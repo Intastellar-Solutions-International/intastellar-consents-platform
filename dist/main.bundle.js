@@ -6460,7 +6460,9 @@ function LiveView(props) {
       }).length)), /*#__PURE__*/React.createElement("div", {
         key: index,
         style: {
-          width: "".concat((liveData === null || liveData === void 0 ? void 0 : liveData.domains[domain].count) / liveData.count * 100, "%"),
+          width: "".concat((liveData === null || liveData === void 0 ? void 0 : liveData.domains[domain].country.filter(function (country) {
+            return country === key;
+          }).length) / liveData.count * 100, "%"),
           height: "2px",
           backgroundColor: "rgb(222, 189, 113)",
           marginBottom: "10px"

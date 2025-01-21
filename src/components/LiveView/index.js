@@ -100,7 +100,9 @@ export function LiveView(props) {
                                                             }</p>
                                                         </div>
                                                         <div key={index} style={{
-                                                            width: `${(liveData?.domains[domain].count / liveData.count) * 100
+                                                            width: `${(liveData?.domains[domain].country.filter((country) => {
+                                                                return country === key;
+                                                            }).length / liveData.count) * 100
                                                                 }%`,
                                                             height: "2px",
                                                             backgroundColor: "rgb(222, 189, 113)",
