@@ -82,17 +82,23 @@ export function LiveView(props) {
                                                 marginBottom: "10px"
                                             }}></div>
                                             {
+
                                                 Object.keys(
                                                     liveData?.domains
                                                 ).filter((domain) => {
                                                     return liveData?.domains[domain].country.indexOf(key) > -1;
                                                 }).map((domain, index) => {
+                                                    console.log(liveData?.domains[domain], domain)
                                                     return <>
                                                         <div key={index} className="liveView-content-flex" style={{
                                                             fontSize: "12px",
                                                         }}>
                                                             <p className="liveView-content-data-1-text">{domain}</p>
-                                                            <p className="liveView-content-data-1-text">{liveData?.domains[domain].count}</p>
+                                                            <p className="liveView-content-data-1-text">{
+                                                                liveData?.domains[domain].country.filter((country) => {
+                                                                    return country === key;
+                                                                }).length
+                                                            }</p>
                                                         </div>
                                                         <div key={index} style={{
                                                             width: `${(liveData?.domains[domain].count / liveData.count) * 100
