@@ -88,7 +88,6 @@ export function LiveView(props) {
                                                 ).filter((domain) => {
                                                     return liveData?.domains[domain].country.indexOf(key) > -1;
                                                 }).map((domain, index) => {
-                                                    console.log(liveData?.domains[domain], domain)
                                                     return <>
                                                         <div key={index} className="liveView-content-flex" style={{
                                                             fontSize: "12px",

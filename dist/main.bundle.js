@@ -6455,7 +6455,9 @@ function LiveView(props) {
         className: "liveView-content-data-1-text"
       }, domain), /*#__PURE__*/React.createElement("p", {
         className: "liveView-content-data-1-text"
-      }, liveData === null || liveData === void 0 ? void 0 : liveData.domains[domain].count)), /*#__PURE__*/React.createElement("div", {
+      }, liveData === null || liveData === void 0 ? void 0 : liveData.domains[domain].country.filter(function (country) {
+        return country === key;
+      }).length)), /*#__PURE__*/React.createElement("div", {
         key: index,
         style: {
           width: "".concat((liveData === null || liveData === void 0 ? void 0 : liveData.domains[domain].count) / liveData.count * 100, "%"),
