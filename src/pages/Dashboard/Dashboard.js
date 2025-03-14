@@ -99,14 +99,6 @@ export default function Dashboard(props) {
                 <div className="" style={{ paddingTop: "40px" }}>
                     <h2>User Interactions</h2>
                     <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
-                        {
-                            (loading) ? <Loading /> :
-                                (activeData) ? <Line data={activeData?.dailyNum} data2={activeData?.dailyNum} fromDate={fromDate} toDate={toDate} title={"Daily user interactions"} /> : null}
-                        <div className={"widget no-padding"}>
-                            <LiveView currentDomain={currentDomain} />
-                        </div>
-                    </div>
-                    <div className="grid-container">
                         {(loading) ? <>
 
                             <Loading />
@@ -119,6 +111,15 @@ export default function Dashboard(props) {
                                 }} />
                             </div>
                         </>}
+                        <div className={"widget no-padding"}>
+                            <LiveView currentDomain={currentDomain} />
+                        </div>
+                    </div>
+                    <div className="grid-container">
+                        {
+                            (loading) ? <Loading /> :
+                                (activeData) ? <Line data={activeData?.dailyNum} data2={activeData?.dailyNum} fromDate={fromDate} toDate={toDate} title={"Daily user interactions"} /> : null}
+                        
                     </div>
                 </div>
                 <PremiumTier loading={loading} activeData={activeData} />
