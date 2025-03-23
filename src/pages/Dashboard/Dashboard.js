@@ -97,7 +97,7 @@ export default function Dashboard(props) {
                     <Crawler />
                 </div> */}
                 <div className="" style={{ paddingTop: "40px" }}>
-                    <h2>User Interactions</h2>
+                    <h2>User Consent Interaction</h2>
                     <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
                         {(loading) ? <>
 
