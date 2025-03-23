@@ -13,8 +13,6 @@ export default function Account(props) {
         document.addEventListener("click", clickOutSide);
     }, []); */
 
-    console.log(JSON.parse(localStorage.getItem("globals"))?.access.type);
-
     return <>
         <div className="user_content">
             <div className="dropdown-image-name">
@@ -29,21 +27,6 @@ export default function Account(props) {
                     }
                 }>
                     <img src={props.profile.image} className="content-img" />
-                    <div className="ziuVxb" style={{ position: "absolute", bottom: "10px", right: "20px" }}>
-                        <button jsaction="click:lj3vef" aria-label="Change profile picture" className="GXg3Le LgkqPe" jsname="twx2Pc" data-cat="profile" data-cp=""
-                            style={{
-                                border: "none",
-                                borderRadius: "50%",
-                                boxShadow: "0 0 9px rgba(0, 0, 0, 0.14), 0 2px 1px rgba(0, 0, 0, 0.28)",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                background: "#fff",
-                                padding: "10px"
-                            }}>
-                            <svg width="24" height="24" viewBox="0 0 24 24" focusable="false" className="uarSJe NMm5M"><path d="M20 5h-3.17L15 3H9L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 14H4V7h16v12z"></path><path d="M12 9c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"></path></svg>
-                        </button>
-                    </div>
                 </div>
                 <div className="dropdown-name">
                     <div className="dpdn">Hi, {props.profile.name}!</div>

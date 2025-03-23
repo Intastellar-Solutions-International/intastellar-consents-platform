@@ -257,7 +257,7 @@ export default function App() {
                                             <LandingPage />
                                         </ErrorBoundary>
                                     </Route>
-                                    <Redirect to="/" />
+                                    <Redirect to="/login" />
                                 </Switch>
                             </div>
                             <ErrorBoundary>
@@ -292,7 +292,7 @@ export default function App() {
                             <Crawler />
                             <footer>
                                 <p>Powered by Intastellar Cookie Consents</p>
-                                <p>&copy; 2023 Intastellar Solutions, International</p>
+                                <p>&copy; {new Date().getFullYear()} Intastellar Solutions, International</p>
                             </footer>
                         </div>
                     </Route>

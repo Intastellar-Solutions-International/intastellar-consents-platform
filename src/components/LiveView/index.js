@@ -23,7 +23,8 @@ export function LiveView(props) {
                                 // Stretch the container to the full width of the parent container.
                                 width: "100%",
                                 borderBottom: "1px solid rgb(192, 159, 83)",
-                                marginBottom: "10px"
+                                marginBottom: "10px",
+                                overflowX: "hidden",
                             }}>
                                 {/* Users count over minutes */}
                                 {
