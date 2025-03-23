@@ -159,7 +159,22 @@ export default function Map(props) {
          <div className="grid-container grid-3">
             <div id="svgMap"></div>
          </div>
-         <div style={{ width: "1000px" }}>
+         <div className="grid-container grid-3">
+            {
+               (countries) ? countries.map((country, key) => {
+                  return (
+                     <div key={key}>
+                        <h3>{country.country}</h3>
+                        <p>Total consents giving: {country.num.total}</p>
+                        <p>Accepted Consents: {country.accepted}%</p>
+                        <p>Rejected Consents: {country.declined}%</p>
+                        <p>Functional Consents: {country.functional}%</p>
+                        <p>Statistics Consents: {country.statics}%</p>
+                        <p>Marketing Consents: {country.marketing}%</p>
+                     </div>
+                  )
+               }) : null
+            }
          </div>
       </>
    )
