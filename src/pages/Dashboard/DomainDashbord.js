@@ -28,7 +28,17 @@ export default function DomainDashbord(props) {
             <div className="dashboard-content">
                 <h1>Dashboard</h1>
                 <p>You´re currently viewing the data for:</p>
-                <h2>Domain: <a className="activeDomain" href={`https://${handle}`} target="_blank">{punycode.toUnicode(handle)}</a></h2>
+                <div>
+                    <h2>Domain: <a className="activeDomain" href={`https://${handle}`} target="_blank">{punycode.toUnicode(handle)}</a></h2>
+                    {/* <button className="btn" onClick={() => { Fetch(API[id].getInteractions.url, API[id].getInteractions.method, {
+                        ...API[id].getInteractions.headers,
+                        "Content-Type": "application/json",
+                        "Accept": "application/pdf",
+                        "Method": "POST"
+                    }, JSON.stringify({ Domains: punycode.toASCII(handle), FromDate: fromDate, ToDate: toDate })) }}>
+                        Download as PDF
+                    </button> */}
+                </div>
                 {(loading) ? <Loading /> : (data.Total === 0) ? <h1>No interactions yet</h1> :
                     <>
                         <p>Date Range: {Intl.DateTimeFormat("da-DK").format(new Date(data.date.from))} - {Intl.DateTimeFormat("da-DK").format(new Date(data.date.to))}</p>

@@ -292,7 +292,7 @@ export default function App() {
                             <Crawler />
                             <footer>
                                 <p>Powered by Intastellar Cookie Consents</p>
-                                <p>&copy; {new Date().getFullYear()} Intastellar Solutions, International</p>
+                                <p>&copy; 2025 Intastellar Solutions, International</p>
                             </footer>
                         </div>
                     </Route>
