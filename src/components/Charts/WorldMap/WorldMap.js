@@ -160,7 +160,7 @@ export default function Map(props) {
             <div id="svgMap"></div>
          </div>
          <div className="grid-container grid-3">
-            {
+            {/* {
                (countries) ? countries.map((country, key) => {
                   return (
                      <div key={key}>
@@ -174,7 +174,7 @@ export default function Map(props) {
                      </div>
                   )
                }) : null
-            }
+            } */}
          </div>
       </>
    )

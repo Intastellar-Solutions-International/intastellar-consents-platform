@@ -21,7 +21,7 @@ export default function PremiumTier(props) {
                 {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
                 {(loading) ? <Loading /> : <Widget totalNumber={ activeData?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" /> }
             </div> */}
-        <div className="grid-container grid-3">
+        <div className="grid-container grid-5">
             {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
             {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" />}
             {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Marketing.toLocaleString("de-DE") + "%"} type="Only Marketing" />}

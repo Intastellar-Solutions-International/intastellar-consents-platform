@@ -5,6 +5,13 @@
     gap: 20px;
 }
 
+.grid-5 {
+    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
 .grid-2 {
     grid-template-columns: 1fr 1fr;
     justify-content: center;
