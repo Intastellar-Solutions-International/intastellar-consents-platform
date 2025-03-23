@@ -7,7 +7,7 @@ export default function PremiumTier(props) {
     const activeData = props.activeData;
 
     return <>
-        {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Total.toLocaleString("de-DE")} type="Total interactions" />}
+        {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Total.toLocaleString("de-DE")} type="Consents given" />}
         {/* <div className="grid-container grid-3">
                 {
                     (loading) ? <Loading /> : <Pie data={[
