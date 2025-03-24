@@ -63,7 +63,7 @@ export default function Line({ data, data2, title, fromDate, toDate }) {
     }, [dailyData, dailyData2]);
 
     return (
-        <div className={"widget no-padding"}>
+        <div className={"no-padding"}>
             {
                 (title) ? <h2>{title}</h2> : null
             }

@@ -5,9 +5,16 @@ import Pie from "../Charts/Pie";
 export default function PremiumTier(props) {
     const loading = props.loading;
     const activeData = props.activeData;
+    const fromDate = props.fromDate;
+    const toDate = props.toDate;
 
     return <>
-        {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Total.toLocaleString("de-DE")} type="Consents given" />}
+        {(loading) ? <Loading /> : <Widget totalNumber={activeData} fromDate={fromDate} toDate={toDate} type="Consents given" />}
+        {/* {
+            (loading) ? <Loading /> :
+                (activeData) ? <Line data={activeData?.dailyNum} data2={activeData?.dailyNum} fromDate={fromDate} toDate={toDate} title={"Daily user interactions"} /> : null
+
+        } */}
         {/* <div className="grid-container grid-3">
                 {
                     (loading) ? <Loading /> : <Pie data={[

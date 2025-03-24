@@ -115,14 +115,8 @@ export default function Dashboard(props) {
                             <LiveView currentDomain={currentDomain} />
                         </div>
                     </div>
-                    <div className="grid-container">
-                        {
-                            (loading) ? <Loading /> :
-                                (activeData) ? <Line data={activeData?.dailyNum} data2={activeData?.dailyNum} fromDate={fromDate} toDate={toDate} title={"Daily user interactions"} /> : null}
-                        
-                    </div>
                 </div>
-                <PremiumTier loading={loading} activeData={activeData} />
+                <PremiumTier loading={loading} activeData={activeData} activeData={activeData} fromDate={fromDate} />
                 {/* {subscriptionStatus?.tier === "premium" ?
                     <PremiumTier loading={loading} activeData={activeData} />
                     : (subscriptionStatus?.tier === "professional") ?
