@@ -8,7 +8,7 @@ export default function Widget(props) {
                 <h2 className="overvieTotal-num">{(props?.totalNumber?.Total) ? props?.totalNumber?.Total?.toLocaleString("de-DE") : props?.totalNumber}</h2>
                 <p>{props?.type}</p>
                 {
-                    (props?.totalNumber?.dailyNum) ? <Line data={props?.totalNumber?.dailyNum} data2={props?.totalNumber?.dailyNum} fromDate={props?.fromDate} toDate={props?.toDate} title={"Daily user interactions"} /> : null
+                    (props?.totalNumber?.dailyNum) ? <Line data={props?.totalNumber?.dailyNum} data2={props?.totalNumber?.dailyNum} fromDate={props?.fromDate} toDate={props?.toDate} /> : null
                 }
             </div>
         </>
