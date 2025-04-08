@@ -1,6 +1,7 @@
 import Fetch from "../../Functions/FetchHook";
 import API from "../../API/api";
-import {Loading, CurrentPageLoading} from "../../Components/widget/Loading";
+import "./Style.css";
+import { Loading, CurrentPageLoading } from "../../Components/widget/Loading";
 const { useState, useEffect, useRef } = React;
 const punycode = require("punycode");
 export default function Websites() {
@@ -24,12 +25,14 @@ export default function Websites() {
 
                                 const installed = domain["installed"];
                                 const lastVisited = domain["lastedVisited"];
+                                const icon = domain["icon"];
                                 return (
                                     <>
                                         <a key={key} className="link widget" href={"http://" + main} target="_blank" rel="noopener nofollow noreferer">
                                             {punycode.toUnicode(main)} <br />
                                             Last visited: {lastVisited} <br />
-                                            Installed: {installed}
+                                            Installed: {installed} <br />
+                                            {icon ? <img src={icon} alt="icon" className="domainIcon" /> : null}
                                         </a>
                                     </>
                                 )
