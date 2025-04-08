@@ -3,7 +3,7 @@
     font-size: 16px;
     text-align: center;
     border-top: 1px solid rgb(95, 95, 95);
-    margin-top: 20px;
+    margin: 20px auto !important;
 }
 
 .links{
