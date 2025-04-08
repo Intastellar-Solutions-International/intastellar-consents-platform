@@ -399,7 +399,7 @@
     }
 
     .main-grid {
-        padding-top: 155px;
+        padding-top: 133px;
     }
 
     .menu {
@@ -463,12 +463,11 @@
     }
 
     .infoHeader {
-        top: 10px;
         position: relative;
     }
 
     .infoHeader.sticky {
-        top: 144px;
+        top: 130px;
     }
 
     .infoHeader .dashboard-content {
