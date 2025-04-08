@@ -158,3 +158,11 @@ svg.uarSJe.NMm5M {
     width: 60%;
     margin: 0;
 }
+
+@media screen and (min-width: 320px) and (max-width: 900px) {
+    .user_content,
+        .services-overview-container{
+            top: 100px;
+        }
+    
+}

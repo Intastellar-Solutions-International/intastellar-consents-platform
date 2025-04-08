@@ -111,3 +111,12 @@
 /* .selectorContianer{
     z-index: 1;
 } */
+
+@media screen and (min-width: 320px) and (max-width: 900px) {
+    .dropdown-menu-button{
+        max-width: 140px;
+        min-width: 0;
+        overflow: hidden;
+    }
+    
+}

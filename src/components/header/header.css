@@ -21,6 +21,7 @@
     justify-content: space-between;
     width: 100%;
     font-size: 19px;
+    padding: 10px;
 }
 
 .flex {
@@ -410,15 +411,28 @@
         color: #fff;
     }
 
+    .menu-bar{
+        width: 25px;
+        height: 3px;
+        background-color: #fff;
+        margin: 5px auto;
+        transition: all .3s ease-in-out;
+        border-radius: 5px;
+    }
+
     .logo-selector-container {
         display: block;
     }
 
+        .company_container .selectorContianer{
+        margin-right: 0px;
+        }
+
     .company_container {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
-        padding: 0 20px;
         padding-bottom: 10px;
+        padding-right: 0;
         gap: 10px;
     }
 

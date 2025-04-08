@@ -83,7 +83,11 @@ export default function Header(props) {
                         <section className="logo_container">
                             <button className="menu" onClick={() => {
                                 document.querySelector(".navOverlay").classList.toggle("expand");
-                            }}>Open</button>
+                            }}>
+                                <div className="menu-bar"></div>
+                                <div className="menu-bar"></div>
+                                <div className="menu-bar"></div>
+                            </button>
                             <img className="dashboard-logo" src={logo} alt="Intastellar Solutions Logo" />
                             <span className="platform-view">{Platform}</span>
                         </section>
