@@ -129,7 +129,7 @@ export default function App() {
             return (
                 <>
                     <PlatformSelector setId={setId} platforms={organisations} />
-                    <BugReport />
+                    {/* <BugReport /> */}
                 </>
             )
         }
@@ -152,7 +152,7 @@ export default function App() {
                             <ErrorBoundary>
                                 {id ? <>
                                     <Header handle={handle} id={id} />
-                                    <BugReport />
+                                    {/* <BugReport /> */}
                                 </> : null}
                             </ErrorBoundary>
                             <div className="main-grid">
