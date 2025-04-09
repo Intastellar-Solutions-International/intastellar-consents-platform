@@ -10,7 +10,7 @@ import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 const Link = window.ReactRouterDOM.Link;
 const { useState, useEffect, useRef, useContext } = React;
 export default function AddUser() {
-    document.title = "Add User to an Organisation | Intastellar Analytics";
+    document.title = "Add User to an Organisation | Intastellar Consents Solutions";
     const [Organisation, setOrganisation] = useContext(OrganisationContext);
     const [userMail, setUserMail] = useState("");
     const [userRole, setUserRole] = useState("Admin");
@@ -36,13 +36,13 @@ export default function AddUser() {
         ).then(
             (re) => {
                 setStatus(null);
-                if(re == "ERROR_ADDING_USER" || re === "Err_Token_Not_Found") { 
+                if (re == "ERROR_ADDING_USER" || re === "Err_Token_Not_Found") {
                     setStatus(`We couldn´t add the user`);
                     setStyle({
                         right: "0",
                         borderColor: "red"
                     })
-                }else{
+                } else {
                     setStatus(`User ${userName} added to ${Organisation?.name}`);
                     setStyle({
                         right: "0"
@@ -63,12 +63,12 @@ export default function AddUser() {
         <>
             <SideNav links={reportsLinks} title="Settings" />
             <main className="dashboard-content">
-                <h1>Add user for { JSON.parse(Organisation).name }</h1>
+                <h1>Add user for {JSON.parse(Organisation).name}</h1>
                 <Link className="backLink" to="/settings">Back to settings</Link>
                 <SuccessWindow style={style} message={status} />
                 <form onSubmit={addUser}>
                     <label for="name">Name</label>
-                    <Text onChange={(e) => setUserName(e.target.value)}/>
+                    <Text onChange={(e) => setUserName(e.target.value)} />
                     <label for="email">Email</label>
                     <Email onChange={(e) => setUserMail(e.target.value)} />
                     <label for="role">Role</label>

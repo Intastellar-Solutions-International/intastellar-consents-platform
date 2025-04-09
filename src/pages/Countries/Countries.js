@@ -13,7 +13,7 @@ import { DomainContext, OrganisationContext } from "../../App.js";
 import { reportsLinks } from "../Reports/Reports.js";
 
 export default function UserConsents(props) {
-    document.title = "Countries | Intastellar Analytics";
+    document.title = "Countries | Intastellar Consents Solutions";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
     const organisations = props.organisations;
@@ -24,13 +24,13 @@ export default function UserConsents(props) {
     return (
         <>
             <SideNav links={reportsLinks} />
-            <article style={{flex: "1"}}>
-                <section style={{padding: "40px", backgroundColor: "rgb(218, 218, 218)", color: "#626262"}}>
+            <article style={{ flex: "1" }}>
+                <section style={{ padding: "40px", backgroundColor: "rgb(218, 218, 218)", color: "#626262" }}>
                     <h1>Reports</h1>
-                    <h2 style={{display: "flex"}}>Countries</h2>
+                    <h2 style={{ display: "flex" }}>Countries</h2>
                 </section>
                 <div className="dashboard-content">
-                    
+
                 </div>
             </article>
         </>

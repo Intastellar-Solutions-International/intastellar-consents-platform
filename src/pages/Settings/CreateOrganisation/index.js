@@ -8,7 +8,7 @@ import API from "../../../API/api";
 const { useState, useEffect, useRef, useContext } = React;
 const Link = window.ReactRouterDOM.Link;
 export default function AddUser() {
-    document.title = "Create a new Organisation | Intastellar Analytics";
+    document.title = "Create a new Organisation | Intastellar Consents Solutions";
     const [organisationName, setOrganisationName] = useState("");
     const [organisationAdmin, setOrganisationAdmin] = useState("");
 

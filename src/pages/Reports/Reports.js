@@ -21,7 +21,7 @@ export const reportsLinks = [
 ]
 
 export default function Reports() {
-    document.title = "Reports | Intastellar Analytics";
+    document.title = "Reports | Intastellar Consents Solutions";
     return <>
         <SideNav links={reportsLinks} />
         <div className="dashboard-content">
