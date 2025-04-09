@@ -16,6 +16,7 @@ export default function DomainDashbord(props) {
     document.title = `${punycode.toUnicode(handle)} Dashboard | Intastellar Consents Solutions`;
 
     const today = new Date();
+
     const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - 360)).toISOString().split("T")[0]);
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]);
 

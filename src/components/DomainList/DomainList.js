@@ -4,7 +4,7 @@ const { useState, useEffect, useRef, createContext } = React;
 import SuccessWindow from "../SuccessWindow/index";
 import API from "../../API/api";
 import Fetch from "../../Functions/fetch";
-export default function DomainList(props){
+export default function DomainList(props) {
     const currentDomain = props.domains;
     const [viewPopUp, setPopUp] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -19,8 +19,8 @@ export default function DomainList(props){
     const [companyLogo, setCompanyLogo] = useState("");
     const [requiredCookies, setRequiredCookies] = useState("");
     const [partnerDomain, setPartnerDomain] = useState("");
-    
-    function saveDomains(domains, settings){
+
+    function saveDomains(domains, settings) {
 
         Fetch(API.settings.addDomain.url, API.settings.addDomain.method,
             API.settings.addDomain.headers,
@@ -32,30 +32,30 @@ export default function DomainList(props){
                 }
             )
         ).then(
-           re => {
-                if(re === "success"){
+            re => {
+                if (re === "success") {
                     setSuccess(true);
                     setPopUp(true);
                     setSavedDomains(domains);
-                } else if(re === "error"){
+                } else if (re === "error") {
                     setError(true);
                     setErrorMessage("Something went wrong, please try again later");
                 } else {
                     setError(true);
                 }
-           }
+            }
         ).catch(setErrorMessage);
 
     }
 
-    function copy(item){
+    function copy(item) {
         navigator.clipboard.writeText(item);
     }
 
-    if(currentDomain.length > 0 && privacyPolicyLink.length === 0){
+    if (currentDomain.length > 0 && privacyPolicyLink.length === 0) {
         setPrivacyPolicyLink("https://" + currentDomain[0] + "/privacy-policy")
     }
-    
+
     return <>
         <div className="domain-list">
             {
@@ -67,19 +67,19 @@ export default function DomainList(props){
                             savedDomains.map((domain, index) => {
                                 return <li key={index}>{domain}</li>
                             }
-                        )}
+                            )}
                     </ul>
                     <p>Now you can add these two lines of code into your head tag of your Website:</p>
                     <button className="copyCta" onClick={() => {
                         copy(
-                            `<script src='https://consents.cdn.intastellarsolutions.com/gdpr.js'></script>
-                            <script href='https://downloads.intastellarsolutions.com/cookieconsents/${savedDomains[0]}/config.js'></script>`
+                            `<script src='https://downloads.intastellarsolutions.com/cookieconsents/${savedDomains[0]}/config.js'></script>
+                            <script href='https://consents.cdn.intastellarsolutions.com/uc.js'></script>`
                         )
                     }}>Copy</button>
-                    <div style={{clear: "both"}}></div>
+                    <div style={{ clear: "both" }}></div>
                     {
-                        `<script src='https://consents.cdn.intastellarsolutions.com/gdpr.js'></script> \n
-                        <script href='https://downloads.intastellarsolutions.com/cookieconsents/${savedDomains[0]}/config.js'></script>`
+                        `<script src='https://downloads.intastellarsolutions.com/cookieconsents/${savedDomains[0]}/config.js'></script> \n
+                        <script href='https://consents.cdn.intastellarsolutions.com/uc.js'></script>`
                     }
                 </> : <>
                     <h2>Domains to be added</h2>
@@ -104,32 +104,32 @@ export default function DomainList(props){
                     </ul>
                     <code className="editor">
                         Privacy Policy Link: <span contentEditable={true}
-                                    suppressContentEditableWarning={true} onInput={(e) => {
+                            suppressContentEditableWarning={true} onInput={(e) => {
                                 setPrivacyPolicyLink(e.target.innerHTML);
                             }} className="editable">"{(currentDomain[0] != undefined) ? `https://${currentDomain[0]}/privacy-policy` : null}"</span>
                         <br />
                         Color: <span contentEditable={true} suppressContentEditableWarning={true} className="editable" onInput={(e) => {
-                                setChoosenColor(e.target.innerHTML);
-                            }}>"{choosenColor}"</span>
+                            setChoosenColor(e.target.innerHTML);
+                        }}>"{choosenColor}"</span>
                         <br />
                         Banner Arrangement: <span contentEditable={true} suppressContentEditableWarning={true} className="editable" onInput={(e) => {
-                                setBannerArrangement(e.target.innerHTML);
-                            }}>"{bannerArrangement}"</span>
+                            setBannerArrangement(e.target.innerHTML);
+                        }}>"{bannerArrangement}"</span>
                         <br />
                         Company Logo: <span contentEditable={true} suppressContentEditableWarning={true} className="editable" onInput={(e) => {
-                                setCompanyLogo(e.target.innerHTML);
-                            }}>"{companyLogo}"</span>
+                            setCompanyLogo(e.target.innerHTML);
+                        }}>"{companyLogo}"</span>
                         <br />
                         Required Cookies: <span contentEditable={true} suppressContentEditableWarning={true} className="editable" onInput={(e) => {
-                                setRequiredCookies(e.target.innerHTML);
-                            }}>[{requiredCookies}]</span>
+                            setRequiredCookies(e.target.innerHTML);
+                        }}>[{requiredCookies}]</span>
                         <br />
                         Partner Domains: <span contentEditable={true} suppressContentEditableWarning={true} className="editable" onInput={(e) => {
-                                setPartnerDomain(e.target.innerHTML);
-                            }}>[{partnerDomain}]</span>
+                            setPartnerDomain(e.target.innerHTML);
+                        }}>[{partnerDomain}]</span>
                         <br />
                     </code>
-                        {/* window.INTA = &#123; <br />
+                    {/* window.INTA = &#123; <br />
                             policy_link: <span contentEditable={true}
                                     suppressContentEditableWarning={true} onInput={() => {
                                 setPrivacyPolicyLink(document.querySelector(".editable").innerHTML);
@@ -147,13 +147,13 @@ export default function DomainList(props){
                                 <br />&#125; <br />
                         &#125; <br />
                     </code> */}
-                    
+
                     <p>Read the full documentation under: <a href="https://developers.intastellarsolutions.com/cookie-solutions/docs/js-docs" target="_blank">https://developers.intastellarsolutions.com/cookie-solutions/docs/js-docs</a></p>
                 </>
             }
             {
-                (currentDomain.length > 0 && !success) ? <Button text="Save" onClick={ () => {
-                    
+                (currentDomain.length > 0 && !success) ? <Button text="Save" onClick={() => {
+
                     saveDomains(currentDomain, `
                     <script>
                         window.INTA = {
@@ -168,12 +168,12 @@ export default function DomainList(props){
                             }
                         }
                     </>`);
-                }}  />
-                : ""
+                }} />
+                    : ""
             }
         </div>
         {
-            (viewPopUp && success) ? 
+            (viewPopUp && success) ?
                 <SuccessWindow message={
                     <>
                         <h2>Success!</h2>
@@ -187,7 +187,7 @@ export default function DomainList(props){
                         </ul>
                     </>
                 } />
-            : null
+                : null
         }
     </>
 }
