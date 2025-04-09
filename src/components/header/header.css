@@ -444,6 +444,10 @@
         display: block;
     }
 
+    .dashboard-profile {
+        align-items: flex-start;
+    }
+
     .dashboard-profile__nameContainer {
         width: auto;
     }

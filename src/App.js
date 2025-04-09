@@ -10,6 +10,7 @@ import Header from "./Components/Header/header";
 import Footer from "./Components/Footer";
 import Login from "./Login/Login";
 import Signup from "./Login/Signup";
+import AuthLogin from "./Login/AuthLogin";
 import Nav from "./Components/Header/Nav";
 import CookiesDashboard from "./Pages/Dashboard/CookiesDashboard";
 import API from "./API/api";
@@ -257,6 +258,9 @@ export default function App() {
                                             <LandingPage />
                                         </ErrorBoundary>
                                     </Route>
+                                    <Route path="/auth-login">
+                                        <AuthLogin />
+                                    </Route>
                                     <Redirect to="/login" />
                                 </Switch>
                             </div>
@@ -265,6 +269,7 @@ export default function App() {
                             </ErrorBoundary>
                         </DomainContext.Provider>
                     </OrganisationContext.Provider>
+
                 </Router>
             </>
         )
