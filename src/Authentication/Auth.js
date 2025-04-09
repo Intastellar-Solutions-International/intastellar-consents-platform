@@ -58,7 +58,10 @@ const Authentication = {
         window.location.href = "/";
     },
     getToken: function () {
-        const token = (JSON.parse(localStorage.getItem("globals"))?.token) ? "Bearer " + JSON.parse(localStorage.getItem("globals"))?.token : undefined;
+        // Get token from query string
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenFromUrl = urlParams.get('token');
+        const token = (JSON.parse(localStorage.getItem("globals"))?.token) ? "Bearer " + JSON.parse(localStorage.getItem("globals"))?.token : tokenFromUrl ? tokenFromUrl : null;
         return token;
     },
     getUserId: function () {
