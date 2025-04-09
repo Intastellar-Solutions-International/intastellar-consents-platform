@@ -1,4 +1,8 @@
 const Authentication = {
+    oAuthCallback: function (e) {
+        const url = window.location.href;
+        console.log(e);
+    },
     Login: function (url, email, password, type, setErrorMessage, setLoading) {
         setLoading(true);
         fetch(url, {
