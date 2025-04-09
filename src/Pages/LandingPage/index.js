@@ -6,7 +6,7 @@ export default function LandingPage() {
     const loginRef = useRef(null);
     useEffect(() => {
         Intastellar.accounts.id.renderButton("login", {
-            "picker": "popup",
+            "picker": "button",
             "theme": "dark"
         });
 
