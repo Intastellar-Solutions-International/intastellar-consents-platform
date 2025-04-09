@@ -61,6 +61,9 @@ const Authentication = {
         // Get token from query string
         const urlParams = new URLSearchParams(window.location.search);
         const tokenFromUrl = urlParams.get('token');
+
+        console.log(tokenFromUrl);
+
         const token = (JSON.parse(localStorage.getItem("globals"))?.token) ? "Bearer " + JSON.parse(localStorage.getItem("globals"))?.token : tokenFromUrl ? tokenFromUrl : null;
         return token;
     },
