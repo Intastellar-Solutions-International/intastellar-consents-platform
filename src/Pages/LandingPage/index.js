@@ -22,7 +22,6 @@ export default function LandingPage() {
                     <h1 className="main-content-section-title">Welcome to Intastellar Consents</h1>
                     <p className="main-content-section-description">Intastellar Consent is a consent management platform that helps you manage your user consents in a compliant way.</p>
                     <Link to="/login" className="main-content-section-button">Get Started</Link>
-                    <p>Or</p>
                     <div
                         id="login"
                         data-client_id="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"

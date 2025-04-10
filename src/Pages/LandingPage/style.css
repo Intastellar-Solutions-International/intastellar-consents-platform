@@ -21,3 +21,27 @@
     padding: 10px 20px;
     border-radius: 5px;
 }
+
+@media screen and (max-width: 600px) {
+    .main-content {
+        width: 100%;
+    }
+    .crawlerPage-logo {
+        width: 100px;
+    }
+
+    .main-content-section-description{
+        font-size: 14px;
+        line-height: 20px;
+        margin-bottom: 15px;
+    }
+    .main-content-section-title{
+        font-size: 20px;
+        line-height: 30px;
+    }
+
+    .main-content-section{
+        width: 100%;
+        padding: 25px;
+    }
+}
