@@ -35,7 +35,7 @@
     background-color: transparent;
 }
 
-.svgMap-map-container{
+.svgMap-map-container, .svgMap-container{
     height: 100%;
 }
 
