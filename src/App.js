@@ -61,6 +61,13 @@ export default function App() {
     });
     const [id, setId] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
 
+
+    if (localStorage.getItem("globals") === null || localStorage.getItem("globals") === undefined) {
+        document.cookie = "inta_acc=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        if (window.location.pathname !== "/login" && window.location.pathname !== "/signup") {
+            window.location.href = "/login";
+        }
+    }
     if (localStorage.getItem("globals") != null) {
         if (window.location.pathname === "/login") {
             window.location.href = "/" + id + "/dashboard";

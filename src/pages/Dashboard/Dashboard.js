@@ -35,12 +35,8 @@ export default function Dashboard(props) {
     let method = API[id].getInteractions.method;
     let header = API[id].getInteractions.headers;
 
-    let consent = null;
-
     useEffect(() => {
-        if (localStorage.getItem("globals") === null || localStorage.getItem("globals") === undefined) {
-            window.location.href = "/login";
-        }
+
         function handleScrollEvent() {
             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
                 /* console.log("you're at the bottom of the page"); */

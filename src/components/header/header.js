@@ -30,7 +30,7 @@ export default function Header(props) {
         })).then((data) => {
             if (data === "Err_Login_Expired") {
                 localStorage.removeItem("globals");
-                navigate.push("/login");
+                window.location.href = "/login";
                 return;
             }
 
