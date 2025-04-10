@@ -35,6 +35,10 @@
     background-color: transparent;
 }
 
+.svgMap-map-container{
+    height: 100%;
+}
+
 @media screen and (max-width: 768px) {
     .svgMap-map-wrapper {
         width: 100%;
