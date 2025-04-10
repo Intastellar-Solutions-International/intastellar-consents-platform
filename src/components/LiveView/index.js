@@ -20,6 +20,7 @@ export function LiveView(props) {
                             <div className="liveView-container" style={{
                                 gap: "1px",
                                 display: "flex",
+                                alignItems: "flex-end",
                                 // Stretch the container to the full width of the parent container.
                                 width: "100%",
                                 borderBottom: "1px solid rgb(192, 159, 83)",
@@ -30,9 +31,10 @@ export function LiveView(props) {
                                         const visitData = liveData?.visitsOverTime.find(minute => Math.round(minute.minutes) === index + 1);
 
                                         return <div key={index} className="liveView-container-bar" style={{
-                                            width: "3px",
-                                            height: `${Math.round(visitData?.minutes) == index + 1 ? "60" : "0"}px`,
+                                            width: document.querySelector(".liveView-container")?.clientWidth / 30,
+                                            height: `${Math.round(visitData?.minutes) == index + 1 ? "60" : "2"}px`,
                                             backgroundColor: "rgb(192, 159, 83)",
+                                            transition: "height 0.5s ease-in-out",
                                             // Set the opacity to 1 if there is data for the minute, otherwise keep it 0.
                                             opacity: "1"
                                         }}></div>
