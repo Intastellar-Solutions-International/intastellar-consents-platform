@@ -64,9 +64,6 @@ export default function Line({ data, data2, title, fromDate, toDate }) {
 
     return (
         <div className={"no-padding"}>
-            {
-                (title) ? <h2>{title}</h2> : null
-            }
             <div className="chart" id="line-chart">
             </div>
         </div>
