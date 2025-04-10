@@ -24,10 +24,21 @@ export function LiveView(props) {
                                 width: "100%",
                                 borderBottom: "1px solid rgb(192, 159, 83)",
                                 marginBottom: "10px",
-                                overflowX: "hidden",
                             }}>
-                                {/* Users count over minutes */}
                                 {
+                                    Array.from({ length: 30 }, (_, index) => {
+                                        const visitData = liveData?.visitsOverTime.find(minute => Math.round(minute.minutes) === index + 1);
+
+                                        return <div key={index} className="liveView-container-bar" style={{
+                                            width: "3px",
+                                            height: `${Math.round(visitData?.minutes) == index + 1 ? "60" : "0"}px`,
+                                            backgroundColor: "rgb(192, 159, 83)",
+                                            // Set the opacity to 1 if there is data for the minute, otherwise keep it 0.
+                                            opacity: "1"
+                                        }}></div>
+                                    })
+                                }
+                                {/* {
                                     liveData?.visitsOverTime.map((minute, index) => {
                                         // Calulate the position of the bar based on the number of minutes gone by.
 
@@ -43,23 +54,9 @@ export function LiveView(props) {
 
                                         // Display a bar for each minute with the height of the bar being the number of users in that minute.
                                         // Update the bars position based on the number of users in that minute.
-                                        return <div key={index} className="liveView-content-data-1" style={{
-                                            // Update the bars position based on the minutes gone by and move it from right to left.
-                                            /* marginLeft: `${barTransformPosition}px`, */
-                                            transform: `translateX(${Math.round(barTransformPosition)}px)`,
-                                            transition: "transform 0.5s",
-                                            width: "maxContent",
-                                        }}>
-                                            <div style={{
-                                                height: `${(minute.count / liveData.count) * 100
-                                                    }%`,
-                                                minHeight: "70px",
-                                                width: "4px",
-                                                backgroundColor: "rgb(192, 159, 83)",
-                                            }} data-time={Math.round(minute.minutes)}></div>
-                                        </div>
+                                        return 
                                     })
-                                }
+                                } */}
                             </div>
                             <div className="liveView-content-data-2">
                                 {
