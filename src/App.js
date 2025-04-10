@@ -258,9 +258,6 @@ export default function App() {
                                             <LandingPage />
                                         </ErrorBoundary>
                                     </Route>
-                                    <Route path="/auth-login">
-                                        <AuthLogin />
-                                    </Route>
                                     <Redirect to="/login" />
                                 </Switch>
                             </div>
@@ -285,6 +282,9 @@ export default function App() {
                         <ErrorBoundary>
                             <Signup />
                         </ErrorBoundary>
+                    </Route>
+                    <Route path="/auth-login" exact>
+                        <AuthLogin />
                     </Route>
                     <Route path="/" exact>
                         <ErrorBoundary>
