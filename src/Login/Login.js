@@ -18,7 +18,7 @@ export default function Login() {
 
     useEffect(() => {
         Intastellar.accounts.id.renderButton("login", {
-            "picker": "button",
+            "picker": "popup",
             "theme": "light"
         });
 
@@ -38,7 +38,6 @@ export default function Login() {
                     <button className="loginForm-inputField --btn" type="submit">{(isLoading) ? "We are loggin you in..." : "SIGNIN"}</button>
                     <a className="loginForm-inputField --link" href="/forgot-password">Forgot Password?</a>
                     <Link className="loginForm-inputField --link" to="/signup">Don't have an account? Signup</Link>
-                    <p>or</p>
                     <div
                         id="login"
                         data-client_id="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
