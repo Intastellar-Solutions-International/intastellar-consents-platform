@@ -26,6 +26,8 @@ function colorCalulator(value) {
 
 export default function Map(props) {
    const data = props.data;
+   const total = data.total;
+   console.log(data);
    const countries = data.Countries;
 
    if (countries != null) {
@@ -159,22 +161,36 @@ export default function Map(props) {
          <div className="grid-container grid-3">
             <div id="svgMap"></div>
          </div>
-         <div className="grid-container grid-3">
-            {/* {
-               (countries) ? countries.map((country, key) => {
+         <div className="top-countries">
+            <div className="grid-container grid-2">
+               <p>Contry</p>
+               <p>Active users</p>
+            </div>
+            {
+               (countries) ? countries.sort((a, b) => {
+                  return b.num.total - a.num.total;
+               }
+               ).map((country, key) => {
                   return (
-                     <div key={key}>
-                        <h3>{country.country}</h3>
-                        <p>Total consents giving: {country.num.total}</p>
-                        <p>Accepted Consents: {country.accepted}%</p>
-                        <p>Rejected Consents: {country.declined}%</p>
-                        <p>Functional Consents: {country.functional}%</p>
-                        <p>Statistics Consents: {country.statics}%</p>
-                        <p>Marketing Consents: {country.marketing}%</p>
+                     <div key={key} style={{
+                        padding: "0 10px",
+                     }}>
+                        <div className="grid-container grid-2">
+                           <p>{country.country}</p>
+                           <p style={{
+                              textAlign: "right",
+                           }}>{country.num.total.toLocaleString("de-DE")}</p>
+                        </div>
+                        <div style={{
+                           width: country.num.total / total * 100 + "%",
+                           height: "2px",
+                           backgroundColor: "rgb(222, 189, 113)",
+                        }}>
+                        </div>
                      </div>
                   )
-               }) : null
-            } */}
+               }).slice(0, 8) : null
+            }
          </div>
       </>
    )

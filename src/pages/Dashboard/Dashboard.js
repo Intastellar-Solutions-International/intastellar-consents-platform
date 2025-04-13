@@ -102,19 +102,25 @@ export default function Dashboard(props) {
                             <Loading />
                         </> : <>
 
-                            <div className={"widget no-padding"}>
+                            <div className={["widget no-padding"]} style={
+                                {
+                                    display: "grid",
+                                    gridTemplateColumns: "1fr .4fr",
+                                }
+                            }>
                                 <Map data={{
                                     date: Intl.DateTimeFormat("de-DE").format(new Date(data.date.from)) + " - " + Intl.DateTimeFormat("da-DK").format(new Date(data.date.to)),
-                                    Countries: activeData?.Countries
+                                    Countries: activeData?.Countries,
+                                    total: activeData?.Total,
                                 }} />
                             </div>
                         </>}
-                        <div className={"widget no-padding"}>
+                        <div className={["widget no-padding"]}>
                             <LiveView currentDomain={currentDomain} />
                         </div>
                     </div>
                 </div>
-                <PremiumTier loading={loading} activeData={activeData} activeData={activeData} fromDate={fromDate} />
+                <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} />
                 {/* {subscriptionStatus?.tier === "premium" ?
                     <PremiumTier loading={loading} activeData={activeData} />
                     : (subscriptionStatus?.tier === "professional") ?

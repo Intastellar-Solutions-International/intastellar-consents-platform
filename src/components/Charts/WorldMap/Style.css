@@ -1,3 +1,8 @@
+.top-countries{
+    font-size: 12px;
+    text-align: left;
+}
+
 .map-selected {
     fill: #E3DA37;
 }
