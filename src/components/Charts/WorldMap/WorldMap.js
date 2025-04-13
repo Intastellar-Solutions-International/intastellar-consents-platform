@@ -172,9 +172,7 @@ export default function Map(props) {
                }
                ).map((country, key) => {
                   return (
-                     <div key={key} style={{
-                        padding: "0 10px",
-                     }}>
+                     <div key={key}>
                         <div className="grid-container grid-2">
                            <p>{country.country}</p>
                            <p style={{
