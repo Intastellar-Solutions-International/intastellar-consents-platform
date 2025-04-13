@@ -74,13 +74,19 @@ export function LiveView(props) {
                                                 <p className="liveView-content-data-1-text">{liveData?.country[key].count}</p>
                                             </div>
                                             <div style={{
-                                                width: `${(liveData?.country[key].count / liveData.count) * 100
-                                                    }%`,
+                                                width: `100%`,
                                                 height: "2px",
-                                                backgroundColor: "rgb(222, 189, 113)",
-                                                backgroundColor: "rgb(192, 159, 83)",
+                                                backgroundColor: "#c4c4c4",
                                                 marginBottom: "10px"
-                                            }}></div>
+                                            }}>
+                                                <div style={{
+                                                    width: `${(liveData?.country[key].count / liveData.count) * 100
+                                                        }%`,
+                                                    height: "2px",
+                                                    backgroundColor: "rgb(222, 189, 113)",
+                                                    marginBottom: "10px"
+                                                }}></div>
+                                            </div>
                                             {
 
                                                 Object.keys(
@@ -100,14 +106,24 @@ export function LiveView(props) {
                                                             }</p>
                                                         </div>
                                                         <div key={index} style={{
-                                                            width: `${(liveData?.domains[domain].country.filter((country) => {
-                                                                return country === key;
-                                                            }).length / liveData.count) * 100
-                                                                }%`,
+                                                            width: `100%`,
                                                             height: "2px",
-                                                            backgroundColor: "rgb(222, 189, 113)",
-                                                            marginBottom: "10px"
-                                                        }}></div>
+                                                            backgroundColor: "#c4c4c4",
+                                                            marginBottom: "10px",
+                                                            position: "relative",
+                                                            overflow: "hidden",
+                                                        }}>
+                                                            <div style={{
+                                                                width: `${(liveData?.domains[domain].country.filter((country) => {
+                                                                    return country === key;
+                                                                }).length / liveData.count) * 100
+                                                                    }%`,
+                                                                height: "2px",
+                                                                position: "absolute",
+                                                                top: "0",
+                                                                backgroundColor: "rgb(222, 189, 113)"
+                                                            }}></div>
+                                                        </div>
                                                     </>
                                                 })
                                             }

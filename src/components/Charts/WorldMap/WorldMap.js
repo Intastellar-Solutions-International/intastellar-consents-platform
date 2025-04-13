@@ -180,10 +180,22 @@ export default function Map(props) {
                            }}>{country.num.total.toLocaleString("de-DE")}</p>
                         </div>
                         <div style={{
-                           width: country.num.total / total * 100 + "%",
+                           width: "100%",
                            height: "2px",
-                           backgroundColor: "rgb(222, 189, 113)",
+                           backgroundColor: "#c4c4c4",
+                           position: "relative",
+                           overflow: "hidden",
                         }}>
+                           <div
+                              style={{
+                                 width: country.num.total / total * 100 + "%",
+                                 height: "2px",
+                                 position: "absolute",
+                                 top: "0",
+                                 left: "0",
+                                 backgroundColor: "rgb(222, 189, 113)",
+                              }}
+                           ></div>
                         </div>
                      </div>
                   )
