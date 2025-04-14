@@ -197,9 +197,116 @@ export default function Map(props) {
                               }}
                            ></div>
                         </div>
+                        <div className="grid-container grid-2">
+                           <section>
+                              <p>Accepted</p>
+                              <div style={{
+                                 width: "100%",
+                                 height: "2px",
+                                 backgroundColor: "#c4c4c4",
+                                 position: "relative",
+                                 overflow: "hidden",
+                              }}>
+                                 <div
+                                    style={{
+                                       width: country.accepted + "%",
+                                       height: "2px",
+                                       position: "absolute",
+                                       top: "0",
+                                       left: "0",
+                                       backgroundColor: "rgb(222, 189, 113)",
+                                    }}
+                                 ></div>
+                              </div>
+                           </section>
+                           <section>
+                              <p>Rejected</p>
+                              <div style={{
+                                 width: "100%",
+                                 height: "2px",
+                                 backgroundColor: "#c4c4c4",
+                                 position: "relative",
+                                 overflow: "hidden",
+                              }}>
+                                 <div
+                                    style={{
+                                       width: country.declined + "%",
+                                       height: "2px",
+                                       position: "absolute",
+                                       top: "0",
+                                       left: "0",
+                                       backgroundColor: "rgb(222, 189, 113)",
+                                    }}
+                                 ></div>
+                              </div>
+                           </section>
+                           <section>
+                              <p>Functional</p>
+                              <div style={{
+                                 width: "100%",
+                                 height: "2px",
+                                 backgroundColor: "#c4c4c4",
+                                 position: "relative",
+                                 overflow: "hidden",
+                              }}>
+                                 <div
+                                    style={{
+                                       width: country.functional + "%",
+                                       height: "2px",
+                                       position: "absolute",
+                                       top: "0",
+                                       left: "0",
+                                       backgroundColor: "rgb(222, 189, 113)",
+                                    }}
+                                 ></div>
+                              </div>
+                           </section>
+                           <section>
+                              <p>Statistics</p>
+                              <div style={{
+                                 width: "100%",
+                                 height: "2px",
+                                 backgroundColor: "#c4c4c4",
+                                 position: "relative",
+                                 overflow: "hidden",
+                              }}>
+                                 <div
+                                    style={{
+                                       width: country.statics + "%",
+                                       height: "2px",
+                                       position: "absolute",
+                                       top: "0",
+                                       left: "0",
+                                       backgroundColor: "rgb(222, 189, 113)",
+                                    }}
+                                 ></div>
+                              </div>
+                           </section>
+                           <section>
+                              <p>Marketing</p>
+                              <div style={{
+                                 width: "100%",
+                                 height: "2px",
+                                 backgroundColor: "#c4c4c4",
+                                 position: "relative",
+                                 overflow: "hidden",
+                              }}>
+                                 <div
+                                    style={{
+                                       width: country.marketing + "%",
+                                       height: "2px",
+                                       position: "absolute",
+                                       top: "0",
+                                       left: "0",
+                                       backgroundColor: "rgb(222, 189, 113)",
+                                    }}
+                                 ></div>
+                              </div>
+                           </section>
+                        </div>
                      </div>
                   )
-               }).slice(0, 8) : null
+               }).slice(0, 4) : null
             }
          </div>
       </>
