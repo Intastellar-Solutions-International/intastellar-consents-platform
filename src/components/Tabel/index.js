@@ -1,5 +1,5 @@
 import "./Style.css";
-export default function Table(props){
+export default function Table(props) {
     const data = props.data;
     const headers = props.headers;
     return <>
@@ -20,7 +20,7 @@ export default function Table(props){
                             data?.map((d, i) => {
                                 return <>
                                     <div className="table-cell" key={i}>{d.name}</div>
-                                    <div className="table-cell" key={i+1}>{d.domain}</div>
+                                    <div className="table-cell" key={i + 1}>{d.domain}</div>
                                 </>
                             })
                         }
