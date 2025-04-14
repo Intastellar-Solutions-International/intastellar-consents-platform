@@ -137,6 +137,7 @@ export function LiveView(props) {
                                                             });
                                                         }} className="liveView-content-flex" style={{
                                                             fontSize: "12px",
+                                                            cursor: "pointer",
                                                         }}>
                                                             <p className="liveView-content-data-1-text">{domain}</p>
                                                             <p className="liveView-content-data-1-text">{
