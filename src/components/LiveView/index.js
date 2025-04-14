@@ -1,11 +1,16 @@
 import useFetch from "../../Functions/FetchHook";
 import API from "../../API/api";
 import "./Style.css";
+const useState = window.React.useState;
+const useEffect = window.React.useEffect;
 export function LiveView(props) {
     API.liveData.headers.Domains = props.currentDomain;
 
     const [loading, liveData, error, updated] = useFetch(0.25, API.liveData.url, API.liveData.method, API.liveData.headers);
-
+    const [domainLiveView, setDomainLiveView] = useState({
+        domain: "",
+        open: false
+    });
 
     return <>
         {
@@ -88,14 +93,49 @@ export function LiveView(props) {
                                                 }}></div>
                                             </div>
                                             {
-
+                                                domainLiveView.open && domainLiveView.domain === key ?
+                                                    <div className="liveView-content-data-1-domain" style={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        gap: "10px",
+                                                        padding: "10px",
+                                                        borderRadius: "5px",
+                                                        backgroundColor: "white",
+                                                        position: "absolute",
+                                                        top: "0",
+                                                        left: "0",
+                                                        right: "0",
+                                                        bottom: "0",
+                                                        zIndex: "999",
+                                                        overflowY: "scroll",
+                                                        maxHeight: "400px",
+                                                        width: "100%",
+                                                        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                                                        border: "1px solid #c4c4c4",
+                                                        borderRadius: "5px",
+                                                        backgroundColor: "white"
+                                                    }}
+                                                    >
+                                                        <div className="liveView-content-data-1-domain-title">
+                                                            <p className="liveView-content-data-1-text">Domain</p>
+                                                            <p className="liveView-content-data-1-text">Count</p>
+                                                        </div>
+                                                    </div>
+                                                    : null
+                                            }
+                                            {
                                                 Object.keys(
                                                     liveData?.domains
                                                 ).filter((domain) => {
                                                     return liveData?.domains[domain].country.indexOf(key) > -1;
                                                 }).map((domain, index) => {
                                                     return <>
-                                                        <div key={index} className="liveView-content-flex" style={{
+                                                        <div key={index} onClick={() => {
+                                                            setDomainLiveView({
+                                                                domain: domain,
+                                                                open: true
+                                                            });
+                                                        }} className="liveView-content-flex" style={{
                                                             fontSize: "12px",
                                                         }}>
                                                             <p className="liveView-content-data-1-text">{domain}</p>

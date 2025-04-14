@@ -27,7 +27,6 @@ function colorCalulator(value) {
 export default function Map(props) {
    const data = props.data;
    const total = data.total;
-   console.log(data);
    const countries = data.Countries;
 
    if (countries != null) {
@@ -197,7 +196,7 @@ export default function Map(props) {
                               }}
                            ></div>
                         </div>
-                        <div className="grid-container grid-2">
+                        {/* <div className="grid-container grid-2">
                            <section>
                               <p>Accepted</p>
                               <div style={{
@@ -303,7 +302,7 @@ export default function Map(props) {
                                  ></div>
                               </div>
                            </section>
-                        </div>
+                        </div> */}
                      </div>
                   )
                }).slice(0, 4) : null
