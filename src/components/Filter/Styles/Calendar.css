@@ -1,0 +1,85 @@
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.right-0 {
+    right: 0;
+}
+
+.z-10 {
+    z-index: 10;
+}
+
+.will-change-scroll {
+    will-change: scroll-position;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.flex-col-reverse {
+    flex-direction: column-reverse;
+}
+
+.mt-3 {
+    margin-top: .75rem;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.grid-cols-7 {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.gap-2 {
+    gap: .5rem;
+}
+
+.h-\[20px\] {
+    height: 20px;
+}
+
+.w-\[20px\] {
+    width: 20px;
+}
+
+.text-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgb(241 245 249 / var(--tw-text-opacity));
+}
+
+.bg-primary {
+    --tw-bg-opacity: 1;
+    background-color: rgb(192, 159, 83);
+}
+
+.bottom-0 {
+    bottom: 0;
+}

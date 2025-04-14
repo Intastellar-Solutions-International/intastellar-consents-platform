@@ -20,6 +20,9 @@ export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents Solutions";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
+    const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split("T")[0];
+    const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60)).toISOString().split("T")[0];
+
     const subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
     const userProfile = JSON.parse(localStorage.getItem("globals")).profile.image;
 
@@ -72,7 +75,7 @@ export default function Dashboard(props) {
 
     return (
         <>
-            <StickyPageTitle title="Home" url={url} method={method} header={header} setLastDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} />
+            <StickyPageTitle title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
                 <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
