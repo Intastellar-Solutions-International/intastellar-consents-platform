@@ -40,7 +40,7 @@ export default function Months({ currentMonth, year, selectedStartDate, selected
 
                         if (date && day != null && new Date(selectedStartDate).toISOString().split("T")[0] <= date && date <= new Date(selectedEndDate).toISOString().split("T")[0]) {
                             resultClass = "bg-primary text-slate-100 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
-                        } else if (today < date || date < new Date("2024-06-03").toISOString().split("T")[0]) {
+                        } else if (today < date || date < new Date("2022-01-01").toISOString().split("T")[0]) {
                             resultClass = "text-slate-200 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
                         } else if (clicked.isClicked && clicked.Date === date) {
                             resultClass = "bg-primary text-slate-100 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
@@ -56,7 +56,7 @@ export default function Months({ currentMonth, year, selectedStartDate, selected
                                     return;
                                 }
 
-                                if (date < new Date("2024-06-03").toISOString().split("T")[0]) {
+                                if (date < new Date("2022-01-01").toISOString().split("T")[0]) {
                                     return;
                                 }
 
