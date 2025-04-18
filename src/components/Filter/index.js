@@ -23,8 +23,6 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
     });
     setNumberOfDays(selectedDays);
 
-    console.log("dateRange", dateRange);
-
     /*  const navigate = useNavigate(); */
     const endXDays = dateRange?.end;
     const startXDays = dateRange?.start;
