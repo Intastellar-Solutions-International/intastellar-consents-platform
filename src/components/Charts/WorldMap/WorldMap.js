@@ -305,7 +305,7 @@ export default function Map(props) {
                         </div> */}
                      </div>
                   )
-               }).slice(0, 4) : null
+               }).slice(0, 7) : null
             }
          </div>
       </>
