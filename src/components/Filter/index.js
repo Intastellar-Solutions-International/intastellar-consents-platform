@@ -2,7 +2,15 @@ import "./Styles/Filter.css";
 const { useState, useEffect, useRef, useContext } = React;
 /* import { ToggleButton } from "~/components"; */
 import Calendar from "./Calendar.js";
-export default function Filter({ className, numberOfDays, setNumberOfDays, compareRange, date }) {
+export default function Filter({
+    className,
+    numberOfDays,
+    setNumberOfDays,
+    compareRange,
+    date,
+    setFromDate,       // ← new
+    setToDate,         // ← new
+}) {
     const compareRangeCheck = compareRange === 0 ? false : true;
 
     const [calendar, setCalendar] = useState(false);
@@ -200,20 +208,16 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
                         } className="bottom-0 col-span-2 text-slate-100 bg-secondaryDark w-1/2 right-0 p-2 hover:bg-slate-100 hover:text-primary cursor-pointer">
                             Cancel
                         </button>
-                        <button onClick={(e) => {
-                            e.preventDefault();
-                            handleCalendarToggle();
-                            if (!isCompare) {
-                                /* navigate({
-                                    search: '?startDate=' + startXDays + '&endDate=' + endXDays + '&days=' + selectedDays
-                                }) */
-                            } else {
-                                /* navigate({
-                                    search: '?startDate=' + startXDays + '&endDate=' + endXDays + '&compareRange=' + selectedCompareRange + '&days=' + selectedDays
-                                }) */
-                            }
-                        }
-                        } className="bottom-0 col-span-2 text-slate-100 bg-primary w-1/2 right-0 p-2 hover:bg-primaryHover cursor-pointer">
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleCalendarToggle();
+                                // push the new range up
+                                setFromDate(new Date(startXDays));
+                                setToDate(new Date(endXDays));
+                            }}
+                            className="bottom-0 col-span-2 text-slate-100 bg-primary w-1/2 right-0 p-2 hover:bg-primaryHover cursor-pointer"
+                        >
                             Apply
                         </button>
                     </footer>
