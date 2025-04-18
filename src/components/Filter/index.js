@@ -35,7 +35,7 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
 
     return (
         <div className={className ?? className + " calendar relative z-40"}>
-            <button className="flex justify-center cursor-pointer w-max ml-auto text-slate-100" onClick={
+            <button className="flex justify-center cursor-pointer w-max ml-auto text-slate-100 transparent" onClick={
                 handleCalendarToggle
             }>
                 <p className="bg-primaryHover text-sm rounded-md mr-2 px-2">Last {numberOfDays} days</p>

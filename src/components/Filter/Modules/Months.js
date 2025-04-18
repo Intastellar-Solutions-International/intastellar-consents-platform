@@ -1,4 +1,4 @@
-import { useState } from "react";
+const { useState } = React;
 
 export default function Months({ currentMonth, year, selectedStartDate, selectedEndDate, setStartDate, setEndDate, setSelectedDays, setDateRange, today }) {
     const [clicked, setClicked] = useState({ isClicked: false, Date: "" });

@@ -1,3 +1,14 @@
+.calendar-grid button{
+    border: none;
+    cursor: pointer;
+}
+
+.transparent{
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
+
 .relative {
     position: relative;
 }

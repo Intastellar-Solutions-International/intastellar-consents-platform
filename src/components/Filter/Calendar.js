@@ -1,4 +1,4 @@
-import { useState } from "react";
+const { useState, useEffect } = React;
 import Months from "./Modules/Months";
 import "./Styles/Calendar.css";
 
