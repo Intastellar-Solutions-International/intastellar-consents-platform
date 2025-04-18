@@ -1,4 +1,4 @@
-const { useState } = React;
+const { useState, useRef } = React;
 import Months from "./Modules/Months";
 import "./Styles/Calendar.css";
 
@@ -35,11 +35,26 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
             ? months.slice(0, currentMonth + 1)
             : months;
 
+    const containerRef = useRef(null);
+
+    const handleScroll = (e) => {
+        if (e.target.scrollTop < 50) {
+            handlePrevYear();
+        } else if (e.target.scrollTop > containerRef.current.scrollHeight - e.target.clientHeight - 50) {
+            handleNextYear();
+        }
+    };
+
     return (
-        <div className="overflow-auto will-change-scroll flex flex-col-reverse" style={{
-            scrollSnapType: "y mandatory",
-            scrollBehavior: "smooth",
-        }}>
+        <div
+            ref={containerRef}
+            onScroll={handleScroll}
+            className="overflow-auto will-change-scroll flex flex-col-reverse"
+            style={{
+                scrollSnapType: "y mandatory",
+                scrollBehavior: "smooth",
+            }}
+        >
             <div className="p-2">
                 {/* year navigation */}
                 <div className="flex justify-between items-center mb-2">
