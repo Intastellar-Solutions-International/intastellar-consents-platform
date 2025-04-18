@@ -48,7 +48,7 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
     return (
         <div
             ref={containerRef}
-            onScroll={handleScroll}
+            /* onScroll={handleScroll} */
             className="overflow-auto will-change-scroll flex flex-col-reverse"
             style={{
                 scrollSnapType: "y mandatory",
