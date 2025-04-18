@@ -105,12 +105,7 @@ export default function Dashboard(props) {
                             <Loading />
                         </> : <>
 
-                            <div className={["widget no-padding"]} style={
-                                {
-                                    display: "grid",
-                                    gridTemplateColumns: "1fr .4fr",
-                                }
-                            }>
+                            <div className={["widget no-padding grid-3-4"]}>
                                 <Map data={{
                                     date: Intl.DateTimeFormat("de-DE").format(new Date(data.date.from)) + " - " + Intl.DateTimeFormat("da-DK").format(new Date(data.date.to)),
                                     Countries: activeData?.Countries,
