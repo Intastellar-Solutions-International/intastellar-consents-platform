@@ -35,16 +35,13 @@ export default function PremiumTier(props) {
             {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Functional.toLocaleString("de-DE") + "%"} type="Accepted Functional" />}
             {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Statics.toLocaleString("de-DE") + "%"} type="Accepted Statics" />}
         </div>
-        <div>
-            <h3>Device Type</h3>
-            <div className="grid-container grid-3">
-                <BarChart data={[
-                    { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
-                    { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
-                    { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },
-                ]} />
+        <div className="grid-container">
+            <BarChart title="Device Type" data={[
+                { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
+                { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
+                { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },
+            ]} />
 
-            </div>
         </div>
     </>
 }
