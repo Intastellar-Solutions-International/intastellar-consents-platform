@@ -55,6 +55,27 @@ export default function Dashboard(props) {
         }
     }, [])
 
+    useEffect(() => {
+        API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
+        API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
+
+        fetch(API[id].getInteractions.url, {
+            method: API[id].getInteractions.method,
+            headers: API[id].getInteractions.headers,
+        }).then((res) => res.json()).then((data) => {
+            if (data === "Err_Login_Expired") {
+                localStorage.removeItem("globals");
+                window.location.href = "/login";
+                return;
+            }
+            setActiveData(data);
+        }
+        ).catch((err) => {
+            console.log(err);
+        });
+
+    }, [fromDate, toDate]);
+
     API[id].getInteractions.headers.Domains = currentDomain;
     API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
     API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];

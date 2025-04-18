@@ -64,7 +64,7 @@ export default function useFetch(updateInterval, url, method, headers, body, han
                 clearInterval(id);
             }
         }
-    }, [url, handle]);
+    }, [url, handle, headers.fromDate, headers.toDate]);
 
     if (data == "Err_Login_Expired") {
         localStorage.removeItem("globals");
