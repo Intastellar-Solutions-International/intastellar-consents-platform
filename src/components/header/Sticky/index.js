@@ -15,7 +15,7 @@ export default function StickyPageTitle({ title, url, method, header, numberofDa
                 alignItems: "center",
             }}>
                 <h1 style={{ fontSize: "1.5em" }}>{title}</h1>
-                {/* {
+                {
                     <Filter
                         numberOfDays={numberofDays}
                         setNumberOfDays={setActiveData}
@@ -30,7 +30,7 @@ export default function StickyPageTitle({ title, url, method, header, numberofDa
                             }
                         }
                     />
-                } */}
+                }
                 {/* {(url) ? <Filter url={url} method={method} header={header} setLastDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} /> : null} */}
             </div>
         </div>

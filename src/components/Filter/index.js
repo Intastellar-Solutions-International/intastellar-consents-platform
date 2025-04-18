@@ -1,5 +1,5 @@
 import "./Styles/Filter.css";
-import { useState } from "react";
+const { useState, useEffect, useRef, useContext } = React;
 /* import { ToggleButton } from "~/components"; */
 import Calendar from "./Calendar.js";
 export default function Filter({ className, numberOfDays, setNumberOfDays, compareRange, date }) {
@@ -23,7 +23,9 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
     });
     setNumberOfDays(selectedDays);
 
-    const navigate = useNavigate();
+    console.log("dateRange", dateRange);
+
+    /*  const navigate = useNavigate(); */
     const endXDays = dateRange?.end;
     const startXDays = dateRange?.start;
     const previousPeriod = date?.previousStart;
@@ -38,9 +40,9 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
             <button className="flex justify-center cursor-pointer w-max ml-auto text-slate-100" onClick={
                 handleCalendarToggle
             }>
-                <p className="bg-primaryHover text-slate-100 text-sm rounded-md mr-2 px-2">Last {numberOfDays} days</p>
+                <p className="bg-primaryHover text-sm rounded-md mr-2 px-2">Last {numberOfDays} days</p>
                 <section>
-                    <p className="text-slate-100 text-sm text-right">{
+                    <p className="text-sm text-right">{
                         new Intl.DateTimeFormat("da-DK", {
                             dateStyle: "short",
                         }).format(
@@ -55,7 +57,7 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
                         }
                     </p>
                     {compareRangeCheck ? (
-                        <p className="text-slate-100 text-sm text-right"><span className="mx-2">compare</span>
+                        <p className="text-sm text-right"><span className="mx-2">compare</span>
                             {
                                 new Intl.DateTimeFormat("da-DK", {
                                     dateStyle: "short",
@@ -72,7 +74,7 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
                         </p>
                     ) : null}
                 </section>
-                <RiArrowDownSLine size={25} />
+                {/* <RiArrowDownSLine size={25} /> */}
             </button>
             {calendar && (
                 <div className="calendar-grid auto-rows-max grid-cols-1 bg-slate-100 shadow-md absolute z-10 right-0 mt-3 w-[512px] h-[445px] rounded-md overflow-hidden">
@@ -201,13 +203,13 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
                             e.preventDefault();
                             handleCalendarToggle();
                             if (!isCompare) {
-                                navigate({
+                                /* navigate({
                                     search: '?startDate=' + startXDays + '&endDate=' + endXDays + '&days=' + selectedDays
-                                })
+                                }) */
                             } else {
-                                navigate({
+                                /* navigate({
                                     search: '?startDate=' + startXDays + '&endDate=' + endXDays + '&compareRange=' + selectedCompareRange + '&days=' + selectedDays
-                                })
+                                }) */
                             }
                         }
                         } className="bottom-0 col-span-2 text-slate-100 bg-primary w-1/2 right-0 p-2 hover:bg-primaryHover cursor-pointer">

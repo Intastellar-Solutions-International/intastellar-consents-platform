@@ -20,8 +20,8 @@ export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents Solutions";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
-    const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split("T")[0];
-    const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60)).toISOString().split("T")[0];
+    const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
+    const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
 
     const subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
     const userProfile = JSON.parse(localStorage.getItem("globals")).profile.image;
@@ -30,8 +30,8 @@ export default function Dashboard(props) {
     const [activeData, setActiveData] = useState(null);
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - getLastDays)).toISOString().split("T")[0]);
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]);
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - getLastDays)));
+    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
 
     const dashboardView = props.dashboardView;
     let url = API[id].getInteractions.url;
@@ -56,8 +56,8 @@ export default function Dashboard(props) {
     }, [])
 
     API[id].getInteractions.headers.Domains = currentDomain;
-    API[id].getInteractions.headers.FromDate = fromDate;
-    API[id].getInteractions.headers.ToDate = toDate;
+    API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
+    API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
     url = API[id].getInteractions.url;
     method = API[id].getInteractions.method;
     header = API[id].getInteractions.headers;
