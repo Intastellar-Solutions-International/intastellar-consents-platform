@@ -55,7 +55,7 @@ export default function Map(props) {
 
       useEffect(() => {
          document.getElementById("svgMap").innerHTML = "";
-         let zoomLevel = 1.5;
+         let zoomLevel = 1.2;
          let center = [0, 0];
 
          // Zoom into center the area of the map where the data is
@@ -63,8 +63,8 @@ export default function Map(props) {
             const min = Math.min(...countries.map(country => country.num.total));
             const max = Math.max(...countries.map(country => country.num.total));
 
-            if (max - min > 1000) {
-               zoomLevel = 1.75;
+            if (max - min > 3000) {
+               zoomLevel = 1.5;
 
                const lat = countries.map(country => {
                   // Find the country code of the max value
