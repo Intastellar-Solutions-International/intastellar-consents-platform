@@ -182,10 +182,19 @@ export default function Filter({
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 365;
+                                // Calculate the end date to the previous 31. december of the previous year
                                 const end = new Date().toISOString().split("T")[0];
+                                const year = new Date().getFullYear();
+                                const lastYear = new Date(year - 1, 11, 32).toISOString().split("T")[0];
 
-                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0];
+                                // Calculate the start date to the previous 1. january of the previous year
+                                const start = new Date(year - 1, 0, 1).toISOString().split("T")[0];
+
+                                // Add to the start date + 1 day
+                                date.start = new Date(new Date(start).setDate(new Date(start).getDate() + 1)).toISOString().split("T")[0];
+
+                                date.end = lastYear;
+
                                 setDateRange({ start: date.start, end: date.end });
                                 setSelectedDays(value);
                                 if (selectedComparison === "Previous period") {
