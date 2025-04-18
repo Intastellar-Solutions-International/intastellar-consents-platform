@@ -40,7 +40,13 @@ export default function PremiumTier(props) {
                 { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
                 { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
                 { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },
-            ]} />
+            ]} data2={
+                [
+                    { x: "Mobile", value: activeData?.device_type.deviceTypeNum.mobile, color: "#FF6384" },
+                    { x: "Desktop", value: activeData?.device_type.deviceTypeNum.desktop, color: "#36A2EB" },
+                    { x: "Tablet", value: activeData?.device_type.deviceTypeNum.tablet, color: "#FFCE56" },
+                ]
+            } fromDate={fromDate} toDate={toDate} />
 
         </div>
     </>
