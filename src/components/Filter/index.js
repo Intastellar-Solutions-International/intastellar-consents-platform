@@ -117,6 +117,27 @@ export default function Filter({
                             }} className={selectedDays !== 7 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 7 days</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
+                                const value = 28;
+                                const end = new Date().toISOString().split("T")[0];
+
+                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - 29)).toISOString().split("T")[0];
+                                setDateRange({ start: date.start, end: date.end });
+                                setSelectedDays(value);
+                                if (selectedComparison === "Previous period") {
+                                    setSelectedCompareRange(value + 1);
+                                } else if (selectedComparison === "Preceding period") {
+                                    setSelectedCompareRange(value + 1 * 2);
+                                } else if (selectedComparison === "Previous quarter") {
+                                    setSelectedCompareRange(value + 1 * 3);
+                                } else if (selectedComparison === "Last 180 days") {
+                                    setSelectedCompareRange(value + 1 * 6);
+                                } else if (selectedComparison === "Same period last year") {
+                                    setSelectedCompareRange(value + 1 * 12);
+                                }
+                            }} className={selectedDays !== 28 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 28 days</button>
+                            <button onClick={(e) => {
+                                e.preventDefault();
                                 const value = 30;
                                 const end = new Date().toISOString().split("T")[0];
 
@@ -158,6 +179,27 @@ export default function Filter({
                                     setSelectedCompareRange(value * 12);
                                 }
                             }} className={selectedDays !== 90 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 90 days</button>
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                const value = 365;
+                                const end = new Date().toISOString().split("T")[0];
+
+                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - 366)).toISOString().split("T")[0];
+                                setDateRange({ start: date.start, end: date.end });
+                                setSelectedDays(value);
+                                if (selectedComparison === "Previous period") {
+                                    setSelectedCompareRange(value + 1);
+                                } else if (selectedComparison === "Preceding period") {
+                                    setSelectedCompareRange(value + 1 * 2);
+                                } else if (selectedComparison === "Previous quarter") {
+                                    setSelectedCompareRange(value + 1 * 3);
+                                } else if (selectedComparison === "Last 180 days") {
+                                    setSelectedCompareRange(value + 1 * 6);
+                                } else if (selectedComparison === "Same period last year") {
+                                    setSelectedCompareRange(value + 1 * 12);
+                                }
+                            }} className={selectedDays !== 365 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last year</button>
                             <section className="border-t-2 pt-4">
                                 {/* {isCompare ? <div className="flex justify-between px-2">Compare <ToggleButton enabled={true} onChange={() => {
                                     setIsCompare(!isCompare);
