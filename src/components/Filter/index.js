@@ -21,7 +21,10 @@ export default function Filter({ className, numberOfDays, setNumberOfDays, compa
         start: new Date(date.start)?.toISOString()?.split("T")[0],
         end: new Date(date.end)?.toISOString()?.split("T")[0],
     });
-    setNumberOfDays(selectedDays);
+
+    useEffect(() => {
+        setNumberOfDays(selectedDays);
+    }, [selectedDays]);
 
     /*  const navigate = useNavigate(); */
     const endXDays = dateRange?.end;
