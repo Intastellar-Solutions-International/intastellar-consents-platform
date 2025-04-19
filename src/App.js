@@ -60,9 +60,10 @@ export default function App() {
         subscription: null
     });
     const [id, setId] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
+    const navigate = window.ReactRouterDOM.useHistory();
 
     if (localStorage.getItem("globals") != null) {
-        if (window.location.pathname === "/login") {
+        if (window.location.pathname === "/login" || window.location.pathname === "/") {
             window.location.href = "/" + id + "/dashboard";
         }
 
@@ -151,14 +152,14 @@ export default function App() {
                     <OrganisationContext.Provider value={[organisation, setOrganisation]}>
                         <DomainContext.Provider value={[currentDomain, setCurrentDomain]}>
                             <ErrorBoundary>
-                                {id ? <>
+                                {id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
                                     <Header handle={handle} id={id} />
                                     {/* <BugReport /> */}
                                 </> : null}
                             </ErrorBoundary>
                             <div className="main-grid">
                                 {
-                                    id ? <Nav /> : null
+                                    id && window.location.pathname != "/" || window.location.pathname != "/login" ? <Nav /> : null
                                 }
                                 <Switch>
                                     <Route path="/:id/dashboard" exact>

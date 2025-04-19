@@ -23,7 +23,7 @@ export default function UserConsents(props) {
     const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(5, API.gdpr.getDomainsUrl.url, API.gdpr.getDomainsUrl.method, API.gdpr.getDomainsUrl.headers);
     return (
         <>
-            <SideNav links={reportsLinks} />
+            <SideNav links={reportsLinks} title="Reports" />
             <article style={{ flex: "1" }}>
                 <section style={{ padding: "40px", backgroundColor: "rgb(218, 218, 218)", color: "#626262" }}>
                     <h1>Reports</h1>
