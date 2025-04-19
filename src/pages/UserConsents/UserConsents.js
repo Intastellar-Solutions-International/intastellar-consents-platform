@@ -29,6 +29,9 @@ export default function UserConsents(props) {
     const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings.dateRange)).toISOString().split("T")[0]);
     const [toDate, setToDate] = useState(new Date().toISOString().split("T")[0]);
 
+    const previousPeriod = new Date(new Date().setDate(today.getDate() - settings.dateRange));
+    const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings.dateRange * 2));
+
     API[id].getDomainsUrl.headers.Domains = currentDomain;
     API[id].getDomainsUrl.headers.Offset = page;
     API[id].getDomainsUrl.headers.FromDate = fromDate;
@@ -40,51 +43,57 @@ export default function UserConsents(props) {
 
     const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(5, API[id].getDomainsUrl.url, API[id].getDomainsUrl.method, API[id].getDomainsUrl.headers);
     useEffect(() => {
-        if(getDomainsUrlData){
+        if (getDomainsUrlData) {
+            console.log(getDomainsUrlData);
             setActiveData(getDomainsUrlData);
         }
     }, [getDomainsUrlData]);
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
-            <article style={{flex: "1"}}>
-                <StickyPageTitle title="User consents" />
+            <article style={{ flex: "1" }}>
+                <StickyPageTitle title="User consents" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
-                        <Filter url={url} method={method} header={header} setLastDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} />
+                        {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{
+                            start: fromDate,
+                            end: toDate,
+                            previousStart: previousPeriod,
+                            previousEnd: previousPeriod2,
+                        }} setFromDate={setFromDate} setToDate={setToDate} /> */}
                     </section>
-                    {(getDomainsUrlLoading && !getDomainsUrlError) ? <Loading /> : (getDomainsUrlError) ? <Unknown /> : ( getDomainsUrlData == "Err_No_Data_Found") ? <NoDataFound /> : <>
+                    {(getDomainsUrlLoading && !getDomainsUrlError) ? <Loading /> : (getDomainsUrlError) ? <Unknown /> : (getDomainsUrlData == "Err_No_Data_Found") ? <NoDataFound /> : <>
                         <div className="grid-container grid-3">
-                        {
-                            activeData?.map((d, key) => {
-                                
-                                let consent = "";
-                                if(isJson(d?.consent)) {
-                                    consent = JSON.parse(d?.consent);
-                                }else{
-                                    consent = d?.consent;
-                                }
+                            {
+                                activeData?.map((d, key) => {
 
-                                return (
-                                    <>
-                                        <div className="user" key={key}>
-                                            <p>UID: {d?.uid}</p>
-                                            <p>Time: {new Date(d?.consents_timestamp).toLocaleString('de-DE', { timeZone: 'Europe/Copenhagen' })}</p>
-                                            <p className="lb">Referrer: {d?.referrer}</p>
-                                            <p className="lb">URL: {d?.url}</p>
-                                            <section>
-                                                <h4>Consent given</h4>
-                                                {
-                                                    (Object.prototype.toString.call(consent) === '[object Array]') ? consent?.map((c, key) => {
+                                    let consent = "";
+                                    if (isJson(d?.consent)) {
+                                        consent = JSON.parse(d?.consent);
+                                    } else {
+                                        consent = d?.consent;
+                                    }
+
+                                    return (
+                                        <>
+                                            <div className="user" key={key}>
+                                                <p>UID: {d?.uid}</p>
+                                                <p>Time: {new Date(d?.consents_timestamp).toLocaleString('de-DE', { timeZone: 'Europe/Copenhagen' })}</p>
+                                                <p className="lb">Referrer: {d?.referrer}</p>
+                                                <p className="lb">URL: {d?.url}</p>
+                                                <section>
+                                                    <h4>Consent given</h4>
+                                                    {
+                                                        (Object.prototype.toString.call(consent) === '[object Array]') ? consent?.map((c, key) => {
                                                             return <p key={key}>{c?.type} cookies: {(!c.checked) ? "declined" : (c?.checked == "checked" || c?.checked == "1") ? "Accepted" : c?.checked}</p>
                                                         }) : <p>{consent?.consent_type} cookies: {(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "declined"}</p>
-                                                }
-                                            </section>
-                                        </div>
-                                    </>
-                                )
-                            })
-                        }
+                                                    }
+                                                </section>
+                                            </div>
+                                        </>
+                                    )
+                                })
+                            }
                         </div>
                     </>}
                 </div>
