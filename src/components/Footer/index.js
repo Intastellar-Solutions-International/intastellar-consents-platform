@@ -24,8 +24,7 @@ export function LPFooter() {
                 </nav>
                 <nav className="footer-nav">
                     <h3>Company</h3>
-                    <a href="https://www.intastellarsolutions.com/about" target="_blank" className="links">About Us</a>
-                    <a href="https://www.intastellarsolutions.com/careers" target="_blank" className="links">Careers</a>
+                    <a href="https://www.intastellarsolutions.com/about/om-os" target="_blank" className="links">About Us</a>
                     <a href="https://www.intastellarsolutions.com/blog" target="_blank" className="links">Blog</a>
                     <a href="https://www.intastellarsolutions.com/contact" target="_blank" className="links">Contact Us</a>
                 </nav>
