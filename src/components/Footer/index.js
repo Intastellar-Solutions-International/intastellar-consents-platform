@@ -14,7 +14,7 @@ export default function Footer() {
 export function LPFooter() {
     const year = new Date().getFullYear();
     return <>
-        <footer className="footer dashboard-content">
+        <footer className="footer lp-footer dashboard-content">
             <section className="footer-nav-container">
                 <nav className="footer-nav">
                     <h3>Legal</h3>

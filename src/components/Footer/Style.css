@@ -1,8 +1,15 @@
 .footer{
-    padding: 30px 60px !important;
+    padding: 50px 60px !important;
     font-size: 16px;
     text-align: center;
-    margin: 20px auto !important;
+    margin: 0px auto !important;
+}
+
+.lp-footer{
+    background-color: #ebebeb;
+    color: #3d3d3d;
+    max-width: 100% !important;
+    border-top: 15px solid #c09f53;
 }
 
 .links{
@@ -33,6 +40,14 @@
 
 .footer-logo-container{
     margin-top: 80px;
+}
+
+.footer.lp-footer a {
+    color: #717171;
+}
+
+.footer.lp-footer a:hover {
+    color: #c09f53;
 }
 
 @media screen and (max-width: 900px) {
