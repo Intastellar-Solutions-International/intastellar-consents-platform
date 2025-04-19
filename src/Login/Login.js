@@ -7,7 +7,7 @@ const useLocation = window.ReactRouterDOM.useLocation;
 const useEffect = window.React.useEffect;
 
 export default function Login() {
-    document.title = "Intastellar Consents";
+    document.title = "Intastellar Consents Solutions powered by Intastellar Solutions";
     document.body.style.overflow = "hidden";
     document.body.style.height = "100vh"
     const [email, setEmail] = React.useState();
@@ -27,25 +27,21 @@ export default function Login() {
     return (
         <>
             <div className="loginForm-container">
-                <div className="loginForm-header" style={{
-                    width: "50%",
-                    margin: "0 auto",
-                    display: "grid",
-                    placeContent: "center",
-                    textAlign: "left",
-                }}>
-                    <img className="loginForm-logo" src={logo} alt="Intastellar Solutions Logo" />
-                    <h1>Get started with Intastellar Consents Solutions</h1>
-                    <p>By logging in, you can navigate to your consents managment tool, where you can find <strong>reports</strong> about & regarding your <strong>users consents</strong> on <strong>your Websites</strong>.</p>
-                    <section>
-                        <p>Our business tools can help you:</p>
-                        <ul>
-                            <li>Manage your users consents</li>
-                            <li>Generate reports</li>
-                            <li>Integrate with your websites</li>
-                            <li>Get insights about your users</li>
-                            <li>And much more...</li>
-                        </ul>
+                <div className="loginForm-header">
+                    <section className="loginForm-header-content">
+                        <img className="loginForm-logo" src={logo} alt="Intastellar Solutions Logo" />
+                        <h1>Get started with <br /> Intastellar Consents Solutions</h1>
+                        <p>By logging in, you can navigate to your consents managment tool, where you can find <strong>reports</strong> about & regarding your <strong>users consents</strong> on <strong>your Websites</strong>.</p>
+                        <section>
+                            <p>Our business tools can help you:</p>
+                            <ul>
+                                <li>Manage your users consents</li>
+                                <li>Generate reports</li>
+                                <li>Integrate with your websites</li>
+                                <li>Get insights about your users</li>
+                                <li>And much more...</li>
+                            </ul>
+                        </section>
                     </section>
                 </div>
                 <div className="signin-container" style={{
@@ -62,7 +58,12 @@ export default function Login() {
                         data-app-name="Intastellar Consents Solutions"
                         data-login_uri={window.location.host + "/auth-login"}
                     ></div>
+                    {/* <button onClick={() => {
 
+                    }}>
+                        Create an account
+                    </button> */}
+                    <img className="intastellar-accounts-logo" src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg" />
                 </div>
             </div>
         </>

@@ -2,7 +2,8 @@
     display: flex;
     flex-direction: column;
     place-content: center;
-    background-color: #c09f53;
+    background-color: #ffffff;
+    color: #636363;
 }
 
 .loginForm-container {
@@ -10,10 +11,25 @@
     grid-template-columns: 1fr .45fr;
     height: 100vh;
     width: 100%;
-    text-align: center;
-    background-image: linear-gradient(189deg, #c09f53, #e2c480);
+}
 
-    color: #fff;
+.loginForm-header{
+    background-image: radial-gradient(circle, #c09f53, #856a2b);
+    color: #ffffff;
+    display: grid;
+    place-content: center;
+    line-height: 1.4;
+}
+
+.loginForm-header-content{
+    width: 50%;
+    margin: auto;
+}
+
+.loginForm-header-content h1{
+    font-size: 2em;
+    font-weight: 600;
+    margin: 0;
 }
 
 .loginForm-overlay {
@@ -72,15 +88,20 @@
 }
 
 .loginForm-logo {
-    width: 20%;
-    object-fit: contain;
-    padding: 20px 0px;
+    width: 24%;
+    margin-bottom: 30px;
     filter: invert(100) brightness(100);
 }
 
 .loginForm-logo.--hideMobile {
     display: none;
 }
+
+.intastellar-accounts-logo{
+    width: 120px;
+    margin-top: 170px;
+}
+
 
 .loginForm-inputField.--btn {
     background-color: #c09f53;
