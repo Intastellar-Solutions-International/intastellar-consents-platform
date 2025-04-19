@@ -196,4 +196,17 @@
     .signup {
         overflow: scroll;
     }
+
+    .loginForm-header, .signin-container{
+        height: auto !important;
+    }
+
+    .signin-container{
+        padding: 60px;
+    }
+
+    .intastellar-accounts-logo{
+        margin-top: 90px;
+        margin-bottom: 40px;
+    }
 }

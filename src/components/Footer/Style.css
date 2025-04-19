@@ -34,3 +34,17 @@
 .footer-logo-container{
     margin-top: 80px;
 }
+
+@media screen and (max-width: 900px) {
+    .footer-nav-container{
+        grid-template-columns: 1fr;
+    }
+    .footer-nav{
+        justify-content: center;
+        gap: 10px;
+    }
+    .footer-logo-container{
+        margin-top: 20px;
+    }
+    
+}
