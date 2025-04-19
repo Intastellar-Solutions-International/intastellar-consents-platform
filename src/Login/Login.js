@@ -8,8 +8,6 @@ const useEffect = window.React.useEffect;
 
 export default function Login() {
     document.title = "Intastellar Consents Solutions powered by Intastellar Solutions";
-    document.body.style.overflow = "hidden";
-    document.body.style.height = "100vh"
     const [email, setEmail] = React.useState();
     const [password, setPassword] = React.useState();
     const [isLoading, setLoading] = React.useState(false);
