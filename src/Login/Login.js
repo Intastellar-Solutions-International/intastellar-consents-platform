@@ -1,5 +1,6 @@
 import "./Login.css";
 import logo from "../Components/Header/logo.png";
+import { LPFooter } from "../Components/Footer";
 import API from "../API/api";
 import Authentication from "../Authentication/Auth";
 const Link = window.ReactRouterDOM.Link;
@@ -62,6 +63,7 @@ export default function Login() {
                     <img className="intastellar-accounts-logo" src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg" />
                 </div>
             </div>
+            <LPFooter />
         </>
     )
 }
