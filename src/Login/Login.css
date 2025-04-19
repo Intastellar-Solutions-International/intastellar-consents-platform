@@ -1,17 +1,19 @@
+.signin-container{
+    display: flex;
+    flex-direction: column;
+    place-content: center;
+    background-color: #c09f53;
+}
+
 .loginForm-container {
     display: grid;
-    grid-template-columns: 1fr .85fr;
+    grid-template-columns: 1fr .45fr;
     height: 100vh;
     width: 100%;
     text-align: center;
-    background-color: #c09f53;
-    background-image: url("https://www.intastellaraccounts.com/images/AdobeStock_317238161.jpeg");
-    background-position: left;
-    background-size: cover;
-    background-blend-mode: multiply;
-    position: absolute;
-    z-index: 1000000000;
-    top: 0;
+    background-image: linear-gradient(189deg, #c09f53, #e2c480);
+
+    color: #fff;
 }
 
 .loginForm-overlay {
@@ -70,9 +72,8 @@
 }
 
 .loginForm-logo {
-    width: 25%;
+    width: 20%;
     object-fit: contain;
-    margin: 10px auto;
     padding: 20px 0px;
     filter: invert(100) brightness(100);
 }
@@ -91,13 +92,9 @@
 }
 
 .loginForm-title {
-    font-size: 1.7em;
-    text-align: left;
+    font-size: 1.175em;
+    text-align: center;
     padding: 15px 0px;
-    width: 70%;
-    text-transform: uppercase;
-    margin-bottom: -2px;
-    font-weight: bold;
 }
 
 .loginForm-service {

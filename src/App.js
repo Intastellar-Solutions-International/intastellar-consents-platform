@@ -255,7 +255,7 @@ export default function App() {
                                     </Route>
                                     <Route path="/" exact>
                                         <ErrorBoundary>
-                                            <LandingPage />
+                                            <Login />
                                         </ErrorBoundary>
                                     </Route>
                                     <Redirect to="/login" />
@@ -288,7 +288,7 @@ export default function App() {
                     </Route>
                     <Route path="/" exact>
                         <ErrorBoundary>
-                            <LandingPage />
+                            <Login />
                         </ErrorBoundary>
                     </Route>
                     <Route path="/check">

@@ -7,7 +7,7 @@ const useLocation = window.ReactRouterDOM.useLocation;
 const useEffect = window.React.useEffect;
 
 export default function Login() {
-    document.title = "Sign in | Intastellar Consents";
+    document.title = "Intastellar Consents";
     document.body.style.overflow = "hidden";
     document.body.style.height = "100vh"
     const [email, setEmail] = React.useState();
@@ -18,7 +18,7 @@ export default function Login() {
 
     useEffect(() => {
         Intastellar.accounts.id.renderButton("login", {
-            "picker": "popup",
+            "picker": "button",
             "theme": "light"
         });
 
@@ -27,24 +27,43 @@ export default function Login() {
     return (
         <>
             <div className="loginForm-container">
-                <form className="loginForm" onSubmit={(e) => { e.preventDefault(), Authentication.Login(API.Login.url, email, password, type, setErrorMessage, setLoading) }}>
+                <div className="loginForm-header" style={{
+                    width: "50%",
+                    margin: "0 auto",
+                    display: "grid",
+                    placeContent: "center",
+                    textAlign: "left",
+                }}>
                     <img className="loginForm-logo" src={logo} alt="Intastellar Solutions Logo" />
-                    <h1 className="loginForm-title">Sign in to Intastellar Consents</h1>
-                    <label>{(errorMessage != null) ? errorMessage : null}</label>
-                    <label>Email:</label>
-                    <input className="loginForm-inputField" type="email" placeholder="email" onChange={e => { setEmail(e.target.value); }} />
-                    <label>Password:</label>
-                    <input className="loginForm-inputField" type="password" placeholder="password" onChange={e => { setPassword(e.target.value); }} />
-                    <button className="loginForm-inputField --btn" type="submit">{(isLoading) ? "We are loggin you in..." : "SIGNIN"}</button>
-                    <a className="loginForm-inputField --link" href="/forgot-password">Forgot Password?</a>
-                    <Link className="loginForm-inputField --link" to="/signup">Don't have an account? Signup</Link>
+                    <h1>Get started with Intastellar Consents Solutions</h1>
+                    <p>By logging in, you can navigate to your consents managment tool, where you can find <strong>reports</strong> about & regarding your <strong>users consents</strong> on <strong>your Websites</strong>.</p>
+                    <section>
+                        <p>Our business tools can help you:</p>
+                        <ul>
+                            <li>Manage your users consents</li>
+                            <li>Generate reports</li>
+                            <li>Integrate with your websites</li>
+                            <li>Get insights about your users</li>
+                            <li>And much more...</li>
+                        </ul>
+                    </section>
+                </div>
+                <div className="signin-container" style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "100vh"
+                }}>
+                    <h2 className="loginForm-title">Log into Intastellar Consents Solutions</h2>
                     <div
                         id="login"
                         data-client_id="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
                         data-app-name="Intastellar Consents Solutions"
                         data-login_uri={window.location.host + "/auth-login"}
                     ></div>
-                </form>
+
+                </div>
             </div>
         </>
     )
