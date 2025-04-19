@@ -58,9 +58,9 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
             <div className="p-2">
                 {/* year navigation */}
                 <div className="flex justify-between items-center mb-2">
-                    <button onClick={handlePrevYear} className="px-2">{"<"}</button>
+                    <button onClick={handlePrevYear} className="px-2">&lsaquo;</button>
                     <span className="font-semibold">{visibleYear}</span>
-                    <button onClick={handleNextYear} className="px-2" disabled={visibleYear === currentYear}>{">"}</button>
+                    <button onClick={handleNextYear} className="px-2" disabled={visibleYear === currentYear}>&rsaquo;</button>
                 </div>
                 {
                     monthsToShow.map((month, index) => (
