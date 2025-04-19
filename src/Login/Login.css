@@ -32,6 +32,35 @@
     margin: 0;
 }
 
+.loginForm-signup{
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #636363;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid #c09f53;
+    border-radius: 30px;
+    margin: 20px;
+    text-decoration: none;
+}
+
+.loginForm-signup-2{
+    text-decoration: none;
+    color: #636363;
+    margin-top: 20px;
+    border-radius: 30px;
+    padding: 10px 20px;
+}
+
+.loginForm-signup-2:hover, .loginForm-signup:hover{
+    background-color: #c09f53;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    border: 1px solid #c09f53;
+    cursor: pointer;
+}
+
 .loginForm-overlay {
     position: fixed;
     top: 0;

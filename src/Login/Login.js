@@ -58,11 +58,9 @@ export default function Login() {
                         data-app-name="Intastellar Consents Solutions"
                         data-login_uri={window.location.host + "/auth-login"}
                     ></div>
-                    {/* <button onClick={() => {
-
-                    }}>
+                    <Link to="/signup" className="loginForm-signup-2">
                         Create an account
-                    </button> */}
+                    </Link>
                     <img className="intastellar-accounts-logo" src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg" />
                 </div>
             </div>
