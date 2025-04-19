@@ -50,6 +50,11 @@
     color: #c09f53;
 }
 
+.copy-info{
+    font-size: 14px;
+    color: #717171;
+}
+
 @media screen and (max-width: 900px) {
     .footer-nav-container{
         grid-template-columns: 1fr;

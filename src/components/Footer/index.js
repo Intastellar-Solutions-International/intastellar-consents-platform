@@ -37,7 +37,7 @@ export function LPFooter() {
             </section>
             <section className="footer-logo-container">
                 <img src={logo} alt="Intastellar Solutions International" className="footer-logo" />
-                <p>&copy; {year} Intastellar Solutions International. All rights reserved.</p>
+                <p className="copy-info">&copy; {year} Intastellar Solutions International. All rights reserved.</p>
             </section>
         </footer>
     </>
