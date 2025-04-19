@@ -92,7 +92,7 @@ export default function UserConsents(props) {
                                             </div>
                                         </>
                                     )
-                                })
+                                }).slice(0, 40)
                             }
                         </div>
                     </>}
