@@ -30,7 +30,7 @@
 
 .loading-bar-progress-fill{
     width: 0%;
-    height: 1px;
+    height: 3px;
     background: linear-gradient(to right, rgba(192, 159, 83, 0), rgb(192, 159, 83), rgb(190, 161, 96), rgb(192, 159, 83, 0));
     animation-name: leftToRight;
     animation-duration: 2s;
@@ -43,7 +43,7 @@
 
 .loading-bar-progress{
     width: 100%;
-    height: 1px;
+    height: 3px;
     background: linear-gradient(to right, rgba(192, 159, 83, 0), rgb(192, 159, 83), rgb(190, 161, 96), rgba(192, 159, 83, 0));
     animation-name: leftToRight;
     animation-duration: 2s;
