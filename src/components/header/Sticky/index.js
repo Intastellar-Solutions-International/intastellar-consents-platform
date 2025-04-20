@@ -1,5 +1,6 @@
 import Filter from "../../Filter/index.js";
-export default function StickyPageTitle({ title, url, method, header, numberofDays, getLastDays, setActiveData, fromDate, toDate, setFromDate, setToDate, previousPeriod, previousPeriod2 }) {
+import { LoadingBar } from "../../../Components/widget/Loading";
+export default function StickyPageTitle({ loadingUpdated, title, url, method, header, numberofDays, getLastDays, setActiveData, fromDate, toDate, setFromDate, setToDate, previousPeriod, previousPeriod2 }) {
     window.addEventListener("scroll", (e) => {
         if (window.scrollY > 0) {
             document.querySelector(".infoHeader").classList.add("sticky");
@@ -9,6 +10,7 @@ export default function StickyPageTitle({ title, url, method, header, numberofDa
     })
     return <>
         <div className="infoHeader" style={{ padding: "10px 0" }}>
+            {loadingUpdated ? <LoadingBar /> : null}
             <div className="dashboard-content" style={{
                 display: "grid",
                 gridTemplateColumns: "1fr .5fr",

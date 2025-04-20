@@ -11,8 +11,8 @@ function Loading() {
     )
 }
 
-function CurrentPageLoading(){
-    return(
+function CurrentPageLoading() {
+    return (
         <>
             <div className="dashboard-content">
                 <div className="bigNumIsLoading"></div>
@@ -22,4 +22,16 @@ function CurrentPageLoading(){
     )
 }
 
-export {Loading, CurrentPageLoading}
+function LoadingBar() {
+    return (
+        <>
+            <div className="loading-bar">
+                <div className="loading-bar-progress">
+                    <div className="loading-bar-progress-fill"></div>
+                </div>
+            </div>
+        </>
+    )
+}
+
+export { Loading, CurrentPageLoading, LoadingBar }

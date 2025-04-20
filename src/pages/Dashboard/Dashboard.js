@@ -3,7 +3,7 @@ import TopWidgets from "../../Components/widget/TopWidgets.js";
 import StyleWidget from "../../Components/widget/StyleWidget.js";
 import useFetch from "../../Functions/FetchHook";
 import API from "../../API/api";
-import { Loading } from "../../Components/widget/Loading";
+import { Loading, LoadingBar } from "../../Components/widget/Loading";
 
 import "./Style.css";
 import Map from "../../Components/Charts/WorldMap/WorldMap.js";
@@ -33,6 +33,8 @@ export default function Dashboard(props) {
     const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - getLastDays)));
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
 
+    const [loadingUpdated, setLoading] = useState(false);
+
     const dashboardView = props.dashboardView;
     let url = API[id].getInteractions.url;
     let method = API[id].getInteractions.method;
@@ -56,6 +58,7 @@ export default function Dashboard(props) {
     }, [])
 
     useEffect(() => {
+        setLoading(true);
         API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
         API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
 
@@ -72,6 +75,8 @@ export default function Dashboard(props) {
         }
         ).catch((err) => {
             console.log(err);
+        }).finally(() => {
+            setLoading(false);
         });
 
     }, [fromDate, toDate]);
@@ -94,9 +99,11 @@ export default function Dashboard(props) {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
     })
 
+    console.log(loadingUpdated);
+
     return (
         <>
-            <StickyPageTitle title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+            <StickyPageTitle loadingUpdated={loadingUpdated} title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
                 <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
