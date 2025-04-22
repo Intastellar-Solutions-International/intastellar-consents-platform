@@ -101,7 +101,7 @@ export default function Header(props) {
                                     }}
                                     items={allOrganisations}
                                     style={{ right: "0" }}
-                                /> : null
+                                /> : <div className="selector"></div>
                             }
                             {(domains && currentDomain) ?
                                 <>
@@ -114,7 +114,7 @@ export default function Header(props) {
                                         items={domainList}
                                         style={{ left: "0" }}
                                     />
-                                </> : null
+                                </> : <div className="selector"></div>
                             }
                         </section>
                     </section>

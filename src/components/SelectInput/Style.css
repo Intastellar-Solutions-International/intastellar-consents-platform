@@ -1,5 +1,6 @@
 .selector{
     width: calc(max-content + 20px);
+    height: 34px;
     position: relative;
     display: flex;
     align-items: center;
