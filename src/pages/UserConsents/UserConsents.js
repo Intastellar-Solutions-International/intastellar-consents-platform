@@ -27,7 +27,7 @@ export default function UserConsents(props) {
 
     const today = new Date();
     const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings.dateRange)).toISOString().split("T")[0]);
-    const [toDate, setToDate] = useState(new Date().toISOString().split("T")[0]);
+    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]);
 
     const previousPeriod = new Date(new Date().setDate(today.getDate() - settings.dateRange));
     const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings.dateRange * 2));
