@@ -181,6 +181,28 @@ export default function Filter({
                             }} className={selectedDays !== 90 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 90 days</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
+                                const value = 12 * 30;
+                                const end = new Date().toISOString().split("T")[0];
+
+                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - 91)).toISOString().split("T")[0];
+
+                                setDateRange({ start: date.start, end: date.end });
+                                setSelectedDays(value);
+                                if (selectedComparison === "Previous period") {
+                                    setSelectedCompareRange(value);
+                                } else if (selectedComparison === "Preceding period") {
+                                    setSelectedCompareRange(value * 2);
+                                } else if (selectedComparison === "Previous quarter") {
+                                    setSelectedCompareRange(value * 3);
+                                } else if (selectedComparison === "Last 180 days") {
+                                    setSelectedCompareRange(value * 6);
+                                } else if (selectedComparison === "Same period last year") {
+                                    setSelectedCompareRange(value * 12);
+                                }
+                            }} className={selectedDays !== (12 * 30) ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 12 months</button>
+                            <button onClick={(e) => {
+                                e.preventDefault();
                                 const value = 365;
                                 // Calculate the end date to the previous 31. december of the previous year
                                 const end = new Date().toISOString().split("T")[0];
