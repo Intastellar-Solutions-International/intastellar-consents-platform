@@ -100,7 +100,7 @@ export default function Filter({
                                 const end = new Date().toISOString().split("T")[0];
 
                                 date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - 8)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
                                 setDateRange({ start: date.start, end: date.end });
                                 setSelectedDays(value);
                                 if (selectedComparison === "Previous period") {
@@ -121,7 +121,7 @@ export default function Filter({
                                 const end = new Date().toISOString().split("T")[0];
 
                                 date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - 29)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
                                 setDateRange({ start: date.start, end: date.end });
                                 setSelectedDays(value);
                                 if (selectedComparison === "Previous period") {
@@ -142,7 +142,7 @@ export default function Filter({
                                 const end = new Date().toISOString().split("T")[0];
 
                                 date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - 31)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
                                 setDateRange({ start: date.start, end: date.end });
                                 setSelectedDays(value);
                                 if (selectedComparison === "Previous period") {
@@ -163,7 +163,7 @@ export default function Filter({
                                 const end = new Date().toISOString().split("T")[0];
 
                                 date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - 91)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
 
                                 setDateRange({ start: date.start, end: date.end });
                                 setSelectedDays(value);
@@ -185,7 +185,7 @@ export default function Filter({
                                 const end = new Date().toISOString().split("T")[0];
 
                                 date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - 91)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
 
                                 setDateRange({ start: date.start, end: date.end });
                                 setSelectedDays(value);
