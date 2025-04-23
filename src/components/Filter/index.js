@@ -49,7 +49,7 @@ export default function Filter({
             <button className="flex justify-center cursor-pointer w-max ml-auto text-slate-100 transparent" onClick={
                 handleCalendarToggle
             }>
-                <p className="bg-primaryHover text-sm rounded-md mr-2 px-2">Last {numberOfDays} days</p>
+                <p className="bg-primaryHover text-sm rounded-md mr-2 px-2">Last {(numberOfDays >= 0) ? numberOfDays + " days" : numberOfDays}</p>
                 <section>
                     <p className="text-sm text-right">{
                         new Intl.DateTimeFormat("da-DK", {
@@ -188,7 +188,7 @@ export default function Filter({
                                 date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
 
                                 setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays(value);
+                                setSelectedDays("12 months");
                                 if (selectedComparison === "Previous period") {
                                     setSelectedCompareRange(value);
                                 } else if (selectedComparison === "Preceding period") {
