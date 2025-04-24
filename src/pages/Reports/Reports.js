@@ -23,7 +23,7 @@ export const reportsLinks = [
 export default function Reports() {
     document.title = "Reports | Intastellar Consents Solutions";
     return <>
-        <SideNav links={reportsLinks} />
+        <SideNav links={reportsLinks} title="Reports" />
         <div className="dashboard-content">
             <h1>Reports</h1>
         </div>
