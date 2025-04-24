@@ -32,7 +32,7 @@ export default function AddUser() {
                     userEmail: userMail,
                     userRole: userRole,
                     userName: userName,
-                    orgName: Organisation?.name
+                    orgName: JSON.parse(Organisation).name
                 }
             )
         ).then(
@@ -45,7 +45,7 @@ export default function AddUser() {
                         borderColor: "red"
                     })
                 } else {
-                    setStatus(`User ${userName} added to ${Organisation?.name}`);
+                    setStatus(`User ${userName} added to ${JSON.parse(Organisation).name}`);
                     setStyle({
                         right: "0"
                     })
