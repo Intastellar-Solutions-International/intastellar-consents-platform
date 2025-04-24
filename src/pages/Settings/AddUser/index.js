@@ -16,7 +16,7 @@ export default function AddUser() {
     const [userRole, setUserRole] = useState("Admin");
     const [userName, setUserName] = useState("");
     const [status, setStatus] = useState(null);
-    const [organisationId, setOrganisationId] = useState(null);
+    const [organisationId, setOrganisationId] = useState(JSON.parse(Organisation).id);
     const [style, setStyle] = useState({
         right: "-100%"
     });
