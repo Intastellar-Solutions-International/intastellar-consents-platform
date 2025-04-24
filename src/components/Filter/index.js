@@ -200,7 +200,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value * 12);
                                 }
-                            }} className={selectedDays !== "12 months" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 12 months</button>
+                            }} className={selectedDays != "12 months" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 12 months</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 365;
