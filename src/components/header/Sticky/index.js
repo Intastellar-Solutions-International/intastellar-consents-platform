@@ -18,19 +18,20 @@ export default function StickyPageTitle({ loadingUpdated, title, url, method, he
             }}>
                 <h1 style={{ fontSize: "1.5em" }}>{title}</h1>
                 {
-                    <Filter
-                        numberOfDays={getLastDays}
-                        setNumberOfDays={numberofDays}
-                        compareRange={0}
-                        date={{
-                            start: fromDate,
-                            end: toDate,
-                            previousStart: previousPeriod,
-                            previousEnd: previousPeriod2,
-                        }}
-                        setFromDate={setFromDate}
-                        setToDate={setToDate}
-                    />
+                    (numberofDays) ?
+                        <Filter
+                            numberOfDays={getLastDays}
+                            setNumberOfDays={numberofDays}
+                            compareRange={0}
+                            date={{
+                                start: fromDate ?? new Date(Date.now() - (getLastDays * 24 * 60 * 60 * 1000)),
+                                end: toDate ?? new Date(Date.now()),
+                                previousStart: previousPeriod ?? new Date(Date.now() - (getLastDays * 24 * 60 * 60 * 1000) - (getLastDays * 24 * 60 * 60 * 1000)),
+                                previousEnd: previousPeriod2 ?? new Date(Date.now() - (getLastDays * 24 * 60 * 60 * 1000))
+                            }}
+                            setFromDate={setFromDate}
+                            setToDate={setToDate}
+                        /> : null
                 }
                 {/* {(url) ? <Filter url={url} method={method} header={header} setLastDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} /> : null} */}
             </div>
