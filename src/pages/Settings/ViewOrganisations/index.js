@@ -26,20 +26,22 @@ export default function ViewOrg() {
             <main className="dashboard-content">
                 <h1>My Organisation</h1>
                 <Link className="backLink" to="/settings">Back to settings</Link>
-                {
-                    (loading) ? <Loading /> : data.map((d, key) => {
-                        return (
-                            <article key={key} className="widget">
-                                <h2 >{d.name}</h2>
-                                {
-                                    (Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin") ?
-                                        <button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button>
-                                        : null
-                                }
-                            </article>
-                        )
-                    })
-                }
+                <div className="grid">
+                    {
+                        (loading) ? <Loading /> : data.map((d, key) => {
+                            return (
+                                <article key={key} className="widget">
+                                    <h2 >{d.name}</h2>
+                                    {
+                                        (Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin") ?
+                                            <button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button>
+                                            : null
+                                    }
+                                </article>
+                            )
+                        })
+                    }
+                </div>
             </main>
         </>
     )
