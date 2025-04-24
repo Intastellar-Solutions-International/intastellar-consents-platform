@@ -150,6 +150,15 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        getOrgUsers: {
+            url: `${PrimaryHost}/analytics/settings/getOrgUsers`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
         getSettings: {
             url: `${PrimaryHost}/analytics/settings/getOrganisation`,
             method: "GET",
