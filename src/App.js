@@ -23,6 +23,7 @@ import Settings from "./Pages/Settings";
 import CreateOrganisation from "./Pages/Settings/CreateOrganisation";
 import AddUser from "./Pages/Settings/AddUser";
 import ViewOrg from "./Pages/Settings/ViewOrganisations";
+import ViewUsers from "./Pages/Settings/ViewUsers";
 import LoginOverLay from "./Login/LoginOverlay";
 import DomainDashbord from "./Pages/Dashboard/DomainDashbord";
 import Fetch from "./Functions/fetch";
@@ -200,6 +201,11 @@ export default function App() {
                                         <ErrorBoundary>
                                             {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" || Authentication.User.Status === "manager" ?
                                                 <SettingsAddDomain /> : null}
+                                        </ErrorBoundary>
+                                    </Route>
+                                    <Route path="/settings/view-users">
+                                        <ErrorBoundary>
+                                            {domainError ? <AddDomain /> : <ViewUsers />}
                                         </ErrorBoundary>
                                     </Route>
                                     <Route path="/settings/view-organisations">
