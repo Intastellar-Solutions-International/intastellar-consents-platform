@@ -30,6 +30,7 @@ export default function ViewUsers() {
                             return (
                                 <article key={key} className="widget">
                                     <h2 >{d.email}</h2>
+                                    <h2 >{d.role}</h2>
                                     {
                                         (Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin") ?
                                             <button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button>
