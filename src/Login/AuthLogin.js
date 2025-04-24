@@ -7,6 +7,11 @@ export default function AuthLogin() {
     const rawToken = query.get("token");
     const token = rawToken ? decodeURIComponent(rawToken) : null;
 
+    if (!token) {
+        window.location.href = "/login";
+        return null;
+    }
+
     console.log("Token from URL: ", typeof token, token);
     // Convert token string to object if needed
 
