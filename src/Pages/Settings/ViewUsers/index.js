@@ -9,13 +9,10 @@ const { useState, useEffect, useRef } = React;
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 export default function ViewUsers() {
-    document.title = "My Organisation | Intastellar Consents Solutions";
+    document.title = "Users in the Organisation | Intastellar Consents Solutions";
     const { handle, id } = useParams();
 
-    const [loading, data, error, updated] = useFetch(1, API.settings.getOrgUsers.url, API.settings.getOrgUsers.method, API.settings.getOrgUsers.headers, JSON.stringify({
-        organisationMember: Authentication.getUserId(),
-        organisationId: Authentication.getOrganisation()
-    }))
+    const [loading, data, error, updated] = useFetch(1, API.settings.getOrgUsers.url, API.settings.getOrgUsers.method, API.settings.getOrgUsers.headers)
 
     function editOrganisation(org) {
         console.log("Edit: ", org);
