@@ -30,7 +30,9 @@ export default function AddUser() {
                 {
                     organisationId: organisationId,
                     userEmail: userMail,
-                    userRole: userRole
+                    userRole: userRole,
+                    userName: userName,
+                    orgName: Organisation?.name
                 }
             )
         ).then(
