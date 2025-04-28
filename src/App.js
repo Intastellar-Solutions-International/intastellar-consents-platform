@@ -269,7 +269,16 @@ export default function App() {
                             </ErrorBoundary>
                         </DomainContext.Provider>
                     </OrganisationContext.Provider>
-
+                    <Route path="/check">
+                        <div className="cookieCheckContainer">
+                            <img src="https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg" className="crawlerPage-logo" />
+                            <Crawler />
+                            <footer>
+                                <p>Powered by Intastellar Cookie Consents</p>
+                                <p>&copy; {new Date().getFullYear()} Intastellar Solutions, International</p>
+                            </footer>
+                        </div>
+                    </Route>
                 </Router>
             </>
         )
