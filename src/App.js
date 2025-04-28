@@ -166,9 +166,7 @@ export default function App() {
                                     <Route path="/:id/dashboard" exact>
                                         <div style={{ flex: "1" }}>
                                             {domainError ? <AddDomain /> :
-                                                <ErrorBoundary>
-                                                    {(id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />}
-                                                </ErrorBoundary>
+                                                (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
                                             }
                                         </div>
                                     </Route>
@@ -254,9 +252,7 @@ export default function App() {
                                         </ErrorBoundary>
                                     </Route>
                                     <Router path="/login" exact>
-                                        <ErrorBoundary>
-                                            <Login />
-                                        </ErrorBoundary>
+                                        <Login />
                                     </Router>
                                     <Route path="/settings/config-gdpr">
                                     </Route>

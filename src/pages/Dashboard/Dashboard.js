@@ -14,7 +14,7 @@ import Line from "../../Components/Charts/Line"
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
-import Pie from "../../Components/Charts/Pie/index.js";
+import ErrorBoundary from "../../Components/ErrorBoundary";
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents Solutions";
@@ -134,15 +134,19 @@ export default function Dashboard(props) {
                         </> : <>
 
                             <div className={["widget no-padding grid-3-4"]}>
-                                <Map data={{
-                                    date: Intl.DateTimeFormat("de-DE").format(new Date(data.date.from)) + " - " + Intl.DateTimeFormat("da-DK").format(new Date(data.date.to)),
-                                    Countries: activeData?.Countries,
-                                    total: activeData?.Total,
-                                }} />
+                                <ErrorBoundary>
+                                    <Map data={{
+                                        date: Intl.DateTimeFormat("de-DE").format(new Date(data.date.from)) + " - " + Intl.DateTimeFormat("da-DK").format(new Date(data.date.to)),
+                                        Countries: activeData?.Countries,
+                                        total: activeData?.Total,
+                                    }} />
+                                </ErrorBoundary>
                             </div>
                         </>}
                         <div className={["widget no-padding"]}>
-                            <LiveView currentDomain={currentDomain} />
+                            <ErrorBoundary>
+                                <LiveView currentDomain={currentDomain} />
+                            </ErrorBoundary>
                         </div>
                     </div>
                 </div>
