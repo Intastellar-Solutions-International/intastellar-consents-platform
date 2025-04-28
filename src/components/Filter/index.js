@@ -49,7 +49,7 @@ export default function Filter({
             <button className="flex justify-center cursor-pointer w-max ml-auto text-slate-100 transparent" onClick={
                 handleCalendarToggle
             }>
-                <p className="bg-primaryHover text-sm rounded-md mr-2 px-2">Last {(numberOfDays >= 0) ? numberOfDays + " days" : numberOfDays}</p>
+                <p className="bg-primaryHover text-sm rounded-md mr-2 px-2">{(numberOfDays >= 0) ? "Last " + numberOfDays + " days" : numberOfDays}</p>
                 <section>
                     <p className="text-sm text-right">{
                         new Intl.DateTimeFormat("da-DK", {
@@ -89,11 +89,27 @@ export default function Filter({
                 <div className="calendar-grid auto-rows-max grid-cols-1 bg-slate-100 shadow-md absolute z-10 right-0 mt-3 w-[512px] h-[445px] rounded-md overflow-hidden">
                     <section className="calendar-grid grid-cols-2 h-[406px]">
                         <section className="border-r-2">
-                            {/* <button onClick={(e) => {
+                            <button onClick={(e) => {
                                 e.preventDefault();
-                                const value = 1;
-                                setSelectedDays(value);
-                            }} className={selectedDays !== 1 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-700 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-700 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Yesterday</button> */}
+                                const value = 2;
+                                const end = new Date().toISOString().split("T")[0];
+
+                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
+                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
+                                setDateRange({ start: date.start, end: date.end });
+                                setSelectedDays("Yesterday");
+                                if (selectedComparison === "Previous period") {
+                                    setSelectedCompareRange(value + 1);
+                                } else if (selectedComparison === "Preceding period") {
+                                    setSelectedCompareRange(value + 1 * 2);
+                                } else if (selectedComparison === "Previous quarter") {
+                                    setSelectedCompareRange(value + 1 * 3);
+                                } else if (selectedComparison === "Last 180 days") {
+                                    setSelectedCompareRange(value + 1 * 6);
+                                } else if (selectedComparison === "Same period last year") {
+                                    setSelectedCompareRange(value + 1 * 12);
+                                }
+                            }} className={selectedDays !== "Yesterday" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Yesterday</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 7;
