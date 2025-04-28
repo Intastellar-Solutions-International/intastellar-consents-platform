@@ -89,7 +89,7 @@ export default function Filter({
                 <div className="calendar-grid auto-rows-max grid-cols-1 bg-slate-100 shadow-md absolute z-10 right-0 mt-3 w-[512px] h-[445px] rounded-md overflow-hidden">
                     <section className="calendar-grid grid-cols-2 h-[406px]">
                         <section className="border-r-2">
-                            <button onClick={(e) => {
+                            {/* <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 2;
                                 const end = new Date().toISOString().split("T")[0];
@@ -109,7 +109,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value + 1 * 12);
                                 }
-                            }} className={selectedDays !== "Yesterday" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Yesterday</button>
+                            }} className={selectedDays !== "Yesterday" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Yesterday</button> */}
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 7;
