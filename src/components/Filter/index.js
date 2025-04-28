@@ -97,7 +97,7 @@ export default function Filter({
                                 date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
                                 date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
                                 setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays("Last 2 days");
+                                setSelectedDays("Yesterday");
                                 if (selectedComparison === "Previous period") {
                                     setSelectedCompareRange(value + 1);
                                 } else if (selectedComparison === "Preceding period") {
@@ -109,7 +109,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value + 1 * 12);
                                 }
-                            }} className={selectedDays !== "Last 2 days" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 2 days</button>
+                            }} className={selectedDays !== "Yesterday" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Yesterday</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 7;
