@@ -99,10 +99,6 @@ export default function Map(props) {
 
             data: {
                data: {
-                  date: {
-                     name: 'Date',
-                     format: '{0}',
-                  },
                   total: {
                      name: 'Total Interactions',
                      format: '{0}',
