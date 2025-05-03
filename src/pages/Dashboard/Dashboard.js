@@ -14,7 +14,7 @@ import Line from "../../Components/Charts/Line"
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
-import ErrorBoundary from "../../Components/Error/ErrorBoundary";
+import Pie from "../../Components/Charts/Pie/index.js";
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents Solutions";
@@ -28,17 +28,27 @@ export default function Dashboard(props) {
 
     const { handle, id } = useParams();
     const [activeData, setActiveData] = useState(null);
+    const [activeDataCountry, setactiveDataCountry] = useState(null);
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
     const today = new Date();
     const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - getLastDays)));
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
 
-    const [loadingUpdated, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [loadingCountry, setLoadingCountry] = useState(false);
 
     const dashboardView = props.dashboardView;
     let url = API[id].getInteractions.url;
     let method = API[id].getInteractions.method;
     let header = API[id].getInteractions.headers;
+
+    API[id].getInteractions.headers.Domains = currentDomain;
+    API[id].getInteractionsByCountry.headers.Domains = currentDomain;
+    API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
+    API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
+
+    API[id].getInteractionsByCountry.headers.FromDate = fromDate.toISOString().split("T")[0];
+    API[id].getInteractionsByCountry.headers.ToDate = toDate.toISOString().split("T")[0];
 
     useEffect(() => {
 
@@ -59,8 +69,7 @@ export default function Dashboard(props) {
 
     useEffect(() => {
         setLoading(true);
-        API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
-        API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
+        setLoadingCountry(true);
 
         fetch(API[id].getInteractions.url, {
             method: API[id].getInteractions.method,
@@ -79,31 +88,34 @@ export default function Dashboard(props) {
             setLoading(false);
         });
 
-    }, [fromDate, toDate]);
-
-    API[id].getInteractions.headers.Domains = currentDomain;
-    API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
-    API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
-    url = API[id].getInteractions.url;
-    method = API[id].getInteractions.method;
-    header = API[id].getInteractions.headers;
-
-    const [loading, data, error, getUpdated] = useFetch(5, url, method, header);
-    useEffect(() => {
-        if (data) {
-            setActiveData(data);
+        fetch(API[id].getInteractionsByCountry.url, {
+            method: API[id].getInteractionsByCountry.method,
+            headers: API[id].getInteractionsByCountry.headers,
+        }).then((res) => res.json()).then((country) => {
+            if (country === "Err_Login_Expired") {
+                localStorage.removeItem("globals");
+                window.location.href = "/login";
+                return;
+            }
+            setactiveDataCountry(country);
         }
-    }, [data]);
+        ).catch((err) => {
+            console.log(err);
+        }).finally(() => {
+            setLoadingCountry(false);
+        });
+
+    }, [fromDate, toDate]);
 
     document.querySelectorAll(".intInput").forEach((input) => {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
     })
 
-    console.log(loadingUpdated);
+    console.log(activeData, activeDataCountry, subscriptionStatus);
 
     return (
         <>
-            <StickyPageTitle loadingUpdated={loadingUpdated} title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+            <StickyPageTitle loadingUpdated={loading} title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
@@ -128,25 +140,21 @@ export default function Dashboard(props) {
                 </div> */}
                 <div className="" style={{ paddingTop: "40px" }}>
                     <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
-                        {(loading) ? <>
+                        {(loadingCountry) ? <>
 
                             <Loading />
                         </> : <>
 
                             <div className={["widget no-padding grid-3-4"]}>
-                                <ErrorBoundary>
-                                    <Map data={{
-                                        date: Intl.DateTimeFormat("de-DE").format(new Date(data.date.from)) + " - " + Intl.DateTimeFormat("da-DK").format(new Date(data.date.to)),
-                                        Countries: activeData?.Countries,
-                                        total: activeData?.Total,
-                                    }} />
-                                </ErrorBoundary>
+                                <Map data={{
+
+                                    Countries: activeDataCountry?.Countries,
+                                    total: activeDataCountry?.Total,
+                                }} />
                             </div>
                         </>}
                         <div className={["widget no-padding"]}>
-                            <ErrorBoundary>
-                                <LiveView currentDomain={currentDomain} />
-                            </ErrorBoundary>
+                            <LiveView currentDomain={currentDomain} />
                         </div>
                     </div>
                 </div>

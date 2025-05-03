@@ -62,6 +62,15 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        getInteractionsByCountry: {
+            url: `${PrimaryHost}/analytics/gdpr/interactionsByCountry`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
         getDomains: {
             url: `${PrimaryHost}/analytics/gdpr/getDomains`,
             method: "GET",
