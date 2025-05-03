@@ -148,8 +148,8 @@ export default function Dashboard(props) {
                             <div className={["widget no-padding grid-3-4"]}>
                                 <Map data={{
 
-                                    Countries: activeDataCountry?.Countries,
-                                    total: activeDataCountry?.Total,
+                                    Countries: activeDataCountry?.data?.Countries,
+                                    total: activeData?.Total,
                                 }} />
                             </div>
                         </>}
