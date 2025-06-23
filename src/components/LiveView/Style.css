@@ -31,3 +31,8 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.liveView-content-data-1-domain-consent{
+    margin-block: 10px;
+    border-top: 1px solid #ccc;
+}
