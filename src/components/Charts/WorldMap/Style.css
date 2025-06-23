@@ -50,5 +50,8 @@
         width: 100%;
         height: 100%;
     }
-    
+
+    .top-countries .grid-container {
+        display: grid;
+    }
 }
