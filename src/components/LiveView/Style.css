@@ -25,3 +25,9 @@
     font-weight: 200;
     margin-top: 0;
 }
+
+.liveView-content-data-1-domain-consent{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

@@ -140,11 +140,17 @@ export function LiveView(props) {
                                                                     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
                                                                     border: "1px solid #c4c4c4",
                                                                     borderRadius: "5px",
-                                                                    backgroundColor: "white"
+                                                                    backgroundColor: "rgb(63, 63, 63)"
                                                                 }}
                                                                 >
                                                                     <div className="liveView-content-data-1-domain-title">
                                                                         <p className="liveView-content-data-1-text">Domain: {domain}</p>
+                                                                        <button onClick={() => {
+                                                                            setDomainLiveView({
+                                                                                domain: "",
+                                                                                open: false
+                                                                            });
+                                                                        }} className="dropdown-menu-button">Close</button>
                                                                     </div>
                                                                     {
                                                                         liveData?.domains[domain]?.consent?.map((consent, index) => {
@@ -168,12 +174,6 @@ export function LiveView(props) {
                                                                             }
                                                                         })
                                                                     }
-                                                                    <button onClick={() => {
-                                                                        setDomainLiveView({
-                                                                            domain: "",
-                                                                            open: false
-                                                                        });
-                                                                    }} className="liveView-content-data-1-domain-close">Close</button>
                                                                 </div>
                                                                 : null
                                                         }
@@ -205,7 +205,7 @@ export function LiveView(props) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div >
                 : null
         }
     </>
