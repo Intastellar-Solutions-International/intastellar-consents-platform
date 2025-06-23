@@ -30,7 +30,7 @@ export default function DomainDashbord(props) {
                 <h1>Dashboard</h1>
                 <p>You´re currently viewing the data for:</p>
                 <div>
-                    <h2>Domain: <a className="activeDomain" href={`https://${handle}`} target="_blank">{punycode.toUnicode(handle)}</a></h2>
+                    <h2>Domain: <a className="activeDomain" href={`https://${handle}`} target="_blank">{punycode.toUnicode(handle)}</a> {!loading ? " | " + data?.bannerStyle : null}</h2>
                     {/* <button className="btn" onClick={() => { Fetch(API[id].getInteractions.url, API[id].getInteractions.method, {
                         ...API[id].getInteractions.headers,
                         "Content-Type": "application/json",
