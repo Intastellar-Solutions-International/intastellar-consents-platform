@@ -12,6 +12,8 @@ export function LiveView(props) {
         open: false
     });
 
+    console.log(domainLiveView)
+
     return <>
         {
             (!loading) ?
@@ -68,6 +70,7 @@ export function LiveView(props) {
                             <div className="liveView-content-data-2">
                                 {
                                     // Loop through the 'liveData.contry' object and display the country name.
+
                                     Object.keys(
                                         liveData?.country
                                     ).map((key, index) => {
@@ -93,37 +96,7 @@ export function LiveView(props) {
                                                 }}></div>
                                             </div>
                                             {
-                                                domainLiveView.open && domainLiveView.domain === key ?
-                                                    <div className="liveView-content-data-1-domain" style={{
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        gap: "10px",
-                                                        padding: "10px",
-                                                        borderRadius: "5px",
-                                                        backgroundColor: "white",
-                                                        position: "absolute",
-                                                        top: "0",
-                                                        left: "0",
-                                                        right: "0",
-                                                        bottom: "0",
-                                                        zIndex: "999",
-                                                        overflowY: "scroll",
-                                                        maxHeight: "400px",
-                                                        width: "100%",
-                                                        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-                                                        border: "1px solid #c4c4c4",
-                                                        borderRadius: "5px",
-                                                        backgroundColor: "white"
-                                                    }}
-                                                    >
-                                                        <div className="liveView-content-data-1-domain-title">
-                                                            <p className="liveView-content-data-1-text">Domain</p>
-                                                            <p className="liveView-content-data-1-text">Count</p>
-                                                        </div>
-                                                    </div>
-                                                    : null
-                                            }
-                                            {
+
                                                 Object.keys(
                                                     liveData?.domains
                                                 ).filter((domain) => {
@@ -146,6 +119,64 @@ export function LiveView(props) {
                                                                 }).length
                                                             }</p>
                                                         </div>
+                                                        {
+                                                            domainLiveView.open && domainLiveView.domain == domain ?
+                                                                <div key={key + new Date().getTime()} className="liveView-content-data-1-domain" style={{
+                                                                    display: "flex",
+                                                                    flexDirection: "column",
+                                                                    gap: "10px",
+                                                                    padding: "10px",
+                                                                    borderRadius: "5px",
+                                                                    backgroundColor: "white",
+                                                                    position: "absolute",
+                                                                    top: "0",
+                                                                    left: "0",
+                                                                    right: "0",
+                                                                    bottom: "0",
+                                                                    zIndex: "999",
+                                                                    overflowY: "scroll",
+                                                                    maxHeight: "400px",
+                                                                    width: "100%",
+                                                                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                                                                    border: "1px solid #c4c4c4",
+                                                                    borderRadius: "5px",
+                                                                    backgroundColor: "white"
+                                                                }}
+                                                                >
+                                                                    <div className="liveView-content-data-1-domain-title">
+                                                                        <p className="liveView-content-data-1-text">Domain: {domain}</p>
+                                                                    </div>
+                                                                    {
+                                                                        liveData?.domains[domain]?.consent?.map((consent, index) => {
+                                                                            // Convert the consent string to an array of objects.
+                                                                            const consentData = (consent && typeof consent === "string") ? JSON.parse(consent) : null;
+                                                                            if (consentData) {
+
+                                                                                return consentData.map((consentItem, index) => {
+                                                                                    return <div key={index} className="liveView-content-data-1-domain-consent">
+                                                                                        <p className="liveView-content-data-1-text">{consentItem?.type}</p>
+                                                                                        <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
+                                                                                    </div>
+                                                                                })
+                                                                            } else {
+                                                                                consent.map((consentItem, index) => {
+                                                                                    return <div key={index} className="liveView-content-data-1-domain-consent">
+                                                                                        <p className="liveView-content-data-1-text">{consentItem?.type}</p>
+                                                                                        <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
+                                                                                    </div>
+                                                                                })
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                    <button onClick={() => {
+                                                                        setDomainLiveView({
+                                                                            domain: "",
+                                                                            open: false
+                                                                        });
+                                                                    }} className="liveView-content-data-1-domain-close">Close</button>
+                                                                </div>
+                                                                : null
+                                                        }
                                                         <div key={index} style={{
                                                             width: `100%`,
                                                             height: "2px",
