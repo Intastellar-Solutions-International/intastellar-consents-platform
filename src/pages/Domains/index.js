@@ -12,8 +12,7 @@ export default function Websites() {
     return (
         <>
             <main className="dashboard-content">
-                <h2>Analytics</h2>
-                <h3>List of all domains</h3>
+                <h1>List of all domains</h1>
                 <p>On all these domains the Intastellar Cookie Consents is implemented</p>
                 <section className="grid-container grid-3">
                     {
