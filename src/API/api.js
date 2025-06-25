@@ -1,5 +1,6 @@
 import { PrimaryHost, LoginHost } from "./host";
 import Authentication from "../Authentication/Auth";
+import Compare from "../Pages/Reports/Compare";
 
 const API = {
     Login: {
@@ -79,6 +80,16 @@ const API = {
                 "Organisation": Authentication.getOrganisation(),
                 "Content-Type": "application/json"
             }
+        },
+        Compare: {
+            url: `${PrimaryHost}/analytics/gdpr/compare`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            },
+            body: (domains) => JSON.stringify({ Domains: domains })
         },
         getLanguage: {
             url: `${PrimaryHost}/analytics/gdpr/getLanguage`,
