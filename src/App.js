@@ -41,6 +41,7 @@ import Crawler from "./Components/Crawler";
 import UserAgents from "./Pages/Reports/UserAgents";
 import UserPreferences from "./Pages/Settings/UserPreferences";
 import StripePayment from "./Components/StripePayment";
+import Compare from "./Pages/Reports/Compare";
 
 export const OrganisationContext = createContext(localStorage.getItem("organisation"));
 export const AllOrg = createContext(null);
