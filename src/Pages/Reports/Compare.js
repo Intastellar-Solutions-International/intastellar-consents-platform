@@ -3,6 +3,8 @@ import StickyPageTitle from '../../Components/Header/Sticky';
 import API from '../../API/api';
 import { DomainContext } from '../../App.js';
 const useParams = window.ReactRouterDOM.useParams;
+import Fetch from '../../Functions/fetch';
+import punycode from 'punycode';
 
 export default function Compare(props) {
     document.title = "Compare Domains | Intastellar Consents Solutions";
@@ -19,10 +21,44 @@ export default function Compare(props) {
 
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
+    const [domains, setDomains] = useState([]);
 
     let url = API[id].getInteractions.url;
     let method = API[id].getInteractions.method;
     let header = API[id].getInteractions.headers;
+    useEffect(() => {
+        Fetch(API[window.location.pathname.split("/")[1]]?.getDomains?.url, API[window.location.pathname.split("/")[1]]?.getDomains?.method, API[window.location.pathname.split("/")[1]]?.getDomains?.headers).then((data) => {
+            if (data === "Err_Login_Expired") {
+                localStorage.removeItem("globals");
+                window.location.href = "/login";
+                return;
+            }
+
+            if (data.error === "Err_No_Domains") {
+
+            } else {
+                data.unshift({ domain: "all", installed: null, lastedVisited: null });
+                data?.map((d) => {
+                    return punycode.toUnicode(d.domain);
+                }).filter((d) => {
+                    return d !== undefined && d !== "" && d !== "undefined.";
+                });
+                setDomains(data);
+
+                const allowedDomains = data?.map((d) => {
+                    return punycode.toUnicode(d.domain);
+                }).filter((d) => {
+                    return d !== undefined && d !== "" && d !== "undefined." && d !== "all";
+                });
+
+            }
+        });
+    }, []);
+
+    let domainList = null;
+    domainList = domains?.map((d) => {
+        return punycode.toUnicode(d.domain)
+    })
 
     return (
         <>

@@ -262,7 +262,7 @@ export default function App() {
                                             <Login />
                                         </ErrorBoundary>
                                     </Route>
-                                    <Route path="/:id/reports/compare" exact>
+                                    <Route path="/:id/compare" exact>
                                         <ErrorBoundary>
                                             <Compare />
                                         </ErrorBoundary>
