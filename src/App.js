@@ -261,6 +261,11 @@ export default function App() {
                                             <Login />
                                         </ErrorBoundary>
                                     </Route>
+                                    <Route path="/:id/reports/compare" exact>
+                                        <ErrorBoundary>
+
+                                        </ErrorBoundary>
+                                    </Route>
                                     <Redirect to="/login" />
                                 </Switch>
                             </div>
