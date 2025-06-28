@@ -63,7 +63,7 @@ export default function BlacklistIp() {
     return (
         <>
             <SideNav links={reportsLinks} title="Settings" />
-            <main className="dashboard-content">
+            <main className="dashboard-content black-list">
                 <StickyPageTitle title="Blacklist IP" />
                 <section className="filter">
                     <p>Manage the IP addresses that are blacklisted from accessing the platform.</p>
