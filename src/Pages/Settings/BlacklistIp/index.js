@@ -102,9 +102,6 @@ export default function BlacklistIp() {
                                     if (newIp) {
                                         setBlacklist([...blacklist, newIp]);
 
-                                        console.log("Adding IP to blacklist:", newIp);
-                                        console.log("Current blacklist:", API["gdpr"].saveBlacklistIp.url);
-
                                         fetch(API["gdpr"].saveBlacklistIp.url, {
                                             method: API["gdpr"].saveBlacklistIp.method,
                                             headers: API["gdpr"].saveBlacklistIp.headers,
