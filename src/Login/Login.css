@@ -182,7 +182,7 @@ body{
 .used_by {
     display: inline-block;
     width: 10%;
-    height: 150px;
+    height: 100px;
     object-fit: contain;
     object-position: center;
     margin-inline: 50px;
@@ -190,6 +190,7 @@ body{
 
 .key-numbers-section{
     padding-block: 150px;
+    background-color: #fff;
 }
 
 @media screen and (min-width: 375px) and (max-width: 900px) {
