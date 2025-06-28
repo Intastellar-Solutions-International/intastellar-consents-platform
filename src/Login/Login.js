@@ -8,7 +8,7 @@ const useLocation = window.ReactRouterDOM.useLocation;
 const useEffect = window.React.useEffect;
 
 export default function Login() {
-    document.title = "Intastellar Consents Solutions powered by Intastellar Solutions";
+    document.title = "Intastellar Consents Solutions | Data consent management platform";
     const [email, setEmail] = React.useState();
     const [password, setPassword] = React.useState();
     const [isLoading, setLoading] = React.useState(false);
