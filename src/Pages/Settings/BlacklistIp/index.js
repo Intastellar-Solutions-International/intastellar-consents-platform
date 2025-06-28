@@ -101,24 +101,24 @@ export default function BlacklistIp() {
                                 <button onClick={() => {
                                     if (newIp) {
                                         setBlacklist([...blacklist, newIp]);
-                                        document.querySelector('.blacklistIpContainer input').value = ''; // Clear input
 
-                                        if (blacklist.length > 0) {
-                                            fetch(API["gdpr"].saveBlacklistIp.url, {
-                                                method: API["gdpr"].saveBlacklistIp.method,
-                                                headers: API["gdpr"].saveBlacklistIp.headers,
-                                                body: JSON.stringify({
-                                                    ipAddresses: newIp
-                                                })
+                                        console.log("Adding IP to blacklist:", newIp);
+                                        console.log("Current blacklist:", API["gdpr"].saveBlacklistIp.url);
+
+                                        fetch(API["gdpr"].saveBlacklistIp.url, {
+                                            method: API["gdpr"].saveBlacklistIp.method,
+                                            headers: API["gdpr"].saveBlacklistIp.headers,
+                                            body: JSON.stringify({
+                                                ipAddresses: newIp
                                             })
-                                                .then(response => response.json())
-                                                .then(data => {
-                                                    console.log("Blacklist updated:", data);
-                                                })
-                                                .catch(error => {
-                                                    console.error("Error updating blacklist:", error);
-                                                });
-                                        }
+                                        })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                console.log("Blacklist updated:", data);
+                                            })
+                                            .catch(error => {
+                                                console.error("Error updating blacklist:", error);
+                                            });
                                     }
                                     setOpenModal(false);
                                 }}>
