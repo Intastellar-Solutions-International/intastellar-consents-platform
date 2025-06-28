@@ -80,7 +80,6 @@ export default function App() {
                     navigate.push("/login");
                     return;
                 }
-
                 setOrganisations(data);
             });
 
@@ -92,9 +91,6 @@ export default function App() {
                     navigate.push("/login");
                     return;
                 }
-
-                console.log(data);
-
                 setSubscriptionStatus(data);
                 localStorage.setItem("subscription", JSON.stringify(data));
             });
@@ -126,7 +122,7 @@ export default function App() {
             )
         }
 
-        if (subscriptionStatus?.status != "active" && subscriptionStatus?.loading) {
+        if (subscriptionStatus?.status != "active" && subscriptionStatus?.loading && Authentication.getOrganisation() !== 1) {
             return (
                 <>
                     <AllOrg.Provider value={[organisations, setOrganisations]}>
