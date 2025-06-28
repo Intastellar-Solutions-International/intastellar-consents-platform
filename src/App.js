@@ -64,6 +64,12 @@ export default function App() {
     });
     const [id, setId] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
     const navigate = window.ReactRouterDOM.useHistory();
+    const currentPath = window.ReactRouterDOM.useLocation().pathname;
+
+    // Check if the user is logged in
+    if (localStorage.getItem("globals") === null && currentPath !== "/login" && currentPath !== "/signup" && currentPath !== "/auth-login") {
+        navigate.push("/login");
+    }
 
     if (localStorage.getItem("globals") != null) {
         if (window.location.pathname === "/login" || window.location.pathname === "/") {
