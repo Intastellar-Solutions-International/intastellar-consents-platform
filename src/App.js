@@ -70,19 +70,6 @@ export default function App() {
             window.location.href = "/" + id + "/dashboard";
         }
 
-        Fetch(API.settings.user.get.url, API.settings.user.get.method, API.settings.user.headers, JSON.stringify({
-            user: Authentication.getUserId()
-        })).then((data) => {
-            const setting = data.setting;
-            if (data === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
-                navigate.push("/login");
-                return;
-            }
-
-            localStorage.setItem("settings", JSON.stringify(setting));
-        });
-
         /* const [domainLoadings, data, error, getUpdated] = useFetch(null, API[id].getDomains.url, API[id].getDomains.method, API[id].getDomains.headers); */
         useEffect(() => {
             Fetch(API.settings.getOrganisation.url, API.settings.getOrganisation.method, API.settings.getOrganisation.headers, JSON.stringify({
@@ -97,7 +84,7 @@ export default function App() {
                 setOrganisations(data);
             });
 
-            /* Fetch(API.Subscription.url, API.Subscription.method, API.Subscription.headers, JSON.stringify({
+            Fetch(API.Subscription.url, API.Subscription.method, API.Subscription.headers, JSON.stringify({
                 organization: Authentication.getOrganisation()
             })).then((data) => {
                 if (data === "Err_Login_Expired") {
@@ -110,7 +97,7 @@ export default function App() {
 
                 setSubscriptionStatus(data);
                 localStorage.setItem("subscription", JSON.stringify(data));
-            }); */
+            });
 
             if (id && API[id]?.getDomains?.url != undefined) {
                 Fetch(API[id].getDomains.url, API[id].getDomains.method, API[id].getDomains.headers).then((data) => {
@@ -139,7 +126,7 @@ export default function App() {
             )
         }
 
-        /* if (subscriptionStatus?.status != "active" && subscriptionStatus?.loading) {
+        if (subscriptionStatus?.status != "active" && subscriptionStatus?.loading) {
             return (
                 <>
                     <AllOrg.Provider value={[organisations, setOrganisations]}>
@@ -148,153 +135,153 @@ export default function App() {
                     </AllOrg.Provider>
                 </>
             )
-        } else if (!subscriptionStatus?.loading && subscriptionStatus?.status === "active") { */
-        return (
-            <>
-                <Router>
-                    <OrganisationContext.Provider value={[organisation, setOrganisation]}>
-                        <DomainContext.Provider value={[currentDomain, setCurrentDomain]}>
-                            <ErrorBoundary>
-                                {id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
-                                    <Header handle={handle} id={id} />
-                                    {/* <BugReport /> */}
-                                </> : null}
-                            </ErrorBoundary>
-                            <div className="main-grid">
-                                {
-                                    id && window.location.pathname != "/" || window.location.pathname != "/login" ? <Nav /> : null
-                                }
-                                <Switch>
-                                    <Route path="/:id/dashboard" exact>
-                                        <div style={{ flex: "1" }}>
-                                            {domainError ? <AddDomain /> :
-                                                (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
-                                            }
-                                        </div>
-                                    </Route>
-                                    <Route path="/signup" exact>
-                                        <ErrorBoundary>
-                                            <Signup />
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/:id/domains" exact>
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <Websites />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/settings" exact>
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <Settings />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/settings/create-organisation">
-                                        <ErrorBoundary>
-                                            {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <CreateOrganisation /> : null}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/settings/add-user">
-                                        <ErrorBoundary>
-                                            {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <AddUser /> : null}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/settings/add-domain">
-                                        <ErrorBoundary>
-                                            {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" || Authentication.User.Status === "manager" ?
-                                                <SettingsAddDomain /> : null}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/settings/view-users">
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <ViewUsers />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/settings/view-organisations">
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <ViewOrg />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/settings/preferences">
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <UserPreferences />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path='/:id/view/:handle'>
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <DomainDashbord setHandle={setHandle} />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/:id/cookies" exact>
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <CookiesDashboard />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/:id/reports" exact>
-                                        <ErrorBoundary>
-                                            <Reports />
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/:id/reports/user-consents">
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/:id/reports/user-agents">
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <UserAgents />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/:id/reports/countries">
-                                        <ErrorBoundary>
-                                            {domainError ? <AddDomain /> : <Countries organisations={organisations} />}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/dashboard">
-                                        <ErrorBoundary>
-                                            <PlatformSelector setId={setId} platforms={JSON.parse(localStorage.getItem("globals"))?.access?.type} />
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Router path="/login" exact>
-                                        <Login />
-                                    </Router>
-                                    <Route path="/settings/config-gdpr">
-                                    </Route>
-                                    <Route path="/settings/blacklist-ip">
-                                        <ErrorBoundary>
-                                            {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <BlacklistIp /> : null}
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/" exact>
-                                        <ErrorBoundary>
+        } else if (!subscriptionStatus?.loading && subscriptionStatus?.status === "active") {
+            return (
+                <>
+                    <Router>
+                        <OrganisationContext.Provider value={[organisation, setOrganisation]}>
+                            <DomainContext.Provider value={[currentDomain, setCurrentDomain]}>
+                                <ErrorBoundary>
+                                    {id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
+                                        <Header handle={handle} id={id} />
+                                        {/* <BugReport /> */}
+                                    </> : null}
+                                </ErrorBoundary>
+                                <div className="main-grid">
+                                    {
+                                        id && window.location.pathname != "/" || window.location.pathname != "/login" ? <Nav /> : null
+                                    }
+                                    <Switch>
+                                        <Route path="/:id/dashboard" exact>
+                                            <div style={{ flex: "1" }}>
+                                                {domainError ? <AddDomain /> :
+                                                    (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
+                                                }
+                                            </div>
+                                        </Route>
+                                        <Route path="/signup" exact>
+                                            <ErrorBoundary>
+                                                <Signup />
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/domains" exact>
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <Websites />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings" exact>
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <Settings />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/create-organisation">
+                                            <ErrorBoundary>
+                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <CreateOrganisation /> : null}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/add-user">
+                                            <ErrorBoundary>
+                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <AddUser /> : null}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/add-domain">
+                                            <ErrorBoundary>
+                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" || Authentication.User.Status === "manager" ?
+                                                    <SettingsAddDomain /> : null}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/view-users">
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <ViewUsers />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/view-organisations">
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <ViewOrg />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/preferences">
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <UserPreferences />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path='/:id/view/:handle'>
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <DomainDashbord setHandle={setHandle} />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/cookies" exact>
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <CookiesDashboard />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/reports" exact>
+                                            <ErrorBoundary>
+                                                <Reports />
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/reports/user-consents">
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/reports/user-agents">
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <UserAgents />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/reports/countries">
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <Countries organisations={organisations} />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/dashboard">
+                                            <ErrorBoundary>
+                                                <PlatformSelector setId={setId} platforms={JSON.parse(localStorage.getItem("globals"))?.access?.type} />
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Router path="/login" exact>
                                             <Login />
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Route path="/:id/compare" exact>
-                                        <ErrorBoundary>
-                                            <Compare />
-                                        </ErrorBoundary>
-                                    </Route>
-                                    <Redirect to="/login" />
-                                </Switch>
+                                        </Router>
+                                        <Route path="/settings/config-gdpr">
+                                        </Route>
+                                        <Route path="/settings/blacklist-ip">
+                                            <ErrorBoundary>
+                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <BlacklistIp /> : null}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/" exact>
+                                            <ErrorBoundary>
+                                                <Login />
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/compare" exact>
+                                            <ErrorBoundary>
+                                                <Compare />
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Redirect to="/login" />
+                                    </Switch>
+                                </div>
+                                <ErrorBoundary>
+                                    <Footer />
+                                </ErrorBoundary>
+                            </DomainContext.Provider>
+                        </OrganisationContext.Provider>
+                        <Route path="/check">
+                            <div className="cookieCheckContainer">
+                                <img src="https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg" className="crawlerPage-logo" />
+                                <Crawler />
+                                <footer>
+                                    <p>Powered by Intastellar Cookie Consents</p>
+                                    <p>&copy; {new Date().getFullYear()} Intastellar Solutions, International</p>
+                                </footer>
                             </div>
-                            <ErrorBoundary>
-                                <Footer />
-                            </ErrorBoundary>
-                        </DomainContext.Provider>
-                    </OrganisationContext.Provider>
-                    <Route path="/check">
-                        <div className="cookieCheckContainer">
-                            <img src="https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg" className="crawlerPage-logo" />
-                            <Crawler />
-                            <footer>
-                                <p>Powered by Intastellar Cookie Consents</p>
-                                <p>&copy; {new Date().getFullYear()} Intastellar Solutions, International</p>
-                            </footer>
-                        </div>
-                    </Route>
-                </Router>
-            </>
-        )
-        /* } */
+                        </Route>
+                    </Router>
+                </>
+            )
+        }
     } else {
         return (
             <Router>
