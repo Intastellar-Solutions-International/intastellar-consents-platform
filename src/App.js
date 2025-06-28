@@ -42,6 +42,7 @@ import UserAgents from "./Pages/Reports/UserAgents";
 import UserPreferences from "./Pages/Settings/UserPreferences";
 import StripePayment from "./Components/StripePayment";
 import Compare from "./Pages/Reports/Compare";
+import BlacklistIp from "./Pages/Settings/BlacklistIp";
 
 export const OrganisationContext = createContext(localStorage.getItem("organisation"));
 export const AllOrg = createContext(null);
@@ -256,6 +257,11 @@ export default function App() {
                                         <Login />
                                     </Router>
                                     <Route path="/settings/config-gdpr">
+                                    </Route>
+                                    <Route path="/settings/blacklist-ip">
+                                        <ErrorBoundary>
+                                            {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <BlacklistIp /> : null}
+                                        </ErrorBoundary>
                                     </Route>
                                     <Route path="/" exact>
                                         <ErrorBoundary>

@@ -91,6 +91,25 @@ const API = {
             },
             body: (domains) => JSON.stringify({ Domains: domains })
         },
+        saveBlacklistIp: {
+            url: `${PrimaryHost}/analytics/gdpr/blackListIpAddress`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            },
+            body: (ipAddress) => JSON.stringify({ ipAddress: ipAddress })
+        },
+        getBlackList: {
+            url: `${PrimaryHost}/analytics/gdpr/getBlackList`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
         getLanguage: {
             url: `${PrimaryHost}/analytics/gdpr/getLanguage`,
             method: "GET",

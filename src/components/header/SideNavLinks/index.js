@@ -38,5 +38,10 @@ export const reportsLinks = [
         name: "Config GDPR",
         path: "/settings/config-gdpr",
         view: ["admin", "super-admin", "manager"]
+    },
+    {
+        name: "Blacklist IP",
+        path: "/settings/blacklist-ip",
+        view: ["admin", "super-admin", "manager"]
     }
 ]
