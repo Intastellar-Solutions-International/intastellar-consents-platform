@@ -1,18 +1,18 @@
 const { useState, useEffect } = window.React;
 const useParams = window.ReactRouterDOM.useParams;
 import { use } from "react";
-import API from "../../../API/api";
+import API from "../../../API/api.js";
 export default function BlacklistIp() {
     const [blacklist, setBlacklist] = useState([]);
     const [userIp, setUserIp] = useState(null);
 
-    const { id } = useParams();
+    const { handle, id } = useParams();
 
     // Get user's IP address if available
 
     const fetchUserIp = async () => {
         try {
-            const response = await fetch('https://apis.intastellarsolutions.com/ip', {
+            const response = await fetch('https://apis.intastellarsolutions.com/user-ip', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,6 +32,8 @@ export default function BlacklistIp() {
     }
 
     useEffect(() => {
+        console.log("Fetching user IP address...");
+        console.log(id, API["gdpr"].saveBlacklistIp.url);
         fetchUserIp();
     }, []);
 
@@ -39,10 +41,12 @@ export default function BlacklistIp() {
 
         // Save the ip addresses to the server
         if (blacklist.length > 0) {
-            fetch(API[id].saveBlacklistIp.url, {
-                method: API[id].saveBlacklistIp.method,
-                headers: API[id].saveBlacklistIp.headers,
-                body: JSON.stringify({ ips: blacklist })
+            fetch(API["gdpr"].saveBlacklistIp.url, {
+                method: API["gdpr"].saveBlacklistIp.method,
+                headers: API["gdpr"].saveBlacklistIp.headers,
+                body: JSON.stringify({
+                    ipAddresses: blacklist
+                })
             })
                 .then(response => response.json())
                 .then(data => {

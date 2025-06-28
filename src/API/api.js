@@ -92,7 +92,7 @@ const API = {
             body: (domains) => JSON.stringify({ Domains: domains })
         },
         saveBlacklistIp: {
-            url: `${PrimaryHost}/analytics/gdpr/blackListIpAddress`,
+            url: `${PrimaryHost}/analytics/gdpr/black-lists-ip`,
             method: "POST",
             headers: {
                 "Authorization": Authentication.getToken(),
