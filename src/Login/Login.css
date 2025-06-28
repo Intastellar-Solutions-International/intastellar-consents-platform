@@ -249,5 +249,14 @@ body{
         display: none;
     }
 
+    .key-numbers-section{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
 
+    .used_by{
+        width: 150px;
+        margin: auto;
+        display: flex;
+    }
 }
