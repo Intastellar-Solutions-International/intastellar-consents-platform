@@ -16,6 +16,7 @@ export default function Login() {
     const type = "";
 
     useEffect(() => {
+        document.body.classList.add("loginForm-body");
         Intastellar.accounts.id.renderButton("login", {
             "picker": "button",
             "theme": "light"
