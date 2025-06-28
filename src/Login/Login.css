@@ -1,3 +1,9 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+}
 .signin-container{
     display: flex;
     flex-direction: column;
@@ -166,6 +172,24 @@
 
 .graphic-container{
     height: 100%;
+}
+
+.main-content-section{
+    padding: 50px;
+    color: #636363;
+}
+
+.used_by {
+    display: inline-block;
+    width: 10%;
+    height: 150px;
+    object-fit: contain;
+    object-position: center;
+    margin-inline: 50px;
+}
+
+.key-numbers-section{
+    padding-block: 150px;
 }
 
 @media screen and (min-width: 375px) and (max-width: 900px) {

@@ -147,6 +147,26 @@ export default function Login() {
                     <img className="intastellar-accounts-logo" src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg" />
                 </div>
             </div>
+            <section class="ppad key-numbers-section">
+                <a href="https://www.cykelfaergen.info" target="_blank" rel="noopener"><img loading="lazy" class="used_by" src="https://www.cykelfaergen.info/assets/logo/logo.svg" alt="Cykelfærgen Flensborg fjord" /></a>
+                <a href="https://teamjacobsen.dk" target="_blank" rel="noopener"><img loading="lazy" class="used_by" src="https://teamjacobsen.dk/img-own/TB_logo_white_91x50.jpg" alt="Team Jacobsen" /></a>
+                <a href="https://laesoe-booking.dk" target="_blank" rel="noopener"><img loading="lazy" class="used_by" src="https://laesoe-booking.dk/media/2377/logo-combi.png" alt="Læsø Pakkerejser" /></a>
+                <a href="https://www.parkinpeace.eu" target="_blank" rel="noopener"><img loading="lazy" class="used_by" src="https://www.parkinpeace.eu/assets/logo/Park-in-Peace-farve.svg" alt="ParkinPeace" /></a>
+                <a href="https://asasoftware.aero" target="_blank" rel="noopener"><img class="used_by" src="https://asasoftware.aero/wp-content/uploads/2020/04/ASA.svg" alt="ASA Software ApS" /></a>
+                <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img class="used_by" src="https://www.laesoe-efterskole.dk/wp-content/uploads/2023/09/cropped-cropped-cropped-cropped-cropped-LaesoeEfterskole_Logo_Farve-1.png" alt="Læssø Efterskole" /></a>
+            </section>
+            <section className="grid-container grid-cols-2">
+                <section className="main-content-section">
+                    <h2 className="main-content-section-title">What is Intastellar Consent?</h2>
+                    <p className="main-content-section-description">Intastellar Consent is a consent management platform that helps you manage your user consents in a compliant way.</p>
+                    <a target="_blank" rel="noopener" href="https://www.intastellarsolutions.com" className="main-content-section-button">Learn More</a>
+                </section>
+                <section className="main-content-section">
+                    <h2 className="main-content-section-title">Why Intastellar Consent?</h2>
+                    <p className="main-content-section-description">Intastellar Consent is built on the Intastellar platform, which is a secure and scalable platform for building consent management solutions.</p>
+                    <a target="_blank" rel="noopener" href="https://www.intastellarsolutions.com" className="main-content-section-button">Explore Features</a>
+                </section>
+            </section>
             <LPFooter />
         </>
     )

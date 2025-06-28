@@ -29,6 +29,16 @@ export default function LandingPage() {
                         data-login_uri={window.location.host + "/auth-login"}
                     ></div>
                 </section>
+                <section className="main-content-section">
+                    <h2 className="main-content-section-title">What is Intastellar Consent?</h2>
+                    <p className="main-content-section-description">Intastellar Consent is a consent management platform that helps you manage your user consents in a compliant way.</p>
+                    <Link to="/about" className="main-content-section-button">Learn More</Link>
+                </section>
+                <section className="main-content-section">
+                    <h2 className="main-content-section-title">Why Intastellar Consent?</h2>
+                    <p className="main-content-section-description">Intastellar Consent is built on the Intastellar platform, which is a secure and scalable platform for building consent management solutions.</p>
+                    <Link to="/features" className="main-content-section-button">Explore Features</Link>
+                </section>
             </main>
         </>
     )
