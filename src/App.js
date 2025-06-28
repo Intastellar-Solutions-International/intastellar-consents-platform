@@ -122,16 +122,14 @@ export default function App() {
             )
         }
 
-        if (subscriptionStatus?.status != "active" && subscriptionStatus?.loading && Authentication.getOrganisation() !== 1) {
+        if (JSON.parse(localStorage.getItem("subscription"))?.status != "active" && JSON.parse(localStorage.getItem("subscription"))?.loading && Authentication.getOrganisation() != 1) {
             return (
-                <>
-                    <AllOrg.Provider value={[organisations, setOrganisations]}>
-                        <StripePayment userId={Authentication.getUserId} />
-                        <BugReport />
-                    </AllOrg.Provider>
-                </>
+                <AllOrg.Provider value={[organisations, setOrganisations]}>
+                    <StripePayment userId={Authentication.getUserId} />
+                    <BugReport />
+                </AllOrg.Provider>
             )
-        } else if (!subscriptionStatus?.loading && subscriptionStatus?.status === "active") {
+        } else if (!JSON.parse(localStorage.getItem("subscription"))?.loading && JSON.parse(localStorage.getItem("subscription"))?.status === "active") {
             return (
                 <>
                     <Router>
