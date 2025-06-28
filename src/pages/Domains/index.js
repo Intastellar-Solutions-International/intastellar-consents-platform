@@ -23,6 +23,7 @@ export default function Websites() {
                                 const timestamp = domain[1];
 
                                 const installed = domain["installed"] ? domain["installed"] : null;
+                                const comapnyName = domain["companyName"] ? domain["companyName"] : null;
                                 const lastVisited = domain["lastedVisited"] ? domain["lastedVisited"] : null;
                                 const icon = domain["icon"];
 
@@ -30,6 +31,7 @@ export default function Websites() {
                                     <>
                                         <a key={key} className="link widget" href={"http://" + main} target="_blank" rel="noopener nofollow noreferer">
                                             {icon ? <img src={icon} alt="icon" className="domainIcon" /> : null}
+                                            {comapnyName ? <h2 className="companyName">{comapnyName}</h2> : null}
                                             <p>{punycode.toUnicode(main)}</p>
                                             <p>Installed: {installed && installed !== "Invalid Date" && installed !== "0000-00-00T00:00:00.000Z" ? installed : null}</p>
                                             <p>Last visited: {lastVisited && lastVisited !== "Invalid Date" ? lastVisited : null}</p>
