@@ -15,7 +15,7 @@ body{
 .loginForm-container {
     display: grid;
     grid-template-columns: 1fr .65fr;
-    height: 100vh;
+    height: 70vh;
     width: 100%;
 }
 

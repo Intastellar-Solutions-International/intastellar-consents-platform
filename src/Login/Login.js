@@ -132,7 +132,7 @@ export default function Login() {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    height: "100vh"
+                    height: "70vh"
                 }}>
                     <h2 className="loginForm-title">Log into Intastellar Consents Solutions</h2>
                     <div
