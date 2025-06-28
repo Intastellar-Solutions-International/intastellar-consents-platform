@@ -1,12 +1,17 @@
 const { useState, useEffect } = window.React;
 const useParams = window.ReactRouterDOM.useParams;
-import { use } from "react";
 import API from "../../../API/api.js";
 import SideNav from "../../../Components/Header/SideNav.js";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks/index.js";
+import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
+
+import "./Style.css";
+
 export default function BlacklistIp() {
     const [blacklist, setBlacklist] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
     const [userIp, setUserIp] = useState(null);
+    const [newIp, setNewIp] = useState("");
 
     const { handle, id } = useParams();
 
@@ -25,8 +30,7 @@ export default function BlacklistIp() {
             });
             const data = await response.json();
 
-            console.log("User IP:", data.ip);
-
+            setNewIp(data.ip);
             setUserIp(data.ip);
         } catch (error) {
             console.error("Error fetching user IP:", error);
@@ -60,57 +64,71 @@ export default function BlacklistIp() {
         <>
             <SideNav links={reportsLinks} title="Settings" />
             <main className="dashboard-content">
+                <StickyPageTitle title="Blacklist IP" />
+                <section className="filter">
+                    <p>Manage the IP addresses that are blacklisted from accessing the platform.</p>
+                    <p>Your current IP: {userIp ? userIp : "Fetching..."}</p>
+                    <button className="fetchIpBtn" onClick={
+                        () => {
+                            setOpenModal(true);
+                        }
+                    }>+</button>
+                </section>
                 <h1>Blacklist IP</h1>
                 <p>Manage the IP addresses that are blacklisted from accessing the platform.</p>
                 <div className="blacklistIpContainer">
-                    <input type="text" placeholder="Enter IP address to blacklist" defaultValue={userIp} />
-                    <button
-                        className="addBlacklistBtn" onClick={() => {
-                            // Logic to add IP to blacklist
-                            const newIp = document.querySelector('.blacklistIpContainer input').value;
-                            if (newIp) {
-                                setBlacklist([...blacklist, newIp]);
-                                document.querySelector('.blacklistIpContainer input').value = ''; // Clear input
 
-                                if (blacklist.length > 0) {
-                                    fetch(API["gdpr"].saveBlacklistIp.url, {
-                                        method: API["gdpr"].saveBlacklistIp.method,
-                                        headers: API["gdpr"].saveBlacklistIp.headers,
-                                        body: JSON.stringify({
-                                            ipAddresses: newIp
-                                        })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            console.log("Blacklist updated:", data);
-                                        })
-                                        .catch(error => {
-                                            console.error("Error updating blacklist:", error);
-                                        });
-                                }
-                            }
-                        }}>
-                        <i className="dashboard-icons add"></i>
-                        <span className="hiddenCollapsed"> </span>
-                        Add to Blacklist
-                    </button>
                     <ul className="blacklistIpList">
                         {/* Example list item, replace with dynamic data */}
                         {blacklist.map((ip, index) => (
                             <li key={index} className="blacklistIpItem">
                                 <span>{ip}</span>
-                                <button className="removeBtn">Remove</button>
                             </li>
                         ))}
                     </ul>
                 </div>
-                <div className="blacklistIpActions">
-                    <button className="removeAllBtn">Remove All</button>
-                </div>
-                <div className="blacklistIpFooter">
-                    <p>Note: Blacklisted IPs will not be collected data from.</p>
-                    <p>Ensure to manage the list carefully to avoid blocking legitimate users.</p>
-                </div>
+                {
+                    openModal && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <h2>Add IP to Blacklist</h2>
+                                <input
+                                    type="text"
+                                    placeholder="Enter IP address"
+                                    value={newIp}
+                                    onChange={(e) => setNewIp(e.target.value)}
+                                />
+                                <button onClick={() => {
+                                    if (newIp) {
+                                        setBlacklist([...blacklist, newIp]);
+                                        document.querySelector('.blacklistIpContainer input').value = ''; // Clear input
+
+                                        if (blacklist.length > 0) {
+                                            fetch(API["gdpr"].saveBlacklistIp.url, {
+                                                method: API["gdpr"].saveBlacklistIp.method,
+                                                headers: API["gdpr"].saveBlacklistIp.headers,
+                                                body: JSON.stringify({
+                                                    ipAddresses: newIp
+                                                })
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    console.log("Blacklist updated:", data);
+                                                })
+                                                .catch(error => {
+                                                    console.error("Error updating blacklist:", error);
+                                                });
+                                        }
+                                    }
+                                    setOpenModal(false);
+                                }}>
+                                    Add to Blacklist
+                                </button>
+                                <button onClick={() => setOpenModal(false)}>Cancel</button>
+                            </div>
+                        </div>
+                    )
+                }
             </main>
         </>
     );
