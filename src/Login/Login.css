@@ -127,9 +127,8 @@
 }
 
 .loginForm-logo {
-    width: 24%;
+    width: 350px;
     margin-bottom: 30px;
-    filter: invert(100) brightness(100);
 }
 
 .loginForm-logo.--hideMobile {

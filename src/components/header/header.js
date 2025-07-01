@@ -1,7 +1,7 @@
 const { useState, useEffect, useRef, useContext } = React;
 import { OrganisationContext, DomainContext } from "../../App";
 import "./header.css";
-import logo from "./logo.png";
+import logo from "./logo.svg";
 import Fetch from "../../Functions/fetch";
 import useFetch from "../../Functions/FetchHook";
 import API from "../../API/api";
@@ -89,7 +89,6 @@ export default function Header(props) {
                                 <div className="menu-bar"></div>
                             </button>
                             <img className="dashboard-logo" src={logo} alt="Intastellar Solutions Logo" />
-                            <span className="platform-view">{Platform}</span>
                         </section>
                         <section className="company_container">
                             {(allOrganisations && Organisation) ?
