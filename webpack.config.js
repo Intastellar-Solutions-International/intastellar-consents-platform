@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const client = {
   entry: path.resolve(__dirname, 'index.js'),
@@ -71,7 +72,11 @@ module.exports = (env, argv) => {
     client.plugins = [
       new HtmlWebpackPlugin({
         template: "./index.html",
-      })
+      }),
+      new Dotenv({
+        path: './.env', // Path to your .env file (default is './.env')
+        safe: false,    // Set to true if you want to load a .env.example file for validation
+      }),
     ]
   }
 
@@ -81,7 +86,12 @@ module.exports = (env, argv) => {
     client.plugins = [
       new HtmlWebpackPlugin({
         template: "./production.html",
-      })
+      }),
+      new Dotenv({
+        path: './.env', // Path to your .env file (default is './.env')
+        safe: false,    // Set to true if you want to load a .env.example file for validation
+      }),
+
     ]
 
   }

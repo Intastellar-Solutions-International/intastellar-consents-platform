@@ -10,6 +10,16 @@ export default function StripePayment(props) {
     const [allOrganisations, setallOrganisations] = useContext(AllOrg);
     const companyName = JSON.parse(localStorage.getItem("organisation"))?.name;
 
+    const isProduction = process.env.NODE_ENV === "production";
+
+    const pricingTableId = isProduction
+        ? process.env.STRIPE_PRICING_TABLE_ID_LIVE
+        : process.env.STRIPE_PRICING_TABLE_ID_TEST;
+
+    const publishableKey = isProduction
+        ? process.env.STRIPE_PUBLISHABLE_KEY_LIVE
+        : process.env.STRIPE_PUBLISHABLE_KEY_TEST;
+
     return (
         <>
             <header className="payment-header">
@@ -24,8 +34,11 @@ export default function StripePayment(props) {
                 }} defaultValue={companyName} />
                 <h1>Choose a Plan</h1>
                 <p>Choose a plan that suits your needs. You´re about to select a plan for your company: {companyName}</p>
-                <stripe-pricing-table class="stripe-price-table" pricing-table-id="prctbl_1RfGbIEK0yX4gMoHvanLTmrU"
-                    publishable-key="pk_test_cdjFXrTVnj1SdyYXzlTz95Sk" customer-email={props.userId()}
+                <stripe-pricing-table
+                    class="stripe-price-table"
+                    pricing-table-id={pricingTableId}
+                    publishable-key={publishableKey}
+                    customer-email={props.userId()}
                     client-reference-id={Authentication.getOrganisation()}
                 >
                 </stripe-pricing-table>
