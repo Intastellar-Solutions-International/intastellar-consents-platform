@@ -1,4 +1,4 @@
-# Intastellar Consents Solutions
+# Intastellar Consents | CMP
 
 This is the dashboard for our Analytics tool, where we can keep track of our [Intastellar Cookie Consents](https://www.intastellarsolutions.com/gdpr-cookiebanner)
 

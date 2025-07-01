@@ -13,7 +13,7 @@ const punycode = require("punycode");
 
 export default function DomainDashbord(props) {
     const { handle, id } = useParams();
-    document.title = `${punycode.toUnicode(handle)} Dashboard | Intastellar Consents Solutions`;
+    document.title = `${punycode.toUnicode(handle)} Dashboard | Intastellar Consents | CMP`;
 
     const today = new Date();
 

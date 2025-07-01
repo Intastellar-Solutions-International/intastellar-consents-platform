@@ -7,7 +7,7 @@ import Fetch from '../../Functions/fetch';
 import punycode from 'punycode';
 
 export default function Compare(props) {
-    document.title = "Compare Domains | Intastellar Consents Solutions";
+    document.title = "Compare Domains | Intastellar Consents | CMP";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const { handle, id } = useParams();
     const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));

@@ -13,7 +13,7 @@ import { DomainContext, OrganisationContext } from "../../App.js";
 import { reportsLinks } from "../Reports/Reports.js";
 
 export default function UserConsents(props) {
-    document.title = "Countries | Intastellar Consents Solutions";
+    document.title = "Countries | Intastellar Consents | CMP";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
     const organisations = props.organisations;

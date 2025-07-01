@@ -17,7 +17,7 @@ import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js
 import Pie from "../../Components/Charts/Pie/index.js";
 
 export default function Dashboard(props) {
-    document.title = "Home | Intastellar Consents Solutions";
+    document.title = "Home | Intastellar Consents | CMP";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
     const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));

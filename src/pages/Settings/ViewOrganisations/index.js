@@ -9,7 +9,7 @@ const { useState, useEffect, useRef } = React;
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 export default function ViewOrg() {
-    document.title = "My Organisation | Intastellar Consents Solutions";
+    document.title = "My Organisation | Intastellar Consents | CMP";
     const { handle, id } = useParams();
 
     const [loading, data, error, updated] = useFetch(1, API.settings.getOrganisation.url, API.settings.getOrganisation.method, API.settings.getOrganisation.headers, JSON.stringify({

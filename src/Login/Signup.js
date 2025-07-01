@@ -8,7 +8,7 @@ const useLocation = window.ReactRouterDOM.useLocation;
 const useEffect = window.React.useEffect;
 
 export default function Login() {
-    document.title = "Intastellar Consents Solutions powered by Intastellar Solutions";
+    document.title = "Intastellar Consents | CMP powered by Intastellar Solutions";
     const [email, setEmail] = React.useState();
     const [password, setPassword] = React.useState();
     const [isLoading, setLoading] = React.useState(false);
@@ -33,7 +33,7 @@ export default function Login() {
                 <div className="loginForm-header">
                     <section className="loginForm-header-content">
                         <img className="loginForm-logo" src={logo} alt="Intastellar Solutions Logo" />
-                        <h1>Get started with <br /> Intastellar Consents Solutions</h1>
+                        <h1>Get started with <br /> Intastellar Consents | CMP</h1>
                         <p>By logging in, you can navigate to your consents managment tool, where you can find <strong>reports</strong> about & regarding your <strong>users consents</strong> on <strong>your Websites</strong>.</p>
                         <section>
                             <p>Our business tools can help you:</p>

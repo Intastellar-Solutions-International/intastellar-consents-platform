@@ -6,7 +6,7 @@ const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 
 export default function Settings(props) {
-    document.title = "Settings | Intastellar Consents Solutions";
+    document.title = "Settings | Intastellar Consents | CMP";
     const { handle, id } = useParams();
 
     return (

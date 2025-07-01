@@ -10,7 +10,7 @@ import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 const Link = window.ReactRouterDOM.Link;
 const { useState, useEffect, useRef, useContext } = React;
 export default function AddUser() {
-    document.title = "Add User to an Organisation | Intastellar Consents Solutions";
+    document.title = "Add User to an Organisation | Intastellar Consents | CMP";
     const [Organisation, setOrganisation] = useContext(OrganisationContext);
     const [userMail, setUserMail] = useState("");
     const [userRole, setUserRole] = useState("Admin");

@@ -25,7 +25,7 @@ export default function LandingPage() {
                     <div
                         id="login"
                         data-client_id="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
-                        data-app-name="Intastellar Consents Solutions"
+                        data-app-name="Intastellar Consents | CMP"
                         data-login_uri={window.location.host + "/auth-login"}
                     ></div>
                 </section>
