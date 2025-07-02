@@ -43,6 +43,7 @@ import UserPreferences from "./Pages/Settings/UserPreferences";
 import StripePayment from "./Components/StripePayment";
 import Compare from "./Pages/Reports/Compare";
 import BlacklistIp from "./Pages/Settings/BlacklistIp";
+import NewOrganisation from "./Pages/Settings/CreateOrganisation/NewOrganisation";
 
 export const OrganisationContext = createContext(localStorage.getItem("organisation"));
 export const AllOrg = createContext(null);
@@ -117,7 +118,7 @@ export default function App() {
 
         if (organisations === null) {
             return (
-                <CreateOrganisation />
+                <NewOrganisation />
             )
         }
 

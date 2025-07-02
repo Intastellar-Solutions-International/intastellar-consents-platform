@@ -1,13 +1,12 @@
 import Fetch from "../../../Functions/fetch";
 import Text from "../../../Components/InputFields/textInput";
 import Email from "../../../Components/InputFields/EmailInput";
-import SideNav from "../../../Components/Header/SideNav";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 import { OrganisationContext } from "../../../App";
 import API from "../../../API/api";
 const { useState, useEffect, useRef, useContext } = React;
 const Link = window.ReactRouterDOM.Link;
-export default function AddUser() {
+export default function NewOrganisation() {
     document.title = "Create a new Organisation | Intastellar Consents | CMP";
     const [organisationName, setOrganisationName] = useState("");
     const [organisationAdmin, setOrganisationAdmin] = useState("");
@@ -35,7 +34,6 @@ export default function AddUser() {
 
     return (
         <>
-            <SideNav links={reportsLinks} title="Settings" />
             <main className="dashboard-content">
                 <h1>Create a Organisation</h1>
                 <form onSubmit={create}>
