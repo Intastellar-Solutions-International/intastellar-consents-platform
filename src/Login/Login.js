@@ -21,88 +21,6 @@ export default function Login() {
             "picker": "button",
             "theme": "light"
         });
-
-        // Create an graphic for the canvas, the graphic should be a simple animation
-        // of consent management, with a simple animation of a user giving consent
-        const canvas = document.getElementById("graphic");
-        const ctx = canvas.getContext("2d");
-        canvas.width = 200;
-        canvas.height = window.innerHeight;
-        let x = 0;
-        let y = 0;
-        let width = 100;
-        let height = 100;
-
-        let dx = 2;
-        let dy = 2;
-        let angle = 0;
-        let radius = 50;
-        let speed = 0.05;
-        let color = "#fff";
-        let alpha = 0.5;
-        let scale = 1;
-        let scaleSpeed = 0.01;
-        let scaleDirection = 1;
-        let scaleFactor = 1;
-        let scaleFactorSpeed = 0.01;
-        let scaleFactorDirection = 1;
-        let scaleFactorMax = 1.5;
-        let scaleFactorMin = 1;
-        let scaleFactorMaxSpeed = 0.01;
-        let scaleFactorMinSpeed = 0.01;
-        let scaleFactorMaxDirection = 1;
-        let scaleFactorMinDirection = -1;
-        let scaleFactorMaxDirectionSpeed = 0.01;
-        let scaleFactorMinDirectionSpeed = 0.01;
-        let scaleFactorMaxDirectionMax = 1;
-        let scaleFactorMinDirectionMax = -1;
-        let scaleFactorMaxDirectionMin = 1;
-        let scaleFactorMinDirectionMin = -1;
-
-        function draw() {
-            // User clicking on a consent button
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = color;
-            ctx.globalAlpha = alpha;
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.closePath();
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(angle);
-            ctx.scale(scale, scale);
-            ctx.fillStyle = color;
-            ctx.globalAlpha = alpha;
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.closePath();
-            ctx.restore();
-            ctx.fillStyle = color;
-            ctx.globalAlpha = alpha;
-        }
-        function update() {
-            x += dx;
-            y += dy;
-            angle += speed;
-            radius += scaleSpeed;
-            if (radius > 100 || radius < 50) {
-                scaleSpeed = -scaleSpeed;
-            }
-            if (x > canvas.width || x < 0) {
-                dx = -dx;
-            }
-            if (y > canvas.height || y < 0) {
-                dy = -dy;
-            }
-        }
-        function animate() {
-            requestAnimationFrame(animate);
-            update();
-            draw();
-        }
-        animate();
     }, []);
 
     return (
@@ -124,9 +42,6 @@ export default function Login() {
                             </ul>
                         </section>
                     </section>
-                    <div className="graphic-container">
-                        <canvas id="graphic" width="100%" height="100%"></canvas>
-                    </div>
                 </div>
                 <div className="signin-container" style={{
                     display: "flex",
