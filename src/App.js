@@ -115,6 +115,12 @@ export default function App() {
 
         }, []);
 
+        if (organisations === null) {
+            return (
+                <CreateOrganisation />
+            )
+        }
+
         if (id === null && organisations) {
             return (
                 <>
