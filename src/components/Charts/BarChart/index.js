@@ -27,8 +27,6 @@ export default function BarChart({ data, data2, title, fromDate, toDate }) {
             /* series.name("Current Period"); */
             series.normal().stroke("#C09F53");
             series.normal().fill("#C09F53");
-            series.hovered().stroke("#C09F53", 2, "10 5", "round");
-            series.selected().stroke("#C09F53", 4, "10 5", "round");
 
             // Loop through all document.getElementById("pie-chart") elements
             // and set the chart container to the container for each element
