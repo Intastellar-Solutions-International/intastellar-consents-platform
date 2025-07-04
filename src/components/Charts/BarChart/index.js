@@ -18,7 +18,7 @@ export default function BarChart({ data, data2, title, fromDate, toDate }) {
             let chart = anychart.bar();
 
             chart.background().fill("transparent");
-            chart.yAxis().title("Number of users");
+            chart.xAxis().title("Number of users");
             chart.tooltip().format("{%Value}%");
             chart.xScale().mode("continuous");
 
@@ -26,6 +26,7 @@ export default function BarChart({ data, data2, title, fromDate, toDate }) {
 
             /* series.name("Current Period"); */
             series.normal().stroke("#C09F53");
+            series.normal().fill("#C09F53");
             series.hovered().stroke("#C09F53", 2, "10 5", "round");
             series.selected().stroke("#C09F53", 4, "10 5", "round");
 
