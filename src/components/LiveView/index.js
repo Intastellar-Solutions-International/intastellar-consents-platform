@@ -35,11 +35,6 @@ export function LiveView(props) {
                                     Array.from({ length: 30 }, (_, index) => {
                                         const visitData = liveData?.visitsOverTime.find(minute => Math.round(minute.minutes) === index + 1);
 
-                                        const numberOfUsersPerMinute = visitData ? visitData.count : 0;
-
-                                        console.log("Visit Data for minute " + (index + 1) + ": ", visitData);
-                                        console.log("Number of users for minute " + (index + 1) + ": ", numberOfUsersPerMinute);
-
                                         return <div key={index} className="liveView-container-bar" style={{
                                             width: document.querySelector(".liveView-container")?.clientWidth / 30,
                                             height: `${Math.round(visitData?.minutes) == index + 1 ? "60" : "2"}px`,
@@ -50,25 +45,6 @@ export function LiveView(props) {
                                         }}></div>
                                     })
                                 }
-                                {/* {
-                                    liveData?.visitsOverTime.map((minute, index) => {
-                                        // Calulate the position of the bar based on the number of minutes gone by.
-
-                                        // Calculate the position of the bar based on the number of minutes gone by and take the container width as 30 minutes.
-                                        // Get the parent container width.
-                                        const containerWidth = document.querySelector(".liveView-container")?.clientWidth;
-                                        // Calculate the position of the bar based on the number of minutes gone by and take the container width as 30 minutes.
-                                        const barTransformPosition = ((containerWidth / 30) * minute.minutes) - 4;
-
-                                        if (Math.round(minute.minutes) > 30) {
-                                            return null;
-                                        }
-
-                                        // Display a bar for each minute with the height of the bar being the number of users in that minute.
-                                        // Update the bars position based on the number of users in that minute.
-                                        return 
-                                    })
-                                } */}
                             </div>
                             <div className="liveView-content-data-2">
                                 {
@@ -77,7 +53,7 @@ export function LiveView(props) {
                                     Object.keys(
                                         liveData?.country
                                     ).map((key, index) => {
-                                        return <div key={index + new Date().getTime()} className="liveView-content-country" style={{
+                                        return <div key={index + Math.random()} className="liveView-content-country" style={{
                                             marginBottom: (liveData?.country.length - 1 === index) ? "0" : "40px"
                                         }}>
                                             <div className="liveView-content-flex">
@@ -105,9 +81,8 @@ export function LiveView(props) {
                                                 ).filter((domain) => {
                                                     return liveData?.domains[domain].country.indexOf(key) > -1;
                                                 }).map((domain, index) => {
-                                                    console.log("Domain Data: ", liveData?.domains[domain])
                                                     return <>
-                                                        <div key={index + new Date().getTime()} onClick={() => {
+                                                        <div key={index + Math.random()} onClick={() => {
                                                             setDomainLiveView({
                                                                 domain: domain,
                                                                 open: true
@@ -125,7 +100,7 @@ export function LiveView(props) {
                                                         </div>
                                                         {
                                                             domainLiveView.open && domainLiveView.domain == domain ?
-                                                                <div key={key + new Date().getTime()} className="liveView-content-data-1-domain" style={{
+                                                                <div key={key + Math.random()} className="liveView-content-data-1-domain" style={{
                                                                     display: "flex",
                                                                     flexDirection: "column",
                                                                     gap: "10px",
@@ -164,14 +139,14 @@ export function LiveView(props) {
                                                                             if (consentData) {
 
                                                                                 return consentData.map((consentItem, index) => {
-                                                                                    return <div key={index + new Date().getTime()} className="liveView-content-data-1-domain-consent">
+                                                                                    return <div key={index + Math.random()} className="liveView-content-data-1-domain-consent">
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.type}</p>
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
                                                                                     </div>
                                                                                 })
                                                                             } else {
                                                                                 consent.map((consentItem, index) => {
-                                                                                    return <div key={index + new Date().getTime()} className="liveView-content-data-1-domain-consent">
+                                                                                    return <div key={index + Math.random()} className="liveView-content-data-1-domain-consent">
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.type}</p>
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
                                                                                     </div>
@@ -182,7 +157,7 @@ export function LiveView(props) {
                                                                 </div>
                                                                 : null
                                                         }
-                                                        <div key={index + new Date().getTime()} style={{
+                                                        <div key={index + Math.random()} style={{
                                                             width: `100%`,
                                                             height: "2px",
                                                             backgroundColor: "#c4c4c4",
