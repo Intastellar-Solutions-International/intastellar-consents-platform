@@ -5,8 +5,6 @@ import "../Line/Style.css";
 export default function Pie({ data, title, fromDate, toDate }) {
     const dailyData = data;
 
-    console.log(dailyData);
-
     useEffect(() => {
 
         anychart.onDocumentReady(function () {

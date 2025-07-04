@@ -83,7 +83,7 @@ export default function Dashboard(props) {
             setActiveData(data);
         }
         ).catch((err) => {
-            console.log(err);
+            console.error(err);
         }).finally(() => {
             setLoading(false);
         });
@@ -100,7 +100,7 @@ export default function Dashboard(props) {
             setactiveDataCountry(country);
         }
         ).catch((err) => {
-            console.log(err);
+            console.error(err);
         }).finally(() => {
             setLoadingCountry(false);
         });
@@ -110,8 +110,6 @@ export default function Dashboard(props) {
     document.querySelectorAll(".intInput").forEach((input) => {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
     })
-
-    console.log(activeData, activeDataCountry, subscriptionStatus);
 
     return (
         <>

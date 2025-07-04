@@ -12,8 +12,6 @@ export function LiveView(props) {
         open: false
     });
 
-    console.log(domainLiveView)
-
     return <>
         {
             (!loading) ?
@@ -36,6 +34,11 @@ export function LiveView(props) {
                                 {
                                     Array.from({ length: 30 }, (_, index) => {
                                         const visitData = liveData?.visitsOverTime.find(minute => Math.round(minute.minutes) === index + 1);
+
+                                        const numberOfUsersPerMinute = visitData ? visitData.count : 0;
+
+                                        console.log("Visit Data for minute " + (index + 1) + ": ", visitData);
+                                        console.log("Number of users for minute " + (index + 1) + ": ", numberOfUsersPerMinute);
 
                                         return <div key={index} className="liveView-container-bar" style={{
                                             width: document.querySelector(".liveView-container")?.clientWidth / 30,
@@ -74,7 +77,7 @@ export function LiveView(props) {
                                     Object.keys(
                                         liveData?.country
                                     ).map((key, index) => {
-                                        return <div key={index} className="liveView-content-country" style={{
+                                        return <div key={index + new Date().getTime()} className="liveView-content-country" style={{
                                             marginBottom: (liveData?.country.length - 1 === index) ? "0" : "40px"
                                         }}>
                                             <div className="liveView-content-flex">
@@ -102,8 +105,9 @@ export function LiveView(props) {
                                                 ).filter((domain) => {
                                                     return liveData?.domains[domain].country.indexOf(key) > -1;
                                                 }).map((domain, index) => {
+                                                    console.log("Domain Data: ", liveData?.domains[domain])
                                                     return <>
-                                                        <div key={index} onClick={() => {
+                                                        <div key={index + new Date().getTime()} onClick={() => {
                                                             setDomainLiveView({
                                                                 domain: domain,
                                                                 open: true
@@ -153,20 +157,21 @@ export function LiveView(props) {
                                                                         }} className="dropdown-menu-button">Close</button>
                                                                     </div>
                                                                     {
+
                                                                         liveData?.domains[domain]?.consent?.map((consent, index) => {
                                                                             // Convert the consent string to an array of objects.
                                                                             const consentData = (consent && typeof consent === "string") ? JSON.parse(consent) : null;
                                                                             if (consentData) {
 
                                                                                 return consentData.map((consentItem, index) => {
-                                                                                    return <div key={index} className="liveView-content-data-1-domain-consent">
+                                                                                    return <div key={index + new Date().getTime()} className="liveView-content-data-1-domain-consent">
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.type}</p>
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
                                                                                     </div>
                                                                                 })
                                                                             } else {
                                                                                 consent.map((consentItem, index) => {
-                                                                                    return <div key={index} className="liveView-content-data-1-domain-consent">
+                                                                                    return <div key={index + new Date().getTime()} className="liveView-content-data-1-domain-consent">
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.type}</p>
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
                                                                                     </div>
@@ -177,7 +182,7 @@ export function LiveView(props) {
                                                                 </div>
                                                                 : null
                                                         }
-                                                        <div key={index} style={{
+                                                        <div key={index + new Date().getTime()} style={{
                                                             width: `100%`,
                                                             height: "2px",
                                                             backgroundColor: "#c4c4c4",

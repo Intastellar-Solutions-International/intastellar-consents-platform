@@ -2,7 +2,7 @@ import "./Widget.css";
 import Line from "../Charts/Line";
 export default function Widget(props) {
     const overViewTotal = (props?.overviewTotal) ? " overviewTotal" : " overviewDistribution";
-    console.log("overviewTotal", props?.totalNumber);
+
     return (
         <>
             <div className={"widget" + overViewTotal}>
