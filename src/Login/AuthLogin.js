@@ -45,6 +45,9 @@ export default function AuthLogin() {
         } else {
             window.location.href = "/" + localStorage.getItem("platform") + "/dashboard";
         }
+    }).catch((error) => {
+        console.error("Error during login:", error);
+        // Optionally redirect to login page or show an error message
     })
 
     //{"token":"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDQyNzA1MDUsIm5iZiI6MTc0NDI2NjkwNSwiaXNzIjoiSW50YXN0ZWxsYXIgU29sdXRpb25zLCBJbnRlcm5hdGlvbmFsIiwiUEFZTE9BRCI6ImZlbGl4LnNjaHVsdHpAaW50YXN0ZWxsYXIuY29tIn0.OTF0SGMwTERtQ0x3MDM2YWlOYmNNX29aRDVIc2dNcERwRG1xeUlZMVVBNkhWTWhtZlJxeFh6UG5CMUJrNXRBaGlpWmVac0cyNEN6eGFjaEVOQ0oxaXc","status":"super-admin","access":{"type":{"":{"type":null,"uri":null}},"user_access":[null]},"organisation":"{\"id\":\"1\",\"name\":\"Intastellar Solutions, International\"}","profile":{"name":{"first_name":"Felix A.","last_name":"Schultz"},"email":"felix.schultz@intastellar.com","image":"https://scontent-uc-d2c-7.intastellaraccounts.com/a/s/ul/p/avtr46-img/felix.schultz@intastellar.com/profile/shg64x73usd8gai3a0p1b3tz59jgcjvzjgxvl6w5zo7cpp0l49qw51d5pjb4cgx7e8n8xlkntns3enoxxbmjb3510qcydnnrhwmxhtebnplhntdqu0r4j5yiyiacms82t83rlgh5wjjdean1wcv53dq2d0evvhfzkc3856qoyv5pbg1l3j3tejfnntxpq5kyk3pruanl.jpg"}}

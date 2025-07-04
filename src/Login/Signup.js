@@ -1,5 +1,5 @@
 import "./Login.css";
-import logo from "../Components/Header/logo.png";
+import logo from "../Components/Header/logo.svg";
 import API from "../API/api";
 import Authentication from "../Authentication/Auth";
 import { LPFooter } from "../Components/Footer";
@@ -52,7 +52,7 @@ export default function Login() {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    height: "100vh"
+                    height: "70vh"
                 }}>
                     <h2 className="loginForm-title">Create new account</h2>
                     <button onClick={signUp} class="loginForm-signup" >
