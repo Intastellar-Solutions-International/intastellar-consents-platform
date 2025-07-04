@@ -66,7 +66,12 @@ export default function App() {
     const [id, setId] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
     const navigate = window.ReactRouterDOM.useHistory();
 
-
+    useEffect(() => {
+        if (localStorage.getItem("globals") === null && window.location.pathname !== "/login" && window.location.pathname !== "/") {
+            // Redirect to login if globals are not set
+            window.location.href = "/login";
+        }
+    }, [localStorage.getItem("globals")]);
 
     if (localStorage.getItem("globals") != null) {
         if (window.location.pathname === "/login" || window.location.pathname === "/") {
@@ -116,12 +121,6 @@ export default function App() {
 
         }, []);
 
-        if (organisations === null) {
-            return (
-                <NewOrganisation />
-            )
-        }
-
         if (id === null && organisations) {
             return (
                 <>
@@ -131,7 +130,11 @@ export default function App() {
             )
         }
 
-        if (JSON.parse(localStorage.getItem("subscription"))?.status != "active" && JSON.parse(localStorage.getItem("subscription"))?.loading && Authentication.getOrganisation() != 1) {
+        if (organisations === null) {
+            return (
+                <NewOrganisation />
+            )
+        } else if (JSON.parse(localStorage.getItem("subscription"))?.status != "active" && JSON.parse(localStorage.getItem("subscription"))?.loading && Authentication.getOrganisation() != 1) {
             return (
                 <AllOrg.Provider value={[organisations, setOrganisations]}>
                     <StripePayment userId={Authentication.getUserId} />
