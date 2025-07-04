@@ -128,9 +128,7 @@ export default function App() {
                     {/* <BugReport /> */}
                 </>
             )
-        }
-
-        if (organisations === null) {
+        } else if (organisations === null) {
             return (
                 <NewOrganisation />
             )
