@@ -128,7 +128,7 @@ export default function App() {
                     {/* <BugReport /> */}
                 </>
             )
-        } else if (organisations === null) {
+        } else if (subscriptionStatus.status != "loading" && organisations === null) {
             return (
                 <NewOrganisation />
             )
