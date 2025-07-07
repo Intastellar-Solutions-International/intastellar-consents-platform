@@ -328,19 +328,6 @@
     cursor: pointer;
 }
 
-.expandBtn::after {
-    content: "";
-    width: 20px;
-    height: 20px;
-    display: block;
-    float: right;
-    margin-left: auto;
-    background: url("icons/expand.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-}
-
 .navItems--bottom {
     margin-top: auto;
 }

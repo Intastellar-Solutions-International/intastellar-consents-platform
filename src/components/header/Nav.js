@@ -8,6 +8,7 @@ import home from "./icons/home.svg";
 import reports from "./icons/reports.svg";
 /* import compare from "./icons/compare.svg"; */
 import domains from "./icons/domain.svg";
+import expand from "./icons/expand.svg";
 import cookies from "./icons/cookies.svg";
 import settings from "./icons/settings.svg";
 import logout from "./icons/logout.svg";
@@ -25,7 +26,12 @@ export default function Nav() {
             <div className="navOverlay">
                 <aside className="sidebar">
                     <nav className="collapsed">
-                        <button className="expandBtn" onClick={() => Expand()}></button>
+                        <button className="expandBtn navItems" onClick={() => Expand()}>
+                            <i className="dashboard-icons reports" style={{
+                                backgroundImage: `url(${expand})`
+                            }} data-icon={expand}></i>
+                            <span className="hiddenCollapsed">Expand</span>
+                        </button>
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/dashboard") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/dashboard"}><i className="dashboard-icons home" style={{
                             backgroundImage: `url(${home})`
                         }} data-icon={home}></i> <span className="hiddenCollapsed">Home</span></Link>
