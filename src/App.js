@@ -163,6 +163,11 @@ export default function App() {
                                                 }
                                             </div>
                                         </Route>
+                                        <Route path='/:id/view/:handle'>
+                                            <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <DomainDashbord setHandle={setHandle} />}
+                                            </ErrorBoundary>
+                                        </Route>
                                         <Route path="/signup" exact>
                                             <ErrorBoundary>
                                                 <Signup />
@@ -207,11 +212,6 @@ export default function App() {
                                         <Route path="/settings/preferences">
                                             <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <UserPreferences />}
-                                            </ErrorBoundary>
-                                        </Route>
-                                        <Route path='/:id/view/:handle'>
-                                            <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <DomainDashbord setHandle={setHandle} />}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/:id/cookies" exact>
