@@ -2,14 +2,17 @@ import "./Login.css";
 import logo from "../Components/Header/logo.svg";
 import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
+import { IntastellarButton } from "@intastellar/signin-sdk-react";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
-const useEffect = window.React.useEffect;
 
 export default function Login() {
     document.title = "Intastellar Consents | CMP | Data consent management platform";
-
-    useEffect(() => {
+    const handleLogin = (account) => {
+        console.log("User logged in:", account);
+        // Handle successful authentication
+    };
+    /* useEffect(() => {
         document.body.classList.add("loginForm-body");
         Intastellar.accounts.id.renderButton("login", {
             "picker": "button",
@@ -52,7 +55,7 @@ export default function Login() {
             }
         }
 
-    }, []);
+    }, []); */
 
     return (
         <>
@@ -82,25 +85,32 @@ export default function Login() {
                     height: "70vh"
                 }}>
                     <h2 className="loginForm-title">Log into Intastellar Consents | CMP</h2>
-                    <div
+                    <IntastellarButton
+                        appName="My App"
+                        clientId="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
+                        loginCallback={handleLogin}
+                        scopes="profile"
+                        theme={{ theme: "light", picker: "button" }}
+                    />
+                    {/* <div
                         id="login"
                         data-client_id="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
                         data-app-name="Intastellar Consents | CMP"
                         data-login_callback="authLogin"
-                    ></div>
+                    ></div> */}
                     <Link to="/signup" className="loginForm-signup-2">
                         Create an account
                     </Link>
                     <img className="intastellar-accounts-logo" src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg" />
                 </div>
             </div>
-            <section class="ppad key-numbers-section">
-                <a href="https://www.cykelfaergen.info" target="_blank" rel="noopener"><img loading="lazy" class="used_by" src="https://www.cykelfaergen.info/assets/logo/logo.svg" alt="Cykelfærgen Flensborg fjord" /></a>
-                <a href="https://teamjacobsen.dk" target="_blank" rel="noopener"><img loading="lazy" class="used_by" src="https://teamjacobsen.dk/img-own/TB_logo_white_91x50.jpg" alt="Team Jacobsen" /></a>
-                <a href="https://laesoe-booking.dk" target="_blank" rel="noopener"><img loading="lazy" class="used_by" src="https://laesoe-booking.dk/media/2377/logo-combi.png" alt="Læsø Pakkerejser" /></a>
-                <a href="https://www.parkinpeace.eu" target="_blank" rel="noopener"><img loading="lazy" class="used_by" src="https://www.parkinpeace.eu/assets/logo/Park-in-Peace-farve.svg" alt="ParkinPeace" /></a>
-                <a href="https://asasoftware.aero" target="_blank" rel="noopener"><img class="used_by" src="https://asasoftware.aero/wp-content/uploads/2020/04/ASA.svg" alt="ASA Software ApS" /></a>
-                <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img class="used_by" src="https://www.laesoe-efterskole.dk/wp-content/uploads/2023/09/cropped-cropped-cropped-cropped-cropped-LaesoeEfterskole_Logo_Farve-1.png" alt="Læssø Efterskole" /></a>
+            <section className="ppad key-numbers-section">
+                <a href="https://www.cykelfaergen.info" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://www.cykelfaergen.info/assets/logo/logo.svg" alt="Cykelfærgen Flensborg fjord" /></a>
+                <a href="https://teamjacobsen.dk" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://teamjacobsen.dk/img-own/TB_logo_white_91x50.jpg" alt="Team Jacobsen" /></a>
+                <a href="https://laesoe-booking.dk" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://laesoe-booking.dk/media/2377/logo-combi.png" alt="Læsø Pakkerejser" /></a>
+                <a href="https://www.parkinpeace.eu" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://www.parkinpeace.eu/assets/logo/Park-in-Peace-farve.svg" alt="ParkinPeace" /></a>
+                <a href="https://asasoftware.aero" target="_blank" rel="noopener"><img className="used_by" src="https://asasoftware.aero/wp-content/uploads/2020/04/ASA.svg" alt="ASA Software ApS" /></a>
+                <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img className="used_by" src="https://www.laesoe-efterskole.dk/wp-content/uploads/2023/09/cropped-cropped-cropped-cropped-cropped-LaesoeEfterskole_Logo_Farve-1.png" alt="Læssø Efterskole" /></a>
             </section>
             <section className="grid-container grid-cols-2">
                 <section className="main-content-section">
