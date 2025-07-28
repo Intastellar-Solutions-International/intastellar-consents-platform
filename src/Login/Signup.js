@@ -9,19 +9,6 @@ const useEffect = window.React.useEffect;
 
 export default function Login() {
     document.title = "Intastellar Consents | CMP powered by Intastellar Solutions";
-    const [email, setEmail] = React.useState();
-    const [password, setPassword] = React.useState();
-    const [isLoading, setLoading] = React.useState(false);
-    const [errorMessage, setErrorMessage] = React.useState(null);
-    const type = "";
-
-    useEffect(() => {
-        Intastellar.accounts.id.renderButton("login", {
-            "picker": "button",
-            "theme": "light",
-        });
-
-    }, []);
 
     const signUp = () => {
         window.location.href = "https://www.intastellaraccounts.com/SignUp/?service=Intastellar%20Consents%20Solutions&continue=www.intastellarconsents.com/auth-login&entryFlow=cHJvZmlsZQ==&key=d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d&access_id=intastellarconsents.com&passive=true&flowName=GeneralOAuthFlow&Entry=webauthsignin&scope=profile";
