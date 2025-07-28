@@ -35,10 +35,8 @@ export default function Login() {
 
                 localStorage.setItem("platform", "gdpr");
 
-                localStorage.setItem("organisation", response.organisations);
+                localStorage.setItem("organisation", JSON.stringify(response));
                 localStorage.setItem("globals", JSON.stringify(account));
-
-                return;
 
                 if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
                     window.location.href = "/dashboard";
