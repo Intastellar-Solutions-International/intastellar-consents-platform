@@ -15,9 +15,9 @@ export default function Header(props) {
 
     const [Organisation, setOrganisation] = useContext(OrganisationContext);
     const [currentDomain, setCurrentDomain] = useState((window.location.pathname.split("/")[2] === "view") ? decodeURI(window.location.pathname.split("/")[3]?.replace("%2E", ".")) : "Choose one of your domains");
-    const profileImage = JSON.parse(localStorage.getItem("globals"))?.profile?.image;
+    const profileImage = JSON.parse(localStorage.getItem("globals"))?.user?.avatar;
     let domainList = null;
-    const Name = JSON.parse(localStorage.getItem("globals"))?.profile?.name?.first_name + " " + JSON.parse(localStorage.getItem("globals"))?.profile?.name?.last_name;
+    const Name = JSON.parse(localStorage.getItem("globals"))?.user?.name?.first_name + " " + JSON.parse(localStorage.getItem("globals"))?.user?.name?.last_name;
     const navigate = useHistory();
     const [allOrganisations, setallOrganisations] = useState(null);
     const [domains, setDomains] = useState(props.domains);
@@ -123,7 +123,7 @@ export default function Header(props) {
                 </div>
                 {(viewUserProfile) ? <IntastellarAccounts profile={{
                     image: profileImage,
-                    name: JSON.parse(localStorage.getItem("globals"))?.user?.name?.first_name,
+                    name: JSON.parse(localStorage.getItem("globals"))?.user?.name?.firstName,
                     email: JSON.parse(localStorage.getItem("globals"))?.user?.email,
                 }} setIsOpen={setViewUserProfile} /> : null}
             </header>
