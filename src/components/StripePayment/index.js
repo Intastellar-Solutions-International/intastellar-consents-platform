@@ -1,4 +1,4 @@
-import IntastellarLogo from "../Header/logo.png";
+import logo from "../Header/logo.svg"
 const { useState, useEffect, useRef, useContext } = React;
 import Authentication from "../../Authentication/Auth";
 import "./Style/Stripe.css";
@@ -23,8 +23,7 @@ export default function StripePayment(props) {
     return (
         <>
             <header className="payment-header">
-                <img src={IntastellarLogo} alt="Intastellar Consents" className="logo" />
-                Intastellar Consents
+                <img src={logo} alt="Intastellar Consents" className="logo" />
             </header>
             <div className="content">
                 <h2>{companyName}</h2>
