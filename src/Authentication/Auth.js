@@ -71,6 +71,7 @@ const Authentication = {
         return email;
     },
     getOrganisation: function () {
+        console.log(JSON.parse(localStorage.getItem("organisation")));
         const organisation = (localStorage.getItem("organisation") != null || localStorage.getItem("organisation") != undefined) ? JSON.parse(localStorage.getItem("organisation"))?.id : undefined;
         return organisation;
     },

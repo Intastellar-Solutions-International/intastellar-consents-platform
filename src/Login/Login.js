@@ -35,7 +35,7 @@ export default function Login() {
 
                 localStorage.setItem("platform", "gdpr");
 
-                localStorage.setItem("organisation", JSON.stringify(response));
+                localStorage.setItem("organisation", response[0]);
                 localStorage.setItem("globals", JSON.stringify(account));
 
                 if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {

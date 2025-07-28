@@ -24,7 +24,7 @@ export default function Dashboard(props) {
     const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
 
     const subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
-    const userProfile = JSON.parse(localStorage.getItem("globals")).profile.image;
+    const userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
 
     const { handle, id } = useParams();
     const [activeData, setActiveData] = useState(null);
