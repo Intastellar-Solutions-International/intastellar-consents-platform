@@ -16,6 +16,9 @@ const client = {
   },
   externals: {
     "i18n-iso-countries": "i18n-iso-countries",
+    'react': 'React',
+    'react-dom': 'ReactDOM',
+    'react-router-dom': 'ReactRouterDOM'
   },
   devServer: {
     historyApiFallback: true,

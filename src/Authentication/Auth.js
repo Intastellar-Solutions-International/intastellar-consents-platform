@@ -63,15 +63,15 @@ const Authentication = {
         const urlParams = new URLSearchParams(window.location.search);
         const tokenFromUrl = urlParams.get('token');
 
-        const token = (JSON.parse(localStorage.getItem("globals"))?.token) ? "Bearer " + JSON.parse(localStorage.getItem("globals"))?.token : tokenFromUrl ? tokenFromUrl : null;
+        const token = (localStorage.getItem("globals")?.token) ? "Bearer " + localStorage.getItem("globals")?.token : tokenFromUrl ? tokenFromUrl : null;
         return token;
     },
     getUserId: function () {
-        const email = (JSON.parse(localStorage.getItem("globals"))?.profile?.email) ? JSON.parse(localStorage.getItem("globals"))?.profile?.email : undefined;
+        const email = (localStorage.getItem("globals")?.user?.email) ? localStorage.getItem("globals")?.user?.email : undefined;
         return email;
     },
     getOrganisation: function () {
-        const organisation = (localStorage.getItem("organisation") != null || localStorage.getItem("organisation") != undefined) ? JSON.parse(localStorage.getItem("organisation"))?.id : undefined;
+        const organisation = (localStorage.getItem("organisation") != null || localStorage.getItem("organisation") != undefined) ? localStorage.getItem("organisation")?.id : undefined;
         return organisation;
     },
     SignUp: function (url, email, password, firstname, lastname, type, companyName, setErrorMessage, setLoading) {

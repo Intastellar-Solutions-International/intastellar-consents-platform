@@ -123,8 +123,8 @@ export default function Header(props) {
                 </div>
                 {(viewUserProfile) ? <IntastellarAccounts profile={{
                     image: profileImage,
-                    name: JSON.parse(localStorage.getItem("globals"))?.profile?.name?.first_name,
-                    email: JSON.parse(localStorage.getItem("globals"))?.profile?.email,
+                    name: JSON.parse(localStorage.getItem("globals"))?.user?.name?.first_name,
+                    email: JSON.parse(localStorage.getItem("globals"))?.user?.email,
                 }} setIsOpen={setViewUserProfile} /> : null}
             </header>
         </>

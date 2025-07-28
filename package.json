@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Intastellar-Solutions-International/analytics_dashboard#readme",
   "dependencies": {
-    "@intastellar/signin-sdk-react": "^1.0.1",
+    "@intastellar/signin-sdk-react": "^1.0.21",
     "chart.js": "^4.4.0",
     "cors": "^2.8.5",
     "i18n-iso-countries": "^7.7.0",
@@ -31,6 +31,10 @@
     "nodemon": "^2.0.20",
     "react-chartjs-2": "^5.2.0",
     "webpack-node-externals": "^3.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",
@@ -44,6 +48,8 @@
     "mini-css-extract-plugin": "^2.7.6",
     "node-loader": "^2.0.0",
     "punycode": "^2.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "style-loader": "^4.0.0",
     "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",

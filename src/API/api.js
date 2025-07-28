@@ -6,6 +6,9 @@ const API = {
     Login: {
         url: `${LoginHost}/signin/v2/signin`,
     },
+    OrganisationData: {
+        url: `https://apis.intastellarsolutions.com/getOrganisation.php`,
+    },
     SignUp: {
         url: `${LoginHost}/consents/signup/v1/signup`,
     },

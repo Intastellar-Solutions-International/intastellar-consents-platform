@@ -11,6 +11,46 @@ export default function Login() {
     const handleLogin = (account) => {
         console.log("User logged in:", account);
         // Handle successful authentication
+
+        if (account) {
+            console.log(account?.account_domain);
+            fetch(API.OrganisationData.url, {
+                withCredentials: false,
+                method: "POST",
+                headers: {
+                    'LoginType': 'oauth',
+                    'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify({
+                    organisationMember: account?.user?.email,
+                })
+            }).then((response) => {
+                return response.json();
+            }).then(response => {
+
+                if (response === "Err_Logon_Fail") {
+                    console.error("Error logging in");
+                    return;
+                }
+
+                localStorage.setItem("platform", "gdpr");
+
+                localStorage.setItem("organisation", response.organisations);
+                localStorage.setItem("globals", JSON.stringify(account));
+
+                return;
+
+                if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
+                    window.location.href = "/dashboard";
+                } else {
+                    window.location.href = "/" + localStorage.getItem("platform") + "/dashboard";
+                }
+            }).catch((error) => {
+                console.error("Error during login:", error);
+                // Optionally redirect to login page or show an error message
+            })
+        }
+
     };
     /* useEffect(() => {
         document.body.classList.add("loginForm-body");
