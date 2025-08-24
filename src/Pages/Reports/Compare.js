@@ -26,7 +26,7 @@ export default function Compare(props) {
     const [comparisonData, setComparisonData] = useState(null);
 
     function handleDomainSelection(event, domain) {
-        if (event.target.checked) {
+        if (event.target) {
             setDomains((prevDomains) => [...prevDomains, domain]);
         } else {
             setDomains((prevDomains) => prevDomains.filter((d) => d !== domain));
@@ -69,18 +69,66 @@ export default function Compare(props) {
                 <div className="compare-container">
                     <p className="compare-text">Select Domains to Compare:</p>
                     <div className="compare-domain-list">
-                        {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
-                            <div key={index} className="compare-domain-item">
-                                <input
-                                    type="checkbox"
-                                    id={`domain-${index}`}
-                                    name={`domain-${index}`}
-                                    value={domain}
-                                    onChange={(e) => handleDomainSelection(e, domain.domain)}
-                                />
-                                <label htmlFor={`domain-${index}`}>{domain.domain}</label>
-                            </div>
-                        ))}
+                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                            <option value="" disabled selected>Select domain</option>
+                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                                <option key={index} value={domain.domain}
+                                    disabled={
+                                        domains.includes(domain.domain)
+                                    }
+                                >
+                                    {domain.domain}
+                                </option>
+                            ))}
+                        </select>
+                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                            <option value="" disabled selected>Select domain</option>
+                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                                <option key={index} value={domain.domain}
+                                    disabled={
+                                        domains.includes(domain.domain)
+                                    }
+                                >
+                                    {domain.domain}
+                                </option>
+                            ))}
+                        </select>
+                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                            <option value="" disabled selected>Select domain</option>
+                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                                <option key={index} value={domain.domain}
+                                    disabled={
+                                        domains.includes(domain.domain)
+                                    }
+                                >
+                                    {domain.domain}
+                                </option>
+                            ))}
+                        </select>
+                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                            <option value="" disabled selected>Select domain</option>
+                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                                <option key={index} value={domain.domain}
+                                    disabled={
+                                        domains.includes(domain.domain)
+                                    }
+                                >
+                                    {domain.domain}
+                                </option>
+                            ))}
+                        </select>
+                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                            <option value="" disabled selected>Select domain</option>
+                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                                <option key={index} value={domain.domain}
+                                    disabled={
+                                        domains.includes(domain.domain)
+                                    }
+                                >
+                                    {domain.domain}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <button className="btn" onClick={handleDomainCompare}>Compare</button>
                 </div>
