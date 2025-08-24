@@ -60,8 +60,8 @@ export default function Compare(props) {
 
     return (
         <>
-            <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
+                <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Domain Comparison" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <h1>Compare Domains</h1>
                 <p>Compare the data of different domains to see how they perform against each other.</p>
                 <p>To compare domains, select the domains you want to compare from the list below and click on the "Compare" button.</p>
