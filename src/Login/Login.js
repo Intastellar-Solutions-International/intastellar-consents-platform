@@ -150,6 +150,8 @@ export default function Login() {
                 <a href="https://www.parkinpeace.eu" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://www.parkinpeace.eu/assets/logo/Park-in-Peace-farve.svg" alt="ParkinPeace" /></a>
                 <a href="https://asasoftware.aero" target="_blank" rel="noopener"><img className="used_by" src="https://asasoftware.aero/wp-content/uploads/2020/04/ASA.svg" alt="ASA Software ApS" /></a>
                 <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img className="used_by" src="https://www.laesoe-efterskole.dk/wp-content/uploads/2023/09/cropped-cropped-cropped-cropped-cropped-LaesoeEfterskole_Logo_Farve-1.png" alt="Læssø Efterskole" /></a>
+                <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img className="used_by" src="https://klinik-fysioterapi.dk/wp-content/uploads/2022/05/cropped-Logo-1-a-768x532.png" alt="Læssø Efterskole" /></a>
+                <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img className="used_by" src="https://www.intastellarsolutions.com/assets/testimonials/nwc-es.png" alt="Læssø Efterskole" /></a>
             </section>
             <section className="grid-container grid-cols-2">
                 <section className="main-content-section">
