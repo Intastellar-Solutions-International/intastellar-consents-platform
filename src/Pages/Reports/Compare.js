@@ -142,7 +142,7 @@ export default function Compare(props) {
                                     <div key={index} className="compare-card">
                                         <div className="compare-card-header">
                                             <h3>{domain.name}</h3>
-                                            <span className="total-interactions">{Intl.NumberFormat().format(domain.Total)} total interactions</span>
+                                            <span className="total-interactions">{Intl.NumberFormat("de-DE").format(domain.Total)} total interactions</span>
                                         </div>
                                         <div className="compare-card-stats">
                                             <div className="stat-item">
@@ -262,23 +262,23 @@ export default function Compare(props) {
                                             <div className="interaction-numbers">
                                                 <div className="number-item">
                                                     <span className="number-label">Accepted</span>
-                                                    <span className="number-value">{domain.interactions_number.accept}</span>
+                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.accept)}</span>
                                                 </div>
                                                 <div className="number-item">
                                                     <span className="number-label">Declined</span>
-                                                    <span className="number-value">{domain.interactions_number.decline}</span>
+                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.decline)}</span>
                                                 </div>
                                                 <div className="number-item">
                                                     <span className="number-label">Marketing</span>
-                                                    <span className="number-value">{domain.interactions_number.marketing}</span>
+                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.marketing)}</span>
                                                 </div>
                                                 <div className="number-item">
                                                     <span className="number-label">Functional</span>
-                                                    <span className="number-value">{domain.interactions_number.functional}</span>
+                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.functional)}</span>
                                                 </div>
                                                 <div className="number-item">
                                                     <span className="number-label">Statistics</span>
-                                                    <span className="number-value">{domain.interactions_number.statics}</span>
+                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.statics)}</span>
                                                 </div>
                                             </div>
                                         </div>
