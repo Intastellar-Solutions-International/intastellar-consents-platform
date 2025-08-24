@@ -136,10 +136,10 @@ export default function Compare(props) {
                                 </option>
                             ))}
                         </select>
+                        <button className="btn" disabled={loading || domains.length < 2} onClick={handleDomainCompare}>
+                            {loading ? "Comparing..." : "Compare"}
+                        </button>
                     </div>
-                    <button className="btn" disabled={loading || domains.length < 2} onClick={handleDomainCompare}>
-                        {loading ? "Comparing..." : "Compare"}
-                    </button>
                 </div>
                 <div className="compare-results">
                     <h2>Comparison Results:</h2>

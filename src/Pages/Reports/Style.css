@@ -2,7 +2,7 @@
     background-color: rgb(192, 159, 83);
     border: none;
     color: white;
-    padding: 10px 20px;
+    padding: 17px 20px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -23,7 +23,7 @@
 }
 
 .compare-domain-list select{
-    padding: 15px;
+    padding: 13px;
     appearance: none;
     border: 1px solid #ccc;
     border-radius: 4px;
