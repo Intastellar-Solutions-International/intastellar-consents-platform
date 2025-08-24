@@ -88,7 +88,14 @@ export default function Compare(props) {
                                 </option>
                             ))}
                         </select>
-                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                        <select onChange={(e) => {
+                            if (domains.includes(e.target.value)) {
+                                // Remove it from the selection
+                                setDomains((prevDomains) => prevDomains.filter((d) => d !== e.target.value));
+                            } else {
+                                handleDomainSelection(e, e.target.value)
+                            }
+                        }}>
                             <option value="" disabled selected>Select domain</option>
                             {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
