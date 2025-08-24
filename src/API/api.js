@@ -84,7 +84,7 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
-        Compare: {
+        compareDomains: {
             url: `${PrimaryHost}/analytics/gdpr/compare`,
             method: "POST",
             headers: {

@@ -23,42 +23,40 @@ export default function Compare(props) {
     const [loadingCountry, setLoadingCountry] = useState(false);
     const [domains, setDomains] = useState([]);
 
-    let url = API[id].getInteractions.url;
-    let method = API[id].getInteractions.method;
-    let header = API[id].getInteractions.headers;
-    useEffect(() => {
-        Fetch(API[window.location.pathname.split("/")[1]]?.getDomains?.url, API[window.location.pathname.split("/")[1]]?.getDomains?.method, API[window.location.pathname.split("/")[1]]?.getDomains?.headers).then((data) => {
+    const [comparisonData, setComparisonData] = useState(null);
+
+    function handleDomainSelection(event, domain) {
+        if (event.target.checked) {
+            setDomains((prevDomains) => [...prevDomains, domain]);
+        } else {
+            setDomains((prevDomains) => prevDomains.filter((d) => d !== domain));
+        }
+    }
+
+    function handleDomainCompare() {
+        // Handle domain comparison logic here
+        console.log("Comparing domains:", domains);
+
+        API[id].compareDomains.headers.FromDate = fromDate.toISOString().split("T")[0];
+        API[id].compareDomains.headers.ToDate = toDate.toISOString().split("T")[0];
+
+        // You can fetch comparison data from the API and update the state accordingly
+        Fetch(API[id].compareDomains.url, API[id].compareDomains.method, API[id].compareDomains.headers, JSON.stringify({
+            domains: domains
+        })).then((data) => {
             if (data === "Err_Login_Expired") {
                 localStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
-
-            if (data.error === "Err_No_Domains") {
-
-            } else {
-                data.unshift({ domain: "all", installed: null, lastedVisited: null });
-                data?.map((d) => {
-                    return punycode.toUnicode(d.domain);
-                }).filter((d) => {
-                    return d !== undefined && d !== "" && d !== "undefined.";
-                });
-                setDomains(data);
-
-                const allowedDomains = data?.map((d) => {
-                    return punycode.toUnicode(d.domain);
-                }).filter((d) => {
-                    return d !== undefined && d !== "" && d !== "undefined." && d !== "all";
-                });
-
-            }
+            setActiveData(data);
+            setComparisonData(data);
         });
-    }, []);
+    }
 
-    let domainList = null;
-    domainList = domains?.map((d) => {
-        return punycode.toUnicode(d.domain)
-    })
+    let url = API[id].getInteractions.url;
+    let method = API[id].getInteractions.method;
+    let header = API[id].getInteractions.headers;
 
     return (
         <>
@@ -71,26 +69,175 @@ export default function Compare(props) {
                 <div className="compare-container">
                     <p className="compare-text">Select Domains to Compare:</p>
                     <div className="compare-domain-list">
-                        {props?.domains?.map((domain, index) => (
+                        {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
                             <div key={index} className="compare-domain-item">
                                 <input
                                     type="checkbox"
                                     id={`domain-${index}`}
                                     name={`domain-${index}`}
                                     value={domain}
-                                    onChange={(e) => props?.handleDomainSelection(e, domain)}
+                                    onChange={(e) => handleDomainSelection(e, domain.domain)}
                                 />
-                                <label htmlFor={`domain-${index}`}>{domain}</label>
+                                <label htmlFor={`domain-${index}`}>{domain.domain}</label>
                             </div>
                         ))}
                     </div>
-                    <button className="btn" onClick={props?.handleCompare}>Compare</button>
+                    <button className="btn" onClick={handleDomainCompare}>Compare</button>
                 </div>
                 <div className="compare-results">
-                    {props?.comparisonData?.length > 0 ? (
-                        <table className="compare-table">
+                    <h2>Comparison Results:</h2>
+                    {comparisonData?.length > 0 ? (
+                        <div className="compare-analysis grid-container">
+                            {/* Summary Cards */}
+                            <div className={`compare-summary-cards grid-container grid-cols-${Math.min(comparisonData.length, 5)}`}>
+                                {comparisonData.map((domain, index) => (
+                                    <div key={index} className="compare-card">
+                                        <div className="compare-card-header">
+                                            <h3>{domain.name}</h3>
+                                            <span className="total-interactions">{Intl.NumberFormat().format(domain.Total)} total interactions</span>
+                                        </div>
+                                        <div className="compare-card-stats">
+                                            <div className="stat-item">
+                                                <span className="stat-label">Accepted: </span>
+                                                <span className={`stat-value ${domain.Accepted > 50 ? 'high' : 'low'}`}>
+                                                    {domain.Accepted}%
+                                                </span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">Declined: </span>
+                                                <span className={`stat-value ${domain.Declined > 50 ? 'high' : 'low'}`}>
+                                                    {domain.Declined}%
+                                                </span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">Functional: </span>
+                                                <span className={`stat-value ${domain.Functional > 50 ? 'high' : 'low'}`}>
+                                                    {domain.Functional}%
+                                                </span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">Marketing: </span>
+                                                <span className={`stat-value ${domain.Marketing > 50 ? 'high' : 'low'}`}>
+                                                    {domain.Marketing}%
+                                                </span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">Statistics: </span>
+                                                <span className={`stat-value ${domain.Statistics > 50 ? 'high' : 'low'}`}>
+                                                    {domain.Statics}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
 
-                        </table>
+                            {/* Detailed Comparison Table */}
+                            <div className="compare-table-container">
+                                <h3>Detailed Comparison</h3>
+                                <table className="compare-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Domain</th>
+                                            <th>Total</th>
+                                            <th>Accepted (%)</th>
+                                            <th>Declined (%)</th>
+                                            <th>Marketing (%)</th>
+                                            <th>Functional (%)</th>
+                                            <th>Statistics (%)</th>
+                                            <th>Primary Device</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {comparisonData.map((domain, index) => {
+                                            const primaryDevice = Object.keys(domain.device_type.deviceTypeNum)
+                                                .reduce((a, b) => domain.device_type.deviceTypeNum[a] > domain.device_type.deviceTypeNum[b] ? a : b);
+
+                                            return (
+                                                <tr key={index}>
+                                                    <td className="domain-name">{domain.name}</td>
+                                                    <td>{domain.Total}</td>
+                                                    <td className={domain.Accepted > 50 ? 'positive' : 'negative'}>
+                                                        {domain.Accepted}%
+                                                    </td>
+                                                    <td className={domain.Declined > 50 ? 'negative' : 'positive'}>
+                                                        {domain.Declined}%
+                                                    </td>
+                                                    <td>{domain.Marketing}%</td>
+                                                    <td>{domain.Functional}%</td>
+                                                    <td>{domain.Statics}%</td>
+                                                    <td>
+                                                        {primaryDevice} ({domain.device_type.deviceTypeNum[primaryDevice]}%)
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Device Type Breakdown */}
+                            <div className="device-comparison">
+                                <h3>Device Type Distribution</h3>
+                                <div className="device-charts">
+                                    {comparisonData.map((domain, index) => (
+                                        <div key={index} className="device-chart">
+                                            <h4>{domain.name}</h4>
+                                            <div className="device-stats">
+                                                <div className="device-bar">
+                                                    <div className="device-segment mobile"
+                                                        style={{ width: `${domain.device_type.deviceTypeNum.mobile}%` }}>
+                                                        <span>Mobile: {domain.device_type.deviceTypeNum.mobile}%</span>
+                                                    </div>
+                                                    <div className="device-segment tablet"
+                                                        style={{ width: `${domain.device_type.deviceTypeNum.tablet}%` }}>
+                                                        <span>Tablet: {domain.device_type.deviceTypeNum.tablet}%</span>
+                                                    </div>
+                                                    <div className="device-segment desktop"
+                                                        style={{ width: `${domain.device_type.deviceTypeNum.desktop}%` }}>
+                                                        <span>Desktop: {domain.device_type.deviceTypeNum.desktop}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Interaction Numbers */}
+                            <div className="interaction-comparison">
+                                <h3>Raw Interaction Numbers</h3>
+                                <div className="interaction-grid">
+                                    {comparisonData.map((domain, index) => (
+                                        <div key={index} className="interaction-card">
+                                            <h4>{domain.name}</h4>
+                                            <div className="interaction-numbers">
+                                                <div className="number-item">
+                                                    <span className="number-label">Accepted</span>
+                                                    <span className="number-value">{domain.interactions_number.accept}</span>
+                                                </div>
+                                                <div className="number-item">
+                                                    <span className="number-label">Declined</span>
+                                                    <span className="number-value">{domain.interactions_number.decline}</span>
+                                                </div>
+                                                <div className="number-item">
+                                                    <span className="number-label">Marketing</span>
+                                                    <span className="number-value">{domain.interactions_number.marketing}</span>
+                                                </div>
+                                                <div className="number-item">
+                                                    <span className="number-label">Functional</span>
+                                                    <span className="number-value">{domain.interactions_number.functional}</span>
+                                                </div>
+                                                <div className="number-item">
+                                                    <span className="number-label">Statistics</span>
+                                                    <span className="number-value">{domain.interactions_number.statics}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     ) : (
                         <p>No comparison data available. Please select domains to compare.</p>
                     )}
