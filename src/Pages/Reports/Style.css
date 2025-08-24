@@ -31,3 +31,13 @@
     font-size: 16px;
     cursor: pointer;
 }
+
+@media screen and (max-width: 768px) {
+    .compare-domain-list {
+        flex-direction: column;
+    }
+
+    .compare-domain-list select {
+        width: 100%;
+    }
+}
