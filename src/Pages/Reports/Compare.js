@@ -4,7 +4,7 @@ import API from '../../API/api';
 import { DomainContext } from '../../App.js';
 const useParams = window.ReactRouterDOM.useParams;
 import Fetch from '../../Functions/fetch';
-import punycode from 'punycode';
+import "./Style.css";
 
 export default function Compare(props) {
     document.title = "Compare Domains | Intastellar Consents | CMP";
@@ -37,6 +37,8 @@ export default function Compare(props) {
         // Handle domain comparison logic here
         console.log("Comparing domains:", domains);
 
+        setLoading(true);
+
         API[id].compareDomains.headers.FromDate = fromDate.toISOString().split("T")[0];
         API[id].compareDomains.headers.ToDate = toDate.toISOString().split("T")[0];
 
@@ -51,6 +53,12 @@ export default function Compare(props) {
             }
             setActiveData(data);
             setComparisonData(data);
+        }).catch(() => {
+            setActiveData(null);
+            setComparisonData(null);
+            setLoading(false);
+        }).finally(() => {
+            setLoading(false);
         });
     }
 
@@ -61,8 +69,7 @@ export default function Compare(props) {
     return (
         <>
             <div className="dashboard-content">
-                <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Domain Comparison" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
-                <h1>Compare Domains</h1>
+                <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Portfolio View" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <p>Compare the data of different domains to see how they perform against each other.</p>
                 <p>To compare domains, select the domains you want to compare from the list below and click on the "Compare" button.</p>
                 <p>Note: You can only compare up to 5 domains at a time.</p>
@@ -130,7 +137,9 @@ export default function Compare(props) {
                             ))}
                         </select>
                     </div>
-                    <button className="btn" onClick={handleDomainCompare}>Compare</button>
+                    <button className="btn" disabled={loading || domains.length < 2} onClick={handleDomainCompare}>
+                        {loading ? "Comparing..." : "Compare"}
+                    </button>
                 </div>
                 <div className="compare-results">
                     <h2>Comparison Results:</h2>

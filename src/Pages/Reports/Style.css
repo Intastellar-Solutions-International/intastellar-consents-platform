@@ -1,0 +1,33 @@
+.btn{
+    background-color: rgb(192, 159, 83);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn:disabled {
+    background-color: lightgrey;
+    cursor: not-allowed;
+}
+
+.compare-domain-list{
+    display: flex;
+    gap: 10px;
+}
+
+.compare-domain-list select{
+    padding: 15px;
+    appearance: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
