@@ -32,6 +32,25 @@
     cursor: pointer;
 }
 
+.compare-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.compare-table td{
+    padding: 15px;
+    border: 1px solid #ddd;
+}
+
+.negative{
+    background-color: #ad2a2a;
+}
+
+.positive {
+    background-color: #2a7a2a;
+}
+
 @media screen and (max-width: 768px) {
     .compare-domain-list {
         flex-direction: column;

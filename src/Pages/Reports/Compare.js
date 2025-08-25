@@ -91,7 +91,7 @@ export default function Compare(props) {
                         <select onChange={(e) => {
                             if (domains.includes(e.target.value)) {
                                 // Remove it from the selection
-                                setDomains((prevDomains) => prevDomains.filter((d) => d !== e.target.value));
+                                domains.pop(domains.indexOf(e.target.value));
                             } else {
                                 handleDomainSelection(e, e.target.value)
                             }
@@ -155,7 +155,7 @@ export default function Compare(props) {
                             {/* Summary Cards */}
                             <div className={`compare-summary-cards grid-container grid-cols-${Math.min(comparisonData.length, 5)}`}>
                                 {comparisonData.map((domain, index) => (
-                                    <div key={index} className="compare-card">
+                                    <div key={index} className="compare-card widget">
                                         <div className="compare-card-header">
                                             <h3>{domain.name}</h3>
                                             <span className="total-interactions">{Intl.NumberFormat("de-DE").format(domain.Total)} total interactions</span>
@@ -220,7 +220,7 @@ export default function Compare(props) {
                                             return (
                                                 <tr key={index}>
                                                     <td className="domain-name">{domain.name}</td>
-                                                    <td>{domain.Total}</td>
+                                                    <td>{Intl.NumberFormat('da-DK').format(domain.Total)}</td>
                                                     <td className={domain.Accepted > 50 ? 'positive' : 'negative'}>
                                                         {domain.Accepted}%
                                                     </td>
