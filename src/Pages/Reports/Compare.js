@@ -196,7 +196,7 @@ export default function Compare(props) {
                                             </div>
                                             <div className="stat-item">
                                                 <span className="stat-label">Declined: </span>
-                                                <span className={`stat-value ${domain.Declined > 50 ? 'high' : 'low'}`}>
+                                                <span className={`stat-value ${domain.Declined < 50 ? 'high' : 'low'}`}>
                                                     {domain.Declined}%
                                                 </span>
                                             </div>
