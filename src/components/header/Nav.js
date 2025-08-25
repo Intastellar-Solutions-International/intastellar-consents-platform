@@ -40,7 +40,7 @@ export default function Nav() {
                         }} data-icon={reports}></i> <span className="hiddenCollapsed">Reports</span></Link>
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/compare") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/compare"}><i className="dashboard-icons compare" style={{
                             backgroundImage: `url(${dashboard})`
-                        }} data-icon={dashboard}></i> <span className="hiddenCollapsed">Portfolio View</span></Link>
+                        }} data-icon={dashboard}></i> <span className="hiddenCollapsed">Portfolio Benchmark</span></Link>
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/domains") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/domains"}><i className="dashboard-icons domains" style={{
                             backgroundImage: `url(${domains})`
                         }} data-icon={domains}></i> <span className="hiddenCollapsed">Domains</span></Link>

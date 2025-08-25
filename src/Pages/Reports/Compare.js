@@ -7,7 +7,7 @@ import Fetch from '../../Functions/fetch';
 import "./Style.css";
 
 export default function Compare(props) {
-    document.title = "Compare Domains | Intastellar Consents | CMP";
+    document.title = "Portfolio Benchmark | Intastellar Consents | CMP";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const { handle, id } = useParams();
     const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
@@ -68,14 +68,21 @@ export default function Compare(props) {
 
     return (
         <>
-            <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Portfolio View" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+            <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Portfolio Benchmark" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
                 <p>Compare the data of different domains to see how they perform against each other.</p>
                 <p>Note: You can only compare up to 5 domains at a time.</p>
                 <div className="compare-container">
                     <p className="compare-text">Select Domains to Compare:</p>
                     <div className="compare-domain-list">
-                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                        <select onChange={(e) => {
+                            if (domains.includes(e.target.value)) {
+                                // Remove it from the selection
+                                domains.pop(domains.indexOf(e.target.value));
+                            } else {
+                                handleDomainSelection(e, e.target.value)
+                            }
+                        }}>
                             <option value="" disabled selected>Select domain</option>
                             {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
@@ -106,7 +113,14 @@ export default function Compare(props) {
                                 </option>
                             ))}
                         </select>
-                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                        <select onChange={(e) => {
+                            if (domains.includes(e.target.value)) {
+                                // Remove it from the selection
+                                domains.pop(domains.indexOf(e.target.value));
+                            } else {
+                                handleDomainSelection(e, e.target.value)
+                            }
+                        }}>
                             <option value="" disabled selected>Select domain</option>
                             {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
@@ -118,7 +132,14 @@ export default function Compare(props) {
                                 </option>
                             ))}
                         </select>
-                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                        <select onChange={(e) => {
+                            if (domains.includes(e.target.value)) {
+                                // Remove it from the selection
+                                domains.pop(domains.indexOf(e.target.value));
+                            } else {
+                                handleDomainSelection(e, e.target.value)
+                            }
+                        }}>
                             <option value="" disabled selected>Select domain</option>
                             {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
@@ -130,7 +151,14 @@ export default function Compare(props) {
                                 </option>
                             ))}
                         </select>
-                        <select onChange={(e) => handleDomainSelection(e, e.target.value)}>
+                        <select onChange={(e) => {
+                            if (domains.includes(e.target.value)) {
+                                // Remove it from the selection
+                                domains.pop(domains.indexOf(e.target.value));
+                            } else {
+                                handleDomainSelection(e, e.target.value)
+                            }
+                        }}>
                             <option value="" disabled selected>Select domain</option>
                             {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
