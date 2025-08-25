@@ -186,6 +186,7 @@ export default function Compare(props) {
                                         <div className="compare-card-header">
                                             <h3>{domain.name}</h3>
                                             <span className="total-interactions">{Intl.NumberFormat("de-DE").format(domain.Total)} total interactions</span>
+                                            <p>Banner Style: {domain.style}</p>
                                         </div>
                                         <div className="compare-card-stats">
                                             <div className="stat-item">
