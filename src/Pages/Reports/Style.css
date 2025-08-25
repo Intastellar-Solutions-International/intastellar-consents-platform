@@ -51,6 +51,29 @@
     background-color: #2a7a2a;
 }
 
+.stat-value{
+    position: relative;
+}
+
+.stat-value::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -30px;
+}
+
+.stat-value.high::after{
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #2a7a2a;
+}
+
+.stat-value.low::after{
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #ad2a2a;
+}
+
 @media screen and (max-width: 768px) {
     .compare-domain-list {
         flex-direction: column;
