@@ -271,7 +271,7 @@ export default function Compare(props) {
                             {/* Device Type Breakdown */}
                             <div className="device-comparison">
                                 <h3>Device Type Distribution</h3>
-                                <div className="device-charts grid-container grid-cols-3">
+                                <div className={`device-charts grid-container grid-cols-${comparisonData.length}`}>
                                     {comparisonData.map((domain, index) => (
                                         <div key={index} className="device-chart">
                                             <h4>{domain.name}</h4>
