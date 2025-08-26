@@ -74,6 +74,10 @@
     border-bottom: 10px solid #ad2a2a;
 }
 
+.device-comparison{
+    margin-top: 30px;
+}
+
 @media screen and (max-width: 768px) {
     .compare-domain-list {
         flex-direction: column;
