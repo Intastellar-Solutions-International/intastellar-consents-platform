@@ -129,6 +129,14 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        exportPDF: {
+            url: `${PrimaryHost}/analytics/gdpr/generatePDF`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
         getDevices: {
             url: `${PrimaryHost}/analytics/gdpr/getDevices`,
             method: "GET",

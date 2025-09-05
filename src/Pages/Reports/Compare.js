@@ -25,6 +25,23 @@ export default function Compare(props) {
 
     const [comparisonData, setComparisonData] = useState(null);
 
+    function handlePDFEExport() {
+        API[id].exportPDF.headers.FromDate = fromDate.toISOString().split("T")[0];
+        API[id].exportPDF.headers.ToDate = toDate.toISOString().split("T")[0];
+
+        Fetch(API[id].exportPDF.url, API[id].exportPDF.method, API[id].exportPDF.headers, JSON.stringify({
+            domains: domains
+        })).then((data) => {
+            if (data === "Err_Login_Expired") {
+                localStorage.removeItem("globals");
+                window.location.href = "/login";
+                return;
+            }
+            // Handle successful PDF export
+            console.log("PDF export successful:", data);
+        })
+    }
+
     function handleDomainSelection(event, domain) {
         if (event.target) {
             setDomains((prevDomains) => [...prevDomains, domain]);
@@ -72,6 +89,7 @@ export default function Compare(props) {
             <div className="dashboard-content">
                 <p>Compare the data of different domains to see how they perform against each other.</p>
                 <p>Note: You can only compare up to 5 domains at a time.</p>
+                <button onClick={handlePDFEExport}>Export as PDF</button>
                 <div className="compare-container">
                     <p className="compare-text">Select Domains to Compare:</p>
                     <div className="compare-domain-list">
@@ -177,6 +195,7 @@ export default function Compare(props) {
                 </div>
                 <div className="compare-results">
                     <h2>Comparison Results:</h2>
+                    
                     {comparisonData?.length > 0 ? (
                         <div className="compare-analysis grid-container">
                             {/* Summary Cards */}
