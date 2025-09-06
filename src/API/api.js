@@ -134,7 +134,8 @@ const API = {
             method: "POST",
             headers: {
                 "Authorization": Authentication.getToken(),
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Organisation": Authentication.getOrganisation(),
             }
         },
         getDevices: {
