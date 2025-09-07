@@ -25,6 +25,9 @@ const Fetch = async (url, method, headers, body, signal, responseType = 'json') 
         } else if (res.status === 404) {
             return "Err_Not_Found";
         } else if (res.status === 500) {
+            // Log the response text to see the actual PHP error
+            const errorText = await res.text();
+            console.error('Server error response:', errorText);
             return "Err_Server_Error";
         } 
 
@@ -43,7 +46,14 @@ const Fetch = async (url, method, headers, body, signal, responseType = 'json') 
             } else {
                 const text = await res.text();
                 console.log('Response text:', text);
-                return JSON.parse(text);
+                
+                // Check if the response is actually JSON
+                if (text.trim().startsWith('{') || text.trim().startsWith('[')) {
+                    return JSON.parse(text);
+                } else {
+                    console.error('Non-JSON response received:', text);
+                    throw new Error("Invalid response format");
+                }
             }
         } catch (error) {
             console.error("Error parsing response:", error);

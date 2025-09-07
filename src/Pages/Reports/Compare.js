@@ -205,158 +205,166 @@ export default function Compare(props) {
                     </div>
                     
                     {comparisonData?.length > 0 ? (
-                        <div className="compare-analysis grid-container">
-                            {/* Summary Cards */}
-                            <div className={`compare-summary-cards grid-container grid-cols-${Math.min(comparisonData.length, 5)}`}>
-                                {comparisonData.map((domain, index) => (
-                                    <div key={index} className="compare-card widget">
-                                        <div className="compare-card-header">
-                                            <h3>{domain.name}</h3>
-                                            <span className="total-interactions">{Intl.NumberFormat("de-DE").format(domain.Total)} total interactions</span>
-                                            <p>Banner Style: {domain.style}</p>
-                                        </div>
-                                        <div className="compare-card-stats">
-                                            <div className="stat-item">
-                                                <span className="stat-label">Accepted: </span>
-                                                <span className={`stat-value ${domain.Accepted > 50 ? 'high' : 'low'}`}>
-                                                    {domain.Accepted}%
-                                                </span>
-                                            </div>
-                                            <div className="stat-item">
-                                                <span className="stat-label">Declined: </span>
-                                                <span className={`stat-value ${domain.Declined < 50 ? 'high' : 'low'}`}>
-                                                    {domain.Declined}%
-                                                </span>
-                                            </div>
-                                            <div className="stat-item">
-                                                <span className="stat-label">Functional: </span>
-                                                <span className={`stat-value ${domain.Functional > 50 ? 'high' : 'low'}`}>
-                                                    {domain.Functional}%
-                                                </span>
-                                            </div>
-                                            <div className="stat-item">
-                                                <span className="stat-label">Marketing: </span>
-                                                <span className={`stat-value ${domain.Marketing > 50 ? 'high' : 'low'}`}>
-                                                    {domain.Marketing}%
-                                                </span>
-                                            </div>
-                                            <div className="stat-item">
-                                                <span className="stat-label">Statistics: </span>
-                                                <span className={`stat-value ${domain.Statistics > 50 ? 'high' : 'low'}`}>
-                                                    {domain.Statics}%
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                        <>
+                            <div>
+                                <h2>Acceptance Rate by Domain</h2>
+                                {
+                                    console.log(comparisonData)
+                                }
                             </div>
-
-                            {/* Detailed Comparison Table */}
-                            <div className="compare-table-container">
-                                <h3>Detailed Comparison</h3>
-                                <table className="compare-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Domain</th>
-                                            <th>Total</th>
-                                            <th>Accepted (%)</th>
-                                            <th>Declined (%)</th>
-                                            <th>Marketing (%)</th>
-                                            <th>Functional (%)</th>
-                                            <th>Statistics (%)</th>
-                                            <th>Primary Device</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {comparisonData.map((domain, index) => {
-                                            const primaryDevice = Object.keys(domain.device_type.deviceTypeNum)
-                                                .reduce((a, b) => domain.device_type.deviceTypeNum[a] > domain.device_type.deviceTypeNum[b] ? a : b);
-
-                                            return (
-                                                <tr key={index}>
-                                                    <td className="domain-name">{domain.name}</td>
-                                                    <td>{Intl.NumberFormat('da-DK').format(domain.Total)}</td>
-                                                    <td className={domain.Accepted > 50 ? 'positive' : 'negative'}>
+                            <div className="compare-analysis grid-container">
+                                {/* Summary Cards */}
+                                <div className={`compare-summary-cards grid-container grid-cols-${Math.min(comparisonData.length, 5)}`}>
+                                    {comparisonData.map((domain, index) => (
+                                        <div key={index} className="compare-card widget">
+                                            <div className="compare-card-header">
+                                                <h3>{domain.name}</h3>
+                                                <span className="total-interactions">{Intl.NumberFormat("de-DE").format(domain.Total)} total interactions</span>
+                                                <p>Banner Style: {domain.style}</p>
+                                            </div>
+                                            <div className="compare-card-stats">
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Accepted: </span>
+                                                    <span className={`stat-value ${domain.Accepted > 50 ? 'high' : 'low'}`}>
                                                         {domain.Accepted}%
-                                                    </td>
-                                                    <td className={domain.Declined > 50 ? 'negative' : 'positive'}>
+                                                    </span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Declined: </span>
+                                                    <span className={`stat-value ${domain.Declined < 50 ? 'high' : 'low'}`}>
                                                         {domain.Declined}%
-                                                    </td>
-                                                    <td>{domain.Marketing}%</td>
-                                                    <td>{domain.Functional}%</td>
-                                                    <td>{domain.Statics}%</td>
-                                                    <td>
-                                                        {primaryDevice} ({domain.device_type.deviceTypeNum[primaryDevice]}%)
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            {/* Device Type Breakdown */}
-                            <div className="device-comparison">
-                                <h3>Device Type Distribution</h3>
-                                <div className={`device-charts grid-container grid-cols-${comparisonData.length}`}>
-                                    {comparisonData.map((domain, index) => (
-                                        <div key={index} className="device-chart">
-                                            <h4>{domain.name}</h4>
-                                            <div className="device-stats">
-                                                <div className="device-bar">
-                                                    <div className="device-segment mobile"
-                                                        style={{ width: `${domain.device_type.deviceTypeNum.mobile}%` }}>
-                                                        <span>Mobile: {domain.device_type.deviceTypeNum.mobile}%</span>
-                                                    </div>
-                                                    <div className="device-segment tablet"
-                                                        style={{ width: `${domain.device_type.deviceTypeNum.tablet}%` }}>
-                                                        <span>Tablet: {domain.device_type.deviceTypeNum.tablet}%</span>
-                                                    </div>
-                                                    <div className="device-segment desktop"
-                                                        style={{ width: `${domain.device_type.deviceTypeNum.desktop}%` }}>
-                                                        <span>Desktop: {domain.device_type.deviceTypeNum.desktop}%</span>
-                                                    </div>
+                                                    </span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Functional: </span>
+                                                    <span className={`stat-value ${domain.Functional > 50 ? 'high' : 'low'}`}>
+                                                        {domain.Functional}%
+                                                    </span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Marketing: </span>
+                                                    <span className={`stat-value ${domain.Marketing > 50 ? 'high' : 'low'}`}>
+                                                        {domain.Marketing}%
+                                                    </span>
+                                                </div>
+                                                <div className="stat-item">
+                                                    <span className="stat-label">Statistics: </span>
+                                                    <span className={`stat-value ${domain.Statistics > 50 ? 'high' : 'low'}`}>
+                                                        {domain.Statics}%
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
-                            </div>
 
-                            {/* Interaction Numbers */}
-                            <div className="interaction-comparison">
-                                <h3>Raw Interaction Numbers</h3>
-                                <div className="interaction-grid">
-                                    {comparisonData.map((domain, index) => (
-                                        <div key={index} className="interaction-card">
-                                            <h4>{domain.name}</h4>
-                                            <div className="interaction-numbers">
-                                                <div className="number-item">
-                                                    <span className="number-label">Accepted</span>
-                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.accept)}</span>
-                                                </div>
-                                                <div className="number-item">
-                                                    <span className="number-label">Declined</span>
-                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.decline)}</span>
-                                                </div>
-                                                <div className="number-item">
-                                                    <span className="number-label">Marketing</span>
-                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.marketing)}</span>
-                                                </div>
-                                                <div className="number-item">
-                                                    <span className="number-label">Functional</span>
-                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.functional)}</span>
-                                                </div>
-                                                <div className="number-item">
-                                                    <span className="number-label">Statistics</span>
-                                                    <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.statics)}</span>
+                                {/* Detailed Comparison Table */}
+                                <div className="compare-table-container">
+                                    <h3>Detailed Comparison</h3>
+                                    <table className="compare-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Domain</th>
+                                                <th>Total</th>
+                                                <th>Accepted (%)</th>
+                                                <th>Declined (%)</th>
+                                                <th>Marketing (%)</th>
+                                                <th>Functional (%)</th>
+                                                <th>Statistics (%)</th>
+                                                <th>Primary Device</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {comparisonData.map((domain, index) => {
+                                                const primaryDevice = Object.keys(domain.device_type.deviceTypeNum)
+                                                    .reduce((a, b) => domain.device_type.deviceTypeNum[a] > domain.device_type.deviceTypeNum[b] ? a : b);
+
+                                                return (
+                                                    <tr key={index}>
+                                                        <td className="domain-name">{domain.name}</td>
+                                                        <td>{Intl.NumberFormat('da-DK').format(domain.Total)}</td>
+                                                        <td className={domain.Accepted > 50 ? 'positive' : 'negative'}>
+                                                            {domain.Accepted}%
+                                                        </td>
+                                                        <td className={domain.Declined > 50 ? 'negative' : 'positive'}>
+                                                            {domain.Declined}%
+                                                        </td>
+                                                        <td>{domain.Marketing}%</td>
+                                                        <td>{domain.Functional}%</td>
+                                                        <td>{domain.Statics}%</td>
+                                                        <td>
+                                                            {primaryDevice} ({domain.device_type.deviceTypeNum[primaryDevice]}%)
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* Device Type Breakdown */}
+                                <div className="device-comparison">
+                                    <h3>Device Type Distribution</h3>
+                                    <div className={`device-charts grid-container grid-cols-${comparisonData.length}`}>
+                                        {comparisonData.map((domain, index) => (
+                                            <div key={index} className="device-chart">
+                                                <h4>{domain.name}</h4>
+                                                <div className="device-stats">
+                                                    <div className="device-bar">
+                                                        <div className="device-segment mobile"
+                                                            style={{ width: `${domain.device_type.deviceTypeNum.mobile}%` }}>
+                                                            <span>Mobile: {domain.device_type.deviceTypeNum.mobile}%</span>
+                                                        </div>
+                                                        <div className="device-segment tablet"
+                                                            style={{ width: `${domain.device_type.deviceTypeNum.tablet}%` }}>
+                                                            <span>Tablet: {domain.device_type.deviceTypeNum.tablet}%</span>
+                                                        </div>
+                                                        <div className="device-segment desktop"
+                                                            style={{ width: `${domain.device_type.deviceTypeNum.desktop}%` }}>
+                                                            <span>Desktop: {domain.device_type.deviceTypeNum.desktop}%</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Interaction Numbers */}
+                                <div className="interaction-comparison">
+                                    <h3>Raw Interaction Numbers</h3>
+                                    <div className="interaction-grid">
+                                        {comparisonData.map((domain, index) => (
+                                            <div key={index} className="interaction-card">
+                                                <h4>{domain.name}</h4>
+                                                <div className="interaction-numbers">
+                                                    <div className="number-item">
+                                                        <span className="number-label">Accepted</span>
+                                                        <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.accept)}</span>
+                                                    </div>
+                                                    <div className="number-item">
+                                                        <span className="number-label">Declined</span>
+                                                        <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.decline)}</span>
+                                                    </div>
+                                                    <div className="number-item">
+                                                        <span className="number-label">Marketing</span>
+                                                        <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.marketing)}</span>
+                                                    </div>
+                                                    <div className="number-item">
+                                                        <span className="number-label">Functional</span>
+                                                        <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.functional)}</span>
+                                                    </div>
+                                                    <div className="number-item">
+                                                        <span className="number-label">Statistics</span>
+                                                        <span className="number-value">{Intl.NumberFormat("de-DE").format(domain.interactions_number.statics)}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </>
                     ) : (
                         <p>No comparison data available. Please select domains to compare.</p>
                     )}
