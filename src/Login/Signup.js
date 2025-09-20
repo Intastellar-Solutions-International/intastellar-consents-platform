@@ -3,6 +3,7 @@ import logo from "../Components/Header/logo.svg";
 import API from "../API/api";
 import Authentication from "../Authentication/Auth";
 import { LPFooter } from "../Components/Footer";
+import { IntastellarButton } from "@intastellar/signin-sdk-react";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useEffect = window.React.useEffect;
@@ -10,9 +11,48 @@ const useEffect = window.React.useEffect;
 export default function Login() {
     document.title = "Intastellar Consents | CMP powered by Intastellar Solutions";
 
-    const signUp = () => {
-        window.location.href = "https://www.intastellaraccounts.com/SignUp/?service=Intastellar%20Consents%20Solutions&continue=www.intastellarconsents.com/auth-login&entryFlow=cHJvZmlsZQ==&key=d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d&access_id=intastellarconsents.com&passive=true&flowName=GeneralOAuthFlow&Entry=webauthsignin&scope=profile";
-    }
+    const handleLogin = (account) => {
+        console.log("User logged in:", account);
+        // Handle successful authentication
+
+        if (account) {
+            console.log(account?.account_domain);
+            fetch(API.OrganisationData.url, {
+                withCredentials: false,
+                method: "POST",
+                headers: {
+                    'LoginType': 'oauth',
+                    'Content-Type': 'application/json; charset=utf-8'
+                },
+                body: JSON.stringify({
+                    organisationMember: account?.user?.email,
+                })
+            }).then((response) => {
+                return response.json();
+            }).then(response => {
+
+                if (response === "Err_Logon_Fail") {
+                    console.error("Error logging in");
+                    return;
+                }
+
+                localStorage.setItem("platform", "gdpr");
+
+                localStorage.setItem("organisation", response[0]);
+                localStorage.setItem("globals", JSON.stringify(account));
+
+                if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
+                    window.location.href = "/dashboard";
+                } else {
+                    window.location.href = "/" + localStorage.getItem("platform") + "/dashboard";
+                }
+            }).catch((error) => {
+                console.error("Error during login:", error);
+                // Optionally redirect to login page or show an error message
+            })
+        }
+
+    };
 
     return (
         <>
@@ -42,9 +82,14 @@ export default function Login() {
                     height: "70vh"
                 }}>
                     <h2 className="loginForm-title">Create new account</h2>
-                    <button onClick={signUp} class="loginForm-signup" >
-                        Sign up with Intastellar
-                    </button>
+                    <IntastellarButton
+                        appName="Intastellar  Consents"
+                        clientId="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
+                        loginCallback={handleLogin}
+                        scopes="profile"
+                        type="signup"
+                        theme={{ theme: "light", picker: "button" }}
+                    />
                     <Link to="/login" className="loginForm-signup-2">
                         Already have an account? Log in
                     </Link>
