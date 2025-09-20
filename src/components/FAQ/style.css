@@ -1,0 +1,43 @@
+.accordion {
+    cursor: pointer;
+    padding: 30px 18px;
+    margin: 0;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    color: #fff;
+    background: radial-gradient(circle, #c09f53, #856a2b);
+}
+
+.panel {
+    height: 0;
+    overflow: hidden;
+    text-align: left;
+    transition: all .5s ease-in-out;
+    border-bottom: 2px solid #c09f53;
+}
+
+.question:last-of-type{
+    margin-bottom: 20px;
+}
+
+.arrowDown {
+    transform: rotate(135deg);
+    transition: transform 1s ease-in-out;
+    transform-origin: center center;
+    margin-right: 20px;
+    border-color: #ffffff;
+    float: right;
+}
+
+.arrow {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 2px solid;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 1px;
+    margin-right: 8px;
+}

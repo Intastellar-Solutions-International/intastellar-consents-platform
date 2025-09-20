@@ -2,6 +2,7 @@ import "./Login.css";
 import logo from "../Components/Header/logo.svg";
 import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
+import FAQS from "../Components/FAQ";
 import { IntastellarButton } from "@intastellar/signin-sdk-react";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
@@ -50,6 +51,25 @@ export default function Login() {
         }
 
     };
+
+    const faq = [
+        {
+            question: "Do I need to install anything to use the dashboard?",
+            answer: "Nope. As soon as your banner is live, the dashboard starts showing you consent data automatically."
+        },
+        {
+            question: "Where is the consent data stored?",
+            answer: "All data stays in the EU, securely hosted and fully aligned with GDPR rules."
+        },
+        {
+            question: "Can I manage multiple websites?",
+            answer: "Your banner will keep running on your site, but access to reports and insights will pause until you upgrade."
+        },
+        {
+            question: "What happens after my trial ends?",
+            answer: "Your banner will keep running on your site, but access to reports and insights will pause until you upgrade."
+        }
+    ]
     /* useEffect(() => {
         document.body.classList.add("loginForm-body");
         Intastellar.accounts.id.renderButton("login", {
@@ -101,17 +121,21 @@ export default function Login() {
                 <div className="loginForm-header">
                     <section className="loginForm-header-content">
                         <img className="loginForm-logo" src={logo} alt="Intastellar Solutions Logo" />
-                        <h1>Get started with <br /> Intastellar Consents | CMP</h1>
-                        <p>By logging in, you can navigate to your consents managment tool, where you can find <strong>reports</strong> about & regarding your <strong>users consents</strong> on <strong>your Websites</strong>.</p>
+                        <h1>Your Consent Management Dashboard</h1>
+                        <p>Track, report, and manage visitor consents across all your websites in one secure EU-hosted platform.</p>
                         <section>
-                            <p>Our business tools can help you:</p>
                             <ul>
-                                <li>Manage your users consents</li>
-                                <li>Generate reports</li>
-                                <li>Integrate with your websites</li>
-                                <li>Get insights about your users</li>
-                                <li>And much more...</li>
+                                <li>📊 Consent Reports – Export-ready compliance documentation</li>
+                                <li>🌍 Global View – Live tracking and world map of visitor consents</li>
+                                <li>🛡️ Privacy-First Hosting – All data secured in the EU</li>
                             </ul>
+                            <p>Built for small businesses, agencies, and privacy-conscious website owners.</p>
+                        </section>
+                        <section className="testimonials">
+                            <a href="https://www.cykelfaergen.info" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://www.cykelfaergen.info/assets/logo/logo.svg" alt="Cykelfærgen Flensborg fjord" /></a>
+                            <a href="https://laesoe-booking.dk" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://laesoe-booking.dk/media/2377/logo-combi.png" alt="Læsø Pakkerejser" /></a>
+                            <a href="https://asasoftware.aero" target="_blank" rel="noopener"><img className="used_by" src="https://asasoftware.aero/wp-content/uploads/2020/04/ASA.svg" alt="ASA Software ApS" /></a>
+                            <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img className="used_by" src="https://www.laesoe-efterskole.dk/wp-content/uploads/2023/09/cropped-cropped-cropped-cropped-cropped-LaesoeEfterskole_Logo_Farve-1.png" alt="Læssø Efterskole" /></a>
                         </section>
                     </section>
                 </div>
@@ -122,8 +146,8 @@ export default function Login() {
                     alignItems: "center",
                     height: "70vh"
                 }}>
-                    <h2 className="loginForm-title">Log into Intastellar Consents</h2>
-                    <p className="loginForm-description">Please log in with your Intastellar account to access the platform.</p>
+                    <h2 className="loginForm-title">Access Intastellar Consents</h2>
+                    <p className="loginForm-description">Sign in to manage your consents, view reports, and explore insights.</p>
                     <IntastellarButton
                         appName="Intastellar  Consents"
                         clientId="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
@@ -138,32 +162,29 @@ export default function Login() {
                         data-login_callback="authLogin"
                     ></div> */}
                     <Link to="/signup" className="loginForm-signup-2">
-                        Create an account
+                        New here? Start your free trial
                     </Link>
                     <img className="intastellar-accounts-logo" src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg" />
                 </div>
             </div>
-            <section className="ppad key-numbers-section">
-                <a href="https://www.cykelfaergen.info" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://www.cykelfaergen.info/assets/logo/logo.svg" alt="Cykelfærgen Flensborg fjord" /></a>
-                <a href="https://teamjacobsen.dk" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://teamjacobsen.dk/img-own/TB_logo_white_91x50.jpg" alt="Team Jacobsen" /></a>
-                <a href="https://laesoe-booking.dk" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://laesoe-booking.dk/media/2377/logo-combi.png" alt="Læsø Pakkerejser" /></a>
-                <a href="https://www.parkinpeace.eu" target="_blank" rel="noopener"><img loading="lazy" className="used_by" src="https://www.parkinpeace.eu/assets/logo/Park-in-Peace-farve.svg" alt="ParkinPeace" /></a>
-                <a href="https://asasoftware.aero" target="_blank" rel="noopener"><img className="used_by" src="https://asasoftware.aero/wp-content/uploads/2020/04/ASA.svg" alt="ASA Software ApS" /></a>
-                <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img className="used_by" src="https://www.laesoe-efterskole.dk/wp-content/uploads/2023/09/cropped-cropped-cropped-cropped-cropped-LaesoeEfterskole_Logo_Farve-1.png" alt="Læssø Efterskole" /></a>
-                <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img className="used_by" src="https://klinik-fysioterapi.dk/wp-content/uploads/2022/05/cropped-Logo-1-a-768x532.png" alt="Læssø Efterskole" /></a>
-                <a href="https://www.laesoe-efterskole.dk" target="_blank" rel="noopener"><img className="used_by" src="https://www.intastellarsolutions.com/assets/testimonials/nwc-es.png" alt="Læssø Efterskole" /></a>
+            <section className="feature-list grid-container grid-cols-3">
+                <article>
+                    <h2>Reports</h2>
+                </article>
+                <article>
+                    <h2>Live Consent Tracking</h2>
+                </article>
+                <article>
+                    <h2>World Map</h2>
+                </article>
             </section>
-            <section className="grid-container grid-cols-2">
-                <section className="main-content-section">
-                    <h2 className="main-content-section-title">What is Intastellar Consent?</h2>
-                    <p className="main-content-section-description">Intastellar Consent is a consent management platform that helps you manage your user consents in a compliant way.</p>
-                    <a target="_blank" rel="noopener" href="https://www.intastellarsolutions.com" className="main-content-section-button">Learn More</a>
-                </section>
-                <section className="main-content-section">
-                    <h2 className="main-content-section-title">Why Intastellar Consent?</h2>
-                    <p className="main-content-section-description">Intastellar Consent is built on the Intastellar platform, which is a secure and scalable platform for building consent management solutions.</p>
-                    <a target="_blank" rel="noopener" href="https://www.intastellarsolutions.com" className="main-content-section-button">Explore Features</a>
-                </section>
+            <section className="feature-list">
+                <h2>Built for Compliance, Backed by Trust</h2>
+                <p>Intastellar Consents is designed around GDPR and DMA requirements from day one. All data is securely hosted in the EU, so you can focus on growing your business while staying privacy-first.</p>
+            </section>
+            <section className="feature-list">
+                <h2>Frequently Asked Questions</h2>
+                <FAQS faq={faq} />
             </section>
             <LPFooter />
         </>

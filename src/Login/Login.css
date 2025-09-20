@@ -179,11 +179,21 @@
 
 .used_by {
     display: inline-block;
-    width: 10%;
+    width: 50%;
     height: 100px;
     object-fit: contain;
     object-position: center;
     margin-inline: 50px;
+}
+
+.feature-list{
+    width: 1100px;
+    margin-inline: auto;
+}
+
+.testimonials{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .key-numbers-section{
