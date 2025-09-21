@@ -144,7 +144,6 @@ export default function Login() {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    height: "70vh"
                 }}>
                     <h2 className="loginForm-title">Access Intastellar Consents</h2>
                     <p className="loginForm-description">Sign in to manage your consents, view reports, and explore insights.</p>
@@ -167,7 +166,7 @@ export default function Login() {
                     <img className="intastellar-accounts-logo" src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg" />
                 </div>
             </div>
-            <section className="feature-list grid-container grid-cols-3">
+            <section className="ppad feature-list grid-container grid-cols-3">
                 <article>
                     <h2>Reports</h2>
                 </article>
