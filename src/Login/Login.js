@@ -121,7 +121,7 @@ export default function Login() {
                 <div className="loginForm-header">
                     <section className="loginForm-header-content">
                         <img className="loginForm-logo" src={logo} alt="Intastellar Solutions Logo" />
-                        <h1>Your Consent Management Dashboard</h1>
+                        <h1>Your Consent Management Platform</h1>
                         <p>Track, report, and manage visitor consents across all your websites in one secure EU-hosted platform.</p>
                         <section>
                             <ul>
@@ -166,18 +166,7 @@ export default function Login() {
                     <img className="intastellar-accounts-logo" src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg" />
                 </div>
             </div>
-            <section className="ppad feature-list grid-container grid-cols-3">
-                <article>
-                    <h2>Reports</h2>
-                </article>
-                <article>
-                    <h2>Live Consent Tracking</h2>
-                </article>
-                <article>
-                    <h2>World Map</h2>
-                </article>
-            </section>
-            <section className="feature-list">
+            <section className="ppad feature-list">
                 <h2>Built for Compliance, Backed by Trust</h2>
                 <p>Intastellar Consents is designed around GDPR and DMA requirements from day one. All data is securely hosted in the EU, so you can focus on growing your business while staying privacy-first.</p>
             </section>

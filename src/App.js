@@ -132,14 +132,14 @@ export default function App() {
             return (
                 <NewOrganisation />
             )
-        } else if (JSON.parse(localStorage.getItem("subscription"))?.status != "active" && JSON.parse(localStorage.getItem("subscription"))?.loading && Authentication.getOrganisation() != 1) {
+        } else if (JSON.parse(localStorage.getItem("subscription"))?.status != "active" && Authentication.getOrganisation() != 1) {
             return (
                 <AllOrg.Provider value={[organisations, setOrganisations]}>
                     <StripePayment userId={Authentication.getUserId} />
                     <BugReport />
                 </AllOrg.Provider>
             )
-        } else if (!JSON.parse(localStorage.getItem("subscription"))?.loading && JSON.parse(localStorage.getItem("subscription"))?.status === "active") {
+        } else if (!JSON.parse(localStorage.getItem("subscription"))?.loading && JSON.parse(localStorage.getItem("subscription"))?.status === "active" || Authentication.getOrganisation() == 1) {
             return (
                 <>
                     <Router>

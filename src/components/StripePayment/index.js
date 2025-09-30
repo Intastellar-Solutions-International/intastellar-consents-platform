@@ -37,8 +37,8 @@ export default function StripePayment(props) {
                     class="stripe-price-table"
                     pricing-table-id={pricingTableId}
                     publishable-key={publishableKey}
-                    customer-email={props.userId()}
-                    client-reference-id={Authentication.getOrganisation()}
+                    customer-email={props.userId() || null}
+                    client-reference-id={Authentication.getOrganisation() || null}
                 >
                 </stripe-pricing-table>
             </div>

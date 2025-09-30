@@ -1,3 +1,7 @@
+.ppad{
+    padding-block: 60px;
+}
+
 .loginForm-body{
     margin: 0;
     padding: 0;
