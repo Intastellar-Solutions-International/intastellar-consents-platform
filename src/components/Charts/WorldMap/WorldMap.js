@@ -169,9 +169,12 @@ export default function Map(props) {
                   return (
                      <div key={key}>
                         <div className="grid-container grid-2">
-                           <p>{country.country}</p>
+                           <p style={{
+                              marginBottom: "3px"
+                           }}>{country.country}</p>
                            <p style={{
                               textAlign: "right",
+                              marginBottom: "3px"
                            }}>{country.num.total.toLocaleString("de-DE")}</p>
                         </div>
                         <div style={{
@@ -301,7 +304,7 @@ export default function Map(props) {
                         </div> */}
                      </div>
                   )
-               }).slice(0, 7) : null
+               }).slice(0, 9) : null
             }
          </div>
       </>
