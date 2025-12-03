@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/Intastellar-Solutions-International/analytics_dashboard#readme",
   "dependencies": {
+    "@intastellar/consents-react": "^1.0.0",
     "@intastellar/signin-sdk-react": "^1.0.21",
     "chart.js": "^4.4.0",
     "cors": "^2.8.5",

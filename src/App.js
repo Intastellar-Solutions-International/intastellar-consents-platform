@@ -45,6 +45,8 @@ import Compare from "./Pages/Reports/Compare";
 import BlacklistIp from "./Pages/Settings/BlacklistIp";
 import NewOrganisation from "./Pages/Settings/CreateOrganisation/NewOrganisation";
 
+/* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
+
 export const OrganisationContext = createContext(localStorage.getItem("organisation"));
 export const AllOrg = createContext(null);
 export const DomainContext = createContext(null);
