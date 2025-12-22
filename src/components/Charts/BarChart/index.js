@@ -18,7 +18,7 @@ export default function BarChart({ data, data2, title, fromDate, toDate }) {
             let chart = anychart.bar();
 
             chart.background().fill("transparent");
-            chart.xAxis().title("Number of users");
+            chart.xAxis().title("Number of interactions");
             chart.tooltip().format("{%Value}%");
             chart.xScale().mode("continuous");
 

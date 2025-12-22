@@ -3,7 +3,7 @@ const useParams = window.ReactRouterDOM.useParams;
 
 export const reportsLinks = [
     {
-        name: "User Consents",
+        name: "Consent decisions overview",
         path: "/reports/user-consents"
     },
     {

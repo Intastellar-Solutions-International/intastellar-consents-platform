@@ -34,7 +34,7 @@ export default function PremiumTier(props) {
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" /></ErrorBoundary>}
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Marketing.toLocaleString("de-DE") + "%"} type="Accepted Marketing" /></ErrorBoundary>}
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Functional.toLocaleString("de-DE") + "%"} type="Accepted Functional" /></ErrorBoundary>}
-            {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Statics.toLocaleString("de-DE") + "%"} type="Accepted Statics" /></ErrorBoundary >
+            {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Statics.toLocaleString("de-DE") + "%"} type="Accepted analytical cookies" /></ErrorBoundary >
             }
         </div>
         <div className="grid-container">

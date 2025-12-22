@@ -16,7 +16,7 @@ const urlParams = new URLSearchParams(window.location.search);
 
 export default function UserConsents(props) {
     document.title = "User consents | Intastellar Consents";
-    const settings = JSON.parse(localStorage.getItem("settings"));
+    const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
     const { handle, id } = useParams();
@@ -26,11 +26,11 @@ export default function UserConsents(props) {
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
 
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings.dateRange)).toISOString().split("T")[0]);
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings?.dateRange)).toISOString().split("T")[0]);
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]);
 
-    const previousPeriod = new Date(new Date().setDate(today.getDate() - settings.dateRange));
-    const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings.dateRange * 2));
+    const previousPeriod = new Date(new Date().setDate(today.getDate() - settings?.dateRange));
+    const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings?.dateRange * 2));
 
     API[id].getDomainsUrl.headers.Domains = currentDomain;
     API[id].getDomainsUrl.headers.Offset = page;
