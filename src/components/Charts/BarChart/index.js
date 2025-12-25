@@ -29,7 +29,7 @@ export default function BarChart({ data, data2, title, fromDate, toDate }) {
             chart.tooltip().format("{%Value}%");
             chart.xScale().mode("continuous");
 
-            const series = chart.bar(dataSet2);
+            const series = chart.bar(dataSet);
 
             /* series.name("Current Period"); */
             series.normal().stroke("#C09F53");
@@ -38,6 +38,10 @@ export default function BarChart({ data, data2, title, fromDate, toDate }) {
             // Loop through all document.getElementById("pie-chart") elements
             // and set the chart container to the container for each element
             chart.container("bar-chart");
+
+            console.log(dataSet2);
+            console.log(dataSet);
+            console.log(chart);
 
             if (data !== null || data !== undefined) {
                 chart.draw();

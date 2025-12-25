@@ -15,8 +15,6 @@ const Fetch = async (url, method, headers, body, signal, responseType = 'json') 
     }
 
     const t = fetch(url, fetchOptions).then(async (res) => {
-        console.log('Response status:', res.status);
-        console.log('Response headers:', res.headers);
         
         if (res.status === 401) {
             return "Err_Login_Expired";
@@ -56,9 +54,6 @@ const Fetch = async (url, method, headers, body, signal, responseType = 'json') 
                 }
             }
         } catch (error) {
-            console.error("Error parsing response:", error);
-            console.error("Response status:", res.status);
-            console.error("Response headers:", [...res.headers.entries()]);
             throw new Error("Failed to parse response: " + error.message);
         }
     }).catch(error => {

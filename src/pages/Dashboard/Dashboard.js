@@ -115,10 +115,12 @@ export default function Dashboard(props) {
         <>
             <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
-                {/* <div className="profilePicture-container">
+                <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
-                    <p className="profile-user">Welcome, {JSON.parse(localStorage.getItem("globals")).profile.name.first_name}</p>
-                </div> */}
+                    <p className="profile-user">Welcome, {JSON.parse(localStorage.getItem("globals")).user.name.firstName}</p>
+                    <p>Get an overview of your dashboard below. How are your consents performing?</p>
+                    
+                </div>
                 {
                     (id === "gdpr" && organisation != null && JSON.parse(organisation).id == 1) ? <TopWidgets dashboardView={dashboardView} API={{
                         url: API[id].getTotalNumber.url,

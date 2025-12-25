@@ -22,7 +22,7 @@
     border-radius: 5px;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 900px) {
     .main-content {
         width: 100%;
     }
@@ -43,5 +43,11 @@
     .main-content-section{
         width: 100%;
         padding: 25px;
+    }
+
+    .feature-list{
+        grid-template-columns: 1fr;
+        width: 100%;
+        padding: 15px;
     }
 }

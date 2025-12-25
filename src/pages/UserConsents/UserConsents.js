@@ -15,7 +15,7 @@ const useParams = window.ReactRouterDOM.useParams;
 const urlParams = new URLSearchParams(window.location.search);
 
 export default function UserConsents(props) {
-    document.title = "User consents | Intastellar Consents";
+    document.title = "Consents overview | Intastellar Consents";
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
@@ -52,7 +52,7 @@ export default function UserConsents(props) {
         <>
             <SideNav links={reportsLinks} title="Reports" />
             <article style={{ flex: "1" }}>
-                <StickyPageTitle title="User consents" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+                <StickyPageTitle title="Consents overview" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
                         {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{

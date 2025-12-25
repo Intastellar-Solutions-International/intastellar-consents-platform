@@ -34,22 +34,16 @@ export default function PremiumTier(props) {
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" /></ErrorBoundary>}
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Marketing.toLocaleString("de-DE") + "%"} type="Accepted Marketing" /></ErrorBoundary>}
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Functional.toLocaleString("de-DE") + "%"} type="Accepted Functional" /></ErrorBoundary>}
-            {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Statics.toLocaleString("de-DE") + "%"} type="Accepted analytical cookies" /></ErrorBoundary >
-            }
+            {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Statics.toLocaleString("de-DE") + "%"} type="Accepted analytical cookies" /></ErrorBoundary >}
         </div>
+        <p>The data is based of the total number of consents given.</p>
         <div className="grid-container">
             <ErrorBoundary>
                 <BarChart title="Consents interactions by Device Type" data={[
                     { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
                     { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
                     { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },
-                ]} data2={
-                    [
-                        { x: "Mobile", value: activeData?.device_type.deviceTypeNum.mobile, color: "#FF6384" },
-                        { x: "Desktop", value: activeData?.device_type.deviceTypeNum.desktop, color: "#36A2EB" },
-                        { x: "Tablet", value: activeData?.device_type.deviceTypeNum.tablet, color: "#FFCE56" },
-                    ]
-                } fromDate={fromDate} toDate={toDate} />
+                ]} fromDate={fromDate} toDate={toDate} />
             </ErrorBoundary>
         </div>
     </>
