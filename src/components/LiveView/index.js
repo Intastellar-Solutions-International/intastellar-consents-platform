@@ -79,6 +79,7 @@ export function LiveView(props) {
                                                 Object.keys(
                                                     liveData?.domains
                                                 ).filter((domain) => {
+                                                    console.log(liveData?.domains[domain].country, );
                                                     return liveData?.domains[domain].country.indexOf(key) > -1;
                                                 }).map((domain, index) => {
                                                     return <>
@@ -132,26 +133,18 @@ export function LiveView(props) {
                                                                         }} className="dropdown-menu-button">Close</button>
                                                                     </div>
                                                                     {
-
-                                                                        liveData?.domains[domain]?.consent?.map((consent, index) => {
-                                                                            // Convert the consent string to an array of objects.
-                                                                            const consentData = (consent && typeof consent === "string") ? JSON.parse(consent) : null;
-                                                                            if (consentData) {
-
-                                                                                return consentData.map((consentItem, index) => {
-                                                                                    return <div key={index + Math.random()} className="liveView-content-data-1-domain-consent">
+                                                                        // Only show consents for the current country
+                                                                        liveData?.domains[domain]?.consent?.flatMap((consent, index) => {
+                                                                            const consentData = (consent && typeof consent === "string") ? JSON.parse(consent) : consent;
+                                                                            if (Array.isArray(consentData)) {
+                                                                                return consentData.map((consentItem, idx) => (
+                                                                                    <div key={idx + Math.random()} className="liveView-content-data-1-domain-consent">
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.type}</p>
                                                                                         <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
                                                                                     </div>
-                                                                                })
-                                                                            } else {
-                                                                                consent.map((consentItem, index) => {
-                                                                                    return <div key={index + Math.random()} className="liveView-content-data-1-domain-consent">
-                                                                                        <p className="liveView-content-data-1-text">{consentItem?.type}</p>
-                                                                                        <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
-                                                                                    </div>
-                                                                                })
+                                                                                ));
                                                                             }
+                                                                            return [];
                                                                         })
                                                                     }
                                                                 </div>

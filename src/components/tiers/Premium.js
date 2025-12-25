@@ -39,7 +39,7 @@ export default function PremiumTier(props) {
         </div>
         <div className="grid-container">
             <ErrorBoundary>
-                <BarChart title="Device Type" data={[
+                <BarChart title="Consents interactions by Device Type" data={[
                     { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
                     { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
                     { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },

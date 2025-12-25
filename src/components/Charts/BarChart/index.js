@@ -18,7 +18,14 @@ export default function BarChart({ data, data2, title, fromDate, toDate }) {
             let chart = anychart.bar();
 
             chart.background().fill("transparent");
-            chart.xAxis().title("Number of interactions");
+            chart.xAxis().title("Device Type");
+            chart.yAxis().title("Number of interactions");
+            chart.title().fontColor("#626262");
+            chart.animation(true);
+            chart.padding([10, 20, 5, 20]);
+            chart.tooltip().titleFormat(function () {
+                return "";
+            });
             chart.tooltip().format("{%Value}%");
             chart.xScale().mode("continuous");
 
