@@ -155,6 +155,15 @@ const API = {
                 "Organisation": Authentication.getOrganisation(),
                 "Content-Type": "application/json"
             }
+        },
+        audit: {
+            url: `${PrimaryHost}/cmp/audit-report.php`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
         }
     },
     ferry: {
