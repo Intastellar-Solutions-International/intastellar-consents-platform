@@ -16,20 +16,19 @@ export default function Websites() {
     API[id].audit.headers["FromDate"] = new Date().toISOString();
     API[id].audit.headers["ToDate"] = new Date().toISOString();
 
+    
     function generateAudit() {
         fetch(API[id].audit.url, {
             method: API[id].audit.method,
             headers: API[id].audit.headers,
-        }).then((res) => res.json()).then((data) => {
+        }).then((data) => {
             if (data === "Err_Login_Expired") {
                 localStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
-            setActiveData(data);
-        }
-        ).catch((err) => {
-            console.error(err);
+            // Handle successful PDF export
+            console.log("PDF export successful:", data);
         }).finally(() => {
             setLoading(false);
         });

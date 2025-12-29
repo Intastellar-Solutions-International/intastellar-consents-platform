@@ -126,7 +126,7 @@ const API = {
             method: "GET",
             headers: {
                 "Authorization": Authentication.getToken(),
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             }
         },
         exportPDF: {

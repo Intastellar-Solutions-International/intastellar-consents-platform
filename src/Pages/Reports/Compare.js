@@ -4,6 +4,18 @@ import API from '../../API/api';
 import { DomainContext } from '../../App.js';
 const useParams = window.ReactRouterDOM.useParams;
 import Fetch from '../../Functions/fetch';
+// Utility to download a blob as a file
+function downloadBlob(blob, filename) {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+}
 import "./Style.css";
 
 export default function Compare(props) {
@@ -26,24 +38,42 @@ export default function Compare(props) {
 
     const [comparisonData, setComparisonData] = useState(null);
 
-    function handlePDFEExport() {
+    async function handlePDFEExport() {
         setLoadingExport(true);
         API[id].exportPDF.headers.FromDate = fromDate.toISOString().split("T")[0];
         API[id].exportPDF.headers.ToDate = toDate.toISOString().split("T")[0];
 
-        Fetch(API[id].exportPDF.url, API[id].exportPDF.method, API[id].exportPDF.headers, JSON.stringify({
-            domains: domains
-        })).then((data) => {
-            if (data === "Err_Login_Expired") {
+        try {
+            const response = await fetch(API[id].exportPDF.url, {
+                method: API[id].exportPDF.method,
+                headers: {
+                    ...API[id].exportPDF.headers,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ domains })
+            });
+            if (response.status === 401 || response.status === 403) {
                 localStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
-            // Handle successful PDF export
-            console.log("PDF export successful:", data);
-        }).finally(() => {
+            if (response.headers.get('content-type')?.includes('application/pdf')) {
+                const blob = await response.blob();
+                downloadBlob(blob, `Consent_Audit_Report_${fromDate.toISOString().split('T')[0]}_to_${toDate.toISOString().split('T')[0]}.pdf`);
+            } else {
+                const data = await response.json();
+                if (data === "Err_Login_Expired") {
+                    localStorage.removeItem("globals");
+                    window.location.href = "/login";
+                    return;
+                }
+                alert("Failed to generate PDF: " + (data?.error || JSON.stringify(data)));
+            }
+        } catch (err) {
+            alert("An error occurred while exporting the PDF.");
+        } finally {
             setLoadingExport(false);
-        });
+        }
     }
 
     function handleDomainSelection(event, domain) {
@@ -200,7 +230,7 @@ export default function Compare(props) {
                     <div class="flex">
                         <h2>Comparison Results</h2>
                         <button className='export-button' disabled={comparisonData?.length === 0 || comparisonData === null || loadingExport} onClick={handlePDFEExport}>
-                            {loadingExport ? "Exporting..." : "Export as PDF"}
+                            {loadingExport ? "Exporting..." : "Export Audit Report (PDF)"}
                         </button>
                     </div>
                     
