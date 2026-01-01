@@ -19,7 +19,7 @@ export default function BarChart({ data, data2, title, fromDate, toDate }) {
 
             chart.background().fill("transparent");
             chart.xAxis().title("Device Type");
-            chart.yAxis().title("Number of interactions");
+            chart.yAxis().title("Percentage (%) of consents given by device type");
             chart.title().fontColor("#626262");
             chart.animation(true);
             chart.padding([10, 20, 5, 20]);
