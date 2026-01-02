@@ -118,7 +118,8 @@ export default function Dashboard(props) {
                 <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
                     <p className="profile-user">Welcome, {JSON.parse(localStorage.getItem("globals")).user.name.firstName}</p>
-                    <p>Get an overview of your dashboard below. How are your consents performing?</p>
+                    <p>This dashboard shows aggregated consent interactions for the selected period. <br />
+                        Use it to monitor acceptance rates and category-level consent behavior.</p>
                     
                 </div>
                 {
