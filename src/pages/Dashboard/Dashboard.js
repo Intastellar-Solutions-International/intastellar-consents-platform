@@ -15,6 +15,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
 import Pie from "../../Components/Charts/Pie/index.js";
+import Widget from "../../Components/widget/widget.js";
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
@@ -115,14 +116,34 @@ export default function Dashboard(props) {
         <>
             <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
-                <div className="profilePicture-container">
+                {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
                     <p className="profile-user">Welcome, {JSON.parse(localStorage.getItem("globals")).user.name.firstName}</p>
                     <p>This dashboard shows aggregated consent interactions for the selected period. <br />
                         Use it to monitor acceptance rates and category-level consent behavior.</p>
                     
-                </div>
+                </div> */}
+                {/* Top key data views */}
                 {
+                    activeData != null ?
+                        <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
+                            <Widget styleType="small" totalNumber={activeData} type="Total Consents Given" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance rate" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                        </div> : 
+                        <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
+                            <Loading small={true} />
+                            <Loading small={true} />
+                            <Loading small={true} />
+                            <Loading small={true} />
+                            <Loading small={true} />
+                        </div>
+                            
+
+                }
+                {/* {
                     (id === "gdpr" && organisation != null && JSON.parse(organisation).id == 1) ? <TopWidgets dashboardView={dashboardView} API={{
                         url: API[id].getTotalNumber.url,
                         method: API[id].getTotalNumber.method,
@@ -135,7 +156,7 @@ export default function Dashboard(props) {
                         method: API[id].getStyle.method,
                         header: API[id].getStyle.headers
                     }} /> : null
-                }
+                } */}
                 {/* <div className="crawler">
                     <Crawler />
                 </div> */}

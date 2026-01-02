@@ -1,6 +1,17 @@
 import "./Widget.css";
 import "./Loading.css";
-function Loading() {
+function Loading(props) {
+
+    if (props?.small) {
+        return (
+            <>
+                <div className="key-highlight-widget small-widget loading-small-widget">
+                    <div className="smallIsLoading"></div>
+                </div>
+            </>
+        );
+    }
+
     return (
         <>
             <div className="widget">
