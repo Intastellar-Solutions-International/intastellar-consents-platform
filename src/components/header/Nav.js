@@ -16,22 +16,11 @@ import dashboard from "./icons/dashboard.svg";
 
 export default function Nav() {
 
-    const Expand = function () {
-        document.querySelector(".sidebar").classList.toggle("expand");
-        document.querySelector(".collapsed").classList.toggle("expand");
-    };
-
     return (
         <>
             <div className="navOverlay">
                 <aside className="sidebar">
                     <nav className="collapsed">
-                        <button className="expandBtn navItems" onClick={() => Expand()}>
-                            <i className="dashboard-icons reports" style={{
-                                backgroundImage: `url(${expand})`
-                            }} data-icon={expand}></i>
-                            <span className="hiddenCollapsed">Expand</span>
-                        </button>
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/dashboard") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/dashboard"}><i className="dashboard-icons home" style={{
                             backgroundImage: `url(${home})`
                         }} data-icon={home}></i> <span className="hiddenCollapsed">Home</span></Link>

@@ -1,6 +1,4 @@
 const { useState, useEffect, useRef, useContext } = React;
-import TopWidgets from "../../Components/widget/TopWidgets.js";
-import StyleWidget from "../../Components/widget/StyleWidget.js";
 import useFetch from "../../Functions/FetchHook";
 import API from "../../API/api";
 import { Loading, LoadingBar } from "../../Components/widget/Loading";
@@ -16,6 +14,7 @@ import { LiveView } from "../../components/LiveView/index.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
 import Pie from "../../Components/Charts/Pie/index.js";
 import Widget from "../../Components/widget/widget.js";
+import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
@@ -50,6 +49,19 @@ export default function Dashboard(props) {
 
     API[id].getInteractionsByCountry.headers.FromDate = fromDate.toISOString().split("T")[0];
     API[id].getInteractionsByCountry.headers.ToDate = toDate.toISOString().split("T")[0];
+
+    const APIUrl = API[id].getTotalNumber.url;
+    const APIMethod = API[id].getTotalNumber.method;
+    const APIHeader = API[id].getTotalNumber.headers;
+
+    const StyleAPIUrl = API[id].getStyle.url;
+    const StyleAPIMethod = API[id].getStyle.method;
+    const StyleAPIHeader = API[id].getStyle.headers;
+
+    const [styleLoading, styleData, styleError, styleUpdated] = useFetch(30, StyleAPIUrl, StyleAPIMethod, StyleAPIHeader);
+    const [jsLoading, jsData, error, updated] = useFetch(30, APIUrl, APIMethod, APIHeader);
+
+    console.log(styleData);
 
     useEffect(() => {
 
@@ -126,14 +138,29 @@ export default function Dashboard(props) {
                 {/* Top key data views */}
                 {
                     activeData != null ?
-                        <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
-                            <Widget styleType="small" totalNumber={activeData} type="Total Consents Given" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance rate" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                        <div className={`grid-container`} style={{ gridTemplateColumns: organisation != null && JSON.parse(organisation).id == 1 ? "max-content 1fr" : "1fr", gap: "10px", marginBottom: "20px" }}>
+                            {
+                                organisation != null && JSON.parse(organisation).id == 1 ?
+                                    <div className="grid-container" style={{ gridTemplateColumns: "max-content max-content max-content", gap: "10px", marginBottom: "20px", marginRight: "20px" }}>
+                                        {(jsLoading) ? <Loading /> : <ErrorBoundary>
+                                            <Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" />
+                                        </ErrorBoundary>
+                                        }
+                                        {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString("de-DE") + "%"} type="JavaScript" /></ErrorBoundary>}
+                                        {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString("de-DE") + "%"} type="WordPress" /></ErrorBoundary>}
+                                    </div> : null
+                            }
+                            <div className={`grid-container grid-5`} style={{ gap: "10px", marginBottom: "20px" }}>
+
+                                <Widget styleType="small" totalNumber={activeData} type="Total Consents Given" fromDate={fromDate} toDate={toDate} />
+                                <Widget styleType="small" totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
+                                <Widget styleType="small" totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
+                                <Widget styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
+                                <Widget styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                            </div>
                         </div> : 
                         <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
+                            <Loading small={true} />
                             <Loading small={true} />
                             <Loading small={true} />
                             <Loading small={true} />
