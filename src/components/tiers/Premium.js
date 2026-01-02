@@ -36,7 +36,7 @@ export default function PremiumTier(props) {
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Functional.toLocaleString("de-DE") + "%"} type="Accepted Functional" /></ErrorBoundary>}
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Statics.toLocaleString("de-DE") + "%"} type="Accepted analytical cookies" /></ErrorBoundary >}
         </div>
-        <p>The data is based of the total number of consents given.</p>
+        <p>All percentages are calculated based on the total number of consent interactions in the selected period. Category-level percentages are calculated independently and may overlap.</p>
         <div className="grid-container">
             <ErrorBoundary>
                 <BarChart title="Consents interactions by Device Type" data={[
