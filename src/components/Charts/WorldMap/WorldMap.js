@@ -158,8 +158,8 @@ export default function Map(props) {
          </div>
          <div className="top-countries">
             <div className="grid-container grid-2">
-               <p>Contry</p>
-               <p style={{ textAlign: "right" }}>Active Interactions</p>
+               <p>Country</p>
+               <p style={{ textAlign: "right" }}>Interactions</p>
             </div>
             {
                (countries) ? countries.sort((a, b) => {
