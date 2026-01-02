@@ -19,6 +19,10 @@
     padding: 0px;
 }
 
+.span-2{
+    grid-column: span 2;
+}
+
 /* .overviewTotal::before {
     content: '';
     position: absolute;
