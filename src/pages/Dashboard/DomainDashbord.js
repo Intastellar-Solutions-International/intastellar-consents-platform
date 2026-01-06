@@ -103,7 +103,10 @@ export default function DomainDashbord(props) {
                             <Loading small={true} />
                         </div>
                 }
-                {(loading) ? <Loading /> : (data?.Total === 0) ? <h1>No interactions yet</h1> :
+                {(loading) ? <Loading /> : (data?.Total === 0) ? <>
+                    <h1>No interactions yet</h1>
+                    <p>No interactions were recorded for this domain during the selected period.</p>
+                </> :
                     <>
                         <p>Date Range: {Intl.DateTimeFormat("da-DK").format(new Date(data?.date.from))} - {Intl.DateTimeFormat("da-DK").format(new Date(data?.date.to))}</p>
                         <Widget totalNumber={data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />
