@@ -11,7 +11,7 @@ export default function SideCart({
                 }}>×</button>
             </div>
             <div className="sideCart-content">
-                <iframe title="Help" src={`https://support.intastellarsolutions.com/${helpPage}`} frameBorder="0" style={{ width: "100%", height: "100vh" }}></iframe>
+                <iframe title="Help" src={`https://support.intastellarsolutions.com/${helpPage}`} frameBorder="0" style={{ width: "100%", height: "100vh" }} sandbox="allow-scripts allow-forms" allow="clipboard-write"></iframe>
             </div>
         </div>
     </>
