@@ -61,7 +61,7 @@ export default function Dashboard(props) {
     const [styleLoading, styleData, styleError, styleUpdated] = useFetch(30, StyleAPIUrl, StyleAPIMethod, StyleAPIHeader);
     const [jsLoading, jsData, error, updated] = useFetch(30, APIUrl, APIMethod, APIHeader);
 
-    console.log(styleData);
+    console.log(fromDate, toDate);
 
     useEffect(() => {
 

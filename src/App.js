@@ -123,16 +123,18 @@ export default function App() {
 
         }, []);
 
+        console.log("ORG:", Authentication.getOrganisation());
+
+        if (Authentication.getOrganisation() === undefined || Authentication.getOrganisation() === null) {
+            navigate.push("/settings/create-organisation");
+        }
+
         if (id === null && organisations) {
             return (
                 <>
                     <PlatformSelector setId={setId} platforms={organisations} />
                     {/* <BugReport /> */}
                 </>
-            )
-        } else if (subscriptionStatus.status != "loading" && organisations === null) {
-            return (
-                <NewOrganisation />
             )
         } else if (JSON.parse(localStorage.getItem("subscription"))?.status != "active" && Authentication.getOrganisation() != 1) {
             return (
@@ -187,7 +189,9 @@ export default function App() {
                                         </Route>
                                         <Route path="/settings/create-organisation">
                                             <ErrorBoundary>
-                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <CreateOrganisation /> : null}
+                                                {Authentication.User.Status === "admin" 
+                                                || Authentication.User.Status === "super-admin" 
+                                                    || Authentication.getOrganisation() === undefined ? <CreateOrganisation /> : null}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/add-user">
@@ -197,7 +201,9 @@ export default function App() {
                                         </Route>
                                         <Route path="/settings/add-domain">
                                             <ErrorBoundary>
-                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" || Authentication.User.Status === "manager" ?
+                                                {Authentication.User.Status === "admin" 
+                                                || Authentication.User.Status === "super-admin"
+                                                || Authentication.User.Status === "manager" ?
                                                     <SettingsAddDomain /> : null}
                                             </ErrorBoundary>
                                         </Route>
