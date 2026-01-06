@@ -199,6 +199,22 @@
     background-position: center;
 }
 
+.secondary{
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin-left: 10px;
+}
+
 /* .dashboard-icons[data-icon]::after {
     content: "";
     background: url();
@@ -406,6 +422,10 @@
 
 .menu {
     display: none;
+}
+
+.dashboard-content h1{
+    display: flex;
 }
 
 @media screen and (min-width: 320px) and (max-width: 900px) {

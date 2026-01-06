@@ -1,6 +1,29 @@
 import Filter from "../../Filter/index.js";
 import { LoadingBar } from "../../../Components/widget/Loading";
-export default function StickyPageTitle({ loadingUpdated, finalLoaded, title, url, method, header, numberofDays, getLastDays, setActiveData, fromDate, toDate, setFromDate, setToDate, previousPeriod, previousPeriod2, children }) {
+import Button from "../../Button/Button.js";
+import SideCart from "../../SideCart/SideCart.js";
+
+// Added showInfoButton and infoType props
+export default function StickyPageTitle({
+    loadingUpdated,
+    finalLoaded,
+    title,
+    url,
+    method,
+    header,
+    numberofDays,
+    getLastDays,
+    setActiveData,
+    fromDate,
+    toDate,
+    setFromDate,
+    setToDate,
+    previousPeriod,
+    previousPeriod2,
+    children,
+    showInfoButton = false,
+    infoType = "information"
+}) {
     window.addEventListener("scroll", (e) => {
         if (window.scrollY > 0) {
             document.querySelector(".infoHeader").classList.add("sticky");
@@ -10,8 +33,11 @@ export default function StickyPageTitle({ loadingUpdated, finalLoaded, title, ur
     })
     
     console.log("Children in StickyPageTitle:", children);
+    function openSideCart() {
+        document.querySelector(".sideCart").classList.add("open");
+    }
 
-    if (!children){
+    if (!children) {
         return <>
             <div className="infoHeader" style={{ padding: "10px 0" }}>
                 {loadingUpdated || finalLoaded ? <LoadingBar /> : null}
@@ -20,7 +46,12 @@ export default function StickyPageTitle({ loadingUpdated, finalLoaded, title, ur
                     gridTemplateColumns: "1fr .5fr",
                     alignItems: "center",
                 }}>
-                    <h1 style={{ fontSize: "1.5em" }}>{title}</h1>
+                    <h1 style={{ fontSize: "1.5em" }}>
+                        {title}
+                        {showInfoButton && (
+                            <Button className="secondary" onClick={openSideCart}>i</Button>
+                        )}
+                    </h1>
                     {
                         (numberofDays) ?
                             <Filter
@@ -37,12 +68,12 @@ export default function StickyPageTitle({ loadingUpdated, finalLoaded, title, ur
                                 setToDate={setToDate}
                             /> : null
                     }
-                    {/* {(url) ? <Filter url={url} method={method} header={header} setLastDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} /> : null} */}
                 </div>
             </div>
+            {showInfoButton && <SideCart infoType={infoType} helpPage={infoType} />}
         </>
     } else {
-        console.log("Hello children" + children);
+        // With children
         return <>
             <div className="infoHeader" style={{ padding: "10px 0" }}>
                 {loadingUpdated || finalLoaded ? <LoadingBar /> : null}
@@ -52,10 +83,13 @@ export default function StickyPageTitle({ loadingUpdated, finalLoaded, title, ur
                     alignItems: "center",
                 }}>
                     {children}
+                    {showInfoButton && (
+                        <Button className="secondary" onClick={openSideCart}>i</Button>
+                    )}
                 </div>
             </div>
+            {showInfoButton && <SideCart infoType={infoType} helpPage={infoType} />}
         </>
-        
     }
 
 }
