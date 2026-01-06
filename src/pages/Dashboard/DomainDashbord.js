@@ -123,13 +123,13 @@ export default function DomainDashbord(props) {
                         {(loadingCountry) ? <Loading /> : (activeDataCountry?.data.Total === 0) ? null :
                             <section>
                                 <h3>User interactions based on country</h3>
-                                {
+                                <div className={["widget no-padding grid-3-4"]}>
                                     <Map data={{
 
                                         Countries: activeDataCountry?.data?.Countries,
                                         total: activeDataCountry?.data?.Total,
                                     }} />
-                                }
+                                </div>
                             </section>
                         }
                     </section>}
