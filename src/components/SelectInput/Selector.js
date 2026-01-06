@@ -1,8 +1,22 @@
 const { useState, useEffect, useRef, useContext } = React;
 import "./Style.css";
-const useParams = window.ReactRouterDOM.useParams;
 export default function Select(props){
     const [isOpen, setIsOpen] = useState(false);
+    // Search input ref
+    const searchInput = useRef(null);
+
+    function searchItems(query){
+        let items = document.querySelectorAll(".dropdown-menu__content li");
+        console.log("Items:", items, query);
+        items.forEach((item) => {
+            if(item.innerText.toLowerCase().includes(query.toLowerCase())){
+                item.style.display = "block";
+            }else{
+                item.style.display = "none";
+            }
+        });
+    }
+
     function isJson(str) {
         try {
             JSON.parse(str);
@@ -17,7 +31,7 @@ export default function Select(props){
     }
 
     function clickOutSide(e){
-        if(e.target.className !== "dropdown-menu-button"){
+        if(e.target.className !== "dropdown-menu-button" && e.target !== searchInput.current){
             setIsOpen(false);
         }
     }
@@ -34,6 +48,9 @@ export default function Select(props){
                 {(isOpen) ? 
                 <div className="dropdown-menu">
                     <ul className="dropdown-menu__content" style={props.style}>
+                        <div className="search-box">
+                            <input className="search-input" onChange={(e) => searchItems(e.target.value)} ref={searchInput} type="search" name="q" placeholder="Search" />
+                        </div>
                         {
                             props?.items?.map((item, key) => {
                                 if(isJson(item)){

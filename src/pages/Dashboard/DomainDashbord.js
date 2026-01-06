@@ -103,10 +103,10 @@ export default function DomainDashbord(props) {
                             <Loading small={true} />
                         </div>
                 }
-                {(loading) ? <Loading /> : (data.Total === 0) ? <h1>No interactions yet</h1> :
+                {(loading) ? <Loading /> : (data?.Total === 0) ? <h1>No interactions yet</h1> :
                     <>
-                        <p>Date Range: {Intl.DateTimeFormat("da-DK").format(new Date(data.date.from))} - {Intl.DateTimeFormat("da-DK").format(new Date(data.date.to))}</p>
-                        <Widget totalNumber={data.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />
+                        <p>Date Range: {Intl.DateTimeFormat("da-DK").format(new Date(data?.date.from))} - {Intl.DateTimeFormat("da-DK").format(new Date(data?.date.to))}</p>
+                        <Widget totalNumber={data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />
                         <div className="grid-container grid-3">
                             {(loading) ? <Loading /> : <Widget totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
                             {(loading) ? <Loading /> : <Widget totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" />}
@@ -120,7 +120,7 @@ export default function DomainDashbord(props) {
                 }
                 <div className="grid-container grid-3">
                     {<section>
-                        {(loadingCountry) ? <Loading /> : (activeDataCountry?.data.Total === 0) ? null :
+                        {(loadingCountry) ? <Loading /> : (activeDataCountry?.data?.Total === 0) ? null :
                             <section>
                                 <h3>User interactions based on country</h3>
                                 <div className={["widget no-padding grid-3-4"]}>

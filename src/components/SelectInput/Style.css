@@ -35,10 +35,16 @@
     border-bottom: 1px solid;
 }
 
-.dropdown-menu__content{
+.dropdown-menu{
     position: absolute;
     top: 100%;
     left: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.dropdown-menu__content{
+    position: relative;
     font-size: 16px;
     font-weight: lighter;
     width: 100%;
@@ -107,6 +113,21 @@
     border-top: 1px solid;
     border-left: 1px solid;
     transform: rotate(-135deg);
+}
+
+.search-box{
+    padding: 10px;
+}
+
+.search-input{
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 5px;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+    position: sticky;
 }
 
 /* .selectorContianer{
