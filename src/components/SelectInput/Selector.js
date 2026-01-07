@@ -10,7 +10,7 @@ export default function Select(props){
         console.log("Items:", items, query);
         items.forEach((item) => {
             if(item.innerText.toLowerCase().includes(query.toLowerCase())){
-                item.style.display = "block";
+                item.style.display = "flex";
             }else{
                 item.style.display = "none";
             }
