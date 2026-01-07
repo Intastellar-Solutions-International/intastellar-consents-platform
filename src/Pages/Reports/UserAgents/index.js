@@ -8,7 +8,7 @@ export default function UserAgents() {
     document.title = "Reports - User agents | Intastellar Consents";
     const { handle, id } = useParams();
 
-    API[id].getDevices.headers.Domains = "all";
+    API[id].getDevices.headers.Domains = "combined view";
     API[id].getDevices.headers.FromDate = "2021-01-01";
     API[id].getDevices.headers.ToDate = "2021-12-31";
 

@@ -50,7 +50,7 @@ export default function Header(props) {
             if (data.error === "Err_No_Domains") {
 
             } else {
-                data.unshift({ domain: "all", installed: null, lastedVisited: null });
+                data.unshift({ domain: "combined view", installed: null, lastedVisited: null });
                 data?.map((d) => {
                     return punycode.toUnicode(d.domain);
                 }).filter((d) => {
@@ -61,7 +61,7 @@ export default function Header(props) {
                 const allowedDomains = data?.map((d) => {
                     return punycode.toUnicode(d.domain);
                 }).filter((d) => {
-                    return d !== undefined && d !== "" && d !== "undefined." && d !== "all";
+                    return d !== undefined && d !== "" && d !== "undefined." && d !== "combined view";
                 });
 
                 localStorage.setItem("domains", JSON.stringify(allowedDomains));

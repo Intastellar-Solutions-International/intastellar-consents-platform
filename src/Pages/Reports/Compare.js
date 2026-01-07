@@ -135,7 +135,7 @@ export default function Compare(props) {
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
                                         domains.includes(domain.domain)
@@ -154,7 +154,7 @@ export default function Compare(props) {
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
                                         domains.includes(domain.domain)
@@ -173,7 +173,7 @@ export default function Compare(props) {
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
                                         domains.includes(domain.domain)
@@ -192,7 +192,7 @@ export default function Compare(props) {
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
                                         domains.includes(domain.domain)
@@ -211,7 +211,7 @@ export default function Compare(props) {
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "all")?.map((domain, index) => (
+                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
                                         domains.includes(domain.domain)

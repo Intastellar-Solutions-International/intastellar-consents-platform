@@ -48,7 +48,7 @@ export const DomainContext = createContext(null);
 export default function App() {
     const [dashboardView, setDashboardView] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
     const [organisation, setOrganisation] = useState((localStorage.getItem("organisation")) ? localStorage.getItem("organisation") : null);
-    const [currentDomain, setCurrentDomain] = useState("all");
+    const [currentDomain, setCurrentDomain] = useState("combined view");
     const [handle, setHandle] = useState(null);
     const [organisations, setOrganisations] = useState(null);
     const [domains, setDomains] = useState(null);
@@ -111,7 +111,7 @@ export default function App() {
                     if (data.error === "Err_No_Domains" || data.length === 0) {
                         setDomainError(true);
                     } else {
-                        data.unshift({ domain: "all", installed: null, lastedVisited: null });
+                        data.unshift({ domain: "combined view", installed: null, lastedVisited: null });
                         data?.map((d) => {
                             return punycode.toUnicode(d.domain);
                         }).filter((d) => {
