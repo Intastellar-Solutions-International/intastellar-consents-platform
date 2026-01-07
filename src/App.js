@@ -10,12 +10,9 @@ import Header from "./Components/Header/header";
 import Footer from "./Components/Footer";
 import Login from "./Login/Login";
 import Signup from "./Login/Signup";
-import AuthLogin from "./Login/AuthLogin";
 import Nav from "./Components/Header/Nav";
 import CookiesDashboard from "./Pages/Dashboard/CookiesDashboard";
 import API from "./API/api";
-import LandingPage from "./Pages/LandingPage";
-import useFetch from "./Functions/FetchHook";
 import Dashboard from "./Pages/Dashboard/Dashboard.js";
 import FerryDashboard from "./Pages/Dashboard/ferry/Dashboard.js";
 import Websites from "./Pages/Domains/index.js";
@@ -24,12 +21,10 @@ import CreateOrganisation from "./Pages/Settings/CreateOrganisation";
 import AddUser from "./Pages/Settings/AddUser";
 import ViewOrg from "./Pages/Settings/ViewOrganisations";
 import ViewUsers from "./Pages/Settings/ViewUsers";
-import LoginOverLay from "./Login/LoginOverlay";
 import DomainDashbord from "./Pages/Dashboard/DomainDashbord";
 import Fetch from "./Functions/fetch";
 import AddDomain from "./Components/AddDomain/AddDomain";
 import SettingsAddDomain from "./Pages/Settings/AddDomain";
-import Select from "./Components/SelectInput/Selector";
 import Authentication from "./Authentication/Auth";
 import UserConsents from "./Pages/UserConsents/UserConsents";
 import Reports from "./Pages/Reports/Reports";
@@ -43,7 +38,6 @@ import UserPreferences from "./Pages/Settings/UserPreferences";
 import StripePayment from "./Components/StripePayment";
 import Compare from "./Pages/Reports/Compare";
 import BlacklistIp from "./Pages/Settings/BlacklistIp";
-import NewOrganisation from "./Pages/Settings/CreateOrganisation/NewOrganisation";
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
@@ -54,7 +48,6 @@ export const DomainContext = createContext(null);
 export default function App() {
     const [dashboardView, setDashboardView] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
     const [organisation, setOrganisation] = useState((localStorage.getItem("organisation")) ? localStorage.getItem("organisation") : null);
-    const [AllOrganisations, setAllOrganisations] = useState(null);
     const [currentDomain, setCurrentDomain] = useState("all");
     const [handle, setHandle] = useState(null);
     const [organisations, setOrganisations] = useState(null);
@@ -69,15 +62,23 @@ export default function App() {
     const navigate = window.ReactRouterDOM.useHistory();
 
     useEffect(() => {
-        if (localStorage.getItem("globals") === null && window.location.pathname !== "/login" && window.location.pathname !== "/") {
-            // Redirect to login if globals are not set
-            window.location.href = "/login";
+        const globals = localStorage.getItem("globals");
+        const path = window.location.pathname;
+        console.log("[App.js] globals:", globals, "path:", path);
+        if (!globals && path !== "/login" && path !== "/") {
+            window.location.replace("/login");
         }
-    }, [localStorage.getItem("globals")]);
+    }, []);
 
     if (localStorage.getItem("globals") != null) {
-        if (window.location.pathname === "/login" || window.location.pathname === "/") {
-            window.location.href = "/" + id + "/dashboard";
+        const path = window.location.pathname;
+        // Only redirect if id is present and not already on dashboard
+        if ((path === "/login" || path === "/") && id) {
+            if (!path.startsWith("/" + id + "/dashboard")) {
+                console.log("[App.js] Redirecting to dashboard:", id);
+                window.location.replace("/" + id + "/dashboard");
+                return null;
+            }
         }
 
         /* const [domainLoadings, data, error, getUpdated] = useFetch(null, API[id].getDomains.url, API[id].getDomains.method, API[id].getDomains.headers); */
@@ -122,8 +123,6 @@ export default function App() {
             }
 
         }, []);
-
-        console.log("ORG:", Authentication.getOrganisation());
 
         if (Authentication.getOrganisation() === undefined || Authentication.getOrganisation() === null) {
             navigate.push("/settings/create-organisation");
@@ -255,8 +254,7 @@ export default function App() {
                                         <Router path="/login" exact>
                                             <Login />
                                         </Router>
-                                        <Route path="/settings/config-gdpr">
-                                        </Route>
+                                        <Route path="/settings/config-gdpr"></Route>
                                         <Route path="/settings/blacklist-ip">
                                             <ErrorBoundary>
                                                 {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <BlacklistIp /> : null}
@@ -300,14 +298,6 @@ export default function App() {
                 <Switch>
                     <Route path="/login" exact>
                         <Login />
-                    </Route>
-                    <Route path="/signup" exact>
-                        <ErrorBoundary>
-                            <Signup />
-                        </ErrorBoundary>
-                    </Route>
-                    <Route path="/auth-login" exact>
-                        <AuthLogin />
                     </Route>
                     <Route path="/" exact>
                         <ErrorBoundary>
