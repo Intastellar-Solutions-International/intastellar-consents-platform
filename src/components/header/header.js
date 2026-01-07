@@ -72,7 +72,10 @@ export default function Header(props) {
 
 
     domainList = domains?.map((d) => {
-        return punycode.toUnicode(d.domain)
+        return {
+            icon: d.icon || null,
+            name: punycode.toUnicode(d.domain)
+        }
     })
 
     return (

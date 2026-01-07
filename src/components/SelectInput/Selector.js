@@ -55,8 +55,12 @@ export default function Select(props){
                             props?.items?.map((item, key) => {
                                 if(isJson(item)){
                                     item = JSON.parse(item);
+                                    console.log("Item is JSON:", item);
                                     return <>
-                                        <li onClick={() => props.onChange(JSON.stringify({ id: item.id, name: item.name }))} key={item.id}>{item.name}</li>
+                                        <li onClick={() => props.onChange(JSON.stringify({ id: item.id, name: item.name }))} key={item.id}>
+                                            {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
+                                            {item.name}
+                                        </li>
                                     </> 
                                 }else if(typeof item === "object" && item?.uri){
                                     return <>
@@ -67,15 +71,24 @@ export default function Select(props){
                                                     uri: item.uri
                                                 }
                                             )
-                                        )} key={item.uri}>{item.type}</li>
+                                        )} key={item.uri}>
+                                            {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
+                                            {item.type}
+                                        </li>
                                     </> 
                                 }else if(typeof item === "object"){
                                     return <>
-                                        <li onClick={() => props.onChange(JSON.stringify({ id: item.id, name: item.name }))} key={item.id}>{item.name}</li>
+                                        <li style={{display: "flex", alignItems: "center"}} onClick={() => props.onChange(item.name)} key={item.id}>
+                                            {(item?.icon && item.icon != "undefined") ? <img className="company-logo" src={item.icon} alt={item.name} /> : null}
+                                            {item.name}
+                                        </li>
                                     </> 
                                 }else {
                                     return <>
-                                        <li onClick={(e) => props.onChange(e.target.innerText)} key={item} value={item}>{item}</li>
+                                        <li onClick={(e) => props.onChange(e.target.innerText)} key={item} value={item}>
+                                            {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
+                                            {item}
+                                        </li>
                                     </>
                                 }
                             })

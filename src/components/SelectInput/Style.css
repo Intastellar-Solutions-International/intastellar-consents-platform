@@ -130,6 +130,14 @@
     position: sticky;
 }
 
+.company-logo{
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    object-fit: contain;
+}
+
 /* .selectorContianer{
     z-index: 1;
 } */

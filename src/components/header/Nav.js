@@ -30,9 +30,6 @@ export default function Nav() {
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/compare") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/compare"}><i className="dashboard-icons compare" style={{
                             backgroundImage: `url(${dashboard})`
                         }} data-icon={dashboard}></i> <span className="hiddenCollapsed">Portfolio Benchmark</span></Link>
-                        <Link className={"navItems" + (useLocation().pathname.indexOf("/domains") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/domains"}><i className="dashboard-icons domains" style={{
-                            backgroundImage: `url(${domains})`
-                        }} data-icon={domains}></i> <span className="hiddenCollapsed">Domains</span></Link>
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/cookies") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/cookies"}><i className="dashboard-icons cookies" style={{
                             backgroundImage: `url(${cookies})`
                         }} data-icon={cookies}></i> <span className="hiddenCollapsed">Cookies</span></Link>
