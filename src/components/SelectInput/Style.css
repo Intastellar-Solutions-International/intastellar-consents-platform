@@ -148,5 +148,11 @@
         min-width: 0;
         overflow: hidden;
     }
+
+    .dropdown-menu{
+        width: unset;
+        right: 0;
+        left: unset;
+    }
     
 }
