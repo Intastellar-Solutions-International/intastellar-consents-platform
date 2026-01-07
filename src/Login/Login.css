@@ -177,6 +177,11 @@ body{
     width: 110px;
 }
 
+.poweredBy {
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
 .loginForm-inputField.--btn {
     background-color: #c09f53;
     font-size: 16px;
@@ -287,6 +292,11 @@ body{
 
     .intastellar-accounts-logo-container{
         text-align: center;
+    }
+
+    .poweredBy{
+        font-size: 12px;
+        margin-bottom: 10px;
     }
 
     .intastellar-accounts-logo{

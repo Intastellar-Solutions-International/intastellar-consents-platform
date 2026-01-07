@@ -111,7 +111,7 @@ export default function Login() {
                             type="login"
                         /> 
                         <section className="intastellar-accounts-logo-container">
-                            <p>Powered by Intastellar Accounts</p>
+                            <p className="poweredBy">Powered by Intastellar Accounts</p>
                             <img src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts-white.svg" alt="Intastellar Accounts Logo" className="intastellar-accounts-logo" />
                         </section>
                     </div>
