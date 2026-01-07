@@ -2,10 +2,7 @@ import "./Login.css";
 import logo from "../Components/Header/logo.svg";
 import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
-import FAQS from "../Components/FAQ";
 import { IntastellarButton } from "@intastellar/signin-sdk-react";
-const Link = window.ReactRouterDOM.Link;
-const useLocation = window.ReactRouterDOM.useLocation;
 
 export default function Login() {
     document.title = "Log in to Intastellar Consents";
