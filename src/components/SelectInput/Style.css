@@ -1,5 +1,5 @@
 .selector{
-    width: calc(max-content + 20px);
+    max-width: 350px;
     height: 34px;
     position: relative;
     display: flex;
