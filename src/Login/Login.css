@@ -247,8 +247,11 @@ body{
         grid-template-columns: 1fr;
     }
 
+    .loginForm-logo-section{
+        border: none;
+    }
+
     .loginForm-logo {
-        width: 50%;
         padding: 0;
         margin: 20px auto;
     }
