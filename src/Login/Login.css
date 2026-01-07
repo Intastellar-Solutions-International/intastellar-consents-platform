@@ -1,3 +1,8 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;;
+}
 .ppad{
     padding-block: 60px;
 }
@@ -7,6 +12,7 @@
     padding: 0;
     font-family: 'Arial', sans-serif;
     background-color: #f0f0f0;
+    color:#636363;
 }
 .signin-container{
     display: flex;
@@ -18,10 +24,33 @@
 
 .loginForm-container {
     display: grid;
-    grid-template-columns: 1fr .65fr;
-    min-height: 70vh;
+    place-items: center;
+    min-height: 100dvh;
     height: auto;
     width: 100%;
+}
+
+.loginForm-logo-section{
+    padding: 40px;
+    text-align: left;
+    border-radius: 7px;
+    border: 1px solid #505050;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.loginForm-button-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.loginForm-description{
+    margin-bottom: 30px;
+    margin-top: 0;
 }
 
 .loginForm-header{
@@ -132,8 +161,7 @@
 }
 
 .loginForm-logo {
-    width: 350px;
-    margin-bottom: 30px;
+    width: 400px;
 }
 
 .loginForm-logo.--hideMobile {
@@ -141,8 +169,8 @@
 }
 
 .intastellar-accounts-logo{
-    width: 120px;
-    margin-top: 170px;
+    width: 110px;
+    margin-top: 120px;
 }
 
 
@@ -156,9 +184,8 @@
 }
 
 .loginForm-title {
-    font-size: 1.175em;
+    font-size: 1.70em;
     text-align: center;
-    padding: 15px 0px;
 }
 
 .loginForm-service {
@@ -255,9 +282,12 @@
         padding: 60px;
     }
 
-    .intastellar-accounts-logo{
+    .intastellar-accounts-logo-container{
         margin-top: 90px;
-        margin-bottom: 40px;
+    }
+
+    .intastellar-accounts-logo{
+        margin-bottom: 70px;
     }
 
     .graphic-container{
