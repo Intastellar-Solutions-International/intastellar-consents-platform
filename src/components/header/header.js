@@ -14,7 +14,7 @@ const punycode = require("punycode");
 export default function Header(props) {
 
     const [Organisation, setOrganisation] = useContext(OrganisationContext);
-    const [currentDomain, setCurrentDomain] = useState((window.location.pathname.split("/")[2] === "view") ? decodeURI(window.location.pathname.split("/")[3]?.replace("%2E", ".")) : "Choose one of your domains");
+    const [currentDomain, setCurrentDomain] = useState((window.location.pathname.split("/")[2] === "view") ? decodeURI(window.location.pathname.split("/")[3]?.replace("%2E", ".")) : "Choose domain");
     const profileImage = JSON.parse(localStorage.getItem("globals"))?.user?.avatar;
     let domainList = null;
     const Name = JSON.parse(localStorage.getItem("globals"))?.user?.name?.first_name + " " + JSON.parse(localStorage.getItem("globals"))?.user?.name?.last_name;

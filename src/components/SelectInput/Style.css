@@ -47,7 +47,7 @@
     position: relative;
     font-size: 16px;
     font-weight: lighter;
-    width: 100%;
+    width: max-content;
     max-height: 500px;
     overflow: auto;
     text-align: left;

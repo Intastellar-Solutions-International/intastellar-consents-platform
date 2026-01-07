@@ -30,8 +30,8 @@ export function LPFooter() {
             </section>
             <section className="footer-logo-container">
                 <img src="https://www.intastellar-consents.com/assets/icons/intastellar-logo-black.svg" alt="Intastellar Solutions International" className="footer-logo" />
+                <p className="copy-info">Data processing in accordance with GDPR. Intastellar Consents is a product by Intastellar Solutions International.</p>
                 <p className="copy-info">&copy; {year} Intastellar Solutions International. All rights reserved.</p>
-                <p className="copy-info">Data processing in accordance with GDPR.</p>
             </section>
         </footer>
     </>
