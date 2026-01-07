@@ -48,6 +48,16 @@ export default function Select(props){
                 {(props.icon) ? <i className={props.icon}></i> : null}
                 <button className="dropdown-menu-button" style={props?.style2} onClick={openMenu}>
                     {
+                        (isJson(props.defaultValue)) ?
+                        <>
+                            {
+                                (JSON.parse(props.defaultValue).icon) ? 
+                                <img className="company-logo" src={JSON.parse(props.defaultValue).icon} alt={JSON.parse(props.defaultValue).name} />
+                                : null
+                            }
+                            {JSON.parse(props.defaultValue).name}
+                        </>
+                        :
                         props.defaultValue
                     }
                 </button>
