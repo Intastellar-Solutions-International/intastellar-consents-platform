@@ -55,10 +55,9 @@
 }
 
 .dashboard-logo {
-    padding: 10px 20px;
-    padding-right: 0;
-    height: 65px;
+    height: 56px;
     text-align: left;
+    margin-right: 30px;
     object-fit: contain;
     object-position: 0;
     position: relative;
