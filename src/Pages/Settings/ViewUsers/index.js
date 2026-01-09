@@ -21,10 +21,34 @@ export default function ViewUsers() {
     return (
         <>
             <SideNav links={reportsLinks} title="Settings" />
-            <main className="dashboard-content">
+            <main className="dashboard-content" style={{maxWidth: "1200px"}}>
                 <h1>Users in my organisation</h1>
-                <Link className="backLink" to="/settings">Back to settings</Link>
-                <div className="grid">
+                <section>
+                    <header className="grid-cols-5 grid no-gap">
+                        <h3>Org. ID</h3>
+                        <h3>Name</h3>
+                        <h3>Email</h3>
+                        <h3>Role</h3>
+                        <h3>Actions</h3>
+                    </header>
+                    {(loading) ? <CurrentPageLoading /> : data.length > 0 ? data.map((d, key) => {
+                        console.log("Data: ", d);
+                        return (
+                            <article key={key} className="grid-cols-5 grid border-gray-300 rounded-md mb-4 no-gap">
+                                <p className="p-4 border">{d.id}</p>
+                                <p className="p-4 border">{d.name}</p>
+                                <p className="p-4 border">{d.email}</p>
+                                <p className="p-4 border">{d.role}</p>
+                                {
+                                    (Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin") ?
+                                        <p className="p-4 border"><button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button></p>
+                                        : <p className="p-4 border">-</p>
+                                }
+                            </article>
+                        )
+                    }) : <p>No users found in your organisation.</p>}
+                </section>
+                {/* <div className="grid">
                     {
                         (loading) ? <Loading /> : data.map((d, key) => {
                             return (
@@ -40,7 +64,7 @@ export default function ViewUsers() {
                             )
                         })
                     }
-                </div>
+                </div> */}
             </main>
         </>
     )
