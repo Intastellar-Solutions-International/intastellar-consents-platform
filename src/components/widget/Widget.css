@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+
 }
 
 .no-padding{
@@ -32,6 +33,7 @@
     border-radius: 10px;
     padding: 10px;
     background-color: #636363;
+    position: relative;
 }
 
 .key-highlight-widget .small-widget-type{
@@ -44,4 +46,35 @@
     color: #cbcbcb;
     margin-bottom: 0;
     margin-top: 10px;
+}
+
+.has-explainer{
+    text-decoration: dotted underline;
+}
+
+.explainer-tooltip{
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 250px;
+    font-size: 14px;
+    text-align: left;
+    z-index: 10;
+}
+
+.explainer-tooltip-icon{
+    font-weight: bold;
+    margin-right: 5px;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    text-align: center;
+    line-height: 12px;
 }

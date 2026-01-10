@@ -1,8 +1,9 @@
 import "./Widget.css";
 import Line from "../Charts/Line";
+import { useState } from "react";
 export default function Widget(props) {
-
-    console.log("Widget props:", props.totalNumber, typeof props.totalNumber);
+    const [explainerVisible, setExplainer] = useState(false);
+    const explainer = props?.explainer ? props.explainer : null;
 
     const overViewTotal = (props?.overviewTotal) ? " overviewTotal" : " overviewDistribution";
     const className = (props?.class) ? props.class : "";
@@ -15,10 +16,25 @@ export default function Widget(props) {
             displayValue = props.totalNumber;
         }
         return (
-            <div className="key-highlight-widget small-widget">
-                <p className="small-widget-type">{props?.type}</p>
-                <h3 className="small-widget-number">{displayValue}</h3>
-            </div>
+            <>
+                <div className="key-highlight-widget small-widget">
+                    <p className={`small-widget-type ${(explainer?.exist) ? "has-explainer" : ""}`}  onMouseEnter={() => {
+                        (explainer?.exist) ? setExplainer(true) : null;
+                    }} onMouseLeave={() => {
+                        (explainer?.exist) ? setExplainer(false) : null;
+                    }}>{props?.type}</p>
+                    <h3 className="small-widget-number">{displayValue}</h3>
+                    {explainer?.exist && explainerVisible ? 
+                        <div className="explainer-tooltip">
+                            <span className="explainer-tooltip-icon">i</span>
+                            <span className="explainer-tooltip-text">
+                                <strong>{explainer.title}</strong><br />
+                                {explainer.content}
+                            </span>
+                        </div>
+                    : null }
+                </div>
+            </>
         );
     } else {
         let displayValue = "";

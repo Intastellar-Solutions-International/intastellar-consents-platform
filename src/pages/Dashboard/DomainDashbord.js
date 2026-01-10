@@ -112,8 +112,16 @@ export default function DomainDashbord(props) {
                             <Widget styleType="small" totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={observedCookies?.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.preConsent.count.toLocaleString("de-DE")} type="Detected (pre-consent)" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={observedCookies?.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.consent.count.toLocaleString("de-DE")} type="Detected (post-consent)" fromDate={fromDate} toDate={toDate} />
+                            <Widget explainer={{
+                                exist: true,
+                                title: "Detected (pre-consent) cookies",
+                                content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks.",
+                            }} styleType="small" totalNumber={observedCookies?.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.preConsent.count.toLocaleString("de-DE")} type="Detected (pre-consent)" fromDate={fromDate} toDate={toDate} />
+                            <Widget explainer={{
+                                exist: true,
+                                title: "Detected (post-consent) cookies",
+                                content: "Number of cookies detected after user consent was given. Useful for identifying compliance risks.",
+                            }} styleType="small" totalNumber={observedCookies?.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.consent.count.toLocaleString("de-DE")} type="Detected (post-consent)" fromDate={fromDate} toDate={toDate} />
                         </div> : 
                         <div className="grid-container grid-7" style={{ gap: "20px", marginBottom: "20px" }}>
                             <Loading small={true} />
