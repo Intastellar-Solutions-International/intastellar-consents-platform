@@ -45,6 +45,10 @@ export default function Account(props) {
                         </label>
                     </div>
                 </div>
+                <p style={{
+                    margin: "0",
+                    color: "#6b6b6b"
+                }}>Masks live data across dashboards</p>
             </div>
             <div className="sign_out_btn_container">
                 <button className="sign_out_btn" onClick={() => { Authentication.Logout() }}>
