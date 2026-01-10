@@ -232,7 +232,7 @@ export default function Dashboard(props) {
                             </div>
                         </>}
                         <div className={["widget no-padding"]}>
-                            <LiveView currentDomain={currentDomain} />
+                            <LiveView currentDomain={currentDomain} demoMode={demoMode} />
                         </div>
                     </div>
                 </div>

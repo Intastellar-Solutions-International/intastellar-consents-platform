@@ -5,6 +5,7 @@ const useState = window.React.useState;
 const useEffect = window.React.useEffect;
 export function LiveView(props) {
     API.liveData.headers.Domains = props.currentDomain;
+    const demoMode = props.demoMode;
 
     const [loading, liveData, error, updated] = useFetch(0.25, API.liveData.url, API.liveData.method, API.liveData.headers);
     const [domainLiveView, setDomainLiveView] = useState({
@@ -17,7 +18,9 @@ export function LiveView(props) {
             (!loading) ?
                 <div className="liveView">
                     <div className="liveView-content">
-                        <p className="liveView-content-title">INTERACTIONS IN LAST 30 MINUTES</p>
+                        <p className="liveView-content-title">INTERACTIONS IN LAST 30 MINUTES {demoMode ? "(Disabled)" : ""}</p>
+                        {demoMode && <p className="demoModeNotice">Demo Mode is ON</p>}
+                        {!demoMode &&
                         <div className="liveView-content-data">
                             <div className="liveView-content-data-1">
                                 <p className="liveView-content-data-1-number">{liveData?.count}</p>
@@ -177,6 +180,7 @@ export function LiveView(props) {
                                 }
                             </div>
                         </div>
+                        }
                     </div>
                 </div >
                 : null
