@@ -38,9 +38,9 @@ export default function Map(props) {
             const name = country.country;
             const code = countryCodes[name];
                return {
-                  [code]: {
+               [code]: {
                   date: data.date ? data.date : "No data",
-                     total: demoMode ? `${String(country.num.total).slice(0, 2)}${country.num.total > 99 ? "**" : "*"}` : country.num.total,
+                  total: demoMode ? `${country.num.total > 9999 ? String(country.num.total).slice(0, 2) : String(country.num.total).slice(0, 1)}${country.num.total > 999 ? "k" : "**"}` : country.num.total,
                   accepted: country.accepted,
                   rejected: country.declined,
                   functional: country.functional,
@@ -176,7 +176,9 @@ export default function Map(props) {
                            <p style={{
                               textAlign: "right",
                               marginBottom: "3px"
-                           }}>{country.num.total.toLocaleString("de-DE")}</p>
+                           }}>{
+                                 demoMode ? `${country.num.total > 9999 ? String(country.num.total).slice(0, 2) : String(country.num.total).slice(0, 1)}${country.num.total > 999 ? "k" : "**"}` : country.num.total.toLocaleString("de-DE")
+                           }</p>
                         </div>
                         <div style={{
                            width: "100%",
