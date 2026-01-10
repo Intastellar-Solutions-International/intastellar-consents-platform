@@ -120,7 +120,7 @@ export default function DomainDashbord(props) {
                             <Widget explainer={{
                                 exist: true,
                                 title: "Detected (post-consent) cookies",
-                                content: "Number of cookies detected after user consent was given. Useful for identifying compliance risks.",
+                                content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement.",
                             }} styleType="small" totalNumber={observedCookies?.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.consent.count.toLocaleString("de-DE")} type="Detected (post-consent)" fromDate={fromDate} toDate={toDate} />
                         </div> : 
                         <div className="grid-container grid-7" style={{ gap: "20px", marginBottom: "20px" }}>
