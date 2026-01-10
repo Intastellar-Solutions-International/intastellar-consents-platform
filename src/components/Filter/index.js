@@ -10,6 +10,7 @@ export default function Filter({
     date,
     setFromDate,       // ← new
     setToDate,         // ← new
+    demoMode
 }) {
     const compareRangeCheck = compareRange === 0 ? false : true;
 
@@ -51,6 +52,8 @@ export default function Filter({
             }>
                 <p className="bg-primaryHover text-sm rounded-md mr-2 px-2">{(numberOfDays >= 0) ? "Last " + numberOfDays + " days" : numberOfDays}</p>
                 <section>
+                    {demoMode && <p className="text-sm text-right">Demo Mode Active</p>}
+                    {!demoMode &&
                     <p className="text-sm text-right">{
                         new Intl.DateTimeFormat("da-DK", {
                             dateStyle: "short",
@@ -65,6 +68,7 @@ export default function Filter({
                             )
                         }
                     </p>
+                    }
                     {compareRangeCheck ? (
                         <p className="text-sm text-right"><span className="mx-2">compare</span>
                             {

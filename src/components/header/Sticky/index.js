@@ -5,6 +5,7 @@ import SideCart from "../../SideCart/SideCart.js";
 
 // Added showInfoButton and infoType props
 export default function StickyPageTitle({
+    demoMode = false,
     loadingUpdated,
     finalLoaded,
     title,
@@ -66,6 +67,7 @@ export default function StickyPageTitle({
                                 }}
                                 setFromDate={setFromDate}
                                 setToDate={setToDate}
+                                demoMode={demoMode}
                             /> : null
                     }
                 </div>
