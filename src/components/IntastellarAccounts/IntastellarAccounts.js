@@ -32,23 +32,28 @@ export default function Account(props) {
                         <a href="https://my.intastellaraccounts.com" target="_blank"><img src="https://www.intastellarsolutions.com/assets/icons/fav/favicon-96x96.png" className="logo-icon" />Manage Your Intastellar Account</a>
                     </div>
                 </div>
-                <div className="dropdown-separator"></div>
-                <div className="dropdown-name" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: "200px", padding: "15px", marginInline: "auto" }}>
-                    {/* Toggle for Demo mode */}
-                    <div className="dpdn">Demo Mode</div>
-                    <div className="dpde">
-                        <label className="switch">
-                            <input type="checkbox" checked={demoMode} onChange={(e) => {
-                                Authentication.SetDemoMode(e.target.checked);
-                            }} />
-                            <span className="slider round"></span>
-                        </label>
-                    </div>
-                </div>
-                <p style={{
-                    margin: "0",
-                    color: "#6b6b6b"
-                }}>Masks live data across dashboards</p>
+                {
+                    (Authentication.getOrganisation() == 1) ?
+                    <>
+                        <div className="dropdown-separator"></div>
+                        <div className="dropdown-name" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: "200px", padding: "15px", marginInline: "auto" }}>
+                            {/* Toggle for Demo mode */}
+                            <div className="dpdn">Demo Mode</div>
+                            <div className="dpde">
+                                <label className="switch">
+                                    <input type="checkbox" checked={demoMode} onChange={(e) => {
+                                        Authentication.SetDemoMode(e.target.checked);
+                                    }} />
+                                    <span className="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <p style={{
+                            margin: "0",
+                            color: "#6b6b6b"
+                        }}>Masks live data across dashboards</p>
+                    </>
+                : null}
             </div>
             <div className="sign_out_btn_container">
                 <button className="sign_out_btn" onClick={() => { Authentication.Logout() }}>
