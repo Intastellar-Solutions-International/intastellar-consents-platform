@@ -33,6 +33,7 @@ export default function Dashboard(props) {
     const today = new Date();
     const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - getLastDays)));
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [observedCookies, setObservedCookies] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
@@ -101,6 +102,26 @@ export default function Dashboard(props) {
             setLoading(false);
         });
 
+        API[id].observedCookies.headers.Domains = currentDomain;
+        API[id].observedCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
+        API[id].observedCookies.headers.ToDate = toDate.toISOString().split("T")[0];
+
+        fetch(API[id].observedCookies.url, {
+            method: API[id].observedCookies.method,
+            headers: API[id].observedCookies.headers,
+        }).then((res) => res.json()).then((cookiesData) => {
+            if (cookiesData === "Err_Login_Expired") {
+                localStorage.removeItem("globals");
+                window.location.href = "/login";
+                return;
+            }
+            setObservedCookies(cookiesData);
+        }).catch((err) => {
+            console.error(err);
+        }).finally(() => {
+            setLoading(false);
+        });
+
         fetch(API[id].getInteractionsByCountry.url, {
             method: API[id].getInteractionsByCountry.method,
             headers: API[id].getInteractionsByCountry.headers,
@@ -137,37 +158,37 @@ export default function Dashboard(props) {
                 </div> */}
                 {/* Top key data views */}
                 {
-                    activeData != null ?
-                        <div className={`grid-container`} style={{ gridTemplateColumns: organisation != null && JSON.parse(organisation).id == 1 ? "max-content 1fr" : "1fr", gap: "10px", marginBottom: "20px" }}>
-                            {
-                                organisation != null && JSON.parse(organisation).id == 1 ?
-                                    <div className="grid-container" style={{ gridTemplateColumns: "max-content max-content max-content", gap: "10px", marginBottom: "20px", marginRight: "20px" }}>
-                                        {(jsLoading) ? <Loading /> : <ErrorBoundary>
-                                            <Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" />
-                                        </ErrorBoundary>
-                                        }
-                                        {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString("de-DE") + "%"} type="JavaScript" /></ErrorBoundary>}
-                                        {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString("de-DE") + "%"} type="WordPress" /></ErrorBoundary>}
-                                    </div> : null
+                    organisation != null && JSON.parse(organisation).id == 1 ?
+                        <div className="grid-container" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "20px", }}>
+                            {(jsLoading) ? <Loading /> : <ErrorBoundary>
+                                <Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" />
+                            </ErrorBoundary>
                             }
-                            <div className={`grid-container grid-5`} style={{ gap: "10px", marginBottom: "20px" }}>
+                            {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString("de-DE") + "%"} type="JavaScript" /></ErrorBoundary>}
+                            {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString("de-DE") + "%"} type="WordPress" /></ErrorBoundary>}
+                        </div> : null
+                }
+                {
+                    activeData != null ?
+                        <>
+                        <div className={`grid-container grid-7`} style={{ gap: "10px", marginBottom: "20px" }}>
 
-                                <Widget styleType="small" totalNumber={activeData} type="Total Consents Given" fromDate={fromDate} toDate={toDate} />
-                                <Widget styleType="small" totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
-                                <Widget styleType="small" totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
-                                <Widget styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
-                                <Widget styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
-                            </div>
-                        </div> : 
-                        <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
-                            <Loading small={true} />
-                            <Loading small={true} />
-                            <Loading small={true} />
-                            <Loading small={true} />
-                            <Loading small={true} />
-                            <Loading small={true} />
-                        </div>
-                            
+                            <Widget styleType="small" totalNumber={activeData} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={observedCookies?.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.preConsent.count.toLocaleString("de-DE")} type="Cookies detected (pre-consent)" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={observedCookies?.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.consent.count.toLocaleString("de-DE")} type="Cookies detected (post-consent)" fromDate={fromDate} toDate={toDate} />
+                        </div> 
+                        </> : <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
+                                <Loading small={true} />
+                                <Loading small={true} />
+                                <Loading small={true} />
+                                <Loading small={true} />
+                                <Loading small={true} />
+                                <Loading small={true} />
+                            </div>  
 
                 }
                 {/* {

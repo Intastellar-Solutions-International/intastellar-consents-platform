@@ -164,7 +164,16 @@ const API = {
                 "Organisation": Authentication.getOrganisation(),
                 "Content-Type": "application/json"
             }
-        }
+        },
+        observedCookies: {
+            url: `${PrimaryHost}/cmp/observed-cookies`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
     },
     ferry: {
         getTotalSales: {

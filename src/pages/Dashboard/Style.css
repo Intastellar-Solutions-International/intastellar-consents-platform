@@ -12,6 +12,13 @@
     gap: 20px;
 }
 
+.grid-7{
+    grid-template-columns: repeat(auto-fit, minmax(12%, 1fr));
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
 .grid-8 {
     grid-template-columns: repeat(auto-fit, minmax(10%, 1fr));
     justify-content: center;
