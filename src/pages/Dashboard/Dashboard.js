@@ -124,8 +124,6 @@ export default function Dashboard(props) {
             setObservedCookies(cookiesData);
         }).catch((err) => {
             console.error(err);
-        }).finally(() => {
-            setLoading(false);
         });
 
         fetch(API[id].getInteractionsByCountry.url, {

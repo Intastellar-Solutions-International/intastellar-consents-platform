@@ -17,6 +17,8 @@ export default function DomainDashbord(props) {
     const { handle, id } = useParams();
     document.title = `${punycode.toUnicode(handle)} Dashboard | Intastellar Consents | CMP`;
     const today = new Date();
+
+    const demoMode = props.demoMode || false;
     
     const [activeDataCountry, setactiveDataCountry] = useState(null);
     const [data, setActiveData] = useState(null);
@@ -38,8 +40,6 @@ export default function DomainDashbord(props) {
     API[id].getInteractions.headers.Domains = punycode.toASCII(handle);
     API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
     API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
-
-    console.log("Domain Dashboard data:", data);
 
     useEffect(() => {
         API[id].getInteractionsByCountry.headers.Domains = punycode.toASCII(handle);
@@ -78,8 +78,6 @@ export default function DomainDashbord(props) {
             setObservedCookies(cookiesData);
         }).catch((err) => {
             console.error(err);
-        }).finally(() => {
-            setLoading(false);
         });
 
         fetch(API[id].getInteractions.url, {
@@ -109,7 +107,7 @@ export default function DomainDashbord(props) {
                     (!loading) ?
                         <div className={`grid-container grid-7`} style={{ gap: "10px", marginBottom: "20px" }}>
 
-                            <Widget styleType="small" totalNumber={data} type="Total Consents Given" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={data} type="Consents given" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
@@ -131,8 +129,8 @@ export default function DomainDashbord(props) {
                     <h1>No interactions yet</h1>
                     <p>No interactions were recorded for this domain during the selected period.</p>
                 </> :
-                    <>
-                        <Widget totalNumber={data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />
+                    <div className="grid-container grid-1">
+                        {(loading) ? <Loading /> : <Widget totalNumber={demoMode ? `${data.Total > 9999 ? String(data?.Total).slice(0, 2) : String(data?.Total).slice(0, 1)}${data?.Total > 999 ? "k" : "**"}` : data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />}
                         <div className="grid-container grid-3">
                             {(loading) ? <Loading /> : <Widget totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
                             {(loading) ? <Loading /> : <Widget totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" />}
@@ -142,7 +140,7 @@ export default function DomainDashbord(props) {
                             {(loading) ? <Loading /> : <Widget totalNumber={data?.Functional.toLocaleString("de-DE") + "%"} type="Accepted only Functional" />}
                             {(loading) ? <Loading /> : <Widget totalNumber={data?.Statics.toLocaleString("de-DE") + "%"} type="Accepted only Statics" />}
                         </div>
-                    </>
+                    </div>
                 }
                 <div className="grid-container grid-3">
                     {<section>
