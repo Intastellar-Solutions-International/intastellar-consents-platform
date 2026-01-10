@@ -28,6 +28,7 @@ export default function Map(props) {
    const data = props.data;
    const total = data.total;
    const countries = data.Countries;
+   const demoMode = props.demoMode;
 
    if (countries != null) {
 
@@ -36,10 +37,10 @@ export default function Map(props) {
             /* console.log(country); */
             const name = country.country;
             const code = countryCodes[name];
-            return {
-               [code]: {
+               return {
+                  [code]: {
                   date: data.date ? data.date : "No data",
-                  total: country.num.total,
+                     total: demoMode ? `${String(country.num.total).slice(0, 2)}${country.num.total > 99 ? "**" : "*"}` : country.num.total,
                   accepted: country.accepted,
                   rejected: country.declined,
                   functional: country.functional,

@@ -224,7 +224,7 @@ export default function Dashboard(props) {
                         </> : <>
 
                             <div className={["widget no-padding grid-3-4"]}>
-                                <Map data={{
+                                <Map demoMode={demoMode} data={{
 
                                     Countries: activeDataCountry?.data?.Countries,
                                     total: activeData?.Total,
@@ -236,7 +236,7 @@ export default function Dashboard(props) {
                         </div>
                     </div>
                 </div>
-                <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} />
+                <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} demoMode={demoMode} />
                 {/* {subscriptionStatus?.tier === "premium" ?
                     <PremiumTier loading={loading} activeData={activeData} />
                     : (subscriptionStatus?.tier === "professional") ?

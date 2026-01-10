@@ -18,7 +18,7 @@ export function LiveView(props) {
             (!loading) ?
                 <div className="liveView">
                     <div className="liveView-content">
-                        <p className="liveView-content-title">INTERACTIONS IN LAST 30 MINUTES {demoMode ? "(Disabled)" : ""}</p>
+                        <p className="liveView-content-title">INTERACTIONS IN LAST 30 MINUTES {demoMode ? "(DISABLED)" : ""}</p>
                         {demoMode && <p className="demoModeNotice">Demo Mode is ON</p>}
                         {!demoMode &&
                         <div className="liveView-content-data">

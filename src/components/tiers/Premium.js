@@ -9,6 +9,8 @@ export default function PremiumTier(props) {
     const fromDate = props.fromDate;
     const toDate = props.toDate;
 
+    const demoMode = props.demoMode;
+
     return <>
         {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData} fromDate={fromDate} toDate={toDate} type="Consents given" /></ErrorBoundary>}
         {/* {
