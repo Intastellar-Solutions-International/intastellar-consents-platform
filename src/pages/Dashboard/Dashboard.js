@@ -182,8 +182,16 @@ export default function Dashboard(props) {
                             <Widget styleType="small" totalNumber={activeData} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                            <Widget explainer={{
+                                exist: true,
+                                title: "EU based users",
+                                    content: "Visitors detected from EU-based IP locations.",
+                            }} styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
+                            <Widget explainer={{
+                                exist: true,
+                                title: "Non-EU based users",
+                                content: "Visitors detected from non-EU-based IP locations.",
+                            }}  styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
                             <Widget explainer={{
                                 exist: true,
                                 title: "Detected (pre-consent) cookies",

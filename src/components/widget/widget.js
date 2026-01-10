@@ -28,7 +28,6 @@ export default function Widget(props) {
                         <div className="explainer-tooltip">
                             <span className="explainer-tooltip-icon">i</span>
                             <span className="explainer-tooltip-text">
-                                <strong>{explainer.title}</strong><br />
                                 {explainer.content}
                             </span>
                         </div>
