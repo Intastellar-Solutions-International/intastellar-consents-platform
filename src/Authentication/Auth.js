@@ -1,6 +1,23 @@
+let DemoMode = false;
+const listeners = [];
 const Authentication = {
     oAuthCallback: function (e) {
         const url = window.location.href;
+    },
+    DemoMode: (localStorage.getItem("demoMode") === "true") ? true : false,
+    SetDemoMode: function (mode) {
+        localStorage.setItem("demoMode", mode);
+        DemoMode = mode;
+        listeners.forEach(fn => fn(DemoMode));
+        this.DemoMode = mode;
+    },
+    onDemoModeChange(fn) {
+        listeners.push(fn);
+        // Optionally return unsubscribe function
+        return () => {
+            const idx = listeners.indexOf(fn);
+            if (idx > -1) listeners.splice(idx, 1);
+        };
     },
     Login: function (url, email, password, type, setErrorMessage, setLoading) {
         setLoading(true);

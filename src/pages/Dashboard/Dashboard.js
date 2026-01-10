@@ -15,6 +15,7 @@ import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js
 import Pie from "../../Components/Charts/Pie/index.js";
 import Widget from "../../Components/widget/widget.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
+import Authentication from "../../Authentication/Auth";
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
@@ -25,6 +26,8 @@ export default function Dashboard(props) {
 
     const subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
     const userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
+
+    const [demoMode, setDemoMode] = useState(Authentication.DemoMode);
 
     const { handle, id } = useParams();
     const [activeData, setActiveData] = useState(null);
@@ -62,7 +65,10 @@ export default function Dashboard(props) {
     const [styleLoading, styleData, styleError, styleUpdated] = useFetch(30, StyleAPIUrl, StyleAPIMethod, StyleAPIHeader);
     const [jsLoading, jsData, error, updated] = useFetch(30, APIUrl, APIMethod, APIHeader);
 
-    console.log(fromDate, toDate);
+    useEffect(() => {
+        const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
+        return unsubscribe; // Clean up on unmount
+    }, []);
 
     useEffect(() => {
 
@@ -145,6 +151,8 @@ export default function Dashboard(props) {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
     })
 
+    console.log("Demo mode: ", demoMode);
+
     return (
         <>
             <StickyPageTitle loadingUpdated={loading} finalLoaded={loadingCountry} title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
@@ -158,7 +166,7 @@ export default function Dashboard(props) {
                 </div> */}
                 {/* Top key data views */}
                 {
-                    organisation != null && JSON.parse(organisation).id == 1 ?
+                    organisation != null && JSON.parse(organisation).id == 1 && !demoMode ?
                         <div className="grid-container" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "20px", }}>
                             {(jsLoading) ? <Loading /> : <ErrorBoundary>
                                 <Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" />

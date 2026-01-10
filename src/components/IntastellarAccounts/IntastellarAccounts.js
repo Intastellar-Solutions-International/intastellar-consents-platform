@@ -3,15 +3,12 @@ import "./Style.css";
 const { useState, useEffect, useRef, useContext } = window.React;
 const Link = window.ReactRouterDOM.Link;
 export default function Account(props) {
-    function clickOutSide(e) {
-        if (e.target.className !== "user_content" || e.target.className !== "content-img") {
-            props.setIsOpen(false);
-        }
-    }
+    const [demoMode, isDemoMode] = useState(Authentication.DemoMode);
 
-    /* useEffect(() => {
-        document.addEventListener("click", clickOutSide);
-    }, []); */
+    useEffect(() => {
+        const unsubscribe = Authentication.onDemoModeChange(isDemoMode);
+        return unsubscribe;
+    }, [])
 
     return <>
         <div className="user_content">
@@ -33,6 +30,19 @@ export default function Account(props) {
                     <div className="dpde">{props.profile.email}</div>
                     <div className="acc">
                         <a href="https://my.intastellaraccounts.com" target="_blank"><img src="https://www.intastellarsolutions.com/assets/icons/fav/favicon-96x96.png" className="logo-icon" />Manage Your Intastellar Account</a>
+                    </div>
+                </div>
+                <div className="dropdown-separator"></div>
+                <div className="dropdown-name" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", maxWidth: "200px", padding: "15px", marginInline: "auto" }}>
+                    {/* Toggle for Demo mode */}
+                    <div className="dpdn">Demo Mode</div>
+                    <div className="dpde">
+                        <label className="switch">
+                            <input type="checkbox" checked={demoMode} onChange={(e) => {
+                                Authentication.SetDemoMode(e.target.checked);
+                            }} />
+                            <span className="slider round"></span>
+                        </label>
                     </div>
                 </div>
             </div>
