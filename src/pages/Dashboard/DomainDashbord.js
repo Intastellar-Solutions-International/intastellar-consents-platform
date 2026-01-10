@@ -27,6 +27,7 @@ export default function DomainDashbord(props) {
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
     const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
     const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
+    const [observedCookies, setObservedCookies] = useState(null);
 
     let url = API[id].getInteractions.url;
     let method = API[id].getInteractions.method;
@@ -61,6 +62,26 @@ export default function DomainDashbord(props) {
             setLoadingCountry(false);
         });
 
+        API[id].observedCookies.headers.Domains = punycode.toASCII(handle);
+        API[id].observedCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
+        API[id].observedCookies.headers.ToDate = toDate.toISOString().split("T")[0];
+
+        fetch(API[id].observedCookies.url, {
+            method: API[id].observedCookies.method,
+            headers: API[id].observedCookies.headers,
+        }).then((res) => res.json()).then((cookiesData) => {
+            if (cookiesData === "Err_Login_Expired") {
+                localStorage.removeItem("globals");
+                window.location.href = "/login";
+                return;
+            }
+            setObservedCookies(cookiesData);
+        }).catch((err) => {
+            console.error(err);
+        }).finally(() => {
+            setLoading(false);
+        });
+
         fetch(API[id].getInteractions.url, {
             method: API[id].getInteractions.method,
             headers: API[id].getInteractions.headers,
@@ -86,15 +107,18 @@ export default function DomainDashbord(props) {
             <div className="dashboard-content">
                 {
                     (!loading) ?
-                        <div className={`grid-container grid-5`} style={{ gap: "10px", marginBottom: "20px" }}>
+                        <div className={`grid-container grid-7`} style={{ gap: "10px", marginBottom: "20px" }}>
 
                             <Widget styleType="small" totalNumber={data} type="Total Consents Given" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={observedCookies?.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.preConsent.count.toLocaleString("de-DE")} type="Detected (pre-consent)" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={observedCookies?.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.consent.count.toLocaleString("de-DE")} type="Detected (post-consent)" fromDate={fromDate} toDate={toDate} />
                         </div> : 
-                        <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
+                        <div className="grid-container grid-7" style={{ gap: "20px", marginBottom: "20px" }}>
+                            <Loading small={true} />
                             <Loading small={true} />
                             <Loading small={true} />
                             <Loading small={true} />
@@ -108,7 +132,6 @@ export default function DomainDashbord(props) {
                     <p>No interactions were recorded for this domain during the selected period.</p>
                 </> :
                     <>
-                        <p>Date Range: {Intl.DateTimeFormat("da-DK").format(new Date(data?.date.from))} - {Intl.DateTimeFormat("da-DK").format(new Date(data?.date.to))}</p>
                         <Widget totalNumber={data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />
                         <div className="grid-container grid-3">
                             {(loading) ? <Loading /> : <Widget totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
