@@ -18,9 +18,7 @@ export function LiveView(props) {
             (!loading) ?
                 <div className="liveView">
                     <div className="liveView-content">
-                        <p className="liveView-content-title">INTERACTIONS IN LAST 30 MINUTES {demoMode ? "(DISABLED)" : ""}</p>
-                        {demoMode && <p className="demoModeNotice">DEMO MODE IS ON</p>}
-                        {!demoMode &&
+                        <p className="liveView-content-title">INTERACTIONS IN LAST 30 MINUTES {demoMode ? "(DEMO MODE IS ON)" : ""}</p>
                         <div className="liveView-content-data">
                             <div className="liveView-content-data-1">
                                 <p className="liveView-content-data-1-number">{liveData?.count}</p>
@@ -78,7 +76,7 @@ export function LiveView(props) {
                                                 }}></div>
                                             </div>
                                             {
-
+                                                !demoMode &&
                                                 Object.keys(
                                                     liveData?.domains
                                                 ).filter((domain) => {
@@ -180,7 +178,6 @@ export function LiveView(props) {
                                 }
                             </div>
                         </div>
-                        }
                     </div>
                 </div >
                 : null
