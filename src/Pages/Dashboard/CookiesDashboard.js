@@ -27,15 +27,10 @@ export default function CookiesDashboard() {
                     !loading ? data.status == "success" ? <>
                         {
                             <Table data={data.data.map((cookie, index) => {
-                                const cookieName = JSON.parse(cookie.cookiename)?.map((c, key) => {
-                                    return Object.keys(c).reduce((object, key) => {
-                                        return object;
-                                    })
-                                })
+                                
 
                                 return {
-                                    name: cookieName,
-                                    domain: cookie.domain,
+                                    name: cookie,
                                 }
                             })} headers={["Cookie", "Domain"]} />
                         }
