@@ -64,7 +64,6 @@ export default function App() {
     useEffect(() => {
         const globals = localStorage.getItem("globals");
         const path = window.location.pathname;
-        console.log("[App.js] globals:", globals, "path:", path);
         if (!globals && path !== "/login" && path !== "/") {
             window.location.replace("/login");
         }
@@ -75,7 +74,6 @@ export default function App() {
         // Only redirect if id is present and not already on dashboard
         if ((path === "/login" || path === "/") && id) {
             if (!path.startsWith("/" + id + "/dashboard")) {
-                console.log("[App.js] Redirecting to dashboard:", id);
                 window.location.replace("/" + id + "/dashboard");
                 return null;
             }

@@ -46,12 +46,17 @@ export default function UserConsents(props) {
         if (getDomainsUrlData) {
             console.log(getDomainsUrlData);
             setActiveData(getDomainsUrlData);
+        } else if(getDomainsUrlError) {
+            setActiveData(getDomainsUrlError);
         }
     }, [getDomainsUrlData]);
+
+    console.log(activeData);
+
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
-            <article style={{ flex: "1" }}>
+            <article style={{ flex: "1", maxWidth: "1200px", margin: "auto"}}>
                 <StickyPageTitle title="Consents overview" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
@@ -77,16 +82,19 @@ export default function UserConsents(props) {
                                     return (
                                         <>
                                             <div className="user" key={key}>
-                                                <p>UID: {d?.uid}</p>
+                                                {
+                                                    d?.banner_policy_id != "" ? <p className="policy-id">Banner Policy ID: {d?.banner_policy_id}</p> : <p>Banner Policy ID: Unknown (Legacy Record)</p>
+                                                }
+                                                <p>Banner generated ID: {d?.uid}</p>
                                                 <p>Time: {new Date(d?.consents_timestamp).toLocaleString('de-DE', { timeZone: 'Europe/Copenhagen' })}</p>
                                                 <p className="lb">Referrer: {d?.referrer}</p>
                                                 <p className="lb">URL: {d?.url}</p>
                                                 <section>
-                                                    <h4>Consent given</h4>
+                                                    <h4>Consent decision recorded</h4>
                                                     {
                                                         (Object.prototype.toString.call(consent) === '[object Array]') ? consent?.map((c, key) => {
                                                             return <p key={key}>{c?.type} cookies: {(!c.checked) ? "declined" : (c?.checked == "checked" || c?.checked == "1") ? "Accepted" : c?.checked}</p>
-                                                        }) : <p>{consent?.consent_type} cookies: {(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "declined"}</p>
+                                                        }) : <p>{consent?.consent_type == "statics" ? "analytics" : consent?.consent_type} cookies: {(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "declined"}</p>
                                                     }
                                                 </section>
                                             </div>

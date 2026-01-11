@@ -14,6 +14,8 @@ export default function UserAgents() {
 
     const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(5, API[id].getDevices.url, API[id].getDevices.method, API[id].getDevices.headers);
 
+    console.log(getDomainsUrlData, getDomainsUrlError, getDomainsUrlLoading);
+
     return <>
         <SideNav links={reportsLinks} title="Reports" />
         <div className="dashboard-content">
