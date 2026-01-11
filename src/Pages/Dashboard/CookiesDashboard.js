@@ -39,11 +39,13 @@ export default function CookiesDashboard() {
                         {
                             <Table data={data.data.map((cookie, index) => {
                                 
-
+                                console.log("Cookie data:", cookie);
                                 return {
-                                    name: cookie,
+                                    name: cookie[0],
+                                    origin: cookie[1],
+                                    domain: cookie[2]
                                 }
-                            })} headers={["Cookie", "Domain"]} />
+                            })} headers={["Cookie", "Type", "Domain"]} />
                         }
                     </> : null : <div className="loading"></div>
                 }

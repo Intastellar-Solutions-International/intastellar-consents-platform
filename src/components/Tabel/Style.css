@@ -11,11 +11,15 @@
     font-size: 18px;
     border-bottom: 1px solid #fff;
     font-weight: bold;
+    position: sticky;
+    top: 0;
+    background-color: #5c5c5c;
+    z-index: 1;
 }
 
 .table-row{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     padding: 15px 0;
     gap: 10px;
     white-space: wrap;
