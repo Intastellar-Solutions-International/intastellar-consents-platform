@@ -4,12 +4,23 @@ const useParams = window.ReactRouterDOM.useParams;
 import { DomainContext, OrganisationContext } from "../../App.js";
 import useFetch from "../../Functions/FetchHook";
 import Table from "../../Components/Tabel/index.js";
+import StickyPageTitle from "../../Components/Header/Sticky";
 
 export default function CookiesDashboard() {
     document.title = "Cookies | Intastellar Consents";
     const { handle, id } = useParams();
     const [organisation, setOrganisation] = useContext(OrganisationContext);
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
+    const [activeData, setActiveData] = useState(null);
+    const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
+    const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
+
+    const today = new Date();
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings?.dateRange)).toISOString().split("T")[0]);
+    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]);
+
+    const previousPeriod = new Date(new Date().setDate(today.getDate() - settings?.dateRange));
+    const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings?.dateRange * 2));
 
     API[id].getCookies.headers.Domains = currentDomain;
     let url = API[id].getCookies.url;
@@ -21,8 +32,8 @@ export default function CookiesDashboard() {
 
     return (
         <>
+            <StickyPageTitle title="Cookies Dashboard" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
-                <h1>Cookies Dashboard</h1>
                 {
                     !loading ? data.status == "success" ? <>
                         {
