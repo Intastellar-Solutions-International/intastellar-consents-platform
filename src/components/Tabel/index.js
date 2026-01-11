@@ -20,8 +20,12 @@ export default function Table(props) {
                             data?.map((d, i) => {
                                 return <>
                                     <div className="table-cell" key={i}>{d.name}</div>
-                                    <div className="table-cell" key={i + 1}>{d.origin}</div>
-                                    <div className="table-cell" key={i + 2}>{d.domain}</div>
+                                    <div className="table-cell" key={i}>{d.origin}</div>
+                                    <div className="table-cell" key={i}>{d.domain}</div>
+                                    <div className="table-cell" key={i}>{new Date(d.firstSeen).toLocaleString('de-DE', { timeZone: 'Europe/Copenhagen' })}</div>
+                                    <div className="table-cell" key={i}>{new Date(d.lastSeen).toLocaleString('de-DE', { timeZone: 'Europe/Copenhagen' })}</div>
+                                    <div className="table-cell" key={i}>{d.seenPostConsent}</div>
+                                    <div className="table-cell" key={i}>{d.seenPreConsent}</div>
                                 </>
                             })
                         }

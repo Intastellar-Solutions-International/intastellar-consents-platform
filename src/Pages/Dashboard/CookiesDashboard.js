@@ -38,14 +38,17 @@ export default function CookiesDashboard() {
                     !loading ? data.status == "success" ? <>
                         {
                             <Table data={data.data.map((cookie, index) => {
-                                
-                                console.log("Cookie data:", cookie);
+                                console.log("Cookie data:", data.data);
                                 return {
-                                    name: cookie[0],
-                                    origin: cookie[1],
-                                    domain: cookie[2]
+                                    name: cookie.name,
+                                    origin: cookie.origin,
+                                    domain: cookie.domain,
+                                    firstSeen: cookie.firstSeen,
+                                    lastSeen: cookie.lastSeen,
+                                    seenPostConsent: cookie.seenPostConsent == 1 ? "Yes" : "No",
+                                    seenPreConsent: cookie.seenPreConsent == 1 ? "Yes" : "No"
                                 }
-                            })} headers={["Cookie", "Type", "Domain"]} />
+                            })} headers={["Cookie", "Type", "Domain", "First Seen", "Last Seen", "Seen Post Consent", "Seen Pre Consent"]} />
                         }
                     </> : null : <div className="loading"></div>
                 }
