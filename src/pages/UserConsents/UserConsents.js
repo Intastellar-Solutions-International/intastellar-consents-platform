@@ -83,18 +83,18 @@ export default function UserConsents(props) {
                                         <>
                                             <div className="user" key={key}>
                                                 {
-                                                    d?.banner_policy_id != "" ? <p className="policy-id">Banner Policy ID: {d?.banner_policy_id}</p> : <p>Banner Policy ID: Unknown (Legacy Record)</p>
+                                                    d?.banner_policy_id != "" ? <p className="policy-id">Consent instance ID: {d?.banner_policy_id}</p> : <p>Consent instance ID: Unknown (Legacy Record)</p>
                                                 }
                                                 <p>Banner generated ID: {d?.uid}</p>
                                                 <p>Time: {new Date(d?.consents_timestamp).toLocaleString('de-DE', { timeZone: 'Europe/Copenhagen' })}</p>
-                                                <p className="lb">Referrer: {d?.referrer}</p>
-                                                <p className="lb">URL: {d?.url}</p>
+                                                <p className="lb">Referrer: {d?.referrer.split("?")[0]}</p>
+                                                <p className="lb">URL: {d?.url.split("?")[0].split("#")[0]}</p>
                                                 <section>
-                                                    <h4>Consent decision recorded</h4>
                                                     {
                                                         (Object.prototype.toString.call(consent) === '[object Array]') ? consent?.map((c, key) => {
-                                                            return <p key={key}>{c?.type} cookies: {(!c.checked) ? "declined" : (c?.checked == "checked" || c?.checked == "1") ? "Accepted" : c?.checked}</p>
-                                                        }) : <p>{consent?.consent_type == "statics" ? "analytics" : consent?.consent_type} cookies: {(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "declined"}</p>
+                                                            
+                                                            return <p key={key}>{c?.type == "statics" ? "analytics" : c?.type} cookies: <strong>{(!c.checked) ? "Declined" : (c?.checked == "checked" || c?.checked == "1") ? "Accepted" : c?.checked}</strong></p>
+                                                        }) : <p>{consent?.consent_type == "statics" ? "analytics" : consent?.consent_type} cookies: <strong>{(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "Declined"}</strong></p>
                                                     }
                                                 </section>
                                             </div>
