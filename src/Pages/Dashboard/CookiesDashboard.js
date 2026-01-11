@@ -48,7 +48,7 @@ export default function CookiesDashboard() {
                                     seenPostConsent: cookie.seenPostConsent == 1 ? "Yes" : "No",
                                     seenPreConsent: cookie.seenPreConsent == 1 ? "Yes" : "No"
                                 }
-                            })} headers={["Cookie", "Type", "Domain", "First Seen", "Last Seen", "Seen Post Consent", "Seen Pre Consent"]} />
+                            })} headers={["Cookie", "first- / third-party", "Domain", "First Seen", "Last Seen", "Seen Post Consent", "Seen Pre Consent"]} />
                         }
                     </> : null : <div className="loading"></div>
                 }
