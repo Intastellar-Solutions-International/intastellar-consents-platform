@@ -6,6 +6,7 @@ import useFetch from "../../Functions/FetchHook";
 import Table from "../../Components/Tabel/index.js";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import Widget from "../../Components/widget/widget.js";
+import Select from "../../Components/SelectInput/Selector.js";
 
 export default function CookiesDashboard() {
     document.title = "Cookies | Intastellar Consents";
@@ -62,12 +63,42 @@ export default function CookiesDashboard() {
         }
     }, [data]);
 
+    function filterDataByDomain(domain) {
+
+        if (domain == "clear filter") {
+            setActiveData(activeData);
+            return;
+        }
+
+        if (!activeData || !activeData?.domains) return null;
+        return activeData?.domains[domain] || null;
+    }
+
+    const [defaultValue, setDefaultValue] = useState("Select a Domain");
+
     return (
         <>
             <StickyPageTitle title="Cookies Dashboard" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
                 {
                     !loading ? activeData.status == "success" ? <>
+                        <Select
+                            defaultValue={defaultValue}
+                            key={""}
+                            items={["clear filter", ...Object.keys(activeData.domains)]}
+                            onChange={(e) => {
+                                console.log("Selected domain:", e);
+                                if (e === "Select a Domain" || e === "clear filter") {
+                                    // Clear filter, show all domains
+                                    setDefaultValue("clear filter");
+                                    setCurrentDomain(null);
+                                } else {
+                                    filterDataByDomain(e);
+                                    setDefaultValue(e);
+                                    setCurrentDomain(e);
+                                }
+                            }}
+                        />
                         <div className="grid-container grid-cols-2">
                             {
                                 !loading && activeData.status === "success" ?
@@ -112,6 +143,14 @@ export default function CookiesDashboard() {
                                             }))} headers={["Cookie", "first- / third-party", "Domain", "First Seen", "Last Seen", "Seen Post Consent", "Seen Pre Consent"]} />
                                         </div>
                                     ))
+                                    .filter(domainData => {
+                                        // Show all domains if 'clear filter' is selected
+                                        if (defaultValue === "clear filter") return true;
+                                        // Show all domains if 'Select a Domain' is selected
+                                        if (defaultValue === "Select a Domain") return true;
+                                        // Otherwise, show only the selected/current domain
+                                        return domainData.key === defaultValue || domainData.key === currentDomain;
+                                    })
                                     : <div className="loading"></div>
                             }
                         </div>
