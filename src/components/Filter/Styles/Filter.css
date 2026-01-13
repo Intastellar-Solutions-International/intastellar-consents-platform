@@ -74,6 +74,7 @@
 }
 
 .grid-cols-3 {
+    display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
 }
@@ -86,6 +87,7 @@
 .grid-cols-5 {
     grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
     gap: 10px;
+    display: grid;
 }
 
 .border-r-2 {

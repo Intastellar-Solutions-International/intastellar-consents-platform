@@ -80,6 +80,38 @@
     object-fit: cover;
 }
 
+.warning{
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.warning.critical{
+    color: red;
+}
+
+.warning.high{
+    color: orange;
+}
+
+.warning.high::before{
+    content: "!!";
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.warning.critical::before {
+    content: "!!!";
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.warning.medium{
+    color: yellow;
+}
+.warning.low{
+    color: green;
+}
+
 @media screen and (max-width: 900px) {
     .dashboard-content {
         padding: 0 20px;
