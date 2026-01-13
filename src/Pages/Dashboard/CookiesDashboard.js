@@ -11,11 +11,11 @@ import Select from "../../Components/SelectInput/Selector.js";
 export default function CookiesDashboard() {
     document.title = "Cookies | Intastellar Consents";
     const { handle, id } = useParams();
-    const [organisation, setOrganisation] = useContext(OrganisationContext);
-    const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [activeData, setActiveData] = useState(null);
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
+
+    const [filteredDomain, setFilteredDomain] = useState("combined view");
 
     const today = new Date();
     const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings?.dateRange)).toISOString().split("T")[0]);
@@ -24,14 +24,14 @@ export default function CookiesDashboard() {
     const previousPeriod = new Date(new Date().setDate(today.getDate() - settings?.dateRange));
     const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings?.dateRange * 2));
 
-    API[id].getCookies.headers.Domains = currentDomain;
+    API[id].getCookies.headers.Domains = filteredDomain;
     let url = API[id].getCookies.url;
     let method = API[id].getCookies.method;
     let header = API[id].getCookies.headers;
     let consent = null;
 
     useEffect(() => {
-        API[id].getCookies.headers.Domains = currentDomain;
+        API[id].getCookies.headers.Domains = filteredDomain;
         API[id].getCookies.headers.FromDate = new Date(fromDate).toISOString().split("T")[0];
         API[id].getCookies.headers.ToDate = new Date(toDate).toISOString().split("T")[0];
         header = API[id].getCookies.headers;
@@ -64,12 +64,7 @@ export default function CookiesDashboard() {
     }, [data]);
 
     function filterDataByDomain(domain) {
-
-        if (domain == "clear filter") {
-            setActiveData(activeData);
-            return;
-        }
-
+        // No longer used for setting activeData, just for returning filtered data if needed
         if (!activeData || !activeData?.domains) return null;
         return activeData?.domains[domain] || null;
     }
@@ -85,17 +80,15 @@ export default function CookiesDashboard() {
                         <Select
                             defaultValue={defaultValue}
                             key={""}
-                            items={["clear filter", ...Object.keys(activeData.domains)]}
+                            items={["combined view", ...Object.keys(activeData.domains)]}
                             onChange={(e) => {
                                 console.log("Selected domain:", e);
-                                if (e === "Select a Domain" || e === "clear filter") {
-                                    // Clear filter, show all domains
-                                    setDefaultValue("clear filter");
-                                    setCurrentDomain(null);
+                                if (e === "Select a Domain" || e === "combined view") {
+                                    setDefaultValue("combined view");
+                                    setFilteredDomain(null);
                                 } else {
-                                    filterDataByDomain(e);
                                     setDefaultValue(e);
-                                    setCurrentDomain(e);
+                                    setFilteredDomain(e);
                                 }
                             }}
                         />
@@ -144,12 +137,12 @@ export default function CookiesDashboard() {
                                         </div>
                                     ))
                                     .filter(domainData => {
-                                        // Show all domains if 'clear filter' is selected
-                                        if (defaultValue === "clear filter") return true;
+                                        // Show all domains if 'combined view' is selected
+                                        if (defaultValue === "combined view") return true;
                                         // Show all domains if 'Select a Domain' is selected
                                         if (defaultValue === "Select a Domain") return true;
                                         // Otherwise, show only the selected/current domain
-                                        return domainData.key === defaultValue || domainData.key === currentDomain;
+                                        return domainData.key === defaultValue || domainData.key === filteredDomain;
                                     })
                                     : <div className="loading"></div>
                             }
