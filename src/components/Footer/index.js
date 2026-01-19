@@ -3,8 +3,8 @@ export default function Footer() {
     const year = new Date().getFullYear();
     return <>
         <footer className="footer dashboard-content">
-            <img src="https://www.intastellar-consents.com/assets/icons/intastellar-logo-black.svg" alt="Intastellar Solutions International" className="footer-logo" />
             <p>&copy; {year} Intastellar Solutions International. All rights reserved.</p>
+            <img src="https://www.intastellar-consents.com/assets/icons/intastellar-logo-black.svg" alt="Intastellar Solutions International" className="footer-logo" />
         </footer>
     </>
 }
