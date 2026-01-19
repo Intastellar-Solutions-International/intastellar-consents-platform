@@ -71,7 +71,6 @@ export default function Select(props){
                             props?.items?.map((item, key) => {
                                 if(isJson(item)){
                                     item = JSON.parse(item);
-                                    console.log("Item is JSON:", item);
                                     return <>
                                         <li onClick={() => props.onChange(JSON.stringify({ id: item.id, name: item.name }))} key={item.id}>
                                             {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
@@ -84,7 +83,7 @@ export default function Select(props){
                                             JSON.stringify(
                                                 {
                                                     name: item.type,
-                                                    uri: item.uri
+                                                    uri: item.uri,
                                                 }
                                             )
                                         )} key={item.uri}>
@@ -94,7 +93,11 @@ export default function Select(props){
                                     </> 
                                 }else if(typeof item === "object"){
                                     return <>
-                                        <li style={{display: "flex", alignItems: "center"}} onClick={() => props.onChange(item.name)} key={item.id}>
+                                        <li style={{display: "flex", alignItems: "center"}} onClick={() => props.onChange(JSON.stringify({
+                                            id: item.id,
+                                            name: item.name,
+                                            access: item.access,
+                                        }))} key={item.id}>
                                             {(item?.icon && item.icon != "undefined") ? <img className="company-logo" src={item.icon} alt={item.name} /> : null}
                                             {item.name}
                                         </li>

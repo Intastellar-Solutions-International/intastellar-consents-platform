@@ -122,10 +122,6 @@ export default function App() {
 
         }, []);
 
-        if (Authentication.getOrganisation() === undefined || Authentication.getOrganisation() === null) {
-            navigate.push("/settings/create-organisation");
-        }
-
         if (id === null && organisations) {
             return (
                 <>
@@ -133,14 +129,7 @@ export default function App() {
                     {/* <BugReport /> */}
                 </>
             )
-        } else if (JSON.parse(localStorage.getItem("subscription"))?.status != "active" && Authentication.getOrganisation() != 1) {
-            return (
-                <AllOrg.Provider value={[organisations, setOrganisations]}>
-                    <StripePayment userId={Authentication.getUserId} />
-                    <BugReport />
-                </AllOrg.Provider>
-            )
-        } else if (!JSON.parse(localStorage.getItem("subscription"))?.loading && JSON.parse(localStorage.getItem("subscription"))?.status === "active" || Authentication.getOrganisation() == 1) {
+        } else {
             return (
                 <>
                     <Router>
@@ -156,18 +145,26 @@ export default function App() {
                                     {
                                         id && window.location.pathname != "/" || window.location.pathname != "/login" ? <Nav /> : null
                                     }
+
                                     <Switch>
                                         <Route path="/:id/dashboard" exact>
                                             <div style={{ flex: "1" }}>
-                                                {domainError ? <AddDomain /> :
-                                                    (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
-                                                }
+                                                {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <>
+                                                        {domainError ? <AddDomain /> :
+                                                            (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
+                                                        }
+                                                </>}
                                             </div>
                                         </Route>
                                         <Route path='/:id/view/:handle'>
-                                            <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <DomainDashbord setHandle={setHandle} />}
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <>
+                                                    <ErrorBoundary>
+                                                        {domainError ? <AddDomain /> : <DomainDashbord setHandle={setHandle} />}
+                                                    </ErrorBoundary>
+                                                </>
+                                            }
                                         </Route>
                                         <Route path="/signup" exact>
                                             <ErrorBoundary>
@@ -175,34 +172,40 @@ export default function App() {
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/:id/domains" exact>
-                                            <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <Websites />}
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <Websites />}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/settings" exact>
-                                            <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <Settings />}
-                                            </ErrorBoundary>
+                                            {
+                                                <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <Settings organisations={organisations} subscriptionStatus={subscriptionStatus} />}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/settings/create-organisation">
-                                            <ErrorBoundary>
-                                                {Authentication.User.Status === "admin" 
-                                                || Authentication.User.Status === "super-admin" 
-                                                    || Authentication.getOrganisation() === undefined ? <CreateOrganisation /> : null}
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <CreateOrganisation /> : <p>No access</p>}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/settings/add-user">
                                             <ErrorBoundary>
-                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <AddUser /> : null}
+                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <AddUser /> : <p>No access</p>}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/add-domain">
-                                            <ErrorBoundary>
-                                                {Authentication.User.Status === "admin" 
-                                                || Authentication.User.Status === "super-admin"
-                                                || Authentication.User.Status === "manager" ?
-                                                    <SettingsAddDomain /> : null}
-                                            </ErrorBoundary>
+                                            {localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1 ? <StripePayment userId={Authentication.getUserId} /> :
+                                                <ErrorBoundary>
+                                                    {Authentication.User.Status === "admin" 
+                                                    || Authentication.User.Status === "super-admin"
+                                                    || Authentication.User.Status === "manager" ?
+                                                        <SettingsAddDomain /> : <p>No access</p>}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/settings/view-users">
                                             <ErrorBoundary>
@@ -220,29 +223,39 @@ export default function App() {
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/:id/cookies" exact>
-                                            <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <CookiesDashboard />}
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <CookiesDashboard />}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/:id/reports" exact>
-                                            <ErrorBoundary>
-                                                <Reports />
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <Reports organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/:id/reports/user-consents">
-                                            <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/:id/reports/user-agents">
-                                            <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <UserAgents />}
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <UserAgents />}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/:id/reports/countries">
-                                            <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <Countries organisations={organisations} />}
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <Countries organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Route path="/dashboard">
                                             <ErrorBoundary>
@@ -264,9 +277,11 @@ export default function App() {
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/:id/compare" exact>
-                                            <ErrorBoundary>
-                                                <Compare domains={domains} />
-                                            </ErrorBoundary>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <Compare organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
                                         </Route>
                                         <Redirect to="/login" />
                                     </Switch>

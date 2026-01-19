@@ -21,6 +21,8 @@ export default function AddUser() {
         right: "-100%"
     });
 
+    console.log(API.settings.addUser.url);
+
     const addUser = (e) => {
         e.preventDefault();
         setStatus("Loading...");
@@ -66,7 +68,6 @@ export default function AddUser() {
             <SideNav links={reportsLinks} title="Settings" />
             <main className="dashboard-content">
                 <h1>Add user for {JSON.parse(Organisation).name}</h1>
-                <Link className="backLink" to="/settings">Back to settings</Link>
                 <SuccessWindow style={style} message={status} />
                 <form onSubmit={addUser}>
                     <label for="name">Name</label>
