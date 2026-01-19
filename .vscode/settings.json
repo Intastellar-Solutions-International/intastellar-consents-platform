@@ -1,9 +1,4 @@
 {
     "svn.ignoreMissingSvnWarning": true,
-    "postman.settings.dotenv-detection-notification-visibility": false,
-    "workbench.colorCustomizations": {
-        "activityBar.background": "#610320",
-        "titleBar.activeBackground": "#87052D",
-        "titleBar.activeForeground": "#FFFBFC"
-    }
+    "postman.settings.dotenv-detection-notification-visibility": false
 }
