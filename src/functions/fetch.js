@@ -29,6 +29,11 @@ const Fetch = async (url, method, headers, body, signal, responseType = 'json') 
             return "Err_Server_Error";
         } 
 
+        if (await res.text() === "Err_Login_Expired"){
+            window.location.href = "/login";
+            return;
+        }
+
         try {
             if (responseType === 'pdf' || res.headers.get('content-type')?.includes('application/pdf')) {
                 const blob = await res.blob();
