@@ -153,7 +153,7 @@ export default function Map(props) {
    }
 
    // Calculate how many countries fit based on container height
-   const [visibleCount, setVisibleCount] = useState(10); // default
+   const [visibleCount, setVisibleCount] = useState(15); // default
 
    useEffect(() => {
       const updateVisibleCount = () => {
