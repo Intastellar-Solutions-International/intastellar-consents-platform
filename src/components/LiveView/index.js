@@ -13,6 +13,11 @@ export function LiveView(props) {
         domain: "",
         open: false
     });
+    // Add a state to force re-render when liveData changes
+    const [barRenderKey, setBarRenderKey] = useState(0);
+    useEffect(() => {
+        setBarRenderKey(prev => prev + 1);
+    }, [liveData]);
 
     return <>
         {
@@ -24,28 +29,47 @@ export function LiveView(props) {
                             <div className="liveView-content-data-1">
                                 <p className="liveView-content-data-1-number">{liveData?.count}</p>
                             </div>
-                            <div className="liveView-container" style={{
+                            <div className="liveView-container" key={barRenderKey} style={{
                                 gap: "1px",
                                 display: "flex",
                                 alignItems: "flex-end",
-                                // Stretch the container to the full width of the parent container.
                                 width: "100%",
                                 borderBottom: "1px solid rgb(192, 159, 83)",
                                 marginBottom: "10px",
                             }}>
                                 {
-                                    Array.from({ length: 30 }, (_, index) => {
-                                        const visitData = liveData?.visitsOverTime.find(minute => Math.round(minute.minutes) === index + 1);
+                                    (() => {
+                                        // Build an array of counts for each minute (1-30)
+                                        let counts = Array(30).fill(0);
+                                        if (liveData?.visitsOverTime && Array.isArray(liveData.visitsOverTime)) {
+                                            liveData.visitsOverTime.forEach(event => {
+                                                const idx = Math.round(event.minutes) - 1;
+                                                if (idx >= 0 && idx < 30) {
+                                                    counts[idx]++;
+                                                }
+                                            });
+                                        }
+                                        const maxCount = Math.max(1, ...counts);
 
-                                        return <div key={index} className="liveView-container-bar" style={{
-                                            width: document.querySelector(".liveView-container")?.clientWidth / 30,
-                                            height: `${Math.round(visitData?.minutes) == index + 1 ? "60" : "2"}px`,
-                                            backgroundColor: "rgb(192, 159, 83)",
-                                            transition: "height 0.5s ease-in-out",
-                                            // Set the opacity to 1 if there is data for the minute, otherwise keep it 0.
-                                            opacity: "1"
-                                        }}></div>
-                                    })
+                                        console.log("LiveView counts array:", counts);
+
+                                        return counts.map((count, index) => {
+                                            // Scale bar height: min 2px, max 60px
+                                            const barHeight = count > 0
+                                                ? Math.round((count / maxCount) * 60)
+                                                : 2;
+
+                                            console.log("Bar height for index", index, "with count", count, "is", barHeight);
+
+                                            return <div key={index} className="liveView-container-bar" style={{
+                                                width: `calc(100% / 30)`,
+                                                height: `${barHeight}px`,
+                                                backgroundColor: "rgb(192, 159, 83)",
+                                                transition: "height 0.5s ease-in-out",
+                                                opacity: count > 0 ? "1" : "0.3"
+                                            }} title={count > 0 ? `${count} interactions` : "0 interactions"}></div>
+                                        });
+                                    })()
                                 }
                             </div>
                             <div className="liveView-content-data-2">
