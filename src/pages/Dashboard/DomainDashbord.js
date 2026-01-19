@@ -147,7 +147,7 @@ export default function DomainDashbord(props) {
                     <p>No interactions were recorded for this domain during the selected period.</p>
                 </> :
                 <>
-                    <div className="grid-container grid-2">
+                    <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
                         {(loadingCountry) ? <Loading /> : (activeDataCountry?.data?.Total === 0) ? null :
                             <div className={["widget no-padding grid-3-4"]}>
                                 <Map data={{
