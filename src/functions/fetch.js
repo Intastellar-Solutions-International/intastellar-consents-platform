@@ -31,11 +31,6 @@ const Fetch = async (url, method, headers, body, signal, responseType = 'json') 
 
         try {
 
-            if (await res.text() === "Err_Login_Expired") {
-                window.location.href = "/login";
-                return;
-            }
-
             if (responseType === 'pdf' || res.headers.get('content-type')?.includes('application/pdf')) {
                 const blob = await res.blob();
                 console.log('PDF blob size:', blob.size);
