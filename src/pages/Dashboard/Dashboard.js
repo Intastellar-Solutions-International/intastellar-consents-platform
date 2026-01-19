@@ -149,7 +149,27 @@ export default function Dashboard(props) {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
     })
 
-    console.log("Demo mode: ", demoMode);
+    if(activeData != null) {
+        fetch(
+            "https://apis.intastellarsolutions.com/cmp/ai.php",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    prompt: `Provide a brief summary of the user consent data for the period from ${fromDate.toISOString().split("T")[0]} to ${toDate.toISOString().split("T")[0]}. The summary should include key metrics such as total consent interactions, acceptance rates, and any notable trends or patterns observed during this timeframe. Format the response in JSON with keys: totalInteractions, acceptanceRate, notableTrends.`,
+                    consentData: activeData,
+                    max_tokens: 500,
+                    temperature: 0.7,
+                }),
+            }
+        ).then((e) => e.json()).then((data) => {
+            console.log(data);
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
 
     return (
         <>

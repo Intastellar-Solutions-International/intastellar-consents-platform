@@ -10,6 +10,7 @@ import { DomainContext } from "../../App.js";
 import NotAllowed from "../../Components/NotAllowed/NotAllowed";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
+import { LiveView } from "../../components/LiveView/index.js";
 const useParams = window.ReactRouterDOM.useParams;
 const punycode = require("punycode");
 
@@ -141,25 +142,12 @@ export default function DomainDashbord(props) {
                             <Loading small={true} />
                         </div>
                 }
-                {(loading) ? <Loading /> : (data?.Total === 0) ? <>
+                {(!loading && data?.Total === 0) ? <>
                     <h1>No interactions yet</h1>
                     <p>No interactions were recorded for this domain during the selected period.</p>
                 </> :
-                    <div className="grid-container grid-1">
-                        {(loading) ? <Loading /> : <Widget totalNumber={demoMode ? `${data.Total > 9999 ? String(data?.Total).slice(0, 2) : String(data?.Total).slice(0, 1)}${data?.Total > 999 ? "k" : "**"}` : data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />}
-                        <div className="grid-container grid-3">
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" />}
-                        </div>
-                        <div className="grid-container grid-3">
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Marketing.toLocaleString("de-DE") + "%"} type="Accepted only Marketing" />}
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Functional.toLocaleString("de-DE") + "%"} type="Accepted only Functional" />}
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Statics.toLocaleString("de-DE") + "%"} type="Accepted only Statics" />}
-                        </div>
-                    </div>
-                }
-                <div className="grid-container grid-3">
-                    {<section>
+                <>
+                    <div className="grid-container grid-2">
                         {(loadingCountry) ? <Loading /> : (activeDataCountry?.data?.Total === 0) ? null :
                             <section>
                                 <h3>User interactions based on country</h3>
@@ -172,8 +160,23 @@ export default function DomainDashbord(props) {
                                 </div>
                             </section>
                         }
-                    </section>}
-                </div>
+                        <div className={["widget no-padding"]}>
+                            <LiveView currentDomain={punycode.toASCII(handle)} demoMode={demoMode} />
+                        </div>
+                    </div>
+                    {(loading) ? <Loading /> : <Widget totalNumber={demoMode ? `${data.Total > 9999 ? String(data?.Total).slice(0, 2) : String(data?.Total).slice(0, 1)}${data?.Total > 999 ? "k" : "**"}` : data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />}
+                        <div className="grid-container grid-3">
+                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
+                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" />}
+                        </div>
+                        <div className="grid-container grid-3">
+                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Marketing.toLocaleString("de-DE") + "%"} type="Accepted only Marketing" />}
+                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Functional.toLocaleString("de-DE") + "%"} type="Accepted only Functional" />}
+                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Statics.toLocaleString("de-DE") + "%"} type="Accepted only Statics" />}
+                        </div>
+                </>
+                    
+                }
             </div>
         </>
     ) : <NotAllowed />

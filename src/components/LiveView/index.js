@@ -4,6 +4,7 @@ import "./Style.css";
 const useState = window.React.useState;
 const useEffect = window.React.useEffect;
 export function LiveView(props) {
+    console.log("LiveView props:", props);
     API.liveData.headers.Domains = props.currentDomain;
     const demoMode = props.demoMode;
 
