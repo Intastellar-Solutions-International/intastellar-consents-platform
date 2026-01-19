@@ -109,7 +109,7 @@ export default function Header(props) {
                                 <>
                                     <Select defaultValue={currentDomain}
                                         onChange={(e) => {
-                                            const domain = e;
+                                            const domain = JSON.parse(e).name;
                                             setCurrentDomain(domain);
                                             window.location.href = `/${window.location.pathname.split("/")[1]}/view/${domain.replace('.', '%2E')}`;
                                         }}
