@@ -49,8 +49,10 @@ const Fetch = async (url, method, headers, body, signal, responseType = 'json') 
                 if (text.trim().startsWith('{') || text.trim().startsWith('[')) {
                     return JSON.parse(text);
                 } else {
-                    console.error('Non-JSON response received:', text);
-                    throw new Error("Invalid response format");
+                    if (text === "Err_Login_Expired") {
+                        window.location.href = "/login";
+                        return;
+                    }
                 }
             }
         } catch (error) {
