@@ -54,11 +54,6 @@ const Fetch = async (url, method, headers, body, signal, responseType = 'json') 
                 // Check if the response is actually JSON
                 if (text.trim().startsWith('{') || text.trim().startsWith('[')) {
                     return JSON.parse(text);
-                } else {
-                    if (text === "Err_Login_Expired") {
-                        window.location.href = "/login";
-                        return;
-                    }
                 }
             }
         } catch (error) {
