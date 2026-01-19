@@ -161,7 +161,7 @@ export default function Map(props) {
          const topCountries = document.querySelector('.top-countries');
          const parent = topCountries?.parentElement;
          if (parent) {
-            const countryItemHeight = 44; // Approximate height per country block (adjust as needed)
+            const countryItemHeight = 32; // Approximate height per country block (adjust as needed)
             const parentHeight = parent.offsetHeight;
             const count = Math.floor(parentHeight / countryItemHeight);
             setVisibleCount(count > 0 ? count : 1);
