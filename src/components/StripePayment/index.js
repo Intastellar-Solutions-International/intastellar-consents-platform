@@ -22,8 +22,7 @@ export default function StripePayment(props) {
     return (
         <>
             <div className="content">
-                <h1>Choose a Plan</h1>
-                <p>Choose a plan that suits your needs. You´re about to select a plan for your company: {companyName}</p>
+                <h1>Choose a plan for {companyName}</h1>
                 <stripe-pricing-table
                     class="stripe-price-table"
                     pricing-table-id={pricingTableId}
