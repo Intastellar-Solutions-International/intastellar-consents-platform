@@ -427,6 +427,10 @@
     display: flex;
 }
 
+.sticky-title {
+    font-size: 1.5em;
+}
+
 @media screen and (min-width: 320px) and (max-width: 900px) {
     .dashboard-header {
         width: 100%;
@@ -516,5 +520,10 @@
 
     .infoHeader .crawl-cta {
         width: max-content;
+    }
+
+    .sticky-title{
+        font-size: 1em;
+        display: block !important;
     }
 }

@@ -47,7 +47,7 @@ export default function StickyPageTitle({
                     gridTemplateColumns: "1fr .5fr",
                     alignItems: "center",
                 }}>
-                    <h1 style={{ fontSize: "1.5em" }}>
+                    <h1 className="sticky-title">
                         {title}
                         {showInfoButton && (
                             <Button className="secondary" onClick={openSideCart}>i</Button>
