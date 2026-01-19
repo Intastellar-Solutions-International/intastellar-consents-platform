@@ -101,3 +101,21 @@
     top: 0;
     background-color: rgb(241 245 249 / var(--tw-bg-opacity));
 }
+
+@media screen and (max-width: 600px) {
+    .calendar button{
+        flex-direction: column;
+    }
+
+    .calendar button p{
+        margin: 0;
+    }
+
+    .w-\[512px\]{
+        width: 400px;
+    }
+
+    .grid-cols-2{
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
