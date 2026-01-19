@@ -31,8 +31,10 @@ export default function StripePayment(props) {
                     client-reference-id={Authentication.getOrganisation() || null}
                 >
                 </stripe-pricing-table>
-                <p>Subscriptions and invoices will be issued to {companyName}</p>
-                <p>Billing contact: {props.userId() || "your email address"}.</p>
+                <p>
+                    Subscriptions and invoices will be issued to {companyName}<br />
+                    Billing contact: {props.userId() || "your email address"}.
+                </p>
             </div>
         </>
     )
