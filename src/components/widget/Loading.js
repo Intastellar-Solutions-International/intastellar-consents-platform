@@ -2,10 +2,12 @@ import "./Widget.css";
 import "./Loading.css";
 function Loading(props) {
 
+    const style = (props?.style) ? props.style : {};
+
     if (props?.small) {
         return (
             <>
-                <div className="key-highlight-widget small-widget loading-small-widget">
+                <div className="key-highlight-widget small-widget loading-small-widget" style={style}>
                     <div className="smallIsLoading"></div>
                 </div>
             </>
@@ -14,7 +16,7 @@ function Loading(props) {
 
     return (
         <>
-            <div className="widget">
+            <div className="widget" style={style}>
                 <div className="bigNumIsLoading"></div>
                 <div className="smallIsLoading"></div>
             </div>

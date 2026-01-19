@@ -164,16 +164,16 @@ export default function DomainDashbord(props) {
                             <LiveView currentDomain={punycode.toASCII(handle)} demoMode={demoMode} />
                         </div>
                     </div>
-                    {(loading) ? <Loading /> : <Widget totalNumber={demoMode ? `${data.Total > 9999 ? String(data?.Total).slice(0, 2) : String(data?.Total).slice(0, 1)}${data?.Total > 999 ? "k" : "**"}` : data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />}
-                        <div className="grid-container grid-3">
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" />}
-                        </div>
-                        <div className="grid-container grid-3">
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Marketing.toLocaleString("de-DE") + "%"} type="Accepted only Marketing" />}
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Functional.toLocaleString("de-DE") + "%"} type="Accepted only Functional" />}
-                            {(loading) ? <Loading /> : <Widget totalNumber={data?.Statics.toLocaleString("de-DE") + "%"} type="Accepted only Statics" />}
-                        </div>
+                        {(loading) ? <Loading style={{ height: "auto" }} /> : <Widget style={{height: "auto"}} totalNumber={demoMode ? `${data.Total > 9999 ? String(data?.Total).slice(0, 2) : String(data?.Total).slice(0, 1)}${data?.Total > 999 ? "k" : "**"}` : data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />}
+                    <div className="grid-container grid-3">
+                        {(loading) ? <Loading /> : <Widget totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
+                        {(loading) ? <Loading /> : <Widget totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" />}
+                    </div>
+                        <div className="grid-container grid-3" style={{ marginTop: "14px" }}>
+                        {(loading) ? <Loading /> : <Widget totalNumber={data?.Marketing.toLocaleString("de-DE") + "%"} type="Accepted only Marketing" />}
+                        {(loading) ? <Loading /> : <Widget totalNumber={data?.Functional.toLocaleString("de-DE") + "%"} type="Accepted only Functional" />}
+                        {(loading) ? <Loading /> : <Widget totalNumber={data?.Statics.toLocaleString("de-DE") + "%"} type="Accepted only Statics" />}
+                    </div>
                 </>
                     
                 }

@@ -7,6 +7,7 @@ export default function Widget(props) {
 
     const overViewTotal = (props?.overviewTotal) ? " overviewTotal" : " overviewDistribution";
     const className = (props?.class) ? props.class : "";
+    const style = (props?.style) ? props.style : {};
 
     if (props?.styleType == "small"){
         let displayValue = "";
@@ -43,7 +44,7 @@ export default function Widget(props) {
             displayValue = props.totalNumber;
         }
         return (
-            <div className={className + " widget" + overViewTotal}>
+            <div className={className + " widget" + overViewTotal} style={style}>
                 <h2 className="overvieTotal-num">{displayValue}</h2>
                 <p>{props?.type}</p>
                 {
