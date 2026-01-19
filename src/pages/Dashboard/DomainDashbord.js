@@ -149,16 +149,13 @@ export default function DomainDashbord(props) {
                 <>
                     <div className="grid-container grid-2">
                         {(loadingCountry) ? <Loading /> : (activeDataCountry?.data?.Total === 0) ? null :
-                            <section>
-                                <h3>User interactions based on country</h3>
-                                <div className={["widget no-padding grid-3-4"]}>
-                                    <Map data={{
+                            <div className={["widget no-padding grid-3-4"]}>
+                                <Map data={{
 
-                                        Countries: activeDataCountry?.data?.Countries,
-                                        total: activeDataCountry?.data?.Total,
-                                    }} />
-                                </div>
-                            </section>
+                                    Countries: activeDataCountry?.data?.Countries,
+                                    total: activeDataCountry?.data?.Total,
+                                }} />
+                            </div>
                         }
                         <div className={["widget no-padding"]}>
                             <LiveView currentDomain={punycode.toASCII(handle)} demoMode={demoMode} />

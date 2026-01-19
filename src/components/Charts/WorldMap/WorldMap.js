@@ -167,6 +167,7 @@ export default function Map(props) {
                   return b.num.total - a.num.total;
                }
                ).map((country, key) => {
+                  console.log(country.num.total / total * 100);
                   return (
                      <div key={key}>
                         <div className="grid-container grid-2">
