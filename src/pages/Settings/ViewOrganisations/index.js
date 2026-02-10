@@ -17,31 +17,34 @@ export default function ViewOrg() {
     }))
 
     function editOrganisation(org) {
-        console.log("Edit: ", org);
+        window.location.href = `/settings/edit-organisation/${org.id}`;
     }
 
     return (
         <>
             <SideNav links={reportsLinks} title="Settings" />
-            <main className="dashboard-content">
+            <main className="dashboard-content" style={{ padding: "20px", maxWidth: "1200px" }}>
                 <h1>My Organisation</h1>
                 <Link className="backLink" to="/settings">Back to settings</Link>
-                <div className="grid">
-                    {
-                        (loading) ? <Loading /> : data.map((d, key) => {
-                            return (
-                                <article key={key} className="widget">
-                                    <h2 >{d.name}</h2>
-                                    {
-                                        (Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin") ?
-                                            <button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button>
-                                            : null
-                                    }
-                                </article>
-                            )
-                        })
-                    }
-                </div>
+                <section>
+                    <header className="grid-cols-5 grid no-gap">
+                        <h3>Name</h3>
+                        <h3>Actions</h3>
+                    </header>
+                    {(loading) ? <CurrentPageLoading /> : data.length > 0 ? data.map((d, key) => {
+                        console.log("Data: ", d);
+                        return (
+                            <article key={key} className="grid-cols-5 grid border-gray-300 rounded-md mb-4 no-gap">
+                                <p className="p-4 my-0 border">{d.name}</p>
+                                {
+                                    (Authentication.getOrganisationAccessStatusForOrganisation(d.id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(d.id) === "super-admin") ?
+                                        <p className="p-4 my-0 border"><button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button></p>
+                                        : <p className="p-4 my-0 border">-</p>
+                                }
+                            </article>
+                        )
+                    }) : <p>No organisations found.</p>}
+                </section>
             </main>
         </>
     )
