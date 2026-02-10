@@ -66,7 +66,7 @@ export default function AddUser() {
     return (
         <>
             <SideNav links={reportsLinks} title="Settings" />
-            <main className="dashboard-content">
+            <main className="dashboard-content" style={{ padding: "20px", maxWidth: "1200px" }}>
                 <h1>Add user for {JSON.parse(Organisation).name}</h1>
                 <SuccessWindow style={style} message={status} />
                 <form onSubmit={addUser}>
