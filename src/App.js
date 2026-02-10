@@ -188,21 +188,21 @@ export default function App() {
                                         <Route path="/settings/create-organisation">
                                             {
                                                 (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
-                                                    {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <CreateOrganisation /> : <p>No access</p>}
+                                                    {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <CreateOrganisation /> : <p>No access</p>}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/settings/add-user">
                                             <ErrorBoundary>
-                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <AddUser /> : <p>No access</p>}
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <AddUser /> : <p>No access</p>}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/add-domain">
                                             {localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1 ? <StripePayment userId={Authentication.getUserId} /> :
                                                 <ErrorBoundary>
-                                                    {Authentication.User.Status === "admin" 
-                                                    || Authentication.User.Status === "super-admin"
-                                                    || Authentication.User.Status === "manager" ?
+                                                    {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" 
+                                                    || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin"
+                                                    || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "manager" ?
                                                         <SettingsAddDomain /> : <p>No access</p>}
                                                 </ErrorBoundary>
                                             }
@@ -268,7 +268,7 @@ export default function App() {
                                         <Route path="/settings/config-gdpr"></Route>
                                         <Route path="/settings/blacklist-ip">
                                             <ErrorBoundary>
-                                                {Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin" ? <BlacklistIp /> : null}
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <BlacklistIp /> : null}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/" exact>

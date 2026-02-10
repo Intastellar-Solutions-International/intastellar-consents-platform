@@ -138,7 +138,10 @@ const Authentication = {
     },
     User: {
         Status: JSON.parse(localStorage.getItem("globals"))?.status
+    },
+    getOrganisationAccessStatusForOrganisation: function (organisation_id) {
+        const organisation_access = (localStorage.getItem("globals") != null || localStorage.getItem("globals") != undefined) ? JSON.parse(localStorage.getItem("globals"))?.organisation_access : undefined;
+        return organisation_access.find(organisation => organisation.organisation_id == organisation_id)?.organisation_access;
     }
 }
-
 export default Authentication;

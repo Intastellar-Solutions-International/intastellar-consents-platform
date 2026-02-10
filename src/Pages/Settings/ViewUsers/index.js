@@ -35,14 +35,14 @@ export default function ViewUsers() {
                         console.log("Data: ", d);
                         return (
                             <article key={key} className="grid-cols-5 grid border-gray-300 rounded-md mb-4 no-gap">
-                                <p className="p-4 border">{d.id}</p>
-                                <p className="p-4 border">{d.name}</p>
-                                <p className="p-4 border">{d.email}</p>
-                                <p className="p-4 border">{d.role}</p>
+                                <p className="p-4 my-0 border">{d.id}</p>
+                                <p className="p-4 my-0 border">{d.name}</p>
+                                <p className="p-4 my-0 border">{d.email}</p>
+                                <p className="p-4 my-0 border">{d.role}</p>
                                 {
                                     (Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin") ?
-                                        <p className="p-4 border"><button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button></p>
-                                        : <p className="p-4 border">-</p>
+                                        <p className="p-4 my-0 border"><button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button></p>
+                                        : <p className="p-4 my-0 border">-</p>
                                 }
                             </article>
                         )

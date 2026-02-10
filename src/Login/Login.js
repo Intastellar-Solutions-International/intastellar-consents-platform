@@ -28,15 +28,29 @@ export default function Login() {
                 return response.json();
             }).then(response => {
 
+
+                console.log("Response: ", response);
                 if (response === "Err_Logon_Fail") {
                     console.error("Error logging in");
                     return;
                 }
 
                 localStorage.setItem("platform", "gdpr");
+                console.log("Response: ", response[0]);
+                localStorage.setItem("organisation", JSON.stringify(response[0]));
 
-                localStorage.setItem("organisation", response[0]);
-                localStorage.setItem("globals", JSON.stringify(account));
+                localStorage.setItem("globals", JSON.stringify(
+                    {
+                        ...account,
+                        organisation_access: response.map(organisation => {
+                            return {
+                                organisation_id: organisation.id,
+                                organisation_name: organisation.name,
+                                organisation_access: organisation.users.find(user => user.email === account?.user?.email)?.role
+                            }
+                        }) || []
+                    }   
+                ));
 
                 if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
                     window.location.href = "/dashboard";
