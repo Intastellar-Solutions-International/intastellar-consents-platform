@@ -11,10 +11,9 @@ export default function AddDomain() {
     const domainRegex = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
     return (
         <>
-            <div className="dashboard-content">
+            <div className="dashboard-content" style={{ padding: "20px", maxWidth: "1200px" }}>
                 <h2>Add domain</h2>
-                <p>Here you can add a domain to your organisation, for any website your Organisation is using the Intastellar Cookie Consents | CMP</p>
-                <p>After adding a domain you can implement the Intastellar Cookie Consents on your website.</p>
+                <p>Add a domain to your organisation, to track the usage of the Intastellar Consents on your website.</p>
                 <div className='grid'>
                     <section>
                         <Textfield placeholder="Add your root domain" type={"url"} onChange={
