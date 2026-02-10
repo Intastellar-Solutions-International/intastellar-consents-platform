@@ -1,8 +1,9 @@
 import "./Style.css";
 export default function Email(props){
     return(
-        <>
-            <input className="intInput" autoComplete="off" type="email" onChange={props.onChange} />
-        </>
+        <div className="flex flex-col gap-2">
+            <label htmlFor={props?.id} className="text-sm font-medium">{props?.label}</label>
+            <input placeholder={props?.placeholder} className="intInput" autoComplete="off" type="email" onChange={props.onChange} id={props?.id} />
+        </div>
     )
 }

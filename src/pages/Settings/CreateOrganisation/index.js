@@ -36,15 +36,13 @@ export default function AddUser() {
     return (
         <>
             <SideNav links={reportsLinks} title="Settings" />
-            <main className="dashboard-content">
+            <main className="dashboard-content" style={{ padding: "20px", maxWidth: "1200px" }}>
                 <h1>Create a Organisation</h1>
                 <form onSubmit={create}>
                     <p>{(status != null) ? status : null}</p>
-                    <label htmlFor="orgName">Organisation Name</label><br />
-                    <label htmlFor="MemberName">Admin Email</label><br />
-                    <Text onChange={(e) => setOrganisationName(e.target.value)} />
-                    <Email onChange={(e) => setOrganisationAdmin(e.target.value)} />
-                    <button type="submit">Create Organisation</button>
+                    <Text onChange={(e) => setOrganisationName(e.target.value)} label="Organisation Name" placeholder="Enter the name of the organisation" />
+                    <Email onChange={(e) => setOrganisationAdmin(e.target.value)} label="Admin Email" placeholder="Enter the email of the organisation admin" />
+                    <button className="cta" type="submit">Create Organisation</button>
                 </form>
             </main>
         </>

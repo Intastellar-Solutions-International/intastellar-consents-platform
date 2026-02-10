@@ -7,3 +7,26 @@
     border-radius: 5px;
     font-size: 14px;
 }
+
+.intInput:focus{
+    outline: none;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.intInput:focus-visible{
+    outline: none;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.intInput:focus-within{
+    outline: none;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.flex-col{
+    flex-direction: column;
+    gap: 10px;
+}
