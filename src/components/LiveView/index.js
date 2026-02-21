@@ -11,6 +11,7 @@ export function LiveView(props) {
     const [loading, liveData, error, updated] = useFetch(0.25, API.liveData.url, API.liveData.method, API.liveData.headers);
     const [domainLiveView, setDomainLiveView] = useState({
         domain: "",
+        country: "",
         open: false
     });
     // Add a state to force re-render when liveData changes
@@ -74,27 +75,28 @@ export function LiveView(props) {
                             </div>
                             <div className="liveView-content-data-2">
                                 {
-                                    // Loop through the 'liveData.contry' object and display the country name.
+                                    // Loop through the 'liveData.country' object and display the country name.
+                                    Object.keys(liveData?.country || {}).map((key, countryIndex) => {
+                                        const countryCount = liveData?.country[key]?.count ?? 0;
+                                        const totalCount = liveData?.count || 1;
+                                        const countryKeys = Object.keys(liveData?.country || {});
+                                        const isLastCountry = countryIndex === countryKeys.length - 1;
 
-                                    Object.keys(
-                                        liveData?.country
-                                    ).map((key, index) => {
-                                        return <div key={index + Math.random()} className="liveView-content-country" style={{
-                                            marginBottom: (liveData?.country.length - 1 === index) ? "0" : "40px"
+                                        return <div key={key} className="liveView-content-country" style={{
+                                            marginBottom: isLastCountry ? "0" : "40px"
                                         }}>
                                             <div className="liveView-content-flex">
                                                 <p className="liveView-content-data-1-text">{key}</p>
-                                                <p className="liveView-content-data-1-text">{liveData?.country[key].count}</p>
+                                                <p className="liveView-content-data-1-text">{countryCount}</p>
                                             </div>
                                             <div style={{
-                                                width: `100%`,
+                                                width: "100%",
                                                 height: "2px",
                                                 backgroundColor: "#c4c4c4",
                                                 marginBottom: "10px"
                                             }}>
                                                 <div style={{
-                                                    width: `${(liveData?.country[key].count / liveData.count) * 100
-                                                        }%`,
+                                                    width: `${(countryCount / totalCount) * 100}%`,
                                                     height: "2px",
                                                     backgroundColor: "rgb(222, 189, 113)",
                                                     marginBottom: "10px"
@@ -102,103 +104,105 @@ export function LiveView(props) {
                                             </div>
                                             {
                                                 !demoMode &&
-                                                Object.keys(
-                                                    liveData?.domains
-                                                ).filter((domain) => {
-                                                    console.log(liveData?.domains[domain].country, );
-                                                    return liveData?.domains[domain].country.indexOf(key) > -1;
-                                                }).map((domain, index) => {
-                                                    return <>
-                                                        <div key={index + Math.random()} onClick={() => {
-                                                            setDomainLiveView({
-                                                                domain: domain,
-                                                                open: true
-                                                            });
-                                                        }} className="liveView-content-flex" style={{
-                                                            fontSize: "12px",
-                                                            cursor: "pointer",
-                                                        }}>
-                                                            <p className="liveView-content-data-1-text">{domain}</p>
-                                                            <p className="liveView-content-data-1-text">{
-                                                                liveData?.domains[domain].country.filter((country) => {
-                                                                    return country === key;
-                                                                }).length
-                                                            }</p>
-                                                        </div>
-                                                        {
-                                                            domainLiveView.open && domainLiveView.domain == domain ?
-                                                                <div key={key + Math.random()} className="liveView-content-data-1-domain" style={{
-                                                                    display: "flex",
-                                                                    flexDirection: "column",
-                                                                    gap: "10px",
-                                                                    padding: "10px",
-                                                                    borderRadius: "5px",
-                                                                    backgroundColor: "white",
+                                                Object.keys(liveData?.domains || {})
+                                                    .filter((domain) => {
+                                                        const domainCountries = liveData?.domains[domain]?.country;
+                                                        return Array.isArray(domainCountries) && domainCountries.includes(key);
+                                                    })
+                                                    .map((domain) => {
+                                                        const domainCountryCount = (liveData?.domains[domain]?.country || []).filter((c) => c === key).length;
+                                                        const barWidthPercent = totalCount > 0 ? (domainCountryCount / totalCount) * 100 : 0;
+
+                                                        return <div key={`${key}-${domain}`} style={{ marginBottom: "10px" }}>
+                                                            <div onClick={() => {
+                                                                setDomainLiveView({
+                                                                    domain: domain,
+                                                                    country: key,
+                                                                    open: true
+                                                                });
+                                                            }} className="liveView-content-flex" style={{
+                                                                fontSize: "12px",
+                                                                cursor: "pointer",
+                                                            }}>
+                                                                <p className="liveView-content-data-1-text">{domain}</p>
+                                                                <p className="liveView-content-data-1-text">{domainCountryCount}</p>
+                                                            </div>
+                                                            {
+                                                                domainLiveView.open && domainLiveView.domain === domain && domainLiveView.country === key && (
+                                                                    <div className="liveView-content-data-1-domain" style={{
+                                                                        display: "flex",
+                                                                        flexDirection: "column",
+                                                                        gap: "10px",
+                                                                        padding: "10px",
+                                                                        position: "absolute",
+                                                                        top: "0",
+                                                                        left: "0",
+                                                                        right: "0",
+                                                                        bottom: "0",
+                                                                        zIndex: "999",
+                                                                        overflowY: "scroll",
+                                                                        maxHeight: "400px",
+                                                                        width: "100%",
+                                                                        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                                                                        border: "1px solid #c4c4c4",
+                                                                        borderRadius: "5px",
+                                                                        backgroundColor: "rgb(63, 63, 63)"
+                                                                    }}>
+                                                                        <div className="liveView-content-data-1-domain-title">
+                                                                            <p className="liveView-content-data-1-text">Domain: {domain}</p>
+                                                                            <button onClick={(e) => {
+                                                                                e.stopPropagation();
+                                                                                setDomainLiveView({
+                                                                                    domain: "",
+                                                                                    country: "",
+                                                                                    open: false
+                                                                                });
+                                                                            }} className="dropdown-menu-button">Close</button>
+                                                                        </div>
+                                                                        {
+                                                                            (() => {
+                                                                                const consents = liveData?.domains[domain]?.consent || [];
+                                                                                const countries = liveData?.domains[domain]?.country || [];
+                                                                                // Only show consents for visits from the selected country (consent[i] matches country[i])
+                                                                                return consents.flatMap((consent, consentIdx) => {
+                                                                                    if (countries[consentIdx] !== key) return [];
+                                                                                    const consentData = (consent && typeof consent === "string") ? JSON.parse(consent) : consent;
+                                                                                    if (!Array.isArray(consentData)) return [];
+                                                                                    return consentData.map((consentItem, idx) => {
+                                                                                        const isAccepted = consentItem?.checked === "checked" || consentItem?.checked === true;
+                                                                                        return (
+                                                                                            <div key={`${domain}-${consentIdx}-${idx}`} className="liveView-content-data-1-domain-consent">
+                                                                                                <p className="liveView-content-data-1-text">{consentItem?.type}</p>
+                                                                                                <p className="liveView-content-data-1-text">{isAccepted ? "Accepted" : "Declined"}</p>
+                                                                                            </div>
+                                                                                        );
+                                                                                    });
+                                                                                });
+                                                                            })()
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            <div style={{
+                                                                width: "100%",
+                                                                height: "2px",
+                                                                backgroundColor: "#c4c4c4",
+                                                                marginBottom: "10px",
+                                                                position: "relative",
+                                                                overflow: "hidden",
+                                                            }}>
+                                                                <div style={{
+                                                                    width: `${barWidthPercent}%`,
+                                                                    height: "2px",
                                                                     position: "absolute",
                                                                     top: "0",
-                                                                    left: "0",
-                                                                    right: "0",
-                                                                    bottom: "0",
-                                                                    zIndex: "999",
-                                                                    overflowY: "scroll",
-                                                                    maxHeight: "400px",
-                                                                    width: "100%",
-                                                                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-                                                                    border: "1px solid #c4c4c4",
-                                                                    borderRadius: "5px",
-                                                                    backgroundColor: "rgb(63, 63, 63)"
-                                                                }}
-                                                                >
-                                                                    <div className="liveView-content-data-1-domain-title">
-                                                                        <p className="liveView-content-data-1-text">Domain: {domain}</p>
-                                                                        <button onClick={() => {
-                                                                            setDomainLiveView({
-                                                                                domain: "",
-                                                                                open: false
-                                                                            });
-                                                                        }} className="dropdown-menu-button">Close</button>
-                                                                    </div>
-                                                                    {
-                                                                        // Only show consents for the current country
-                                                                        liveData?.domains[domain]?.consent?.flatMap((consent, index) => {
-                                                                            const consentData = (consent && typeof consent === "string") ? JSON.parse(consent) : consent;
-                                                                            if (Array.isArray(consentData)) {
-                                                                                return consentData.map((consentItem, idx) => (
-                                                                                    <div key={idx + Math.random()} className="liveView-content-data-1-domain-consent">
-                                                                                        <p className="liveView-content-data-1-text">{consentItem?.type}</p>
-                                                                                        <p className="liveView-content-data-1-text">{consentItem?.checked ? "Accepted" : "Declined"}</p>
-                                                                                    </div>
-                                                                                ));
-                                                                            }
-                                                                            return [];
-                                                                        })
-                                                                    }
-                                                                </div>
-                                                                : null
-                                                        }
-                                                        <div key={index + Math.random()} style={{
-                                                            width: `100%`,
-                                                            height: "2px",
-                                                            backgroundColor: "#c4c4c4",
-                                                            marginBottom: "10px",
-                                                            position: "relative",
-                                                            overflow: "hidden",
-                                                        }}>
-                                                            <div style={{
-                                                                width: `${(liveData?.domains[domain].country.filter((country) => {
-                                                                    return country === key;
-                                                                }).length / liveData.count) * 100
-                                                                    }%`,
-                                                                height: "2px",
-                                                                position: "absolute",
-                                                                top: "0",
-                                                                backgroundColor: "rgb(222, 189, 113)"
-                                                            }}></div>
-                                                        </div>
-                                                    </>
-                                                })
+                                                                    backgroundColor: "rgb(222, 189, 113)"
+                                                                }}></div>
+                                                            </div>
+                                                        </div>;
+                                                    })
                                             }
-                                        </div>
+                                        </div>;
                                     })
                                 }
                             </div>

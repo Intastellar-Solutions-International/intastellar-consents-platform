@@ -46,7 +46,13 @@ export default function Map(props) {
                   functional: country.functional,
                   statistics: country.statics,
                   marketing: country.marketing,
-                  color: colorCalulator(country.num.total)
+                  color: colorCalulator(country.num.total),
+                  acceptedTotal: demoMode ? `${country.num.accepted > 9999 ? String(country.num.accepted).slice(0, 2) : String(country.num.accepted).slice(0, 1)}${country.num.accepted > 999 ? "k" : "**"}` : country.num.accepted,
+                  rejectedTotal: demoMode ? `${country.num.rejected > 9999 ? String(country.num.rejected).slice(0, 2) : String(country.num.rejected).slice(0, 1)}${country.num.rejected > 999 ? "k" : "**"}` : country.num.rejected,
+                  rejectedTotal: demoMode ? `${country.num.rejected > 9999 ? String(country.num.rejected).slice(0, 2) : String(country.num.rejected).slice(0, 1)}${country.num.rejected > 999 ? "k" : "**"}` : country.num.rejected,
+                  functionalTotal: demoMode ? `${country.num.functional > 9999 ? String(country.num.functional).slice(0, 2) : String(country.num.functional).slice(0, 1)}${country.num.functional > 999 ? "k" : "**"}` : country.num.functional,
+                  statisticsTotal: demoMode ? `${country.num.statics > 9999 ? String(country.num.statics).slice(0, 2) : String(country.num.statics).slice(0, 1)}${country.num.statics > 999 ? "k" : "**"}` : country.num.statics,
+                  marketingTotal: demoMode ? `${country.num.marketing > 9999 ? String(country.num.marketing).slice(0, 2) : String(country.num.marketing).slice(0, 1)}${country.num.marketing > 999 ? "k" : "**"}` : country.num.marketing,
                }
             }
          }
@@ -109,38 +115,43 @@ export default function Map(props) {
                   },
                   accepted: {
                      name: 'Accepted Consents',
-                     format: '{0} %',
+                     format: '{0}% (Total: {total})',
                      thousandSeparator: '.',
                      thresholdMax: 800,
-                     thresholdMin: 10
+                     thresholdMin: 10,
+                     total: 'acceptedTotal',
                   },
                   rejected: {
                      name: 'Rejected Consents',
-                     format: '{0} %',
+                     format: '{0}% (Total: {total})',
                      thousandSeparator: '.',
                      thresholdMax: 800,
-                     thresholdMin: 10
+                     thresholdMin: 10,
+                     total: 'rejectedTotal',
                   },
                   functional: {
                      name: 'Functional Consents',
-                     format: '{0} %',
+                     format: '{0}% (Total: {total})',
                      thousandSeparator: '.',
                      thresholdMax: 800,
-                     thresholdMin: 10
+                     thresholdMin: 10,
+                     total: 'functionalTotal',
                   },
                   statistics: {
                      name: 'Statistics Consents',
-                     format: '{0} %',
+                     format: '{0}% (Total: {total})',
                      thousandSeparator: '.',
                      thresholdMax: 800,
-                     thresholdMin: 10
+                     thresholdMin: 10,
+                     total: 'statisticsTotal',
                   },
                   marketing: {
                      name: 'Marketing Consents',
-                     format: '{0} %',
+                     format: '{0}% (Total: {total})',
                      thousandSeparator: '.',
                      thresholdMax: 800,
-                     thresholdMin: 10
+                     thresholdMin: 10,
+                     total: 'marketingTotal',
                   }
                },
                applyData: 'total',
