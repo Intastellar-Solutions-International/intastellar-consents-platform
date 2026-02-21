@@ -38,6 +38,8 @@ import UserPreferences from "./Pages/Settings/UserPreferences";
 import StripePayment from "./Components/StripePayment";
 import Compare from "./Pages/Reports/Compare";
 import BlacklistIp from "./Pages/Settings/BlacklistIp";
+import CreateUser from "./Pages/Settings/CreateUser";
+import AuthLogin from "./Login/AuthLogin";
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
@@ -145,7 +147,6 @@ export default function App() {
                                     {
                                         id && window.location.pathname != "/" || window.location.pathname != "/login" ? <Nav /> : null
                                     }
-
                                     <Switch>
                                         <Route path="/:id/dashboard" exact>
                                             <div style={{ flex: "1" }}>
@@ -265,10 +266,18 @@ export default function App() {
                                         <Router path="/login" exact>
                                             <Login />
                                         </Router>
+                                        <Route path="/auth-login">
+                                            <AuthLogin />
+                                        </Route>
                                         <Route path="/settings/config-gdpr"></Route>
                                         <Route path="/settings/blacklist-ip">
                                             <ErrorBoundary>
                                                 {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <BlacklistIp /> : null}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/create-user">
+                                            <ErrorBoundary>
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <CreateUser /> : null}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/" exact>

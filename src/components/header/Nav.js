@@ -1,6 +1,5 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
-import SideNav from "./SideNav";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 

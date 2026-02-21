@@ -1,6 +1,5 @@
 import { PrimaryHost, LoginHost } from "./host";
 import Authentication from "../Authentication/Auth";
-import Compare from "../Pages/Reports/Compare";
 
 const API = {
     Login: {
@@ -186,6 +185,30 @@ const API = {
         }
     },
     settings: {
+        createUser: {
+            url: `${LoginHost}/consents/signup/v1/create-user`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            },
+            body: (firstName, lastName, email, password, role, organisation) => JSON.stringify({
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password,
+                role: role,
+                organisation: organisation
+            })
+        },
+        getAllOrganisations: {
+            url: `${PrimaryHost}/cmp/get-organisation`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
         getOrganisation: {
             url: `${PrimaryHost}/analytics/settings/getOrganisation`,
             method: "POST",
