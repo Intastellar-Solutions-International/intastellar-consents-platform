@@ -32,6 +32,7 @@ export default function DomainDashbord(props) {
     const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
     const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
     const [observedCookies, setObservedCookies] = useState(null);
+    const [timeToDecision, setTimeToDecision] = useState("global");
 
     let url = API[id].getInteractions.url;
     let method = API[id].getInteractions.method;
@@ -110,13 +111,21 @@ export default function DomainDashbord(props) {
                     <>
                         <div className={`grid-container grid-7`} style={{ gap: "10px", marginBottom: "20px" }}>
 
-                            <Widget styleType="small" totalNumber={data} type="Consents given" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={data} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" change={{
+                                change: data?.changeRate.accepted,
+                                }} relativeDrop={{
+                                    relativeDrop: data?.relativeDrop.accepted,
+                                }} kpi={true} totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
                             <Widget explainer={{
                                 exist: true,
                                 title: "Essential-only rate",
                                 content: "Share of users who declined analytics and marketing cookies, allowing only required cookies..",
-                            }} styleType="small" totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
+                            }} styleType="small" change={{
+                                change: data?.changeRate.declined,
+                                }} relativeDrop={{
+                                    relativeDrop: data?.relativeDrop.declined,
+                                    }} kpi={true} totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
                             <Widget explainer={{
                                 exist: true,
                                 title: "EU based users",
@@ -146,29 +155,29 @@ export default function DomainDashbord(props) {
                                 setTimeToDecision(e);
                             }}  
                         />
-                        <p>n={activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE")}</p>
+                        <p>n={data?.timeToDecision[timeToDecision].count.toLocaleString("de-DE")}</p>
                         <div className="grid-container grid-7" style={{ marginBottom: "20px" }}>
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") + "s"} explainer={{ 
+                            <Widget styleType="small" totalNumber={data?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : data?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") + "s"} explainer={{ 
                                 exist: true,
                                 title: "Median time to decision",
                                 content: "Median time taken by users to decide on consent.",
                             }} type="Median time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") + "s"} explainer={{
+                            <Widget styleType="small" totalNumber={data?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : data?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") + "s"} explainer={{
                                 exist: true,
                                 title: "90th percentile time to decision",
                                 content: "Time taken by 90% of users to decide on consent.",
                                 }} type="P90 decision time" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") + "s"} explainer={{
+                            <Widget styleType="small" totalNumber={data?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : data?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") + "s"} explainer={{
                                 exist: true,
                                 title: "Average time to decision",
                                 content: "Average time taken by users to decide on consent.",
                             }} type="Average time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
+                            <Widget styleType="small" totalNumber={data?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : data?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
                                 exist: true,
                                 title: "Percentage of users who took more than 10 seconds to decide",
                                 content: "Percentage of users who took more than 10 seconds to decide on consent.",
                             }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
+                            <Widget styleType="small" totalNumber={data?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : data?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
                                 exist: true,
                                 title: "Percentage of users who took less than 1 second to decide",
                                 content: "Percentage of users who took less than 1 second to decide on consent.",

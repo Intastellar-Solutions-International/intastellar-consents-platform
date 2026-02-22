@@ -13,6 +13,7 @@ export default function Widget(props) {
     const details = (props?.details) ? props.details : null;
     const kpi = (props?.kpi) ? props.kpi : false;
     const change = (props?.change) ? props.change : null;
+    const relativeDrop = (props?.relativeDrop) ? props.relativeDrop : null;
 
     if (props?.styleType == "small"){
         let displayValue = "";
@@ -23,7 +24,7 @@ export default function Widget(props) {
         }
         return (
             <>
-                <div className={`key-highlight-widget small-widget ${(kpi) ? "kpi" : ""} ${(change?.change > 0) ? "positive" : (change?.change < -10) ? "negative" : (change?.change > -10 && change?.change < 10) ? "neutral" : ""}`} onClick={() => {
+                <div className={`key-highlight-widget small-widget ${(kpi) ? "kpi" : ""} ${(relativeDrop?.relativeDrop > 20) ? "negative" : (relativeDrop?.relativeDrop <= 20 && relativeDrop?.relativeDrop >= -20) ? "neutral" : (relativeDrop?.relativeDrop < -20) ? "positive" : ""}`} onClick={() => {
                     (details && details !== null) ? document.querySelector('.details-dialog').showModal() : null;
                 }}>
                     <p className={`small-widget-type ${(explainer?.exist) ? "has-explainer" : ""}`}  onMouseEnter={() => {

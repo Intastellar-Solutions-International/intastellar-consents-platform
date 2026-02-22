@@ -204,9 +204,13 @@ export default function Dashboard(props) {
                             <Widget styleType="small" totalNumber={activeData} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
                             <Widget kpi={true} styleType="small" change={{
                                 change: activeData?.changeRate.accepted,
+                            }} relativeDrop={{
+                                relativeDrop: activeData?.relativeDrop.accepted,
                             }} totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
                             <Widget kpi={true} change={{
                                 change: activeData?.changeRate.declined,
+                            }} relativeDrop={{
+                                relativeDrop: activeData?.relativeDrop.declined,
                             }} explainer={{
                                 exist: true,
                                 title: "Essential-only rate",
