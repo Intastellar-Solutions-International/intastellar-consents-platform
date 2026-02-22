@@ -26,6 +26,13 @@ export default function Widget(props) {
                         (explainer?.exist) ? setExplainer(false) : null;
                     }}>{props?.type}</p>
                     <h3 className="small-widget-number">{displayValue} {percentage ? <span class="small-widget-percentage">{`${percentage}% accepted`}</span> : ""}</h3>
+                    {explainer?.exist && explainerVisible ? 
+                        <div className="explainer-tooltip">
+                            <span className="explainer-tooltip-text">
+                                {explainer.content}
+                            </span>
+                        </div>
+                    : ""}
                 </div>
             </>
         );
