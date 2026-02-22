@@ -143,9 +143,7 @@ export default function DomainDashbord(props) {
                             labels={["Global", "EU", "Non-EU"]}
                             defaultValue={timeToDecision}
                             onChange={(e) => {
-                                let value = e.toLowerCase();
-                                value = value.charAt(0).toUpperCase() + value.slice(1);
-                                setTimeToDecision(value);
+                                setTimeToDecision(e);
                             }}  
                         />
                         <p>n={activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE")}</p>

@@ -102,7 +102,9 @@ export default function Select(props){
                                     </> 
                                 }else {
                                     return <>
-                                        <li onClick={(e) => props.onChange(e.target.innerText)} key={item} value={item}>
+                                        <li onClick={(e) => props.onChange(
+                                            (props.labels) ? item : e.target.innerText
+                                        )} key={item} value={item}>
                                             {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
                                             {props?.labels ? props?.labels[key] : item}
                                         </li>
