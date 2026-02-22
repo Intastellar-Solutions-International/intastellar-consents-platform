@@ -238,17 +238,17 @@ export default function Dashboard(props) {
                             }}
                         />
                         <div className="grid-container grid-7" style={{ marginTop: "20px" }}>
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE")} explainer={{
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") + "s"} explainer={{
                                 exist: true,
                                 title: "Median time to decision",
                                 content: "Median time taken by users to decide on consent.",
                             }} type="Median time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE")} explainer={{
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") + "s" } explainer={{
                                 exist: true,
                                 title: "90th percentile time to decision",
                                 content: "Time taken by 90% of users to decide on consent.",
                                 }} type="P90 decision time" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE")} explainer={{
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") + "s"} explainer={{
                                 exist: true,
                                 title: "Average time to decision",
                                 content: "Average time taken by users to decide on consent.",
