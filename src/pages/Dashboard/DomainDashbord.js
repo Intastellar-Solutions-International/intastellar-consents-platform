@@ -147,21 +147,21 @@ export default function DomainDashbord(props) {
                             }}  
                         />
                         <div className="grid-container grid-7" style={{ marginBottom: "20px" }}>
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE")} explainer={{ 
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE")} explainer={{ 
                                 exist: true,
-                                title: "Average time to decision",
-                                content: "Average time taken by users to decide on consent.",
-                            }} type="Average time to decision" fromDate={fromDate} toDate={toDate} />
+                                title: "Median time to decision",
+                                content: "Median time taken by users to decide on consent.",
+                            }} type="Median time to decision" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE")} explainer={{
                                 exist: true,
                                 title: "90th percentile time to decision",
                                 content: "Time taken by 90% of users to decide on consent.",
                             }} type="90% time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE")} explainer={{
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE")} explainer={{
                                 exist: true,
-                                title: "Median time to decision",
-                                content: "Median time taken by users to decide on consent.",
-                            }} type="Median time to decision" fromDate={fromDate} toDate={toDate} />
+                                title: "Average time to decision",
+                                content: "Average time taken by users to decide on consent.",
+                            }} type="Average time to decision" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
                                 exist: true,
                                 title: "Percentage of users who took more than 10 seconds to decide",
