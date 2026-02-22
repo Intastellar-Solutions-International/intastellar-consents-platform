@@ -227,7 +227,7 @@ export default function Compare(props) {
                     </div>
                 </div>
                 <div className="compare-results">
-                    <div class="flex">
+                    <div className="flex">
                         <h2>Comparison Results</h2>
                         <button className='export-button' disabled={comparisonData?.length === 0 || comparisonData === null || loadingExport} onClick={handlePDFEExport}>
                             {loadingExport ? "Exporting..." : "Export Audit Report (PDF)"}
