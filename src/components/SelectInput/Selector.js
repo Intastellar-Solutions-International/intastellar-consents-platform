@@ -40,8 +40,6 @@ export default function Select(props){
         document.addEventListener("click", clickOutSide);
     }, []);
 
-    console.log("Select props:", props);
-
     return <>
         <div className="selectorContianer" style={props.style}>
             <div className="selector">
@@ -74,7 +72,7 @@ export default function Select(props){
                                     return <>
                                         <li onClick={() => props.onChange(JSON.stringify({ id: item.id, name: item.name }))} key={item.id}>
                                             {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
-                                            {item.name}
+                                            {props?.labels ? props?.labels[key] : item.name}
                                         </li>
                                     </> 
                                 }else if(typeof item === "object" && item?.uri){
@@ -88,7 +86,7 @@ export default function Select(props){
                                             )
                                         )} key={item.uri}>
                                             {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
-                                            {item.type}
+                                            {props?.labels ? props?.labels[key] : item.type}
                                         </li>
                                     </> 
                                 }else if(typeof item === "object"){
@@ -99,14 +97,14 @@ export default function Select(props){
                                             access: item.access,
                                         }))} key={item.id}>
                                             {(item?.icon && item.icon != "undefined") ? <img className="company-logo" src={item.icon} alt={item.name} /> : null}
-                                            {item.name}
+                                            {props?.labels ? props?.labels[key] : item.name}
                                         </li>
                                     </> 
                                 }else {
                                     return <>
                                         <li onClick={(e) => props.onChange(e.target.innerText)} key={item} value={item}>
                                             {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
-                                            {item}
+                                            {props?.labels ? props?.labels[key] : item}
                                         </li>
                                     </>
                                 }

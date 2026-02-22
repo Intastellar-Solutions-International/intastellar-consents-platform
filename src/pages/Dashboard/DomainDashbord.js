@@ -140,23 +140,14 @@ export default function DomainDashbord(props) {
                         </div>
                         <Select type="timeToDecision" 
                             items={["global", "eu", "noneEU"]}
-                            defaultValue="global"
+                            labels={["Global", "EU", "Non-EU"]}
+                            defaultValue={timeToDecision}
                             onChange={(e) => {
                                 setTimeToDecision(e);
-                            }}
+                            }}  
                         />
                         <div className="grid-container grid-7" style={{ marginBottom: "20px" }}>
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
-                                exist: true,
-                                title: "Percentage of users who took less than 1 second to decide",
-                                content: "Percentage of users who took less than 1 second to decide on consent.",
-                            }} type="<1s time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
-                                exist: true,
-                                title: "Percentage of users who took more than 10 seconds to decide",
-                                content: "Percentage of users who took more than 10 seconds to decide on consent.",
-                            }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE")} explainer={{
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE")} explainer={{ 
                                 exist: true,
                                 title: "Average time to decision",
                                 content: "Average time taken by users to decide on consent.",
@@ -171,6 +162,16 @@ export default function DomainDashbord(props) {
                                 title: "90th percentile time to decision",
                                 content: "Time taken by 90% of users to decide on consent.",
                             }} type="90% time to decision" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
+                                exist: true,
+                                title: "Percentage of users who took more than 10 seconds to decide",
+                                content: "Percentage of users who took more than 10 seconds to decide on consent.",
+                            }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
+                                exist: true,
+                                title: "Percentage of users who took less than 1 second to decide",
+                                content: "Percentage of users who took less than 1 second to decide on consent.",
+                            }} type="<1s time to decision" fromDate={fromDate} toDate={toDate} />
                         </div>
                         </> : <>
                         <div className="grid-container grid-7" style={{ gap: "20px", marginBottom: "20px" }}>
