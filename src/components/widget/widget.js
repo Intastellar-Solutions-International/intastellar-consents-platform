@@ -10,6 +10,8 @@ export default function Widget(props) {
     const style = (props?.style) ? props.style : {};
     const percentage = (props?.percentage) ? props.percentage : null;
 
+    const details = (props?.details) ? props.details : null;
+
     if (props?.styleType == "small"){
         let displayValue = "";
         if (typeof props.totalNumber === "object" && props?.totalNumber?.Total !== undefined && props?.totalNumber?.Total !== null) {

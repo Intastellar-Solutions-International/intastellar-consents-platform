@@ -243,27 +243,87 @@ export default function Dashboard(props) {
                                 exist: true,
                                 title: "Median time to decision",
                                 content: "Median time taken by users to decide on consent.",
-                            }} type="Median time to decision" fromDate={fromDate} toDate={toDate} />
+                            }} type="Median time to decision" fromDate={fromDate} toDate={toDate} details={
+                                {
+                                    "avg": activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") + "s",
+                                    "median": activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") + "s",
+                                    "p90": activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") + "s",
+                                    "percentageOver10s": activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%",
+                                    "percentageUnder1s": activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%",
+                                    "count": activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE"),
+                                    "countOver10s": activeData?.timeToDecision[timeToDecision].countOver10s.toLocaleString("de-DE"),
+                                    "countUnder1s": activeData?.timeToDecision[timeToDecision].countUnder1s.toLocaleString("de-DE"),
+                                    "percentageOver10s": activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%",
+                                    "percentageUnder1s": activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%",
+                                    "deviceType": activeData?.timeToDecision[timeToDecision].deviceType,
+                                }
+                            } />
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") + "s" } explainer={{
                                 exist: true,
                                 title: "90th percentile time to decision",
                                 content: "Time taken by 90% of users to decide on consent.",
-                                }} type="P90 decision time" fromDate={fromDate} toDate={toDate} />
+                                }} type="P90 decision time" fromDate={fromDate} toDate={toDate} details={
+                                    {
+                                        "avg": activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") + "s",
+                                        "median": activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") + "s",
+                                        "p90": activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") + "s",
+                                        "percentageOver10s": activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%",
+                                        "percentageUnder1s": activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%",
+                                        "count": activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE"),
+                                        "countOver10s": activeData?.timeToDecision[timeToDecision].countOver10s.toLocaleString("de-DE"),
+                                        "countUnder1s": activeData?.timeToDecision[timeToDecision].countUnder1s.toLocaleString("de-DE"),
+                                        "percentageOver10s": activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%",
+                                        "percentageUnder1s": activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%",
+                                        "deviceType": activeData?.timeToDecision[timeToDecision].deviceType,
+                                    }
+                                } />
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") + "s"} explainer={{
                                 exist: true,
                                 title: "Average time to decision",
                                 content: "Average time taken by users to decide on consent.",
-                            }} type="Average time to decision" fromDate={fromDate} toDate={toDate} />
+                            }} type="Average time to decision" fromDate={fromDate} toDate={toDate} details={
+                                {
+                                    "avg": activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") + "s",
+                                    "median": activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") + "s",
+                                    "p90": activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") + "s",
+                                    "percentageOver10s": activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%",
+                                    "percentageUnder1s": activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%",
+                                    "count": activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE"),
+                                    "countOver10s": activeData?.timeToDecision[timeToDecision].countOver10s.toLocaleString("de-DE"),
+                                    "countUnder1s": activeData?.timeToDecision[timeToDecision].countUnder1s.toLocaleString("de-DE"),
+                                    "percentageOver10s": activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%",
+                                    "percentageUnder1s": activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%",
+                                    "deviceType": activeData?.timeToDecision[timeToDecision].deviceType,
+                                }
+                            } />
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
                                 exist: true,
                                 title: "Percentage of users who took more than 10 seconds to decide",
                                 content: "Percentage of users who took more than 10 seconds to decide on consent.",
-                            }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} />
+                            }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} details={
+                                {
+                                    "percentageOver10s": activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%",
+                                    "percentageUnder1s": activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%",
+                                    "count": activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE"),
+                                    "countOver10s": activeData?.timeToDecision[timeToDecision].countOver10s.toLocaleString("de-DE"),
+                                    "countUnder1s": activeData?.timeToDecision[timeToDecision].countUnder1s.toLocaleString("de-DE"),
+                                    "deviceType": activeData?.timeToDecision[timeToDecision].deviceType,
+                                }
+                            } />
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
                                 exist: true,
                                 title: "Percentage of users who took less than 1 second to decide",
                                 content: "Percentage of users who took less than 1 second to decide on consent.",
-                            }} type="<1s time to decision" fromDate={fromDate} toDate={toDate} /> 
+                            }} type="<1s time to decision" fromDate={fromDate} toDate={toDate} details={
+                                {
+                                    "percentageOver10s": activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%",
+                                    "percentageUnder1s": activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%",
+                                    "count": activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE"),
+                                    "countOver10s": activeData?.timeToDecision[timeToDecision].countOver10s.toLocaleString("de-DE"),
+                                    "countUnder1s": activeData?.timeToDecision[timeToDecision].countUnder1s.toLocaleString("de-DE"),
+                                    "deviceType": activeData?.timeToDecision[timeToDecision].deviceType,
+                                }
+                            } />
                         </div>
                         </> : <>
                             <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
