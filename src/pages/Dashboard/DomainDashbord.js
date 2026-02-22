@@ -156,7 +156,7 @@ export default function DomainDashbord(props) {
                                 exist: true,
                                 title: "90th percentile time to decision",
                                 content: "Time taken by 90% of users to decide on consent.",
-                            }} type="90% time to decision" fromDate={fromDate} toDate={toDate} />
+                                }} type="P90 decision time" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE")} explainer={{
                                 exist: true,
                                 title: "Average time to decision",
