@@ -110,17 +110,21 @@ export default function DomainDashbord(props) {
 
                             <Widget styleType="small" totalNumber={data} type="Consents given" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
+                            <Widget explainer={{
+                                exist: true,
+                                title: "Essential-only rate",
+                                content: "Share of users who declined analytics and marketing cookies, allowing only required cookies..",
+                            }} styleType="small" totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
                             <Widget explainer={{
                                 exist: true,
                                 title: "EU based users",
                                 content: "Visitors detected from EU-based IP locations.",
-                            }} styleType="small" totalNumber={data?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
+                            }} styleType="small" totalNumber={data?.euUsers.toLocaleString("de-DE")} percentage={data?.euAcceptedRate.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
                             <Widget explainer={{
                                 exist: true,
                                 title: "Non-EU based users",
                                 content: "Visitors detected from non-EU-based IP locations.",
-                            }} styleType="small" totalNumber={data?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                            }} styleType="small" totalNumber={data?.noneEUUsers.toLocaleString("de-DE")} percentage={data?.noneEUAcceptedRate.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
                             <Widget explainer={{
                                 exist: true,
                                 title: "Detected (pre-consent) cookies",
