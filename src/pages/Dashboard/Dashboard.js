@@ -231,12 +231,12 @@ export default function Dashboard(props) {
                         </div> 
                         <Select type="timeToDecision" 
                             items={["global", "eu", "noneEU"]}
-                            defaultValue="global"
+                            defaultValue={timeToDecision}
                             onChange={(e) => {
                                 setTimeToDecision(e);
                             }}
                         />
-                        <div className="grid-container grid-7" style={{ marginBottom: "20px" }}>
+                        <div className="grid-container grid-7" style={{ marginTop: "20px" }}>
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
                                 exist: true,
                                 title: "Percentage of users who took less than 1 second to decide",
@@ -264,6 +264,14 @@ export default function Dashboard(props) {
                             }} type="90% time to decision" fromDate={fromDate} toDate={toDate} />
                         </div>
                         </> : <>
+                            <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
+                                <Loading small={true} />
+                                <Loading small={true} />
+                                <Loading small={true} />
+                                <Loading small={true} />
+                                <Loading small={true} />
+                                <Loading small={true} />
+                            </div>
                             <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
                                 <Loading small={true} />
                                 <Loading small={true} />
