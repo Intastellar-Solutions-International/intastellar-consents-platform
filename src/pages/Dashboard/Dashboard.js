@@ -16,6 +16,7 @@ import Pie from "../../Components/Charts/Pie/index.js";
 import Widget from "../../Components/widget/widget.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
+import Select from "../../Components/SelectInput/Selector.js";
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
@@ -28,6 +29,7 @@ export default function Dashboard(props) {
     const userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
 
     const [demoMode, setDemoMode] = useState(Authentication.DemoMode);
+    const [timeToDecision, setTimeToDecision] = useState("global");
 
     const { handle, id } = useParams();
     const [activeData, setActiveData] = useState(null);
@@ -227,77 +229,41 @@ export default function Dashboard(props) {
                                     content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement.",
                             }} totalNumber={observedCookies?.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies?.consent.count.toLocaleString("de-DE")} type="Detected (post-consent)" fromDate={fromDate} toDate={toDate} />
                         </div> 
-                        <div className="grid-container grid-7">
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.global.avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.global.avg.toLocaleString("de-DE")} explainer={{
-                                exist: true,
-                                title: "Average time to decision",
-                                content: "Average time taken by users to decide on consent.",
-                            }} type="Average time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.global.median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.global.median.toLocaleString("de-DE")} explainer={{
-                                exist: true,
-                                title: "Median time to decision",
-                                content: "Median time taken by users to decide on consent.",
-                            }} type="Median time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.global.p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.global.p90.toLocaleString("de-DE")} explainer={{
-                                exist: true,
-                                title: "90th percentile time to decision",
-                                content: "Time taken by 90% of users to decide on consent.",
-                            }} type="90% time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.global.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.global.percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
+                        <Select type="timeToDecision" 
+                            items={["global", "eu", "noneEU"]}
+                            defaultValue="global"
+                            onChange={(e) => {
+                                setTimeToDecision(e);
+                            }}
+                        />
+                        <div className="grid-container grid-7" style={{ marginBottom: "20px" }}>
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
                                 exist: true,
                                 title: "Percentage of users who took less than 1 second to decide",
                                 content: "Percentage of users who took less than 1 second to decide on consent.",
                             }} type="<1s time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.global.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.global.percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
                                 exist: true,
                                 title: "Percentage of users who took more than 10 seconds to decide",
                                 content: "Percentage of users who took more than 10 seconds to decide on consent.",
                             }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} />
-                        </div>
-                        <div className="grid-container grid-7">
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.eu.avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.eu.avg.toLocaleString("de-DE")} explainer={{
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].avg.toLocaleString("de-DE")} explainer={{
                                 exist: true,
-                                title: "Average time to decision for EU users",
-                                content: "Average time taken by EU users to decide on consent.",
-                            }} type="EU avg time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.eu.median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.eu.median.toLocaleString("de-DE")} explainer={{
+                                title: "Average time to decision",
+                                content: "Average time taken by users to decide on consent.",
+                            }} type="Average time to decision" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE")} explainer={{
                                 exist: true,
-                                title: "Median time to decision for EU users",
-                                content: "Median time taken by EU users to decide on consent.",
-                            }} type="EU median time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.noneEU.avg.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.eu.avg.toLocaleString("de-DE")} explainer={{
+                                title: "Median time to decision",
+                                content: "Median time taken by users to decide on consent.",
+                            }} type="Median time to decision" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].p90.toLocaleString("de-DE")} explainer={{
                                 exist: true,
-                                title: "Average time to decision for EU users",
-                                content: "Average time taken by EU users to decide on consent.",
-                            }} type="None EU avg time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.noneEU.median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.noneEU.median.toLocaleString("de-DE")} explainer={{
-                                exist: true,
-                                title: "Median time to decision for EU users",
-                                content: "Median time taken by EU users to decide on consent.",
-                            }} type="None EU median time to decision" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.timeToDecision.noneEU.p90.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision.noneEU.p90.toLocaleString("de-DE")} explainer={{
-                                exist: true,
-                                title: "90th percentile time to decision for EU users",
-                                content: "Time taken by 90% of EU users to decide on consent.",
-                            }} type="None EU 90% time to decision" fromDate={fromDate} toDate={toDate} />
+                                title: "90th percentile time to decision",
+                                content: "Time taken by 90% of users to decide on consent.",
+                            }} type="90% time to decision" fromDate={fromDate} toDate={toDate} />
                         </div>
                         </> : <>
-                            <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                            </div>
-                            <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                            </div>
                             <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
                                 <Loading small={true} />
                                 <Loading small={true} />
