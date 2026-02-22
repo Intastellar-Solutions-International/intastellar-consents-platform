@@ -8,6 +8,7 @@ export default function Widget(props) {
     const overViewTotal = (props?.overviewTotal) ? " overviewTotal" : " overviewDistribution";
     const className = (props?.class) ? props.class : "";
     const style = (props?.style) ? props.style : {};
+    const percentage = (props?.percentage) ? props.percentage : null;
 
     if (props?.styleType == "small"){
         let displayValue = "";
@@ -24,7 +25,7 @@ export default function Widget(props) {
                     }} onMouseLeave={() => {
                         (explainer?.exist) ? setExplainer(false) : null;
                     }}>{props?.type}</p>
-                    <h3 className="small-widget-number">{displayValue}</h3>
+                    <h3 className="small-widget-number">{displayValue} {percentage ? `(${percentage} accepted)` : ""}</h3>
                     {explainer?.exist && explainerVisible ? 
                         <div className="explainer-tooltip">
                             <span className="explainer-tooltip-icon">i</span>

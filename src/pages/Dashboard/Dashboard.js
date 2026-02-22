@@ -206,12 +206,12 @@ export default function Dashboard(props) {
                                 exist: true,
                                 title: "EU based users",
                                     content: "Visitors detected from EU-based IP locations.",
-                            }} styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} type="EU-based users" fromDate={fromDate} toDate={toDate} />
+                            }} styleType="small" totalNumber={activeData?.euUsers.toLocaleString("de-DE")} percentage={activeData?.euAcceptedRate.toLocaleString("de-DE") + "%"} type="EU-based users" fromDate={fromDate} toDate={toDate} />
                             <Widget explainer={{
                                 exist: true,
                                 title: "Non-EU based users",
                                 content: "Visitors detected from non-EU-based IP locations.",
-                            }}  styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                            }}  styleType="small" totalNumber={activeData?.noneEUUsers.toLocaleString("de-DE")} percentage={activeData?.noneEUAcceptedRate.toLocaleString("de-DE") + "%"} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
                             <Widget explainer={{
                                 exist: true,
                                 title: "Detected (pre-consent) cookies",

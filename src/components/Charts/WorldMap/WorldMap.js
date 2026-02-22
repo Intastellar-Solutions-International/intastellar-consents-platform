@@ -49,7 +49,6 @@ export default function Map(props) {
                   color: colorCalulator(country.num.total),
                   acceptedTotal: demoMode ? `${country.num.accepted > 9999 ? String(country.num.accepted).slice(0, 2) : String(country.num.accepted).slice(0, 1)}${country.num.accepted > 999 ? "k" : "**"}` : country.num.accepted,
                   rejectedTotal: demoMode ? `${country.num.rejected > 9999 ? String(country.num.rejected).slice(0, 2) : String(country.num.rejected).slice(0, 1)}${country.num.rejected > 999 ? "k" : "**"}` : country.num.rejected,
-                  rejectedTotal: demoMode ? `${country.num.rejected > 9999 ? String(country.num.rejected).slice(0, 2) : String(country.num.rejected).slice(0, 1)}${country.num.rejected > 999 ? "k" : "**"}` : country.num.rejected,
                   functionalTotal: demoMode ? `${country.num.functional > 9999 ? String(country.num.functional).slice(0, 2) : String(country.num.functional).slice(0, 1)}${country.num.functional > 999 ? "k" : "**"}` : country.num.functional,
                   statisticsTotal: demoMode ? `${country.num.statics > 9999 ? String(country.num.statics).slice(0, 2) : String(country.num.statics).slice(0, 1)}${country.num.statics > 999 ? "k" : "**"}` : country.num.statics,
                   marketingTotal: demoMode ? `${country.num.marketing > 9999 ? String(country.num.marketing).slice(0, 2) : String(country.num.marketing).slice(0, 1)}${country.num.marketing > 999 ? "k" : "**"}` : country.num.marketing,
@@ -115,47 +114,61 @@ export default function Map(props) {
                   },
                   accepted: {
                      name: 'Accepted Consents',
-                     format: '{0}% (Total: {total})',
+                     format: '{0}%',
                      thousandSeparator: '.',
                      thresholdMax: 800,
                      thresholdMin: 10,
-                     total: 'acceptedTotal',
                   },
                   rejected: {
                      name: 'Rejected Consents',
-                     format: '{0}% (Total: {total})',
+                     format: '{0}%',
                      thousandSeparator: '.',
                      thresholdMax: 800,
                      thresholdMin: 10,
-                     total: 'rejectedTotal',
                   },
                   functional: {
                      name: 'Functional Consents',
-                     format: '{0}% (Total: {total})',
+                     format: '{0}%',
                      thousandSeparator: '.',
                      thresholdMax: 800,
                      thresholdMin: 10,
-                     total: 'functionalTotal',
                   },
                   statistics: {
                      name: 'Statistics Consents',
-                     format: '{0}% (Total: {total})',
+                     format: '{0}%',
                      thousandSeparator: '.',
                      thresholdMax: 800,
                      thresholdMin: 10,
-                     total: 'statisticsTotal',
                   },
                   marketing: {
                      name: 'Marketing Consents',
-                     format: '{0}% (Total: {total})',
+                     format: '{0}%',
                      thousandSeparator: '.',
                      thresholdMax: 800,
                      thresholdMin: 10,
-                     total: 'marketingTotal',
                   }
                },
                applyData: 'total',
                values: mapCountries,
+            },
+            onGetTooltip: (tooltipDiv, countryID, countryValues) => {
+               console.log(countryValues);
+               if (!countryValues) return '';
+               const fmt = (n) => (n != null && !isNaN(n) ? (typeof n === 'number' ? n.toLocaleString('de-DE') : n) : '-');
+               const rows = [
+                  { label: 'Country', value: countryID, total: null },
+                  { label: 'Total', value: countryValues.total, total: null },
+                  { label: 'Accepted', value: countryValues.accepted, total: countryValues.acceptedTotal },
+                  { label: 'Functional', value: countryValues.functional, total: countryValues.functionalTotal },
+                  { label: 'Statistics', value: countryValues.statistics, total: countryValues.statisticsTotal },
+                  { label: 'Marketing', value: countryValues.marketing, total: countryValues.marketingTotal },
+                  { label: 'Rejected', value: countryValues.rejected, total: countryValues.rejectedTotal },
+               ];
+               return rows.map(r =>
+                  r.total != null
+                     ? `${r.label}: ${r.value}% (${fmt(r.total)})`
+                     : `${r.label}: ${fmt(r.value)}`
+               ).join('\n');
             },
             initialZoom: zoomLevel,
             initialLocation: center,

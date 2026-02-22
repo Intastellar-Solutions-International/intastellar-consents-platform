@@ -45,6 +45,13 @@
     height: 100%;
 }
 
+/* Let tooltip newlines (\n) create line breaks */
+.svgMap-tooltip,
+.svgMap-tooltip-content,
+.svgMap-tooltip table {
+    white-space: pre-line;
+}
+
 @media screen and (max-width: 768px) {
     .svgMap-map-wrapper {
         width: 100%;
