@@ -237,6 +237,7 @@ export default function Dashboard(props) {
                                 setTimeToDecision(e);
                             }}
                         />
+                        <p>n= {activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE")}</p>
                         <div className="grid-container grid-7" style={{ marginTop: "20px" }}>
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") + "s"} explainer={{
                                 exist: true,
