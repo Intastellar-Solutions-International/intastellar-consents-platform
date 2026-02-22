@@ -234,7 +234,9 @@ export default function Dashboard(props) {
                             labels={["Global", "EU", "Non-EU"]}
                             defaultValue={timeToDecision}
                             onChange={(e) => {
-                                setTimeToDecision(e.toLowerCase());
+                                let  value = e.toLowerCase();
+                                value = value.charAt(0).toUpperCase() + value.slice(1);
+                                setTimeToDecision(value);
                             }}
                         />
                         <p>n= {activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE")}</p>
