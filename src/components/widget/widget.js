@@ -25,19 +25,11 @@ export default function Widget(props) {
                     }} onMouseLeave={() => {
                         (explainer?.exist) ? setExplainer(false) : null;
                     }}>{props?.type}</p>
-                    <h3 className="small-widget-number">{displayValue} {percentage ? `(${percentage} accepted)` : ""}</h3>
-                    {explainer?.exist && explainerVisible ? 
-                        <div className="explainer-tooltip">
-                            <span className="explainer-tooltip-icon">i</span>
-                            <span className="explainer-tooltip-text">
-                                {explainer.content}
-                            </span>
-                        </div>
-                    : null }
+                    <h3 className="small-widget-number">{displayValue} {percentage ? <span class="small-widget-percentage">{`${percentage}% accepted`}</span> : ""}</h3>
                 </div>
             </>
         );
-    } else {
+    } else {   
         let displayValue = "";
         if (typeof props.totalNumber === "object" && props?.totalNumber?.Total !== undefined && props?.totalNumber?.Total !== null) {
             displayValue = props?.totalNumber?.Total?.toLocaleString("de-DE");

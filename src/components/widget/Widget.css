@@ -79,3 +79,9 @@
     text-align: center;
     line-height: 12px;
 }
+
+.small-widget-percentage{
+    font-size: 14px;
+    font-weight: normal;
+    color: #a8a8a8;
+}
