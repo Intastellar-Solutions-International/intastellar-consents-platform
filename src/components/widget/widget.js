@@ -11,6 +11,8 @@ export default function Widget(props) {
     const percentage = (props?.percentage) ? props.percentage : null;
 
     const details = (props?.details) ? props.details : null;
+    const kpi = (props?.kpi) ? props.kpi : false;
+    const change = (props?.change) ? props.change : null;
 
     if (props?.styleType == "small"){
         let displayValue = "";
@@ -21,7 +23,7 @@ export default function Widget(props) {
         }
         return (
             <>
-                <div className="key-highlight-widget small-widget" onClick={() => {
+                <div className={`key-highlight-widget small-widget ${(kpi) ? "kpi" : ""} ${(change?.change > 0) ? "positive" : (change?.change < -10) ? "negative" : (change?.change > -10 && change?.change < 10) ? "neutral" : ""}`} onClick={() => {
                     (details && details !== null) ? document.querySelector('.details-dialog').showModal() : null;
                 }}>
                     <p className={`small-widget-type ${(explainer?.exist) ? "has-explainer" : ""}`}  onMouseEnter={() => {
@@ -29,7 +31,8 @@ export default function Widget(props) {
                     }} onMouseLeave={() => {
                         (explainer?.exist) ? setExplainer(false) : null;
                     }}>{props?.type}</p>
-                    <h3 className="small-widget-number">{displayValue} {percentage ? <span className="small-widget-percentage">{`${percentage}% accepted`}</span> : ""}</h3>
+                    <h3 className="small-widget-number">{displayValue} {change ? <span className="small-widget-percentage">{`${change?.change > 0 ? "+" : "-"
+                    }${Math.abs(change?.change)}pp`}</span> : ""} {percentage ? <span className="small-widget-percentage">{`${percentage}% accepted`}</span> : ""}</h3>
                     {explainer?.exist && explainerVisible ? 
                         <div className="explainer-tooltip">
                             <span className="explainer-tooltip-text">
@@ -38,99 +41,6 @@ export default function Widget(props) {
                         </div>
                     : ""}
                 </div>
-                {
-                    (details && details !== null) ? <dialog className="details-dialog" modal >
-                        <button className="details-close-button" onClick={() => document.querySelector('.details-dialog').close()}>Close</button>
-                        <div className="details-content">
-                            <section className="grid-container grid-2">
-                                <article>
-                                    <h2>General Overview</h2>
-                                    <section className="grid-container grid-2">
-                                        {
-                                            details != null && Object.keys(details ?? {}).map((key, index) => {
-                                                return <div key={index} className="details-item">
-                                                    <h4>{key}</h4>
-                                                        {
-                                                            typeof details?.[key] === 'object' ? <p>{details?.[key]?.count.toLocaleString("de-DE")}</p> : <p>{details?.[key]?.count.toLocaleString("de-DE")}</p>
-                                                        }
-                                                        {
-                                                            typeof details?.[key] === 'object' ? <p>{details?.[key]?.p90.toLocaleString("de-DE")}</p> : <p>{details?.[key]?.p90.toLocaleString("de-DE")}</p>
-                                                        }
-                                                        {
-                                                            typeof details?.[key] === 'object' ? <p>{details?.[key]?.percentageOver10s.toLocaleString("de-DE")}</p> : <p>{details?.[key]?.percentageOver10s.toLocaleString("de-DE")}</p>
-                                                        }
-                                                </div>
-                                            })
-                                        }
-                                    </section>
-                                </article>
-                                <article>
-                                    <h2>Time to Decision</h2>
-                                    <section className="grid-container grid-2">
-                                        {
-                                            details != null && Object.keys(details?.timeToDecision ?? {}).map((key, index) => {
-                                                return <div key={index} className="details-item">
-                                                    <h4>{key}</h4>
-                                                    {
-                                                        typeof details?.timeToDecision?.[key] === 'object' ? <p>{details?.timeToDecision?.[key]?.count.toLocaleString("de-DE")}</p> : <p>{details?.timeToDecision?.[key]?.count.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.timeToDecision?.[key] === 'object' ? <p>{details?.timeToDecision?.[key]?.p90.toLocaleString("de-DE")}</p> : <p>{details?.timeToDecision?.[key]?.p90.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.timeToDecision?.[key] === 'object' ? <p>{details?.timeToDecision?.[key]?.percentageOver10s.toLocaleString("de-DE")}</p> : <p>{details?.timeToDecision?.[key]?.percentageOver10s.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.timeToDecision?.[key] === 'object' ? <p>{details?.timeToDecision?.[key]?.percentageUnder1s.toLocaleString("de-DE")}</p> : <p>{details?.timeToDecision?.[key]?.percentageUnder1s.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.timeToDecision?.[key] === 'object' ? <p>{details?.timeToDecision?.[key]?.countOver10s.toLocaleString("de-DE")}</p> : <p>{details?.timeToDecision?.[key]?.countOver10s.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.timeToDecision?.[key] === 'object' ? <p>{details?.timeToDecision?.[key]?.countUnder1s.toLocaleString("de-DE")}</p> : <p>{details?.timeToDecision?.[key]?.countUnder1s.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.timeToDecision?.[key] === 'object' ? <p>{details?.timeToDecision?.[key]?.percentageOver10s.toLocaleString("de-DE")}</p> : <p>{details?.timeToDecision?.[key]?.percentageOver10s.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.timeToDecision?.[key] === 'object' ? <p>{details?.timeToDecision?.[key]?.percentageUnder1s.toLocaleString("de-DE")}</p> : <p>{details?.timeToDecision?.[key]?.percentageUnder1s.toLocaleString("de-DE")}</p>
-                                                    }
-                                                </div>
-                                            })
-                                        }
-                                    </section>
-                                </article>
-                                <article>
-                                    <h2>Device Overview</h2>
-                                    <section className="grid-container grid-2">
-                                        {
-                                            details != null && Object.keys(details?.deviceType ?? {}).map((key, index) => {
-                                                return <div key={index} className="details-item">
-                                                    <h4>{key}</h4>
-                                                    {
-                                                        typeof details?.deviceType?.[key] === 'object' ? <p>{details?.deviceType?.[key]?.count.toLocaleString("de-DE")}</p> : <p>{details?.deviceType?.[key]?.count.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.deviceType?.[key] === 'object' ? <p>{details?.deviceType?.[key]?.p90.toLocaleString("de-DE")}</p> : <p>{details?.deviceType?.[key]?.p90.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.deviceType?.[key] === 'object' ? <p>{details?.deviceType?.[key]?.percentageOver10s.toLocaleString("de-DE")}</p> : <p>{details?.deviceType?.[key]?.percentageOver10s.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.deviceType?.[key] === 'object' ? <p>{details?.deviceType?.[key]?.count.toLocaleString("de-DE")}</p> : <p>{details?.deviceType?.[key]?.count.toLocaleString("de-DE")}</p>
-                                                    }
-                                                    {
-                                                        typeof details?.deviceType?.[key] === 'object' ? <p>{details?.deviceType?.[key]?.percentageUnder1s.toLocaleString("de-DE")}</p> : <p>{details?.deviceType?.[key]?.percentageUnder1s.toLocaleString("de-DE")}</p>
-                                                    }
-                                                </div>
-                                            })
-                                        }
-                                    </section>
-                                </article>
-                            </section>
-                        </div>
-                    </dialog> : null
-                }
             </>
         );
     } else {   

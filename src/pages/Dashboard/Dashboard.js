@@ -202,8 +202,12 @@ export default function Dashboard(props) {
                         <div className={`grid-container grid-7`} style={{ gap: "10px", marginBottom: "20px" }}>
 
                             <Widget styleType="small" totalNumber={activeData} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
-                            <Widget explainer={{
+                            <Widget kpi={true} styleType="small" change={{
+                                change: activeData?.changeRate.accepted,
+                            }} totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
+                            <Widget kpi={true} change={{
+                                change: activeData?.changeRate.declined,
+                            }} explainer={{
                                 exist: true,
                                 title: "Essential-only rate",
                                 content: "Share of users who declined analytics and marketing cookies, allowing only required cookies..",

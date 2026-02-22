@@ -85,3 +85,33 @@
     font-weight: normal;
     color: #a8a8a8;
 }
+
+.kpi{
+    
+}
+
+.positive{
+    background: linear-gradient(to right, #008000, #006400);
+}
+
+.neutral{
+    /* Yellow gradient */
+    background: linear-gradient(to right, #d89e00, #957200);
+
+}
+
+.negative{
+    background: linear-gradient(to right, #ff0000, #8b0000);
+}
+
+.neutral .small-widget-number{
+    color: #ffffff;
+}
+
+.neutral .small-widget-percentage{
+    color: #ffffff;
+}
+
+.neutral .small-widget-type{
+    color: #ffffff;
+}
