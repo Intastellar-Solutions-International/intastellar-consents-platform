@@ -12,6 +12,7 @@ import cookies from "./icons/cookies.svg";
 import settings from "./icons/settings.svg";
 import logout from "./icons/logout.svg";
 import dashboard from "./icons/dashboard.svg";
+import experiments from "./icons/domain.svg";
 
 export default function Nav() {
 
@@ -29,6 +30,11 @@ export default function Nav() {
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/compare") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/compare"}><i className="dashboard-icons compare" style={{
                             backgroundImage: `url(${dashboard})`
                         }} data-icon={dashboard}></i> <span className="hiddenCollapsed">Portfolio Benchmark</span></Link>
+                        <Link className={"navItems" + (useLocation().pathname.indexOf("/experiments") > -1 ? " --active" : "")} to={"/experiments"}>
+                            <i className="dashboard-icons experiments" style={{
+                                backgroundImage: `url(${experiments})`
+                            }} data-icon={experiments}></i> <span className="hiddenCollapsed">A/B Testing</span>
+                        </Link>
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/cookies") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/cookies"}><i className="dashboard-icons cookies" style={{
                             backgroundImage: `url(${cookies})`
                         }} data-icon={cookies}></i> <span className="hiddenCollapsed">Cookies</span></Link>
