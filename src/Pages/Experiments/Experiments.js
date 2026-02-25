@@ -7,6 +7,7 @@ import API from "../../api/api";
 const { useState, useEffect } = React;
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+const punycode = require("punycode");
 
 import "./Experiments.css";
 import Select from "../../Components/SelectInput/Selector";
@@ -89,47 +90,74 @@ export default function Experiments() {
     document.title = "A/B Testing | Intastellar Consents";
     const [activeData, setActiveData] = useState(null);
     const today = new Date();
-    const [currentDomain, setCurrentDomain] = useState("");
-    const [experimentID, setExperimentID] = useState("");
-
+    const [currentDomain, setCurrentDomain] = useState("Choose domain");
+    const [experimentID, setExperimentID] = useState("Choose experiment");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     API.experiments.getExperiments.headers.Organisation = Authentication.getOrganisation();
     API.experiments.getExperiments.headers.FromDate = today.toISOString();
     API.experiments.getExperiments.headers.ToDate = today.toISOString();
-    API.experiments.getExperiments.headers.Domains = currentDomain;
-    API.experiments.getExperiments.headers.ExperimentID = experimentID;
+    API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? null : currentDomain;
+    API.experiments.getExperiments.headers.ExperimentID = experimentID === "Choose experiment" ? null : experimentID;
 
-    const [loading, data, error] = Fetch(5, API.experiments.getExperiments.url, API.experiments.getExperiments.method, API.experiments.getExperiments.headers);
-    const [loadingDomains, domains, errorDomains] = Fetch(5, API.gdpr.getDomains.url, API.gdpr.getDomains.method, API.gdpr.getDomains.headers);
+    API.gdpr.getDomains.headers.Organisation = Authentication.getOrganisation();
+
 
     useEffect(() => {
-        if (data) {
+        setLoading(true);
+        fetch(API.experiments.getExperiments.url, {
+            method: API.experiments.getExperiments.method,
+            headers: API.experiments.getExperiments.headers,
+        }).then(response => response.json()).then((data) => {
             setActiveData(Array.isArray(data) ? data : (data?.experiments ?? data?.variants ?? []));
-        } else if (error) {
-            console.error(error);
-        }
-    }, [data, error]);
+        }).catch((error) => {
+            setError(error);
+        }).finally(() => {
+            setLoading(false);
+        });
+    }, [currentDomain, experimentID]);
+    
+    const [loadingDomains, domains, errorDomains] = Fetch(5, API.gdpr.getDomains.url, API.gdpr.getDomains.method, API.gdpr.getDomains.headers);
+
+
+    useEffect(() => {
+        API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? null : currentDomain;
+        API.experiments.getExperiments.headers.ExperimentID = experimentID === "Choose experiment" ? null : experimentID;
+    }, [currentDomain, experimentID]);
 
     const experiments = activeData ?? [];
+    let domainList = [];
+    if (domains) {
+        domainList = domains?.map((d) => {
+            return {
+                icon: d.icon || null,
+                name: punycode.toUnicode(d.domain)
+            }
+        })
+    }
 
     return <>
         <SideNav links={experimentsLinks} title="Experiments" />
         <div className="dashboard-content experiments-page">
             <StickyPageTitle>
                 <h1>A/B Testing</h1>
-                <Select
-                    defaultValue={currentDomain}
-                    items={domains}
-                    onChange={(e) => {
-                        setCurrentDomain(e.target.value);
-                    }}
-                />
-                <Select
-                    defaultValue={experimentID}
-                    items={experiments.map((row) => row.experiment_id)}
-                    onChange={(e) => {
-                        setExperimentID(e.target.value);
-                    }}
-                />
+                <section className="experiments-filters">
+                    <Select
+                        defaultValue={currentDomain}
+                        items={domainList}
+                        onChange={(e) => {
+                            const domain = JSON.parse(e).name;
+                            setCurrentDomain(domain);
+                        }}
+                    />
+                    <Select
+                        defaultValue={experimentID}
+                        items={experiments.map((row) => row.experiment_id)}
+                        onChange={(e) => {
+                            setExperimentID(e.target.value);
+                        }}
+                    />
+                </section>
             </StickyPageTitle>
             {loading && <p className="experiments-loading">Loading experiment data…</p>}
             {error && <p className="experiments-error">Failed to load experiments.</p>}

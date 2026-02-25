@@ -47,7 +47,7 @@ export default function Header(props) {
                 return;
             }
 
-            if (data.error === "Err_No_Domains") {
+            if (data?.error == "Err_No_Domains") {
 
             } else {
                 data.unshift({ domain: "combined view", installed: null, lastedVisited: null });
