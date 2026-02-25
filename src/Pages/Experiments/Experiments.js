@@ -163,7 +163,7 @@ export default function Experiments() {
             {loading && <p className="experiments-loading">Loading experiment data…</p>}
             {error && <p className="experiments-error">Failed to load experiments.</p>}
             {!loading && !error && experiments.length === 0 && (
-                <p className="experiments-empty">No experiment data for this period.</p>
+                <p className="experiments-empty">Currently no experiments are running or no data is available for this domain.</p>
             )}
             {!loading && experiments.length > 0 && (
                 <div className="experiments-grid">
