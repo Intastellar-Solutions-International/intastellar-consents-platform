@@ -59,6 +59,58 @@
     border-radius: 6px;
 }
 
+.experiment-card__donuts {
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.experiment-card__donut-wrap {
+    position: relative;
+    width: 100px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.experiment-card__donut-wrap canvas {
+    max-height: 100px;
+}
+
+.experiment-card__donut-label {
+    font-size: 0.7rem;
+    color: #a0a0a0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    width: max-content;
+}
+
+.experiment-card--winning {
+    border: 2px solid rgba(76, 175, 80, 0.8);
+    box-shadow: 0 0 16px rgba(76, 175, 80, 0.35);
+}
+
+.experiment-card--winning .experiment-card__header {
+    border-bottom-color: rgba(76, 175, 80, 0.25);
+}
+
+.experiment-card__winning-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #1b5e20;
+    background: rgba(76, 175, 80, 0.35);
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
 .experiment-card__section {
     flex: 1;
 }

@@ -5,9 +5,76 @@ import StickyPageTitle from "../../Components/Header/Sticky";
 import Fetch from "../../Functions/FetchHook";
 import API from "../../api/api";
 const { useState, useEffect } = React;
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
 
 import "./Experiments.css";
 import Select from "../../Components/SelectInput/Selector";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+const CONVERSION_COLORS = {
+    accepted: "rgba(76, 175, 80, 0.9)",
+    rejected: "rgba(244, 67, 54, 0.9)",
+    undecided: "rgba(158, 158, 158, 0.9)",
+};
+
+function buildConversionChartData(row) {
+    const u = row.unique_user_conversion_performance || {};
+    const accepted = u.users_final_accepted ?? 0;
+    const rejected = u.users_final_rejected ?? 0;
+    const undecided = u.undecided_users ?? 0;
+    const total = accepted + rejected + undecided;
+    if (total === 0) {
+        return { labels: ["No data"], datasets: [{ data: [1], backgroundColor: ["rgba(128,128,128,0.3)"], borderWidth: 0 }] };
+    }
+    return {
+        labels: ["Accepted", "Rejected", "Undecided"],
+        datasets: [{
+            data: [accepted, rejected, undecided],
+            backgroundColor: [CONVERSION_COLORS.accepted, CONVERSION_COLORS.rejected, CONVERSION_COLORS.undecided],
+            borderColor: ["rgba(255,255,255,0.2)"],
+            borderWidth: 1,
+        }],
+    };
+}
+
+function buildDecisionChangeChartData(row) {
+    const d = row.decision_event_behavior_dynamics || {};
+    const total = d.decision_events_total ?? 0;
+    const changes = d.decision_changes ?? 0;
+    const unchanged = Math.max(0, total - changes);
+    if (total === 0) {
+        return { labels: ["No data"], datasets: [{ data: [1], backgroundColor: ["rgba(128,128,128,0.3)"], borderWidth: 0 }] };
+    }
+    return {
+        labels: ["Changed mind", "No change"],
+        datasets: [{
+            data: [changes, unchanged],
+            backgroundColor: ["rgba(255, 152, 0, 0.9)", "rgba(96, 125, 139, 0.7)"],
+            borderColor: ["rgba(255,255,255,0.2)"],
+            borderWidth: 1,
+        }],
+    };
+}
+
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+        legend: { display: false },
+        tooltip: {
+            callbacks: {
+                label: (ctx) => {
+                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                    const pct = total ? Math.round((ctx.raw / total) * 100) : 0;
+                    return `${ctx.label}: ${ctx.raw} (${pct}%)`;
+                },
+            },
+        },
+    },
+    cutout: "65%",
+};
 
 function formatPct(n) {
     if (n == null || Number.isNaN(n)) return "—";
@@ -32,7 +99,7 @@ export default function Experiments() {
 
     useEffect(() => {
         if (data) {
-            setActiveData(Array.isArray(data) ? data : (data?.experiments ?? []));
+            setActiveData(Array.isArray(data) ? data : (data?.experiments ?? data?.variants ?? []));
         } else if (error) {
             console.error(error);
         }
@@ -53,13 +120,31 @@ export default function Experiments() {
             )}
             {!loading && experiments.length > 0 && (
                 <div className="experiments-grid">
-                    {experiments.map((row, i) => (
-                        <article key={row.experiment_variant + i} className="experiment-card">
+                    {experiments.map((row, i) => {
+                        const isWinning = row.experiment_variant === row.winning_variant;
+                        return (
+                        <article
+                            key={row.experiment_variant + i}
+                            className={`experiment-card${isWinning ? " experiment-card--winning" : ""}`}
+                        >
                             <header className="experiment-card__header">
                                 <h2 className="experiment-card__variant">{row.experiment_variant}</h2>
+                                {isWinning && (
+                                    <span className="experiment-card__winning-badge">Winning variant</span>
+                                )}
                                 <span className="experiment-card__design">{row.design}</span>
                                 <span className="experiment-card__design">{row.domain}</span>
                             </header>
+                            <div className="experiment-card__donuts">
+                                <div className="experiment-card__donut-wrap" title="User outcome: Accepted / Rejected / Undecided">
+                                    <Doughnut data={buildConversionChartData(row)} options={chartOptions} />
+                                    <span className="experiment-card__donut-label">User outcome</span>
+                                </div>
+                                <div className="experiment-card__donut-wrap" title="Decision events: Changed mind vs No change">
+                                    <Doughnut data={buildDecisionChangeChartData(row)} options={chartOptions} />
+                                    <span className="experiment-card__donut-label">Decision change</span>
+                                </div>
+                            </div>
                             <section className="experiment-card__section">
                                 <h3 className="experiment-card__section-title">Unique user conversion</h3>
                                 <ul className="experiment-card__metrics">
@@ -68,6 +153,7 @@ export default function Experiments() {
                                     <li><span className="metric-label">Final rejected</span> <span className="metric-value">{row.unique_user_conversion_performance?.users_final_rejected ?? "—"}</span></li>
                                     <li><span className="metric-label">Undecided</span> <span className="metric-value">{row.unique_user_conversion_performance?.undecided_users ?? "—"}</span></li>
                                     <li><span className="metric-label">Accept rate (user %)</span> <span className="metric-value">{formatPct(row.unique_user_conversion_performance?.accept_rate_user_pct)}</span></li>
+                                    <li><span className="metric-label">Reject rate (user %)</span> <span className="metric-value">{formatPct(row.unique_user_conversion_performance?.reject_rate_user_pct)}</span></li>
                                 </ul>
                             </section>
                             <section className="experiment-card__section">
@@ -80,7 +166,7 @@ export default function Experiments() {
                                 </ul>
                             </section>
                         </article>
-                    ))}
+                    ); })}
                 </div>
             )}
         </div>
