@@ -2,6 +2,7 @@ const { useState, useEffect, useRef, useContext } = React;
 import "./Style.css";
 export default function Select(props){
     const [isOpen, setIsOpen] = useState(false);
+    const [align, setAlign] = useState(props.align || "left");
     // Search input ref
     const searchInput = useRef(null);
 
@@ -60,7 +61,7 @@ export default function Select(props){
                     }
                 </button>
                 {(isOpen) ? 
-                <div className="dropdown-menu">
+                <div className="dropdown-menu" style={{left: align === "right" ? "auto" : "0", right: align === "right" ? "0" : "auto"}}>
                     <ul className="dropdown-menu__content" style={props.style}>
                         <div className="search-box">
                             <input className="search-input" onChange={(e) => searchItems(e.target.value)} ref={searchInput} type="search" name="q" placeholder="Search" />

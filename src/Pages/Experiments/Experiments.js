@@ -149,14 +149,15 @@ export default function Experiments() {
                             const domain = JSON.parse(e).name;
                             setCurrentDomain(domain);
                         }}
+                        align="right"
                     />
-                    <Select
+                    {/* <Select
                         defaultValue={experimentID}
                         items={experiments.map((row) => row.experiment_id)}
                         onChange={(e) => {
                             setExperimentID(e.target.value);
                         }}
-                    />
+                    /> */}
                 </section>
             </StickyPageTitle>
             {loading && <p className="experiments-loading">Loading experiment data…</p>}
