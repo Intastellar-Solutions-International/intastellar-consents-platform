@@ -45,3 +45,11 @@ export const reportsLinks = [
         view: ["admin", "super-admin", "manager"]
     }
 ]
+
+export const experimentsLinks = [
+    {
+        name: "A/B Testing",
+        path: "/experiments",
+        view: ["admin", "super-admin", "manager"]
+    }
+]

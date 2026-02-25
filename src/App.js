@@ -40,6 +40,7 @@ import Compare from "./Pages/Reports/Compare";
 import BlacklistIp from "./Pages/Settings/BlacklistIp";
 import CreateUser from "./Pages/Settings/CreateUser";
 import AuthLogin from "./Login/AuthLogin";
+import Experiments from "./Pages/Experiments/Experiments";
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
@@ -291,6 +292,11 @@ export default function App() {
                                                     {domainError ? <AddDomain /> : <Compare organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
+                                        </Route>
+                                        <Route path="/experiments">
+                                            <ErrorBoundary>
+                                                <Experiments />
+                                            </ErrorBoundary>
                                         </Route>
                                         <Redirect to="/login" />
                                     </Switch>

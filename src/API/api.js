@@ -28,6 +28,17 @@ const API = {
             "Content-Type": "application/json"
         }
     },
+    experiments: {
+        getExperiments: {
+            url: `${PrimaryHost}/analytics/gdpr/experiements`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        }
+    },
     gdpr: {
         getTotalNumber: {
             url: `${PrimaryHost}/analytics/gdpr/getTotalNumber`,
