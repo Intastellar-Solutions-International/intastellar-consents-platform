@@ -89,13 +89,17 @@ export default function Experiments() {
     document.title = "A/B Testing | Intastellar Consents";
     const [activeData, setActiveData] = useState(null);
     const today = new Date();
+    const [currentDomain, setCurrentDomain] = useState("");
+    const [experimentID, setExperimentID] = useState("");
+
     API.experiments.getExperiments.headers.Organisation = Authentication.getOrganisation();
     API.experiments.getExperiments.headers.FromDate = today.toISOString();
     API.experiments.getExperiments.headers.ToDate = today.toISOString();
-    API.experiments.getExperiments.headers.Domains = "intastellarsolutions.com";
-    API.experiments.getExperiments.headers.ExperimentID = "banner-test";
+    API.experiments.getExperiments.headers.Domains = currentDomain;
+    API.experiments.getExperiments.headers.ExperimentID = experimentID;
 
     const [loading, data, error] = Fetch(5, API.experiments.getExperiments.url, API.experiments.getExperiments.method, API.experiments.getExperiments.headers);
+    const [loadingDomains, domains, errorDomains] = Fetch(5, API.gdpr.getDomains.url, API.gdpr.getDomains.method, API.gdpr.getDomains.headers);
 
     useEffect(() => {
         if (data) {
@@ -112,6 +116,20 @@ export default function Experiments() {
         <div className="dashboard-content experiments-page">
             <StickyPageTitle>
                 <h1>A/B Testing</h1>
+                <Select
+                    defaultValue={currentDomain}
+                    items={domains}
+                    onChange={(e) => {
+                        setCurrentDomain(e.target.value);
+                    }}
+                />
+                <Select
+                    defaultValue={experimentID}
+                    items={experiments.map((row) => row.experiment_id)}
+                    onChange={(e) => {
+                        setExperimentID(e.target.value);
+                    }}
+                />
             </StickyPageTitle>
             {loading && <p className="experiments-loading">Loading experiment data…</p>}
             {error && <p className="experiments-error">Failed to load experiments.</p>}
