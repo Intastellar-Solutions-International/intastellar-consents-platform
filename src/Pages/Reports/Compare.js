@@ -18,7 +18,7 @@ function downloadBlob(blob, filename) {
 }
 import "./Style.css";
 
-export default function Compare(props) {
+export default function Compare({ organisations, domains }) {
     document.title = "Portfolio Benchmark | Intastellar Consents | CMP";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const { handle, id } = useParams();
@@ -33,10 +33,11 @@ export default function Compare(props) {
 
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
-    const [domains, setDomains] = useState([]);
     const [loadingExport, setLoadingExport] = useState(false);
 
     const [comparisonData, setComparisonData] = useState(null);
+
+    const [comparisonDomains, setComparisonDomains] = useState([]);
 
     async function handlePDFEExport() {
         setLoadingExport(true);
@@ -50,7 +51,7 @@ export default function Compare(props) {
                     ...API[id].exportPDF.headers,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ domains })
+                body: JSON.stringify({ domains: comparisonDomains })
             });
             if (response.status === 401 || response.status === 403) {
                 localStorage.removeItem("globals");
@@ -78,15 +79,15 @@ export default function Compare(props) {
 
     function handleDomainSelection(event, domain) {
         if (event.target) {
-            setDomains((prevDomains) => [...prevDomains, domain]);
+            comparisonDomains.push(domain);
         } else {
-            setDomains((prevDomains) => prevDomains.filter((d) => d !== domain));
+            comparisonDomains.pop(comparisonDomains.indexOf(domain));
         }
     }
 
     function handleDomainCompare() {
         // Handle domain comparison logic here
-        console.log("Comparing domains:", domains);
+        console.log("Comparing domains:", comparisonDomains);
 
         setLoading(true);
 
@@ -95,7 +96,7 @@ export default function Compare(props) {
 
         // You can fetch comparison data from the API and update the state accordingly
         Fetch(API[id].compareDomains.url, API[id].compareDomains.method, API[id].compareDomains.headers, JSON.stringify({
-            domains: domains
+            domains: comparisonDomains
         })).then((data) => {
             if (data === "Err_Login_Expired") {
                 localStorage.removeItem("globals");
@@ -127,18 +128,18 @@ export default function Compare(props) {
                     <p className="compare-text">Select Domains to Compare:</p>
                     <div className="compare-domain-list">
                         <select onChange={(e) => {
-                            if (domains.includes(e.target.value)) {
+                            if (comparisonDomains.includes(e.target.value)) {
                                 // Remove it from the selection
-                                domains.pop(domains.indexOf(e.target.value));
+                                comparisonDomains.pop(comparisonDomains.indexOf(e.target.value));
                             } else {
                                 handleDomainSelection(e, e.target.value)
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
+                            {domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
-                                        domains.includes(domain.domain)
+                                        comparisonDomains.includes(domain.domain)
                                     }
                                 >
                                     {domain.domain}
@@ -146,7 +147,7 @@ export default function Compare(props) {
                             ))}
                         </select>
                         <select onChange={(e) => {
-                            if (domains.includes(e.target.value)) {
+                            if (comparisonDomains.includes(e.target.value)) {
                                 // Remove it from the selection
                                 domains.pop(domains.indexOf(e.target.value));
                             } else {
@@ -154,10 +155,10 @@ export default function Compare(props) {
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
+                            {comparisonDomains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
-                                        domains.includes(domain.domain)
+                                        comparisonDomains.includes(domain.domain)
                                     }
                                 >
                                     {domain.domain}
@@ -165,7 +166,7 @@ export default function Compare(props) {
                             ))}
                         </select>
                         <select onChange={(e) => {
-                            if (domains.includes(e.target.value)) {
+                            if (comparisonDomains.includes(e.target.value)) {
                                 // Remove it from the selection
                                 domains.pop(domains.indexOf(e.target.value));
                             } else {
@@ -173,10 +174,10 @@ export default function Compare(props) {
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
+                            {comparisonDomains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
-                                        domains.includes(domain.domain)
+                                        comparisonDomains.includes(domain.domain)
                                     }
                                 >
                                     {domain.domain}
@@ -184,7 +185,7 @@ export default function Compare(props) {
                             ))}
                         </select>
                         <select onChange={(e) => {
-                            if (domains.includes(e.target.value)) {
+                            if (comparisonDomains.includes(e.target.value)) {
                                 // Remove it from the selection
                                 domains.pop(domains.indexOf(e.target.value));
                             } else {
@@ -192,10 +193,10 @@ export default function Compare(props) {
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
+                            {comparisonDomains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
-                                        domains.includes(domain.domain)
+                                                comparisonDomains.includes(domain.domain)
                                     }
                                 >
                                     {domain.domain}
@@ -203,25 +204,25 @@ export default function Compare(props) {
                             ))}
                         </select>
                         <select onChange={(e) => {
-                            if (domains.includes(e.target.value)) {
+                                if (comparisonDomains.includes(e.target.value)) {
                                 // Remove it from the selection
-                                domains.pop(domains.indexOf(e.target.value));
+                                comparisonDomains.pop(comparisonDomains.indexOf(e.target.value));
                             } else {
                                 handleDomainSelection(e, e.target.value)
                             }
                         }}>
                             <option value="" disabled selected>Select domain</option>
-                            {props?.domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
+                            {domains?.filter((domain) => domain.domain != "combined view")?.map((domain, index) => (
                                 <option key={index} value={domain.domain}
                                     disabled={
-                                        domains.includes(domain.domain)
+                                        comparisonDomains.includes(domain.domain)
                                     }
                                 >
                                     {domain.domain}
                                 </option>
                             ))}
                         </select>
-                        <button className="btn" disabled={loading || domains.length < 1} onClick={handleDomainCompare}>
+                        <button className="btn" disabled={loading || domains?.length < 1} onClick={handleDomainCompare}>
                             {loading ? "Comparing..." : "Compare"}
                         </button>
                     </div>

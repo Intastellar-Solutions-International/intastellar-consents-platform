@@ -111,7 +111,7 @@ export default function Header(props) {
                                         onChange={(e) => {
                                             const domain = JSON.parse(e).name;
                                             setCurrentDomain(domain);
-                                            window.location.href = `/${window.location.pathname.split("/")[1]}/view/${domain.replace('.', '%2E')}`;
+                                            window.location.href = `/gdpr/view/${domain.replace('.', '%2E')}`;
                                         }}
                                         items={domainList}
                                         style={{ left: "0" }}

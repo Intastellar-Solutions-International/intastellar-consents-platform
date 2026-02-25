@@ -289,7 +289,7 @@ export default function App() {
                                         <Route path="/:id/compare" exact>
                                             {
                                                 (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <Compare organisations={organisations} />}
+                                                    {domainError ? <AddDomain /> : <Compare organisations={organisations} domains={domains} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
