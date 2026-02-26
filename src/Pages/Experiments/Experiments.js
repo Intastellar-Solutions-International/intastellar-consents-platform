@@ -1,5 +1,3 @@
-import SideNav from "../../Components/Header/SideNav";
-import { experimentsLinks } from "../../Components/Header/SideNavLinks";
 import Authentication from "../../Authentication/Auth";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import Fetch from "../../Functions/FetchHook";
@@ -10,6 +8,8 @@ import { Doughnut } from "react-chartjs-2";
 const punycode = require("punycode");
 const useParams = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
+
+import experimentsIcon from "../../components/header/icons/experiment.svg";
 
 import "./Experiments.css";
 
@@ -155,7 +155,7 @@ export default function Experiments() {
         {/* <SideNav links={experimentsLinks} title="Experiments" /> */}
         <div className="dashboard-content experiments-page">
             <StickyPageTitle>
-                <h1>A/B Testing | {isListView ? "All experiments" : "Experiment: " + effectiveExperimentId}</h1>
+                <h1 style={{ display: "flex", alignItems: "center" }}><img src={experimentsIcon} alt="Experiments" style={{ width: "24px", height: "24px", marginRight: "8px" }} /> A/B Testing | {isListView ? "All experiments" : "Experiment: " + effectiveExperimentId}</h1>
                 {!isListView && (
                     <button type="button" className="experiments-back" onClick={() => history.push("/experiments")}>
                         ← All experiments
