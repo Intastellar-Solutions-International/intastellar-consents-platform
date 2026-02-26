@@ -245,20 +245,6 @@ export default function App() {
                                                 </ErrorBoundary>
                                             }
                                         </Route>
-                                        <Route path="/:id/reports/user-agents">
-                                            {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <UserAgents />}
-                                                </ErrorBoundary>
-                                            }
-                                        </Route>
-                                        <Route path="/:id/reports/countries">
-                                            {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <Countries organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
-                                        </Route>
                                         <Route path="/dashboard">
                                             <ErrorBoundary>
                                                 <PlatformSelector setId={setId} platforms={JSON.parse(localStorage.getItem("globals"))?.access?.type} />
