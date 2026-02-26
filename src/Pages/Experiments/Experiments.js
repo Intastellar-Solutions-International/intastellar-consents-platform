@@ -162,26 +162,6 @@ export default function Experiments() {
                         ← All experiments
                     </button>
                 )}
-                {!isListView && (
-                <section className="experiments-filters">
-                    <Select
-                        defaultValue={currentDomain}
-                        items={domainList}
-                        onChange={(e) => {
-                            const domain = JSON.parse(e).name;
-                            setCurrentDomain(domain);
-                        }}
-                        align="right"
-                    />
-                    {/* <Select
-                        defaultValue={experimentID}
-                        items={experiments.map((row) => row.experiment_id)}
-                        onChange={(e) => {
-                            setExperimentID(e.target.value);
-                        }}
-                    /> */}
-                </section>
-                )}
             </StickyPageTitle>
             {isListView ? (
                 <div className="experiments-list">
