@@ -152,10 +152,10 @@ export default function Experiments() {
     }
 
     return <>
-        <SideNav links={experimentsLinks} title="Experiments" />
+        {/* <SideNav links={experimentsLinks} title="Experiments" /> */}
         <div className="dashboard-content experiments-page">
             <StickyPageTitle>
-                <h1>A/B Testing</h1>
+                <h1>A/B Testing | {isListView ? "All experiments" : "Experiment: " + effectiveExperimentId}</h1>
                 {!isListView && (
                     <button type="button" className="experiments-back" onClick={() => history.push("/experiments")}>
                         ← All experiments
