@@ -293,7 +293,12 @@ export default function App() {
                                                 </ErrorBoundary>
                                             }
                                         </Route>
-                                        <Route path="/experiments">
+                                        <Route path="/experiments" exact>
+                                            <ErrorBoundary>
+                                                <Experiments />
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/experiments/:experimentId">
                                             <ErrorBoundary>
                                                 <Experiments />
                                             </ErrorBoundary>

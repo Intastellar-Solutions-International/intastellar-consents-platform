@@ -8,9 +8,13 @@ const { useState, useEffect } = React;
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 const punycode = require("punycode");
+const useParams = window.ReactRouterDOM.useParams;
+const useHistory = window.ReactRouterDOM.useHistory;
 
 import "./Experiments.css";
 import Select from "../../Components/SelectInput/Selector";
+
+const DEFAULT_EXPERIMENT_IDS = ["asa-banner-design", "banner-test"];
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -88,42 +92,54 @@ function formatMs(ms) {
 
 export default function Experiments() {
     document.title = "A/B Testing | Intastellar Consents";
+    const { experimentId: urlExperimentId } = useParams();
+    const history = useHistory();
     const [activeData, setActiveData] = useState(null);
     const today = new Date();
     const [currentDomain, setCurrentDomain] = useState("Choose domain");
     const [experimentID, setExperimentID] = useState("Choose experiment");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+
+    const isListView = !urlExperimentId;
+    const effectiveExperimentId = urlExperimentId || experimentID;
+
     API.experiments.getExperiments.headers.Organisation = Authentication.getOrganisation();
     API.experiments.getExperiments.headers.FromDate = today.toISOString();
     API.experiments.getExperiments.headers.ToDate = today.toISOString();
     API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? null : currentDomain;
-    API.experiments.getExperiments.headers.ExperimentID = experimentID === "Choose experiment" ? null : experimentID;
+    API.experiments.getExperiments.headers.ExperimentID = (effectiveExperimentId && effectiveExperimentId !== "Choose experiment") ? effectiveExperimentId : null;
 
     API.gdpr.getDomains.headers.Organisation = Authentication.getOrganisation();
 
 
     useEffect(() => {
+        if (!effectiveExperimentId || effectiveExperimentId === "Choose experiment") {
+            setActiveData(null);
+            return;
+        }
         setLoading(true);
+        API.experiments.getExperiments.headers.ExperimentID = effectiveExperimentId;
+        API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? null : currentDomain;
         fetch(API.experiments.getExperiments.url, {
             method: API.experiments.getExperiments.method,
             headers: API.experiments.getExperiments.headers,
         }).then(response => response.json()).then((data) => {
             setActiveData(Array.isArray(data) ? data : (data?.experiments ?? data?.variants ?? []));
-        }).catch((error) => {
-            setError(error);
+        }).catch((err) => {
+            setError(err);
         }).finally(() => {
             setLoading(false);
         });
-    }, [currentDomain, experimentID]);
+    }, [currentDomain, effectiveExperimentId]);
     
     const [loadingDomains, domains, errorDomains] = Fetch(5, API.gdpr.getDomains.url, API.gdpr.getDomains.method, API.gdpr.getDomains.headers);
 
 
     useEffect(() => {
         API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? null : currentDomain;
-        API.experiments.getExperiments.headers.ExperimentID = experimentID === "Choose experiment" ? null : experimentID;
-    }, [currentDomain, experimentID]);
+        API.experiments.getExperiments.headers.ExperimentID = (effectiveExperimentId && effectiveExperimentId !== "Choose experiment") ? effectiveExperimentId : null;
+    }, [currentDomain, effectiveExperimentId]);
 
     const experiments = activeData ?? [];
     let domainList = [];
@@ -141,6 +157,12 @@ export default function Experiments() {
         <div className="dashboard-content experiments-page">
             <StickyPageTitle>
                 <h1>A/B Testing</h1>
+                {!isListView && (
+                    <button type="button" className="experiments-back" onClick={() => history.push("/experiments")}>
+                        ← All experiments
+                    </button>
+                )}
+                {!isListView && (
                 <section className="experiments-filters">
                     <Select
                         defaultValue={currentDomain}
@@ -159,7 +181,27 @@ export default function Experiments() {
                         }}
                     /> */}
                 </section>
+                )}
             </StickyPageTitle>
+            {isListView ? (
+                <div className="experiments-list">
+                    <p className="experiments-list-intro">Select an experiment to view variants and metrics.</p>
+                    <ul className="experiments-id-list">
+                        {DEFAULT_EXPERIMENT_IDS.map((id) => (
+                            <li key={id}>
+                                <a
+                                    href={`/experiments/${id}`}
+                                    className="experiments-id-link"
+                                    onClick={(e) => { e.preventDefault(); history.push(`/experiments/${id}`); }}
+                                >
+                                    {id}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            ) : (
+            <>
             {loading && <p className="experiments-loading">Loading experiment data…</p>}
             {error && <p className="experiments-error">Failed to load experiments.</p>}
             {!loading && !error && experiments.length === 0 && (
@@ -215,6 +257,8 @@ export default function Experiments() {
                         </article>
                     ); })}
                 </div>
+            )}
+            </>
             )}
         </div>
     </>

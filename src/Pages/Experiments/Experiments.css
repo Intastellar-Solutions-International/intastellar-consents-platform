@@ -30,6 +30,56 @@
     color: #e08080;
 }
 
+.experiments-list {
+    margin-top: 24px;
+}
+
+.experiments-list-intro {
+    color: #a0a0a0;
+    margin-bottom: 16px;
+}
+
+.experiments-id-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.experiments-id-link {
+    display: block;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    color: #b0d4ff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.experiments-id-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #c8e0ff;
+}
+
+.experiments-back {
+    margin-left: 12px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    color: #a0a0a0;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.experiments-back:hover {
+    color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
 .experiments-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
