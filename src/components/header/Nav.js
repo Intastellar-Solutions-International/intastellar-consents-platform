@@ -13,6 +13,7 @@ import settings from "./icons/settings.svg";
 import logout from "./icons/logout.svg";
 import dashboard from "./icons/dashboard.svg";
 import experiments from "./icons/experiment.svg";
+import benchmark from "./icons/benchmark.svg";
 
 export default function Nav() {
 
@@ -28,8 +29,8 @@ export default function Nav() {
                             backgroundImage: `url(${reports})`
                         }} data-icon={reports}></i> <span className="hiddenCollapsed">Reports</span></Link>
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/compare") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/compare"}><i className="dashboard-icons compare" style={{
-                            backgroundImage: `url(${dashboard})`
-                        }} data-icon={dashboard}></i> <span className="hiddenCollapsed">Portfolio Benchmark</span></Link>
+                            backgroundImage: `url(${benchmark})`
+                        }} data-icon={benchmark}></i> <span className="hiddenCollapsed">Portfolio Benchmark</span></Link>
                         <Link className={"navItems" + (useLocation().pathname.indexOf("/experiments") > -1 ? " --active" : "")} to={"/experiments"}>
                             <i className="dashboard-icons experiments" style={{
                                 backgroundImage: `url(${experiments})`
