@@ -12,7 +12,6 @@ const useParams = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
 
 import "./Experiments.css";
-import Select from "../../Components/SelectInput/Selector";
 
 const DEFAULT_EXPERIMENT_IDS = ["asa-banner-design", "banner-test"];
 

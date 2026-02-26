@@ -12,7 +12,7 @@ import cookies from "./icons/cookies.svg";
 import settings from "./icons/settings.svg";
 import logout from "./icons/logout.svg";
 import dashboard from "./icons/dashboard.svg";
-import experiments from "./icons/domain.svg";
+import experiments from "./icons/experiment.svg";
 
 export default function Nav() {
 
