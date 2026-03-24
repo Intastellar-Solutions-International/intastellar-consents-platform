@@ -215,7 +215,7 @@ export default function DomainDashbord(props) {
                             <LiveView currentDomain={punycode.toASCII(handle)} demoMode={demoMode} />
                         </div>
                     </div>
-                        {(loading) ? <Loading style={{ height: "auto" }} /> : <Widget style={{height: "auto"}} totalNumber={demoMode ? `${data.Total > 9999 ? String(data?.Total).slice(0, 2) : String(data?.Total).slice(0, 1)}${data?.Total > 999 ? "k" : "**"}` : data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />}
+                        {(loading) ? <Loading style={{ height: "auto" }} /> : <Widget style={{ height: "auto" }} totalNumber={demoMode ? `${data.Total > 9999 ? String(data?.Total).slice(0, 2) : String(data?.Total).slice(0, 1)}${data?.Total > 999 ? "k" : "**"}` : data?.Total.toLocaleString("de-DE")} overviewTotal={true} type="Total interactions" />}
                     <div className="grid-container grid-3">
                         {(loading) ? <Loading /> : <Widget totalNumber={data?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
                         {(loading) ? <Loading /> : <Widget totalNumber={data?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" />}

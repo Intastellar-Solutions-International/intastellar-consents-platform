@@ -12,7 +12,7 @@ export default function PremiumTier(props) {
     const demoMode = props.demoMode;
 
     return <>
-        {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData} fromDate={fromDate} toDate={toDate} type="Consents given" /></ErrorBoundary>}
+        {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData} activeUsers={activeData?.activeUsers.toLocaleString("de-DE")} fromDate={fromDate} toDate={toDate} type="Consents given" /></ErrorBoundary>}
         {/* {
             (loading) ? <Loading /> :
                 (activeData) ? <Line data={activeData?.dailyNum} data2={activeData?.dailyNum} fromDate={fromDate} toDate={toDate} title={"Daily user interactions"} /> : null
