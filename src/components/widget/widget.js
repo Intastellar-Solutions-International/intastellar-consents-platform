@@ -36,7 +36,7 @@ export default function Widget(props) {
                     }} onMouseLeave={() => {
                         (explainer?.exist) ? setExplainer(false) : null;
                     }}>{props?.type}</p>
-                    <h3 className="small-widget-number">{displayValue} {activeUsers ? <span className="small-widget-percentage">{`${activeUsers} active`}</span> : ""} {change ? <span className="small-widget-percentage">{`${change?.change > 0 ? "+" : "-"
+                    <h3 className="small-widget-number">{displayValue} {activeUsers ? <span className="small-widget-percentage">{`${activeUsers} unique visitors`}</span> : ""} {change ? <span className="small-widget-percentage">{`${change?.change > 0 ? "+" : "-"
                     }${Math.abs(change?.change)}pp`}</span> : ""} {percentage ? <span className="small-widget-percentage">{`${percentage}% accepted`}</span> : ""}</h3>
                     {explainer?.exist && explainerVisible ? 
                         <div className="explainer-tooltip">
@@ -57,7 +57,7 @@ export default function Widget(props) {
         }
         return (
             <div className={className + " widget" + overViewTotal} style={style}>
-                <h2 className="overvieTotal-num">{displayValue} {activeUsers ? <span className="small-widget-percentage">{`${activeUsers} active`}</span> : ""}</h2>
+                <h2 className="overvieTotal-num">{displayValue} {activeUsers ? <span className="small-widget-percentage">{`${activeUsers} unique visitors`}</span> : ""}</h2>
                 <p>{props?.type}</p>
                 {
                     Array.isArray(props?.totalNumber?.dailyNum) && props?.totalNumber?.dailyNum.length > 0
