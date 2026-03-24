@@ -111,7 +111,7 @@ export default function DomainDashbord(props) {
                     <>
                         <div className={`grid-container grid-7`} style={{ gap: "10px", marginBottom: "20px" }}>
 
-                            <Widget styleType="small" totalNumber={data} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={data} activeUsers={data?.activeUsers.toLocaleString("de-DE")} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
                             <Widget styleType="small" change={{
                                 change: data?.changeRate.accepted,
                                 }} relativeDrop={{

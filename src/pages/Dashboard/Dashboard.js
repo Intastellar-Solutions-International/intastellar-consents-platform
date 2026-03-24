@@ -201,7 +201,7 @@ export default function Dashboard(props) {
                         <>
                         <div className={`grid-container grid-7`} style={{ gap: "10px", marginBottom: "20px" }}>
 
-                            <Widget styleType="small" totalNumber={activeData} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
+                            <Widget styleType="small" totalNumber={activeData} activeUsers={activeData?.activeUsers.toLocaleString("de-DE")} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
                             <Widget kpi={true} styleType="small" change={{
                                 change: activeData?.changeRate.accepted,
                             }} relativeDrop={{
