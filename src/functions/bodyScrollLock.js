@@ -9,7 +9,7 @@ let savedOverflow = "";
 export function lockBodyScroll() {
     if (lockCount === 0) {
         savedOverflow = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
+        //document.body.style.overflow = "hidden";
     }
     lockCount += 1;
 }
@@ -17,6 +17,6 @@ export function lockBodyScroll() {
 export function unlockBodyScroll() {
     lockCount = Math.max(0, lockCount - 1);
     if (lockCount === 0) {
-        document.body.style.overflow = savedOverflow;
+        //document.body.style.overflow = savedOverflow;
     }
 }
