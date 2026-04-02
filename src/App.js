@@ -162,13 +162,14 @@ export default function App() {
                                             </div>
                                         </Route>
                                         <Route path='/:id/view/:handle'>
-                                            {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <>
-                                                    <ErrorBoundary>
-                                                        {domainError ? <AddDomain /> : <DomainDashbord setHandle={setHandle} />}
-                                                    </ErrorBoundary>
-                                                </>
-                                            }
+                                            <div style={{ flex: "1" }}>
+                                                {
+                                                    (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1) ? <StripePayment userId={Authentication.getUserId} /> : <>
+                                                        {domainError ? <AddDomain /> :
+                                                            (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
+                                                        }
+                                                    </>}
+                                            </div>
                                         </Route>
                                         <Route path="/signup" exact>
                                             <ErrorBoundary>

@@ -17,6 +17,7 @@ import Widget from "../../Components/widget/widget.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
 import Select from "../../Components/SelectInput/Selector.js";
+const punycode = require("punycode");
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
@@ -32,6 +33,15 @@ export default function Dashboard(props) {
     const [timeToDecision, setTimeToDecision] = useState("global");
 
     const { handle, id } = useParams();
+
+    useEffect(() => {
+        if(id == "gdpr") {
+            setCurrentDomain(handle);
+        } else {
+            setCurrentDomain(null);
+        }
+    }, [handle, id]);
+
     const [activeData, setActiveData] = useState(null);
     const [activeDataCountry, setactiveDataCountry] = useState(null);
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
@@ -175,7 +185,7 @@ export default function Dashboard(props) {
 
     return (
         <>
-            <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title="Home" url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+            <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? `Domain: ${punycode.toUnicode(handle)}` : "Home"} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
             <div className="dashboard-content">
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
@@ -186,7 +196,7 @@ export default function Dashboard(props) {
                 </div> */}
                 {/* Top key data views */}
                 {
-                    organisation != null && JSON.parse(organisation).id == 1 && !demoMode ?
+                    organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle ?
                         <div className="grid-container" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "20px", }}>
                             {(jsLoading) ? <Loading /> : <ErrorBoundary>
                                 <Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" />
