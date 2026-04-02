@@ -1,4 +1,4 @@
-const { useState, useEffect, useRef, useContext, useCallback } = React;
+const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 import { isJson } from "../../Functions/isJson.js";
 import useFetch from "../../Functions/FetchHook";
 import Unknown from "../../Components/Error/Unknown.js";
@@ -11,6 +11,8 @@ import SideNav from "../../Components/Header/SideNav.js";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import { DomainContext } from "../../App.js";
 import LoadingSpinner from "../../Components/LoadingSpinner/LoadingSpinner.js";
+import Authentication from "../../Authentication/Auth.js";
+import { buildDemoConsentList, buildDemoConsentRecord } from "./userConsentsDemo.js";
 const useParams = window.ReactRouterDOM.useParams;
 
 const PAGE_SIZE = 40;
@@ -24,6 +26,8 @@ export default function UserConsents(props) {
     const [activeData, setActiveData] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+
+    const [demoMode, setDemoMode] = useState(Authentication.DemoMode); 
 
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
 
@@ -46,6 +50,11 @@ export default function UserConsents(props) {
     const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(5, API[id].getDomainsUrl.url, API[id].getDomainsUrl.method, API[id].getDomainsUrl.headers);
 
     useEffect(() => {
+        const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
+        return unsubscribe; // Clean up on unmount
+    }, []);
+
+    useEffect(() => {
         if (getDomainsUrlError) {
             setActiveData(getDomainsUrlError);
             return;
@@ -59,6 +68,13 @@ export default function UserConsents(props) {
             return;
         }
         if (Array.isArray(getDomainsUrlData)) {
+            // Append necessary consent to getDomainsUrlData
+            getDomainsUrlData.forEach(item => {
+                item.consent.unshift({
+                    type: "necessary",
+                    checked: "checked",
+                });
+            });
             setActiveData(getDomainsUrlData);
             setHasMore(getDomainsUrlData.length === PAGE_SIZE);
         }
@@ -111,6 +127,12 @@ export default function UserConsents(props) {
                 setHasMore(false);
                 return;
             }
+            batch.forEach(item => {
+                item.consent.unshift({
+                    type: "necessary",
+                    checked: "checked",
+                });
+            });
             setActiveData((prev) => (Array.isArray(prev) ? [...prev, ...batch] : batch));
             setHasMore(batch.length === PAGE_SIZE);
         } catch (e) {
@@ -135,11 +157,29 @@ export default function UserConsents(props) {
         return () => window.removeEventListener("scroll", onScroll);
     }, [appendNextBatch, getDomainsUrlLoading]);
 
+    const displayData = useMemo(() => {
+        if (!demoMode) {
+            return activeData;
+        }
+        if (!activeData || activeData.length === 0) {
+            if (getDomainsUrlLoading) {
+                return [];
+            }
+            return buildDemoConsentList(28);
+        }
+        return activeData.map((d, i) => buildDemoConsentRecord(i, d));
+    }, [demoMode, activeData, getDomainsUrlLoading]);
+
+    const showNoData =
+        !demoMode &&
+        (getDomainsUrlData === "Err_No_Data_Found" ||
+            (Array.isArray(getDomainsUrlData) && getDomainsUrlData.length === 0));
+
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
             <article style={{ flex: "1"}}>
-                <StickyPageTitle loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title="Consents overview" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title="Consents overview" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
                         {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{
@@ -160,10 +200,10 @@ export default function UserConsents(props) {
                             <Loading />
                             <Loading />
                         </div>
-                    : (getDomainsUrlError) ? <Unknown /> : (getDomainsUrlData == "Err_No_Data_Found") ? <NoDataFound /> : <>
+                    : (getDomainsUrlError) ? <Unknown /> : (showNoData) ? <NoDataFound /> : <>
                         <div className="user-consents-grid">
                             {
-                                activeData?.map((d, key) => {
+                                displayData?.map((d, key) => {
                                     let consent = "";
                                     if (isJson(d?.consent)) {
                                         consent = JSON.parse(d?.consent);
