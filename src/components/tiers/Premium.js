@@ -1,7 +1,7 @@
 import { Loading } from "../widget/Loading";
 import Widget from "../widget/widget";
-import BarChart from "../Charts/BarChart";
 import ErrorBoundary from "../Error/ErrorBoundary";
+import DeviceTypeInteractions from "../Charts/DeviceTypeInteractions";
 
 export default function PremiumTier(props) {
     const loading = props.loading;
@@ -26,11 +26,13 @@ export default function PremiumTier(props) {
                 (loading) ? <Loading /> :
                 (activeData) ?
                 <ErrorBoundary>
-                    <BarChart title="Consents interactions by Device Type" data={[
-                        { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
-                        { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
-                        { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },
-                    ]} fromDate={fromDate} toDate={toDate} />
+                    <DeviceTypeInteractions
+                        title="Consent interactions by device type"
+                        activeData={activeData}
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        demoMode={demoMode}
+                    />  
                 </ErrorBoundary>
                 : null
             }
