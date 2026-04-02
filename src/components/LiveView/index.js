@@ -1,4 +1,5 @@
 import useFetch from "../../Functions/FetchHook";
+import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock.js";
 import API from "../../API/api";
 import "../Charts/WorldMap/Style.css";
 import "./Style.css";
@@ -123,11 +124,10 @@ function DomainConsentDrawer({ domain, country, liveData, demoMode, onClose }) {
             if (e.key === "Escape") onClose();
         };
         window.addEventListener("keydown", onKey);
-        const prev = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
+        lockBodyScroll();
         return () => {
             window.removeEventListener("keydown", onKey);
-            document.body.style.overflow = prev;
+            unlockBodyScroll();
         };
     }, [onClose]);
 

@@ -1,4 +1,5 @@
 const { useEffect } = React;
+import { lockBodyScroll, unlockBodyScroll } from "../../../Functions/bodyScrollLock.js";
 
 function fmt(n, demoMode) {
     if (n == null || (typeof n === "number" && !Number.isFinite(n))) return "—";
@@ -20,16 +21,18 @@ export default function CountryDetailDrawer({ country, total, demoMode, onClose,
             : null;
 
     useEffect(() => {
+        if (!country) return undefined;
+
         const onKey = (e) => {
             if (e.key === "Escape") onClose();
         };
         window.addEventListener("keydown", onKey);
-        document.body.style.overflow = "hidden";
+        lockBodyScroll();
         return () => {
             window.removeEventListener("keydown", onKey);
-            document.body.style.overflow = "auto";
+            unlockBodyScroll();
         };
-    }, [onClose]);
+    }, [country, onClose]);
 
     if (!country) return null;
 

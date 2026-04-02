@@ -2,6 +2,7 @@ const { useState, useEffect } = React;
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 import Authentication from "../../Authentication/Auth";
+import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock.js";
 
 export default function SideNav(props) {
     const useLocation = window.ReactRouterDOM.useLocation;
@@ -19,15 +20,10 @@ export default function SideNav(props) {
             if (e.key === "Escape") setMobileOpen(false);
         };
         window.addEventListener("keydown", onKey);
-        return () => window.removeEventListener("keydown", onKey);
-    }, [mobileOpen]);
-
-    useEffect(() => {
-        if (!mobileOpen) return undefined;
-        const prev = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
+        lockBodyScroll();
         return () => {
-            document.body.style.overflow = prev;
+            window.removeEventListener("keydown", onKey);
+            unlockBodyScroll();
         };
     }, [mobileOpen]);
 

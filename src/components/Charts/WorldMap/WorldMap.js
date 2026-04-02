@@ -53,6 +53,7 @@ export default function Map(props) {
     const renderCountryPanelExtras = props.renderCountryPanelExtras;
 
     const [selected, setSelected] = useState(null);
+    const closeDrawer = useCallback(() => setSelected(null), []);
     const [visibleCount, setVisibleCount] = useState(12);
 
     const mapCountries = useMemo(() => {
@@ -338,7 +339,7 @@ export default function Map(props) {
                 country={selected}
                 total={total}
                 demoMode={demoMode}
-                onClose={() => setSelected(null)}
+                onClose={closeDrawer}
                 renderCountryPanelExtras={renderCountryPanelExtras}
             />
         </>
