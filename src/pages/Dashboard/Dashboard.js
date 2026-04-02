@@ -375,14 +375,11 @@ export default function Dashboard(props) {
                         {(loadingCountry) ? <>
 
                             <Loading />
-                        </> : <>
+                        </> : <Map demoMode={demoMode} data={{
 
-                            <div className={["widget no-padding"]}>
-                                <Map demoMode={demoMode} data={{
-
-                                    Countries: activeDataCountry?.data?.Countries,
-                                    total: activeData?.Total,
-                                    }} /* renderCountryPanelExtras={(c) =>
+                            Countries: activeDataCountry?.data?.Countries,
+                            total: activeData?.Total,
+                        }} /* renderCountryPanelExtras={(c) =>
                                         c.device_type ? (
                                             <DeviceTypeInteractions
                                                 title="Device mix in this country"
@@ -392,9 +389,7 @@ export default function Dashboard(props) {
                                                 demoMode={demoMode}
                                             />
                                         ) : null
-                                    } */ />
-                            </div>
-                        </>}
+                                    } */ />}
                         <div className={["widget no-padding"]}>
                             <LiveView currentDomain={currentDomain} demoMode={demoMode} />
                         </div>
