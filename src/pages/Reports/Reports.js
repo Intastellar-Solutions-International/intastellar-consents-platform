@@ -17,7 +17,6 @@ export default function Reports() {
     return <>
         <SideNav links={reportsLinks} title="Reports" />
         <div className="dashboard-content">
-            <h1>Reports</h1>
         </div>
     </>
 }
