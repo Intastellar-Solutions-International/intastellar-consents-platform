@@ -125,8 +125,18 @@
         padding: 0 20px;
     }
 
-        .grid-3-4 {
-            grid-template-columns: 1fr;
-        }
+    .grid-3-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .topWidget{
+        display: flex;
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+
+    .topWidget > * {
+        flex: 0 0 auto;
+    }
 
 }

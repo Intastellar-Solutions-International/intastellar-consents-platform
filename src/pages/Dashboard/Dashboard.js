@@ -195,7 +195,7 @@ export default function Dashboard(props) {
                 {/* Top key data views */}
                 {
                     organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle ?
-                        <div className="grid-container" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "20px", }}>
+                        <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "20px", }}>
                             {(jsLoading) ? <Loading /> : <ErrorBoundary>
                                 <Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" />
                             </ErrorBoundary>
@@ -207,7 +207,7 @@ export default function Dashboard(props) {
                 {
                     activeData != null ?
                         <>
-                        <div className={`grid-container grid-7`} style={{ gap: "10px", marginBottom: "20px" }}>
+                        <div className={`grid-container grid-7 topWidget`} style={{ gap: "10px", marginBottom: "20px" }}>
 
                             <Widget styleType="small" totalNumber={activeData} activeUsers={activeData?.activeUsers.toLocaleString("de-DE")} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
                             <Widget kpi={true} styleType="small" change={{
@@ -254,7 +254,7 @@ export default function Dashboard(props) {
                             }}
                         />
                         <p>n= {activeData?.timeToDecision[timeToDecision].count.toLocaleString("de-DE")}</p>
-                        <div className="grid-container grid-7" style={{ marginTop: "20px" }}>
+                        <div className="grid-container topWidget grid-7" style={{ marginTop: "20px" }}>
                             <Widget styleType="small" totalNumber={activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") == 0 ? "N/A" : activeData?.timeToDecision[timeToDecision].median.toLocaleString("de-DE") + "s"} explainer={{
                                 exist: true,
                                 title: "Median time to decision",
@@ -342,7 +342,7 @@ export default function Dashboard(props) {
                             } />
                         </div>
                         </> : <>
-                            <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
+                            <div className="grid-container grid-5 topWidget" style={{ gap: "20px", marginBottom: "20px" }}>
                                 <Loading small={true} />
                                 <Loading small={true} />
                                 <Loading small={true} />
@@ -350,7 +350,7 @@ export default function Dashboard(props) {
                                 <Loading small={true} />
                                 <Loading small={true} />
                             </div>
-                            <div className="grid-container grid-5" style={{ gap: "20px", marginBottom: "20px" }}>
+                            <div className="grid-container grid-5 topWidget" style={{ gap: "20px", marginBottom: "20px" }}>
                                 <Loading small={true} />
                                 <Loading small={true} />
                                 <Loading small={true} />
