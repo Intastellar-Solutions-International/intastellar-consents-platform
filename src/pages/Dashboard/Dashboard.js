@@ -36,6 +36,7 @@ export default function Dashboard(props) {
 
     useEffect(() => {
         if (handle == null || handle === undefined) {
+            setCurrentDomain("combined view");
             return;
         }
         if (handle === "combined view") {

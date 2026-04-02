@@ -1,7 +1,10 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
+import { DomainContext } from "../../App.js";
+import { dashboardPath, reportsPath } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
+const useContext = React.useContext;
 
 import home from "./icons/home.svg";
 import reports from "./icons/reports.svg";
@@ -16,31 +19,40 @@ import experiments from "./icons/experiment.svg";
 import benchmark from "./icons/benchmark.svg";
 
 export default function Nav() {
+    const [currentDomain] = useContext(DomainContext);
+    const location = useLocation();
+    const platform = localStorage.getItem("platform") || "gdpr";
+    const homePath = dashboardPath(platform, currentDomain);
+    const reportsPathResolved = reportsPath(platform, currentDomain, "");
+    const path = location.pathname;
+    // Dashboard: /:id/dashboard or /:id/view/:handle — not /:id/reports/view/... (that also contains "/view/")
+    const homeActive =
+        /\/[^/]+\/dashboard(\/|$|\?)/.test(path) || /^\/[^/]+\/view\//.test(path);
 
     return (
         <>
             <div className="navOverlay">
                 <aside className="sidebar">
                     <nav className="collapsed">
-                        <Link className={"navItems" + (useLocation().pathname.indexOf("/dashboard") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/dashboard"}><i className="dashboard-icons home" style={{
+                        <Link className={"navItems" + (homeActive ? " --active" : "")} to={homePath}><i className="dashboard-icons home" style={{
                             backgroundImage: `url(${home})`
                         }} data-icon={home}></i> <span className="hiddenCollapsed">Home</span></Link>
-                        <Link className={"navItems" + (useLocation().pathname.indexOf("/reports") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/reports"}><i className="dashboard-icons reports" style={{
+                        <Link className={"navItems" + (path.indexOf("/reports") > -1 ? " --active" : "")} to={reportsPathResolved}><i className="dashboard-icons reports" style={{
                             backgroundImage: `url(${reports})`
                         }} data-icon={reports}></i> <span className="hiddenCollapsed">Reports</span></Link>
-                        <Link className={"navItems" + (useLocation().pathname.indexOf("/compare") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/compare"}><i className="dashboard-icons compare" style={{
+                        <Link className={"navItems" + (path.indexOf("/compare") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/compare"}><i className="dashboard-icons compare" style={{
                             backgroundImage: `url(${benchmark})`
                         }} data-icon={benchmark}></i> <span className="hiddenCollapsed">Portfolio Benchmark</span></Link>
-                        <Link className={"navItems" + (useLocation().pathname.indexOf("/experiments") > -1 ? " --active" : "")} to={"/experiments"}>
+                        <Link className={"navItems" + (path.indexOf("/experiments") > -1 ? " --active" : "")} to={"/experiments"}>
                             <i className="dashboard-icons experiments" style={{
                                 backgroundImage: `url(${experiments})`
                             }} data-icon={experiments}></i> <span className="hiddenCollapsed">A/B Testing</span>
                         </Link>
-                        <Link className={"navItems" + (useLocation().pathname.indexOf("/cookies") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/cookies"}><i className="dashboard-icons cookies" style={{
+                        <Link className={"navItems" + (path.indexOf("/cookies") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/cookies"}><i className="dashboard-icons cookies" style={{
                             backgroundImage: `url(${cookies})`
                         }} data-icon={cookies}></i> <span className="hiddenCollapsed">Cookies</span></Link>
                         <section className="navItems--bottom">
-                            <Link className={"navItems" + (useLocation().pathname.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
+                            <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
                                 backgroundImage: `url(${settings})`
                             }} data-icon={settings}></i> <span className="hiddenCollapsed">Settings</span></Link>
                             <button className="navLogout" onClick={() => Authentication.Logout()}><i className="dashboard-icons logout" style={{

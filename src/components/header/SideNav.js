@@ -84,9 +84,16 @@ export default function SideNav(props) {
                             return null;
                         }
 
-                        const url = link.path.indexOf("reports") !== -1
-                            ? "/" + id + link?.path
-                            : link?.path;
+                        const url = (() => {
+                            if (link.path.indexOf("reports") === -1) {
+                                return link.path;
+                            }
+                            let p = link.path;
+                            if (handle) {
+                                p = p.replace(/^\/reports/, `/reports/view/${handle}`);
+                            }
+                            return "/" + id + p;
+                        })();
 
                         const isActive = location?.pathname === url;
                         const itemClass = "navItems sidebar__link" + (isActive ? " --active" : "");

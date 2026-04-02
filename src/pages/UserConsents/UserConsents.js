@@ -13,6 +13,7 @@ import { DomainContext } from "../../App.js";
 import LoadingSpinner from "../../Components/LoadingSpinner/LoadingSpinner.js";
 import Authentication from "../../Authentication/Auth.js";
 import { buildDemoConsentList, buildDemoConsentRecord } from "./userConsentsDemo.js";
+import { useSyncDomainFromRoute } from "../../Functions/domainPathSegments.js";
 const useParams = window.ReactRouterDOM.useParams;
 const punycode = require("punycode");
 const PAGE_SIZE = 40;
@@ -21,8 +22,9 @@ const PAGE_SIZE = 40;
 export default function UserConsents(props) {
     document.title = "Consents overview | Intastellar Consents";
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
-    const [currentDomain, setCurrentDomain] = useContext(DomainContext);
+    const [currentDomain, setGlobalDomain] = useContext(DomainContext);
     const { handle, id } = useParams();
+    useSyncDomainFromRoute(handle, setGlobalDomain);
 
     const [activeData, setActiveData] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);

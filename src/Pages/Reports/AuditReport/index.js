@@ -12,6 +12,7 @@ import {
     addAuditReportEntry,
     removeAuditReportEntry,
 } from "../../../Functions/auditReportsStorage";
+import { useSyncDomainFromRoute } from "../../../Functions/domainPathSegments.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -55,8 +56,9 @@ function toYmd(d) {
 
 export default function AuditReport() {
     document.title = "Audit reports | Intastellar Consents | CMP";
-    const [currentDomain] = useContext(DomainContext);
-    const { id } = useParams();
+    const [currentDomain, setGlobalDomain] = useContext(DomainContext);
+    const { id, handle } = useParams();
+    useSyncDomainFromRoute(handle, setGlobalDomain);
     const orgId = Authentication.getOrganisation();
 
     const settings = (() => {

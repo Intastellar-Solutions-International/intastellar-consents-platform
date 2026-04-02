@@ -1,23 +1,31 @@
-const { useState, useEffect, useRef, useContext } = React;
+const { useState, useEffect, useContext, useMemo } = React;
 import { OrganisationContext, DomainContext } from "../../App";
 import "./header.css";
 import logo from "./logo.svg";
 import Fetch from "../../Functions/fetch";
-import useFetch from "../../Functions/FetchHook";
 import API from "../../API/api";
 import Authentication from "../../Authentication/Auth";
 import Select from "../SelectInput/Selector";
 import IntastellarAccounts from "../IntastellarAccounts/IntastellarAccounts";
+import {
+    parseHandleFromPath,
+    decodeDomainPathSegment,
+    navigateWithDomain,
+} from "../../Functions/domainPathSegments.js";
 const useHistory = window.ReactRouterDOM.useHistory;
 const useLocation = window.ReactRouterDOM.useLocation;
 const punycode = require("punycode");
 
-function initialDomainFromPath() {
-    const parts = window.location.pathname.split("/").filter(Boolean);
-    if (parts.length >= 3 && parts[1] === "view") {
-        return decodeURI(parts[2].replace("%2E", "."));
+function domainLabelForHeader(pathname, globalDomain) {
+    const pathHandle = parseHandleFromPath(pathname);
+    if (pathHandle != null) {
+        const decoded = decodeDomainPathSegment(pathHandle);
+        return decoded != null ? decoded : "combined view";
     }
-    return "Choose domain";
+    if (/\/[^/]+\/(?:reports|dashboard)(?:\/|$)/.test(pathname)) {
+        return "combined view";
+    }
+    return globalDomain || "combined view";
 }
 
 export default function Header(props) {
@@ -25,35 +33,23 @@ export default function Header(props) {
     const [Organisation, setOrganisation] = useContext(OrganisationContext);
     const [globalDomain, setGlobalDomain] = useContext(DomainContext);
     const location = useLocation();
-    const [currentDomain, setCurrentDomain] = useState(initialDomainFromPath);
+    const displayDomain = useMemo(
+        () => domainLabelForHeader(location.pathname, globalDomain),
+        [location.pathname, globalDomain]
+    );
+    const [currentDomain, setCurrentDomain] = useState(displayDomain);
     const profileImage = JSON.parse(localStorage.getItem("globals"))?.user?.avatar;
     let domainList = null;
-    const Name = JSON.parse(localStorage.getItem("globals"))?.user?.name?.first_name + " " + JSON.parse(localStorage.getItem("globals"))?.user?.name?.last_name;
-    const navigate = useHistory();
-    const handle = props.handle || null;
+    const history = useHistory();
     const platformId = props.id || window.location.pathname.split("/").filter(Boolean)[0] || "gdpr";
-    const isAuditReportsPage = location.pathname.includes("/reports/audit-report");
     const [allOrganisations, setallOrganisations] = useState(null);
     const [domains, setDomains] = useState(props.domains);
     const [viewUserProfile, setViewUserProfile] = useState(false);
     const Platform = (localStorage.getItem("platform") == "gdpr") ? "Intastellar Consents | CMP" : "Ferry Booking";
 
     useEffect(() => {
-        if (handle) {
-            setCurrentDomain(punycode.toUnicode(handle));
-        } else if (!isAuditReportsPage) {
-            setCurrentDomain("Choose domain");
-        }
-    }, [handle, isAuditReportsPage]);
-
-    useEffect(() => {
-        if (!isAuditReportsPage || globalDomain == null) return;
-        if (globalDomain === "combined view") {
-            setCurrentDomain("combined view");
-        } else {
-            setCurrentDomain(punycode.toUnicode(globalDomain));
-        }
-    }, [isAuditReportsPage, globalDomain]);
+        setCurrentDomain(displayDomain);
+    }, [displayDomain]);
 
     useEffect(() => {
 
@@ -139,15 +135,14 @@ export default function Header(props) {
                             }
                             {(domains && currentDomain) ?
                                 <>
-                                    <Select defaultValue={currentDomain}
+                                    <Select
+                                        key={`domain-${location.pathname}`}
+                                        defaultValue={currentDomain}
                                         onChange={(e) => {
                                             const domain = JSON.parse(e).name;
                                             setCurrentDomain(domain);
                                             setGlobalDomain(domain);
-                                            if (isAuditReportsPage) {
-                                                return;
-                                            }
-                                            navigate.push(`/${platformId}/dashboard`);
+                                            navigateWithDomain(history, platformId, domain, location.pathname);
                                         }}
                                         items={domainList}
                                         style={{ left: "0" }}
