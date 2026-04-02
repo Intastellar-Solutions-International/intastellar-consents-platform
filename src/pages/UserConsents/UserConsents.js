@@ -219,6 +219,8 @@ export default function UserConsents(props) {
 
                                     const consentLabel = (t) => (t === "statics" ? "analytics" : t);
 
+                                    const isNecessaryType = (t) => String(t || "").toLowerCase() === "necessary";
+
                                     return (
                                         <div className="user-consent-card" key={d?.uid || `${key}-${d?.banner_policy_id || ""}`}>
                                             <header className="user-consent-card__header">
@@ -267,7 +269,7 @@ export default function UserConsents(props) {
                                                                 <li key={i} className="user-consent-card__choice-item">
                                                                     <span className="user-consent-card__choice-name">{label}</span>
                                                                     <span className={`user-consent-card__pill user-consent-card__pill--${status}`}>
-                                                                        {declined ? "Declined" : accepted ? "Accepted" : String(c?.checked ?? "")}
+                                                                        {declined ? "Declined" : accepted ? (isNecessaryType(c?.type) ? "Essential" : "Accepted") : String(c?.checked ?? "")}
                                                                     </span>
                                                                 </li>
                                                             );
@@ -278,7 +280,7 @@ export default function UserConsents(props) {
                                                         <li className="user-consent-card__choice-item">
                                                             <span className="user-consent-card__choice-name">{consentLabel(consent?.consent_type)}</span>
                                                             <span className={`user-consent-card__pill ${(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "user-consent-card__pill--accepted" : "user-consent-card__pill--declined"}`}>
-                                                                {(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "Declined"}
+                                                                {(consent?.consent_value == "1" || consent?.consent_value == "checked") ? (isNecessaryType(consent?.consent_type) ? "Essential" : "Accepted") : "Declined"}
                                                             </span>
                                                         </li>
                                                     </ul>
