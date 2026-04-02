@@ -33395,14 +33395,27 @@ var _React = React,
 
 
 var useHistory = window.ReactRouterDOM.useHistory;
+var useLocation = window.ReactRouterDOM.useLocation;
 var punycode = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+function initialDomainFromPath() {
+  var parts = window.location.pathname.split("/").filter(Boolean);
+  if (parts.length >= 3 && parts[1] === "view") {
+    return decodeURI(parts[2].replace("%2E", "."));
+  }
+  return "Choose domain";
+}
 function Header(props) {
-  var _window$location$path, _JSON$parse, _JSON$parse2, _JSON$parse3, _JSON$parse4, _JSON$parse5;
+  var _JSON$parse, _JSON$parse2, _JSON$parse3, _JSON$parse4, _JSON$parse5;
   var _useContext = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.OrganisationContext),
     _useContext2 = _slicedToArray(_useContext, 2),
     Organisation = _useContext2[0],
     setOrganisation = _useContext2[1];
-  var _useState = useState(window.location.pathname.split("/")[2] === "view" ? decodeURI((_window$location$path = window.location.pathname.split("/")[3]) === null || _window$location$path === void 0 ? void 0 : _window$location$path.replace("%2E", ".")) : "Choose domain"),
+  var _useContext3 = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.DomainContext),
+    _useContext4 = _slicedToArray(_useContext3, 2),
+    globalDomain = _useContext4[0],
+    setGlobalDomain = _useContext4[1];
+  var location = useLocation();
+  var _useState = useState(initialDomainFromPath),
     _useState2 = _slicedToArray(_useState, 2),
     currentDomain = _useState2[0],
     setCurrentDomain = _useState2[1];
@@ -33411,6 +33424,8 @@ function Header(props) {
   var Name = ((_JSON$parse2 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.user) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.name) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.first_name) + " " + ((_JSON$parse3 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse3 === void 0 || (_JSON$parse3 = _JSON$parse3.user) === null || _JSON$parse3 === void 0 || (_JSON$parse3 = _JSON$parse3.name) === null || _JSON$parse3 === void 0 ? void 0 : _JSON$parse3.last_name);
   var navigate = useHistory();
   var handle = props.handle || null;
+  var platformId = props.id || window.location.pathname.split("/").filter(Boolean)[0] || "gdpr";
+  var isAuditReportsPage = location.pathname.includes("/reports/audit-report");
   var _useState3 = useState(null),
     _useState4 = _slicedToArray(_useState3, 2),
     allOrganisations = _useState4[0],
@@ -33425,13 +33440,20 @@ function Header(props) {
     setViewUserProfile = _useState8[1];
   var Platform = localStorage.getItem("platform") == "gdpr" ? "Intastellar Consents | CMP" : "Ferry Booking";
   useEffect(function () {
-    console.log(handle);
     if (handle) {
-      setCurrentDomain(handle);
-    } else {
+      setCurrentDomain(punycode.toUnicode(handle));
+    } else if (!isAuditReportsPage) {
       setCurrentDomain("Choose domain");
     }
-  }, [handle]);
+  }, [handle, isAuditReportsPage]);
+  useEffect(function () {
+    if (!isAuditReportsPage || globalDomain == null) return;
+    if (globalDomain === "combined view") {
+      setCurrentDomain("combined view");
+    } else {
+      setCurrentDomain(punycode.toUnicode(globalDomain));
+    }
+  }, [isAuditReportsPage, globalDomain]);
   useEffect(function () {
     var _API, _API2, _API3;
     (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_5__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_5__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_5__["default"].settings.getOrganisation.headers, JSON.stringify({
@@ -33523,7 +33545,11 @@ function Header(props) {
     onChange: function onChange(e) {
       var domain = JSON.parse(e).name;
       setCurrentDomain(domain);
-      window.location.href = "/gdpr/view/".concat(domain.replace('.', '%2E'));
+      setGlobalDomain(domain);
+      if (isAuditReportsPage) {
+        return;
+      }
+      navigate.push("/".concat(platformId, "/dashboard"));
     },
     items: domainList,
     style: {
@@ -36826,10 +36852,16 @@ function Dashboard(props) {
     handle = _useParams.handle,
     id = _useParams.id;
   useEffect(function () {
-    if (handle == null || handle == undefined || handle == "combined view") {
-      setCurrentDomain("combined view");
+    if (handle == null || handle === undefined) {
+      return;
     }
-  }, [handle, id]);
+    if (handle === "combined view") {
+      setCurrentDomain("combined view");
+    } else {
+      var decoded = decodeURIComponent(String(handle).replace(/%2E/gi, "."));
+      setCurrentDomain(punycode.toUnicode(decoded));
+    }
+  }, [handle, id, setCurrentDomain]);
   var _useState5 = useState(null),
     _useState6 = _slicedToArray(_useState5, 2),
     activeData = _useState6[0],

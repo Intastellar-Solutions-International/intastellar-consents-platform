@@ -9,30 +9,51 @@ import Authentication from "../../Authentication/Auth";
 import Select from "../SelectInput/Selector";
 import IntastellarAccounts from "../IntastellarAccounts/IntastellarAccounts";
 const useHistory = window.ReactRouterDOM.useHistory;
+const useLocation = window.ReactRouterDOM.useLocation;
 const punycode = require("punycode");
+
+function initialDomainFromPath() {
+    const parts = window.location.pathname.split("/").filter(Boolean);
+    if (parts.length >= 3 && parts[1] === "view") {
+        return decodeURI(parts[2].replace("%2E", "."));
+    }
+    return "Choose domain";
+}
 
 export default function Header(props) {
 
     const [Organisation, setOrganisation] = useContext(OrganisationContext);
-    const [currentDomain, setCurrentDomain] = useState((window.location.pathname.split("/")[2] === "view") ? decodeURI(window.location.pathname.split("/")[3]?.replace("%2E", ".")) : "Choose domain");
+    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
+    const location = useLocation();
+    const [currentDomain, setCurrentDomain] = useState(initialDomainFromPath);
     const profileImage = JSON.parse(localStorage.getItem("globals"))?.user?.avatar;
     let domainList = null;
     const Name = JSON.parse(localStorage.getItem("globals"))?.user?.name?.first_name + " " + JSON.parse(localStorage.getItem("globals"))?.user?.name?.last_name;
     const navigate = useHistory();
     const handle = props.handle || null;
+    const platformId = props.id || window.location.pathname.split("/").filter(Boolean)[0] || "gdpr";
+    const isAuditReportsPage = location.pathname.includes("/reports/audit-report");
     const [allOrganisations, setallOrganisations] = useState(null);
     const [domains, setDomains] = useState(props.domains);
     const [viewUserProfile, setViewUserProfile] = useState(false);
     const Platform = (localStorage.getItem("platform") == "gdpr") ? "Intastellar Consents | CMP" : "Ferry Booking";
 
     useEffect(() => {
-        console.log(handle);
-        if(handle) {
-            setCurrentDomain(handle);
-        } else {
+        if (handle) {
+            setCurrentDomain(punycode.toUnicode(handle));
+        } else if (!isAuditReportsPage) {
             setCurrentDomain("Choose domain");
         }
-    }, [handle]);
+    }, [handle, isAuditReportsPage]);
+
+    useEffect(() => {
+        if (!isAuditReportsPage || globalDomain == null) return;
+        if (globalDomain === "combined view") {
+            setCurrentDomain("combined view");
+        } else {
+            setCurrentDomain(punycode.toUnicode(globalDomain));
+        }
+    }, [isAuditReportsPage, globalDomain]);
 
     useEffect(() => {
 
@@ -122,7 +143,11 @@ export default function Header(props) {
                                         onChange={(e) => {
                                             const domain = JSON.parse(e).name;
                                             setCurrentDomain(domain);
-                                            window.location.href = `/gdpr/view/${domain.replace('.', '%2E')}`;
+                                            setGlobalDomain(domain);
+                                            if (isAuditReportsPage) {
+                                                return;
+                                            }
+                                            navigate.push(`/${platformId}/dashboard`);
                                         }}
                                         items={domainList}
                                         style={{ left: "0" }}

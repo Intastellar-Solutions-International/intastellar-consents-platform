@@ -35,10 +35,16 @@ export default function Dashboard(props) {
     const { handle, id } = useParams();
 
     useEffect(() => {
-        if(handle == null || handle == undefined || handle == "combined view") {
-            setCurrentDomain("combined view");
+        if (handle == null || handle === undefined) {
+            return;
         }
-    }, [handle, id]);
+        if (handle === "combined view") {
+            setCurrentDomain("combined view");
+        } else {
+            const decoded = decodeURIComponent(String(handle).replace(/%2E/gi, "."));
+            setCurrentDomain(punycode.toUnicode(decoded));
+        }
+    }, [handle, id, setCurrentDomain]);
 
     const [activeData, setActiveData] = useState(null);
     const [activeDataCountry, setactiveDataCountry] = useState(null);
