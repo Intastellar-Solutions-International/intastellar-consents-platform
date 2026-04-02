@@ -571,3 +571,167 @@
         display: block !important;
     }
 }
+
+/* SideNav (reports/settings): mobile drawer + toggle */
+.sidebar__top {
+    display: contents;
+}
+
+.sidebar-mobile-toggle {
+    display: none;
+}
+
+.sidebar-backdrop {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar-mobile-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        position: fixed;
+        top: 74px;
+        left: 12px;
+        z-index: 102;
+        padding: 8px 12px;
+        margin: 0;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);
+        color: rgba(255, 255, 255, 0.92);
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .sidebar-mobile-toggle__bars {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .sidebar-mobile-toggle__bar {
+        display: block;
+        width: 18px;
+        height: 2px;
+        background: currentColor;
+        border-radius: 1px;
+    }
+
+    .sidebar-mobile-toggle__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .sidebar-backdrop.sidebar-backdrop--visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .sidebar.expand {
+        width: 0 !important;
+        min-width: 0 !important;
+        overflow: visible;
+    }
+
+    .sidebar.expand .collapsed {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: min(86vw, 300px) !important;
+        min-width: min(86vw, 300px) !important;
+        top: 66px;
+        height: calc(100vh - 66px) !important;
+        min-height: calc(100vh - 66px) !important;
+        z-index: 101;
+        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .sidebar.expand.sidebar--open .collapsed {
+        transform: translateX(0);
+    }
+
+    .sidebar.expand .collapsed:hover,
+    .sidebar.expand.sidebar--open .collapsed {
+        min-width: min(86vw, 300px) !important;
+        width: min(86vw, 300px) !important;
+    }
+
+    .sidebar.expand .collapsed:hover nav,
+    .sidebar.expand.sidebar--open .collapsed nav {
+        width: 100%;
+    }
+
+    .sidebar__top {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        padding-right: 4px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        margin-bottom: 4px;
+    }
+
+    .sidebar__top .sidebar__heading {
+        border-bottom: none;
+        padding-bottom: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .sidebar-mobile-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .sidebar-mobile-close:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Offset main content next to the fixed menu control (SideNav pages) */
+    .sidebar-mobile-toggle ~ article,
+    .sidebar-mobile-toggle ~ main,
+    .sidebar-mobile-toggle ~ div.dashboard-content {
+        padding-left: 52px;
+    }
+}
+
+@media (min-width: 769px) {
+    .sidebar-mobile-close {
+        display: none !important;
+    }
+}

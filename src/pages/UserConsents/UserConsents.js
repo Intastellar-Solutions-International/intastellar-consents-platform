@@ -10,6 +10,7 @@ import "./Style.css";
 import SideNav from "../../Components/Header/SideNav.js";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import { DomainContext } from "../../App.js";
+import LoadingSpinner from "../../Components/LoadingSpinner/LoadingSpinner.js";
 const useParams = window.ReactRouterDOM.useParams;
 
 const PAGE_SIZE = 40;
@@ -259,7 +260,7 @@ export default function UserConsents(props) {
                         </div>
                         {loadingMore ? (
                             <div className="user-consents-load-more" role="status" aria-live="polite">
-                                <Loading />
+                                <LoadingSpinner />
                             </div>
                         ) : null}
                     </>}

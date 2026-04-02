@@ -2,9 +2,21 @@ const { useState, useRef } = React;
 import Months from "./Modules/Months";
 import "./Styles/Calendar.css";
 
+function formatLocalYmd(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function parseYmdLocal(s) {
+    if (!s) return new Date();
+    const part = String(s).split("T")[0];
+    const [y, m, d] = part.split("-").map(Number);
+    return new Date(y, m - 1, d);
+}
+
 export default function Calendar({ selectedDays, setSelectedDays, startDate, endDate, setDateRange }) {
     const today = new Date();
     today.setDate(today.getDate() - 1);
+    const yesterdayStr = formatLocalYmd(today);
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
 
@@ -15,11 +27,13 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
         if (visibleYear < currentYear) setVisibleYear((y) => y + 1);
     };
 
-    // compute initial dateToBegin
+    // compute initial dateToBegin (local calendar math — avoids UTC shifts from toISOString)
     let dateToBegin = startDate;
-    if (selectedDays > 0) {
-        dateToBegin = new Date(new Date(endDate).setDate(new Date(endDate).getDate() - selectedDays))
-            .toISOString().split("T")[0];
+    if (selectedDays > 0 && endDate) {
+        const endLocal = parseYmdLocal(endDate);
+        const begin = new Date(endLocal);
+        begin.setDate(begin.getDate() - selectedDays);
+        dateToBegin = formatLocalYmd(begin);
     }
     const [selectedStartDate, setStartDate] = useState(dateToBegin);
     const [selectedEndDate, setEndDate] = useState(endDate);
@@ -75,7 +89,7 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
                                 setEndDate={setEndDate}
                                 setSelectedDays={setSelectedDays}
                                 setDateRange={setDateRange}
-                                today={today.toISOString().split("T")[0]}
+                                today={yesterdayStr}
                             />
                         </div>
                     ))
