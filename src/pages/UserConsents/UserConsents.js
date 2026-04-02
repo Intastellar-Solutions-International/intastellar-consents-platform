@@ -54,7 +54,7 @@ export default function UserConsents(props) {
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
-            <article style={{ flex: "1", maxWidth: "1200px", margin: "auto"}}>
+            <article style={{ flex: "1"}}>
                 <StickyPageTitle loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title="Consents overview" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">

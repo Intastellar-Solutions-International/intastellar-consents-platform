@@ -64,7 +64,7 @@
 }
 
 .sidebar {
-    transition: width .5s ease-in-out;
+    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);
     width: 65px;
 }
 
@@ -72,14 +72,15 @@
     width: 65px;
     height: calc(100vh - 88px);
 
-    transition: width .25s ease-in-out;
+    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     position: fixed;
 
     min-height: calc(100vh - 66px);
-    border-right: 1px solid rgb(95, 95, 95);
-    background-color: rgb(63, 63, 63);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
 }
 
 .divider {
@@ -105,7 +106,7 @@
 .sidebar:hover>.collapsed,
 .sidebar.expand,
 .collapsed.expand {
-    min-width: 170px;
+    min-width: 231px;
     width: auto;
 }
 
@@ -121,30 +122,73 @@
 
 .collapsed nav {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
 }
 
-.collapsed .navItems {
-    color: #fff;
+.sidebar__heading {
+    margin: 0;
+    padding: 18px 14px 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.sidebar__item {
+    margin: 0;
+    padding: 0;
+}
+
+.collapsed .navItems,
+.collapsed .sidebar__link {
+    color: rgba(255, 255, 255, 0.88);
     display: flex;
     width: 100%;
-    padding: 25px 15px;
+    padding: 12px 10px;
     overflow: hidden;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     white-space: nowrap;
-    transition: width .15s ease-in-out;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
     text-decoration: none;
+    box-sizing: border-box;
 }
 
 .navItems.--active,
-.navItems:hover {
-    background-color: rgb(95, 95, 95);
-    color: rgb(241, 241, 241);
-    transition: width .15s ease-in-out;
+.sidebar__link.--active {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgb(255, 255, 255);
+    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);
+}
+
+.navItems:hover:not(.--active),
+.sidebar__link:hover:not(.--active) {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgb(255, 255, 255);
 }
 
 .collapsed:hover .navItems,
-.collapsed.expand a {
+.collapsed:hover .sidebar__link,
+.collapsed.expand a.navItems,
+.collapsed.expand a.sidebar__link {
     width: 100%;
 }
 
