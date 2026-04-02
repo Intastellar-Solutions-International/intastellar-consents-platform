@@ -44,14 +44,11 @@ export default function UserConsents(props) {
     const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(5, API[id].getDomainsUrl.url, API[id].getDomainsUrl.method, API[id].getDomainsUrl.headers);
     useEffect(() => {
         if (getDomainsUrlData) {
-            console.log(getDomainsUrlData);
             setActiveData(getDomainsUrlData);
         } else if(getDomainsUrlError) {
             setActiveData(getDomainsUrlError);
         }
     }, [getDomainsUrlData]);
-
-    console.log(activeData);
 
     return (
         <>
@@ -68,10 +65,9 @@ export default function UserConsents(props) {
                         }} setFromDate={setFromDate} setToDate={setToDate} /> */}
                     </section>
                     {(getDomainsUrlLoading && !getDomainsUrlError) ? <Loading /> : (getDomainsUrlError) ? <Unknown /> : (getDomainsUrlData == "Err_No_Data_Found") ? <NoDataFound /> : <>
-                        <div className="grid-container grid-3">
+                        <div className="user-consents-grid">
                             {
                                 activeData?.map((d, key) => {
-
                                     let consent = "";
                                     if (isJson(d?.consent)) {
                                         consent = JSON.parse(d?.consent);
@@ -79,30 +75,90 @@ export default function UserConsents(props) {
                                         consent = d?.consent;
                                     }
 
+                                    const referrerClean = d?.referrer ? String(d.referrer).split("?")[0] : "—";
+                                    const urlClean = d?.url ? String(d.url).split("?")[0].split("#")[0] : "—";
+                                    const timeStr = d?.consents_timestamp
+                                        ? new Date(d.consents_timestamp).toLocaleString("de-DE", { timeZone: "Europe/Copenhagen" })
+                                        : "—";
+
+                                    const consentLabel = (t) => (t === "statics" ? "analytics" : t);
+
                                     return (
-                                        <>
-                                            <div className="user" key={key}>
-                                                {
-                                                    d?.banner_policy_id != "" ? <p className="policy-id">Consent instance ID: {d?.banner_policy_id}</p> : <p>Consent instance ID: Unknown (Legacy Record)</p>
-                                                }
-                                                <p>Banner generated ID: {d?.uid}</p>
-                                                <p>Country: {d?.country_code}</p>
-                                                <p>Applied regulations: <span className="regulation">{d?.regulation_applied}</span></p>
-                                                <p>Time: {new Date(d?.consents_timestamp).toLocaleString('de-DE', { timeZone: 'Europe/Copenhagen' })}</p>
-                                                <p className="lb">Referrer: {d?.referrer.split("?")[0]}</p>
-                                                <p className="lb">URL: {d?.url.split("?")[0].split("#")[0]}</p>
-                                                <section>
-                                                    {
-                                                        (Object.prototype.toString.call(consent) === '[object Array]') ? consent?.map((c, key) => {
-                                                            
-                                                            return <p key={key}>{c?.type == "statics" ? "analytics" : c?.type} cookies: <strong>{(!c.checked) ? "Declined" : (c?.checked == "checked" || c?.checked == "1") ? "Accepted" : c?.checked}</strong></p>
-                                                        }) : <p>{consent?.consent_type == "statics" ? "analytics" : consent?.consent_type} cookies: <strong>{(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "Declined"}</strong></p>
-                                                    }
-                                                </section>
-                                                <p>Consent Version: <a className="link" href={d?.github_link} target="_blank" rel="noopener noreferrer">{d?.code_version}</a></p>
+                                        <div className="user-consent-card" key={d?.uid || `${key}-${d?.banner_policy_id || ""}`}>
+                                            <header className="user-consent-card__header">
+                                                <span className="user-consent-card__badge">
+                                                    {d?.banner_policy_id ? `ID ${d.banner_policy_id}` : "Legacy record"}
+                                                </span>
+                                                <span className="user-consent-card__uid" title={d?.uid}>UID {d?.uid ?? "—"}</span>
+                                            </header>
+
+                                            <dl className="user-consent-card__meta">
+                                                <div className="user-consent-card__row">
+                                                    <dt>Country</dt>
+                                                    <dd>{d?.country_code ?? "—"}</dd>
+                                                </div>
+                                                <div className="user-consent-card__row">
+                                                    <dt>Regulation</dt>
+                                                    <dd><span className="regulation">{d?.regulation_applied ?? "—"}</span></dd>
+                                                </div>
+                                                <div className="user-consent-card__row">
+                                                    <dt>Time</dt>
+                                                    <dd>{timeStr}</dd>
+                                                </div>
+                                            </dl>
+
+                                            <div className="user-consent-card__urls">
+                                                <div className="user-consent-card__url-block">
+                                                    <span className="user-consent-card__url-label">Referrer</span>
+                                                    <span className="user-consent-card__url-text" title={referrerClean}>{referrerClean}</span>
+                                                </div>
+                                                <div className="user-consent-card__url-block">
+                                                    <span className="user-consent-card__url-label">URL</span>
+                                                    <span className="user-consent-card__url-text" title={urlClean}>{urlClean}</span>
+                                                </div>
                                             </div>
-                                        </>
-                                    )
+
+                                            <section className="user-consent-card__choices" aria-label="Cookie choices">
+                                                <h4 className="user-consent-card__choices-title">Choices</h4>
+                                                {(Object.prototype.toString.call(consent) === "[object Array]") ? (
+                                                    <ul className="user-consent-card__choice-list">
+                                                        {consent?.map((c, i) => {
+                                                            const accepted = c?.checked === "checked" || c?.checked === "1" || c?.checked === true;
+                                                            const declined = !c?.checked;
+                                                            const status = declined ? "declined" : accepted ? "accepted" : "mixed";
+                                                            const label = consentLabel(c?.type);
+                                                            return (
+                                                                <li key={i} className="user-consent-card__choice-item">
+                                                                    <span className="user-consent-card__choice-name">{label}</span>
+                                                                    <span className={`user-consent-card__pill user-consent-card__pill--${status}`}>
+                                                                        {declined ? "Declined" : accepted ? "Accepted" : String(c?.checked ?? "")}
+                                                                    </span>
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+                                                ) : (
+                                                    <ul className="user-consent-card__choice-list">
+                                                        <li className="user-consent-card__choice-item">
+                                                            <span className="user-consent-card__choice-name">{consentLabel(consent?.consent_type)}</span>
+                                                            <span className={`user-consent-card__pill ${(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "user-consent-card__pill--accepted" : "user-consent-card__pill--declined"}`}>
+                                                                {(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "Declined"}
+                                                            </span>
+                                                        </li>
+                                                    </ul>
+                                                )}
+                                            </section>
+
+                                            <footer className="user-consent-card__footer">
+                                                <span className="user-consent-card__version-label">Version</span>
+                                                {d?.github_link ? (
+                                                    <a className="link user-consent-card__version-link" href={d.github_link} target="_blank" rel="noopener noreferrer">{d?.code_version ?? "—"}</a>
+                                                ) : (
+                                                    <span>{d?.code_version ?? "—"}</span>
+                                                )}
+                                            </footer>
+                                        </div>
+                                    );
                                 }).slice(0, 40)
                             }
                         </div>
