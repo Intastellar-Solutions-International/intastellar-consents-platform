@@ -1,4 +1,4 @@
-const { useState, useEffect, useRef, useContext } = React;
+const { useState, useEffect, useRef, useContext, useCallback } = React;
 import { isJson } from "../../Functions/isJson.js";
 import useFetch from "../../Functions/FetchHook";
 import Unknown from "../../Components/Error/Unknown.js";
@@ -9,20 +9,21 @@ import { reportsLinks } from "../Reports/Reports.js";
 import "./Style.css";
 import SideNav from "../../Components/Header/SideNav.js";
 import StickyPageTitle from "../../Components/Header/Sticky";
-import Filter from "../../Components/Filter/index.js";
-import { DomainContext, OrganisationContext } from "../../App.js";
+import { DomainContext } from "../../App.js";
 const useParams = window.ReactRouterDOM.useParams;
-const urlParams = new URLSearchParams(window.location.search);
+
+const PAGE_SIZE = 40;
 
 export default function UserConsents(props) {
     document.title = "Consents overview | Intastellar Consents";
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
-    const [organisation, setOrganisation] = useContext(OrganisationContext);
     const { handle, id } = useParams();
-    const page = urlParams.get("page") || 1;
 
     const [activeData, setActiveData] = useState(null);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
 
     const today = new Date();
@@ -33,23 +34,105 @@ export default function UserConsents(props) {
     const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings?.dateRange * 2));
 
     API[id].getDomainsUrl.headers.Domains = currentDomain;
-    API[id].getDomainsUrl.headers.Offset = page;
+    API[id].getDomainsUrl.headers.Offset = "0";
+    API[id].getDomainsUrl.headers.Limit = String(PAGE_SIZE);
     API[id].getDomainsUrl.headers.FromDate = fromDate;
     API[id].getDomainsUrl.headers.ToDate = toDate;
 
-    const header = API[id].getDomainsUrl.headers;
     const url = API[id].getDomainsUrl.url;
     const method = API[id].getDomainsUrl.method;
 
     const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(5, API[id].getDomainsUrl.url, API[id].getDomainsUrl.method, API[id].getDomainsUrl.headers);
-    useEffect(() => {
-        if (getDomainsUrlData) {
-            setActiveData(getDomainsUrlData);
-        } else if(getDomainsUrlError) {
-            setActiveData(getDomainsUrlError);
-        }
 
-    }, [getDomainsUrlData]);
+    useEffect(() => {
+        if (getDomainsUrlError) {
+            setActiveData(getDomainsUrlError);
+            return;
+        }
+        if (getDomainsUrlData === undefined) {
+            return;
+        }
+        if (getDomainsUrlData === "Err_No_Data_Found") {
+            setActiveData([]);
+            setHasMore(false);
+            return;
+        }
+        if (Array.isArray(getDomainsUrlData)) {
+            setActiveData(getDomainsUrlData);
+            setHasMore(getDomainsUrlData.length === PAGE_SIZE);
+        }
+    }, [getDomainsUrlData, getDomainsUrlError]);
+
+    const dataLengthRef = useRef(0);
+    useEffect(() => {
+        if (Array.isArray(activeData)) {
+            dataLengthRef.current = activeData.length;
+        }
+    }, [activeData]);
+
+    const loadingMoreRef = useRef(false);
+    useEffect(() => {
+        loadingMoreRef.current = loadingMore;
+    }, [loadingMore]);
+
+    const hasMoreRef = useRef(true);
+    useEffect(() => {
+        hasMoreRef.current = hasMore;
+    }, [hasMore]);
+
+    const appendNextBatch = useCallback(async () => {
+        if (loadingMoreRef.current || !hasMoreRef.current || getDomainsUrlLoading) {
+            return;
+        }
+        setLoadingMore(true);
+        try {
+            const offset = dataLengthRef.current;
+            const headers = {
+                ...API[id].getDomainsUrl.headers,
+                Domains: currentDomain,
+                Offset: String(offset),
+                Limit: String(PAGE_SIZE),
+                FromDate: fromDate,
+                ToDate: toDate,
+            };
+            const res = await fetch(url, { method, headers });
+            if (res.status === 401) {
+                localStorage.removeItem("globals");
+                window.location.href = "/login";
+                return;
+            }
+            if (!res.ok) {
+                setHasMore(false);
+                return;
+            }
+            const batch = await res.json();
+            if (batch === "Err_No_Data_Found" || !Array.isArray(batch) || batch.length === 0) {
+                setHasMore(false);
+                return;
+            }
+            setActiveData((prev) => (Array.isArray(prev) ? [...prev, ...batch] : batch));
+            setHasMore(batch.length === PAGE_SIZE);
+        } catch (e) {
+            setHasMore(false);
+        } finally {
+            setLoadingMore(false);
+        }
+    }, [currentDomain, fromDate, toDate, id, getDomainsUrlLoading, method, url]);
+
+    useEffect(() => {
+        const onScroll = () => {
+            if (getDomainsUrlLoading || loadingMoreRef.current || !hasMoreRef.current) {
+                return;
+            }
+            const doc = document.documentElement;
+            if (window.innerHeight + window.scrollY < doc.scrollHeight - 240) {
+                return;
+            }
+            void appendNextBatch();
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, [appendNextBatch, getDomainsUrlLoading]);
 
     return (
         <>
@@ -67,7 +150,6 @@ export default function UserConsents(props) {
                     </section>
                     {(getDomainsUrlLoading && !getDomainsUrlError) ? 
                         <div className="user-consents-grid">
-                            <Loading />
                             <Loading />
                             <Loading />
                             <Loading />
@@ -172,9 +254,14 @@ export default function UserConsents(props) {
                                             </footer>
                                         </div>
                                     );
-                                }).slice(0, 40)
+                                })
                             }
                         </div>
+                        {loadingMore ? (
+                            <div className="user-consents-load-more" role="status" aria-live="polite">
+                                <Loading />
+                            </div>
+                        ) : null}
                     </>}
                 </div>
             </article>
