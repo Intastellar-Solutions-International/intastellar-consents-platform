@@ -86,6 +86,8 @@ export default function UserConsents(props) {
                                                     d?.banner_policy_id != "" ? <p className="policy-id">Consent instance ID: {d?.banner_policy_id}</p> : <p>Consent instance ID: Unknown (Legacy Record)</p>
                                                 }
                                                 <p>Banner generated ID: {d?.uid}</p>
+                                                <p>Country: {d?.country_code}</p>
+                                                <p>Applied regulations: <span className="regulation">{d?.regulation_applied}</span></p>
                                                 <p>Time: {new Date(d?.consents_timestamp).toLocaleString('de-DE', { timeZone: 'Europe/Copenhagen' })}</p>
                                                 <p className="lb">Referrer: {d?.referrer.split("?")[0]}</p>
                                                 <p className="lb">URL: {d?.url.split("?")[0].split("#")[0]}</p>
@@ -97,6 +99,7 @@ export default function UserConsents(props) {
                                                         }) : <p>{consent?.consent_type == "statics" ? "analytics" : consent?.consent_type} cookies: <strong>{(consent?.consent_value == "1" || consent?.consent_value == "checked") ? "Accepted" : "Declined"}</strong></p>
                                                     }
                                                 </section>
+                                                <p>Consent Version: <a className="link" href={d?.github_link} target="_blank" rel="noopener noreferrer">{d?.code_version}</a></p>
                                             </div>
                                         </>
                                     )

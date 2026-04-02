@@ -1,3 +1,21 @@
 .filter{
     margin-bottom: 15px;
 }
+
+.regulation{
+    color: var(--intastellarGold);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.lb{
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+}
+
+.link{
+    color: var(--intastellarGold);
+    text-decoration: none;
+    font-weight: bold;
+}
