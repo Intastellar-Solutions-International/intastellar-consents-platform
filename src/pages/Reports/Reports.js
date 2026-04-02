@@ -7,8 +7,8 @@ export const reportsLinks = [
         path: "/reports/user-consents"
     },
     {
-        name: "Site Status",
-        path: "/reports/site-status"
+        name: "Audit report",
+        path: "/reports/audit-report"
     }
 ]
 

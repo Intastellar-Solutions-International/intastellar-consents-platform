@@ -41,6 +41,8 @@ import BlacklistIp from "./Pages/Settings/BlacklistIp";
 import CreateUser from "./Pages/Settings/CreateUser";
 import AuthLogin from "./Login/AuthLogin";
 import Experiments from "./Pages/Experiments/Experiments";
+import AuditReport from "./Pages/Reports/AuditReport";
+
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
@@ -242,6 +244,13 @@ export default function App() {
                                             {
                                                 (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
+                                        </Route>
+                                        <Route path="/:id/reports/audit-report">
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
