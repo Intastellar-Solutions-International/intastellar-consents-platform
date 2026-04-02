@@ -30,6 +30,8 @@ export function buildDemoConsentRecord(index, base = null) {
     const regulation = pick(DEMO_REGULATIONS, index * 17 + 3);
     const pool = DEMO_REGULATION_COUNTRIES[regulation] || ["EU"];
     const country_code = pick(pool, index * 23 + 5);
+    const subdomain = ["demo-shop", "blog", "checkout", "home", "www"];
+    const tld = ["com", "net", "org", "io", "co.za", "co.uk", "de", "fr", "es", "it", "nl", "se", "dk", "ie", "za", "at", "be", "ch", "cz", "hu", "pl", "ro", "ru", "ua", "us", "ve"];
 
     const consent = CONSENT_TYPES.map((type, j) => {
         if (type === "necessary") {
@@ -50,11 +52,12 @@ export function buildDemoConsentRecord(index, base = null) {
         regulation_applied: regulation,
         country_code,
         consent,
-        uid: b.uid != null && b.uid !== "" ? b.uid : `demo-${100000 + index}`,
-        url: b.url || `https://demo-shop-${(index % 4) + 1}.example${["/product", "/blog", "/checkout", "/"][index % 4]}`,
-        referrer: b.referrer || ["https://www.google.com/", "https://duckduckgo.com/", "https://news.example/"][index % 3],
+        uid: `demo-${100000 + index}`,
+        shopify_consent_id: `demo-${100000 + index}`,
+        url: `https://${subdomain[index % subdomain.length]}.example.${tld[index % tld.length]}${["/product", "/blog", "/checkout", "/"][index % 4]}`,
+        referrer: ["https://www.google.com/", "https://duckduckgo.com/", "https://news.example/", "https://www.wikipedia.org/", "https://www.youtube.com/"][index % 5],
         consents_timestamp: b.consents_timestamp || ts.toISOString(),
-        domain: b.domain || "demo.example",
+        domain: "demo.example",
         banner_policy_id: b.banner_policy_id != null ? b.banner_policy_id : 9000 + (index % 40),
         code_version: b.code_version || "2.4.0",
         github_link: b.github_link || null,
