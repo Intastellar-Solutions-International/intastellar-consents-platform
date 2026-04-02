@@ -24,11 +24,10 @@ export default function CountryDetailDrawer({ country, total, demoMode, onClose,
             if (e.key === "Escape") onClose();
         };
         window.addEventListener("keydown", onKey);
-        const prev = document.body.style.overflow;
         document.body.style.overflow = "hidden";
         return () => {
             window.removeEventListener("keydown", onKey);
-            document.body.style.overflow = prev;
+            document.body.style.overflow = "auto";
         };
     }, [onClose]);
 
