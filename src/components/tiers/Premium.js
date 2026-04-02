@@ -13,24 +13,6 @@ export default function PremiumTier(props) {
 
     return <>
         {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData} activeUsers={activeData?.activeUsers.toLocaleString("de-DE")} fromDate={fromDate} toDate={toDate} type="Consents given" /></ErrorBoundary>}
-        {/* {
-            (loading) ? <Loading /> :
-                (activeData) ? <Line data={activeData?.dailyNum} data2={activeData?.dailyNum} fromDate={fromDate} toDate={toDate} title={"Daily user interactions"} /> : null
-
-        } */}
-        {/* <div className="grid-container grid-3">
-                {
-                    (loading) ? <Loading /> : <Pie data={[
-                        {x: "Accepted", value: activeData?.interactions_number.accept},
-                        {x: "Declined", value: activeData?.interactions_number.decline},
-                        {x: "Only Marketing", value: activeData?.interactions_number.marketing},
-                        {x: "Only Functional", value: activeData?.interactions_number.functional},
-                        {x: "Only Statics", value: activeData?.interactions_number.statics}
-                    ]} />
-                }
-                {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}
-                {(loading) ? <Loading /> : <Widget totalNumber={ activeData?.Declined.toLocaleString("de-DE") + "%"} type="Declined cookies" /> }
-            </div> */}
         <div className="grid-container grid-5">
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted all cookies" /></ErrorBoundary>}
             {(loading) ? <Loading /> : <ErrorBoundary><Widget totalNumber={activeData?.Declined.toLocaleString("de-DE") + "%"} type="Only essential cookies accepted" /></ErrorBoundary>}
@@ -40,13 +22,18 @@ export default function PremiumTier(props) {
         </div>
         <p>All percentages are calculated based on the total number of consent interactions in the selected period. Category-level percentages are calculated independently and may overlap.</p>
         <div className="grid-container">
-            <ErrorBoundary>
-                <BarChart title="Consents interactions by Device Type" data={[
-                    { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
-                    { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
-                    { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },
-                ]} fromDate={fromDate} toDate={toDate} />
-            </ErrorBoundary>
+            {
+                (loading) ? <Loading /> :
+                (activeData) ?
+                <ErrorBoundary>
+                    <BarChart title="Consents interactions by Device Type" data={[
+                        { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
+                        { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
+                        { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },
+                    ]} fromDate={fromDate} toDate={toDate} />
+                </ErrorBoundary>
+                : null
+            }
         </div>
     </>
 }
