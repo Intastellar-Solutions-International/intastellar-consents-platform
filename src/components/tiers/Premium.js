@@ -1,6 +1,6 @@
 import { Loading } from "../widget/Loading";
 import Widget from "../widget/widget";
-import BarChart from "../Charts/BarChart";
+import DeviceTypeInteractions from "../Charts/DeviceTypeInteractions";
 import ErrorBoundary from "../Error/ErrorBoundary";
 
 export default function PremiumTier(props) {
@@ -22,18 +22,19 @@ export default function PremiumTier(props) {
         </div>
         <p>All percentages are calculated based on the total number of consent interactions in the selected period. Category-level percentages are calculated independently and may overlap.</p>
         <div className="grid-container">
-            {
-                (loading) ? <Loading /> :
-                (activeData) ?
+            {loading ? 
+                <Loading />
+             : activeData ? 
                 <ErrorBoundary>
-                    <BarChart title="Consents interactions by Device Type" data={[
-                        { x: "Mobile", value: activeData?.device_type.mobile, color: "#FF6384" },
-                        { x: "Desktop", value: activeData?.device_type.desktop, color: "#36A2EB" },
-                        { x: "Tablet", value: activeData?.device_type.tablet, color: "#FFCE56" },
-                    ]} fromDate={fromDate} toDate={toDate} />
+                    <DeviceTypeInteractions
+                        title="Consent interactions by device type"
+                        activeData={activeData}
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        demoMode={demoMode}
+                    />
                 </ErrorBoundary>
-                : null
-            }
+             : null}
         </div>
     </>
 }

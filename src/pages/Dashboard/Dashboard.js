@@ -377,12 +377,22 @@ export default function Dashboard(props) {
                             <Loading />
                         </> : <>
 
-                            <div className={["widget no-padding grid-3-4"]}>
+                            <div className={["widget no-padding"]}>
                                 <Map demoMode={demoMode} data={{
 
                                     Countries: activeDataCountry?.data?.Countries,
                                     total: activeData?.Total,
-                                }} />
+                                    }} /* renderCountryPanelExtras={(c) =>
+                                        c.device_type ? (
+                                            <DeviceTypeInteractions
+                                                title="Device mix in this country"
+                                                activeData={{ device_type: c.device_type, Total: c.num?.total }}
+                                                fromDate={fromDate}
+                                                toDate={toDate}
+                                                demoMode={demoMode}
+                                            />
+                                        ) : null
+                                    } */ />
                             </div>
                         </>}
                         <div className={["widget no-padding"]}>
@@ -390,7 +400,7 @@ export default function Dashboard(props) {
                         </div>
                     </div>
                 </div>
-                <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} demoMode={demoMode} />
+                <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} toDate={toDate} demoMode={demoMode} />
                 {/* {subscriptionStatus?.tier === "premium" ?
                     <PremiumTier loading={loading} activeData={activeData} />
                     : (subscriptionStatus?.tier === "professional") ?
