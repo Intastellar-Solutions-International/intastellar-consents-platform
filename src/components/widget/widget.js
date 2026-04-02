@@ -74,6 +74,13 @@ export default function Widget(props) {
                   : relativeDrop?.relativeDrop < -20
                     ? "positive"
                     : "";
+        const uniqueVisitors = activeUsers > 3 ?
+            activeUsers.slice(0, -2) + "k" :
+            activeUsers > 6 ?
+            activeUsers.slice(0, -5) + "m" :
+            activeUsers > 9 ?
+            activeUsers.slice(0, -8) + "b" :
+            activeUsers;
 
         return (
             <div
@@ -100,7 +107,10 @@ export default function Widget(props) {
                 <h3 className="small-widget-number">
                     {displayValue}{" "}
                     {activeUsers ? (
-                        <span className="small-widget-percentage">{`${activeUsers} unique visitors`}</span>
+                        <span className="small-widget-percentage">{`${
+                            // Shorten to 2 digits and at k or m if needed
+                            uniqueVisitors
+                        } unique`}</span>
                     ) : null}{" "}
                     {change ? (
                         <span className="small-widget-percentage">{`${change?.change > 0 ? "+" : "-"}${Math.abs(change?.change)}pp`}</span>
