@@ -91,7 +91,10 @@ export default function Compare({ organisations: _organisations, domains }) {
                     ...API[id].exportPDF.headers,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ domains: comparisonDomains }),
+                body: JSON.stringify({
+                    domains: comparisonDomains,
+                    reportType: "portfolio_audit",
+                }),
             });
             if (response.status === 401 || response.status === 403) {
                 localStorage.removeItem("globals");

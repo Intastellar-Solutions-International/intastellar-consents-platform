@@ -4,13 +4,13 @@ const useParams = window.ReactRouterDOM.useParams;
 export const reportsLinks = [
     {
         name: "Consent decisions overview",
-        path: "/reports/user-consents"
+        path: "/reports/user-consents",
     },
     {
-        name: "Audit report",
-        path: "/reports/audit-report"
-    }
-]
+        name: "Audit reports",
+        path: "/reports/audit-report",
+    },
+];
 
 export default function Reports() {
     document.title = "Reports | Intastellar Consents | CMP";
