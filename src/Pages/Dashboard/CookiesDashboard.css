@@ -1,0 +1,205 @@
+/* Cookies dashboard — structured layout (single column, clear sections) */
+.cookies-dashboard__loading,
+.cookies-dashboard__empty {
+    margin: 2rem auto;
+    max-width: 42rem;
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+    color: rgba(197, 197, 197, 0.9);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cookies-dashboard__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin-bottom: 1.75rem;
+    padding: 14px 18px;
+    background: rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.cookies-dashboard__toolbar-label {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.cookies-dashboard__toolbar .selectorContianer,
+.cookies-dashboard__toolbar > div {
+    flex: 1;
+    min-width: min(100%, 220px);
+    max-width: 360px;
+}
+
+.cookies-dashboard__domains {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.cookies-domain-card {
+    background: linear-gradient(180deg, rgba(58, 58, 58, 0.55) 0%, rgba(42, 42, 42, 0.4) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.cookies-domain-card__head {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.cookies-domain-card__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: rgb(239, 239, 239);
+    word-break: break-all;
+}
+
+.cookies-domain-card__body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.cookies-section__title {
+    margin: 0 0 10px 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.cookies-findings {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cookies-findings__item {
+    margin: 0;
+    padding: 8px 14px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.88);
+    background: rgba(192, 159, 83, 0.12);
+    border: 1px solid rgba(192, 159, 83, 0.28);
+    border-radius: 999px;
+}
+
+.cookies-warnings {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cookies-warnings__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0;
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: rgba(230, 230, 230, 0.95);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border-left: 4px solid rgba(255, 255, 255, 0.2);
+}
+
+.cookies-warnings__item--critical {
+    border-left-color: #e74c3c;
+}
+
+.cookies-warnings__item--high {
+    border-left-color: #e67e22;
+}
+
+.cookies-warnings__item--medium {
+    border-left-color: #f1c40f;
+}
+
+.cookies-warnings__item--low {
+    border-left-color: #2ecc71;
+}
+
+.cookies-warnings__item--info {
+    border-left-color: #3498db;
+}
+
+.cookies-warnings__item--unknown {
+    border-left-color: rgba(255, 255, 255, 0.25);
+}
+
+.cookies-warnings__dot {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    margin-top: 4px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+.cookies-warnings__item--critical .cookies-warnings__dot {
+    background: #e74c3c;
+}
+
+.cookies-warnings__item--high .cookies-warnings__dot {
+    background: #e67e22;
+}
+
+.cookies-warnings__item--medium .cookies-warnings__dot {
+    background: #f1c40f;
+}
+
+.cookies-warnings__item--low .cookies-warnings__dot {
+    background: #2ecc71;
+}
+
+.cookies-warnings__item--info .cookies-warnings__dot {
+    background: #3498db;
+}
+
+.cookies-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+}
+
+.cookies-table-wrap {
+    overflow-x: auto;
+    margin: 0 -4px;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.cookies-table-wrap .table {
+    min-width: 720px;
+}
+
+@media screen and (max-width: 600px) {
+    .cookies-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+}

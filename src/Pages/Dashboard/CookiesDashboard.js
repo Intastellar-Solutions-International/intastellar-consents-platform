@@ -1,155 +1,223 @@
-const { useState, useEffect, useRef, useContext } = React;
+const { useState, useEffect } = React;
 import API from "../../API/api";
 const useParams = window.ReactRouterDOM.useParams;
-import { DomainContext, OrganisationContext } from "../../App.js";
-import useFetch from "../../Functions/FetchHook";
-import Table from "../../Components/Tabel/index.js";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import Widget from "../../Components/widget/widget.js";
 import Select from "../../Components/SelectInput/Selector.js";
+import Table from "../../Components/Tabel/index.js";
+import "./CookiesDashboard.css";
+
+const SEVERITY_ORDER = ["critical", "high", "medium", "low", "info"];
+
+function sortWarnings(warnings) {
+    if (!warnings?.length) return [];
+    return [...warnings].sort((a, b) => {
+        const aIndex = SEVERITY_ORDER.indexOf(String(a.severity || "").toLowerCase());
+        const bIndex = SEVERITY_ORDER.indexOf(String(b.severity || "").toLowerCase());
+        return (aIndex === -1 ? 99 : aIndex) - (bIndex === -1 ? 99 : bIndex);
+    });
+}
+
+function warningRowClass(severity) {
+    const s = String(severity || "").toLowerCase();
+    if (["critical", "high", "medium", "low", "info"].includes(s)) {
+        return `cookies-warnings__item cookies-warnings__item--${s}`;
+    }
+    return "cookies-warnings__item cookies-warnings__item--unknown";
+}
 
 export default function CookiesDashboard() {
     document.title = "Cookies | Intastellar Consents";
-    const { handle, id } = useParams();
+    const { id } = useParams();
     const [activeData, setActiveData] = useState(null);
+    const [loading, setLoading] = useState(true);
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
-    const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
+    const [getLastDays, setLastDays] = useState(
+        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30
+    );
 
-    const [filteredDomain, setFilteredDomain] = useState("combined view");
+    const [domainFilter, setDomainFilter] = useState("combined view");
 
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings?.dateRange)).toISOString().split("T")[0]);
+    const [fromDate, setFromDate] = useState(
+        new Date(new Date().setDate(today.getDate() - settings?.dateRange)).toISOString().split("T")[0]
+    );
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]);
 
     const previousPeriod = new Date(new Date().setDate(today.getDate() - settings?.dateRange));
     const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings?.dateRange * 2));
 
-    API[id].getCookies.headers.Domains = filteredDomain;
-    let url = API[id].getCookies.url;
-    let method = API[id].getCookies.method;
-    let header = API[id].getCookies.headers;
-    let consent = null;
-
     useEffect(() => {
-        API[id].getCookies.headers.Domains = filteredDomain;
-        API[id].getCookies.headers.FromDate = new Date(fromDate).toISOString().split("T")[0];
-        API[id].getCookies.headers.ToDate = new Date(toDate).toISOString().split("T")[0];
-        header = API[id].getCookies.headers;
-        url = API[id].getCookies.url;
-        method = API[id].getCookies.method;
+        let cancelled = false;
+        const domainsHeader =
+            domainFilter === "Select a Domain" || domainFilter == null ? "combined view" : domainFilter;
 
-        fetch(url, {
-            method: method,
-            headers: header
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Fetched cookie data:", data);
-                setActiveData(data);
+        API[id].getCookies.headers.Domains = domainsHeader;
+        API[id].getCookies.headers.FromDate = fromDate;
+        API[id].getCookies.headers.ToDate = toDate;
+
+        const url = API[id].getCookies.url;
+        const method = API[id].getCookies.method;
+        const headers = API[id].getCookies.headers;
+
+        setLoading(true);
+        fetch(url, { method, headers })
+            .then((response) => response.json())
+            .then((data) => {
+                if (!cancelled) setActiveData(data);
             })
-            .catch(error => {
-                console.error("Error fetching cookie data:", error);
+            .catch(() => {
+                if (!cancelled) setActiveData(null);
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
             });
 
-    }, [fromDate, toDate]);
-    const [loading, data, error, getUpdated] = useFetch(5, url, method, header);
+        return () => {
+            cancelled = true;
+        };
+    }, [fromDate, toDate, domainFilter, id]);
 
-    useEffect(() => {
-        if (data) {
-            console.log(data);
-            setActiveData(data);
-        } else if (error) {
-            setActiveData(error);
-        }
-    }, [data]);
+    const domainItems =
+        activeData?.status === "success" && activeData?.domains
+            ? ["combined view", ...Object.keys(activeData.domains)]
+            : ["combined view"];
 
-    function filterDataByDomain(domain) {
-        // No longer used for setting activeData, just for returning filtered data if needed
-        if (!activeData || !activeData?.domains) return null;
-        return activeData?.domains[domain] || null;
-    }
+    const showAllDomains =
+        domainFilter === "combined view" || domainFilter === "Select a Domain" || domainFilter == null;
 
-    const [defaultValue, setDefaultValue] = useState("Select a Domain");
+    const visibleEntries =
+        activeData?.status === "success" && activeData?.domains
+            ? Object.entries(activeData.domains).filter(([domain]) => showAllDomains || domain === domainFilter)
+            : [];
 
     return (
         <>
-            <StickyPageTitle title="Cookies Dashboard" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
-            <div className="dashboard-content">
-                {
-                    !loading ? activeData.status == "success" ? <>
-                        <Select
-                            defaultValue={defaultValue}
-                            key={""}
-                            items={["combined view", ...Object.keys(activeData.domains)]}
-                            onChange={(e) => {
-                                console.log("Selected domain:", e);
-                                if (e === "Select a Domain" || e === "combined view") {
-                                    setDefaultValue("combined view");
-                                    setFilteredDomain(null);
-                                } else {
-                                    setDefaultValue(e);
-                                    setFilteredDomain(e);
-                                }
-                            }}
-                        />
-                        <div className="grid-container grid-cols-2">
-                            {
-                                !loading && activeData.status === "success" ?
-                                    Object.entries(activeData.domains).map(([domain, domainData], idx) => (
-                                        <div key={domain} className="domain-group">
-                                            <h3 style={{marginTop: '2em'}}>{domain}</h3>
-                                            <div className="grid-container grid-cols-3 warnings-findings" style={{ marginBottom: "20px" }}>
-                                                {domainData.findings && domainData.findings.map((finding, index) => (
-                                                    <p key={index}>{finding}</p>
-                                                ))}
-                                            </div>
-                                            <div className="grid-container grid-cols-2">
-                                                {domainData.warnings && (() => {
-                                                    const severityOrder = ["critical", "high", "medium", "low", "info"];
-                                                    const sortedWarnings = [...domainData.warnings].sort((a, b) => {
-                                                        const aIndex = severityOrder.indexOf((a.severity || '').toLowerCase());
-                                                        const bIndex = severityOrder.indexOf((b.severity || '').toLowerCase());
-                                                        return (aIndex === -1 ? 99 : aIndex) - (bIndex === -1 ? 99 : bIndex);
-                                                    });
-                                                    return sortedWarnings.map((warning, index) => (
-                                                        <p key={index}>
-                                                            <span className={"warning " + warning.severity}></span>
-                                                            {warning.message}
-                                                        </p>
-                                                    ));
-                                                })()}
-                                            </div>
-                                            <div className="stats-overview grid-container grid-cols-4" style={{ marginBottom: "20px" }}>
-                                                <Widget type="First-party cookies" totalNumber={domainData.firstPartyCookies} />
-                                                <Widget type="Third-party cookies" totalNumber={domainData.thirdPartyCookies} />
-                                                <Widget type="Pre-consent cookies" totalNumber={domainData.preConsent} />
-                                                <Widget type="Post-consent cookies" totalNumber={domainData.postConsent} />
-                                            </div>
-                                            <Table data={domainData.data.map((cookie, index) => ({
-                                                name: cookie.name,
-                                                origin: cookie.origin,
-                                                domain: cookie.domain,
-                                                firstSeen: cookie.firstSeen,
-                                                lastSeen: cookie.lastSeen,
-                                                seenPostConsent: cookie.seenPostConsent == 1 ? "Yes" : "No",
-                                                seenPreConsent: cookie.seenPreConsent == 1 ? "Yes" : "No"
-                                            }))} headers={["Cookie", "first- / third-party", "Domain", "First Seen", "Last Seen", "Seen Post Consent", "Seen Pre Consent"]} />
-                                        </div>
-                                    ))
-                                    .filter(domainData => {
-                                        // Show all domains if 'combined view' is selected
-                                        if (defaultValue === "combined view") return true;
-                                        // Show all domains if 'Select a Domain' is selected
-                                        if (defaultValue === "Select a Domain") return true;
-                                        // Otherwise, show only the selected/current domain
-                                        return domainData.key === defaultValue || domainData.key === filteredDomain;
-                                    })
-                                    : <div className="loading"></div>
-                            }
+            <StickyPageTitle
+                title="Cookies Dashboard"
+                numberofDays={setLastDays}
+                getLastDays={getLastDays}
+                setActiveData={setActiveData}
+                fromDate={fromDate}
+                toDate={toDate}
+                setFromDate={setFromDate}
+                setToDate={setToDate}
+                previousPeriod={previousPeriod}
+                previousPeriod2={previousPeriod2}
+            />
+            <div className="dashboard-content cookies-dashboard">
+                {loading ? (
+                    <p className="cookies-dashboard__loading">Loading…</p>
+                ) : activeData?.status === "success" ? (
+                    <>
+                        <div className="cookies-dashboard__toolbar">
+                            <p className="cookies-dashboard__toolbar-label">Domain scope</p>
+                            <Select
+                                defaultValue={domainFilter === "Select a Domain" ? "combined view" : domainFilter}
+                                items={domainItems}
+                                onChange={(e) => {
+                                    if (e === "Select a Domain" || e === "combined view") {
+                                        setDomainFilter("combined view");
+                                    } else {
+                                        setDomainFilter(e);
+                                    }
+                                }}
+                            />
                         </div>
-                    </> : <p>No data found for the selected domain(s) and date range.</p> : <p>Loading...</p>
-                }
+
+                        <div className="cookies-dashboard__domains">
+                            {visibleEntries.length === 0 ? (
+                                <p className="cookies-dashboard__empty">No domains match the current filter.</p>
+                            ) : null}
+                            {visibleEntries.map(([domain, domainData]) => {
+                                const findings = domainData.findings || [];
+                                const sortedWarnings = sortWarnings(domainData.warnings);
+                                const rows = (domainData.data || []).map((cookie) => ({
+                                    name: cookie.name,
+                                    origin: cookie.origin,
+                                    domain: cookie.domain,
+                                    firstSeen: cookie.firstSeen,
+                                    lastSeen: cookie.lastSeen,
+                                    seenPostConsent: cookie.seenPostConsent == 1 ? "Yes" : "No",
+                                    seenPreConsent: cookie.seenPreConsent == 1 ? "Yes" : "No",
+                                }));
+
+                                return (
+                                    <section className="cookies-domain-card" key={domain}>
+                                        <header className="cookies-domain-card__head">
+                                            <h2 className="cookies-domain-card__title">{domain}</h2>
+                                        </header>
+                                        <div className="cookies-domain-card__body">
+                                            {findings.length > 0 ? (
+                                                <div className="cookies-section">
+                                                    <h3 className="cookies-section__title">Findings</h3>
+                                                    <ul className="cookies-findings">
+                                                        {findings.map((finding, index) => (
+                                                            <li key={index} className="cookies-findings__item">
+                                                                {finding}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            ) : null}
+
+                                            {sortedWarnings.length > 0 ? (
+                                                <div className="cookies-section">
+                                                    <h3 className="cookies-section__title">Warnings</h3>
+                                                    <ul className="cookies-warnings">
+                                                        {sortedWarnings.map((warning, index) => (
+                                                            <li
+                                                                key={index}
+                                                                className={warningRowClass(warning.severity)}
+                                                            >
+                                                                <span
+                                                                    className="cookies-warnings__dot"
+                                                                    aria-hidden
+                                                                />
+                                                                <span>{warning.message}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            ) : null}
+
+                                            <div className="cookies-section">
+                                                <h3 className="cookies-section__title">Overview</h3>
+                                                <div className="cookies-stats">
+                                                    <Widget type="First-party cookies" totalNumber={domainData.firstPartyCookies} />
+                                                    <Widget type="Third-party cookies" totalNumber={domainData.thirdPartyCookies} />
+                                                    <Widget type="Pre-consent cookies" totalNumber={domainData.preConsent} />
+                                                    <Widget type="Post-consent cookies" totalNumber={domainData.postConsent} />
+                                                </div>
+                                            </div>
+
+                                            <div className="cookies-section">
+                                                <h3 className="cookies-section__title">Cookie inventory</h3>
+                                                <div className="cookies-table-wrap">
+                                                    <Table
+                                                        data={rows}
+                                                        headers={[
+                                                            "Cookie",
+                                                            "first- / third-party",
+                                                            "Domain",
+                                                            "First Seen",
+                                                            "Last Seen",
+                                                            "Seen Post Consent",
+                                                            "Seen Pre Consent",
+                                                        ]}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                );
+                            })}
+                        </div>
+                    </>
+                ) : (
+                    <p className="cookies-dashboard__empty">No data found for the selected domain(s) and date range.</p>
+                )}
             </div>
         </>
-    )
+    );
 }
