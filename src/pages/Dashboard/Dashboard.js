@@ -35,10 +35,8 @@ export default function Dashboard(props) {
     const { handle, id } = useParams();
 
     useEffect(() => {
-        if(id == "gdpr") {
-            setCurrentDomain(handle);
-        } else {
-            setCurrentDomain(null);
+        if(handle == null || handle == undefined || handle == "combined view") {
+            setCurrentDomain("combined view");
         }
     }, [handle, id]);
 
@@ -58,8 +56,8 @@ export default function Dashboard(props) {
     let method = API[id].getInteractions.method;
     let header = API[id].getInteractions.headers;
 
-    API[id].getInteractions.headers.Domains = currentDomain;
-    API[id].getInteractionsByCountry.headers.Domains = currentDomain;
+    API[id].getInteractions.headers.Domains = handle ? handle : currentDomain;
+    API[id].getInteractionsByCountry.headers.Domains = handle ? handle : currentDomain;
     API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
     API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
 
@@ -155,7 +153,7 @@ export default function Dashboard(props) {
             setLoadingCountry(false);
         });
 
-    }, [fromDate, toDate]);
+    }, [fromDate, toDate, handle]);
 
     document.querySelectorAll(".intInput").forEach((input) => {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
@@ -401,7 +399,9 @@ export default function Dashboard(props) {
                                         ) : null
                                     } */ />}
                         <div className={["widget no-padding"]}>
-                            <LiveView currentDomain={currentDomain} demoMode={demoMode} />
+                            <LiveView currentDomain={
+                                handle ? handle : currentDomain
+                            } demoMode={demoMode} />
                         </div>
                     </div>
                 </div>

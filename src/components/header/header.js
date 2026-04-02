@@ -19,10 +19,21 @@ export default function Header(props) {
     let domainList = null;
     const Name = JSON.parse(localStorage.getItem("globals"))?.user?.name?.first_name + " " + JSON.parse(localStorage.getItem("globals"))?.user?.name?.last_name;
     const navigate = useHistory();
+    const handle = props.handle || null;
     const [allOrganisations, setallOrganisations] = useState(null);
     const [domains, setDomains] = useState(props.domains);
     const [viewUserProfile, setViewUserProfile] = useState(false);
     const Platform = (localStorage.getItem("platform") == "gdpr") ? "Intastellar Consents | CMP" : "Ferry Booking";
+
+    useEffect(() => {
+        console.log(handle);
+        if(handle) {
+            setCurrentDomain(handle);
+        } else {
+            setCurrentDomain("Choose domain");
+        }
+    }, [handle]);
+
     useEffect(() => {
 
         Fetch(API.settings.getOrganisation.url, API.settings.getOrganisation.method, API.settings.getOrganisation.headers, JSON.stringify({
