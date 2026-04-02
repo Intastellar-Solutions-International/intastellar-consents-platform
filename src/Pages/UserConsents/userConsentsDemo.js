@@ -4,14 +4,14 @@ export function demoRandom01(seed) {
     return x - Math.floor(x);
 }
 
-export const DEMO_REGULATIONS = ["GDPR", "CCPA", "LGPD", "PODIA"];
+export const DEMO_REGULATIONS = ["GDPR", "CCPA", "LGPD", "POPIA"];
 
 /** Plausible country pools per regulation for demo display. */
 export const DEMO_REGULATION_COUNTRIES = {
     GDPR: ["DE", "FR", "NL", "SE", "DK", "IE", "ES", "IT"],
     CCPA: ["US"],
     LGPD: ["BR"],
-    PODIA: ["PH", "SG", "IN"],
+    POPIA: ["ZA"],
 };
 
 const CONSENT_TYPES = ["necessary", "functional", "statics", "marketing"];
