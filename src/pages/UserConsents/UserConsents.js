@@ -14,8 +14,9 @@ import LoadingSpinner from "../../Components/LoadingSpinner/LoadingSpinner.js";
 import Authentication from "../../Authentication/Auth.js";
 import { buildDemoConsentList, buildDemoConsentRecord } from "./userConsentsDemo.js";
 const useParams = window.ReactRouterDOM.useParams;
-
+const punycode = require("punycode");
 const PAGE_SIZE = 40;
+
 
 export default function UserConsents(props) {
     document.title = "Consents overview | Intastellar Consents";
@@ -179,7 +180,7 @@ export default function UserConsents(props) {
         <>
             <SideNav links={reportsLinks} title="Reports" />
             <article style={{ flex: "1"}}>
-                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title="Consents overview" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Consents overview" + (currentDomain == "combined view" ? "" : " for " + punycode.toUnicode(currentDomain))} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
                         {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{
