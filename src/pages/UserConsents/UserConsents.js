@@ -48,13 +48,14 @@ export default function UserConsents(props) {
         } else if(getDomainsUrlError) {
             setActiveData(getDomainsUrlError);
         }
+
     }, [getDomainsUrlData]);
 
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
             <article style={{ flex: "1", maxWidth: "1200px", margin: "auto"}}>
-                <StickyPageTitle title="Consents overview" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+                <StickyPageTitle loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title="Consents overview" numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
                         {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{
@@ -64,7 +65,19 @@ export default function UserConsents(props) {
                             previousEnd: previousPeriod2,
                         }} setFromDate={setFromDate} setToDate={setToDate} /> */}
                     </section>
-                    {(getDomainsUrlLoading && !getDomainsUrlError) ? <Loading /> : (getDomainsUrlError) ? <Unknown /> : (getDomainsUrlData == "Err_No_Data_Found") ? <NoDataFound /> : <>
+                    {(getDomainsUrlLoading && !getDomainsUrlError) ? 
+                        <div className="user-consents-grid">
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                            <Loading />
+                        </div>
+                    : (getDomainsUrlError) ? <Unknown /> : (getDomainsUrlData == "Err_No_Data_Found") ? <NoDataFound /> : <>
                         <div className="user-consents-grid">
                             {
                                 activeData?.map((d, key) => {
