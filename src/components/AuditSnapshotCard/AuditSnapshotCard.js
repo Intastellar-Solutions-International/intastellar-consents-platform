@@ -328,9 +328,79 @@ export default function AuditSnapshotCard(props) {
         return [];
     }, [auditPreview, demoMode]);
 
+    const [complianceSnapshotRisk, setComplianceSnapshotRisk] = useState(null);
+    const [complianceSnapshotIssues, setComplianceSnapshotIssues] = useState([]);
+
+    useEffect(() => {
+        if (demoMode || !platformId || !API[platformId]?.complianceSnapshot) {
+            setComplianceSnapshotRisk(null);
+            setComplianceSnapshotIssues([]);
+            return undefined;
+        }
+        let cancelled = false;
+        const ac = new AbortController();
+        const fd = fromDate.toISOString().split("T")[0];
+        const td = toDate.toISOString().split("T")[0];
+        const hdrs = {
+            ...API[platformId].complianceSnapshot.headers,
+            Domains: domainsApiHeaderForStats,
+            FromDate: fd,
+            ToDate: td,
+        };
+        fetch(API[platformId].complianceSnapshot.url, {
+            method: API[platformId].complianceSnapshot.method,
+            headers: hdrs,
+            signal: ac.signal,
+        })
+            .then(async (res) => {
+                if (cancelled) return;
+                let data;
+                try {
+                    data = await res.json();
+                } catch {
+                    setComplianceSnapshotRisk(null);
+                    setComplianceSnapshotIssues([]);
+                    return;
+                }
+                if (data === "Err_Login_Expired") {
+                    localStorage.removeItem("globals");
+                    window.location.href = "/login";
+                    return;
+                }
+                if (data?.ok) {
+                    const cr = data.complianceRegionRisk;
+                    setComplianceSnapshotRisk(
+                        cr != null && typeof cr === "object" ? cr : {}
+                    );
+                    setComplianceSnapshotIssues(Array.isArray(data.issues) ? data.issues : []);
+                } else {
+                    setComplianceSnapshotRisk(null);
+                    setComplianceSnapshotIssues([]);
+                }
+            })
+            .catch(() => {
+                if (!cancelled) {
+                    setComplianceSnapshotRisk(null);
+                    setComplianceSnapshotIssues([]);
+                }
+            });
+        return () => {
+            cancelled = true;
+            ac.abort();
+        };
+    }, [platformId, domainsApiHeaderForStats, fromDate, toDate, demoMode]);
+
+    const mergedComplianceRegionRisk = useMemo(
+        () => ({
+            ...(complianceSnapshotRisk || {}),
+            ...(complianceRegionRisk || {}),
+        }),
+        [complianceSnapshotRisk, complianceRegionRisk]
+    );
+
     const complianceRegionStatus = useMemo(
-        () => deriveComplianceRegionStatus(auditSampleRowsForCompliance, complianceRegionRisk),
-        [auditSampleRowsForCompliance, complianceRegionRisk]
+        () => deriveComplianceRegionStatus(auditSampleRowsForCompliance, mergedComplianceRegionRisk),
+        [auditSampleRowsForCompliance, mergedComplianceRegionRisk]
     );
 
     const sampleCountryCodesForMap = useMemo(() => {
@@ -344,11 +414,14 @@ export default function AuditSnapshotCard(props) {
         return Array.from(out).sort().join(",");
     }, [auditSampleRowsForCompliance]);
 
-    const [selectedMapCountry, setSelectedMapCountry] = useState(null);
+    const [mapDetailSelection, setMapDetailSelection] = useState(null);
 
     useEffect(() => {
-        setSelectedMapCountry(null);
+        setMapDetailSelection(null);
     }, [domainsApiHeaderForStats, fromDate, toDate, platformId]);
+
+    const selectedMapCountry =
+        mapDetailSelection?.kind === "country" ? mapDetailSelection.code : null;
 
     const auditSnapshotMeta = useMemo(() => {
         const rows = Array.isArray(auditPreview) ? auditPreview : [];
@@ -505,8 +578,10 @@ export default function AuditSnapshotCard(props) {
                                                     ? (e) => {
                                                           e.preventDefault();
                                                           e.stopPropagation();
-                                                          setSelectedMapCountry((c) =>
-                                                              c === row.country ? null : row.country
+                                                          setMapDetailSelection((prev) =>
+                                                              prev?.kind === "country" && prev.code === row.country
+                                                                  ? null
+                                                                  : { kind: "country", code: row.country }
                                                           );
                                                       }
                                                     : undefined
@@ -517,8 +592,10 @@ export default function AuditSnapshotCard(props) {
                                                           if (e.key !== "Enter" && e.key !== " ") return;
                                                           e.preventDefault();
                                                           e.stopPropagation();
-                                                          setSelectedMapCountry((c) =>
-                                                              c === row.country ? null : row.country
+                                                          setMapDetailSelection((prev) =>
+                                                              prev?.kind === "country" && prev.code === row.country
+                                                                  ? null
+                                                                  : { kind: "country", code: row.country }
                                                           );
                                                       }
                                                     : undefined
@@ -562,7 +639,29 @@ export default function AuditSnapshotCard(props) {
                                 demoMode={demoMode && auditSnapshotMeta.isDemoFeed}
                                 sampleCountryCodesKey={sampleCountryCodesForMap}
                                 selectedCountryCode={selectedMapCountry}
-                                onSelectCountry={setSelectedMapCountry}
+                                mapDetailSelection={mapDetailSelection}
+                                complianceIssues={complianceSnapshotIssues}
+                                locale={locale}
+                                onCloseMapDetail={() => setMapDetailSelection(null)}
+                                onSelectCountry={(updater) => {
+                                    setMapDetailSelection((prev) => {
+                                        const prevCode =
+                                            prev?.kind === "country" ? prev.code : null;
+                                        const next =
+                                            typeof updater === "function"
+                                                ? updater(prevCode)
+                                                : updater;
+                                        if (next == null) return null;
+                                        return { kind: "country", code: next };
+                                    });
+                                }}
+                                onSelectFramework={(fw) => {
+                                    setMapDetailSelection((prev) =>
+                                        prev?.kind === "framework" && prev.fw === fw
+                                            ? null
+                                            : { kind: "framework", fw }
+                                    );
+                                }}
                             />
                         </div>
                     </div>

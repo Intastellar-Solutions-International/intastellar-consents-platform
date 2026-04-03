@@ -1,5 +1,6 @@
 import { FRAMEWORK_IDS } from "./complianceRegions.js";
 import AuditComplianceWorldMap from "./AuditComplianceWorldMap.js";
+import AuditMapDetailPanel from "./AuditMapDetailPanel.js";
 import "./AuditComplianceMiniMap.css";
 
 /**
@@ -11,7 +12,12 @@ import "./AuditComplianceMiniMap.css";
  * @param {boolean} [props.demoMode]
  * @param {string} [props.sampleCountryCodesKey] — comma-separated ISO alpha-2 from audit sample
  * @param {string|null} [props.selectedCountryCode]
- * @param {(alpha2: string | null) => void} [props.onSelectCountry]
+ * @param {(updater: string | null | ((prev: string | null) => string | null)) => void} [props.onSelectCountry]
+ * @param {null | { kind: 'country', code: string } | { kind: 'framework', fw: string }} [props.mapDetailSelection]
+ * @param {object[]} [props.complianceIssues]
+ * @param {string} [props.locale]
+ * @param {() => void} [props.onCloseMapDetail]
+ * @param {(fw: string) => void} [props.onSelectFramework]
  */
 export default function AuditComplianceMiniMap({
     regionStatus,
@@ -20,6 +26,11 @@ export default function AuditComplianceMiniMap({
     sampleCountryCodesKey = "",
     selectedCountryCode = null,
     onSelectCountry,
+    mapDetailSelection = null,
+    complianceIssues = [],
+    locale,
+    onCloseMapDetail,
+    onSelectFramework,
 }) {
     return (
         <div
@@ -34,7 +45,7 @@ export default function AuditComplianceMiniMap({
                 <span className="audit-compliance-map__title">Regulatory snapshot</span>
                 <span className="audit-compliance-map__subtitle">
                     Amber = regulated area, no matching consent row in this sample. Brighter green = that country
-                    appears in the list. Click a row or map country to highlight (again to clear).
+                    appears in the list. Click a row, map country, or framework label for details (again to clear).
                 </span>
             </div>
             <div className="audit-compliance-map__map-shell">
@@ -43,6 +54,14 @@ export default function AuditComplianceMiniMap({
                     sampleCountryCodesKey={sampleCountryCodesKey}
                     selectedCountryCode={selectedCountryCode}
                     onSelectCountry={onSelectCountry ?? (() => {})}
+                    onSelectFramework={onSelectFramework}
+                />
+                <AuditMapDetailPanel
+                    selection={mapDetailSelection}
+                    onClose={onCloseMapDetail ?? (() => {})}
+                    regionStatus={regionStatus}
+                    issues={complianceIssues}
+                    locale={locale}
                 />
             </div>
             <ul className="audit-compliance-map__legend" aria-hidden>

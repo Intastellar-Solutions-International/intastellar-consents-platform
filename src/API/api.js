@@ -86,6 +86,15 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        complianceSnapshot: {
+            url: `${PrimaryHost}/cmp/compliance-snapshot.php`,
+            method: "GET",
+            headers: {
+                Authorization: Authentication.getToken(),
+                Organisation: Authentication.getOrganisation(),
+                "Content-Type": "application/json",
+            },
+        },
         getDomains: {
             url: `${PrimaryHost}/analytics/gdpr/getDomains`,
             method: "GET",

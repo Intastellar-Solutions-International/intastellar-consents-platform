@@ -75,20 +75,24 @@ function clearGroup(g) {
  * @param {string} props.sampleCountryCodesKey — comma-separated uppercase alpha-2 (stable key)
  * @param {string|null} props.selectedCountryCode
  * @param {(alpha2: string | null) => void} props.onSelectCountry
+ * @param {(fw: string) => void} [props.onSelectFramework] — GDPR / LGPD / CCPA / POPIA label clicks
  */
 export default function AuditComplianceWorldMap({
     regionStatus,
     sampleCountryCodesKey,
     selectedCountryCode,
     onSelectCountry,
+    onSelectFramework,
 }) {
     const svgRef = useRef(null);
     const regionStatusRef = useRef(regionStatus);
     const onSelectCountryRef = useRef(onSelectCountry);
+    const onSelectFrameworkRef = useRef(onSelectFramework);
     const topoRef = useRef(null);
 
     regionStatusRef.current = regionStatus;
     onSelectCountryRef.current = onSelectCountry;
+    onSelectFrameworkRef.current = onSelectFramework;
 
     const selectedUpper = selectedCountryCode ? String(selectedCountryCode).toUpperCase() : null;
 
@@ -205,8 +209,19 @@ export default function AuditComplianceWorldMap({
             el.setAttribute("font-weight", "700");
             el.setAttribute("letter-spacing", "0.08em");
             el.setAttribute("text-anchor", "middle");
-            el.setAttribute("pointer-events", "none");
             el.setAttribute("class", "audit-compliance-world-map__fw-label");
+            if (onSelectFrameworkRef.current) {
+                el.setAttribute("pointer-events", "auto");
+                el.classList.add("audit-compliance-world-map__fw-label--clickable");
+                el.style.cursor = "pointer";
+                el.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onSelectFrameworkRef.current?.(fw);
+                });
+            } else {
+                el.setAttribute("pointer-events", "none");
+            }
             el.textContent = fw;
             labelsG.appendChild(el);
         }
@@ -236,7 +251,7 @@ export default function AuditComplianceWorldMap({
         return () => {
             cancelled = true;
         };
-    }, [paintKey, sampleCountryCodesKey, selectedUpper]);
+    }, [paintKey, sampleCountryCodesKey, selectedUpper, onSelectFramework]);
 
     const { w, h } = PROJECTED_MAP_VIEWBOX;
 
@@ -248,7 +263,7 @@ export default function AuditComplianceWorldMap({
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="xMidYMid meet"
             role="img"
-            aria-label="Regulatory world map; click a country that appears in the list or in a regulated region to highlight it"
+            aria-label="Regulatory world map; click a country or framework label for details and highlighting"
         >
             <rect width={w} height={h} className="audit-compliance-world-map__ocean" />
             <g id="acwm-land" />

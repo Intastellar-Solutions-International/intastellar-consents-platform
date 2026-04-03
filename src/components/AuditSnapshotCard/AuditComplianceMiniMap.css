@@ -42,13 +42,14 @@
 }
 
 .audit-compliance-map__map-shell {
+    position: relative;
     flex: 1 1 auto;
     width: 100%;
     min-height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .audit-compliance-map__map-shell .audit-compliance-world-map {

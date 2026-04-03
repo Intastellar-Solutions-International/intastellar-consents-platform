@@ -19,6 +19,10 @@
     stroke-linejoin: round;
 }
 
+.audit-compliance-world-map__fw-label--clickable:hover {
+    filter: brightness(1.12);
+}
+
 .audit-compliance-world-map__country--clickable {
     cursor: pointer;
 }
