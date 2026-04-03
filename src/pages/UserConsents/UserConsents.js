@@ -246,12 +246,27 @@ export default function UserConsents(props) {
                                     const isNecessaryType = (t) => String(t || "").toLowerCase() === "necessary";
 
                                     return (
-                                        <div className="user-consent-card" key={d?.uid || `${key}-${d?.banner_policy_id || ""}`}>
+                                        <div
+                                            className="user-consent-card"
+                                            key={d?.uid || d?.shopify_consent_id || `${key}-${d?.banner_policy_id || ""}`}
+                                        >
                                             <header className="user-consent-card__header">
                                                 <span className="user-consent-card__badge">
                                                     {d?.banner_policy_id ? `ID ${d.banner_policy_id}` : "Legacy record"}
                                                 </span>
-                                                <span className="user-consent-card__uid" title={d?.uid}>UID {d?.uid ?? "—"}</span>
+                                                <div className="user-consent-card__header-meta">
+                                                    <span className="user-consent-card__id-line" title={d?.uid != null ? String(d.uid) : ""}>
+                                                        <span className="user-consent-card__id-label">UID</span>
+                                                        <span className="user-consent-card__id-value">{d?.uid ?? "—"}</span>
+                                                    </span>
+                                                    <span
+                                                        className="user-consent-card__id-line"
+                                                        title={d?.shopify_consent_id != null ? String(d.shopify_consent_id) : ""}
+                                                    >
+                                                        <span className="user-consent-card__id-label">Shopify consent ID</span>
+                                                        <span className="user-consent-card__id-value">{d?.shopify_consent_id ?? "—"}</span>
+                                                    </span>
+                                                </div>
                                             </header>
 
                                             <dl className="user-consent-card__meta">
