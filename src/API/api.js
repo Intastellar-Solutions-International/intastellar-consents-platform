@@ -64,7 +64,8 @@ const API = {
             headers: {
                 "Authorization": Authentication.getToken(),
                 "Organisation": Authentication.getOrganisation(),
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "SortOrder": "desc",
             }
         },
         getInteractions: {

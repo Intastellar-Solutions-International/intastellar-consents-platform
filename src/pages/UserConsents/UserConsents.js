@@ -18,6 +18,23 @@ const useParams = window.ReactRouterDOM.useParams;
 const punycode = require("punycode");
 const PAGE_SIZE = 40;
 
+/** Parse consent time for sorting (newest first). */
+function consentTimestampMs(row) {
+    const t = row?.consents_timestamp;
+    if (t == null || t === "") return 0;
+    const ms = new Date(t).getTime();
+    return Number.isFinite(ms) ? ms : 0;
+}
+
+/** Newest decisions first so “yesterday” appears before older days while scrolling loads more. */
+function sortConsentsNewestFirst(rows) {
+    if (!Array.isArray(rows)) return rows;
+    return [...rows].sort((a, b) => {
+        const d = consentTimestampMs(b) - consentTimestampMs(a);
+        if (d !== 0) return d;
+        return String(b?.uid ?? "").localeCompare(String(a?.uid ?? ""));
+    });
+}
 
 export default function UserConsents(props) {
     document.title = "Consents overview | Intastellar Consents";
@@ -46,6 +63,7 @@ export default function UserConsents(props) {
     API[id].getDomainsUrl.headers.Limit = String(PAGE_SIZE);
     API[id].getDomainsUrl.headers.FromDate = fromDate;
     API[id].getDomainsUrl.headers.ToDate = toDate;
+    API[id].getDomainsUrl.headers.SortOrder = "desc";
 
     const url = API[id].getDomainsUrl.url;
     const method = API[id].getDomainsUrl.method;
@@ -78,7 +96,7 @@ export default function UserConsents(props) {
                     checked: "checked",
                 });
             });
-            setActiveData(getDomainsUrlData);
+            setActiveData(sortConsentsNewestFirst(getDomainsUrlData));
             setHasMore(getDomainsUrlData.length === PAGE_SIZE);
         }
     }, [getDomainsUrlData, getDomainsUrlError]);
@@ -114,6 +132,7 @@ export default function UserConsents(props) {
                 Limit: String(PAGE_SIZE),
                 FromDate: fromDate,
                 ToDate: toDate,
+                SortOrder: "desc",
             };
             const res = await fetch(url, { method, headers });
             if (res.status === 401) {
@@ -136,7 +155,9 @@ export default function UserConsents(props) {
                     checked: "checked",
                 });
             });
-            setActiveData((prev) => (Array.isArray(prev) ? [...prev, ...batch] : batch));
+            setActiveData((prev) =>
+                sortConsentsNewestFirst(Array.isArray(prev) ? [...prev, ...batch] : batch)
+            );
             setHasMore(batch.length === PAGE_SIZE);
         } catch (e) {
             setHasMore(false);
