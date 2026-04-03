@@ -441,8 +441,22 @@
     align-items: center;
 }
 
-.company_container .selectorContianer {
-    margin-right: 20px;
+.company_container .selectorContianer,
+.company_container .selector-container {
+    margin-right: 16px;
+    min-width: 0;
+}
+
+.company_container .selectorContianer:last-child,
+.company_container .selector-container:last-child {
+    margin-right: 0;
+}
+
+.selector.selector--placeholder {
+    min-height: 36px;
+    min-width: 120px;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .logo_container {
@@ -470,46 +484,99 @@
 @media screen and (min-width: 320px) and (max-width: 900px) {
     .dashboard-header {
         width: 100%;
-        max-height: max-content;
-        padding-right: 0;
+        max-height: none;
+        padding: 0 8px 0 4px;
     }
 
     .main-grid {
-        padding-top: 120px;
+        padding-top: 118px;
     }
 
     .menu {
         display: block;
-        padding: 10px;
+        padding: 8px 10px;
+        margin-right: 2px;
         cursor: pointer;
         background-color: transparent;
         border: none;
         color: #fff;
+        border-radius: 8px;
+        transition: background-color 0.2s ease;
     }
 
-    .menu-bar{
-        width: 25px;
-        height: 3px;
-        background-color: #fff;
+    .menu:focus-visible {
+        outline: 2px solid rgba(192, 159, 83, 0.6);
+        outline-offset: 2px;
+    }
+
+    .menu:active {
+        background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .menu-bar {
+        width: 22px;
+        height: 2px;
+        background-color: rgba(255, 255, 255, 0.92);
         margin: 5px auto;
-        transition: all .3s ease-in-out;
-        border-radius: 5px;
+        transition: all 0.3s ease-in-out;
+        border-radius: 2px;
+    }
+
+    .dashboard-profile {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        align-items: start;
+        gap: 10px 10px;
+        padding: 8px 4px 10px 8px;
+        width: 100%;
     }
 
     .logo-selector-container {
-        display: block;
+        display: contents;
     }
 
-        .company_container .selectorContianer{
-        margin-right: 0px;
-        }
+    .logo_container {
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        min-width: 0;
+    }
 
     .company_container {
-        flex-direction: row;
-        align-items: flex-start;
-        padding-bottom: 10px;
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+        max-width: 100%;
+        padding-bottom: 0;
         padding-right: 0;
-        gap: 10px;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    .company_container .selectorContianer,
+    .company_container .selector-container {
+        margin-right: 0;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .dashboard-profile > .flex.profileImage {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: start;
+    }
+
+    .dashboard-logo {
+        height: 44px;
+        margin-right: 0;
+        max-width: min(200px, calc(100vw - 120px));
     }
 
     .grid-3 {
@@ -518,10 +585,6 @@
 
     .grid-container {
         display: block;
-    }
-
-    .dashboard-profile {
-        align-items: flex-start;
     }
 
     .dashboard-profile__nameContainer {
@@ -550,8 +613,8 @@
         visibility: visible;
     }
 
-    .dashboard-header>.dashboard-profile .content-img {
-        margin: 0 5px 5px auto;
+    .dashboard-header > .dashboard-profile .content-img {
+        margin: 0;
     }
 
     .platform-view {
@@ -565,7 +628,7 @@
     }
 
     .infoHeader.sticky {
-        top: 120px;
+        top: 118px;
     }
 
     .infoHeader .dashboard-content {
@@ -579,6 +642,12 @@
     .sticky-title{
         font-size: 1em;
         display: block !important;
+    }
+}
+
+@media screen and (min-width: 320px) and (max-width: 480px) {
+    .company_container {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -601,7 +670,7 @@
         align-items: center;
         gap: 10px;
         position: fixed;
-        top: 142px;
+        top: 120px;
         left: 12px;
         z-index: 102;
         padding: 8px 12px;

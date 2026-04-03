@@ -122,33 +122,36 @@ export default function Header(props) {
                             <img className="dashboard-logo" src={logo} alt="Intastellar Solutions Logo" />
                         </section>
                         <section className="company_container">
-                            {(allOrganisations && Organisation) ?
-                                <Select defaultValue={Organisation}
+                            {(allOrganisations && Organisation) ? (
+                                <Select
+                                    defaultValue={Organisation}
                                     onChange={(e) => {
                                         setOrganisation(e);
                                         localStorage.setItem("organisation", e);
                                         window.location.reload();
                                     }}
                                     items={allOrganisations}
-                                    style={{ right: "0" }}
-                                /> : <div className="selector"></div>
-                            }
-                            {(domains && currentDomain) ?
-                                <>
-                                    <Select
-                                        key={`domain-${location.pathname}`}
-                                        defaultValue={currentDomain}
-                                        onChange={(e) => {
-                                            const domain = JSON.parse(e).name;
-                                            setCurrentDomain(domain);
-                                            setGlobalDomain(domain);
-                                            navigateWithDomain(history, platformId, domain, location.pathname);
-                                        }}
-                                        items={domainList}
-                                        style={{ left: "0" }}
-                                    />
-                                </> : <div className="selector"></div>
-                            }
+                                    align="right"
+                                />
+                            ) : (
+                                <div className="selector selector--placeholder" aria-hidden="true" />
+                            )}
+                            {domains && currentDomain ? (
+                                <Select
+                                    key={`domain-${location.pathname}`}
+                                    defaultValue={currentDomain}
+                                    onChange={(e) => {
+                                        const domain = JSON.parse(e).name;
+                                        setCurrentDomain(domain);
+                                        setGlobalDomain(domain);
+                                        navigateWithDomain(history, platformId, domain, location.pathname);
+                                    }}
+                                    items={domainList}
+                                    align="left"
+                                />
+                            ) : (
+                                <div className="selector selector--placeholder" aria-hidden="true" />
+                            )}
                         </section>
                     </section>
                     <div className="flex profileImage">

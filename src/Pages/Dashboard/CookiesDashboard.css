@@ -33,6 +33,7 @@
 }
 
 .cookies-dashboard__toolbar .selectorContianer,
+.cookies-dashboard__toolbar .selector-container,
 .cookies-dashboard__toolbar > div {
     flex: 1;
     min-width: min(100%, 220px);

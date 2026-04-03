@@ -1,20 +1,19 @@
-const { useState, useEffect, useRef, useContext } = React;
+const { useState, useEffect, useRef } = React;
 import "./Style.css";
-export default function Select(props){
+
+export default function Select(props) {
     const [isOpen, setIsOpen] = useState(false);
-    const [align, setAlign] = useState(props.align || "left");
-    // Search input ref
+    const align = props.align || "left";
+    const containerRef = useRef(null);
+    const listRef = useRef(null);
     const searchInput = useRef(null);
 
-    function searchItems(query){
-        let items = document.querySelectorAll(".dropdown-menu__content li");
-        console.log("Items:", items, query);
-        items.forEach((item) => {
-            if(item.innerText.toLowerCase().includes(query.toLowerCase())){
-                item.style.display = "flex";
-            }else{
-                item.style.display = "none";
-            }
+    function searchItems(query) {
+        const root = listRef.current;
+        if (!root) return;
+        root.querySelectorAll("[data-dropdown-item]").forEach((item) => {
+            const text = (item.textContent || "").toLowerCase();
+            item.hidden = query.trim() !== "" && !text.includes(query.toLowerCase());
         });
     }
 
@@ -27,96 +26,173 @@ export default function Select(props){
         return true;
     }
 
-    function openMenu(){
-        setIsOpen(!isOpen);
+    function openMenu() {
+        setIsOpen((open) => !open);
     }
 
-    function clickOutSide(e){
-        if(e.target.className !== "dropdown-menu-button" && e.target !== searchInput.current){
+    function pick(fn) {
+        return () => {
+            setIsOpen(false);
+            fn();
+        };
+    }
+
+    function clickOutside(e) {
+        if (containerRef.current && !containerRef.current.contains(e.target)) {
             setIsOpen(false);
         }
     }
 
     useEffect(() => {
-        document.addEventListener("click", clickOutSide);
+        document.addEventListener("click", clickOutside, true);
+        return () => document.removeEventListener("click", clickOutside, true);
     }, []);
 
-    return <>
-        <div className="selectorContianer" style={props.style}>
+    useEffect(() => {
+        if (isOpen && listRef.current) {
+            listRef.current.querySelectorAll("[data-dropdown-item]").forEach((item) => {
+                item.hidden = false;
+            });
+            if (searchInput.current) {
+                searchInput.current.value = "";
+            }
+        }
+    }, [isOpen]);
+
+    const menuAlignClass =
+        align === "right" ? "dropdown-menu--align-right" : "dropdown-menu--align-left";
+
+    return (
+        <div ref={containerRef} className="selectorContianer selector-container" style={props.style}>
             <div className="selector">
-                {(props.icon) ? <i className={props.icon}></i> : null}
-                <button className="dropdown-menu-button" style={props?.style2} onClick={openMenu}>
-                    {
-                        (isJson(props.defaultValue)) ?
+                {props.icon ? <i className={props.icon}></i> : null}
+                <button
+                    type="button"
+                    className="dropdown-menu-button"
+                    style={props?.style2}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        openMenu();
+                    }}
+                    aria-expanded={isOpen}
+                    aria-haspopup="listbox"
+                >
+                    {isJson(props.defaultValue) ? (
                         <>
-                            {
-                                (JSON.parse(props.defaultValue).icon) ? 
-                                <img className="company-logo" src={JSON.parse(props.defaultValue).icon} alt={JSON.parse(props.defaultValue).name} />
-                                : null
-                            }
-                            {JSON.parse(props.defaultValue).name}
+                            {JSON.parse(props.defaultValue).icon ? (
+                                <img
+                                    className="company-logo"
+                                    src={JSON.parse(props.defaultValue).icon}
+                                    alt=""
+                                />
+                            ) : null}
+                            <span className="dropdown-menu-button__label">
+                                {JSON.parse(props.defaultValue).name}
+                            </span>
                         </>
-                        :
-                        props.defaultValue
-                    }
+                    ) : (
+                        <span className="dropdown-menu-button__label">{props.defaultValue}</span>
+                    )}
                 </button>
-                {(isOpen) ? 
-                <div className="dropdown-menu" style={{left: align === "right" ? "auto" : "0", right: align === "right" ? "0" : "auto"}}>
-                    <ul className="dropdown-menu__content" style={props.style}>
-                        <div className="search-box">
-                            <input className="search-input" onChange={(e) => searchItems(e.target.value)} ref={searchInput} type="search" name="q" placeholder="Search" />
-                        </div>
-                        {
-                            props?.items?.map((item, key) => {
-                                if(isJson(item)){
-                                    item = JSON.parse(item);
-                                    return <>
-                                        <li onClick={() => props.onChange(JSON.stringify({ id: item.id, name: item.name }))} key={item.id}>
-                                            {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
-                                            {props?.labels ? props?.labels[key] : item.name}
-                                        </li>
-                                    </> 
-                                }else if(typeof item === "object" && item?.uri){
-                                    return <>
-                                        <li onClick={() => props.onChange(
-                                            JSON.stringify(
-                                                {
-                                                    name: item.type,
-                                                    uri: item.uri,
+                {isOpen ? (
+                    <div className={`dropdown-menu ${menuAlignClass}`}>
+                        <div className="dropdown-menu__panel">
+                            <div className="search-box">
+                                <input
+                                    ref={searchInput}
+                                    className="search-input"
+                                    type="search"
+                                    name="q"
+                                    placeholder="Search…"
+                                    autoComplete="off"
+                                    onChange={(e) => searchItems(e.target.value)}
+                                    onClick={(e) => e.stopPropagation()}
+                                />
+                            </div>
+                            <ul ref={listRef} className="dropdown-menu__content" role="listbox">
+                                {props?.items?.map((item, key) => {
+                                    if (isJson(item)) {
+                                        const parsed = JSON.parse(item);
+                                        return (
+                                            <li
+                                                key={parsed.id ?? key}
+                                                data-dropdown-item
+                                                role="option"
+                                                onClick={pick(() =>
+                                                    props.onChange(JSON.stringify({ id: parsed.id, name: parsed.name }))
+                                                )}
+                                            >
+                                                {parsed.icon ? <img src={parsed.icon} alt="" /> : null}
+                                                {props?.labels ? props?.labels[key] : parsed.name}
+                                            </li>
+                                        );
+                                    }
+                                    if (typeof item === "object" && item?.uri) {
+                                        return (
+                                            <li
+                                                key={item.uri}
+                                                data-dropdown-item
+                                                role="option"
+                                                onClick={pick(() =>
+                                                    props.onChange(
+                                                        JSON.stringify({
+                                                            name: item.type,
+                                                            uri: item.uri,
+                                                        })
+                                                    )
+                                                )}
+                                            >
+                                                {item.icon ? <img src={item.icon} alt="" /> : null}
+                                                {props?.labels ? props?.labels[key] : item.type}
+                                            </li>
+                                        );
+                                    }
+                                    if (typeof item === "object") {
+                                        return (
+                                            <li
+                                                key={item.id ?? key}
+                                                data-dropdown-item
+                                                role="option"
+                                                className="dropdown-menu__item--with-icon"
+                                                onClick={() =>
+                                                    props.onChange(
+                                                        JSON.stringify({
+                                                            id: item.id,
+                                                            name: item.name,
+                                                            access: item.access,
+                                                        })
+                                                    )
                                                 }
-                                            )
-                                        )} key={item.uri}>
-                                            {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
-                                            {props?.labels ? props?.labels[key] : item.type}
-                                        </li>
-                                    </> 
-                                }else if(typeof item === "object"){
-                                    return <>
-                                        <li style={{display: "flex", alignItems: "center"}} onClick={() => props.onChange(JSON.stringify({
-                                            id: item.id,
-                                            name: item.name,
-                                            access: item.access,
-                                        }))} key={item.id}>
-                                            {(item?.icon && item.icon != "undefined") ? <img className="company-logo" src={item.icon} alt={item.name} /> : null}
-                                            {props?.labels ? props?.labels[key] : item.name}
-                                        </li>
-                                    </> 
-                                }else {
-                                    return <>
-                                        <li onClick={(e) => props.onChange(
-                                            (props.labels) ? item : e.target.innerText
-                                        )} key={item} value={item}>
-                                            {(item?.icon) ? <img src={item.icon} alt={item.name} /> : null}
+                                            >
+                                                {item.icon && item.icon !== "undefined" ? (
+                                                    <img className="company-logo" src={item.icon} alt="" />
+                                                ) : null}
+                                                {props?.labels ? props?.labels[key] : item.name}
+                                            </li>
+                                        );
+                                    }
+                                    return (
+                                        <li
+                                            key={String(item)}
+                                            data-dropdown-item
+                                            role="option"
+                                            onClick={(e) => {
+                                                setIsOpen(false);
+                                                props.onChange(
+                                                    props.labels ? item : e.currentTarget.textContent
+                                                );
+                                            }}
+                                        >
+                                            {item?.icon ? <img src={item.icon} alt="" /> : null}
                                             {props?.labels ? props?.labels[key] : item}
                                         </li>
-                                    </>
-                                }
-                            })
-                        }
-                    </ul>
-                </div> : null
-                }
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    </div>
+                ) : null}
             </div>
         </div>
-    </>
+    );
 }

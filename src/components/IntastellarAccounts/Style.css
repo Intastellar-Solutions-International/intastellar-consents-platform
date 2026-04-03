@@ -326,6 +326,7 @@
 @media screen and (min-width: 320px) and (max-width: 900px) {
     .ia-menu.user_content,
     .services-overview-container {
-        top: 100px;
+        top: 60px;
+        right: 10px;
     }
 }
