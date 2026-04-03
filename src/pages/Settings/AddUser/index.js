@@ -1,4 +1,3 @@
-import "./Style/Style.css";
 import { OrganisationContext } from "../../../App";
 import Fetch from "../../../Functions/fetch";
 import API from "../../../API/api";
@@ -7,85 +6,98 @@ import Email from "../../../Components/InputFields/EmailInput";
 import SuccessWindow from "../../../Components/SuccessWindow";
 import SideNav from "../../../Components/Header/SideNav";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks";
-const Link = window.ReactRouterDOM.Link;
-const { useState, useEffect, useRef, useContext } = React;
+import StickyPageTitle from "../../../Components/Header/Sticky";
+import "../Style.css";
+
+const { useState, useContext } = React;
+
 export default function AddUser() {
-    document.title = "Add User to an Organisation | Intastellar Consents | CMP";
-    const [Organisation, setOrganisation] = useContext(OrganisationContext);
+    document.title = "Add user | Settings | Intastellar Consents | CMP";
+    const [Organisation] = useContext(OrganisationContext);
+    const org = JSON.parse(Organisation);
     const [userMail, setUserMail] = useState("");
-    const [userRole, setUserRole] = useState("Admin");
+    const [userRole, setUserRole] = useState("Manager");
     const [userName, setUserName] = useState("");
     const [status, setStatus] = useState(null);
-    const [organisationId, setOrganisationId] = useState(JSON.parse(Organisation).id);
-    const [style, setStyle] = useState({
-        right: "-100%"
-    });
-
-    console.log(API.settings.addUser.url);
+    const [organisationId] = useState(org.id);
+    const [toastStyle, setToastStyle] = useState({ right: "-100%" });
 
     const addUser = (e) => {
         e.preventDefault();
         setStatus("Loading...");
-        Fetch(API.settings.addUser.url, API.settings.addUser.method,
+        Fetch(
+            API.settings.addUser.url,
+            API.settings.addUser.method,
             API.settings.addUser.headers,
-            JSON.stringify(
-                {
-                    organisationId: organisationId,
-                    userEmail: userMail,
-                    userRole: userRole,
-                    userName: userName,
-                    orgName: JSON.parse(Organisation).name
-                }
-            )
-        ).then(
-            (re) => {
-                setStatus(null);
-                if (re == "ERROR_ADDING_USER" || re === "Err_Token_Not_Found") {
-                    setStatus(`We couldn´t add the user`);
-                    setStyle({
-                        right: "0",
-                        borderColor: "red"
-                    })
-                } else {
-                    setStatus(`User ${userName} added to ${JSON.parse(Organisation).name}`);
-                    setStyle({
-                        right: "0"
-                    })
-                }
-
-                setTimeout(() => {
-                    setStyle({
-                        right: "-100%",
-                        borderColor: "red"
-                    })
-                }, 6000)
+            JSON.stringify({
+                organisationId,
+                userEmail: userMail,
+                userRole,
+                userName,
+                orgName: org.name,
+            })
+        ).then((re) => {
+            setStatus(null);
+            if (re === "ERROR_ADDING_USER" || re === "Err_Token_Not_Found") {
+                setStatus(`We couldn't add the user.`);
+                setToastStyle({ right: "0", borderColor: "red" });
+            } else {
+                setStatus(`User ${userName} added to ${org.name}.`);
+                setToastStyle({ right: "0" });
             }
-        )
+            setTimeout(() => {
+                setToastStyle({ right: "-100%", borderColor: undefined });
+            }, 6000);
+        });
     };
 
     return (
         <>
             <SideNav links={reportsLinks} title="Settings" />
-            <main className="dashboard-content" style={{ padding: "20px", maxWidth: "1200px" }}>
-                <h1>Add user for {JSON.parse(Organisation).name}</h1>
-                <SuccessWindow style={style} message={status} />
-                <form onSubmit={addUser}>
-                    <label for="name">Name</label>
-                    <Text onChange={(e) => setUserName(e.target.value)} />
-                    <label for="email">Email</label>
-                    <Email onChange={(e) => setUserMail(e.target.value)} />
-                    <label for="role">Role</label>
-                    <select id="role" className="intInput" name="role" onChange={(e) => setUserRole(e.target.value)}>
-                        <option>Admin</option>
-                        <option selected>Manager</option>
-                    </select>
-                    <label for="organisation">Organisation</label>
-                    <select id="organisation" className="intInput" disabled name="organisation" onChange={(e) => setOrganisationId(e.target.value)}>
-                        <option value={JSON.parse(Organisation).id}>{JSON.parse(Organisation).name}</option>
-                    </select>
-                    <button className="cta">Add user</button>
+            <main className="dashboard-content settings-subpage">
+                <StickyPageTitle title="Add user" />
+                <p className="settings-subpage__intro">
+                    Invite someone to <strong>{org.name}</strong>. They will receive access according to the role
+                    you choose.
+                </p>
+                <SuccessWindow style={toastStyle} message={status} />
+                <form className="settings-subpage__panel settings-subpage__form" onSubmit={addUser}>
+                    <Text label="Name" placeholder="Full name" onChange={(e) => setUserName(e.target.value)} />
+                    <Email label="Email" placeholder="Email address" onChange={(e) => setUserMail(e.target.value)} />
+                    <div>
+                        <label className="settings-subpage__intro" style={{ display: "block", marginBottom: 8 }}>
+                            Role
+                        </label>
+                        <select
+                            id="role"
+                            className="settings-subpage__select"
+                            name="role"
+                            value={userRole}
+                            onChange={(e) => setUserRole(e.target.value)}
+                        >
+                            <option value="Admin">Admin</option>
+                            <option value="Manager">Manager</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="settings-subpage__intro" style={{ display: "block", marginBottom: 8 }}>
+                            Organisation
+                        </label>
+                        <select
+                            id="organisation"
+                            className="settings-subpage__select"
+                            name="organisation"
+                            disabled
+                            value={String(org.id)}
+                        >
+                            <option value={String(org.id)}>{org.name}</option>
+                        </select>
+                    </div>
+                    <button type="submit" className="cta">
+                        Add user
+                    </button>
                 </form>
             </main>
         </>
-    )
+    );
 }
