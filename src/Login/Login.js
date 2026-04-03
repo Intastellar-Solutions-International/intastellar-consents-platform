@@ -2,15 +2,12 @@ import "./Login.css";
 import logo from "../Components/Header/logo.svg";
 import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
-import { IntastellarButton } from "@intastellar/signin-sdk-react";
+import { useIntastellar } from "@intastellar/signin-sdk-react";
 
-export default function Login() {
-    document.title = "Log in to Intastellar Consents";
+function handleLogin(account) {
+    if (!account) return;
 
-    const handleLogin = (account) => {
-        if (!account) return;
-
-        fetch(API.OrganisationData.url, {
+    fetch(API.OrganisationData.url, {
             withCredentials: false,
             method: "POST",
             headers: {
@@ -56,7 +53,17 @@ export default function Login() {
             .catch((error) => {
                 console.error("Error during login:", error);
             });
-    };
+}
+
+export default function Login() {
+    document.title = "Log in to Intastellar Consents";
+    const { isLoading, signin, users } = useIntastellar({
+        clientId: "d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d",
+        appName: "Intastellar Consents",
+        loginCallback: handleLogin,
+        scopes: "profile",
+        type: "signin",
+    });
 
     return (
         <>
@@ -91,13 +98,35 @@ export default function Login() {
                         </ul>
 
                         <div className="int-login__sso">
-                            <IntastellarButton
-                                clientId="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
-                                appName="Intastellar Consents | CMP"
-                                loginCallback={handleLogin}
-                                theme="dark"
-                                type="login"
-                            />
+                            <button
+                                type="button"
+                                className="int-login__signin-btn"
+                                onClick={() => signin()}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <span className="int-login__signin-btn-inner">
+                                        <span className="int-login__signin-spinner" aria-hidden="true" />
+                                        Signing in…
+                                    </span>
+                                ) : users.length == 1 ? (
+                                    <span className="int-login__signin-btn-inner">
+                                        <img src={users[0].image} className="int-login__signin-btn-inner-image" />
+                                        <span className="int-login__signin-btn-inner-text">
+                                            Continue as {users[0].name.first}
+                                            <span className="int-login__signin-btn-inner-text-email">{users[0].email}</span>
+                                        </span>
+                                    </span>
+                                    ) : users.length > 1 ? (
+                                        <span className="int-login__signin-btn-inner">
+                                            Choose your account
+                                        </span>
+                                    ) : (
+                                        <span className="int-login__signin-btn-inner">
+                                            Sign in with Intastellar Accounts
+                                        </span>
+                                    )}
+                            </button>
                         </div>
 
                         <p className="int-login__not-you">
@@ -107,7 +136,7 @@ export default function Login() {
                                 rel="noopener noreferrer"
                                 className="int-login__not-you-link"
                             >
-                                Not you?
+                                Not you? Switch account
                             </a>
                         </p>
 
