@@ -45,32 +45,62 @@ export default function CreateOrganisation() {
             <main className="dashboard-content settings-subpage">
                 <StickyPageTitle title="Create organisation" />
                 <p className="settings-subpage__intro">
-                    Register a new organisation and nominate an admin email. Further steps may be sent by
-                    email.
+                    Register a new organisation and nominate an admin. Follow-up may arrive by email.
                 </p>
-                <form className="settings-subpage__panel settings-subpage__form" onSubmit={create}>
+                <form className="settings-subpage__panel settings-preferences" onSubmit={create} noValidate>
+                    <header className="settings-preferences__header">
+                        <h2 className="settings-preferences__title">New organisation</h2>
+                        <p className="settings-preferences__lede">
+                            The name appears in the app and in invitations; the admin email is the primary
+                            contact for this workspace.
+                        </p>
+                    </header>
+
                     {status ? (
                         <p
                             className={
                                 error ? "settings-subpage__status settings-subpage__status--error" : "settings-subpage__status"
                             }
+                            style={{ marginBottom: 18 }}
                         >
                             {status}
                         </p>
                     ) : null}
-                    <Text
-                        onChange={(e) => setOrganisationName(e.target.value)}
-                        label="Organisation name"
-                        placeholder="Company or team name"
-                    />
-                    <Email
-                        onChange={(e) => setOrganisationAdmin(e.target.value)}
-                        label="Admin email"
-                        placeholder="Primary administrator email"
-                    />
-                    <button type="submit" className="cta">
-                        Create organisation
-                    </button>
+
+                    <div className="settings-preferences__groups">
+                        <section className="settings-preferences__group" aria-labelledby="create-org-details">
+                            <h3 className="settings-preferences__group-title" id="create-org-details">
+                                Organisation details
+                            </h3>
+                            <p className="settings-preferences__group-desc">
+                                Use the legal or brand name your team recognises. The admin should be someone
+                                who can verify billing and user access.
+                            </p>
+                            <div className="settings-preferences__control-stack">
+                                <Text
+                                    id="create-org-name"
+                                    label="Organisation name"
+                                    placeholder="Company or team name"
+                                    value={organisationName}
+                                    onChange={(e) => setOrganisationName(e.target.value)}
+                                />
+                                <Email
+                                    id="create-org-admin-email"
+                                    label="Admin email"
+                                    placeholder="Primary administrator email"
+                                    value={organisationAdmin}
+                                    autoComplete="off"
+                                    onChange={(e) => setOrganisationAdmin(e.target.value)}
+                                />
+                            </div>
+                        </section>
+                    </div>
+
+                    <footer className="settings-preferences__actions">
+                        <button type="submit" className="cta">
+                            Create organisation
+                        </button>
+                    </footer>
                 </form>
             </main>
         </>

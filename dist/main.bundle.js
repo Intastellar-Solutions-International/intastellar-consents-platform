@@ -22935,6 +22935,67 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
     margin-top: 0;
 }
 
+/* Inputs inside grouped settings panels (match dark panel chrome) */
+.settings-subpage__panel.settings-preferences .flex.flex-col {
+    gap: 8px;
+}
+
+.settings-subpage__panel.settings-preferences .flex.flex-col > label,
+.settings-subpage__panel.settings-preferences label.text-sm {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #c8c8c8;
+    letter-spacing: 0.02em;
+}
+
+.settings-subpage__panel.settings-preferences .intInput {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.35);
+    color: #f0f0f0;
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.settings-subpage__panel.settings-preferences .intInput::placeholder {
+    color: rgba(160, 160, 160, 0.75);
+}
+
+.settings-subpage__panel.settings-preferences .intInput:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.settings-subpage__panel.settings-preferences .intInput:focus,
+.settings-subpage__panel.settings-preferences .intInput:focus-visible {
+    outline: none;
+    border-color: rgba(192, 159, 83, 0.5);
+    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.18);
+}
+
+.settings-preferences__fields-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media screen and (min-width: 540px) {
+    .settings-preferences__fields-grid--2 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.settings-preferences__control-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
 /* Data tables (users, organisations) */
 .settings-table-wrap {
     margin-top: 8px;
@@ -23134,7 +23195,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
 
 .settings-blacklist-modal__btn:hover {
     filter: brightness(1.08);
-}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"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","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* User preferences: grouped sections inside one panel */\n.settings-preferences__header {\n    margin: 0 0 22px;\n    padding-bottom: 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-preferences__title {\n    margin: 0 0 8px;\n    font-size: 1.0625rem;\n    font-weight: 650;\n    letter-spacing: -0.02em;\n    color: #ececec;\n}\n\n.settings-preferences__lede {\n    margin: 0;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 180, 0.92);\n}\n\n.settings-preferences__groups {\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n.settings-preferences__group {\n    margin: 0;\n    padding: 16px 16px 18px 18px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.settings-preferences__group-title {\n    margin: 0 0 6px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n}\n\n.settings-preferences__group-desc {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(165, 165, 165, 0.95);\n    max-width: 42em;\n}\n\n.settings-preferences__field {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px 16px;\n}\n\n.settings-preferences__field .selectorContianer,\n.settings-preferences__field .selector-container {\n    flex: 1;\n    min-width: min(100%, 220px);\n}\n\n.settings-preferences__label {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n    min-width: 120px;\n}\n\n.settings-preferences__actions {\n    margin-top: 22px;\n    padding-top: 18px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-preferences__actions .cta,\n.settings-preferences__actions button {\n    margin-top: 0;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"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","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* User preferences: grouped sections inside one panel */\n.settings-preferences__header {\n    margin: 0 0 22px;\n    padding-bottom: 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-preferences__title {\n    margin: 0 0 8px;\n    font-size: 1.0625rem;\n    font-weight: 650;\n    letter-spacing: -0.02em;\n    color: #ececec;\n}\n\n.settings-preferences__lede {\n    margin: 0;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 180, 0.92);\n}\n\n.settings-preferences__groups {\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n.settings-preferences__group {\n    margin: 0;\n    padding: 16px 16px 18px 18px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.settings-preferences__group-title {\n    margin: 0 0 6px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n}\n\n.settings-preferences__group-desc {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(165, 165, 165, 0.95);\n    max-width: 42em;\n}\n\n.settings-preferences__field {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px 16px;\n}\n\n.settings-preferences__field .selectorContianer,\n.settings-preferences__field .selector-container {\n    flex: 1;\n    min-width: min(100%, 220px);\n}\n\n.settings-preferences__label {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n    min-width: 120px;\n}\n\n.settings-preferences__actions {\n    margin-top: 22px;\n    padding-top: 18px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-preferences__actions .cta,\n.settings-preferences__actions button {\n    margin-top: 0;\n}\n\n/* Inputs inside grouped settings panels (match dark panel chrome) */\n.settings-subpage__panel.settings-preferences .flex.flex-col {\n    gap: 8px;\n}\n\n.settings-subpage__panel.settings-preferences .flex.flex-col > label,\n.settings-subpage__panel.settings-preferences label.text-sm {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n    letter-spacing: 0.02em;\n}\n\n.settings-subpage__panel.settings-preferences .intInput {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 11px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    transition:\n        border-color 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-subpage__panel.settings-preferences .intInput::placeholder {\n    color: rgba(160, 160, 160, 0.75);\n}\n\n.settings-subpage__panel.settings-preferences .intInput:hover {\n    border-color: rgba(255, 255, 255, 0.2);\n}\n\n.settings-subpage__panel.settings-preferences .intInput:focus,\n.settings-subpage__panel.settings-preferences .intInput:focus-visible {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.18);\n}\n\n.settings-preferences__fields-grid {\n    display: grid;\n    grid-template-columns: 1fr;\n    gap: 16px;\n}\n\n@media screen and (min-width: 540px) {\n    .settings-preferences__fields-grid--2 {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n\n.settings-preferences__control-stack {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -35681,21 +35742,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Email)
 /* harmony export */ });
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Components/InputFields/Style.css");
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 
 function Email(props) {
+  var _props$autoComplete;
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-2"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: props === null || props === void 0 ? void 0 : props.id,
     className: "text-sm font-medium"
-  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", {
+  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", _extends({
     placeholder: props === null || props === void 0 ? void 0 : props.placeholder,
     className: "intInput",
-    autoComplete: "off",
+    autoComplete: (_props$autoComplete = props === null || props === void 0 ? void 0 : props.autoComplete) !== null && _props$autoComplete !== void 0 ? _props$autoComplete : "off",
     type: "email",
     onChange: props.onChange,
     id: props === null || props === void 0 ? void 0 : props.id
-  }));
+  }, props.value !== undefined ? {
+    value: props.value
+  } : {})));
 }
 
 /***/ }),
@@ -35711,21 +35776,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ PasswordInput)
 /* harmony export */ });
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Components/InputFields/Style.css");
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 
 function PasswordInput(props) {
+  var _props$autoComplete;
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-2"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: props === null || props === void 0 ? void 0 : props.id,
     className: "text-sm font-medium"
-  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", {
+  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", _extends({
     placeholder: props === null || props === void 0 ? void 0 : props.placeholder,
     className: "intInput",
-    autoComplete: "off",
+    autoComplete: (_props$autoComplete = props === null || props === void 0 ? void 0 : props.autoComplete) !== null && _props$autoComplete !== void 0 ? _props$autoComplete : "new-password",
     type: "password",
     onChange: props.onChange,
     id: props === null || props === void 0 ? void 0 : props.id
-  }));
+  }, props.value !== undefined ? {
+    value: props.value
+  } : {})));
 }
 
 /***/ }),
@@ -35793,21 +35862,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Text)
 /* harmony export */ });
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Components/InputFields/Style.css");
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 
 function Text(props) {
+  var _props$autoComplete;
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-2"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: props === null || props === void 0 ? void 0 : props.id,
     className: "text-sm font-medium"
-  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", {
+  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", _extends({
     placeholder: props === null || props === void 0 ? void 0 : props.placeholder,
     className: "intInput",
-    autoComplete: "off",
+    autoComplete: (_props$autoComplete = props === null || props === void 0 ? void 0 : props.autoComplete) !== null && _props$autoComplete !== void 0 ? _props$autoComplete : "off",
     type: props !== null && props !== void 0 && props.type ? props.type : "text",
     onChange: props.onChange,
     id: props === null || props === void 0 ? void 0 : props.id
-  }));
+  }, props.value !== undefined ? {
+    value: props.value
+  } : {})));
 }
 
 /***/ }),
@@ -42446,27 +42519,56 @@ function CreateOrganisation() {
     title: "Create organisation"
   }), /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__intro"
-  }, "Register a new organisation and nominate an admin email. Further steps may be sent by email."), /*#__PURE__*/React.createElement("form", {
-    className: "settings-subpage__panel settings-subpage__form",
-    onSubmit: create
-  }, status ? /*#__PURE__*/React.createElement("p", {
-    className: error ? "settings-subpage__status settings-subpage__status--error" : "settings-subpage__status"
-  }, status) : null, /*#__PURE__*/React.createElement(_Components_InputFields_textInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  }, "Register a new organisation and nominate an admin. Follow-up may arrive by email."), /*#__PURE__*/React.createElement("form", {
+    className: "settings-subpage__panel settings-preferences",
+    onSubmit: create,
+    noValidate: true
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "settings-preferences__header"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "settings-preferences__title"
+  }, "New organisation"), /*#__PURE__*/React.createElement("p", {
+    className: "settings-preferences__lede"
+  }, "The name appears in the app and in invitations; the admin email is the primary contact for this workspace.")), status ? /*#__PURE__*/React.createElement("p", {
+    className: error ? "settings-subpage__status settings-subpage__status--error" : "settings-subpage__status",
+    style: {
+      marginBottom: 18
+    }
+  }, status) : null, /*#__PURE__*/React.createElement("div", {
+    className: "settings-preferences__groups"
+  }, /*#__PURE__*/React.createElement("section", {
+    className: "settings-preferences__group",
+    "aria-labelledby": "create-org-details"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "settings-preferences__group-title",
+    id: "create-org-details"
+  }, "Organisation details"), /*#__PURE__*/React.createElement("p", {
+    className: "settings-preferences__group-desc"
+  }, "Use the legal or brand name your team recognises. The admin should be someone who can verify billing and user access."), /*#__PURE__*/React.createElement("div", {
+    className: "settings-preferences__control-stack"
+  }, /*#__PURE__*/React.createElement(_Components_InputFields_textInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    id: "create-org-name",
+    label: "Organisation name",
+    placeholder: "Company or team name",
+    value: organisationName,
     onChange: function onChange(e) {
       return setOrganisationName(e.target.value);
-    },
-    label: "Organisation name",
-    placeholder: "Company or team name"
+    }
   }), /*#__PURE__*/React.createElement(_Components_InputFields_EmailInput__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    id: "create-org-admin-email",
+    label: "Admin email",
+    placeholder: "Primary administrator email",
+    value: organisationAdmin,
+    autoComplete: "off",
     onChange: function onChange(e) {
       return setOrganisationAdmin(e.target.value);
-    },
-    label: "Admin email",
-    placeholder: "Primary administrator email"
-  }), /*#__PURE__*/React.createElement("button", {
+    }
+  })))), /*#__PURE__*/React.createElement("footer", {
+    className: "settings-preferences__actions"
+  }, /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "cta"
-  }, "Create organisation"))));
+  }, "Create organisation")))));
 }
 
 /***/ }),
@@ -42486,10 +42588,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_InputFields_textInput__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/InputFields/textInput */ "./src/Components/InputFields/textInput.js");
 /* harmony import */ var _Components_InputFields_EmailInput__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/InputFields/EmailInput */ "./src/Components/InputFields/EmailInput.js");
 /* harmony import */ var _Components_InputFields_PasswordInput__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/InputFields/PasswordInput */ "./src/Components/InputFields/PasswordInput.js");
-/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
-/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
-/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Components_SelectInput_Selector__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Components/SelectInput/Selector */ "./src/Components/SelectInput/Selector.js");
+/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -42499,7 +42602,8 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 var _window$React = window.React,
   useState = _window$React.useState,
-  useEffect = _window$React.useEffect;
+  useEffect = _window$React.useEffect,
+  useMemo = _window$React.useMemo;
 
 
 
@@ -42509,6 +42613,14 @@ var _window$React = window.React,
 
 
 
+
+var ROLE_ITEMS = [{
+  id: "Admin",
+  name: "Admin"
+}, {
+  id: "Manager",
+  name: "Manager"
+}];
 function normaliseOrganisationList(re) {
   if (Array.isArray(re)) return re;
   if (re && _typeof(re) === "object") {
@@ -42547,22 +42659,60 @@ function CreateUser() {
     _useState12 = _slicedToArray(_useState11, 2),
     organisations = _useState12[0],
     setOrganisations = _useState12[1];
-  var _useState13 = useState(null),
+  var _useState13 = useState(false),
     _useState14 = _slicedToArray(_useState13, 2),
-    status = _useState14[0],
-    setStatus = _useState14[1];
-  var _useState15 = useState(false),
+    orgsLoaded = _useState14[0],
+    setOrgsLoaded = _useState14[1];
+  var _useState15 = useState(null),
     _useState16 = _slicedToArray(_useState15, 2),
-    error = _useState16[0],
-    setError = _useState16[1];
+    status = _useState16[0],
+    setStatus = _useState16[1];
+  var _useState17 = useState(false),
+    _useState18 = _slicedToArray(_useState17, 2),
+    error = _useState18[0],
+    setError = _useState18[1];
+  var orgSelectItems = useMemo(function () {
+    if (!orgsLoaded && organisations.length === 0) {
+      return [{
+        id: "",
+        name: "Loading organisations…"
+      }];
+    }
+    if (orgsLoaded && organisations.length === 0) {
+      return [{
+        id: "",
+        name: "No organisations available"
+      }];
+    }
+    return organisations.map(function (org) {
+      var _ref, _org$id, _ref2, _ref3, _org$name;
+      return {
+        id: String((_ref = (_org$id = org.id) !== null && _org$id !== void 0 ? _org$id : org.organisationId) !== null && _ref !== void 0 ? _ref : ""),
+        name: String((_ref2 = (_ref3 = (_org$name = org.name) !== null && _org$name !== void 0 ? _org$name : org.organisationName) !== null && _ref3 !== void 0 ? _ref3 : org.id) !== null && _ref2 !== void 0 ? _ref2 : "—")
+      };
+    });
+  }, [organisations, orgsLoaded]);
+  var orgSelectDefault = useMemo(function () {
+    var _row$name;
+    var row = orgSelectItems.find(function (i) {
+      return i.id === organisationId;
+    });
+    var name = (_row$name = row === null || row === void 0 ? void 0 : row.name) !== null && _row$name !== void 0 ? _row$name : "Select organisation";
+    return JSON.stringify({
+      id: organisationId,
+      name: name
+    });
+  }, [orgSelectItems, organisationId]);
   useEffect(function () {
     (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_0__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_1__["default"].settings.getAllOrganisations.url, _API_api__WEBPACK_IMPORTED_MODULE_1__["default"].settings.getAllOrganisations.method, _API_api__WEBPACK_IMPORTED_MODULE_1__["default"].settings.getAllOrganisations.headers).then(function (re) {
       var list = typeof re === "string" && re.startsWith("Err_") ? [] : normaliseOrganisationList(re);
       setOrganisations(list);
       if (list.length && !organisationId) {
-        var _ref, _list$0$id;
-        setOrganisationId(String((_ref = (_list$0$id = list[0].id) !== null && _list$0$id !== void 0 ? _list$0$id : list[0].organisationId) !== null && _ref !== void 0 ? _ref : ""));
+        var _ref4, _list$0$id;
+        setOrganisationId(String((_ref4 = (_list$0$id = list[0].id) !== null && _list$0$id !== void 0 ? _list$0$id : list[0].organisationId) !== null && _ref4 !== void 0 ? _ref4 : ""));
       }
+    })["finally"](function () {
+      return setOrgsLoaded(true);
     });
   }, []);
   var createUser = function createUser(e) {
@@ -42598,88 +42748,129 @@ function CreateUser() {
       setPassword("");
     });
   };
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_6__.reportsLinks,
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_7__.reportsLinks,
     title: "Settings"
   }), /*#__PURE__*/React.createElement("main", {
     className: "dashboard-content settings-subpage"
-  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_7__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_8__["default"], {
     title: "Create user"
   }), /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__intro"
-  }, "Provision a new account and assign it to an organisation. The person can sign in with the email and password you set here."), /*#__PURE__*/React.createElement("form", {
-    className: "settings-subpage__panel settings-subpage__form",
-    onSubmit: createUser
-  }, status ? /*#__PURE__*/React.createElement("p", {
-    className: error ? "settings-subpage__status settings-subpage__status--error" : "settings-subpage__status"
-  }, status) : null, /*#__PURE__*/React.createElement(_Components_InputFields_textInput__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  }, "Provision a new account and assign it to an organisation. They sign in with the email and password you set here."), /*#__PURE__*/React.createElement("form", {
+    className: "settings-subpage__panel settings-preferences",
+    onSubmit: createUser,
+    noValidate: true
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "settings-preferences__header"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "settings-preferences__title"
+  }, "New user account"), /*#__PURE__*/React.createElement("p", {
+    className: "settings-preferences__lede"
+  }, "Identity details first, then which organisation and role they receive.")), status ? /*#__PURE__*/React.createElement("p", {
+    className: error ? "settings-subpage__status settings-subpage__status--error" : "settings-subpage__status",
+    style: {
+      marginBottom: 18
+    }
+  }, status) : null, /*#__PURE__*/React.createElement("div", {
+    className: "settings-preferences__groups"
+  }, /*#__PURE__*/React.createElement("section", {
+    className: "settings-preferences__group",
+    "aria-labelledby": "create-user-identity"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "settings-preferences__group-title",
+    id: "create-user-identity"
+  }, "Identity"), /*#__PURE__*/React.createElement("p", {
+    className: "settings-preferences__group-desc"
+  }, "Legal or display name, contact email, and an initial password they can change after first login."), /*#__PURE__*/React.createElement("div", {
+    className: "settings-preferences__fields-grid settings-preferences__fields-grid--2"
+  }, /*#__PURE__*/React.createElement(_Components_InputFields_textInput__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    id: "create-user-first",
     label: "First name",
     placeholder: "First name",
+    value: firstName,
     onChange: function onChange(e) {
       return setFirstName(e.target.value);
     }
   }), /*#__PURE__*/React.createElement(_Components_InputFields_textInput__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    id: "create-user-last",
     label: "Last name",
     placeholder: "Last name",
+    value: lastName,
     onChange: function onChange(e) {
       return setLastName(e.target.value);
     }
-  }), /*#__PURE__*/React.createElement(_Components_InputFields_EmailInput__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "settings-preferences__control-stack",
+    style: {
+      marginTop: 16
+    }
+  }, /*#__PURE__*/React.createElement(_Components_InputFields_EmailInput__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    id: "create-user-email",
     label: "Email",
     placeholder: "Email address",
+    value: email,
+    autoComplete: "off",
     onChange: function onChange(e) {
       return setEmail(e.target.value);
     }
   }), /*#__PURE__*/React.createElement(_Components_InputFields_PasswordInput__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    id: "create-user-password",
     label: "Password",
     placeholder: "Temporary password",
+    value: password,
     onChange: function onChange(e) {
       return setPassword(e.target.value);
     }
-  }), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
-    className: "settings-subpage__intro",
-    style: {
-      display: "block",
-      marginBottom: 8
-    }
-  }, "Role"), /*#__PURE__*/React.createElement("select", {
-    id: "create-user-role",
-    className: "settings-subpage__select",
-    name: "role",
-    value: role,
-    onChange: function onChange(e) {
-      return setRole(e.target.value);
-    }
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "Admin"
-  }, "Admin"), /*#__PURE__*/React.createElement("option", {
-    value: "Manager"
-  }, "Manager"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
-    className: "settings-subpage__intro",
-    style: {
-      display: "block",
-      marginBottom: 8
-    }
-  }, "Organisation"), /*#__PURE__*/React.createElement("select", {
-    id: "organisation",
-    className: "settings-subpage__select",
-    name: "organisation",
-    value: organisationId,
-    onChange: function onChange(e) {
-      return setOrganisationId(e.target.value);
-    }
-  }, organisations.length === 0 ? /*#__PURE__*/React.createElement("option", {
-    value: ""
-  }, "No organisations loaded") : null, organisations.map(function (org) {
-    var _org$id, _org$id2, _ref2, _org$name;
-    return /*#__PURE__*/React.createElement("option", {
-      key: (_org$id = org.id) !== null && _org$id !== void 0 ? _org$id : org.organisationId,
-      value: String((_org$id2 = org.id) !== null && _org$id2 !== void 0 ? _org$id2 : org.organisationId)
-    }, (_ref2 = (_org$name = org.name) !== null && _org$name !== void 0 ? _org$name : org.organisationName) !== null && _ref2 !== void 0 ? _ref2 : org.id);
-  }))), /*#__PURE__*/React.createElement("button", {
+  }))), /*#__PURE__*/React.createElement("section", {
+    className: "settings-preferences__group",
+    "aria-labelledby": "create-user-access"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "settings-preferences__group-title",
+    id: "create-user-access"
+  }, "Access"), /*#__PURE__*/React.createElement("p", {
+    className: "settings-preferences__group-desc"
+  }, "Role controls what they can do in that organisation. You can invite additional users from \u201CAdd user\u201D on the current org."), /*#__PURE__*/React.createElement("div", {
+    className: "settings-preferences__control-stack"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "settings-preferences__field"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "settings-preferences__label"
+  }, "Role"), /*#__PURE__*/React.createElement(_Components_SelectInput_Selector__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    key: "role-".concat(role),
+    name: "createUserRole",
+    defaultValue: JSON.stringify({
+      id: role,
+      name: role
+    }),
+    onChange: function onChange(ev) {
+      var p = JSON.parse(ev);
+      setRole(p.id);
+    },
+    items: ROLE_ITEMS,
+    align: "left"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "settings-preferences__field"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "settings-preferences__label"
+  }, "Organisation"), /*#__PURE__*/React.createElement(_Components_SelectInput_Selector__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    key: "org-".concat(organisationId, "-").concat(orgSelectItems.map(function (i) {
+      return i.id;
+    }).join("|")),
+    name: "createUserOrganisation",
+    defaultValue: orgSelectDefault,
+    onChange: function onChange(ev) {
+      var p = JSON.parse(ev);
+      setOrganisationId(String(p.id));
+    },
+    items: orgSelectItems,
+    align: "left"
+  }))))), /*#__PURE__*/React.createElement("footer", {
+    className: "settings-preferences__actions"
+  }, /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "cta"
-  }, "Create user"))));
+  }, "Create user")))));
 }
 
 /***/ }),

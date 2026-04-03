@@ -368,6 +368,67 @@
     margin-top: 0;
 }
 
+/* Inputs inside grouped settings panels (match dark panel chrome) */
+.settings-subpage__panel.settings-preferences .flex.flex-col {
+    gap: 8px;
+}
+
+.settings-subpage__panel.settings-preferences .flex.flex-col > label,
+.settings-subpage__panel.settings-preferences label.text-sm {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #c8c8c8;
+    letter-spacing: 0.02em;
+}
+
+.settings-subpage__panel.settings-preferences .intInput {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.35);
+    color: #f0f0f0;
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.settings-subpage__panel.settings-preferences .intInput::placeholder {
+    color: rgba(160, 160, 160, 0.75);
+}
+
+.settings-subpage__panel.settings-preferences .intInput:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.settings-subpage__panel.settings-preferences .intInput:focus,
+.settings-subpage__panel.settings-preferences .intInput:focus-visible {
+    outline: none;
+    border-color: rgba(192, 159, 83, 0.5);
+    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.18);
+}
+
+.settings-preferences__fields-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+@media screen and (min-width: 540px) {
+    .settings-preferences__fields-grid--2 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.settings-preferences__control-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
 /* Data tables (users, organisations) */
 .settings-table-wrap {
     margin-top: 8px;
