@@ -260,7 +260,7 @@ export default function UserConsents(props) {
                                                     <dd>{d?.country_code ?? "—"}</dd>
                                                 </div>
                                                 <div className="user-consent-card__row">
-                                                    <dt>Regulation</dt>
+                                                    <dt>Applied framework</dt>
                                                     <dd><span className="regulation">{d?.regulation_applied ?? "—"}</span></dd>
                                                 </div>
                                                 <div className="user-consent-card__row">
