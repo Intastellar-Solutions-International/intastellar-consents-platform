@@ -18,11 +18,11 @@ export function LPFooter() {
                     <h3>Legal</h3>
                     <a href="https://www.intastellarsolutions.com/about/legal/privacy" target="_blank" className="links">Privacy Policy</a>
                     <a href="https://www.intastellarsolutions.com/about/legal/terms" target="_blank" className="links">Terms of Service</a>
-                    <a href="https://www.intastellarsolutions.com/about/legal/imprint" target="_blank" className="links">Impressum</a>
+                    <a href="https://www.intastellarsolutions.com/about/legal/imprint" target="_blank" className="links">Imprint</a>
                 </nav>
                 <nav className="footer-nav">
                     <h3>Company</h3>
-                    <a href="https://www.intastellarsolutions.com/about/om-os" target="_blank" className="links">Who we are</a>
+                    <a href="https://www.intastellarsolutions.com/about/om-os" target="_blank" className="links">About</a>
                     <a href="https://www.intastellarsolutions.com/contact" target="_blank" className="links">Contact Us</a>
                 </nav>
             </section>
