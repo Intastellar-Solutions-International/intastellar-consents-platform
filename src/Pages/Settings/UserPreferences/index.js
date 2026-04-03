@@ -54,67 +54,104 @@ export default function UserPreferences() {
             <article style={{ flex: 1 }}>
                 <StickyPageTitle title="My preferences" />
                 <div className="dashboard-content settings-subpage">
-                    <p className="settings-subpage__intro">
-                        Default date range and regional formatting apply to the home and domain dashboards
-                        (numbers, dates in widgets, charts, and the date filter).
-                    </p>
-                    <div className="settings-subpage__panel">
-                        <div className="settings-subpage__field-row">
-                            <label htmlFor="settings-date-range">Default date range</label>
-                            <Select
-                                name="userPreferences"
-                                defaultValue={JSON.stringify({
-                                    id: dateRange,
-                                    name: defaultRange,
-                                })}
-                                onChange={(e) => {
-                                    const parsed = JSON.parse(e);
-                                    setDateRange(parsed.id);
-                                    setDefaultRange(parsed.name);
-                                }}
-                                items={RANGE_ITEMS}
-                                align="left"
-                            />
+                    <div className="settings-subpage__panel settings-preferences">
+                        <header className="settings-preferences__header">
+                            <h2 className="settings-preferences__title">Dashboard preferences</h2>
+                            <p className="settings-preferences__lede">
+                                These settings apply to the home and domain dashboards when you work with
+                                analytics and reports.
+                            </p>
+                        </header>
+
+                        <div className="settings-preferences__groups">
+                            <section
+                                className="settings-preferences__group"
+                                aria-labelledby="pref-reporting-period"
+                            >
+                                <h3 className="settings-preferences__group-title" id="pref-reporting-period">
+                                    Reporting period
+                                </h3>
+                                <p className="settings-preferences__group-desc">
+                                    Pre-selected range when a view loads (you can still change dates in the
+                                    filter).
+                                </p>
+                                <div className="settings-preferences__field">
+                                    <label className="settings-preferences__label" htmlFor="settings-date-range">
+                                        Default range
+                                    </label>
+                                    <Select
+                                        name="userPreferences"
+                                        defaultValue={JSON.stringify({
+                                            id: dateRange,
+                                            name: defaultRange,
+                                        })}
+                                        onChange={(e) => {
+                                            const parsed = JSON.parse(e);
+                                            setDateRange(parsed.id);
+                                            setDefaultRange(parsed.name);
+                                        }}
+                                        items={RANGE_ITEMS}
+                                        align="left"
+                                    />
+                                </div>
+                            </section>
+
+                            <section
+                                className="settings-preferences__group"
+                                aria-labelledby="pref-regional-format"
+                            >
+                                <h3 className="settings-preferences__group-title" id="pref-regional-format">
+                                    Regional format
+                                </h3>
+                                <p className="settings-preferences__group-desc">
+                                    How dates and numbers are shown in widgets, charts, and the compact date
+                                    range next to the calendar.
+                                </p>
+                                <div className="settings-preferences__field">
+                                    <label className="settings-preferences__label" htmlFor="settings-locale">
+                                        Locale
+                                    </label>
+                                    <Select
+                                        name="userLocale"
+                                        defaultValue={JSON.stringify({
+                                            id: locale,
+                                            name: localeLabel,
+                                        })}
+                                        onChange={(e) => {
+                                            const parsed = JSON.parse(e);
+                                            setLocale(parsed.id);
+                                            setLocaleLabel(parsed.name);
+                                        }}
+                                        items={LOCALE_ITEMS}
+                                        align="left"
+                                    />
+                                </div>
+                            </section>
                         </div>
-                        <div className="settings-subpage__field-row">
-                            <label htmlFor="settings-locale">Date &amp; number format</label>
-                            <Select
-                                name="userLocale"
-                                defaultValue={JSON.stringify({
-                                    id: locale,
-                                    name: localeLabel,
-                                })}
-                                onChange={(e) => {
-                                    const parsed = JSON.parse(e);
-                                    setLocale(parsed.id);
-                                    setLocaleLabel(parsed.name);
+
+                        <footer className="settings-preferences__actions">
+                            <Button
+                                onClick={() => {
+                                    const prev = readUserSettings();
+                                    const next = { ...prev, dateRange, locale };
+                                    fetch(API.settings.user.update.url, {
+                                        method: API.settings.user.update.method,
+                                        headers: API.settings.user.headers,
+                                        body: JSON.stringify({
+                                            setting: { dateRange, locale },
+                                            userId: Authentication.getUserId(),
+                                        }),
+                                    })
+                                        .then((res) => res.json())
+                                        .then(() => {
+                                            localStorage.setItem("settings", JSON.stringify(next));
+                                            dispatchUserSettingsChanged();
+                                            setSuccess(true);
+                                        });
                                 }}
-                                items={LOCALE_ITEMS}
-                                align="left"
+                                text="Save changes"
                             />
-                        </div>
-                        <Button
-                            style={{ marginTop: 12 }}
-                            onClick={() => {
-                                const prev = readUserSettings();
-                                const next = { ...prev, dateRange, locale };
-                                fetch(API.settings.user.update.url, {
-                                    method: API.settings.user.update.method,
-                                    headers: API.settings.user.headers,
-                                    body: JSON.stringify({
-                                        setting: { dateRange, locale },
-                                        userId: Authentication.getUserId(),
-                                    }),
-                                })
-                                    .then((res) => res.json())
-                                    .then(() => {
-                                        localStorage.setItem("settings", JSON.stringify(next));
-                                        dispatchUserSettingsChanged();
-                                        setSuccess(true);
-                                    });
-                            }}
-                            text="Save"
-                        />
+                        </footer>
                     </div>
                 </div>
             </article>
