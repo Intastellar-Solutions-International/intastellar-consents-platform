@@ -31168,11 +31168,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Line)
 /* harmony export */ });
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Components/Charts/Line/Style.css");
+/* harmony import */ var _Functions_userLocale__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Functions/userLocale */ "./src/Functions/userLocale.js");
 var _React = React,
-  useState = _React.useState,
   useEffect = _React.useEffect,
-  useRef = _React.useRef,
-  useContext = _React.useContext;
+  useMemo = _React.useMemo;
+
 
 function Line(_ref) {
   var data = _ref.data,
@@ -31180,24 +31180,29 @@ function Line(_ref) {
     title = _ref.title,
     fromDate = _ref.fromDate,
     toDate = _ref.toDate;
-  var dailyData = data === null || data === void 0 ? void 0 : data.map(function (d, i) {
-    return {
-      "name": fromDate === toDate ? new Intl.DateTimeFormat('de-DE', {
-        hour: 'numeric',
-        minute: 'numeric'
-      }).format(new Date(d.date)) : new Intl.DateTimeFormat('de-DE').format(new Date(d.date)),
-      "domain": d.num
-    };
-  });
-  var dailyData2 = data2 === null || data2 === void 0 ? void 0 : data2.map(function (d, i) {
-    return {
-      "name": fromDate === toDate ? new Intl.DateTimeFormat('de-DE', {
-        hour: 'numeric',
-        minute: 'numeric'
-      }).format(new Date(d.previousPeriod.date)) : new Intl.DateTimeFormat('de-DE').format(new Date(d.previousPeriod.date)),
-      "domain": d.previousPeriod.num
-    };
-  });
+  var locale = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_1__.useUserLocale)();
+  var dailyData = useMemo(function () {
+    return data === null || data === void 0 ? void 0 : data.map(function (d) {
+      return {
+        name: fromDate === toDate ? new Intl.DateTimeFormat(locale, {
+          hour: "numeric",
+          minute: "numeric"
+        }).format(new Date(d.date)) : new Intl.DateTimeFormat(locale).format(new Date(d.date)),
+        domain: d.num
+      };
+    });
+  }, [data, fromDate, toDate, locale]);
+  var dailyData2 = useMemo(function () {
+    return data2 === null || data2 === void 0 ? void 0 : data2.map(function (d) {
+      return {
+        name: fromDate === toDate ? new Intl.DateTimeFormat(locale, {
+          hour: "numeric",
+          minute: "numeric"
+        }).format(new Date(d.previousPeriod.date)) : new Intl.DateTimeFormat(locale).format(new Date(d.previousPeriod.date)),
+        domain: d.previousPeriod.num
+      };
+    });
+  }, [data2, fromDate, toDate, locale]);
   useEffect(function () {
     anychart.onDocumentReady(function () {
       // The main JS line charting code will be here.
@@ -31209,7 +31214,7 @@ function Line(_ref) {
       if (dataSet.oc != dailyData) {
         document.getElementById("line-chart").innerHTML = "";
       }
-      var dataSet2 = anychart.data.set(dailyData2);
+      var dataSet2 = anychart.data.set(dailyData2 !== null && dailyData2 !== void 0 ? dailyData2 : []);
       var chart = anychart.line();
       chart.background().fill("transparent");
       chart.xAxis().title("Day");
@@ -31234,7 +31239,7 @@ function Line(_ref) {
         chart.draw();
       }
     });
-  }, [dailyData, dailyData2]);
+  }, [dailyData, dailyData2, data, locale]);
   return /*#__PURE__*/React.createElement("div", {
     className: "no-padding"
   }, /*#__PURE__*/React.createElement("div", {
@@ -34055,6 +34060,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Styles_Filter_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Styles/Filter.css */ "./src/Components/Filter/Styles/Filter.css");
 /* harmony import */ var _Calendar_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Calendar.js */ "./src/Components/Filter/Calendar.js");
+/* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -34069,6 +34075,7 @@ var _React = React,
   useContext = _React.useContext;
 /* import { ToggleButton } from "~/components"; */
 
+
 function Filter(_ref) {
   var _Date, _Date2;
   var className = _ref.className,
@@ -34079,6 +34086,7 @@ function Filter(_ref) {
     setFromDate = _ref.setFromDate,
     setToDate = _ref.setToDate,
     demoMode = _ref.demoMode;
+  var locale = (0,_Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_2__.useUserLocale)();
   var compareRangeCheck = compareRange === 0 ? false : true;
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
@@ -34130,17 +34138,17 @@ function Filter(_ref) {
     className: "text-sm text-right"
   }, "Demo Mode Active"), !demoMode && /*#__PURE__*/React.createElement("p", {
     className: "text-sm text-right"
-  }, new Intl.DateTimeFormat("da-DK", {
+  }, new Intl.DateTimeFormat(locale, {
     dateStyle: "short"
-  }).format(new Date(startXDays)), " - ", new Intl.DateTimeFormat("da-DK", {
+  }).format(new Date(startXDays)), " - ", new Intl.DateTimeFormat(locale, {
     dateStyle: "short"
   }).format(new Date(endXDays))), compareRangeCheck ? /*#__PURE__*/React.createElement("p", {
     className: "text-sm text-right"
   }, /*#__PURE__*/React.createElement("span", {
     className: "mx-2"
-  }, "compare"), new Intl.DateTimeFormat("da-DK", {
+  }, "compare"), new Intl.DateTimeFormat(locale, {
     dateStyle: "short"
-  }).format(new Date(previousPeriod2)), " - ", new Intl.DateTimeFormat("da-DK", {
+  }).format(new Date(previousPeriod2)), " - ", new Intl.DateTimeFormat(locale, {
     dateStyle: "short"
   }).format(new Date(previousPeriod))) : null)), calendar && /*#__PURE__*/React.createElement("div", {
     className: "calendar-grid auto-rows-max grid-cols-1 bg-slate-100 shadow-md absolute z-10 right-0 mt-3 w-[512px] h-[445px] rounded-md overflow-hidden"
@@ -37098,6 +37106,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Charts_Line__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Charts/Line */ "./src/Components/Charts/Line/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Functions_userLocale__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Functions/userLocale */ "./src/Functions/userLocale.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -37109,20 +37118,21 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 
 
 
-function formatPeriodLabel(fromDate, toDate) {
+
+function formatPeriodLabel(fromDate, toDate, locale) {
   if (!fromDate || !toDate) return null;
   try {
     if (fromDate === toDate) {
-      return new Intl.DateTimeFormat("de-DE", {
+      return new Intl.DateTimeFormat(locale, {
         dateStyle: "medium"
       }).format(new Date(fromDate));
     }
     var a = new Date(fromDate);
     var b = new Date(toDate);
-    return "".concat(new Intl.DateTimeFormat("de-DE", {
+    return "".concat(new Intl.DateTimeFormat(locale, {
       day: "numeric",
       month: "short"
-    }).format(a), " \u2013 ").concat(new Intl.DateTimeFormat("de-DE", {
+    }).format(a), " \u2013 ").concat(new Intl.DateTimeFormat(locale, {
       day: "numeric",
       month: "short",
       year: "numeric"
@@ -37177,6 +37187,7 @@ function summarizeDailySeries(daily) {
   };
 }
 function Widget(props) {
+  var locale = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_3__.useUserLocale)();
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
     explainerVisible = _useState2[0],
@@ -37196,7 +37207,7 @@ function Widget(props) {
     var displayValue = "";
     if (_typeof(props.totalNumber) === "object" && (props === null || props === void 0 || (_props$totalNumber = props.totalNumber) === null || _props$totalNumber === void 0 ? void 0 : _props$totalNumber.Total) !== undefined && (props === null || props === void 0 || (_props$totalNumber2 = props.totalNumber) === null || _props$totalNumber2 === void 0 ? void 0 : _props$totalNumber2.Total) !== null) {
       var _props$totalNumber3;
-      displayValue = props === null || props === void 0 || (_props$totalNumber3 = props.totalNumber) === null || _props$totalNumber3 === void 0 || (_props$totalNumber3 = _props$totalNumber3.Total) === null || _props$totalNumber3 === void 0 ? void 0 : _props$totalNumber3.toLocaleString("de-DE");
+      displayValue = props === null || props === void 0 || (_props$totalNumber3 = props.totalNumber) === null || _props$totalNumber3 === void 0 || (_props$totalNumber3 = _props$totalNumber3.Total) === null || _props$totalNumber3 === void 0 ? void 0 : _props$totalNumber3.toLocaleString(locale);
     } else if (_typeof(props.totalNumber) !== "object" && props.totalNumber !== undefined && props.totalNumber !== null) {
       displayValue = props.totalNumber;
     }
@@ -37246,17 +37257,17 @@ function Widget(props) {
     var _displayValue = "";
     if (_typeof(props.totalNumber) === "object" && (props === null || props === void 0 || (_props$totalNumber4 = props.totalNumber) === null || _props$totalNumber4 === void 0 ? void 0 : _props$totalNumber4.Total) !== undefined && (props === null || props === void 0 || (_props$totalNumber5 = props.totalNumber) === null || _props$totalNumber5 === void 0 ? void 0 : _props$totalNumber5.Total) !== null) {
       var _props$totalNumber6;
-      _displayValue = props === null || props === void 0 || (_props$totalNumber6 = props.totalNumber) === null || _props$totalNumber6 === void 0 || (_props$totalNumber6 = _props$totalNumber6.Total) === null || _props$totalNumber6 === void 0 ? void 0 : _props$totalNumber6.toLocaleString("de-DE");
+      _displayValue = props === null || props === void 0 || (_props$totalNumber6 = props.totalNumber) === null || _props$totalNumber6 === void 0 || (_props$totalNumber6 = _props$totalNumber6.Total) === null || _props$totalNumber6 === void 0 ? void 0 : _props$totalNumber6.toLocaleString(locale);
     } else if (_typeof(props.totalNumber) !== "object" && props.totalNumber !== undefined && props.totalNumber !== null) {
       _displayValue = props.totalNumber;
     }
     var daily = props === null || props === void 0 || (_props$totalNumber7 = props.totalNumber) === null || _props$totalNumber7 === void 0 ? void 0 : _props$totalNumber7.dailyNum;
     var hasChart = Array.isArray(daily) && daily.length > 0;
-    var periodLabel = hasChart ? formatPeriodLabel(props === null || props === void 0 ? void 0 : props.fromDate, props === null || props === void 0 ? void 0 : props.toDate) : null;
+    var periodLabel = hasChart ? formatPeriodLabel(props === null || props === void 0 ? void 0 : props.fromDate, props === null || props === void 0 ? void 0 : props.toDate, locale) : null;
     var seriesSummary = hasChart ? summarizeDailySeries(daily) : null;
     var peakDateStr = (seriesSummary === null || seriesSummary === void 0 ? void 0 : seriesSummary.peakDate) != null ? function () {
       try {
-        return new Intl.DateTimeFormat("en-GB", {
+        return new Intl.DateTimeFormat(locale, {
           day: "numeric",
           month: "short"
         }).format(new Date(seriesSummary.peakDate));
@@ -37284,7 +37295,7 @@ function Widget(props) {
       className: "widget__insight-label"
     }, "Peak day"), /*#__PURE__*/React.createElement("span", {
       className: "widget__insight-value"
-    }, seriesSummary.peak.toLocaleString("de-DE")), peakDateStr ? /*#__PURE__*/React.createElement("span", {
+    }, seriesSummary.peak.toLocaleString(locale)), peakDateStr ? /*#__PURE__*/React.createElement("span", {
       className: "widget__insight-sub"
     }, peakDateStr) : null), /*#__PURE__*/React.createElement("div", {
       className: "widget__insight"
@@ -37292,7 +37303,7 @@ function Widget(props) {
       className: "widget__insight-label"
     }, "Daily avg"), /*#__PURE__*/React.createElement("span", {
       className: "widget__insight-value"
-    }, seriesSummary.avg.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("span", {
+    }, seriesSummary.avg.toLocaleString(locale)), /*#__PURE__*/React.createElement("span", {
       className: "widget__insight-sub"
     }, seriesSummary.days, " ", seriesSummary.days === 1 ? "day" : "days")), seriesSummary.vsPrevPct != null ? /*#__PURE__*/React.createElement("div", {
       className: "widget__insight widget__insight--trend ".concat(seriesSummary.vsPrevPct >= 0 ? "widget__insight--up" : "widget__insight--down")
@@ -37898,6 +37909,74 @@ function isJson(str) {
     return false;
   }
   return true;
+}
+
+/***/ }),
+
+/***/ "./src/Functions/userLocale.js":
+/*!*************************************!*\
+  !*** ./src/Functions/userLocale.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   USER_SETTINGS_CHANGED: () => (/* binding */ USER_SETTINGS_CHANGED),
+/* harmony export */   dispatchUserSettingsChanged: () => (/* binding */ dispatchUserSettingsChanged),
+/* harmony export */   getUserLocale: () => (/* binding */ getUserLocale),
+/* harmony export */   readUserSettings: () => (/* binding */ readUserSettings),
+/* harmony export */   useUserLocale: () => (/* binding */ useUserLocale)
+/* harmony export */ });
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+var SETTINGS_KEY = "settings";
+var USER_SETTINGS_CHANGED = "intastellar-user-settings-changed";
+
+/** Matches previous app-wide hardcoding until the user saves a preference. */
+var DEFAULT_LOCALE = "de-DE";
+function readUserSettings() {
+  try {
+    var raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return {};
+    var o = JSON.parse(raw);
+    return o && _typeof(o) === "object" ? o : {};
+  } catch (_unused) {
+    return {};
+  }
+}
+function getUserLocale() {
+  var s = readUserSettings();
+  if (typeof s.locale === "string" && s.locale.trim() !== "") return s.locale.trim();
+  return DEFAULT_LOCALE;
+}
+function dispatchUserSettingsChanged() {
+  window.dispatchEvent(new Event(USER_SETTINGS_CHANGED));
+}
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect;
+function useUserLocale() {
+  var _useState = useState(getUserLocale),
+    _useState2 = _slicedToArray(_useState, 2),
+    locale = _useState2[0],
+    setLocale = _useState2[1];
+  useEffect(function () {
+    var sync = function sync() {
+      return setLocale(getUserLocale());
+    };
+    window.addEventListener(USER_SETTINGS_CHANGED, sync);
+    window.addEventListener("storage", sync);
+    return function () {
+      window.removeEventListener(USER_SETTINGS_CHANGED, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+  return locale;
 }
 
 /***/ }),
@@ -38765,6 +38844,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
 /* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
+/* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -38803,6 +38883,7 @@ var Link = window.ReactRouterDOM.Link;
 
 
 
+
 var punycode = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 function Dashboard(props) {
   var _jsData$Total, _jsData$JS, _jsData$WP, _activeData$activeUse, _activeData$changeRat, _activeData$relativeD, _activeData$changeRat2, _activeData$relativeD2, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da;
@@ -38827,6 +38908,7 @@ function Dashboard(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     timeToDecision = _useState4[0],
     setTimeToDecision = _useState4[1];
+  var locale = (0,_Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_19__.useUserLocale)();
   var _useParams = useParams(),
     handle = _useParams.handle,
     id = _useParams.id;
@@ -39041,15 +39123,15 @@ function Dashboard(props) {
     }
   }, jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: (_jsData$Total = jsData.Total) === null || _jsData$Total === void 0 ? void 0 : _jsData$Total.toLocaleString("de-DE"),
+    totalNumber: (_jsData$Total = jsData.Total) === null || _jsData$Total === void 0 ? void 0 : _jsData$Total.toLocaleString(locale),
     type: "Websites"
   })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: (jsData === null || jsData === void 0 || (_jsData$JS = jsData.JS) === null || _jsData$JS === void 0 ? void 0 : _jsData$JS.toLocaleString("de-DE")) + "%",
+    totalNumber: (jsData === null || jsData === void 0 || (_jsData$JS = jsData.JS) === null || _jsData$JS === void 0 ? void 0 : _jsData$JS.toLocaleString(locale)) + "%",
     type: "JavaScript"
   })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: (jsData === null || jsData === void 0 || (_jsData$WP = jsData.WP) === null || _jsData$WP === void 0 ? void 0 : _jsData$WP.toLocaleString("de-DE")) + "%",
+    totalNumber: (jsData === null || jsData === void 0 || (_jsData$WP = jsData.WP) === null || _jsData$WP === void 0 ? void 0 : _jsData$WP.toLocaleString(locale)) + "%",
     type: "WordPress"
   }))) : null, id ? /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_12__["default"], {
     platformId: id,
@@ -39070,7 +39152,7 @@ function Dashboard(props) {
   }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
     totalNumber: activeData,
-    activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString("de-DE"),
+    activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString(locale),
     type: "Stored consent decisions",
     fromDate: fromDate,
     toDate: toDate
@@ -39083,7 +39165,7 @@ function Dashboard(props) {
     relativeDrop: {
       relativeDrop: activeData === null || activeData === void 0 || (_activeData$relativeD = activeData.relativeDrop) === null || _activeData$relativeD === void 0 ? void 0 : _activeData$relativeD.accepted
     },
-    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%",
+    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? activeData.Accepted.toLocaleString(locale) : "—") + "%",
     type: "Consent acceptance",
     fromDate: fromDate,
     toDate: toDate
@@ -39101,7 +39183,7 @@ function Dashboard(props) {
       content: "Share of users who declined analytics and marketing cookies, allowing only required cookies.."
     },
     styleType: "small",
-    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%",
+    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString(locale) : "—") + "%",
     type: "Essential-only rate",
     fromDate: fromDate,
     toDate: toDate
@@ -39112,8 +39194,8 @@ function Dashboard(props) {
       content: "Visitors detected from EU-based IP locations."
     },
     styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString("de-DE") : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString("de-DE") : null,
+    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString(locale) : "—",
+    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString(locale) : null,
     type: "EU-based users",
     fromDate: fromDate,
     toDate: toDate
@@ -39124,8 +39206,8 @@ function Dashboard(props) {
       content: "Visitors detected from non-EU-based IP locations."
     },
     styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString("de-DE") : null,
+    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString(locale) : "—",
+    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString(locale) : null,
     type: "Non-EU-based users",
     fromDate: fromDate,
     toDate: toDate
@@ -39136,7 +39218,7 @@ function Dashboard(props) {
       content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks."
     },
     styleType: "small",
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE"),
+    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString(locale) == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString(locale),
     type: "Detected (pre-consent)",
     fromDate: fromDate,
     toDate: toDate
@@ -39147,7 +39229,7 @@ function Dashboard(props) {
       title: "Detected (post-consent) cookies",
       content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement."
     },
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE"),
+    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString(locale) == 0 ? "N/A" : observedCookies.consent.count.toLocaleString(locale),
     type: "Detected (post-consent)",
     fromDate: fromDate,
     toDate: toDate
@@ -39159,14 +39241,14 @@ function Dashboard(props) {
     onChange: function onChange(e) {
       setTimeToDecision(e);
     }
-  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("div", {
+  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString(locale)), /*#__PURE__*/React.createElement("div", {
     className: "grid-container topWidget grid-7",
     style: {
       marginTop: "20px"
     }
   }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+    totalNumber: timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
     explainer: {
       exist: true,
       title: "Median time to decision",
@@ -39176,18 +39258,18 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
+      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+    totalNumber: timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
     explainer: {
       exist: true,
       title: "90th percentile time to decision",
@@ -39197,18 +39279,18 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
+      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+    totalNumber: timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
     explainer: {
       exist: true,
       title: "Average time to decision",
@@ -39218,18 +39300,18 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
+      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
     explainer: {
       exist: true,
       title: "Percentage of users who took more than 10 seconds to decide",
@@ -39239,16 +39321,16 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale),
       "deviceType": timeToDecisionSlice.deviceType
     }
   }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
     explainer: {
       exist: true,
       title: "Percentage of users who took less than 1 second to decide",
@@ -39258,11 +39340,11 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale),
       "deviceType": timeToDecisionSlice.deviceType
     }
   }))) : /*#__PURE__*/React.createElement("p", {
@@ -39379,6 +39461,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
 /* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
 /* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
+/* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -39410,6 +39493,7 @@ var _React = React,
 
 var useParams = window.ReactRouterDOM.useParams;
 var punycode = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+
 
 function DomainDashbord(props) {
   var _localStorage, _activeData$date, _activeData$date2, _activeData$activeUse, _activeData$changeRat, _activeData$relativeD, _activeData$changeRat2, _activeData$relativeD2, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da;
@@ -39558,7 +39642,7 @@ function DomainDashbord(props) {
   }, /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
     totalNumber: activeData,
-    activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString("de-DE"),
+    activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString(locale),
     type: "Stored consent decisions",
     fromDate: fromDate,
     toDate: toDate
@@ -39571,7 +39655,7 @@ function DomainDashbord(props) {
     relativeDrop: {
       relativeDrop: activeData === null || activeData === void 0 || (_activeData$relativeD = activeData.relativeDrop) === null || _activeData$relativeD === void 0 ? void 0 : _activeData$relativeD.accepted
     },
-    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%",
+    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? activeData.Accepted.toLocaleString(locale) : "—") + "%",
     type: "Consent acceptance",
     fromDate: fromDate,
     toDate: toDate
@@ -39589,7 +39673,7 @@ function DomainDashbord(props) {
       content: "Share of users who declined analytics and marketing cookies, allowing only required cookies.."
     },
     styleType: "small",
-    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%",
+    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString(locale) : "—") + "%",
     type: "Essential-only rate",
     fromDate: fromDate,
     toDate: toDate
@@ -39600,8 +39684,8 @@ function DomainDashbord(props) {
       content: "Visitors detected from EU-based IP locations."
     },
     styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString("de-DE") : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString("de-DE") : null,
+    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString(locale) : "—",
+    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString(locale) : null,
     type: "EU-based users",
     fromDate: fromDate,
     toDate: toDate
@@ -39612,8 +39696,8 @@ function DomainDashbord(props) {
       content: "Visitors detected from non-EU-based IP locations."
     },
     styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString("de-DE") : null,
+    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString(locale) : "—",
+    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString(locale) : null,
     type: "Non-EU-based users",
     fromDate: fromDate,
     toDate: toDate
@@ -39624,7 +39708,7 @@ function DomainDashbord(props) {
       content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks."
     },
     styleType: "small",
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE"),
+    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString(locale) == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString(locale),
     type: "Detected (pre-consent)",
     fromDate: fromDate,
     toDate: toDate
@@ -39635,7 +39719,7 @@ function DomainDashbord(props) {
       title: "Detected (post-consent) cookies",
       content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement."
     },
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE"),
+    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString(locale) == 0 ? "N/A" : observedCookies.consent.count.toLocaleString(locale),
     type: "Detected (post-consent)",
     fromDate: fromDate,
     toDate: toDate
@@ -39647,14 +39731,14 @@ function DomainDashbord(props) {
     onChange: function onChange(e) {
       setTimeToDecision(e);
     }
-  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("div", {
+  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString(locale)), /*#__PURE__*/React.createElement("div", {
     className: "grid-container grid-7",
     style: {
       marginTop: "20px"
     }
   }, /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+    totalNumber: timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
     explainer: {
       exist: true,
       title: "Median time to decision",
@@ -39664,18 +39748,18 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
+      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+    totalNumber: timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
     explainer: {
       exist: true,
       title: "90th percentile time to decision",
@@ -39685,18 +39769,18 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
+      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+    totalNumber: timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
     explainer: {
       exist: true,
       title: "Average time to decision",
@@ -39706,18 +39790,18 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
+      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
     explainer: {
       exist: true,
       title: "Percentage of users who took more than 10 seconds to decide",
@@ -39727,16 +39811,16 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale),
       "deviceType": timeToDecisionSlice.deviceType
     }
   }), /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
     explainer: {
       exist: true,
       title: "Percentage of users who took less than 1 second to decide",
@@ -39746,11 +39830,11 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+      "count": timeToDecisionSlice.count.toLocaleString(locale),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale),
       "deviceType": timeToDecisionSlice.deviceType
     }
   }))) : /*#__PURE__*/React.createElement("p", {
@@ -42585,13 +42669,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
 /* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
 /* harmony import */ var _Components_SuccessWindow__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Components/SuccessWindow */ "./src/Components/SuccessWindow/index.js");
-/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/userLocale */ "./src/Functions/userLocale.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -42616,16 +42708,29 @@ var RANGE_ITEMS = [{
   id: 30,
   name: "30 days"
 }];
+var LOCALE_ITEMS = [{
+  id: "de-DE",
+  name: "German (Germany)"
+}, {
+  id: "da-DK",
+  name: "Danish (Denmark)"
+}, {
+  id: "en-GB",
+  name: "English (UK)"
+}, {
+  id: "en-US",
+  name: "English (US)"
+}, {
+  id: "fr-FR",
+  name: "French (France)"
+}, {
+  id: "sv-SE",
+  name: "Swedish (Sweden)"
+}];
 function UserPreferences() {
   var _useState = useState(function () {
-      try {
-        var _JSON$parse$dateRange;
-        var s = localStorage.getItem("settings");
-        if (s) return (_JSON$parse$dateRange = JSON.parse(s).dateRange) !== null && _JSON$parse$dateRange !== void 0 ? _JSON$parse$dateRange : 30;
-      } catch (_unused) {
-        /* ignore */
-      }
-      return 30;
+      var s = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.readUserSettings)();
+      return typeof s.dateRange === "number" ? s.dateRange : 30;
     }),
     _useState2 = _slicedToArray(_useState, 2),
     dateRange = _useState2[0],
@@ -42639,10 +42744,26 @@ function UserPreferences() {
     _useState4 = _slicedToArray(_useState3, 2),
     defaultRange = _useState4[0],
     setDefaultRange = _useState4[1];
-  var _useState5 = useState(false),
+  var _useState5 = useState(function () {
+      return (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.getUserLocale)();
+    }),
     _useState6 = _slicedToArray(_useState5, 2),
-    success = _useState6[0],
-    setSuccess = _useState6[1];
+    locale = _useState6[0],
+    setLocale = _useState6[1];
+  var _useState7 = useState(function () {
+      var loc = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.getUserLocale)();
+      var row = LOCALE_ITEMS.find(function (x) {
+        return x.id === loc;
+      });
+      return row ? row.name : loc;
+    }),
+    _useState8 = _slicedToArray(_useState7, 2),
+    localeLabel = _useState8[0],
+    setLocaleLabel = _useState8[1];
+  var _useState9 = useState(false),
+    _useState0 = _slicedToArray(_useState9, 2),
+    success = _useState0[0],
+    setSuccess = _useState0[1];
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_1__["default"], {
     links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
     title: "Settings"
@@ -42656,7 +42777,7 @@ function UserPreferences() {
     className: "dashboard-content settings-subpage"
   }, /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__intro"
-  }, "Default date range is used on dashboards and reports that support relative ranges."), /*#__PURE__*/React.createElement("div", {
+  }, "Default date range and regional formatting apply to the home and domain dashboards (numbers, dates in widgets, charts, and the date filter)."), /*#__PURE__*/React.createElement("div", {
     className: "settings-subpage__panel"
   }, /*#__PURE__*/React.createElement("div", {
     className: "settings-subpage__field-row"
@@ -42675,32 +42796,54 @@ function UserPreferences() {
     },
     items: RANGE_ITEMS,
     align: "left"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__field-row"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "settings-locale"
+  }, "Date & number format"), /*#__PURE__*/React.createElement(_Components_SelectInput_Selector__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    name: "userLocale",
+    defaultValue: JSON.stringify({
+      id: locale,
+      name: localeLabel
+    }),
+    onChange: function onChange(e) {
+      var parsed = JSON.parse(e);
+      setLocale(parsed.id);
+      setLocaleLabel(parsed.name);
+    },
+    items: LOCALE_ITEMS,
+    align: "left"
   })), /*#__PURE__*/React.createElement(_Components_Button_Button__WEBPACK_IMPORTED_MODULE_4__["default"], {
     style: {
       marginTop: 12
     },
     onClick: function onClick() {
+      var prev = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.readUserSettings)();
+      var next = _objectSpread(_objectSpread({}, prev), {}, {
+        dateRange: dateRange,
+        locale: locale
+      });
       fetch(_API_api__WEBPACK_IMPORTED_MODULE_6__["default"].settings.user.update.url, {
         method: _API_api__WEBPACK_IMPORTED_MODULE_6__["default"].settings.user.update.method,
         headers: _API_api__WEBPACK_IMPORTED_MODULE_6__["default"].settings.user.headers,
         body: JSON.stringify({
           setting: {
-            dateRange: dateRange
+            dateRange: dateRange,
+            locale: locale
           },
           userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getUserId()
         })
       }).then(function (res) {
         return res.json();
       }).then(function () {
+        localStorage.setItem("settings", JSON.stringify(next));
+        (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.dispatchUserSettingsChanged)();
         setSuccess(true);
-        localStorage.setItem("settings", JSON.stringify({
-          dateRange: dateRange
-        }));
       });
     },
     text: "Save"
   })))), success ? /*#__PURE__*/React.createElement(_Components_SuccessWindow__WEBPACK_IMPORTED_MODULE_7__["default"], {
-    message: "Settings updated successfully. Default range: ".concat(defaultRange, ".")
+    message: "Settings saved. Range: ".concat(defaultRange, ". Format: ").concat(localeLabel, ".")
   }) : null);
 }
 
@@ -44075,7 +44218,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Functions_isJson_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Functions/isJson.js */ "./src/Functions/isJson.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
 /* harmony import */ var _LiveView_liveInteractionTimestamp_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../LiveView/liveInteractionTimestamp.js */ "./src/components/LiveView/liveInteractionTimestamp.js");
-/* harmony import */ var _AuditSnapshotCard_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AuditSnapshotCard.css */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.css");
+/* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
+/* harmony import */ var _AuditSnapshotCard_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./AuditSnapshotCard.css */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.css");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -44096,6 +44240,7 @@ var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
   useMemo = _React.useMemo;
+
 
 
 
@@ -44157,11 +44302,11 @@ function shortenFramework(reg) {
   if (!reg || String(reg).trim() === "") return "—";
   return String(reg).length > 14 ? "".concat(String(reg).slice(0, 12), "\u2026") : String(reg);
 }
-function formatAuditRowClock(ts) {
+function formatAuditRowClock(ts, locale) {
   if (ts == null || ts === "") return "—";
   var d = new Date(ts);
   if (!Number.isFinite(d.getTime())) return "—";
-  return d.toLocaleTimeString("de-DE", {
+  return d.toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -44256,6 +44401,7 @@ function deriveSystemHealth(_ref) {
  */
 function AuditSnapshotCard(props) {
   var _auditSnapshotMeta$la;
+  var locale = (0,_Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_4__.useUserLocale)();
   var platformId = props.platformId,
     handle = props.handle,
     currentDomain = props.currentDomain,
@@ -44475,7 +44621,7 @@ function AuditSnapshotCard(props) {
         country: String((_r$country_code = r === null || r === void 0 ? void 0 : r.country_code) !== null && _r$country_code !== void 0 ? _r$country_code : "—").toUpperCase(),
         framework: shortenFramework(r === null || r === void 0 ? void 0 : r.regulation_applied),
         summary: auditRowChoiceSummary(r),
-        time: formatAuditRowClock(r === null || r === void 0 ? void 0 : r.consents_timestamp)
+        time: formatAuditRowClock(r === null || r === void 0 ? void 0 : r.consents_timestamp, locale)
       };
     });
     var isDemoFeed = displayRows.length === 0 && demoMode;
@@ -44514,7 +44660,7 @@ function AuditSnapshotCard(props) {
       isDemoFeed: isDemoFeed,
       showLastLoading: showLastLoading
     };
-  }, [auditPreview, activeData, demoMode, liveData, auditPreviewLoading]);
+  }, [auditPreview, activeData, demoMode, liveData, auditPreviewLoading, locale]);
   if (!platformId) return null;
   var lastRecordedTitle = function () {
     var s = auditSnapshotMeta.lastConsentSuffix;
@@ -44600,9 +44746,9 @@ function AuditSnapshotCard(props) {
     className: "audit-snapshot-card__stats"
   }, activeData.Total != null ? /*#__PURE__*/React.createElement("div", {
     className: "audit-snapshot-card__stat"
-  }, /*#__PURE__*/React.createElement("dt", null, "Interactions (this period)"), /*#__PURE__*/React.createElement("dd", null, Number(activeData.Total).toLocaleString("de-DE"))) : null, activeData.Accepted != null ? /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("dt", null, "Interactions (this period)"), /*#__PURE__*/React.createElement("dd", null, Number(activeData.Total).toLocaleString(locale))) : null, activeData.Accepted != null ? /*#__PURE__*/React.createElement("div", {
     className: "audit-snapshot-card__stat"
-  }, /*#__PURE__*/React.createElement("dt", null, "Acceptance rate"), /*#__PURE__*/React.createElement("dd", null, Number(activeData.Accepted).toLocaleString("de-DE"), "%")) : null) : /*#__PURE__*/React.createElement("p", {
+  }, /*#__PURE__*/React.createElement("dt", null, "Acceptance rate"), /*#__PURE__*/React.createElement("dd", null, Number(activeData.Accepted).toLocaleString(locale), "%")) : null) : /*#__PURE__*/React.createElement("p", {
     className: "audit-snapshot-card__hint"
   }, "Metrics load as soon as the dashboard finishes loading."), /*#__PURE__*/React.createElement("div", {
     className: "audit-snapshot-card__cta-wrap"

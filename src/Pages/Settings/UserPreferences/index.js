@@ -6,6 +6,11 @@ import Button from "../../../Components/Button/Button";
 import Authentication from "../../../Authentication/Auth";
 import API from "../../../API/api";
 import SuccessWindow from "../../../Components/SuccessWindow";
+import {
+    readUserSettings,
+    getUserLocale,
+    dispatchUserSettingsChanged,
+} from "../../../Functions/userLocale";
 import "../Style.css";
 
 const { useState } = React;
@@ -17,19 +22,29 @@ const RANGE_ITEMS = [
     { id: 30, name: "30 days" },
 ];
 
+const LOCALE_ITEMS = [
+    { id: "de-DE", name: "German (Germany)" },
+    { id: "da-DK", name: "Danish (Denmark)" },
+    { id: "en-GB", name: "English (UK)" },
+    { id: "en-US", name: "English (US)" },
+    { id: "fr-FR", name: "French (France)" },
+    { id: "sv-SE", name: "Swedish (Sweden)" },
+];
+
 export default function UserPreferences() {
     const [dateRange, setDateRange] = useState(() => {
-        try {
-            const s = localStorage.getItem("settings");
-            if (s) return JSON.parse(s).dateRange ?? 30;
-        } catch {
-            /* ignore */
-        }
-        return 30;
+        const s = readUserSettings();
+        return typeof s.dateRange === "number" ? s.dateRange : 30;
     });
     const [defaultRange, setDefaultRange] = useState(() => {
         const row = RANGE_ITEMS.find((r) => r.id === dateRange);
         return row ? row.name : "30 days";
+    });
+    const [locale, setLocale] = useState(() => getUserLocale());
+    const [localeLabel, setLocaleLabel] = useState(() => {
+        const loc = getUserLocale();
+        const row = LOCALE_ITEMS.find((x) => x.id === loc);
+        return row ? row.name : loc;
     });
     const [success, setSuccess] = useState(false);
 
@@ -40,7 +55,8 @@ export default function UserPreferences() {
                 <StickyPageTitle title="My preferences" />
                 <div className="dashboard-content settings-subpage">
                     <p className="settings-subpage__intro">
-                        Default date range is used on dashboards and reports that support relative ranges.
+                        Default date range and regional formatting apply to the home and domain dashboards
+                        (numbers, dates in widgets, charts, and the date filter).
                     </p>
                     <div className="settings-subpage__panel">
                         <div className="settings-subpage__field-row">
@@ -60,21 +76,41 @@ export default function UserPreferences() {
                                 align="left"
                             />
                         </div>
+                        <div className="settings-subpage__field-row">
+                            <label htmlFor="settings-locale">Date &amp; number format</label>
+                            <Select
+                                name="userLocale"
+                                defaultValue={JSON.stringify({
+                                    id: locale,
+                                    name: localeLabel,
+                                })}
+                                onChange={(e) => {
+                                    const parsed = JSON.parse(e);
+                                    setLocale(parsed.id);
+                                    setLocaleLabel(parsed.name);
+                                }}
+                                items={LOCALE_ITEMS}
+                                align="left"
+                            />
+                        </div>
                         <Button
                             style={{ marginTop: 12 }}
                             onClick={() => {
+                                const prev = readUserSettings();
+                                const next = { ...prev, dateRange, locale };
                                 fetch(API.settings.user.update.url, {
                                     method: API.settings.user.update.method,
                                     headers: API.settings.user.headers,
                                     body: JSON.stringify({
-                                        setting: { dateRange },
+                                        setting: { dateRange, locale },
                                         userId: Authentication.getUserId(),
                                     }),
                                 })
                                     .then((res) => res.json())
                                     .then(() => {
+                                        localStorage.setItem("settings", JSON.stringify(next));
+                                        dispatchUserSettingsChanged();
                                         setSuccess(true);
-                                        localStorage.setItem("settings", JSON.stringify({ dateRange }));
                                     });
                             }}
                             text="Save"
@@ -84,7 +120,7 @@ export default function UserPreferences() {
             </article>
             {success ? (
                 <SuccessWindow
-                    message={`Settings updated successfully. Default range: ${defaultRange}.`}
+                    message={`Settings saved. Range: ${defaultRange}. Format: ${localeLabel}.`}
                 />
             ) : null}
         </>

@@ -2,6 +2,7 @@ import "./Styles/Filter.css";
 const { useState, useEffect, useRef, useContext } = React;
 /* import { ToggleButton } from "~/components"; */
 import Calendar from "./Calendar.js";
+import { useUserLocale } from "../../Functions/userLocale.js";
 export default function Filter({
     className,
     numberOfDays,
@@ -12,6 +13,7 @@ export default function Filter({
     setToDate,         // ← new
     demoMode
 }) {
+    const locale = useUserLocale();
     const compareRangeCheck = compareRange === 0 ? false : true;
 
     const [calendar, setCalendar] = useState(false);
@@ -55,13 +57,13 @@ export default function Filter({
                     {demoMode && <p className="text-sm text-right">Demo Mode Active</p>}
                     {!demoMode &&
                     <p className="text-sm text-right">{
-                        new Intl.DateTimeFormat("da-DK", {
+                        new Intl.DateTimeFormat(locale, {
                             dateStyle: "short",
                         }).format(
                             new Date(startXDays)
                         )
                     } - {
-                            new Intl.DateTimeFormat("da-DK", {
+                            new Intl.DateTimeFormat(locale, {
                                 dateStyle: "short",
                             }).format(
                                 new Date(endXDays)
@@ -72,13 +74,13 @@ export default function Filter({
                     {compareRangeCheck ? (
                         <p className="text-sm text-right"><span className="mx-2">compare</span>
                             {
-                                new Intl.DateTimeFormat("da-DK", {
+                                new Intl.DateTimeFormat(locale, {
                                     dateStyle: "short",
                                 }).format(
                                     new Date(previousPeriod2)
                                 )
                             } - {
-                                new Intl.DateTimeFormat("da-DK", {
+                                new Intl.DateTimeFormat(locale, {
                                     dateStyle: "short",
                                 }).format(
                                     new Date(previousPeriod)

@@ -7,6 +7,7 @@ import {
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
 import { getApproxLastInteractionIsoFromLiveData } from "../LiveView/liveInteractionTimestamp.js";
+import { useUserLocale } from "../../Functions/userLocale.js";
 import "./AuditSnapshotCard.css";
 
 const Link = window.ReactRouterDOM.Link;
@@ -64,11 +65,11 @@ function shortenFramework(reg) {
     return String(reg).length > 14 ? `${String(reg).slice(0, 12)}…` : String(reg);
 }
 
-function formatAuditRowClock(ts) {
+function formatAuditRowClock(ts, locale) {
     if (ts == null || ts === "") return "—";
     const d = new Date(ts);
     if (!Number.isFinite(d.getTime())) return "—";
-    return d.toLocaleTimeString("de-DE", {
+    return d.toLocaleTimeString(locale, {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
@@ -169,6 +170,7 @@ function deriveSystemHealth({
  * @param {boolean} [props.interactionsLoading] — dashboard getInteractions in flight
  */
 export default function AuditSnapshotCard(props) {
+    const locale = useUserLocale();
     const {
         platformId,
         handle,
@@ -340,7 +342,7 @@ export default function AuditSnapshotCard(props) {
             country: String(r?.country_code ?? "—").toUpperCase(),
             framework: shortenFramework(r?.regulation_applied),
             summary: auditRowChoiceSummary(r),
-            time: formatAuditRowClock(r?.consents_timestamp),
+            time: formatAuditRowClock(r?.consents_timestamp, locale),
         }));
         const isDemoFeed = displayRows.length === 0 && demoMode;
         if (isDemoFeed) {
@@ -366,7 +368,7 @@ export default function AuditSnapshotCard(props) {
             isDemoFeed,
             showLastLoading,
         };
-    }, [auditPreview, activeData, demoMode, liveData, auditPreviewLoading]);
+    }, [auditPreview, activeData, demoMode, liveData, auditPreviewLoading, locale]);
 
     if (!platformId) return null;
 
@@ -467,13 +469,13 @@ export default function AuditSnapshotCard(props) {
                             {activeData.Total != null ? (
                                 <div className="audit-snapshot-card__stat">
                                     <dt>Interactions (this period)</dt>
-                                    <dd>{Number(activeData.Total).toLocaleString("de-DE")}</dd>
+                                    <dd>{Number(activeData.Total).toLocaleString(locale)}</dd>
                                 </div>
                             ) : null}
                             {activeData.Accepted != null ? (
                                 <div className="audit-snapshot-card__stat">
                                     <dt>Acceptance rate</dt>
-                                    <dd>{Number(activeData.Accepted).toLocaleString("de-DE")}%</dd>
+                                    <dd>{Number(activeData.Accepted).toLocaleString(locale)}%</dd>
                                 </div>
                             ) : null}
                         </dl>

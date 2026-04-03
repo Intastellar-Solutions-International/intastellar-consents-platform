@@ -1,26 +1,38 @@
-const { useState, useEffect, useRef, useContext } = React;
+const { useEffect, useMemo } = React;
 import "./Style.css";
+import { useUserLocale } from "../../../Functions/userLocale";
 
 export default function Line({ data, data2, title, fromDate, toDate }) {
-    const dailyData = data?.map((d, i) => {
-        return {
-            "name": (fromDate === toDate) ? new Intl.DateTimeFormat('de-DE', {
-                hour: 'numeric',
-                minute: 'numeric',
-            }).format(new Date(d.date)) : new Intl.DateTimeFormat('de-DE').format(new Date(d.date)),
-            "domain": d.num
-        }
-    })
+    const locale = useUserLocale();
+    const dailyData = useMemo(
+        () =>
+            data?.map((d) => ({
+                name:
+                    fromDate === toDate
+                        ? new Intl.DateTimeFormat(locale, {
+                              hour: "numeric",
+                              minute: "numeric",
+                          }).format(new Date(d.date))
+                        : new Intl.DateTimeFormat(locale).format(new Date(d.date)),
+                domain: d.num,
+            })),
+        [data, fromDate, toDate, locale]
+    );
 
-    const dailyData2 = data2?.map((d, i) => {
-        return {
-            "name": (fromDate === toDate) ? new Intl.DateTimeFormat('de-DE', {
-                hour: 'numeric',
-                minute: 'numeric',
-            }).format(new Date(d.previousPeriod.date)) : new Intl.DateTimeFormat('de-DE').format(new Date(d.previousPeriod.date)),
-            "domain": d.previousPeriod.num
-        }
-    })
+    const dailyData2 = useMemo(
+        () =>
+            data2?.map((d) => ({
+                name:
+                    fromDate === toDate
+                        ? new Intl.DateTimeFormat(locale, {
+                              hour: "numeric",
+                              minute: "numeric",
+                          }).format(new Date(d.previousPeriod.date))
+                        : new Intl.DateTimeFormat(locale).format(new Date(d.previousPeriod.date)),
+                domain: d.previousPeriod.num,
+            })),
+        [data2, fromDate, toDate, locale]
+    );
 
     useEffect(() => {
 
@@ -32,7 +44,7 @@ export default function Line({ data, data2, title, fromDate, toDate }) {
                 document.getElementById("line-chart").innerHTML = "";
             }
 
-            let dataSet2 = anychart.data.set(dailyData2);
+            let dataSet2 = anychart.data.set(dailyData2 ?? []);
 
             let chart = anychart.line();
 
@@ -60,7 +72,7 @@ export default function Line({ data, data2, title, fromDate, toDate }) {
                 chart.draw();
             }
         });
-    }, [dailyData, dailyData2]);
+    }, [dailyData, dailyData2, data, locale]);
 
     return (
         <div className={"no-padding"}>
