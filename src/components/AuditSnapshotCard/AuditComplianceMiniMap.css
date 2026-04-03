@@ -41,8 +41,8 @@
 
 .audit-compliance-map__map-shell {
     width: 100%;
-    aspect-ratio: 4 / 1;
-    max-height: 140px;
+    aspect-ratio: 1 / 1;
+    max-height: 240px;
 }
 
 .audit-compliance-map__map-shell .audit-compliance-world-map {

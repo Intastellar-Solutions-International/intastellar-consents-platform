@@ -2,14 +2,14 @@
 
 export const WORLD_TOPO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
-export const WORLD_VIEWBOX = { w: 2000, h: 500 };
+export const WORLD_VIEWBOX = { w: 2000, h: 700 };
 
 export function projectMercator(lon, lat) {
     const x = ((lon + 180) / 360) * 1000;
     const latRad = Math.max(-85, Math.min(85, lat)) * (Math.PI / 180);
     const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
-    const y = ((1 - mercN / Math.PI) / 2) * 520;
-    return [x, Math.max(0, Math.min(500, y))];
+    const y = ((1 - mercN / Math.PI) / 2) * 700;
+    return [x, Math.max(0, Math.min(700, y))];
 }
 
 function fixAntimeridian(coords) {

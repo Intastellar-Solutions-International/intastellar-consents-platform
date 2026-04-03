@@ -172,7 +172,7 @@ export default function AuditComplianceWorldMap({ regionStatus }) {
     }, [statusKey]);
 
     const { w, h } = WORLD_VIEWBOX;
-
+    
     return (
         <svg
             ref={svgRef}
