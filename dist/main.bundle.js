@@ -18692,7 +18692,8 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.user_content, .services-overview-container {
+___CSS_LOADER_EXPORT___.push([module.id, `/* Legacy panel (unused in app; kept for compatibility) */
+.services-overview-container {
     width: 345px;
     height: auto;
     max-height: 600px;
@@ -18703,18 +18704,273 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.user_content, .services-overview-cont
     top: 60px;
     right: 20px;
     box-sizing: border-box;
-    background: rgba(255,255,255,0.8);
-    /* box-shadow: 0 0 3px rgba(0,0,0,.14), 0 1px 3px rgba(0,0,0,.28); */
-    box-shadow: 0 0 3px 0 rgba(0,0,0,.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    -moz-backdrop-filter: blur(10px);
 }
 
-.dropdown-image-name {
-    height: auto;
-    padding: 25px 15px 10px;
+/* Account dropdown — aligned with dashboard dark UI + login gold accents */
+.ia-menu.user_content {
+    width: min(calc(100vw - 32px), 320px);
+    max-height: min(90vh, 640px);
+    overflow: hidden;
+    border-radius: 14px;
+    float: right;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 24px 56px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+}
+
+.ia-menu__accent {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38%;
+    max-width: 120px;
+    height: 3px;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);
+    pointer-events: none;
+}
+
+.ia-menu__body {
+    padding: 22px 18px 12px;
+    max-height: calc(min(90vh, 640px) - 76px);
+    overflow-y: auto;
     text-align: center;
+}
+
+.ia-menu__brand {
+    margin-bottom: 14px;
+}
+
+.ia-menu__brand-logo {
+    display: block;
+    width: min(160px, 72%);
+    height: auto;
+    margin: 0 auto;
+    opacity: 0.92;
+    filter: brightness(0) invert(1);
+}
+
+.ia-menu__avatar-wrap {
+    position: relative;
+    width: max-content;
+    margin: 0 auto 16px;
+}
+
+.ia-menu__avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 3px solid rgba(192, 159, 83, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.ia-menu__identity {
+    color: #e8e8e8;
+}
+
+.ia-menu__greeting {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #f0f0f0;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ia-menu__email {
+    margin: 0 0 14px;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: #9aa0a6;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ia-menu__manage {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.25);
+    color: #d8d8d8 !important;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: left;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.ia-menu__manage:hover {
+    border-color: rgba(192, 159, 83, 0.45);
+    background: rgba(192, 159, 83, 0.1);
+    color: #f4f4f4 !important;
+}
+
+.ia-menu__manage-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.ia-menu__separator {
+    height: 1px;
+    margin: 18px 0 14px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1) 15%,
+        rgba(255, 255, 255, 0.1) 85%,
+        transparent
+    );
+}
+
+.ia-menu__demo {
+    padding: 0 4px 4px;
+    text-align: left;
+}
+
+.ia-menu__demo-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ia-menu__demo-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #e2e2e2;
+}
+
+.ia-menu__demo-hint {
+    margin: 8px 0 0;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: #7a8088;
+}
+
+.ia-menu__switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.ia-menu__switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ia-menu__switch-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.12);
+    transition: background 0.25s ease;
+    border-radius: 34px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ia-menu__switch-slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 2px;
+    background: #f0f0f0;
+    transition: transform 0.25s ease;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.ia-menu__switch input:checked + .ia-menu__switch-slider {
+    background: rgba(192, 159, 83, 0.35);
+    border-color: rgba(192, 159, 83, 0.5);
+}
+
+.ia-menu__switch input:checked + .ia-menu__switch-slider::before {
+    transform: translateX(20px);
+    background: #e8d5a8;
+}
+
+.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {
+    outline: 2px solid rgba(192, 159, 83, 0.7);
+    outline-offset: 2px;
+}
+
+.ia-menu__footer {
+    padding: 14px 16px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.ia-menu__sign-out {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: #c9cdd3;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.ia-menu__sign-out:hover {
+    border-color: rgba(220, 100, 100, 0.45);
+    background: rgba(220, 80, 80, 0.12);
+    color: #f0c4c4;
+}
+
+.ia-menu__sign-out-icon {
+    flex-shrink: 0;
+    opacity: 0.9;
 }
 
 .dropdown-links {
@@ -18728,7 +18984,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.user_content, .services-overview-cont
     font-size: 15px;
     padding: 15px;
     display: block;
-	text-decoration: none;
+    text-decoration: none;
 }
 
 .dropdown-links a:hover {
@@ -18737,180 +18993,13 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.user_content, .services-overview-cont
     color: #000;
 }
 
-.dpde {
-    color: #5f6368;
-    font: 400 14px/19px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
-    letter-spacing: normal;
-    text-align: center;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.dropdown-image-name {
-    text-align: center;
-}
-
-.content-img {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: auto;
-    box-shadow: 0 0 9px rgba(0, 0, 0, 0.14), 0 2px 1px rgba(0, 0, 0, 0.28);
-    border: 5px solid #fff;
-}
-
-.dropdown-name {
-    width: 100%;
-    color: #000;
-}
-
-.dpdn {
-    color: #202124;
-    font: 500 16px/22px Google Sans,Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
-    letter-spacing: .29px;
-    margin: 0;
-    text-align: center;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.dpde {
-    color: #5f6368;
-    font: 400 14px/19px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
-    letter-spacing: normal;
-    text-align: center;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.acc {
-    background-color: transparent;
-    padding: 0;
-    border: none;
-    max-width: fit-content;
-}
-
-.logo-icon {
-    width: 44px;
-    aspect-ratio: 1/1;
-    padding: 5px;
-}
-
-.sign_out_btn_container {
-    padding: 20px 30px;
-    border-top: 1px solid #c4c4c4;
-}
-
-.acc, .sign_out_btn {
-    background-color: #ffffff;
-    border: 1px solid #dadce0;
-    -moz-border-radius: 100px;
-    border-radius: 100px;
-    color: #3c4043;
-    display: inline-block;
-    font: 500 13px/16px Google Sans,Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
-    letter-spacing: .25px;
-    margin: 16px 0 0;
-    max-width: 260px;
-    outline: 0;
-    padding: 8px 9px;
-    text-align: center;
-    text-decoration: none;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.sign_out_btn {
-    border-radius: 4px !important;
-    margin: auto;
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.acc a, .sign_out_btn {
-    color: #3c4043 !important;
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.ziuVxb{
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
-}
-
-svg.uarSJe.NMm5M {
-    width: 24px;
-    height: 24px;
-}
-
-.dpde .intastellaraccounts-logo {
-    width: 60%;
-    margin: 0;
-}
-
-.switch{
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    margin-left: 10px;
-}
-
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked + .slider {
-    background-color: rgb(222, 189, 113);
-}
-
-input:checked + .slider:before {
-    -webkit-transform: translateX(20px);
-    -ms-transform: translateX(20px);
-    transform: translateX(20px);
-}
-
-
 @media screen and (min-width: 320px) and (max-width: 900px) {
-    .user_content,
-        .services-overview-container{
-            top: 100px;
-        }
-    
-}`, "",{"version":3,"sources":["webpack://./src/Components/IntastellarAccounts/Style.css"],"names":[],"mappings":"AAAA;IACI,YAAY;IACZ,YAAY;IACZ,iBAAiB;IACjB,gBAAgB;IAChB,mBAAmB;IACnB,YAAY;IACZ,kBAAkB;IAClB,SAAS;IACT,WAAW;IACX,sBAAsB;IACtB,iCAAiC;IACjC,oEAAoE;IACpE,kFAAkF;IAClF,mCAAmC;IACnC,2BAA2B;IAC3B,gCAAgC;AACpC;;AAEA;IACI,YAAY;IACZ,uBAAuB;IACvB,kBAAkB;AACtB;;AAEA;IACI,iBAAiB;IACjB,YAAY;IACZ,gBAAgB;AACpB;;AAEA;IACI,WAAW;IACX,eAAe;IACf,aAAa;IACb,cAAc;CACjB,qBAAqB;AACtB;;AAEA;IACI,mBAAmB;IACnB,qBAAqB;IACrB,WAAW;AACf;;AAEA;IACI,cAAc;IACd,iEAAiE;IACjE,sBAAsB;IACtB,kBAAkB;IAClB,uBAAuB;IACvB,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,YAAY;IACZ,aAAa;IACb,kBAAkB;IAClB,iBAAiB;IACjB,YAAY;IACZ,sEAAsE;IACtE,sBAAsB;AAC1B;;AAEA;IACI,WAAW;IACX,WAAW;AACf;;AAEA;IACI,cAAc;IACd,6EAA6E;IAC7E,qBAAqB;IACrB,SAAS;IACT,kBAAkB;IAClB,uBAAuB;IACvB,gBAAgB;AACpB;;AAEA;IACI,cAAc;IACd,iEAAiE;IACjE,sBAAsB;IACtB,kBAAkB;IAClB,uBAAuB;IACvB,gBAAgB;AACpB;;AAEA;IACI,6BAA6B;IAC7B,UAAU;IACV,YAAY;IACZ,sBAAsB;AAC1B;;AAEA;IACI,WAAW;IACX,iBAAiB;IACjB,YAAY;AAChB;;AAEA;IACI,kBAAkB;IAClB,6BAA6B;AACjC;;AAEA;IACI,yBAAyB;IACzB,yBAAyB;IACzB,yBAAyB;IACzB,oBAAoB;IACpB,cAAc;IACd,qBAAqB;IACrB,6EAA6E;IAC7E,qBAAqB;IACrB,gBAAgB;IAChB,gBAAgB;IAChB,UAAU;IACV,gBAAgB;IAChB,kBAAkB;IAClB,qBAAqB;IACrB,uBAAuB;IACvB,gBAAgB;AACpB;;AAEA;IACI,6BAA6B;IAC7B,YAAY;IACZ,WAAW;IACX,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,yBAAyB;IACzB,qBAAqB;IACrB,aAAa;IACb,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;IACI,kBAAkB;IAClB,YAAY;IACZ,WAAW;AACf;;AAEA;IACI,WAAW;IACX,YAAY;AAChB;;AAEA;IACI,UAAU;IACV,SAAS;AACb;;AAEA;IACI,kBAAkB;IAClB,qBAAqB;IACrB,WAAW;IACX,YAAY;IACZ,iBAAiB;AACrB;;AAEA;IACI,UAAU;IACV,QAAQ;IACR,SAAS;AACb;;AAEA;IACI,kBAAkB;IAClB,eAAe;IACf,MAAM;IACN,OAAO;IACP,QAAQ;IACR,SAAS;IACT,sBAAsB;IACtB,uBAAuB;IACvB,eAAe;IACf,mBAAmB;AACvB;;AAEA;IACI,kBAAkB;IAClB,WAAW;IACX,YAAY;IACZ,WAAW;IACX,SAAS;IACT,WAAW;IACX,uBAAuB;IACvB,uBAAuB;IACvB,eAAe;IACf,kBAAkB;AACtB;;AAEA;IACI,oCAAoC;AACxC;;AAEA;IACI,mCAAmC;IACnC,+BAA+B;IAC/B,2BAA2B;AAC/B;;;AAGA;IACI;;YAEQ,UAAU;QACd;;AAER","sourcesContent":[".user_content, .services-overview-container {\n    width: 345px;\n    height: auto;\n    max-height: 600px;\n    overflow: hidden;\n    border-radius: 10px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    background: rgba(255,255,255,0.8);\n    /* box-shadow: 0 0 3px rgba(0,0,0,.14), 0 1px 3px rgba(0,0,0,.28); */\n    box-shadow: 0 0 3px 0 rgba(0,0,0,.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);\n    -webkit-backdrop-filter: blur(10px);\n    backdrop-filter: blur(10px);\n    -moz-backdrop-filter: blur(10px);\n}\n\n.dropdown-image-name {\n    height: auto;\n    padding: 25px 15px 10px;\n    text-align: center;\n}\n\n.dropdown-links {\n    max-height: 140px;\n    height: auto;\n    overflow: scroll;\n}\n\n.dropdown-links a {\n    color: #000;\n    font-size: 15px;\n    padding: 15px;\n    display: block;\n\ttext-decoration: none;\n}\n\n.dropdown-links a:hover {\n    background: #b7b7b7;\n    text-decoration: none;\n    color: #000;\n}\n\n.dpde {\n    color: #5f6368;\n    font: 400 14px/19px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;\n    letter-spacing: normal;\n    text-align: center;\n    text-overflow: ellipsis;\n    overflow: hidden;\n}\n\n.dropdown-image-name {\n    text-align: center;\n}\n\n.content-img {\n    width: 200px;\n    height: 200px;\n    border-radius: 50%;\n    object-fit: cover;\n    margin: auto;\n    box-shadow: 0 0 9px rgba(0, 0, 0, 0.14), 0 2px 1px rgba(0, 0, 0, 0.28);\n    border: 5px solid #fff;\n}\n\n.dropdown-name {\n    width: 100%;\n    color: #000;\n}\n\n.dpdn {\n    color: #202124;\n    font: 500 16px/22px Google Sans,Roboto,RobotoDraft,Helvetica,Arial,sans-serif;\n    letter-spacing: .29px;\n    margin: 0;\n    text-align: center;\n    text-overflow: ellipsis;\n    overflow: hidden;\n}\n\n.dpde {\n    color: #5f6368;\n    font: 400 14px/19px Roboto,RobotoDraft,Helvetica,Arial,sans-serif;\n    letter-spacing: normal;\n    text-align: center;\n    text-overflow: ellipsis;\n    overflow: hidden;\n}\n\n.acc {\n    background-color: transparent;\n    padding: 0;\n    border: none;\n    max-width: fit-content;\n}\n\n.logo-icon {\n    width: 44px;\n    aspect-ratio: 1/1;\n    padding: 5px;\n}\n\n.sign_out_btn_container {\n    padding: 20px 30px;\n    border-top: 1px solid #c4c4c4;\n}\n\n.acc, .sign_out_btn {\n    background-color: #ffffff;\n    border: 1px solid #dadce0;\n    -moz-border-radius: 100px;\n    border-radius: 100px;\n    color: #3c4043;\n    display: inline-block;\n    font: 500 13px/16px Google Sans,Roboto,RobotoDraft,Helvetica,Arial,sans-serif;\n    letter-spacing: .25px;\n    margin: 16px 0 0;\n    max-width: 260px;\n    outline: 0;\n    padding: 8px 9px;\n    text-align: center;\n    text-decoration: none;\n    text-overflow: ellipsis;\n    overflow: hidden;\n}\n\n.sign_out_btn {\n    border-radius: 4px !important;\n    margin: auto;\n    width: 100%;\n    display: flex;\n    align-items: center;\n}\n\n.acc a, .sign_out_btn {\n    color: #3c4043 !important;\n    text-decoration: none;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n\n.ziuVxb{\n    position: absolute;\n    bottom: 10px;\n    right: 20px;\n}\n\nsvg.uarSJe.NMm5M {\n    width: 24px;\n    height: 24px;\n}\n\n.dpde .intastellaraccounts-logo {\n    width: 60%;\n    margin: 0;\n}\n\n.switch{\n    position: relative;\n    display: inline-block;\n    width: 40px;\n    height: 20px;\n    margin-left: 10px;\n}\n\n.switch input {\n    opacity: 0;\n    width: 0;\n    height: 0;\n}\n\n.slider {\n    position: absolute;\n    cursor: pointer;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    background-color: #ccc;\n    -webkit-transition: .4s;\n    transition: .4s;\n    border-radius: 34px;\n}\n\n.slider:before {\n    position: absolute;\n    content: \"\";\n    height: 16px;\n    width: 16px;\n    left: 2px;\n    bottom: 2px;\n    background-color: white;\n    -webkit-transition: .4s;\n    transition: .4s;\n    border-radius: 50%;\n}\n\ninput:checked + .slider {\n    background-color: rgb(222, 189, 113);\n}\n\ninput:checked + .slider:before {\n    -webkit-transform: translateX(20px);\n    -ms-transform: translateX(20px);\n    transform: translateX(20px);\n}\n\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .user_content,\n        .services-overview-container{\n            top: 100px;\n        }\n    \n}"],"sourceRoot":""}]);
+    .ia-menu.user_content,
+    .services-overview-container {
+        top: 100px;
+    }
+}
+`, "",{"version":3,"sources":["webpack://./src/Components/IntastellarAccounts/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* Legacy panel (unused in app; kept for compatibility) */\n.services-overview-container {\n    width: 345px;\n    height: auto;\n    max-height: 600px;\n    overflow: hidden;\n    border-radius: 10px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    background: rgba(255, 255, 255, 0.8);\n    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);\n    -webkit-backdrop-filter: blur(10px);\n    backdrop-filter: blur(10px);\n}\n\n/* Account dropdown — aligned with dashboard dark UI + login gold accents */\n.ia-menu.user_content {\n    width: min(calc(100vw - 32px), 320px);\n    max-height: min(90vh, 640px);\n    overflow: hidden;\n    border-radius: 14px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 56px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    -webkit-backdrop-filter: blur(18px);\n    backdrop-filter: blur(18px);\n}\n\n.ia-menu__accent {\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 38%;\n    max-width: 120px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.ia-menu__body {\n    padding: 22px 18px 12px;\n    max-height: calc(min(90vh, 640px) - 76px);\n    overflow-y: auto;\n    text-align: center;\n}\n\n.ia-menu__brand {\n    margin-bottom: 14px;\n}\n\n.ia-menu__brand-logo {\n    display: block;\n    width: min(160px, 72%);\n    height: auto;\n    margin: 0 auto;\n    opacity: 0.92;\n    filter: brightness(0) invert(1);\n}\n\n.ia-menu__avatar-wrap {\n    position: relative;\n    width: max-content;\n    margin: 0 auto 16px;\n}\n\n.ia-menu__avatar {\n    width: 88px;\n    height: 88px;\n    border-radius: 50%;\n    object-fit: cover;\n    display: block;\n    border: 3px solid rgba(192, 159, 83, 0.35);\n    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);\n}\n\n.ia-menu__identity {\n    color: #e8e8e8;\n}\n\n.ia-menu__greeting {\n    margin: 0 0 4px;\n    font-size: 1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f0f0f0;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__email {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.4;\n    color: #9aa0a6;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__manage {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.25);\n    color: #d8d8d8 !important;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    text-decoration: none;\n    text-align: left;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n    box-sizing: border-box;\n}\n\n.ia-menu__manage:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.1);\n    color: #f4f4f4 !important;\n}\n\n.ia-menu__manage-icon {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: 8px;\n    object-fit: contain;\n}\n\n.ia-menu__separator {\n    height: 1px;\n    margin: 18px 0 14px;\n    background: linear-gradient(\n        90deg,\n        transparent,\n        rgba(255, 255, 255, 0.1) 15%,\n        rgba(255, 255, 255, 0.1) 85%,\n        transparent\n    );\n}\n\n.ia-menu__demo {\n    padding: 0 4px 4px;\n    text-align: left;\n}\n\n.ia-menu__demo-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n}\n\n.ia-menu__demo-label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #e2e2e2;\n}\n\n.ia-menu__demo-hint {\n    margin: 8px 0 0;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: #7a8088;\n}\n\n.ia-menu__switch {\n    position: relative;\n    display: inline-block;\n    width: 44px;\n    height: 24px;\n    flex-shrink: 0;\n}\n\n.ia-menu__switch input {\n    opacity: 0;\n    width: 0;\n    height: 0;\n}\n\n.ia-menu__switch-slider {\n    position: absolute;\n    cursor: pointer;\n    inset: 0;\n    background: rgba(255, 255, 255, 0.12);\n    transition: background 0.25s ease;\n    border-radius: 34px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.ia-menu__switch-slider::before {\n    position: absolute;\n    content: \"\";\n    height: 18px;\n    width: 18px;\n    left: 3px;\n    bottom: 2px;\n    background: #f0f0f0;\n    transition: transform 0.25s ease;\n    border-radius: 50%;\n    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider {\n    background: rgba(192, 159, 83, 0.35);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider::before {\n    transform: translateX(20px);\n    background: #e8d5a8;\n}\n\n.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n.ia-menu__footer {\n    padding: 14px 16px 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.ia-menu__sign-out {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    margin: 0;\n    padding: 11px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(255, 255, 255, 0.04);\n    color: #c9cdd3;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n}\n\n.ia-menu__sign-out:hover {\n    border-color: rgba(220, 100, 100, 0.45);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n}\n\n.ia-menu__sign-out-icon {\n    flex-shrink: 0;\n    opacity: 0.9;\n}\n\n.dropdown-links {\n    max-height: 140px;\n    height: auto;\n    overflow: scroll;\n}\n\n.dropdown-links a {\n    color: #000;\n    font-size: 15px;\n    padding: 15px;\n    display: block;\n    text-decoration: none;\n}\n\n.dropdown-links a:hover {\n    background: #b7b7b7;\n    text-decoration: none;\n    color: #000;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .ia-menu.user_content,\n    .services-overview-container {\n        top: 100px;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -34951,10 +35040,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 var _window$React = window.React,
   useState = _window$React.useState,
-  useEffect = _window$React.useEffect,
-  useRef = _window$React.useRef,
-  useContext = _window$React.useContext;
-var Link = window.ReactRouterDOM.Link;
+  useEffect = _window$React.useEffect;
 function Account(props) {
   var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].DemoMode),
     _useState2 = _slicedToArray(_useState, 2),
@@ -34964,89 +35050,82 @@ function Account(props) {
     var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].onDemoModeChange(isDemoMode);
     return unsubscribe;
   }, []);
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "user_content"
+  return /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu user_content"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "dropdown-image-name"
+    className: "ia-menu__accent",
+    "aria-hidden": "true"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__body"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "dpde"
+    className: "ia-menu__brand"
   }, /*#__PURE__*/React.createElement("img", {
     src: "https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg",
-    className: "intastellaraccounts-logo"
+    alt: "",
+    className: "ia-menu__brand-logo"
   })), /*#__PURE__*/React.createElement("div", {
-    className: "img",
-    style: {
-      position: "relative",
-      width: "max-content",
-      margin: "20px auto"
-    }
+    className: "ia-menu__avatar-wrap"
   }, /*#__PURE__*/React.createElement("img", {
     src: props.profile.image,
-    className: "content-img"
+    alt: "",
+    className: "ia-menu__avatar"
   })), /*#__PURE__*/React.createElement("div", {
-    className: "dropdown-name"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "dpdn"
-  }, "Hi, ", props.profile.name, "!"), /*#__PURE__*/React.createElement("div", {
-    className: "dpde"
-  }, props.profile.email), /*#__PURE__*/React.createElement("div", {
-    className: "acc"
-  }, /*#__PURE__*/React.createElement("a", {
+    className: "ia-menu__identity"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "ia-menu__greeting"
+  }, "Hi, ", props.profile.name, "!"), /*#__PURE__*/React.createElement("p", {
+    className: "ia-menu__email"
+  }, props.profile.email), /*#__PURE__*/React.createElement("a", {
     href: "https://my.intastellaraccounts.com",
-    target: "_blank"
+    target: "_blank",
+    rel: "noopener noreferrer",
+    className: "ia-menu__manage"
   }, /*#__PURE__*/React.createElement("img", {
     src: "https://www.intastellarsolutions.com/assets/icons/fav/favicon-96x96.png",
-    className: "logo-icon"
-  }), "Manage Your Intastellar Account"))), _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation() == 1 ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "dropdown-separator"
+    alt: "",
+    className: "ia-menu__manage-icon",
+    width: 32,
+    height: 32
+  }), /*#__PURE__*/React.createElement("span", null, "Manage your Intastellar account"))), _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation() == 1 ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__separator"
   }), /*#__PURE__*/React.createElement("div", {
-    className: "dropdown-name",
-    style: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      maxWidth: "200px",
-      padding: "15px",
-      marginInline: "auto"
-    }
+    className: "ia-menu__demo"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "dpdn"
-  }, "Demo Mode"), /*#__PURE__*/React.createElement("div", {
-    className: "dpde"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "switch"
+    className: "ia-menu__demo-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ia-menu__demo-label",
+    id: "ia-demo-label"
+  }, "Demo mode"), /*#__PURE__*/React.createElement("label", {
+    className: "ia-menu__switch"
   }, /*#__PURE__*/React.createElement("input", {
     type: "checkbox",
     checked: demoMode,
     onChange: function onChange(e) {
-      _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].SetDemoMode(e.target.checked);
-    }
+      return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].SetDemoMode(e.target.checked);
+    },
+    "aria-labelledby": "ia-demo-label"
   }), /*#__PURE__*/React.createElement("span", {
-    className: "slider round"
-  })))), /*#__PURE__*/React.createElement("p", {
-    style: {
-      margin: "0",
-      color: "#6b6b6b"
-    }
-  }, "Masks live data across dashboards")) : null), /*#__PURE__*/React.createElement("div", {
-    className: "sign_out_btn_container"
+    className: "ia-menu__switch-slider"
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "ia-menu__demo-hint"
+  }, "Masks live data across dashboards."))) : null), /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__footer"
   }, /*#__PURE__*/React.createElement("button", {
-    className: "sign_out_btn",
+    type: "button",
+    className: "ia-menu__sign-out",
     onClick: function onClick() {
-      _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].Logout();
+      return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].Logout();
     }
   }, /*#__PURE__*/React.createElement("svg", {
-    focusable: "false",
-    height: "24",
+    className: "ia-menu__sign-out-icon",
     viewBox: "0 0 24 24",
-    width: "24",
-    className: " NMm5M"
+    width: "20",
+    height: "20",
+    "aria-hidden": "true"
   }, /*#__PURE__*/React.createElement("path", {
+    fill: "currentColor",
     d: "M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-  }), /*#__PURE__*/React.createElement("path", {
-    d: "M0 0h24v24H0z",
-    fill: "none"
-  })), " Sign Out"))));
+  })), "Sign out")));
 }
 
 /***/ }),
