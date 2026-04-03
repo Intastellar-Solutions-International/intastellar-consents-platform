@@ -1,42 +1,62 @@
+/* ——— Experiments page (list + detail) ——— */
 .experiments-page {
-    padding: 0 24px 24px;
+    padding: 0 clamp(16px, 3vw, 28px) clamp(24px, 4vw, 40px);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-.experiments-page h1 {
-    margin-bottom: 24px;
-    color: #e0e0e0;
+.experiments-page__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: #f0f0f0;
+}
+
+.experiments-page__title-icon {
+    flex-shrink: 0;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 10px rgba(192, 159, 83, 0.25));
 }
 
 .experiments-loading,
 .experiments-error,
 .experiments-empty {
-    color: #a0a0a0;
-    margin-top: 16px;
+    color: rgba(180, 180, 180, 0.95);
+    margin-top: 18px;
+    font-size: 0.9375rem;
 }
 
 .experiments-empty {
     margin-top: 24px;
     text-align: center;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #a0a0a0;
-    line-height: 1.5;
-    padding: 24px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
+    font-weight: 500;
+    line-height: 1.55;
+    padding: 28px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.2);
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .experiments-error {
-    color: #e08080;
+    color: #e8a0a0;
 }
 
 .experiments-list {
-    margin-top: 24px;
+    margin-top: 20px;
 }
 
 .experiments-list-intro {
-    color: #a0a0a0;
+    color: rgba(165, 165, 165, 0.95);
     margin-bottom: 16px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    max-width: 42em;
 }
 
 .experiments-id-list {
@@ -45,152 +65,260 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    max-width: 480px;
 }
 
 .experiments-id-link {
     display: block;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.06);
-    border-radius: 8px;
-    color: #b0d4ff;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(165deg, rgba(52, 52, 56, 0.45) 0%, rgba(24, 24, 28, 0.65) 100%);
+    color: #e8dcc8;
     text-decoration: none;
-    font-weight: 500;
-    transition: background 0.2s;
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.15s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .experiments-id-link:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: #c8e0ff;
+    border-color: rgba(192, 159, 83, 0.45);
+    background: linear-gradient(165deg, rgba(72, 68, 58, 0.55) 0%, rgba(32, 30, 26, 0.75) 100%);
+    color: #faf6ee;
+}
+
+.experiments-id-link:active {
+    transform: translateY(1px);
 }
 
 .experiments-back {
-    margin-left: 12px;
-    padding: 6px 12px;
-    font-size: 0.9rem;
-    color: #a0a0a0;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
+    margin-left: 10px;
+    padding: 8px 14px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #c8c8c8;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
     cursor: pointer;
+    transition:
+        color 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
 }
 
 .experiments-back:hover {
-    color: #e0e0e0;
-    border-color: rgba(255, 255, 255, 0.35);
+    color: #f0f0f0;
+    border-color: rgba(192, 159, 83, 0.4);
+    background: rgba(192, 159, 83, 0.08);
 }
 
+.experiments-back:focus-visible {
+    outline: 2px solid rgba(192, 159, 83, 0.55);
+    outline-offset: 2px;
+}
+
+/* ——— Variant grid ——— */
 .experiments-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr));
+    gap: clamp(18px, 3vw, 26px);
+    margin-top: 8px;
 }
 
+/* ——— Single variant card ——— */
 .experiment-card {
-    background: radial-gradient(circle at top, rgb(101, 101, 101) -10%, rgb(48, 48, 48));
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22);
-    color: rgb(197, 197, 197);
+    position: relative;
+    border-radius: 16px;
+    padding: clamp(18px, 3vw, 24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(168deg, rgba(52, 52, 56, 0.55) 0%, rgba(22, 22, 26, 0.92) 100%);
+    box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    color: rgba(200, 200, 200, 0.98);
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow: hidden;
+}
+
+.experiment-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38%;
+    max-width: 160px;
+    height: 3px;
+    border-radius: 0 0 10px 10px;
+    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.75), transparent);
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.experiment-card--winning {
+    border-color: rgba(192, 159, 83, 0.42);
+    box-shadow:
+        0 0 0 1px rgba(192, 159, 83, 0.12),
+        0 22px 56px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.experiment-card--winning::before {
+    opacity: 1;
+    width: 48%;
+    max-width: 200px;
+    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.95), transparent);
 }
 
 .experiment-card__header {
     display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.experiment-card__title-row {
+    display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: 10px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: center;
+    gap: 10px 14px;
 }
 
 .experiment-card__variant {
     margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #e0e0e0;
-}
-
-.experiment-card__design {
-    font-size: 0.85rem;
-    color: #a8a8a8;
-    background: rgba(255, 255, 255, 0.08);
-    padding: 4px 10px;
-    border-radius: 6px;
-}
-
-.experiment-card__donuts {
-    display: flex;
-    gap: 50px;
-    justify-content: center;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.experiment-card__donut-wrap {
-    position: relative;
-    width: 100px;
-    height: 150px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-}
-
-.experiment-card__donut-wrap canvas {
-    max-height: 100px;
-}
-
-.experiment-card__donut-label {
-    font-size: 0.7rem;
-    color: #a0a0a0;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    width: max-content;
-}
-
-.experiments-filters {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.experiment-card--winning {
-    border: 2px solid rgba(76, 175, 80, 0.8);
-    box-shadow: 0 0 16px rgba(76, 175, 80, 0.35);
-}
-
-.experiment-card--winning .experiment-card__header {
-    border-bottom-color: rgba(76, 175, 80, 0.25);
+    font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    color: #f4f4f4;
+    line-height: 1.25;
+    word-break: break-word;
 }
 
 .experiment-card__winning-badge {
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #1b5e20;
-    background: rgba(76, 175, 80, 0.35);
-    padding: 4px 10px;
-    border-radius: 6px;
+    color: #faf6ee;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(192, 159, 83, 0.5);
+    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(140, 115, 60, 0.22) 100%);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.experiment-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.experiment-card__chip {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(0, 0, 0, 0.28);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: #dcdcdc;
+    max-width: 100%;
+    word-break: break-word;
+}
+
+.experiment-card__chip-key {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.92);
+}
+
+/* ——— Chart row ——— */
+.experiment-card__charts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.experiment-card__chart-panel {
+    padding: 14px 12px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.22);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 0;
+}
+
+.experiment-card__chart-inner {
+    width: 124px;
+    height: 124px;
+    position: relative;
+    margin: 0 auto 4px;
+}
+
+.experiment-card__chart-inner canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
+}
+
+.experiment-card__chart-caption {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.95);
+    margin-top: 4px;
+}
+
+.experiment-card__chart-hint {
+    font-size: 0.6875rem;
+    color: rgba(150, 150, 150, 0.9);
+    margin-top: 4px;
+    line-height: 1.35;
+    max-width: 11rem;
+}
+
+/* ——— Metrics ——— */
+.experiment-card__metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 20px;
 }
 
 .experiment-card__section {
-    flex: 1;
+    min-width: 0;
+    padding: 14px 14px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .experiment-card__section-title {
     margin: 0 0 12px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #c0c0c0;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: rgba(192, 159, 83, 0.92);
 }
 
 .experiment-card__metrics {
@@ -203,29 +331,49 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    font-size: 0.9rem;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.8125rem;
 }
 
 .experiment-card__metrics li:last-child {
     border-bottom: none;
+    padding-bottom: 0;
 }
 
 .experiment-card__metrics .metric-label {
-    color: #a8a8a8;
+    color: rgba(165, 165, 165, 0.98);
+    flex: 1;
+    min-width: 0;
 }
 
 .experiment-card__metrics .metric-value {
-    font-weight: 600;
-    color: #d0d0d0;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    color: #ececec;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.experiments-filters {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+@media screen and (max-width: 640px) {
+    .experiment-card__charts {
+        grid-template-columns: 1fr;
+    }
+
+    .experiment-card__metrics-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media screen and (max-width: 900px) {
-    .experiments-page {
-        padding: 0 16px 16px;
-    }
-
     .experiments-grid {
         grid-template-columns: 1fr;
     }

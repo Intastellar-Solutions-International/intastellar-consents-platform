@@ -1,7 +1,7 @@
 import Authentication from "../../Authentication/Auth";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import Fetch from "../../Functions/FetchHook";
-import API from "../../api/api";
+import API from "../../API/api";
 const { useState, useEffect } = React;
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
@@ -68,6 +68,13 @@ const chartOptions = {
     plugins: {
         legend: { display: false },
         tooltip: {
+            backgroundColor: "rgba(22, 22, 26, 0.96)",
+            titleColor: "#ececec",
+            bodyColor: "#c4c4c4",
+            borderColor: "rgba(192, 159, 83, 0.35)",
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 8,
             callbacks: {
                 label: (ctx) => {
                     const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
@@ -77,7 +84,7 @@ const chartOptions = {
             },
         },
     },
-    cutout: "65%",
+    cutout: "62%",
 };
 
 function formatPct(n) {
@@ -152,16 +159,26 @@ export default function Experiments() {
     }
 
     return <>
-        {/* <SideNav links={experimentsLinks} title="Experiments" /> */}
+        <StickyPageTitle>
+            <h1 className="experiments-page__title">
+                <img
+                    src={experimentsIcon}
+                    alt=""
+                    className="experiments-page__title-icon"
+                    width={24}
+                    height={24}
+                />
+                <span>
+                    A/B Testing · {isListView ? "All experiments" : effectiveExperimentId}
+                </span>
+            </h1>
+            {!isListView && (
+                <button type="button" className="experiments-back" onClick={() => history.push("/experiments")}>
+                    ← All experiments
+                </button>
+            )}
+        </StickyPageTitle>
         <div className="dashboard-content experiments-page">
-            <StickyPageTitle>
-                <h1 style={{ display: "flex", alignItems: "center" }}><img src={experimentsIcon} alt="Experiments" style={{ width: "24px", height: "24px", marginRight: "8px" }} /> A/B Testing | {isListView ? "All experiments" : "Experiment: " + effectiveExperimentId}</h1>
-                {!isListView && (
-                    <button type="button" className="experiments-back" onClick={() => history.push("/experiments")}>
-                        ← All experiments
-                    </button>
-                )}
-            </StickyPageTitle>
             {isListView ? (
                 <div className="experiments-list">
                     <p className="experiments-list-intro">Select an experiment to view variants and metrics.</p>
@@ -196,43 +213,73 @@ export default function Experiments() {
                             className={`experiment-card${isWinning ? " experiment-card--winning" : ""}`}
                         >
                             <header className="experiment-card__header">
-                                <h2 className="experiment-card__variant">{row.experiment_variant}</h2>
-                                {isWinning && (
-                                    <span className="experiment-card__winning-badge">Winning variant</span>
-                                )}
-                                <span className="experiment-card__design">{row.design}</span>
-                                <span className="experiment-card__design">{row.domain}</span>
-                            </header>
-                            <div className="experiment-card__donuts">
-                                <div className="experiment-card__donut-wrap" title="User outcome: Accepted / Rejected / Undecided">
-                                    <Doughnut data={buildConversionChartData(row)} options={chartOptions} />
-                                    <span className="experiment-card__donut-label">User outcome</span>
+                                <div className="experiment-card__title-row">
+                                    <h2 className="experiment-card__variant">{row.experiment_variant}</h2>
+                                    {isWinning ? (
+                                        <span className="experiment-card__winning-badge">Leading variant</span>
+                                    ) : null}
                                 </div>
-                                <div className="experiment-card__donut-wrap" title="Decision events: Changed mind vs No change">
-                                    <Doughnut data={buildDecisionChangeChartData(row)} options={chartOptions} />
-                                    <span className="experiment-card__donut-label">Decision change</span>
+                                <div className="experiment-card__meta" aria-label="Variant context">
+                                    {row.design ? (
+                                        <span className="experiment-card__chip experiment-card__chip--design">
+                                            <span className="experiment-card__chip-key">Design</span>
+                                            {row.design}
+                                        </span>
+                                    ) : null}
+                                    {row.domain ? (
+                                        <span className="experiment-card__chip experiment-card__chip--domain">
+                                            <span className="experiment-card__chip-key">Domain</span>
+                                            {row.domain}
+                                        </span>
+                                    ) : null}
+                                </div>
+                            </header>
+
+                            <div className="experiment-card__charts" role="group" aria-label="Variant charts">
+                                <div
+                                    className="experiment-card__chart-panel"
+                                    title="User outcome: Accepted / Rejected / Undecided"
+                                >
+                                    <div className="experiment-card__chart-inner">
+                                        <Doughnut data={buildConversionChartData(row)} options={chartOptions} />
+                                    </div>
+                                    <span className="experiment-card__chart-caption">User outcome</span>
+                                    <span className="experiment-card__chart-hint">Accepted · Rejected · Undecided</span>
+                                </div>
+                                <div
+                                    className="experiment-card__chart-panel"
+                                    title="Decision events: Changed mind vs No change"
+                                >
+                                    <div className="experiment-card__chart-inner">
+                                        <Doughnut data={buildDecisionChangeChartData(row)} options={chartOptions} />
+                                    </div>
+                                    <span className="experiment-card__chart-caption">Decision change</span>
+                                    <span className="experiment-card__chart-hint">Mind change vs stable</span>
                                 </div>
                             </div>
-                            <section className="experiment-card__section">
-                                <h3 className="experiment-card__section-title">Unique user conversion</h3>
-                                <ul className="experiment-card__metrics">
-                                    <li><span className="metric-label">Users assigned</span> <span className="metric-value">{row.unique_user_conversion_performance?.users_assigned ?? "—"}</span></li>
-                                    <li><span className="metric-label">Final accepted</span> <span className="metric-value">{row.unique_user_conversion_performance?.users_final_accepted ?? "—"}</span></li>
-                                    <li><span className="metric-label">Final rejected</span> <span className="metric-value">{row.unique_user_conversion_performance?.users_final_rejected ?? "—"}</span></li>
-                                    <li><span className="metric-label">Undecided</span> <span className="metric-value">{row.unique_user_conversion_performance?.undecided_users ?? "—"}</span></li>
-                                    <li><span className="metric-label">Accept rate (user %)</span> <span className="metric-value">{formatPct(row.unique_user_conversion_performance?.accept_rate_user_pct)}</span></li>
-                                    <li><span className="metric-label">Reject rate (user %)</span> <span className="metric-value">{formatPct(row.unique_user_conversion_performance?.reject_rate_user_pct)}</span></li>
-                                </ul>
-                            </section>
-                            <section className="experiment-card__section">
-                                <h3 className="experiment-card__section-title">Decision event behavior</h3>
-                                <ul className="experiment-card__metrics">
-                                    <li><span className="metric-label">Decision events total</span> <span className="metric-value">{row.decision_event_behavior_dynamics?.decision_events_total ?? "—"}</span></li>
-                                    <li><span className="metric-label">Decision changes</span> <span className="metric-value">{row.decision_event_behavior_dynamics?.decision_changes ?? "—"}</span></li>
-                                    <li><span className="metric-label">Decision time (avg)</span> <span className="metric-value">{formatMs(row.decision_event_behavior_dynamics?.decision_time_avg_ms)}</span></li>
-                                    <li><span className="metric-label">Change rate</span> <span className="metric-value">{formatPct(row.decision_event_behavior_dynamics?.change_rate_pct)}</span></li>
-                                </ul>
-                            </section>
+
+                            <div className="experiment-card__metrics-grid">
+                                <section className="experiment-card__section">
+                                    <h3 className="experiment-card__section-title">Unique user conversion</h3>
+                                    <ul className="experiment-card__metrics">
+                                        <li><span className="metric-label">Users assigned</span> <span className="metric-value">{row.unique_user_conversion_performance?.users_assigned ?? "—"}</span></li>
+                                        <li><span className="metric-label">Final accepted</span> <span className="metric-value">{row.unique_user_conversion_performance?.users_final_accepted ?? "—"}</span></li>
+                                        <li><span className="metric-label">Final rejected</span> <span className="metric-value">{row.unique_user_conversion_performance?.users_final_rejected ?? "—"}</span></li>
+                                        <li><span className="metric-label">Undecided</span> <span className="metric-value">{row.unique_user_conversion_performance?.undecided_users ?? "—"}</span></li>
+                                        <li><span className="metric-label">Accept rate (user %)</span> <span className="metric-value">{formatPct(row.unique_user_conversion_performance?.accept_rate_user_pct)}</span></li>
+                                        <li><span className="metric-label">Reject rate (user %)</span> <span className="metric-value">{formatPct(row.unique_user_conversion_performance?.reject_rate_user_pct)}</span></li>
+                                    </ul>
+                                </section>
+                                <section className="experiment-card__section">
+                                    <h3 className="experiment-card__section-title">Decision event behavior</h3>
+                                    <ul className="experiment-card__metrics">
+                                        <li><span className="metric-label">Decision events total</span> <span className="metric-value">{row.decision_event_behavior_dynamics?.decision_events_total ?? "—"}</span></li>
+                                        <li><span className="metric-label">Decision changes</span> <span className="metric-value">{row.decision_event_behavior_dynamics?.decision_changes ?? "—"}</span></li>
+                                        <li><span className="metric-label">Decision time (avg)</span> <span className="metric-value">{formatMs(row.decision_event_behavior_dynamics?.decision_time_avg_ms)}</span></li>
+                                        <li><span className="metric-label">Change rate</span> <span className="metric-value">{formatPct(row.decision_event_behavior_dynamics?.change_rate_pct)}</span></li>
+                                    </ul>
+                                </section>
+                            </div>
                         </article>
                     ); })}
                 </div>
