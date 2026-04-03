@@ -23,7 +23,7 @@ export default function AuditComplianceMiniMap({ regionStatus, loading, demoMode
             <div className="audit-compliance-map__header">
                 <span className="audit-compliance-map__title">Regulatory snapshot</span>
                 <span className="audit-compliance-map__subtitle">
-                    Map shows where each framework applies; shading reflects your sample (not legal advice)
+                    Live compliance coverage by region
                 </span>
             </div>
             <div className="audit-compliance-map__map-shell">
