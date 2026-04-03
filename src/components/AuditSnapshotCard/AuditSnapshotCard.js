@@ -352,11 +352,11 @@ export default function AuditSnapshotCard(props) {
             headers: hdrs,
             signal: ac.signal,
         })
-            .then(async (res) => {
+            .then((res) => {
                 if (cancelled) return;
                 let data;
                 try {
-                    data = await res.json();
+                    data = res.json();
                 } catch {
                     setComplianceSnapshotRisk(null);
                     setComplianceSnapshotIssues([]);
