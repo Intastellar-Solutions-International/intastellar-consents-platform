@@ -80,7 +80,10 @@ export default function SideNav(props) {
                 <ul className="sidebar__list">
                 {
                     props?.links?.map((link, key) => {
-                        if (link?.view?.length && link.view.indexOf(Authentication.User.Status) === -1) {
+                        if (
+                            link?.view?.length &&
+                            link.view.indexOf(Authentication.getCurrentOrganisationRole()) === -1
+                        ) {
                             return null;
                         }
 

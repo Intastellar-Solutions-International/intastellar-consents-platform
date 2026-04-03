@@ -87,8 +87,13 @@ const Authentication = {
         return email;
     },
     getOrganisation: function () {
-        const organisation = (localStorage.getItem("organisation") != null || localStorage.getItem("organisation") != undefined) ? JSON.parse(localStorage.getItem("organisation"))?.id : undefined;
-        return organisation;
+        const raw = localStorage.getItem("organisation");
+        if (raw == null || raw === undefined) return undefined;
+        try {
+            return JSON.parse(raw)?.id;
+        } catch {
+            return undefined;
+        }
     },
     SignUp: function (url, email, password, firstname, lastname, type, companyName, setErrorMessage, setLoading) {
         setLoading(true);
@@ -136,12 +141,49 @@ const Authentication = {
 
         })
     },
-    User: {
-        Status: JSON.parse(localStorage.getItem("globals"))?.status
-    },
+    /**
+     * Role for this user on the given organisation (from globals.organisation_access).
+     * Compares ids as strings so "1" and 1 both match.
+     */
     getOrganisationAccessStatusForOrganisation: function (organisation_id) {
-        const organisation_access = (localStorage.getItem("globals") != null || localStorage.getItem("globals") != undefined) ? JSON.parse(localStorage.getItem("globals"))?.organisation_access : undefined;
-        return organisation_access.find(organisation => organisation.organisation_id == organisation_id)?.organisation_access;
-    }
+        if (organisation_id == null || organisation_id === undefined) return undefined;
+        const raw = localStorage.getItem("globals");
+        if (raw == null || raw === undefined) return undefined;
+        let g;
+        try {
+            g = JSON.parse(raw);
+        } catch {
+            return undefined;
+        }
+        const list = g?.organisation_access;
+        if (!Array.isArray(list)) return undefined;
+        const entry = list.find((o) => String(o.organisation_id) === String(organisation_id));
+        return entry?.organisation_access;
+    },
+
+    /**
+     * Role for the currently selected organisation (localStorage organisation + globals.organisation_access).
+     * Falls back to globals.status only when no organisation_access row matches (legacy).
+     */
+    getCurrentOrganisationRole: function () {
+        const orgId = this.getOrganisation();
+        const fromAccess = this.getOrganisationAccessStatusForOrganisation(orgId);
+        if (fromAccess != null && fromAccess !== "") return fromAccess;
+        const raw = localStorage.getItem("globals");
+        if (!raw) return null;
+        try {
+            return JSON.parse(raw)?.status ?? null;
+        } catch {
+            return null;
+        }
+    },
+
+    get User() {
+        return {
+            get Status() {
+                return Authentication.getCurrentOrganisationRole();
+            },
+        };
+    },
 }
 export default Authentication;

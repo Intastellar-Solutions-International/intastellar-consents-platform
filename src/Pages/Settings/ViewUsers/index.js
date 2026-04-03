@@ -11,6 +11,8 @@ const useParams = window.ReactRouterDOM.useParams;
 export default function ViewUsers() {
     document.title = "Users in the Organisation | Intastellar Consents | CMP";
     const { handle, id } = useParams();
+    const role = Authentication.getCurrentOrganisationRole();
+    const canManageUsers = role === "admin" || role === "super-admin";
 
     const [loading, data, error, updated] = useFetch(1, API.settings.getOrgUsers.url, API.settings.getOrgUsers.method, API.settings.getOrgUsers.headers)
 
@@ -39,11 +41,11 @@ export default function ViewUsers() {
                                 <p className="p-4 my-0 border">{d.name}</p>
                                 <p className="p-4 my-0 border">{d.email}</p>
                                 <p className="p-4 my-0 border">{d.role}</p>
-                                {
-                                    (Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin") ?
+                                {canManageUsers ? (
                                         <p className="p-4 my-0 border"><button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button></p>
-                                        : <p className="p-4 my-0 border">-</p>
-                                }
+                                    ) : (
+                                        <p className="p-4 my-0 border">-</p>
+                                    )}
                             </article>
                         )
                     }) : <p>No users found in your organisation.</p>}
@@ -55,11 +57,9 @@ export default function ViewUsers() {
                                 <article key={key} className="widget">
                                     <h2 >{d.email}</h2>
                                     <h2 >{d.role}</h2>
-                                    {
-                                        (Authentication.User.Status === "admin" || Authentication.User.Status === "super-admin") ?
+                                    {canManageUsers ? (
                                             <button className="cta" onClick={() => editOrganisation({ name: d.name, id: d.id })}>Edit</button>
-                                            : null
-                                    }
+                                        ) : null}
                                 </article>
                             )
                         })

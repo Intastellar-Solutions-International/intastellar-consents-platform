@@ -19089,10 +19089,11 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Legacy panel (unused in app; kept f
 @media screen and (min-width: 320px) and (max-width: 900px) {
     .ia-menu.user_content,
     .services-overview-container {
-        top: 100px;
+        top: 60px;
+        right: 10px;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Components/IntastellarAccounts/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* Legacy panel (unused in app; kept for compatibility) */\n.services-overview-container {\n    width: 345px;\n    height: auto;\n    max-height: 600px;\n    overflow: hidden;\n    border-radius: 10px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    background: rgba(255, 255, 255, 0.8);\n    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);\n    -webkit-backdrop-filter: blur(10px);\n    backdrop-filter: blur(10px);\n}\n\n/* Account dropdown — aligned with dashboard dark UI + login gold accents */\n.ia-menu.user_content {\n    width: min(calc(100vw - 32px), 320px);\n    max-height: min(90vh, 640px);\n    overflow: hidden;\n    border-radius: 14px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 56px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    -webkit-backdrop-filter: blur(18px);\n    backdrop-filter: blur(18px);\n}\n\n.ia-menu__accent {\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 38%;\n    max-width: 120px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.ia-menu__body {\n    padding: 22px 18px 12px;\n    max-height: calc(min(90vh, 640px) - 76px);\n    overflow-y: auto;\n    text-align: center;\n}\n\n.ia-menu__brand {\n    margin-bottom: 14px;\n}\n\n.ia-menu__brand-logo {\n    display: block;\n    width: min(160px, 72%);\n    height: auto;\n    margin: 0 auto;\n    opacity: 0.92;\n    filter: brightness(0) invert(1);\n}\n\n.ia-menu__avatar-wrap {\n    position: relative;\n    width: max-content;\n    margin: 0 auto 16px;\n}\n\n.ia-menu__avatar {\n    width: 88px;\n    height: 88px;\n    border-radius: 50%;\n    object-fit: cover;\n    display: block;\n    border: 3px solid rgba(192, 159, 83, 0.35);\n    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);\n}\n\n.ia-menu__identity {\n    color: #e8e8e8;\n}\n\n.ia-menu__greeting {\n    margin: 0 0 4px;\n    font-size: 1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f0f0f0;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__email {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.4;\n    color: #9aa0a6;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__manage {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.25);\n    color: #d8d8d8 !important;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    text-decoration: none;\n    text-align: left;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n    box-sizing: border-box;\n}\n\n.ia-menu__manage:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.1);\n    color: #f4f4f4 !important;\n}\n\n.ia-menu__manage-icon {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: 8px;\n    object-fit: contain;\n}\n\n.ia-menu__workspace-panel {\n    margin-top: 16px;\n    padding: 12px 14px 12px;\n    text-align: left;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.32) 58%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.ia-menu__workspace-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 14px;\n}\n\n.ia-menu__workspace-copy {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.ia-menu__workspace-kicker {\n    display: block;\n    margin: 0;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: #c0a053;\n    line-height: 1.25;\n}\n\n.ia-menu__demo-label {\n    display: block;\n    margin: 0;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    letter-spacing: 0.01em;\n    color: #ececec;\n    line-height: 1.3;\n}\n\n.ia-menu__demo-hint {\n    margin: 0;\n    margin-top: 10px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    font-size: 0.6875rem;\n    line-height: 1.45;\n    color: #8b9199;\n}\n\n.ia-menu__switch {\n    position: relative;\n    display: inline-block;\n    width: 44px;\n    height: 24px;\n    flex-shrink: 0;\n}\n\n.ia-menu__switch input {\n    opacity: 0;\n    width: 0;\n    height: 0;\n}\n\n.ia-menu__switch-slider {\n    position: absolute;\n    cursor: pointer;\n    inset: 0;\n    background: rgba(255, 255, 255, 0.12);\n    transition: background 0.25s ease;\n    border-radius: 34px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.ia-menu__switch-slider::before {\n    position: absolute;\n    content: \"\";\n    height: 18px;\n    width: 18px;\n    left: 3px;\n    bottom: 2px;\n    background: #f0f0f0;\n    transition: transform 0.25s ease;\n    border-radius: 50%;\n    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider {\n    background: rgba(192, 159, 83, 0.35);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider::before {\n    transform: translateX(20px);\n    background: #e8d5a8;\n}\n\n.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n.ia-menu__footer {\n    padding: 14px 16px 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.ia-menu__sign-out {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    margin: 0;\n    padding: 11px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(255, 255, 255, 0.04);\n    color: #c9cdd3;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n}\n\n.ia-menu__sign-out:hover {\n    border-color: rgba(220, 100, 100, 0.45);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n}\n\n.ia-menu__sign-out-icon {\n    flex-shrink: 0;\n    opacity: 0.9;\n}\n\n.dropdown-links {\n    max-height: 140px;\n    height: auto;\n    overflow: scroll;\n}\n\n.dropdown-links a {\n    color: #000;\n    font-size: 15px;\n    padding: 15px;\n    display: block;\n    text-decoration: none;\n}\n\n.dropdown-links a:hover {\n    background: #b7b7b7;\n    text-decoration: none;\n    color: #000;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .ia-menu.user_content,\n    .services-overview-container {\n        top: 100px;\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Components/IntastellarAccounts/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* Legacy panel (unused in app; kept for compatibility) */\n.services-overview-container {\n    width: 345px;\n    height: auto;\n    max-height: 600px;\n    overflow: hidden;\n    border-radius: 10px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    background: rgba(255, 255, 255, 0.8);\n    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);\n    -webkit-backdrop-filter: blur(10px);\n    backdrop-filter: blur(10px);\n}\n\n/* Account dropdown — aligned with dashboard dark UI + login gold accents */\n.ia-menu.user_content {\n    width: min(calc(100vw - 32px), 320px);\n    max-height: min(90vh, 640px);\n    overflow: hidden;\n    border-radius: 14px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 56px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    -webkit-backdrop-filter: blur(18px);\n    backdrop-filter: blur(18px);\n}\n\n.ia-menu__accent {\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 38%;\n    max-width: 120px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.ia-menu__body {\n    padding: 22px 18px 12px;\n    max-height: calc(min(90vh, 640px) - 76px);\n    overflow-y: auto;\n    text-align: center;\n}\n\n.ia-menu__brand {\n    margin-bottom: 14px;\n}\n\n.ia-menu__brand-logo {\n    display: block;\n    width: min(160px, 72%);\n    height: auto;\n    margin: 0 auto;\n    opacity: 0.92;\n    filter: brightness(0) invert(1);\n}\n\n.ia-menu__avatar-wrap {\n    position: relative;\n    width: max-content;\n    margin: 0 auto 16px;\n}\n\n.ia-menu__avatar {\n    width: 88px;\n    height: 88px;\n    border-radius: 50%;\n    object-fit: cover;\n    display: block;\n    border: 3px solid rgba(192, 159, 83, 0.35);\n    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);\n}\n\n.ia-menu__identity {\n    color: #e8e8e8;\n}\n\n.ia-menu__greeting {\n    margin: 0 0 4px;\n    font-size: 1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f0f0f0;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__email {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.4;\n    color: #9aa0a6;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__manage {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.25);\n    color: #d8d8d8 !important;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    text-decoration: none;\n    text-align: left;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n    box-sizing: border-box;\n}\n\n.ia-menu__manage:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.1);\n    color: #f4f4f4 !important;\n}\n\n.ia-menu__manage-icon {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: 8px;\n    object-fit: contain;\n}\n\n.ia-menu__workspace-panel {\n    margin-top: 16px;\n    padding: 12px 14px 12px;\n    text-align: left;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.32) 58%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.ia-menu__workspace-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 14px;\n}\n\n.ia-menu__workspace-copy {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.ia-menu__workspace-kicker {\n    display: block;\n    margin: 0;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: #c0a053;\n    line-height: 1.25;\n}\n\n.ia-menu__demo-label {\n    display: block;\n    margin: 0;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    letter-spacing: 0.01em;\n    color: #ececec;\n    line-height: 1.3;\n}\n\n.ia-menu__demo-hint {\n    margin: 0;\n    margin-top: 10px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    font-size: 0.6875rem;\n    line-height: 1.45;\n    color: #8b9199;\n}\n\n.ia-menu__switch {\n    position: relative;\n    display: inline-block;\n    width: 44px;\n    height: 24px;\n    flex-shrink: 0;\n}\n\n.ia-menu__switch input {\n    opacity: 0;\n    width: 0;\n    height: 0;\n}\n\n.ia-menu__switch-slider {\n    position: absolute;\n    cursor: pointer;\n    inset: 0;\n    background: rgba(255, 255, 255, 0.12);\n    transition: background 0.25s ease;\n    border-radius: 34px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.ia-menu__switch-slider::before {\n    position: absolute;\n    content: \"\";\n    height: 18px;\n    width: 18px;\n    left: 3px;\n    bottom: 2px;\n    background: #f0f0f0;\n    transition: transform 0.25s ease;\n    border-radius: 50%;\n    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider {\n    background: rgba(192, 159, 83, 0.35);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider::before {\n    transform: translateX(20px);\n    background: #e8d5a8;\n}\n\n.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n.ia-menu__footer {\n    padding: 14px 16px 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.ia-menu__sign-out {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    margin: 0;\n    padding: 11px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(255, 255, 255, 0.04);\n    color: #c9cdd3;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n}\n\n.ia-menu__sign-out:hover {\n    border-color: rgba(220, 100, 100, 0.45);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n}\n\n.ia-menu__sign-out-icon {\n    flex-shrink: 0;\n    opacity: 0.9;\n}\n\n.dropdown-links {\n    max-height: 140px;\n    height: auto;\n    overflow: scroll;\n}\n\n.dropdown-links a {\n    color: #000;\n    font-size: 15px;\n    padding: 15px;\n    display: block;\n    text-decoration: none;\n}\n\n.dropdown-links a:hover {\n    background: #b7b7b7;\n    text-decoration: none;\n    color: #000;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .ia-menu.user_content,\n    .services-overview-container {\n        top: 60px;\n        right: 10px;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -22672,22 +22673,145 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem{
+___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
     display: inline-block;
     padding: 15px;
     color: inherit;
     text-decoration: none;
 }
 
-.settingsNavItem:hover{
+.settingsNavItem:hover {
     background-color: rgb(197, 197, 197);
     color: initial;
     border-radius: 10px;
 }
 
-.my-0{
+.my-0 {
     margin: 0;
-}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"AAAA;IACI,qBAAqB;IACrB,aAAa;IACb,cAAc;IACd,qBAAqB;AACzB;;AAEA;IACI,oCAAoC;IACpC,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,SAAS;AACb","sourcesContent":[".settingsNavItem{\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover{\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0{\n    margin: 0;\n}"],"sourceRoot":""}]);
+}
+
+/* Settings index hub (aligned with Reports hub styling) */
+.settings-hub {
+    padding: 8px 0 48px;
+    max-width: 960px;
+}
+
+.settings-hub__intro {
+    margin: 0 0 24px;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: rgba(197, 197, 197, 0.92);
+}
+
+.settings-hub__scope {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 28px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    font-size: 0.8125rem;
+    color: rgba(197, 197, 197, 0.88);
+}
+
+.settings-hub__scope-label {
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    color: rgba(192, 159, 83, 0.95);
+}
+
+.settings-hub__scope-value {
+    font-weight: 500;
+    color: #ececec;
+    word-break: break-word;
+}
+
+.settings-hub__empty {
+    margin: 0;
+    font-size: 0.875rem;
+    color: rgba(180, 180, 180, 0.9);
+}
+
+.settings-hub__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.settings-hub__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 20px 20px 18px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);
+    box-shadow:
+        0 12px 32px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+    color: inherit;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.settings-hub__card:hover {
+    border-color: rgba(192, 159, 83, 0.35);
+    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);
+    box-shadow:
+        0 16px 40px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transform: translateY(-1px);
+}
+
+.settings-hub__card:focus-visible {
+    outline: 2px solid rgba(192, 159, 83, 0.65);
+    outline-offset: 3px;
+}
+
+.settings-hub__card-title {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.settings-hub__card-arrow {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    margin-left: auto;
+    border-right: 2px solid rgba(192, 159, 83, 0.75);
+    border-bottom: 2px solid rgba(192, 159, 83, 0.75);
+    transform: rotate(-45deg);
+    margin-top: 2px;
+}
+
+.settings-hub__card-desc {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(180, 180, 180, 0.95);
+}
+
+@media screen and (max-width: 600px) {
+    .settings-hub__grid {
+        grid-template-columns: 1fr;
+    }
+}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"AAAA;IACI,qBAAqB;IACrB,aAAa;IACb,cAAc;IACd,qBAAqB;AACzB;;AAEA;IACI,oCAAoC;IACpC,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,SAAS;AACb;;AAEA,0DAA0D;AAC1D;IACI,mBAAmB;IACnB,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,mBAAmB;IACnB,iBAAiB;IACjB,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,oBAAoB;IACpB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,cAAc;IACd,sBAAsB;AAC1B;;AAEA;IACI,SAAS;IACT,mBAAmB;IACnB,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,4DAA4D;IAC5D,SAAS;AACb;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,uBAAuB;IACvB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,2FAA2F;IAC3F;;+CAE2C;IAC3C,qBAAqB;IACrB,cAAc;IACd;;;;4BAIwB;AAC5B;;AAEA;IACI,sCAAsC;IACtC,2FAA2F;IAC3F;;+CAE2C;IAC3C,2BAA2B;AAC/B;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,cAAc;IACd,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,WAAW;AACf;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,iBAAiB;IACjB,gDAAgD;IAChD,iDAAiD;IACjD,yBAAyB;IACzB,eAAe;AACnB;;AAEA;IACI,SAAS;IACT,oBAAoB;IACpB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI;QACI,0BAA0B;IAC9B;AACJ","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -29889,7 +30013,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-var _JSON$parse6;
 var DemoMode = false;
 var listeners = [];
 var Authentication = {
@@ -29976,9 +30099,14 @@ var Authentication = {
     return email;
   },
   getOrganisation: function getOrganisation() {
-    var _JSON$parse5;
-    var organisation = localStorage.getItem("organisation") != null || localStorage.getItem("organisation") != undefined ? (_JSON$parse5 = JSON.parse(localStorage.getItem("organisation"))) === null || _JSON$parse5 === void 0 ? void 0 : _JSON$parse5.id : undefined;
-    return organisation;
+    var raw = localStorage.getItem("organisation");
+    if (raw == null || raw === undefined) return undefined;
+    try {
+      var _JSON$parse5;
+      return (_JSON$parse5 = JSON.parse(raw)) === null || _JSON$parse5 === void 0 ? void 0 : _JSON$parse5.id;
+    } catch (_unused) {
+      return undefined;
+    }
   },
   SignUp: function SignUp(url, email, password, firstname, lastname, type, companyName, setErrorMessage, setLoading) {
     setLoading(true);
@@ -30021,15 +30149,51 @@ var Authentication = {
       }
     });
   },
-  User: {
-    Status: (_JSON$parse6 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse6 === void 0 ? void 0 : _JSON$parse6.status
-  },
+  /**
+   * Role for this user on the given organisation (from globals.organisation_access).
+   * Compares ids as strings so "1" and 1 both match.
+   */
   getOrganisationAccessStatusForOrganisation: function getOrganisationAccessStatusForOrganisation(organisation_id) {
-    var _JSON$parse7, _organisation_access$;
-    var organisation_access = localStorage.getItem("globals") != null || localStorage.getItem("globals") != undefined ? (_JSON$parse7 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse7 === void 0 ? void 0 : _JSON$parse7.organisation_access : undefined;
-    return (_organisation_access$ = organisation_access.find(function (organisation) {
-      return organisation.organisation_id == organisation_id;
-    })) === null || _organisation_access$ === void 0 ? void 0 : _organisation_access$.organisation_access;
+    var _g;
+    if (organisation_id == null || organisation_id === undefined) return undefined;
+    var raw = localStorage.getItem("globals");
+    if (raw == null || raw === undefined) return undefined;
+    var g;
+    try {
+      g = JSON.parse(raw);
+    } catch (_unused2) {
+      return undefined;
+    }
+    var list = (_g = g) === null || _g === void 0 ? void 0 : _g.organisation_access;
+    if (!Array.isArray(list)) return undefined;
+    var entry = list.find(function (o) {
+      return String(o.organisation_id) === String(organisation_id);
+    });
+    return entry === null || entry === void 0 ? void 0 : entry.organisation_access;
+  },
+  /**
+   * Role for the currently selected organisation (localStorage organisation + globals.organisation_access).
+   * Falls back to globals.status only when no organisation_access row matches (legacy).
+   */
+  getCurrentOrganisationRole: function getCurrentOrganisationRole() {
+    var orgId = this.getOrganisation();
+    var fromAccess = this.getOrganisationAccessStatusForOrganisation(orgId);
+    if (fromAccess != null && fromAccess !== "") return fromAccess;
+    var raw = localStorage.getItem("globals");
+    if (!raw) return null;
+    try {
+      var _JSON$parse$status, _JSON$parse6;
+      return (_JSON$parse$status = (_JSON$parse6 = JSON.parse(raw)) === null || _JSON$parse6 === void 0 ? void 0 : _JSON$parse6.status) !== null && _JSON$parse$status !== void 0 ? _JSON$parse$status : null;
+    } catch (_unused3) {
+      return null;
+    }
+  },
+  get User() {
+    return {
+      get Status() {
+        return Authentication.getCurrentOrganisationRole();
+      }
+    };
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Authentication);
@@ -34517,7 +34681,7 @@ function SideNav(props) {
     className: "sidebar__list"
   }, props === null || props === void 0 || (_props$links = props.links) === null || _props$links === void 0 ? void 0 : _props$links.map(function (link, key) {
     var _link$view;
-    if (link !== null && link !== void 0 && (_link$view = link.view) !== null && _link$view !== void 0 && _link$view.length && link.view.indexOf(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].User.Status) === -1) {
+    if (link !== null && link !== void 0 && (_link$view = link.view) !== null && _link$view !== void 0 && _link$view.length && link.view.indexOf(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getCurrentOrganisationRole()) === -1) {
       return null;
     }
     var url = function () {
@@ -42436,6 +42600,8 @@ function ViewUsers() {
   var _useParams = useParams(),
     handle = _useParams.handle,
     id = _useParams.id;
+  var role = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_3__["default"].getCurrentOrganisationRole();
+  var canManageUsers = role === "admin" || role === "super-admin";
   var _useFetch = (0,_Functions_FetchHook__WEBPACK_IMPORTED_MODULE_1__["default"])(1, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.getOrgUsers.url, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.getOrgUsers.method, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.getOrgUsers.headers),
     _useFetch2 = _slicedToArray(_useFetch, 4),
     loading = _useFetch2[0],
@@ -42468,7 +42634,7 @@ function ViewUsers() {
       className: "p-4 my-0 border"
     }, d.email), /*#__PURE__*/React.createElement("p", {
       className: "p-4 my-0 border"
-    }, d.role), _Authentication_Auth__WEBPACK_IMPORTED_MODULE_3__["default"].User.Status === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_3__["default"].User.Status === "super-admin" ? /*#__PURE__*/React.createElement("p", {
+    }, d.role), canManageUsers ? /*#__PURE__*/React.createElement("p", {
       className: "p-4 my-0 border"
     }, /*#__PURE__*/React.createElement("button", {
       className: "cta",
@@ -42499,26 +42665,93 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/Settings/Style.css");
 /* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
 /* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
 
 
 
-var _React = React,
-  useState = _React.useState,
-  useEffect = _React.useEffect,
-  useRef = _React.useRef;
+
+
 var Link = window.ReactRouterDOM.Link;
-var useParams = window.ReactRouterDOM.useParams;
-function Settings(props) {
+var _React = React,
+  useMemo = _React.useMemo;
+var SETTINGS_HUB_COPY = {
+  "/settings/preferences": "Profile, notifications, and personal defaults for your account.",
+  "/settings/add-user": "Invite teammates to this organisation and assign a role.",
+  "/settings/view-users": "See who has access and manage organisation membership.",
+  "/settings/create-organisation": "Register another organisation you administer.",
+  "/settings/view-organisations": "Browse organisations you belong to and switch context.",
+  "/settings/add-domain": "Connect a new site or hostname for the consent platform.",
+  "/settings/view-domains": "Inspect domains linked to this organisation.",
+  "/settings/config-gdpr": "GDPR-related configuration for this workspace (when enabled).",
+  "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting."
+};
+function userCanSeeSidebarLink(link) {
+  var _link$view;
+  if (!(link !== null && link !== void 0 && (_link$view = link.view) !== null && _link$view !== void 0 && _link$view.length)) return true;
+  var role = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_4__["default"].getCurrentOrganisationRole();
+  if (role == null || role === "") return false;
+  return link.view.indexOf(role) !== -1;
+}
+function canOpenBlacklistRoute() {
+  var role = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_4__["default"].getCurrentOrganisationRole();
+  return role === "admin" || role === "super-admin";
+}
+function Settings() {
   document.title = "Settings | Intastellar Consents | CMP";
-  var _useParams = useParams(),
-    handle = _useParams.handle,
-    id = _useParams.id;
+  var visibleItems = useMemo(function () {
+    return _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_2__.reportsLinks.filter(function (link) {
+      if (!userCanSeeSidebarLink(link)) return false;
+      if (link.path === "/settings/blacklist-ip" && !canOpenBlacklistRoute()) return false;
+      return true;
+    });
+  }, []);
+  var scopeLine = useMemo(function () {
+    try {
+      var org = JSON.parse(localStorage.getItem("organisation"));
+      var name = org === null || org === void 0 ? void 0 : org.name;
+      if (name) return name;
+    } catch (_unused) {
+      /* ignore */
+    }
+    return "Current organisation";
+  }, []);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_1__["default"], {
     links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
     title: "Settings"
   }), /*#__PURE__*/React.createElement("main", {
     className: "dashboard-content"
-  }));
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Settings"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "settings-hub"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "settings-hub__intro"
+  }, "Configure your account, organisation, and domains. Use the sidebar for quick access, or choose a section below. Your role controls which actions are available."), /*#__PURE__*/React.createElement("div", {
+    className: "settings-hub__scope",
+    "aria-live": "polite"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "settings-hub__scope-label"
+  }, "Organisation"), /*#__PURE__*/React.createElement("span", {
+    className: "settings-hub__scope-value"
+  }, scopeLine)), visibleItems.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "settings-hub__empty"
+  }, "No settings sections are available for your current role.") : /*#__PURE__*/React.createElement("div", {
+    className: "settings-hub__grid"
+  }, visibleItems.map(function (link) {
+    return /*#__PURE__*/React.createElement(Link, {
+      key: link.path,
+      className: "settings-hub__card",
+      to: link.path
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "settings-hub__card-title"
+    }, link.name, /*#__PURE__*/React.createElement("span", {
+      className: "settings-hub__card-arrow",
+      "aria-hidden": "true"
+    })), /*#__PURE__*/React.createElement("p", {
+      className: "settings-hub__card-desc"
+    }, SETTINGS_HUB_COPY[link.path] || "Open this section to manage related options."));
+  })))));
 }
 
 /***/ }),
@@ -44314,7 +44547,7 @@ function SideNav(props) {
     className: "sidebar__list"
   }, props === null || props === void 0 || (_props$links = props.links) === null || _props$links === void 0 ? void 0 : _props$links.map(function (link, key) {
     var _link$view;
-    if (link !== null && link !== void 0 && (_link$view = link.view) !== null && _link$view !== void 0 && _link$view.length && link.view.indexOf(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].User.Status) === -1) {
+    if (link !== null && link !== void 0 && (_link$view = link.view) !== null && _link$view !== void 0 && _link$view.length && link.view.indexOf(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getCurrentOrganisationRole()) === -1) {
       return null;
     }
     var url = function () {
