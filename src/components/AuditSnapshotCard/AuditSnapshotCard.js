@@ -8,6 +8,8 @@ import {
 } from "../../Functions/domainPathSegments.js";
 import { getApproxLastInteractionIsoFromLiveData } from "../LiveView/liveInteractionTimestamp.js";
 import { useUserLocale } from "../../Functions/userLocale.js";
+import { deriveComplianceRegionStatus } from "./complianceRegions.js";
+import AuditComplianceMiniMap from "./AuditComplianceMiniMap.js";
 import "./AuditSnapshotCard.css";
 
 const Link = window.ReactRouterDOM.Link;
@@ -168,6 +170,7 @@ function deriveSystemHealth({
  * @param {boolean} props.demoMode
  * @param {object|null} props.liveData — payload from Live view (optional)
  * @param {boolean} [props.interactionsLoading] — dashboard getInteractions in flight
+ * @param {Record<string, 'ok'|'watch'|'risk'>} [props.complianceRegionRisk] — optional API hints per framework (GDPR, LGPD, CCPA, POPIA)
  */
 export default function AuditSnapshotCard(props) {
     const locale = useUserLocale();
@@ -181,6 +184,7 @@ export default function AuditSnapshotCard(props) {
         demoMode,
         liveData,
         interactionsLoading = false,
+        complianceRegionRisk,
     } = props;
 
     const auditLogPath = useMemo(() => {
@@ -212,7 +216,7 @@ export default function AuditSnapshotCard(props) {
             ...API[platformId].getDomainsUrl.headers,
             Domains: domainsApiHeaderForStats,
             Offset: "0",
-            Limit: "3",
+            Limit: "15",
             FromDate: fd,
             ToDate: td,
             SortOrder: "desc",
@@ -311,6 +315,21 @@ export default function AuditSnapshotCard(props) {
         ]
     );
 
+    const complianceRegionStatus = useMemo(() => {
+        const rows = Array.isArray(auditPreview) ? auditPreview : [];
+        const sampleRows =
+            rows.length > 0
+                ? rows
+                : demoMode
+                  ? [
+                        { country_code: "DE", regulation_applied: "GDPR" },
+                        { country_code: "DK", regulation_applied: "GDPR" },
+                        { country_code: "US", regulation_applied: "CCPA" },
+                    ]
+                  : [];
+        return deriveComplianceRegionStatus(sampleRows, complianceRegionRisk);
+    }, [auditPreview, demoMode, complianceRegionRisk]);
+
     const auditSnapshotMeta = useMemo(() => {
         const rows = Array.isArray(auditPreview) ? auditPreview : [];
         const liveIso = getApproxLastInteractionIsoFromLiveData(liveData);
@@ -337,7 +356,7 @@ export default function AuditSnapshotCard(props) {
             rows.find((r) => r?.code_version)?.code_version ??
             activeData?.code_version ??
             activeData?.codeVersion;
-        let displayRows = rows.slice(0, 3).map((r) => ({
+        let displayRows = rows.slice(0, 11).map((r) => ({
             key: String(r?.uid ?? r?.shopify_consent_id ?? `${r?.consents_timestamp}-${r?.country_code}`),
             country: String(r?.country_code ?? "—").toUpperCase(),
             framework: shortenFramework(r?.regulation_applied),
@@ -430,40 +449,55 @@ export default function AuditSnapshotCard(props) {
                             </span>
                         </p>
                     </div>
-                    {auditSnapshotMeta.displayRows.length > 0 ? (
-                        <ul
-                            className={
-                                "audit-snapshot-card__feed" +
-                                (auditSnapshotMeta.isDemoFeed ? " audit-snapshot-card__feed--demo" : "")
-                            }
-                            aria-label="Recent consent examples"
-                        >
-                            {auditSnapshotMeta.isDemoFeed ? (
-                                <li className="audit-snapshot-card__feed-note" aria-hidden>
-                                    Example layout
-                                </li>
-                            ) : null}
-                            {auditSnapshotMeta.displayRows.map((row) => (
-                                <li key={row.key} className="audit-snapshot-card__feed-row">
-                                    <span className="audit-snapshot-card__feed-country">{row.country}</span>
-                                    <span className="audit-snapshot-card__feed-sep" aria-hidden>
-                                        ·
-                                    </span>
-                                    <span className="audit-snapshot-card__feed-fw">{row.framework}</span>
-                                    <span className="audit-snapshot-card__feed-sep" aria-hidden>
-                                        ·
-                                    </span>
-                                    <span className="audit-snapshot-card__feed-summary">{row.summary}</span>
-                                    <span className="audit-snapshot-card__feed-sep" aria-hidden>
-                                        ·
-                                    </span>
-                                    <span className="audit-snapshot-card__feed-time">{row.time}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : !auditPreviewLoading ? (
-                        <p className="audit-snapshot-card__hint">No sample rows for this period yet.</p>
-                    ) : null}
+                    <div className="audit-snapshot-card__feed-map-row">
+                        <div className="audit-snapshot-card__feed-col">
+                            {auditSnapshotMeta.displayRows.length > 0 ? (
+                                <ul
+                                    className={
+                                        "audit-snapshot-card__feed" +
+                                        (auditSnapshotMeta.isDemoFeed ? " audit-snapshot-card__feed--demo" : "")
+                                    }
+                                    aria-label="Recent consent examples"
+                                >
+                                    {auditSnapshotMeta.isDemoFeed ? (
+                                        <li className="audit-snapshot-card__feed-note" aria-hidden>
+                                            Example layout
+                                        </li>
+                                    ) : null}
+                                    {auditSnapshotMeta.displayRows.map((row) => (
+                                        <li key={row.key} className="audit-snapshot-card__feed-row">
+                                            <span className="audit-snapshot-card__feed-country">{row.country}</span>
+                                            <span className="audit-snapshot-card__feed-sep" aria-hidden>
+                                                ·
+                                            </span>
+                                            <span className="audit-snapshot-card__feed-fw">{row.framework}</span>
+                                            <span className="audit-snapshot-card__feed-sep" aria-hidden>
+                                                ·
+                                            </span>
+                                            <span className="audit-snapshot-card__feed-summary">{row.summary}</span>
+                                            <span className="audit-snapshot-card__feed-sep" aria-hidden>
+                                                ·
+                                            </span>
+                                            <span className="audit-snapshot-card__feed-time">{row.time}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : !auditPreviewLoading ? (
+                                <p className="audit-snapshot-card__hint">No sample rows for this period yet.</p>
+                            ) : (
+                                <p className="audit-snapshot-card__hint" aria-hidden>
+                                    …
+                                </p>
+                            )}
+                        </div>
+                        <div className="audit-snapshot-card__map-col">
+                            <AuditComplianceMiniMap
+                                regionStatus={complianceRegionStatus}
+                                loading={auditPreviewLoading}
+                                demoMode={demoMode && auditSnapshotMeta.isDemoFeed}
+                            />
+                        </div>
+                    </div>
                     {activeData != null ? (
                         <dl className="audit-snapshot-card__stats">
                             {activeData.Total != null ? (

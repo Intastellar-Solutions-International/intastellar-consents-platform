@@ -330,3 +330,37 @@
     color: #555;
     user-select: none;
 }
+
+.audit-snapshot-card__feed-map-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(200px, 42%);
+    align-items: start;
+    gap: 16px 20px;
+    margin: 14px 0 16px;
+}
+
+@media (max-width: 720px) {
+    .audit-snapshot-card__feed-map-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.audit-snapshot-card__feed-col {
+    min-width: 0;
+}
+
+.audit-snapshot-card__map-col {
+    min-width: 0;
+}
+
+.audit-snapshot-card__feed-col .audit-snapshot-card__feed {
+    margin-bottom: 0;
+}
+
+.audit-snapshot-card__feed-col .audit-snapshot-card__hint {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
