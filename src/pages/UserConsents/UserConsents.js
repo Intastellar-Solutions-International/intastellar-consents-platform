@@ -13,10 +13,34 @@ import { DomainContext } from "../../App.js";
 import LoadingSpinner from "../../Components/LoadingSpinner/LoadingSpinner.js";
 import Authentication from "../../Authentication/Auth.js";
 import { buildDemoConsentList, buildDemoConsentRecord } from "./userConsentsDemo.js";
-import { useSyncDomainFromRoute } from "../../Functions/domainPathSegments.js";
+import {
+    useSyncDomainFromRoute,
+    decodeDomainPathSegment,
+    isCombinedOrClearDomain,
+} from "../../Functions/domainPathSegments.js";
 const useParams = window.ReactRouterDOM.useParams;
 const punycode = require("punycode");
 const PAGE_SIZE = 40;
+
+/**
+ * Unicode domain for this page: prefer :handle from the URL on first paint so the first request
+ * matches a hard reload before DomainContext catches up (avoids wrong Domains header + abort/404 races).
+ */
+function consentsDomainFromRoute(handle, contextDomain) {
+    if (handle == null || handle === undefined) return contextDomain;
+    const h = String(handle).trim();
+    if (h === "") return contextDomain;
+    if (h === "combined view") return "combined view";
+    const decoded = decodeDomainPathSegment(handle);
+    if (decoded == null || decoded === "combined view") return "combined view";
+    return decoded;
+}
+
+/** Value for HTTP Domains header (ASCII punycode for real hosts). */
+function toDomainsApiHeader(domainLabel) {
+    if (isCombinedOrClearDomain(domainLabel)) return "combined view";
+    return punycode.toASCII(String(domainLabel).trim());
+}
 
 /** Parse consent time for sorting (newest first). */
 function consentTimestampMs(row) {
@@ -43,6 +67,16 @@ export default function UserConsents(props) {
     const { handle, id } = useParams();
     useSyncDomainFromRoute(handle, setGlobalDomain);
 
+    const listDomainLabel = useMemo(
+        () => consentsDomainFromRoute(handle, currentDomain),
+        [handle, currentDomain]
+    );
+    const domainsApiHeader = useMemo(() => toDomainsApiHeader(listDomainLabel), [listDomainLabel]);
+    const consentsQueryKey = useMemo(
+        () => `${id}|${domainsApiHeader}|${fromDate}|${toDate}`,
+        [id, domainsApiHeader, fromDate, toDate]
+    );
+
     const [activeData, setActiveData] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(true);
@@ -58,7 +92,7 @@ export default function UserConsents(props) {
     const previousPeriod = new Date(new Date().setDate(today.getDate() - settings?.dateRange));
     const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings?.dateRange * 2));
 
-    API[id].getDomainsUrl.headers.Domains = currentDomain;
+    API[id].getDomainsUrl.headers.Domains = domainsApiHeader;
     API[id].getDomainsUrl.headers.Offset = "0";
     API[id].getDomainsUrl.headers.Limit = String(PAGE_SIZE);
     API[id].getDomainsUrl.headers.FromDate = fromDate;
@@ -68,19 +102,51 @@ export default function UserConsents(props) {
     const url = API[id].getDomainsUrl.url;
     const method = API[id].getDomainsUrl.method;
 
-    const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(5, API[id].getDomainsUrl.url, API[id].getDomainsUrl.method, API[id].getDomainsUrl.headers);
+    const [getDomainsUrlLoading, getDomainsUrlData, getDomainsUrlError, getDomainsUrlGetUpdated] = useFetch(
+        5,
+        API[id].getDomainsUrl.url,
+        API[id].getDomainsUrl.method,
+        API[id].getDomainsUrl.headers
+    );
 
     useEffect(() => {
         const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
         return unsubscribe; // Clean up on unmount
     }, []);
 
+    const consentsInFlightKeyRef = useRef(null);
+
+    useEffect(() => {
+        setActiveData(null);
+        setHasMore(true);
+    }, [consentsQueryKey]);
+
+    useEffect(() => {
+        if (getDomainsUrlLoading) {
+            consentsInFlightKeyRef.current = consentsQueryKey;
+        }
+    }, [getDomainsUrlLoading, consentsQueryKey]);
+
     useEffect(() => {
         if (getDomainsUrlError) {
-            setActiveData(getDomainsUrlError);
+            return;
+        }
+        if (getDomainsUrlLoading) {
             return;
         }
         if (getDomainsUrlData === undefined) {
+            return;
+        }
+        if (
+            consentsInFlightKeyRef.current != null &&
+            consentsInFlightKeyRef.current !== consentsQueryKey
+        ) {
+            return;
+        }
+        if (
+            getDomainsUrlData === "Err_Server_Error" ||
+            getDomainsUrlData === "Err_No_Access"
+        ) {
             return;
         }
         if (getDomainsUrlData === "Err_No_Data_Found") {
@@ -99,7 +165,7 @@ export default function UserConsents(props) {
             setActiveData(sortConsentsNewestFirst(getDomainsUrlData));
             setHasMore(getDomainsUrlData.length === PAGE_SIZE);
         }
-    }, [getDomainsUrlData, getDomainsUrlError]);
+    }, [getDomainsUrlData, getDomainsUrlError, getDomainsUrlLoading, consentsQueryKey]);
 
     const dataLengthRef = useRef(0);
     useEffect(() => {
@@ -127,7 +193,7 @@ export default function UserConsents(props) {
             const offset = dataLengthRef.current;
             const headers = {
                 ...API[id].getDomainsUrl.headers,
-                Domains: currentDomain,
+                Domains: domainsApiHeader,
                 Offset: String(offset),
                 Limit: String(PAGE_SIZE),
                 FromDate: fromDate,
@@ -164,7 +230,7 @@ export default function UserConsents(props) {
         } finally {
             setLoadingMore(false);
         }
-    }, [currentDomain, fromDate, toDate, id, getDomainsUrlLoading, method, url]);
+    }, [domainsApiHeader, fromDate, toDate, id, getDomainsUrlLoading, method, url]);
 
     useEffect(() => {
         const onScroll = () => {
@@ -199,11 +265,19 @@ export default function UserConsents(props) {
         (getDomainsUrlData === "Err_No_Data_Found" ||
             (Array.isArray(getDomainsUrlData) && getDomainsUrlData.length === 0));
 
+    const showFetchFailure =
+        !demoMode &&
+        (getDomainsUrlError ||
+            getDomainsUrlData === "Err_Server_Error" ||
+            getDomainsUrlData === "Err_No_Access");
+
+    const titleDomainLabel = isCombinedOrClearDomain(listDomainLabel) ? null : listDomainLabel;
+
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
             <article style={{ flex: "1"}}>
-                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Consents overview" + (currentDomain == "combined view" ? "" : " for " + punycode.toUnicode(currentDomain))} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Consents overview" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
                         {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{
@@ -213,7 +287,7 @@ export default function UserConsents(props) {
                             previousEnd: previousPeriod2,
                         }} setFromDate={setFromDate} setToDate={setToDate} /> */}
                     </section>
-                    {(getDomainsUrlLoading && !getDomainsUrlError) ? 
+                    {(getDomainsUrlLoading && !showFetchFailure) ? 
                         <div className="user-consents-grid">
                             <Loading />
                             <Loading />
@@ -224,7 +298,7 @@ export default function UserConsents(props) {
                             <Loading />
                             <Loading />
                         </div>
-                    : (getDomainsUrlError) ? <Unknown /> : (showNoData) ? <NoDataFound /> : <>
+                    : showFetchFailure ? <Unknown /> : (showNoData) ? <NoDataFound /> : <>
                         <div className="user-consents-grid">
                             {
                                 displayData?.map((d, key) => {

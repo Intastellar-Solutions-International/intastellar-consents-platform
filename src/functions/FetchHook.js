@@ -1,5 +1,13 @@
 const { useState, useEffect } = React;
 import Authentication from "../Authentication/Auth";
+
+function ignoreAbortError(err, setError) {
+    if (err && (err.name === "AbortError" || err.code === 20)) {
+        return;
+    }
+    setError(err);
+}
+
 export default function useFetch(updateInterval, url, method, headers, body, handle) {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState();
@@ -11,6 +19,8 @@ export default function useFetch(updateInterval, url, method, headers, body, han
     useEffect(() => {
         const controller = new AbortController();
         setLoading(true);
+        setError(undefined);
+        setData(undefined);
         fetch(url, { method: method, headers, body, signal: controller.signal })
             .then((res) => {
                 if (res.status === 401) {
@@ -30,7 +40,7 @@ export default function useFetch(updateInterval, url, method, headers, body, han
                 return res.json()
             })
             .then(setData)
-            .catch(setError)
+            .catch((err) => ignoreAbortError(err, setError))
             .finally(() => {
                 setLoading(false);
                 setUpdated("Now");
@@ -48,7 +58,7 @@ export default function useFetch(updateInterval, url, method, headers, body, han
                 fetch(url, { method: method, headers, body, signal: controller.signal })
                     .then((res) => res.json())
                     .then(setData)
-                    .catch(setError)
+                    .catch((err) => ignoreAbortError(err, setError))
                     .finally(() => {
                         setLoading(false);
                         clearInterval(interval1);
