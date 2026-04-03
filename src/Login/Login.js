@@ -3,135 +3,110 @@ import logo from "../Components/Header/logo.svg";
 import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
 import { IntastellarButton } from "@intastellar/signin-sdk-react";
-import { useState } from "react";
 
 export default function Login() {
     document.title = "Log in to Intastellar Consents";
-    const [loading, setLoading] = useState(true);
+
     const handleLogin = (account) => {
-        console.log("User logged in:", account);
-        // Handle successful authentication
+        if (!account) return;
 
-        if (account) {
-            console.log(account?.account_domain);
-            fetch(API.OrganisationData.url, {
-                withCredentials: false,
-                method: "POST",
-                headers: {
-                    'LoginType': 'oauth',
-                    'Content-Type': 'application/json; charset=utf-8'
-                },
-                body: JSON.stringify({
-                    organisationMember: account?.user?.email,
-                })
-            }).then((response) => {
-                return response.json();
-            }).then(response => {
-
-
-                console.log("Response: ", response);
+        fetch(API.OrganisationData.url, {
+            withCredentials: false,
+            method: "POST",
+            headers: {
+                LoginType: "oauth",
+                "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify({
+                organisationMember: account?.user?.email,
+            }),
+        })
+            .then((response) => response.json())
+            .then((response) => {
                 if (response === "Err_Logon_Fail") {
-                    console.error("Error logging in");
+                    console.error("Login failed: organisation lookup rejected");
                     return;
                 }
 
                 localStorage.setItem("platform", "gdpr");
-                console.log("Response: ", response[0]);
                 localStorage.setItem("organisation", JSON.stringify(response[0]));
 
-                localStorage.setItem("globals", JSON.stringify(
-                    {
+                localStorage.setItem(
+                    "globals",
+                    JSON.stringify({
                         ...account,
-                        organisation_access: response.map(organisation => {
-                            return {
+                        organisation_access:
+                            response.map((organisation) => ({
                                 organisation_id: organisation.id,
                                 organisation_name: organisation.name,
-                                organisation_access: organisation.users.find(user => user.email === account?.user?.email)?.role
-                            }
-                        }) || []
-                    }   
-                ));
+                                organisation_access: organisation.users.find(
+                                    (user) => user.email === account?.user?.email
+                                )?.role,
+                            })) || [],
+                    })
+                );
 
-                if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
+                const platform = localStorage.getItem("platform");
+                if (platform == null || platform === undefined) {
                     window.location.href = "/dashboard";
                 } else {
-                    window.location.href = "/" + localStorage.getItem("platform") + "/dashboard";
+                    window.location.href = `/${platform}/dashboard`;
                 }
-            }).catch((error) => {
-                console.error("Error during login:", error);
-                // Optionally redirect to login page or show an error message
             })
-        }
-
+            .catch((error) => {
+                console.error("Error during login:", error);
+            });
     };
-    /* useEffect(() => {
-        document.body.classList.add("loginForm-body");
-        Intastellar.accounts.id.renderButton("login", {
-            "picker": "button",
-            "theme": "light"
-        });
-
-        window.authLogin = function (response) {
-            if (response) {
-                fetch(API.Login.url, {
-                    withCredentials: false,
-                    method: "POST",
-                    headers: {
-                        'LoginType': 'oauth',
-                        'Content-Type': 'application/json; charset=utf-8'
-                    },
-                    body: JSON.stringify({
-                        email: response?.user?.email,
-                        account_domain: response?.account_domain,
-                    })
-                }).then((response) => {
-                    return response.json();
-                }).then(response => {
-                    if (response === "Err_Logon_Fail") {
-                        console.error("Error logging in");
-                        return;
-                    }
-
-                    localStorage.setItem("organisation", response.organisation);
-                    localStorage.setItem("globals", JSON.stringify(response));
-
-                    if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
-                        window.location.href = "/dashboard";
-                    } else {
-                        window.location.href = "/" + localStorage.getItem("platform") + "/dashboard";
-                    }
-                }).catch((error) => {
-                    console.error("Error during login:", error);
-                    // Optionally redirect to login page or show an error message
-                })
-            }
-        }
-
-    }, []); */
 
     return (
         <>
-            <div className="loginForm-container">
-                <section className="loginForm-logo-section">
-                    <img src={logo} alt="Intastellar Consents Logo" className="loginForm-logo" />
-                    <h1 className="loginForm-title">Sign in to Intastellar Consents</h1>
-                    <p className="loginForm-description">Access consent activity and reporting.</p>
-                    <div className="loginForm-button-container">
-                        <IntastellarButton
-                            clientId="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
-                            appName="Intastellar Consents | CMP"
-                            loginCallback={handleLogin}
-                            theme="dark"
-                            type="login"
-                        /> 
-                        <section className="intastellar-accounts-logo-container">
-                            <p className="poweredBy">Powered by Intastellar Accounts</p>
-                            <img src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts-white.svg" alt="Intastellar Accounts Logo" className="intastellar-accounts-logo" />
-                        </section>
+            <div className="int-login">
+                <main className="int-login__main">
+                    <div
+                        className="int-login__card"
+                        role="region"
+                        aria-labelledby="int-login-heading"
+                    >
+                        <div className="int-login__brand">
+                            <img
+                                src={logo}
+                                alt="Intastellar Consents"
+                                className="int-login__logo"
+                                decoding="async"
+                            />
+                        </div>
+
+                        <h1 id="int-login-heading" className="int-login__headline">
+                            Sign in to Intastellar Consents
+                        </h1>
+                        <p className="int-login__lede">
+                            Access consent activity, audit logs, and reporting. Sign in with your Intastellar
+                            account — authentication is handled by Intastellar Accounts.
+                        </p>
+
+                        <div className="int-login__sso">
+                            <IntastellarButton
+                                clientId="d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d"
+                                appName="Intastellar Consents | CMP"
+                                loginCallback={handleLogin}
+                                theme="dark"
+                                type="login"
+                            />
+                        </div>
+
+                        <footer className="int-login__powered" aria-label="Identity provider">
+                            <span className="int-login__powered-label">Powered by Intastellar Accounts</span>
+                            <img
+                                src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts-white.svg"
+                                alt=""
+                                className="int-login__powered-logo"
+                                decoding="async"
+                            />
+                        </footer>
                     </div>
-                </section>
+                </main>
             </div>
             <LPFooter />
         </>
-    )
+    );
 }
