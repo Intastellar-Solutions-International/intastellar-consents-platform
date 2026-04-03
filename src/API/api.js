@@ -279,6 +279,24 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        updateOrgUser: {
+            url: `${PrimaryHost}/analytics/settings/update-org-user`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
+        deleteOrgUser: {
+            url: `${PrimaryHost}/analytics/settings/delete-org-user`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
         getSettings: {
             url: `${PrimaryHost}/analytics/settings/getOrganisation`,
             method: "GET",

@@ -5,19 +5,9 @@ export const reportsLinks = [
         view: ["admin", "super-admin", "manager"]
     },
     {
-        name: "Add new User",
-        path: "/settings/add-user",
-        view: ["admin", "super-admin"]
-    },
-    {
         name: "View Users",
         path: "/settings/view-users",
         view: ["admin", "super-admin", "manager"]
-    },
-    {
-        name: "Create new Organisation",
-        path: "/settings/create-organisation",
-        view: ["admin", "super-admin"]
     },
     {
         name: "View Organisations",

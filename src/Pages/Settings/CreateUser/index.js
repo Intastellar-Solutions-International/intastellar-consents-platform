@@ -10,6 +10,8 @@ import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 import StickyPageTitle from "../../../Components/Header/Sticky";
 import "../Style.css";
 
+const Link = window.ReactRouterDOM.Link;
+
 const ROLE_ITEMS = [
     { id: "Admin", name: "Admin" },
     { id: "Manager", name: "Manager" },
@@ -116,6 +118,9 @@ export default function CreateUser() {
             <SideNav links={reportsLinks} title="Settings" />
             <main className="dashboard-content settings-subpage">
                 <StickyPageTitle title="Create user" />
+                <Link className="settings-subpage__back" to="/settings/view-users">
+                    ← Back to users
+                </Link>
                 <p className="settings-subpage__intro">
                     Provision a new account and assign it to an organisation. They sign in with the email and
                     password you set here.

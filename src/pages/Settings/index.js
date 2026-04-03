@@ -10,9 +10,8 @@ const { useMemo } = React;
 const SETTINGS_HUB_COPY = {
     "/settings/preferences": "Profile, notifications, and personal defaults for your account.",
     "/settings/add-user": "Invite teammates to this organisation and assign a role.",
-    "/settings/view-users": "See who has access and manage organisation membership.",
-    "/settings/create-organisation": "Register another organisation you administer.",
-    "/settings/view-organisations": "Browse organisations you belong to and switch context.",
+    "/settings/view-users": "See who has access, edit members, or create new platform users from here.",
+    "/settings/view-organisations": "Browse organisations, edit them, or create a new one from here.",
     "/settings/add-domain": "Connect a new site or hostname for the consent platform.",
     "/settings/view-domains": "Inspect domains linked to this organisation.",
     "/settings/config-gdpr": "GDPR-related configuration for this workspace (when enabled).",

@@ -68,6 +68,16 @@ export default function ViewOrg() {
         return r === "admin" || r === "super-admin";
     }
 
+    function canCreateOrganisationFromHere() {
+        try {
+            const id = JSON.parse(localStorage.getItem("organisation")).id;
+            const r = Authentication.getOrganisationAccessStatusForOrganisation(id);
+            return r === "admin" || r === "super-admin";
+        } catch {
+            return false;
+        }
+    }
+
     function afterMutationSuccess() {
         setListTick((n) => n + 1);
         closeModal();
@@ -178,10 +188,22 @@ export default function ViewOrg() {
                 <Link className="settings-subpage__back" to="/settings">
                     ← Back to settings
                 </Link>
-                <p className="settings-subpage__intro">
-                    Organisations your account can access. Edit is only available where you are admin or
-                    super-admin.
-                </p>
+                {canCreateOrganisationFromHere() ? (
+                    <div className="settings-subpage__toolbar">
+                        <p className="settings-subpage__intro" style={{ margin: 0, flex: "1 1 280px" }}>
+                            Organisations your account can access. Edit is only available where you are admin
+                            or super-admin. Create additional organisations from here.
+                        </p>
+                        <Link className="cta" to="/settings/create-organisation">
+                            Create organisation
+                        </Link>
+                    </div>
+                ) : (
+                    <p className="settings-subpage__intro">
+                        Organisations your account can access. Edit is only available where you are admin or
+                        super-admin.
+                    </p>
+                )}
                 <div className="settings-table-wrap">
                     {loading ? (
                         <CurrentPageLoading />

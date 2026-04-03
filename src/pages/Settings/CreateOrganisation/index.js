@@ -8,6 +8,7 @@ import API from "../../../API/api";
 import "../Style.css";
 
 const { useState } = React;
+const Link = window.ReactRouterDOM.Link;
 
 export default function CreateOrganisation() {
     document.title = "Create organisation | Settings | Intastellar Consents | CMP";
@@ -44,6 +45,9 @@ export default function CreateOrganisation() {
             <SideNav links={reportsLinks} title="Settings" />
             <main className="dashboard-content settings-subpage">
                 <StickyPageTitle title="Create organisation" />
+                <Link className="settings-subpage__back" to="/settings/view-organisations">
+                    ← Back to organisations
+                </Link>
                 <p className="settings-subpage__intro">
                     Register a new organisation and nominate an admin email. Further steps may be sent by
                     email.
