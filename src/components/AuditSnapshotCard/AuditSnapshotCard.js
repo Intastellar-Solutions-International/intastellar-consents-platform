@@ -97,6 +97,65 @@ function formatVersionTag(versionRaw) {
     return /^v\d/i.test(s) ? s : `v${s}`;
 }
 
+function deriveSystemHealth({
+    auditPhase,
+    auditError,
+    auditPreview,
+    liveData,
+    activeData,
+    demoMode,
+    interactionsLoading,
+    auditPreviewLoading,
+}) {
+    if (demoMode) {
+        return {
+            level: "healthy",
+            label: "Consent logging active",
+            sub: "Demo mode — illustrative snapshot only.",
+        };
+    }
+    if (auditPhase === "loading" || auditPreviewLoading) {
+        return {
+            level: "loading",
+            label: "Checking status…",
+            sub: "Contacting the audit log for this domain and date range.",
+        };
+    }
+    if (auditPhase === "error") {
+        return {
+            level: "error",
+            label: "Audit log unreachable",
+            sub: auditError || "Network or server error. Open the audit log or retry shortly.",
+        };
+    }
+    if (interactionsLoading) {
+        return {
+            level: "loading",
+            label: "Consent logging active",
+            sub: "Audit log OK — loading dashboard metrics for this period.",
+        };
+    }
+    const liveN = Number(liveData?.count);
+    const totalN = Number(activeData?.Total);
+    const hasSamples = Array.isArray(auditPreview) && auditPreview.length > 0;
+    const hasSignal =
+        hasSamples ||
+        (Number.isFinite(liveN) && liveN > 0) ||
+        (Number.isFinite(totalN) && totalN > 0);
+    if (hasSignal) {
+        return {
+            level: "healthy",
+            label: "Consent logging active",
+            sub: "Audit log responding; consent data is flowing for this selection.",
+        };
+    }
+    return {
+        level: "degraded",
+        label: "Logging endpoint OK",
+        sub: "No recent consents in this view (quiet period or narrow range). Verify the banner if this persists.",
+    };
+}
+
 /**
  * @param {object} props
  * @param {string} props.platformId — route :id (e.g. gdpr)
@@ -107,6 +166,7 @@ function formatVersionTag(versionRaw) {
  * @param {object|null} props.activeData — getInteractions payload
  * @param {boolean} props.demoMode
  * @param {object|null} props.liveData — payload from Live view (optional)
+ * @param {boolean} [props.interactionsLoading] — dashboard getInteractions in flight
  */
 export default function AuditSnapshotCard(props) {
     const {
@@ -118,6 +178,7 @@ export default function AuditSnapshotCard(props) {
         activeData,
         demoMode,
         liveData,
+        interactionsLoading = false,
     } = props;
 
     const auditLogPath = useMemo(() => {
@@ -132,11 +193,17 @@ export default function AuditSnapshotCard(props) {
 
     const [auditPreview, setAuditPreview] = useState([]);
     const [auditPreviewLoading, setAuditPreviewLoading] = useState(false);
+    const [auditFetchState, setAuditFetchState] = useState({ phase: "loading", error: null });
 
     useEffect(() => {
-        if (!platformId || !API[platformId]?.getDomainsUrl) return undefined;
+        if (!platformId || !API[platformId]?.getDomainsUrl) {
+            setAuditFetchState({ phase: "error", error: "Platform not configured" });
+            return undefined;
+        }
+        let cancelled = false;
         const ac = new AbortController();
         setAuditPreviewLoading(true);
+        setAuditFetchState({ phase: "loading", error: null });
         const fd = fromDate.toISOString().split("T")[0];
         const td = toDate.toISOString().split("T")[0];
         const hdrs = {
@@ -153,27 +220,94 @@ export default function AuditSnapshotCard(props) {
             headers: hdrs,
             signal: ac.signal,
         })
-            .then((res) => res.json())
-            .then((data) => {
+            .then(async (res) => {
+                if (cancelled) return;
+                let data;
+                try {
+                    data = await res.json();
+                } catch {
+                    if (!cancelled) {
+                        setAuditPreview([]);
+                        setAuditFetchState({ phase: "error", error: "Invalid response" });
+                    }
+                    return;
+                }
+                if (cancelled) return;
                 if (data === "Err_Login_Expired") {
                     localStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }
+                if (!res.ok) {
+                    const msg =
+                        typeof data?.error === "string"
+                            ? data.error
+                            : `Request failed (${res.status})`;
+                    setAuditPreview([]);
+                    setAuditFetchState({ phase: "error", error: msg });
+                    return;
+                }
+                if (data != null && typeof data === "object" && data.error != null) {
+                    setAuditPreview([]);
+                    setAuditFetchState({
+                        phase: "error",
+                        error: String(data.error),
+                    });
+                    return;
+                }
+                if (data === "Err_No_Data_Found") {
+                    setAuditPreview([]);
+                    setAuditFetchState({ phase: "ok", error: null });
+                    return;
+                }
                 if (!Array.isArray(data)) {
                     setAuditPreview([]);
+                    setAuditFetchState({ phase: "error", error: "Unexpected audit log response" });
                     return;
                 }
                 setAuditPreview(data);
+                setAuditFetchState({ phase: "ok", error: null });
             })
             .catch((err) => {
-                if (err?.name !== "AbortError") setAuditPreview([]);
+                if (cancelled || err?.name === "AbortError") return;
+                setAuditPreview([]);
+                setAuditFetchState({
+                    phase: "error",
+                    error: err?.message || "Network error",
+                });
             })
             .finally(() => {
-                if (!ac.signal.aborted) setAuditPreviewLoading(false);
+                if (!cancelled && !ac.signal.aborted) setAuditPreviewLoading(false);
             });
-        return () => ac.abort();
+        return () => {
+            cancelled = true;
+            ac.abort();
+        };
     }, [platformId, fromDate, toDate, domainsApiHeaderForStats]);
+
+    const systemHealth = useMemo(
+        () =>
+            deriveSystemHealth({
+                auditPhase: auditFetchState.phase,
+                auditError: auditFetchState.error,
+                auditPreview,
+                liveData,
+                activeData,
+                demoMode,
+                interactionsLoading,
+                auditPreviewLoading,
+            }),
+        [
+            auditFetchState.phase,
+            auditFetchState.error,
+            auditPreview,
+            liveData,
+            activeData,
+            demoMode,
+            interactionsLoading,
+            auditPreviewLoading,
+        ]
+    );
 
     const auditSnapshotMeta = useMemo(() => {
         const rows = Array.isArray(auditPreview) ? auditPreview : [];
@@ -244,15 +378,29 @@ export default function AuditSnapshotCard(props) {
         return undefined;
     })();
 
+    const cardStatusClass = `audit-snapshot-card--health-${systemHealth.level}`;
+
     return (
         <Link
-            className="audit-snapshot-card"
+            className={`audit-snapshot-card ${cardStatusClass}`}
             to={auditLogPath}
-            aria-label="Open audit log with individual consent records"
+            aria-label={`Open audit log. System status: ${systemHealth.label}. ${systemHealth.sub}`}
         >
             <div className="audit-snapshot-card__body">
                 <div className="audit-snapshot-card__text">
-                    <h3 className="audit-snapshot-card__title">Audit Snapshot</h3>
+                    <div className="audit-snapshot-card__title-row">
+                        <h3 className="audit-snapshot-card__title">Audit Snapshot</h3>
+                        <div
+                            className={`audit-snapshot-card__health-pill audit-snapshot-card__health-pill--${systemHealth.level}`}
+                            title={systemHealth.sub}
+                        >
+                            <span className="audit-snapshot-card__health-dot" aria-hidden />
+                            <span className="audit-snapshot-card__health-label">{systemHealth.label}</span>
+                        </div>
+                    </div>
+                    <p className="audit-snapshot-card__health-sub" role="status">
+                        {systemHealth.sub}
+                    </p>
                     <p className="audit-snapshot-card__desc">
                         Jump to the audit log for per-user consent records, timestamps, and choices for the same domain
                         and filters you use here.
@@ -334,8 +482,10 @@ export default function AuditSnapshotCard(props) {
                             Metrics load as soon as the dashboard finishes loading.
                         </p>
                     )}
+                    <div className="audit-snapshot-card__cta-wrap">
+                        <span className="audit-snapshot-card__cta">Open audit log</span>
+                    </div>
                 </div>
-                <span className="audit-snapshot-card__cta">Open audit log</span>
             </div>
         </Link>
     );

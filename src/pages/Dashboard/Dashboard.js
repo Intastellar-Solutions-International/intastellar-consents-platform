@@ -246,6 +246,7 @@ export default function Dashboard(props) {
                         activeData={activeData}
                         demoMode={demoMode}
                         liveData={liveViewData}
+                        interactionsLoading={loading}
                     />
                 ) : null}
                 {
