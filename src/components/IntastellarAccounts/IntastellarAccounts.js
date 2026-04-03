@@ -47,29 +47,28 @@ export default function Account(props) {
                 </div>
 
                 {Authentication.getOrganisation() == 1 ? (
-                    <>
-                        <div className="ia-menu__separator" />
-                        <div className="ia-menu__demo" role="group" aria-labelledby="ia-workspace-section">
-                            <p className="ia-menu__workspace-title" id="ia-workspace-section">
-                                Workspace
-                            </p>
-                            <div className="ia-menu__demo-row">
+                    <div className="ia-menu__workspace-panel" role="group" aria-labelledby="ia-workspace-section">
+                        <div className="ia-menu__workspace-row">
+                            <div className="ia-menu__workspace-copy">
+                                <span className="ia-menu__workspace-kicker" id="ia-workspace-section">
+                                    Workspace
+                                </span>
                                 <span className="ia-menu__demo-label" id="ia-demo-label">
                                     Demo mode
                                 </span>
-                                <label className="ia-menu__switch">
-                                    <input
-                                        type="checkbox"
-                                        checked={demoMode}
-                                        onChange={(e) => Authentication.SetDemoMode(e.target.checked)}
-                                        aria-labelledby="ia-workspace-section ia-demo-label"
-                                    />
-                                    <span className="ia-menu__switch-slider" />
-                                </label>
                             </div>
-                            <p className="ia-menu__demo-hint">Masks live data across dashboards.</p>
+                            <label className="ia-menu__switch">
+                                <input
+                                    type="checkbox"
+                                    checked={demoMode}
+                                    onChange={(e) => Authentication.SetDemoMode(e.target.checked)}
+                                    aria-labelledby="ia-workspace-section ia-demo-label"
+                                />
+                                <span className="ia-menu__switch-slider" />
+                            </label>
                         </div>
-                    </>
+                        <p className="ia-menu__demo-hint">Masks live data across dashboards.</p>
+                    </div>
                 ) : null}
             </div>
 
