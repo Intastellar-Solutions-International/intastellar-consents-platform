@@ -19,7 +19,7 @@ export const reportsLinks = [
         path: "/settings/add-domain",
         view: ["admin", "super-admin", "manager"]
     },
-    {
+    /* {
         name: "View Domains",
         path: "/settings/view-domains",
         view: ["admin", "super-admin", "manager"]
@@ -28,7 +28,7 @@ export const reportsLinks = [
         name: "Config GDPR",
         path: "/settings/config-gdpr",
         view: ["admin", "super-admin", "manager"]
-    },
+    }, */
     {
         name: "Blacklist IP",
         path: "/settings/blacklist-ip",
