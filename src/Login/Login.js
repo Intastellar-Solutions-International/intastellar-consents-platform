@@ -81,8 +81,14 @@ export default function Login() {
                         </h1>
                         <p className="int-login__lede">
                             Access consent activity, audit logs, and reporting. Sign in with your Intastellar
-                            account — authentication is handled by Intastellar Accounts.
+                            account.
                         </p>
+
+                        <ul className="int-login__trust" aria-label="Security and privacy">
+                            <li className="int-login__trust-item">Secure authentication</li>
+                            <li className="int-login__trust-item">Your data is protected</li>
+                            <li className="int-login__trust-item">Audit logs are private</li>
+                        </ul>
 
                         <div className="int-login__sso">
                             <IntastellarButton
@@ -94,14 +100,72 @@ export default function Login() {
                             />
                         </div>
 
-                        <footer className="int-login__powered" aria-label="Identity provider">
-                            <span className="int-login__powered-label">Powered by Intastellar Accounts</span>
-                            <img
-                                src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts-white.svg"
-                                alt=""
-                                className="int-login__powered-logo"
-                                decoding="async"
-                            />
+                        <p className="int-login__not-you">
+                            <a
+                                href={`https://www.intastellaraccounts.com/signin/v2/ws/identifier?service=Intastellar+Consents+%7C+CMP&continue=${window.location.host}&entryFlow=cHJvZmlsZQ%3D%3D&key=d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d&access_id=${window.location.hostname}&passive=true&flowName=GeneralOAuthFlow&Entry=webauthsignin&scope=profile`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="int-login__not-you-link"
+                            >
+                                Not you?
+                            </a>
+                        </p>
+
+                        <footer
+                            className="int-login__identity"
+                            aria-label="Single sign-on and identity provider"
+                        >
+                            <div className="int-login__identity-strip">
+                                <div className="int-login__identity-icon" aria-hidden="true">
+                                    <svg
+                                        className="int-login__identity-svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        focusable="false"
+                                    >
+                                        <path
+                                            d="M12 2.5 4.5 5.25v5.5c0 4.85 3.35 9.4 7.5 10.75 4.15-1.35 7.5-5.9 7.5-10.75v-5.5L12 2.5z"
+                                            stroke="currentColor"
+                                            strokeWidth="1.35"
+                                            strokeLinejoin="round"
+                                            fill="rgba(192, 159, 83, 0.14)"
+                                        />
+                                        <path
+                                            d="m9 12 2.25 2.25L15.5 10"
+                                            stroke="currentColor"
+                                            strokeWidth="1.35"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                    </svg>
+                                </div>
+                                <div className="int-login__identity-copy">
+                                    <p className="int-login__identity-kicker">Single sign-on (SSO)</p>
+                                    <p className="int-login__identity-lede">
+                                        <strong className="int-login__identity-product">Intastellar Accounts</strong> is
+                                        your identity provider. One verified login for Intastellar products — this app
+                                        never receives your password.
+                                    </p>
+                                </div>
+                            </div>
+                            <a
+                                href="https://my.intastellaraccounts.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="int-login__identity-brand"
+                            >
+                                <span className="int-login__identity-brand-label">Secured by</span>
+                                <img
+                                    src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts-white.svg"
+                                    alt="Intastellar Accounts"
+                                    className="int-login__identity-logo"
+                                    decoding="async"
+                                />
+                            </a>
+                            <p className="int-login__identity-trustline">
+                                Identity trust · Encrypted session · Centralised access control
+                            </p>
                         </footer>
                     </div>
                 </main>
