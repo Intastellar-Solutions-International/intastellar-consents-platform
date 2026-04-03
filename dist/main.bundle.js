@@ -22850,152 +22850,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
     transform: none;
 }
 
-/* User preferences: grouped sections inside one panel */
-.settings-preferences__header {
-    margin: 0 0 22px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.settings-preferences__title {
-    margin: 0 0 8px;
-    font-size: 1.0625rem;
-    font-weight: 650;
-    letter-spacing: -0.02em;
-    color: #ececec;
-}
-
-.settings-preferences__lede {
-    margin: 0;
-    font-size: 0.875rem;
-    line-height: 1.55;
-    color: rgba(180, 180, 180, 0.92);
-}
-
-.settings-preferences__groups {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-.settings-preferences__group {
-    margin: 0;
-    padding: 16px 16px 18px 18px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.18);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.settings-preferences__group-title {
-    margin: 0 0 6px;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(192, 159, 83, 0.9);
-}
-
-.settings-preferences__group-desc {
-    margin: 0 0 14px;
-    font-size: 0.8125rem;
-    line-height: 1.5;
-    color: rgba(165, 165, 165, 0.95);
-    max-width: 42em;
-}
-
-.settings-preferences__field {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px 16px;
-}
-
-.settings-preferences__field .selectorContianer,
-.settings-preferences__field .selector-container {
-    flex: 1;
-    min-width: min(100%, 220px);
-}
-
-.settings-preferences__label {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #c8c8c8;
-    min-width: 120px;
-}
-
-.settings-preferences__actions {
-    margin-top: 22px;
-    padding-top: 18px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.settings-preferences__actions .cta,
-.settings-preferences__actions button {
-    margin-top: 0;
-}
-
-/* Inputs inside grouped settings panels (match dark panel chrome) */
-.settings-subpage__panel.settings-preferences .flex.flex-col {
-    gap: 8px;
-}
-
-.settings-subpage__panel.settings-preferences .flex.flex-col > label,
-.settings-subpage__panel.settings-preferences label.text-sm {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: #c8c8c8;
-    letter-spacing: 0.02em;
-}
-
-.settings-subpage__panel.settings-preferences .intInput {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 11px 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(0, 0, 0, 0.35);
-    color: #f0f0f0;
-    font-size: 0.875rem;
-    font-family: inherit;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.settings-subpage__panel.settings-preferences .intInput::placeholder {
-    color: rgba(160, 160, 160, 0.75);
-}
-
-.settings-subpage__panel.settings-preferences .intInput:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.settings-subpage__panel.settings-preferences .intInput:focus,
-.settings-subpage__panel.settings-preferences .intInput:focus-visible {
-    outline: none;
-    border-color: rgba(192, 159, 83, 0.5);
-    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.18);
-}
-
-.settings-preferences__fields-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-}
-
-@media screen and (min-width: 540px) {
-    .settings-preferences__fields-grid--2 {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.settings-preferences__control-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
 /* Data tables (users, organisations) */
 .settings-table-wrap {
     margin-top: 8px;
@@ -23193,9 +23047,49 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
     color: #faf6ee;
 }
 
+.settings-blacklist-modal__btn--danger {
+    border-color: rgba(220, 100, 100, 0.5);
+    background: rgba(160, 50, 50, 0.22);
+    color: #ffd8d8;
+}
+
 .settings-blacklist-modal__btn:hover {
     filter: brightness(1.08);
-}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"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","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* User preferences: grouped sections inside one panel */\n.settings-preferences__header {\n    margin: 0 0 22px;\n    padding-bottom: 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-preferences__title {\n    margin: 0 0 8px;\n    font-size: 1.0625rem;\n    font-weight: 650;\n    letter-spacing: -0.02em;\n    color: #ececec;\n}\n\n.settings-preferences__lede {\n    margin: 0;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 180, 0.92);\n}\n\n.settings-preferences__groups {\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n.settings-preferences__group {\n    margin: 0;\n    padding: 16px 16px 18px 18px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.settings-preferences__group-title {\n    margin: 0 0 6px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n}\n\n.settings-preferences__group-desc {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(165, 165, 165, 0.95);\n    max-width: 42em;\n}\n\n.settings-preferences__field {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px 16px;\n}\n\n.settings-preferences__field .selectorContianer,\n.settings-preferences__field .selector-container {\n    flex: 1;\n    min-width: min(100%, 220px);\n}\n\n.settings-preferences__label {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n    min-width: 120px;\n}\n\n.settings-preferences__actions {\n    margin-top: 22px;\n    padding-top: 18px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-preferences__actions .cta,\n.settings-preferences__actions button {\n    margin-top: 0;\n}\n\n/* Inputs inside grouped settings panels (match dark panel chrome) */\n.settings-subpage__panel.settings-preferences .flex.flex-col {\n    gap: 8px;\n}\n\n.settings-subpage__panel.settings-preferences .flex.flex-col > label,\n.settings-subpage__panel.settings-preferences label.text-sm {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n    letter-spacing: 0.02em;\n}\n\n.settings-subpage__panel.settings-preferences .intInput {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 11px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    transition:\n        border-color 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-subpage__panel.settings-preferences .intInput::placeholder {\n    color: rgba(160, 160, 160, 0.75);\n}\n\n.settings-subpage__panel.settings-preferences .intInput:hover {\n    border-color: rgba(255, 255, 255, 0.2);\n}\n\n.settings-subpage__panel.settings-preferences .intInput:focus,\n.settings-subpage__panel.settings-preferences .intInput:focus-visible {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.18);\n}\n\n.settings-preferences__fields-grid {\n    display: grid;\n    grid-template-columns: 1fr;\n    gap: 16px;\n}\n\n@media screen and (min-width: 540px) {\n    .settings-preferences__fields-grid--2 {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n\n.settings-preferences__control-stack {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}"],"sourceRoot":""}]);
+}
+
+.settings-org-modal__divider {
+    margin: 20px 0 14px;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settings-org-modal__danger-title {
+    margin: 0 0 8px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 160, 160, 0.85);
+}
+
+.settings-org-modal__danger-desc {
+    margin: 0 0 12px;
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: rgba(190, 190, 190, 0.95);
+}
+
+.settings-blacklist-modal__card .settings-org-modal__text-input {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.settings-org-modal__label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #c8c8c8;
+}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"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","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn--danger {\n    border-color: rgba(220, 100, 100, 0.5);\n    background: rgba(160, 50, 50, 0.22);\n    color: #ffd8d8;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}\n\n.settings-org-modal__divider {\n    margin: 20px 0 14px;\n    border: none;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-org-modal__danger-title {\n    margin: 0 0 8px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 160, 160, 0.85);\n}\n\n.settings-org-modal__danger-desc {\n    margin: 0 0 12px;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(190, 190, 190, 0.95);\n}\n\n.settings-blacklist-modal__card .settings-org-modal__text-input {\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n.settings-org-modal__label {\n    display: block;\n    margin-bottom: 6px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -29784,6 +29678,22 @@ var API = _defineProperty(_defineProperty({
         "Content-Type": "application/json"
       }
     },
+    updateOrganisation: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/update-organisation"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    },
+    deleteOrganisation: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/delete-organisation"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    },
     updateSettings: {
       url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/updateSettings"),
       method: "POST",
@@ -31314,11 +31224,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Line)
 /* harmony export */ });
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Components/Charts/Line/Style.css");
-/* harmony import */ var _Functions_userLocale__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Functions/userLocale */ "./src/Functions/userLocale.js");
 var _React = React,
+  useState = _React.useState,
   useEffect = _React.useEffect,
-  useMemo = _React.useMemo;
-
+  useRef = _React.useRef,
+  useContext = _React.useContext;
 
 function Line(_ref) {
   var data = _ref.data,
@@ -31326,29 +31236,24 @@ function Line(_ref) {
     title = _ref.title,
     fromDate = _ref.fromDate,
     toDate = _ref.toDate;
-  var locale = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_1__.useUserLocale)();
-  var dailyData = useMemo(function () {
-    return data === null || data === void 0 ? void 0 : data.map(function (d) {
-      return {
-        name: fromDate === toDate ? new Intl.DateTimeFormat(locale, {
-          hour: "numeric",
-          minute: "numeric"
-        }).format(new Date(d.date)) : new Intl.DateTimeFormat(locale).format(new Date(d.date)),
-        domain: d.num
-      };
-    });
-  }, [data, fromDate, toDate, locale]);
-  var dailyData2 = useMemo(function () {
-    return data2 === null || data2 === void 0 ? void 0 : data2.map(function (d) {
-      return {
-        name: fromDate === toDate ? new Intl.DateTimeFormat(locale, {
-          hour: "numeric",
-          minute: "numeric"
-        }).format(new Date(d.previousPeriod.date)) : new Intl.DateTimeFormat(locale).format(new Date(d.previousPeriod.date)),
-        domain: d.previousPeriod.num
-      };
-    });
-  }, [data2, fromDate, toDate, locale]);
+  var dailyData = data === null || data === void 0 ? void 0 : data.map(function (d, i) {
+    return {
+      "name": fromDate === toDate ? new Intl.DateTimeFormat('de-DE', {
+        hour: 'numeric',
+        minute: 'numeric'
+      }).format(new Date(d.date)) : new Intl.DateTimeFormat('de-DE').format(new Date(d.date)),
+      "domain": d.num
+    };
+  });
+  var dailyData2 = data2 === null || data2 === void 0 ? void 0 : data2.map(function (d, i) {
+    return {
+      "name": fromDate === toDate ? new Intl.DateTimeFormat('de-DE', {
+        hour: 'numeric',
+        minute: 'numeric'
+      }).format(new Date(d.previousPeriod.date)) : new Intl.DateTimeFormat('de-DE').format(new Date(d.previousPeriod.date)),
+      "domain": d.previousPeriod.num
+    };
+  });
   useEffect(function () {
     anychart.onDocumentReady(function () {
       // The main JS line charting code will be here.
@@ -31360,7 +31265,7 @@ function Line(_ref) {
       if (dataSet.oc != dailyData) {
         document.getElementById("line-chart").innerHTML = "";
       }
-      var dataSet2 = anychart.data.set(dailyData2 !== null && dailyData2 !== void 0 ? dailyData2 : []);
+      var dataSet2 = anychart.data.set(dailyData2);
       var chart = anychart.line();
       chart.background().fill("transparent");
       chart.xAxis().title("Day");
@@ -31385,7 +31290,7 @@ function Line(_ref) {
         chart.draw();
       }
     });
-  }, [dailyData, dailyData2, data, locale]);
+  }, [dailyData, dailyData2]);
   return /*#__PURE__*/React.createElement("div", {
     className: "no-padding"
   }, /*#__PURE__*/React.createElement("div", {
@@ -34206,7 +34111,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Styles_Filter_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Styles/Filter.css */ "./src/Components/Filter/Styles/Filter.css");
 /* harmony import */ var _Calendar_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Calendar.js */ "./src/Components/Filter/Calendar.js");
-/* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
+Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../Functions/userLocale.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -34232,7 +34137,7 @@ function Filter(_ref) {
     setFromDate = _ref.setFromDate,
     setToDate = _ref.setToDate,
     demoMode = _ref.demoMode;
-  var locale = (0,_Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_2__.useUserLocale)();
+  var locale = Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../Functions/userLocale.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())();
   var compareRangeCheck = compareRange === 0 ? false : true;
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
@@ -35742,25 +35647,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Email)
 /* harmony export */ });
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Components/InputFields/Style.css");
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 
 function Email(props) {
-  var _props$autoComplete;
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-2"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: props === null || props === void 0 ? void 0 : props.id,
     className: "text-sm font-medium"
-  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", _extends({
+  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", {
     placeholder: props === null || props === void 0 ? void 0 : props.placeholder,
     className: "intInput",
-    autoComplete: (_props$autoComplete = props === null || props === void 0 ? void 0 : props.autoComplete) !== null && _props$autoComplete !== void 0 ? _props$autoComplete : "off",
+    autoComplete: "off",
     type: "email",
     onChange: props.onChange,
     id: props === null || props === void 0 ? void 0 : props.id
-  }, props.value !== undefined ? {
-    value: props.value
-  } : {})));
+  }));
 }
 
 /***/ }),
@@ -35776,25 +35677,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ PasswordInput)
 /* harmony export */ });
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Components/InputFields/Style.css");
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 
 function PasswordInput(props) {
-  var _props$autoComplete;
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-2"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: props === null || props === void 0 ? void 0 : props.id,
     className: "text-sm font-medium"
-  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", _extends({
+  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", {
     placeholder: props === null || props === void 0 ? void 0 : props.placeholder,
     className: "intInput",
-    autoComplete: (_props$autoComplete = props === null || props === void 0 ? void 0 : props.autoComplete) !== null && _props$autoComplete !== void 0 ? _props$autoComplete : "new-password",
+    autoComplete: "off",
     type: "password",
     onChange: props.onChange,
     id: props === null || props === void 0 ? void 0 : props.id
-  }, props.value !== undefined ? {
-    value: props.value
-  } : {})));
+  }));
 }
 
 /***/ }),
@@ -35862,25 +35759,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Text)
 /* harmony export */ });
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/Components/InputFields/Style.css");
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 
 function Text(props) {
-  var _props$autoComplete;
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-2"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: props === null || props === void 0 ? void 0 : props.id,
     className: "text-sm font-medium"
-  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", _extends({
+  }, props === null || props === void 0 ? void 0 : props.label), /*#__PURE__*/React.createElement("input", {
     placeholder: props === null || props === void 0 ? void 0 : props.placeholder,
     className: "intInput",
-    autoComplete: (_props$autoComplete = props === null || props === void 0 ? void 0 : props.autoComplete) !== null && _props$autoComplete !== void 0 ? _props$autoComplete : "off",
+    autoComplete: "off",
     type: props !== null && props !== void 0 && props.type ? props.type : "text",
     onChange: props.onChange,
     id: props === null || props === void 0 ? void 0 : props.id
-  }, props.value !== undefined ? {
-    value: props.value
-  } : {})));
+  }));
 }
 
 /***/ }),
@@ -37264,7 +37157,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Charts_Line__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Charts/Line */ "./src/Components/Charts/Line/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _Functions_userLocale__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Functions/userLocale */ "./src/Functions/userLocale.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -37276,21 +37168,20 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 
 
 
-
-function formatPeriodLabel(fromDate, toDate, locale) {
+function formatPeriodLabel(fromDate, toDate) {
   if (!fromDate || !toDate) return null;
   try {
     if (fromDate === toDate) {
-      return new Intl.DateTimeFormat(locale, {
+      return new Intl.DateTimeFormat("de-DE", {
         dateStyle: "medium"
       }).format(new Date(fromDate));
     }
     var a = new Date(fromDate);
     var b = new Date(toDate);
-    return "".concat(new Intl.DateTimeFormat(locale, {
+    return "".concat(new Intl.DateTimeFormat("de-DE", {
       day: "numeric",
       month: "short"
-    }).format(a), " \u2013 ").concat(new Intl.DateTimeFormat(locale, {
+    }).format(a), " \u2013 ").concat(new Intl.DateTimeFormat("de-DE", {
       day: "numeric",
       month: "short",
       year: "numeric"
@@ -37345,7 +37236,6 @@ function summarizeDailySeries(daily) {
   };
 }
 function Widget(props) {
-  var locale = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_3__.useUserLocale)();
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)(false),
     _useState2 = _slicedToArray(_useState, 2),
     explainerVisible = _useState2[0],
@@ -37365,7 +37255,7 @@ function Widget(props) {
     var displayValue = "";
     if (_typeof(props.totalNumber) === "object" && (props === null || props === void 0 || (_props$totalNumber = props.totalNumber) === null || _props$totalNumber === void 0 ? void 0 : _props$totalNumber.Total) !== undefined && (props === null || props === void 0 || (_props$totalNumber2 = props.totalNumber) === null || _props$totalNumber2 === void 0 ? void 0 : _props$totalNumber2.Total) !== null) {
       var _props$totalNumber3;
-      displayValue = props === null || props === void 0 || (_props$totalNumber3 = props.totalNumber) === null || _props$totalNumber3 === void 0 || (_props$totalNumber3 = _props$totalNumber3.Total) === null || _props$totalNumber3 === void 0 ? void 0 : _props$totalNumber3.toLocaleString(locale);
+      displayValue = props === null || props === void 0 || (_props$totalNumber3 = props.totalNumber) === null || _props$totalNumber3 === void 0 || (_props$totalNumber3 = _props$totalNumber3.Total) === null || _props$totalNumber3 === void 0 ? void 0 : _props$totalNumber3.toLocaleString("de-DE");
     } else if (_typeof(props.totalNumber) !== "object" && props.totalNumber !== undefined && props.totalNumber !== null) {
       displayValue = props.totalNumber;
     }
@@ -37415,17 +37305,17 @@ function Widget(props) {
     var _displayValue = "";
     if (_typeof(props.totalNumber) === "object" && (props === null || props === void 0 || (_props$totalNumber4 = props.totalNumber) === null || _props$totalNumber4 === void 0 ? void 0 : _props$totalNumber4.Total) !== undefined && (props === null || props === void 0 || (_props$totalNumber5 = props.totalNumber) === null || _props$totalNumber5 === void 0 ? void 0 : _props$totalNumber5.Total) !== null) {
       var _props$totalNumber6;
-      _displayValue = props === null || props === void 0 || (_props$totalNumber6 = props.totalNumber) === null || _props$totalNumber6 === void 0 || (_props$totalNumber6 = _props$totalNumber6.Total) === null || _props$totalNumber6 === void 0 ? void 0 : _props$totalNumber6.toLocaleString(locale);
+      _displayValue = props === null || props === void 0 || (_props$totalNumber6 = props.totalNumber) === null || _props$totalNumber6 === void 0 || (_props$totalNumber6 = _props$totalNumber6.Total) === null || _props$totalNumber6 === void 0 ? void 0 : _props$totalNumber6.toLocaleString("de-DE");
     } else if (_typeof(props.totalNumber) !== "object" && props.totalNumber !== undefined && props.totalNumber !== null) {
       _displayValue = props.totalNumber;
     }
     var daily = props === null || props === void 0 || (_props$totalNumber7 = props.totalNumber) === null || _props$totalNumber7 === void 0 ? void 0 : _props$totalNumber7.dailyNum;
     var hasChart = Array.isArray(daily) && daily.length > 0;
-    var periodLabel = hasChart ? formatPeriodLabel(props === null || props === void 0 ? void 0 : props.fromDate, props === null || props === void 0 ? void 0 : props.toDate, locale) : null;
+    var periodLabel = hasChart ? formatPeriodLabel(props === null || props === void 0 ? void 0 : props.fromDate, props === null || props === void 0 ? void 0 : props.toDate) : null;
     var seriesSummary = hasChart ? summarizeDailySeries(daily) : null;
     var peakDateStr = (seriesSummary === null || seriesSummary === void 0 ? void 0 : seriesSummary.peakDate) != null ? function () {
       try {
-        return new Intl.DateTimeFormat(locale, {
+        return new Intl.DateTimeFormat("en-GB", {
           day: "numeric",
           month: "short"
         }).format(new Date(seriesSummary.peakDate));
@@ -37453,7 +37343,7 @@ function Widget(props) {
       className: "widget__insight-label"
     }, "Peak day"), /*#__PURE__*/React.createElement("span", {
       className: "widget__insight-value"
-    }, seriesSummary.peak.toLocaleString(locale)), peakDateStr ? /*#__PURE__*/React.createElement("span", {
+    }, seriesSummary.peak.toLocaleString("de-DE")), peakDateStr ? /*#__PURE__*/React.createElement("span", {
       className: "widget__insight-sub"
     }, peakDateStr) : null), /*#__PURE__*/React.createElement("div", {
       className: "widget__insight"
@@ -37461,7 +37351,7 @@ function Widget(props) {
       className: "widget__insight-label"
     }, "Daily avg"), /*#__PURE__*/React.createElement("span", {
       className: "widget__insight-value"
-    }, seriesSummary.avg.toLocaleString(locale)), /*#__PURE__*/React.createElement("span", {
+    }, seriesSummary.avg.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("span", {
       className: "widget__insight-sub"
     }, seriesSummary.days, " ", seriesSummary.days === 1 ? "day" : "days")), seriesSummary.vsPrevPct != null ? /*#__PURE__*/React.createElement("div", {
       className: "widget__insight widget__insight--trend ".concat(seriesSummary.vsPrevPct >= 0 ? "widget__insight--up" : "widget__insight--down")
@@ -38067,74 +37957,6 @@ function isJson(str) {
     return false;
   }
   return true;
-}
-
-/***/ }),
-
-/***/ "./src/Functions/userLocale.js":
-/*!*************************************!*\
-  !*** ./src/Functions/userLocale.js ***!
-  \*************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   USER_SETTINGS_CHANGED: () => (/* binding */ USER_SETTINGS_CHANGED),
-/* harmony export */   dispatchUserSettingsChanged: () => (/* binding */ dispatchUserSettingsChanged),
-/* harmony export */   getUserLocale: () => (/* binding */ getUserLocale),
-/* harmony export */   readUserSettings: () => (/* binding */ readUserSettings),
-/* harmony export */   useUserLocale: () => (/* binding */ useUserLocale)
-/* harmony export */ });
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-var SETTINGS_KEY = "settings";
-var USER_SETTINGS_CHANGED = "intastellar-user-settings-changed";
-
-/** Matches previous app-wide hardcoding until the user saves a preference. */
-var DEFAULT_LOCALE = "de-DE";
-function readUserSettings() {
-  try {
-    var raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return {};
-    var o = JSON.parse(raw);
-    return o && _typeof(o) === "object" ? o : {};
-  } catch (_unused) {
-    return {};
-  }
-}
-function getUserLocale() {
-  var s = readUserSettings();
-  if (typeof s.locale === "string" && s.locale.trim() !== "") return s.locale.trim();
-  return DEFAULT_LOCALE;
-}
-function dispatchUserSettingsChanged() {
-  window.dispatchEvent(new Event(USER_SETTINGS_CHANGED));
-}
-var _window$React = window.React,
-  useState = _window$React.useState,
-  useEffect = _window$React.useEffect;
-function useUserLocale() {
-  var _useState = useState(getUserLocale),
-    _useState2 = _slicedToArray(_useState, 2),
-    locale = _useState2[0],
-    setLocale = _useState2[1];
-  useEffect(function () {
-    var sync = function sync() {
-      return setLocale(getUserLocale());
-    };
-    window.addEventListener(USER_SETTINGS_CHANGED, sync);
-    window.addEventListener("storage", sync);
-    return function () {
-      window.removeEventListener(USER_SETTINGS_CHANGED, sync);
-      window.removeEventListener("storage", sync);
-    };
-  }, []);
-  return locale;
 }
 
 /***/ }),
@@ -39002,7 +38824,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
 /* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
-/* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -39041,7 +38862,6 @@ var Link = window.ReactRouterDOM.Link;
 
 
 
-
 var punycode = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 function Dashboard(props) {
   var _jsData$Total, _jsData$JS, _jsData$WP, _activeData$activeUse, _activeData$changeRat, _activeData$relativeD, _activeData$changeRat2, _activeData$relativeD2, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da;
@@ -39066,7 +38886,6 @@ function Dashboard(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     timeToDecision = _useState4[0],
     setTimeToDecision = _useState4[1];
-  var locale = (0,_Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_19__.useUserLocale)();
   var _useParams = useParams(),
     handle = _useParams.handle,
     id = _useParams.id;
@@ -39281,15 +39100,15 @@ function Dashboard(props) {
     }
   }, jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: (_jsData$Total = jsData.Total) === null || _jsData$Total === void 0 ? void 0 : _jsData$Total.toLocaleString(locale),
+    totalNumber: (_jsData$Total = jsData.Total) === null || _jsData$Total === void 0 ? void 0 : _jsData$Total.toLocaleString("de-DE"),
     type: "Websites"
   })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: (jsData === null || jsData === void 0 || (_jsData$JS = jsData.JS) === null || _jsData$JS === void 0 ? void 0 : _jsData$JS.toLocaleString(locale)) + "%",
+    totalNumber: (jsData === null || jsData === void 0 || (_jsData$JS = jsData.JS) === null || _jsData$JS === void 0 ? void 0 : _jsData$JS.toLocaleString("de-DE")) + "%",
     type: "JavaScript"
   })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: (jsData === null || jsData === void 0 || (_jsData$WP = jsData.WP) === null || _jsData$WP === void 0 ? void 0 : _jsData$WP.toLocaleString(locale)) + "%",
+    totalNumber: (jsData === null || jsData === void 0 || (_jsData$WP = jsData.WP) === null || _jsData$WP === void 0 ? void 0 : _jsData$WP.toLocaleString("de-DE")) + "%",
     type: "WordPress"
   }))) : null, id ? /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_12__["default"], {
     platformId: id,
@@ -39310,7 +39129,7 @@ function Dashboard(props) {
   }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
     totalNumber: activeData,
-    activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString(locale),
+    activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString("de-DE"),
     type: "Stored consent decisions",
     fromDate: fromDate,
     toDate: toDate
@@ -39323,7 +39142,7 @@ function Dashboard(props) {
     relativeDrop: {
       relativeDrop: activeData === null || activeData === void 0 || (_activeData$relativeD = activeData.relativeDrop) === null || _activeData$relativeD === void 0 ? void 0 : _activeData$relativeD.accepted
     },
-    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? activeData.Accepted.toLocaleString(locale) : "—") + "%",
+    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%",
     type: "Consent acceptance",
     fromDate: fromDate,
     toDate: toDate
@@ -39341,7 +39160,7 @@ function Dashboard(props) {
       content: "Share of users who declined analytics and marketing cookies, allowing only required cookies.."
     },
     styleType: "small",
-    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString(locale) : "—") + "%",
+    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%",
     type: "Essential-only rate",
     fromDate: fromDate,
     toDate: toDate
@@ -39352,8 +39171,8 @@ function Dashboard(props) {
       content: "Visitors detected from EU-based IP locations."
     },
     styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString(locale) : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString(locale) : null,
+    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString("de-DE") : "—",
+    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString("de-DE") : null,
     type: "EU-based users",
     fromDate: fromDate,
     toDate: toDate
@@ -39364,8 +39183,8 @@ function Dashboard(props) {
       content: "Visitors detected from non-EU-based IP locations."
     },
     styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString(locale) : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString(locale) : null,
+    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—",
+    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString("de-DE") : null,
     type: "Non-EU-based users",
     fromDate: fromDate,
     toDate: toDate
@@ -39376,7 +39195,7 @@ function Dashboard(props) {
       content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks."
     },
     styleType: "small",
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString(locale) == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString(locale),
+    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE"),
     type: "Detected (pre-consent)",
     fromDate: fromDate,
     toDate: toDate
@@ -39387,7 +39206,7 @@ function Dashboard(props) {
       title: "Detected (post-consent) cookies",
       content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement."
     },
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString(locale) == 0 ? "N/A" : observedCookies.consent.count.toLocaleString(locale),
+    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE"),
     type: "Detected (post-consent)",
     fromDate: fromDate,
     toDate: toDate
@@ -39399,14 +39218,14 @@ function Dashboard(props) {
     onChange: function onChange(e) {
       setTimeToDecision(e);
     }
-  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString(locale)), /*#__PURE__*/React.createElement("div", {
+  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("div", {
     className: "grid-container topWidget grid-7",
     style: {
       marginTop: "20px"
     }
   }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
+    totalNumber: timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
     explainer: {
       exist: true,
       title: "Median time to decision",
@@ -39416,18 +39235,18 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
-      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
+    totalNumber: timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
     explainer: {
       exist: true,
       title: "90th percentile time to decision",
@@ -39437,18 +39256,18 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
-      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
+    totalNumber: timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
     explainer: {
       exist: true,
       title: "Average time to decision",
@@ -39458,18 +39277,18 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
-      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
     explainer: {
       exist: true,
       title: "Percentage of users who took more than 10 seconds to decide",
@@ -39479,16 +39298,16 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale),
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
       "deviceType": timeToDecisionSlice.deviceType
     }
   }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
     explainer: {
       exist: true,
       title: "Percentage of users who took less than 1 second to decide",
@@ -39498,11 +39317,11 @@ function Dashboard(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale),
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
       "deviceType": timeToDecisionSlice.deviceType
     }
   }))) : /*#__PURE__*/React.createElement("p", {
@@ -39619,7 +39438,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
 /* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
 /* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
-/* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -39651,7 +39469,6 @@ var _React = React,
 
 var useParams = window.ReactRouterDOM.useParams;
 var punycode = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
-
 
 function DomainDashbord(props) {
   var _localStorage, _activeData$date, _activeData$date2, _activeData$activeUse, _activeData$changeRat, _activeData$relativeD, _activeData$changeRat2, _activeData$relativeD2, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da;
@@ -39800,7 +39617,7 @@ function DomainDashbord(props) {
   }, /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
     totalNumber: activeData,
-    activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString(locale),
+    activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString("de-DE"),
     type: "Stored consent decisions",
     fromDate: fromDate,
     toDate: toDate
@@ -39813,7 +39630,7 @@ function DomainDashbord(props) {
     relativeDrop: {
       relativeDrop: activeData === null || activeData === void 0 || (_activeData$relativeD = activeData.relativeDrop) === null || _activeData$relativeD === void 0 ? void 0 : _activeData$relativeD.accepted
     },
-    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? activeData.Accepted.toLocaleString(locale) : "—") + "%",
+    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%",
     type: "Consent acceptance",
     fromDate: fromDate,
     toDate: toDate
@@ -39831,7 +39648,7 @@ function DomainDashbord(props) {
       content: "Share of users who declined analytics and marketing cookies, allowing only required cookies.."
     },
     styleType: "small",
-    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString(locale) : "—") + "%",
+    totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%",
     type: "Essential-only rate",
     fromDate: fromDate,
     toDate: toDate
@@ -39842,8 +39659,8 @@ function DomainDashbord(props) {
       content: "Visitors detected from EU-based IP locations."
     },
     styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString(locale) : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString(locale) : null,
+    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString("de-DE") : "—",
+    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString("de-DE") : null,
     type: "EU-based users",
     fromDate: fromDate,
     toDate: toDate
@@ -39854,8 +39671,8 @@ function DomainDashbord(props) {
       content: "Visitors detected from non-EU-based IP locations."
     },
     styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString(locale) : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString(locale) : null,
+    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—",
+    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString("de-DE") : null,
     type: "Non-EU-based users",
     fromDate: fromDate,
     toDate: toDate
@@ -39866,7 +39683,7 @@ function DomainDashbord(props) {
       content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks."
     },
     styleType: "small",
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString(locale) == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString(locale),
+    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE"),
     type: "Detected (pre-consent)",
     fromDate: fromDate,
     toDate: toDate
@@ -39877,7 +39694,7 @@ function DomainDashbord(props) {
       title: "Detected (post-consent) cookies",
       content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement."
     },
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString(locale) == 0 ? "N/A" : observedCookies.consent.count.toLocaleString(locale),
+    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE"),
     type: "Detected (post-consent)",
     fromDate: fromDate,
     toDate: toDate
@@ -39889,14 +39706,14 @@ function DomainDashbord(props) {
     onChange: function onChange(e) {
       setTimeToDecision(e);
     }
-  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString(locale)), /*#__PURE__*/React.createElement("div", {
+  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("div", {
     className: "grid-container grid-7",
     style: {
       marginTop: "20px"
     }
   }, /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
+    totalNumber: timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
     explainer: {
       exist: true,
       title: "Median time to decision",
@@ -39906,18 +39723,18 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
-      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
+    totalNumber: timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
     explainer: {
       exist: true,
       title: "90th percentile time to decision",
@@ -39927,18 +39744,18 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
-      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
+    totalNumber: timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
     explainer: {
       exist: true,
       title: "Average time to decision",
@@ -39948,18 +39765,18 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString(locale) + "s",
-      "median": timeToDecisionSlice.median.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString(locale) + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString(locale) + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale)
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%"), "deviceType", timeToDecisionSlice.deviceType)
+      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
+    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
   }), /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
+    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
     explainer: {
       exist: true,
       title: "Percentage of users who took more than 10 seconds to decide",
@@ -39969,16 +39786,16 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale),
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
       "deviceType": timeToDecisionSlice.deviceType
     }
   }), /*#__PURE__*/React.createElement(_Components_widget_widget__WEBPACK_IMPORTED_MODULE_3__["default"], {
     styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
+    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
     explainer: {
       exist: true,
       title: "Percentage of users who took less than 1 second to decide",
@@ -39988,11 +39805,11 @@ function DomainDashbord(props) {
     fromDate: fromDate,
     toDate: toDate,
     details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString(locale) + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString(locale) + "%",
-      "count": timeToDecisionSlice.count.toLocaleString(locale),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString(locale),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString(locale),
+      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
+      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
+      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
       "deviceType": timeToDecisionSlice.deviceType
     }
   }))) : /*#__PURE__*/React.createElement("p", {
@@ -42519,56 +42336,27 @@ function CreateOrganisation() {
     title: "Create organisation"
   }), /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__intro"
-  }, "Register a new organisation and nominate an admin. Follow-up may arrive by email."), /*#__PURE__*/React.createElement("form", {
-    className: "settings-subpage__panel settings-preferences",
-    onSubmit: create,
-    noValidate: true
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "settings-preferences__header"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "settings-preferences__title"
-  }, "New organisation"), /*#__PURE__*/React.createElement("p", {
-    className: "settings-preferences__lede"
-  }, "The name appears in the app and in invitations; the admin email is the primary contact for this workspace.")), status ? /*#__PURE__*/React.createElement("p", {
-    className: error ? "settings-subpage__status settings-subpage__status--error" : "settings-subpage__status",
-    style: {
-      marginBottom: 18
-    }
-  }, status) : null, /*#__PURE__*/React.createElement("div", {
-    className: "settings-preferences__groups"
-  }, /*#__PURE__*/React.createElement("section", {
-    className: "settings-preferences__group",
-    "aria-labelledby": "create-org-details"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "settings-preferences__group-title",
-    id: "create-org-details"
-  }, "Organisation details"), /*#__PURE__*/React.createElement("p", {
-    className: "settings-preferences__group-desc"
-  }, "Use the legal or brand name your team recognises. The admin should be someone who can verify billing and user access."), /*#__PURE__*/React.createElement("div", {
-    className: "settings-preferences__control-stack"
-  }, /*#__PURE__*/React.createElement(_Components_InputFields_textInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    id: "create-org-name",
-    label: "Organisation name",
-    placeholder: "Company or team name",
-    value: organisationName,
+  }, "Register a new organisation and nominate an admin email. Further steps may be sent by email."), /*#__PURE__*/React.createElement("form", {
+    className: "settings-subpage__panel settings-subpage__form",
+    onSubmit: create
+  }, status ? /*#__PURE__*/React.createElement("p", {
+    className: error ? "settings-subpage__status settings-subpage__status--error" : "settings-subpage__status"
+  }, status) : null, /*#__PURE__*/React.createElement(_Components_InputFields_textInput__WEBPACK_IMPORTED_MODULE_1__["default"], {
     onChange: function onChange(e) {
       return setOrganisationName(e.target.value);
-    }
+    },
+    label: "Organisation name",
+    placeholder: "Company or team name"
   }), /*#__PURE__*/React.createElement(_Components_InputFields_EmailInput__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    id: "create-org-admin-email",
-    label: "Admin email",
-    placeholder: "Primary administrator email",
-    value: organisationAdmin,
-    autoComplete: "off",
     onChange: function onChange(e) {
       return setOrganisationAdmin(e.target.value);
-    }
-  })))), /*#__PURE__*/React.createElement("footer", {
-    className: "settings-preferences__actions"
-  }, /*#__PURE__*/React.createElement("button", {
+    },
+    label: "Admin email",
+    placeholder: "Primary administrator email"
+  }), /*#__PURE__*/React.createElement("button", {
     type: "submit",
     className: "cta"
-  }, "Create organisation")))));
+  }, "Create organisation"))));
 }
 
 /***/ }),
@@ -42945,7 +42733,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
 /* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
 /* harmony import */ var _Components_SuccessWindow__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Components/SuccessWindow */ "./src/Components/SuccessWindow/index.js");
-/* harmony import */ var _Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/userLocale */ "./src/Functions/userLocale.js");
+Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../../Functions/userLocale'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -43005,7 +42793,7 @@ var LOCALE_ITEMS = [{
 }];
 function UserPreferences() {
   var _useState = useState(function () {
-      var s = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.readUserSettings)();
+      var s = Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../../Functions/userLocale'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())();
       return typeof s.dateRange === "number" ? s.dateRange : 30;
     }),
     _useState2 = _slicedToArray(_useState, 2),
@@ -43021,13 +42809,13 @@ function UserPreferences() {
     defaultRange = _useState4[0],
     setDefaultRange = _useState4[1];
   var _useState5 = useState(function () {
-      return (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.getUserLocale)();
+      return Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../../Functions/userLocale'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())();
     }),
     _useState6 = _slicedToArray(_useState5, 2),
     locale = _useState6[0],
     setLocale = _useState6[1];
   var _useState7 = useState(function () {
-      var loc = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.getUserLocale)();
+      var loc = Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../../Functions/userLocale'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())();
       var row = LOCALE_ITEMS.find(function (x) {
         return x.id === loc;
       });
@@ -43117,7 +42905,7 @@ function UserPreferences() {
     className: "settings-preferences__actions"
   }, /*#__PURE__*/React.createElement(_Components_Button_Button__WEBPACK_IMPORTED_MODULE_4__["default"], {
     onClick: function onClick() {
-      var prev = (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.readUserSettings)();
+      var prev = Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../../Functions/userLocale'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())();
       var next = _objectSpread(_objectSpread({}, prev), {}, {
         dateRange: dateRange,
         locale: locale
@@ -43136,7 +42924,7 @@ function UserPreferences() {
         return res.json();
       }).then(function () {
         localStorage.setItem("settings", JSON.stringify(next));
-        (0,_Functions_userLocale__WEBPACK_IMPORTED_MODULE_8__.dispatchUserSettingsChanged)();
+        Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../../Functions/userLocale'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())();
         setSuccess(true);
       });
     },
@@ -43159,19 +42947,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ ViewOrg)
 /* harmony export */ });
 /* harmony import */ var _Functions_FetchHook__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../Functions/FetchHook */ "./src/Functions/FetchHook.js");
-/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Components_widget_Loading__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/widget/Loading */ "./src/Components/widget/Loading.js");
-/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
-/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
-/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Functions/fetch */ "./src/Functions/fetch.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Components_widget_Loading__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/widget/Loading */ "./src/Components/widget/Loading.js");
+/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useCallback = _React.useCallback;
+
 
 
 
@@ -43181,28 +42981,168 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var Link = window.ReactRouterDOM.Link;
+var listBody = function listBody() {
+  return JSON.stringify({
+    organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_3__["default"].getUserId()
+  });
+};
 function ViewOrg() {
   document.title = "Organisations | Settings | Intastellar Consents | CMP";
-  var _useFetch = (0,_Functions_FetchHook__WEBPACK_IMPORTED_MODULE_0__["default"])(1, _API_api__WEBPACK_IMPORTED_MODULE_1__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_1__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_1__["default"].settings.getOrganisation.headers, JSON.stringify({
-      organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_2__["default"].getUserId()
-    })),
+  var _useState = useState(0),
+    _useState2 = _slicedToArray(_useState, 2),
+    listTick = _useState2[0],
+    setListTick = _useState2[1];
+  var _useFetch = (0,_Functions_FetchHook__WEBPACK_IMPORTED_MODULE_0__["default"])(1, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.getOrganisation.headers, listBody(), listTick),
     _useFetch2 = _slicedToArray(_useFetch, 2),
     loading = _useFetch2[0],
     data = _useFetch2[1];
+  var _useState3 = useState(null),
+    _useState4 = _slicedToArray(_useState3, 2),
+    modalOrg = _useState4[0],
+    setModalOrg = _useState4[1];
+  var _useState5 = useState(""),
+    _useState6 = _slicedToArray(_useState5, 2),
+    editName = _useState6[0],
+    setEditName = _useState6[1];
+  var _useState7 = useState(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    modalError = _useState8[0],
+    setModalError = _useState8[1];
+  /** null | "save" | "delete" */
+  var _useState9 = useState(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    pending = _useState0[0],
+    setPending = _useState0[1];
+  var _useState1 = useState(false),
+    _useState10 = _slicedToArray(_useState1, 2),
+    deleteConfirm = _useState10[0],
+    setDeleteConfirm = _useState10[1];
   var rows = Array.isArray(data) ? data : [];
-  function editOrganisation(org) {
-    window.location.href = "/settings/edit-organisation/".concat(org.id);
+  var closeModal = useCallback(function () {
+    setModalOrg(null);
+    setEditName("");
+    setModalError(null);
+    setPending(null);
+    setDeleteConfirm(false);
+  }, []);
+  useEffect(function () {
+    if (!modalOrg) return undefined;
+    var onKey = function onKey(e) {
+      if (e.key === "Escape") closeModal();
+    };
+    window.addEventListener("keydown", onKey);
+    return function () {
+      return window.removeEventListener("keydown", onKey);
+    };
+  }, [modalOrg, closeModal]);
+  function openModal(org) {
+    var _org$name;
+    setModalOrg(org);
+    setEditName((_org$name = org === null || org === void 0 ? void 0 : org.name) !== null && _org$name !== void 0 ? _org$name : "");
+    setModalError(null);
+    setDeleteConfirm(false);
+    setPending(null);
   }
   function canEditOrg(orgId) {
-    var r = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_2__["default"].getOrganisationAccessStatusForOrganisation(orgId);
+    var r = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_3__["default"].getOrganisationAccessStatusForOrganisation(orgId);
     return r === "admin" || r === "super-admin";
   }
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_5__.reportsLinks,
+  function afterMutationSuccess() {
+    setListTick(function (n) {
+      return n + 1;
+    });
+    closeModal();
+  }
+  function handleSave(e) {
+    e.preventDefault();
+    if (!modalOrg) return;
+    var name = editName.trim();
+    if (!name) {
+      setModalError("Enter an organisation name.");
+      return;
+    }
+    setModalError(null);
+    setDeleteConfirm(false);
+    setPending("save");
+    (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_1__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.updateOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.updateOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.updateOrganisation.headers, JSON.stringify({
+      organisationId: modalOrg.id,
+      organisationName: name
+    })).then(function (re) {
+      setPending(null);
+      if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
+        localStorage.removeItem("globals");
+        window.location.href = "/login";
+        return;
+      }
+      if (re === "Err_No_Access" || re === "Err_No_Permission" || re === "Err_Server_Error") {
+        setModalError("Could not update the organisation. Check permissions or try again.");
+        return;
+      }
+      if (re && _typeof(re) === "object" && re.error) {
+        setModalError(String(re.error));
+        return;
+      }
+      try {
+        var raw = localStorage.getItem("organisation");
+        if (raw) {
+          var o = JSON.parse(raw);
+          if (String(o.id) === String(modalOrg.id)) {
+            localStorage.setItem("organisation", JSON.stringify(_objectSpread(_objectSpread({}, o), {}, {
+              name: name
+            })));
+          }
+        }
+      } catch (_unused) {
+        /* ignore */
+      }
+      afterMutationSuccess();
+    });
+  }
+  function handleDelete() {
+    if (!modalOrg) return;
+    setModalError(null);
+    setPending("delete");
+    (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_1__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.deleteOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.deleteOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"].settings.deleteOrganisation.headers, JSON.stringify({
+      organisationId: modalOrg.id
+    })).then(function (re) {
+      setPending(null);
+      if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
+        localStorage.removeItem("globals");
+        window.location.href = "/login";
+        return;
+      }
+      if (re === "Err_No_Access" || re === "Err_No_Permission" || re === "Err_Server_Error") {
+        setModalError("Could not delete the organisation. Check permissions or try again.");
+        setDeleteConfirm(false);
+        return;
+      }
+      if (re && _typeof(re) === "object" && re.error) {
+        setModalError(String(re.error));
+        setDeleteConfirm(false);
+        return;
+      }
+      try {
+        var raw = localStorage.getItem("organisation");
+        if (raw) {
+          var o = JSON.parse(raw);
+          if (String(o.id) === String(modalOrg.id)) {
+            localStorage.removeItem("organisation");
+            window.location.href = "/settings";
+            return;
+          }
+        }
+      } catch (_unused2) {
+        /* ignore */
+      }
+      afterMutationSuccess();
+    });
+  }
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_6__.reportsLinks,
     title: "Settings"
   }), /*#__PURE__*/React.createElement("main", {
     className: "dashboard-content settings-subpage settings-subpage--wide"
-  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_6__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_7__["default"], {
     title: "Organisations"
   }), /*#__PURE__*/React.createElement(Link, {
     className: "settings-subpage__back",
@@ -43211,7 +43151,7 @@ function ViewOrg() {
     className: "settings-subpage__intro"
   }, "Organisations your account can access. Edit is only available where you are admin or super-admin."), /*#__PURE__*/React.createElement("div", {
     className: "settings-table-wrap"
-  }, loading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_3__.CurrentPageLoading, null) : rows.length > 0 ? /*#__PURE__*/React.createElement("table", {
+  }, loading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_4__.CurrentPageLoading, null) : rows.length > 0 ? /*#__PURE__*/React.createElement("table", {
     className: "settings-table"
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", {
     style: {
@@ -43224,7 +43164,7 @@ function ViewOrg() {
       type: "button",
       className: "cta",
       onClick: function onClick() {
-        return editOrganisation(d);
+        return openModal(d);
       }
     }, "Edit") : /*#__PURE__*/React.createElement("span", {
       style: {
@@ -43233,7 +43173,81 @@ function ViewOrg() {
     }, "\u2014")));
   }))) : /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__empty"
-  }, "No organisations found."))));
+  }, "No organisations found."))), modalOrg ? /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-labelledby": "org-edit-modal-title",
+    onClick: function onClick(e) {
+      if (e.target === e.currentTarget) closeModal();
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal__card"
+  }, /*#__PURE__*/React.createElement("h2", {
+    id: "org-edit-modal-title"
+  }, "Edit organisation"), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSave
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label",
+    htmlFor: "org-edit-name"
+  }, "Name"), /*#__PURE__*/React.createElement("input", {
+    id: "org-edit-name",
+    className: "settings-org-modal__text-input",
+    type: "text",
+    value: editName,
+    onChange: function onChange(e) {
+      return setEditName(e.target.value);
+    },
+    autoComplete: "organization",
+    disabled: !!pending
+  }), modalError ? /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status settings-subpage__status--error",
+    style: {
+      marginBottom: 14,
+      fontSize: "0.8125rem"
+    }
+  }, modalError) : null, /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal__actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn",
+    onClick: closeModal,
+    disabled: !!pending
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--primary",
+    disabled: !!pending
+  }, pending === "save" ? "Saving…" : "Save name"))), /*#__PURE__*/React.createElement("hr", {
+    className: "settings-org-modal__divider"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "settings-org-modal__danger-title"
+  }, "Danger zone"), /*#__PURE__*/React.createElement("p", {
+    className: "settings-org-modal__danger-desc"
+  }, "Deleting removes this organisation and its data from the platform for all members. This cannot be undone."), !deleteConfirm ? /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal__actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--danger",
+    onClick: function onClick() {
+      setDeleteConfirm(true);
+      setModalError(null);
+    },
+    disabled: !!pending
+  }, "Delete organisation")) : /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal__actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn",
+    onClick: function onClick() {
+      return setDeleteConfirm(false);
+    },
+    disabled: !!pending
+  }, "Cancel delete"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--danger",
+    onClick: handleDelete,
+    disabled: !!pending
+  }, pending === "delete" ? "Deleting…" : "Yes, delete permanently")))) : null);
 }
 
 /***/ }),
@@ -44343,6 +44357,22 @@ var API = _defineProperty(_defineProperty({
         "Content-Type": "application/json"
       }
     },
+    updateOrganisation: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/update-organisation"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    },
+    deleteOrganisation: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/delete-organisation"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    },
     updateSettings: {
       url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/updateSettings"),
       method: "POST",
@@ -44517,7 +44547,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Functions_isJson_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Functions/isJson.js */ "./src/Functions/isJson.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
 /* harmony import */ var _LiveView_liveInteractionTimestamp_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../LiveView/liveInteractionTimestamp.js */ "./src/components/LiveView/liveInteractionTimestamp.js");
-/* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
+Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../Functions/userLocale.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
 /* harmony import */ var _AuditSnapshotCard_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./AuditSnapshotCard.css */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.css");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
@@ -44700,7 +44730,7 @@ function deriveSystemHealth(_ref) {
  */
 function AuditSnapshotCard(props) {
   var _auditSnapshotMeta$la;
-  var locale = (0,_Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_4__.useUserLocale)();
+  var locale = Object(function webpackMissingModule() { var e = new Error("Cannot find module '../../Functions/userLocale.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }())();
   var platformId = props.platformId,
     handle = props.handle,
     currentDomain = props.currentDomain,

@@ -237,6 +237,22 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        updateOrganisation: {
+            url: `${PrimaryHost}/analytics/settings/update-organisation`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
+        deleteOrganisation: {
+            url: `${PrimaryHost}/analytics/settings/delete-organisation`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
         updateSettings: {
             url: `${PrimaryHost}/analytics/settings/updateSettings`,
             method: "POST",

@@ -1,17 +1,16 @@
 import "./Widget.css";
 import Line from "../Charts/Line";
 import { useState } from "react";
-import { useUserLocale } from "../../Functions/userLocale";
 
-function formatPeriodLabel(fromDate, toDate, locale) {
+function formatPeriodLabel(fromDate, toDate) {
     if (!fromDate || !toDate) return null;
     try {
         if (fromDate === toDate) {
-            return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(fromDate));
+            return new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" }).format(new Date(fromDate));
         }
         const a = new Date(fromDate);
         const b = new Date(toDate);
-        return `${new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(a)} – ${new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(b)}`;
+        return `${new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "short" }).format(a)} – ${new Intl.DateTimeFormat("de-DE", { day: "numeric", month: "short", year: "numeric" }).format(b)}`;
     } catch {
         return null;
     }
@@ -45,7 +44,6 @@ function summarizeDailySeries(daily) {
 }
 
 export default function Widget(props) {
-    const locale = useUserLocale();
     const [explainerVisible, setExplainer] = useState(false);
     const explainer = props?.explainer ? props.explainer : null;
 
@@ -64,7 +62,7 @@ export default function Widget(props) {
     if (props?.styleType == "small"){
         let displayValue = "";
         if (typeof props.totalNumber === "object" && props?.totalNumber?.Total !== undefined && props?.totalNumber?.Total !== null) {
-            displayValue = props?.totalNumber?.Total?.toLocaleString(locale);
+            displayValue = props?.totalNumber?.Total?.toLocaleString("de-DE");
         } else if (typeof props.totalNumber !== "object" && props.totalNumber !== undefined && props.totalNumber !== null) {
             displayValue = props.totalNumber;
         }
@@ -129,19 +127,19 @@ export default function Widget(props) {
     } else {   
         let displayValue = "";
         if (typeof props.totalNumber === "object" && props?.totalNumber?.Total !== undefined && props?.totalNumber?.Total !== null) {
-            displayValue = props?.totalNumber?.Total?.toLocaleString(locale);
+            displayValue = props?.totalNumber?.Total?.toLocaleString("de-DE");
         } else if (typeof props.totalNumber !== "object" && props.totalNumber !== undefined && props.totalNumber !== null) {
             displayValue = props.totalNumber;
         }
         const daily = props?.totalNumber?.dailyNum;
         const hasChart = Array.isArray(daily) && daily.length > 0;
-        const periodLabel = hasChart ? formatPeriodLabel(props?.fromDate, props?.toDate, locale) : null;
+        const periodLabel = hasChart ? formatPeriodLabel(props?.fromDate, props?.toDate) : null;
         const seriesSummary = hasChart ? summarizeDailySeries(daily) : null;
         const peakDateStr =
             seriesSummary?.peakDate != null
                 ? (() => {
                       try {
-                          return new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(
+                          return new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(
                               new Date(seriesSummary.peakDate)
                           );
                       } catch {
@@ -175,7 +173,7 @@ export default function Widget(props) {
                                 <div className="widget__insight">
                                     <span className="widget__insight-label">Peak day</span>
                                     <span className="widget__insight-value">
-                                        {seriesSummary.peak.toLocaleString(locale)}
+                                        {seriesSummary.peak.toLocaleString("de-DE")}
                                     </span>
                                     {peakDateStr ? (
                                         <span className="widget__insight-sub">{peakDateStr}</span>
@@ -184,7 +182,7 @@ export default function Widget(props) {
                                 <div className="widget__insight">
                                     <span className="widget__insight-label">Daily avg</span>
                                     <span className="widget__insight-value">
-                                        {seriesSummary.avg.toLocaleString(locale)}
+                                        {seriesSummary.avg.toLocaleString("de-DE")}
                                     </span>
                                     <span className="widget__insight-sub">
                                         {seriesSummary.days} {seriesSummary.days === 1 ? "day" : "days"}
