@@ -315,20 +315,40 @@ export default function AuditSnapshotCard(props) {
         ]
     );
 
-    const complianceRegionStatus = useMemo(() => {
+    const auditSampleRowsForCompliance = useMemo(() => {
         const rows = Array.isArray(auditPreview) ? auditPreview : [];
-        const sampleRows =
-            rows.length > 0
-                ? rows
-                : demoMode
-                  ? [
-                        { country_code: "DE", regulation_applied: "GDPR" },
-                        { country_code: "DK", regulation_applied: "GDPR" },
-                        { country_code: "US", regulation_applied: "CCPA" },
-                    ]
-                  : [];
-        return deriveComplianceRegionStatus(sampleRows, complianceRegionRisk);
-    }, [auditPreview, demoMode, complianceRegionRisk]);
+        if (rows.length > 0) return rows;
+        if (demoMode) {
+            return [
+                { country_code: "DE", regulation_applied: "GDPR" },
+                { country_code: "DK", regulation_applied: "GDPR" },
+                { country_code: "US", regulation_applied: "CCPA" },
+            ];
+        }
+        return [];
+    }, [auditPreview, demoMode]);
+
+    const complianceRegionStatus = useMemo(
+        () => deriveComplianceRegionStatus(auditSampleRowsForCompliance, complianceRegionRisk),
+        [auditSampleRowsForCompliance, complianceRegionRisk]
+    );
+
+    const sampleCountryCodesForMap = useMemo(() => {
+        const out = new Set();
+        for (const row of auditSampleRowsForCompliance) {
+            const cc = String(row?.country_code ?? "")
+                .toUpperCase()
+                .trim();
+            if (cc && cc !== "—" && cc.length === 2) out.add(cc);
+        }
+        return Array.from(out).sort().join(",");
+    }, [auditSampleRowsForCompliance]);
+
+    const [selectedMapCountry, setSelectedMapCountry] = useState(null);
+
+    useEffect(() => {
+        setSelectedMapCountry(null);
+    }, [domainsApiHeaderForStats, fromDate, toDate, platformId]);
 
     const auditSnapshotMeta = useMemo(() => {
         const rows = Array.isArray(auditPreview) ? auditPreview : [];
@@ -464,8 +484,52 @@ export default function AuditSnapshotCard(props) {
                                             Example layout
                                         </li>
                                     ) : null}
-                                    {auditSnapshotMeta.displayRows.map((row) => (
-                                        <li key={row.key} className="audit-snapshot-card__feed-row">
+                                    {auditSnapshotMeta.displayRows.map((row) => {
+                                        const canPick =
+                                            row.country &&
+                                            row.country !== "—" &&
+                                            String(row.country).length === 2;
+                                        const isSel = canPick && selectedMapCountry === row.country;
+                                        return (
+                                        <li
+                                            key={row.key}
+                                            className={
+                                                "audit-snapshot-card__feed-row" +
+                                                (canPick ? " audit-snapshot-card__feed-row--interactive" : "") +
+                                                (isSel ? " audit-snapshot-card__feed-row--map-selected" : "")
+                                            }
+                                            role={canPick ? "button" : undefined}
+                                            tabIndex={canPick ? 0 : undefined}
+                                            onClick={
+                                                canPick
+                                                    ? (e) => {
+                                                          e.preventDefault();
+                                                          e.stopPropagation();
+                                                          setSelectedMapCountry((c) =>
+                                                              c === row.country ? null : row.country
+                                                          );
+                                                      }
+                                                    : undefined
+                                            }
+                                            onKeyDown={
+                                                canPick
+                                                    ? (e) => {
+                                                          if (e.key !== "Enter" && e.key !== " ") return;
+                                                          e.preventDefault();
+                                                          e.stopPropagation();
+                                                          setSelectedMapCountry((c) =>
+                                                              c === row.country ? null : row.country
+                                                          );
+                                                      }
+                                                    : undefined
+                                            }
+                                            aria-pressed={canPick ? isSel : undefined}
+                                            title={
+                                                canPick
+                                                    ? "Show this country on the map (click again to clear)"
+                                                    : undefined
+                                            }
+                                        >
                                             <span className="audit-snapshot-card__feed-country">{row.country}</span>
                                             <span className="audit-snapshot-card__feed-sep" aria-hidden>
                                                 ·
@@ -480,7 +544,8 @@ export default function AuditSnapshotCard(props) {
                                             </span>
                                             <span className="audit-snapshot-card__feed-time">{row.time}</span>
                                         </li>
-                                    ))}
+                                        );
+                                    })}
                                 </ul>
                             ) : !auditPreviewLoading ? (
                                 <p className="audit-snapshot-card__hint">No sample rows for this period yet.</p>
@@ -495,6 +560,9 @@ export default function AuditSnapshotCard(props) {
                                 regionStatus={complianceRegionStatus}
                                 loading={auditPreviewLoading}
                                 demoMode={demoMode && auditSnapshotMeta.isDemoFeed}
+                                sampleCountryCodesKey={sampleCountryCodesForMap}
+                                selectedCountryCode={selectedMapCountry}
+                                onSelectCountry={setSelectedMapCountry}
                             />
                         </div>
                     </div>

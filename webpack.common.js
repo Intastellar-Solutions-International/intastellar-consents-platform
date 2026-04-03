@@ -13,9 +13,7 @@ const config = {
     publicPath: "/"
   },
   
-  externals: {
-    "i18n-iso-countries": "i18n-iso-countries",
-  },
+  externals: {},
   module: {
     rules: [
       {

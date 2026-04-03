@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import {
     WORLD_TOPO_URL,
+    PROJECTED_MAP_VIEWBOX,
     projectMercator,
     ringToPathD,
     topoToFeatures,
@@ -82,7 +83,7 @@ export default function WorldMap({ width = "100%", className = "" }) {
                 const [, eqY] = projectMercator(0, 0);
                 const eq = document.createElementNS(ns, "line");
                 eq.setAttribute("x1", "0");
-                eq.setAttribute("x2", "2000");
+                eq.setAttribute("x2", String(PROJECTED_MAP_VIEWBOX.w));
                 eq.setAttribute("y1", eqY);
                 eq.setAttribute("y2", eqY);
                 eq.setAttribute("stroke", "#1e5a8e");
@@ -139,16 +140,19 @@ export default function WorldMap({ width = "100%", className = "" }) {
         };
     }, []);
 
+    const { w: vbW, h: vbH } = PROJECTED_MAP_VIEWBOX;
+
     return (
         <svg
             ref={svgRef}
             width={width}
-            viewBox="0 0 2000 500"
+            viewBox={`0 0 ${vbW} ${vbH}`}
             xmlns="http://www.w3.org/2000/svg"
             className={className}
+            preserveAspectRatio="xMidYMid meet"
             style={{ display: "block", background: "#0a1929", borderRadius: 8 }}
         >
-            <rect width="2000" height="500" fill="#0a1929" />
+            <rect width={vbW} height={vbH} fill="#0a1929" />
             <g id="wm-countries" />
             <g id="wm-highlights" />
             <g id="wm-labels" />

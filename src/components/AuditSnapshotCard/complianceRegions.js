@@ -70,6 +70,8 @@ export const EU_EEA_UK_NUMERIC = [
     578, // Norway
     // UK
     826, // United Kingdom
+    292, // Gibraltar
+    833, // Isle of Man
 ];
 
 const FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "POPIA"];

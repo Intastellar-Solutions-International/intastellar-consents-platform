@@ -306,6 +306,30 @@
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.audit-snapshot-card__feed-row--interactive {
+    cursor: pointer;
+    border-radius: 6px;
+    margin: 0 -6px;
+    padding: 6px;
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.audit-snapshot-card__feed-row--interactive:hover {
+    background: rgba(192, 159, 83, 0.08);
+}
+
+.audit-snapshot-card__feed-row--interactive:focus-visible {
+    outline: 2px solid rgba(192, 159, 83, 0.75);
+    outline-offset: 2px;
+}
+
+.audit-snapshot-card__feed-row--map-selected {
+    background: rgba(192, 159, 83, 0.12);
+    box-shadow: inset 3px 0 0 rgba(192, 159, 83, 0.85);
+}
+
 .audit-snapshot-card__feed-country {
     font-weight: 700;
     color: #c0a053;
@@ -334,7 +358,7 @@
 .audit-snapshot-card__feed-map-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(200px, 42%);
-    align-items: start;
+    align-items: stretch;
     gap: 16px 20px;
     margin: 14px 0 16px;
 }
@@ -351,6 +375,14 @@
 
 .audit-snapshot-card__map-col {
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.audit-snapshot-card__map-col > .audit-compliance-map {
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 .audit-snapshot-card__feed-col .audit-snapshot-card__feed {

@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
-import { EU_EEA_UK , EU_EEA_UK_NUMERIC} from "./complianceRegions.js";
+import { numericToAlpha2 } from "../../Functions/isoNumericToAlpha2.js";
+import { EU_EEA_UK_NUMERIC } from "./complianceRegions.js";
 import {
     WORLD_TOPO_URL,
-    WORLD_VIEWBOX,
+    PROJECTED_MAP_VIEWBOX,
     projectMercator,
     ringToPathD,
     topoToFeatures,
@@ -13,8 +14,10 @@ const NS = "http://www.w3.org/2000/svg";
 
 const FILL = {
     base: "#343d4a",
-    none: "#3a4555",
-    observed: "rgba(72, 128, 92, 0.92)",
+    /** Regulated jurisdiction, no consent evidence in this sample — visibility / risk lens */
+    potential: "rgba(118, 88, 48, 0.78)",
+    observed: "rgba(62, 115, 78, 0.78)",
+    observedSample: "rgba(82, 145, 98, 0.95)",
     watch: "rgba(145, 108, 52, 0.9)",
     risk: "rgba(130, 58, 58, 0.92)",
 };
@@ -30,31 +33,15 @@ const LABEL_COLOR = {
     observed: "#b5e8c8",
     watch: "#f0d9a8",
     risk: "#f0b0b0",
-    none: "#8a939e",
+    none: "#c9a057",
+    potential: "#d4a574",
 };
-
-/* function buildFrameworkNumericSets() {
-    const gdpr = new Set();
-    for (const n of EU_EEA_UK_NUMERIC) {
-        const n = countries.numericToAlpha2(n);
-        if (n != null) gdpr.add(Number(n));
-    }
-    const nUs = countries.alpha2ToNumeric("US");
-    const nBr = countries.alpha2ToNumeric("BR");
-    const nZa = countries.alpha2ToNumeric("ZA");
-    return {
-        GDPR: gdpr,
-        CCPA: nUs != null ? new Set([Number(nUs)]) : new Set(),
-        LGPD: nBr != null ? new Set([Number(nBr)]) : new Set(),
-        POPIA: nZa != null ? new Set([Number(nZa)]) : new Set(),
-    };
-} */
 
 const FRAMEWORK_BY_NUMERIC = {
     GDPR: new Set(EU_EEA_UK_NUMERIC),
-    CCPA: new Set([840]),  // US
-    LGPD: new Set([76]),   // Brazil
-    POPIA: new Set([710]), // South Africa
+    CCPA: new Set([840]),
+    LGPD: new Set([76]),
+    POPIA: new Set([710]),
 };
 
 function topoIdToNumeric(id) {
@@ -72,6 +59,11 @@ function frameworkForNumeric(num) {
     return null;
 }
 
+function alpha2FromTopoNumeric(num) {
+    const a2 = numericToAlpha2(num);
+    return a2 ? String(a2).toUpperCase() : null;
+}
+
 function clearGroup(g) {
     if (!g) return;
     while (g.firstChild) g.removeChild(g.firstChild);
@@ -80,22 +72,41 @@ function clearGroup(g) {
 /**
  * @param {object} props
  * @param {Record<string, { status: string }>} props.regionStatus
+ * @param {string} props.sampleCountryCodesKey — comma-separated uppercase alpha-2 (stable key)
+ * @param {string|null} props.selectedCountryCode
+ * @param {(alpha2: string | null) => void} props.onSelectCountry
  */
-export default function AuditComplianceWorldMap({ regionStatus }) {
+export default function AuditComplianceWorldMap({
+    regionStatus,
+    sampleCountryCodesKey,
+    selectedCountryCode,
+    onSelectCountry,
+}) {
     const svgRef = useRef(null);
     const regionStatusRef = useRef(regionStatus);
+    const onSelectCountryRef = useRef(onSelectCountry);
     const topoRef = useRef(null);
 
     regionStatusRef.current = regionStatus;
+    onSelectCountryRef.current = onSelectCountry;
 
-    const statusKey = [
+    const selectedUpper = selectedCountryCode ? String(selectedCountryCode).toUpperCase() : null;
+
+    const paintKey = [
         regionStatus?.GDPR?.status,
         regionStatus?.LGPD?.status,
         regionStatus?.CCPA?.status,
         regionStatus?.POPIA?.status,
+        sampleCountryCodesKey,
+        selectedUpper ?? "",
     ].join("|");
 
-    function paintFromTopo(topo) {
+    function paintFromTopo(topo, sampleKey, selUpper) {
+        const sampleAlpha2Set = new Set(
+            sampleKey
+                ? sampleKey.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean)
+                : []
+        );
         const rs = regionStatusRef.current;
         const stOf = (fw) => rs?.[fw]?.status ?? "none";
         const features = topoToFeatures(topo, "countries");
@@ -107,32 +118,88 @@ export default function AuditComplianceWorldMap({ regionStatus }) {
         clearGroup(landG);
         clearGroup(labelsG);
 
+        const pathsWithMeta = [];
+
         for (const f of features) {
             const d = f.rings.map(ringToPathD).join(" ");
             if (!d.trim()) continue;
             const num = topoIdToNumeric(f.id);
             const fw = frameworkForNumeric(num);
+            const alpha2 = alpha2FromTopoNumeric(num);
+            const inSample = alpha2 != null && sampleAlpha2Set.has(alpha2);
+            const isSelected = alpha2 != null && selUpper != null && alpha2 === selUpper;
+
             const path = document.createElementNS(NS, "path");
             path.setAttribute("d", d);
-            path.setAttribute("stroke", "rgba(8, 12, 18, 0.85)");
-            path.setAttribute("stroke-width", "0.45");
+            path.setAttribute("class", "audit-compliance-world-map__country");
+            if (alpha2) path.setAttribute("data-cc", alpha2);
+
+            const st = fw ? stOf(fw) : null;
+            let fill = FILL.base;
+            let stroke = "rgba(8, 12, 18, 0.85)";
+            let strokeW = "0.45";
+
             if (fw) {
-                const st = stOf(fw);
-                path.setAttribute("fill", FILL[st] ?? FILL.none);
-                path.setAttribute("data-fw", fw);
-            } else {
-                path.setAttribute("fill", FILL.base);
+                if (st === "observed") {
+                    fill = inSample ? FILL.observedSample : FILL.observed;
+                } else if (st === "watch") {
+                    fill = FILL.watch;
+                } else if (st === "risk") {
+                    fill = FILL.risk;
+                } else {
+                    fill = FILL.potential;
+                }
+            } else if (inSample) {
+                fill = FILL.base;
+                stroke = "rgba(192, 159, 83, 0.65)";
+                strokeW = "1.1";
             }
-            landG.appendChild(path);
+
+            if (isSelected) {
+                stroke = "rgba(192, 159, 83, 0.98)";
+                strokeW = "2.4";
+                path.classList.add("audit-compliance-world-map__country--selected");
+            }
+
+            path.setAttribute("fill", fill);
+            path.setAttribute("stroke", stroke);
+            path.setAttribute("stroke-width", strokeW);
+
+            const clickable = alpha2 && (fw != null || inSample);
+            if (clickable) {
+                path.classList.add("audit-compliance-world-map__country--clickable");
+                path.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const next = alpha2;
+                    onSelectCountryRef.current?.((prev) => {
+                        const p = prev ? String(prev).toUpperCase() : null;
+                        return p === next ? null : next;
+                    });
+                });
+            }
+
+            pathsWithMeta.push({ path, isSelected });
         }
+
+        pathsWithMeta.sort((a, b) => Number(a.isSelected) - Number(b.isSelected));
+        for (const { path } of pathsWithMeta) landG.appendChild(path);
 
         for (const { fw, lon, lat } of LABEL) {
             const st = stOf(fw);
+            const colorKey =
+                st === "observed"
+                    ? "observed"
+                    : st === "watch"
+                      ? "watch"
+                      : st === "risk"
+                        ? "risk"
+                        : "potential";
             const [x, y] = projectMercator(lon, lat);
             const el = document.createElementNS(NS, "text");
             el.setAttribute("x", x);
             el.setAttribute("y", y);
-            el.setAttribute("fill", LABEL_COLOR[st] ?? LABEL_COLOR.none);
+            el.setAttribute("fill", LABEL_COLOR[colorKey] ?? LABEL_COLOR.potential);
             el.setAttribute("font-size", "13");
             el.setAttribute("font-family", "system-ui, sans-serif");
             el.setAttribute("font-weight", "700");
@@ -152,14 +219,14 @@ export default function AuditComplianceWorldMap({ regionStatus }) {
             try {
                 if (topoRef.current) {
                     if (cancelled) return;
-                    paintFromTopo(topoRef.current);
+                    paintFromTopo(topoRef.current, sampleCountryCodesKey, selectedUpper);
                     return;
                 }
                 const res = await fetch(WORLD_TOPO_URL);
                 const topo = await res.json();
                 if (cancelled) return;
                 topoRef.current = topo;
-                paintFromTopo(topo);
+                paintFromTopo(topo, sampleCountryCodesKey, selectedUpper);
             } catch (err) {
                 console.error("AuditComplianceWorldMap: failed to load map data", err);
             }
@@ -169,10 +236,10 @@ export default function AuditComplianceWorldMap({ regionStatus }) {
         return () => {
             cancelled = true;
         };
-    }, [statusKey]);
+    }, [paintKey, sampleCountryCodesKey, selectedUpper]);
 
-    const { w, h } = WORLD_VIEWBOX;
-    
+    const { w, h } = PROJECTED_MAP_VIEWBOX;
+
     return (
         <svg
             ref={svgRef}
@@ -180,7 +247,8 @@ export default function AuditComplianceWorldMap({ regionStatus }) {
             viewBox={`0 0 ${w} ${h}`}
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="xMidYMid meet"
-            aria-hidden
+            role="img"
+            aria-label="Regulatory world map; click a country that appears in the list or in a regulated region to highlight it"
         >
             <rect width={w} height={h} className="audit-compliance-world-map__ocean" />
             <g id="acwm-land" />

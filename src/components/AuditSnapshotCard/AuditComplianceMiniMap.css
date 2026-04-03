@@ -4,8 +4,10 @@
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    height: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 .audit-compliance-map--demo {
@@ -40,14 +42,19 @@
 }
 
 .audit-compliance-map__map-shell {
+    flex: 1 1 auto;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    max-height: 240px;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
 .audit-compliance-map__map-shell .audit-compliance-world-map {
     width: 100%;
     height: 100%;
+    flex: 0 1 auto;
 }
 
 .audit-compliance-map__legend {
@@ -85,4 +92,9 @@
 .audit-compliance-map__legend-item--risk {
     border-color: rgba(235, 110, 110, 0.45);
     color: #e89898;
+}
+
+.audit-compliance-map__legend-item--potential {
+    border-color: rgba(201, 160, 87, 0.45);
+    color: #d4a574;
 }

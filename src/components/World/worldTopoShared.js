@@ -2,14 +2,24 @@
 
 export const WORLD_TOPO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
-export const WORLD_VIEWBOX = { w: 2000, h: 700 };
+/** Vertical extent for Mercator Y (must match `projectMercator`). */
+const MERCATOR_HEIGHT = 700;
+
+/**
+ * ViewBox that matches projected coordinates: x ∈ [0, 1000] for lon ∈ [-180, 180].
+ * Use this for compliance / accurate framing — not the wider legacy 2000× canvas.
+ */
+export const PROJECTED_MAP_VIEWBOX = { w: 1000, h: MERCATOR_HEIGHT };
+
+/** @deprecated Prefer PROJECTED_MAP_VIEWBOX for maps using projectMercator; legacy demo SVGs may still reference this. */
+export const WORLD_VIEWBOX = { w: 2000, h: MERCATOR_HEIGHT };
 
 export function projectMercator(lon, lat) {
     const x = ((lon + 180) / 360) * 1000;
     const latRad = Math.max(-85, Math.min(85, lat)) * (Math.PI / 180);
     const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
-    const y = ((1 - mercN / Math.PI) / 2) * 700;
-    return [x, Math.max(0, Math.min(700, y))];
+    const y = ((1 - mercN / Math.PI) / 2) * MERCATOR_HEIGHT;
+    return [x, Math.max(0, Math.min(MERCATOR_HEIGHT, y))];
 }
 
 function fixAntimeridian(coords) {
