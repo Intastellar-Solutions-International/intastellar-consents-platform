@@ -343,6 +343,12 @@ export function LiveView(props) {
         setBarRenderKey((prev) => prev + 1);
     }, [liveData]);
 
+    useEffect(() => {
+        if (typeof props.onLiveDataChange === "function") {
+            props.onLiveDataChange(liveData);
+        }
+    }, [liveData]);
+
     const closeDomainDrawer = () =>
         setDomainLiveView({ domain: "", country: "", open: false });
 

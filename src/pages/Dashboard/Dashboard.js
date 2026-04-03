@@ -1,4 +1,4 @@
-const { useState, useEffect, useRef, useContext, useMemo } = React;
+const { useState, useEffect, useRef, useContext, useMemo, useCallback } = React;
 import useFetch from "../../Functions/FetchHook";
 import API from "../../API/api";
 import { Loading, LoadingBar } from "../../Components/widget/Loading";
@@ -6,11 +6,19 @@ import { Loading, LoadingBar } from "../../Components/widget/Loading";
 import "./Style.css";
 import Map from "../../Components/Charts/WorldMap/WorldMap.js";
 import { DomainContext, OrganisationContext } from "../../App.js";
+import {
+    reportsPath,
+    consentsDomainFromRoute,
+    toDomainsApiHeader,
+} from "../../Functions/domainPathSegments.js";
+import { isJson } from "../../Functions/isJson.js";
 const useParams = window.ReactRouterDOM.useParams;
+const Link = window.ReactRouterDOM.Link;
 import Crawler from "../../Components/Crawler";
 import Line from "../../Components/Charts/Line"
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { LiveView } from "../../components/LiveView/index.js";
+import AuditSnapshotCard from "../../components/AuditSnapshotCard/AuditSnapshotCard.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
 import Pie from "../../Components/Charts/Pie/index.js";
 import Widget from "../../Components/widget/widget.js";
@@ -93,6 +101,11 @@ export default function Dashboard(props) {
         if (slice == null || typeof slice !== "object") return null;
         return slice;
     }, [activeData, timeToDecision]);
+
+    const [liveViewData, setLiveViewData] = useState(null);
+    const onLiveDataChange = useCallback((data) => {
+        setLiveViewData(data);
+    }, []);
 
     useEffect(() => {
         const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
@@ -223,6 +236,18 @@ export default function Dashboard(props) {
                             {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString("de-DE") + "%"} type="WordPress" /></ErrorBoundary>}
                         </div> : null
                 }
+                {id ? (
+                    <AuditSnapshotCard
+                        platformId={id}
+                        handle={handle}
+                        currentDomain={currentDomain}
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        activeData={activeData}
+                        demoMode={demoMode}
+                        liveData={liveViewData}
+                    />
+                ) : null}
                 {
                     activeData != null ?
                         <>
@@ -430,9 +455,11 @@ export default function Dashboard(props) {
                                         ) : null
                                     } */ />}
                         <div className={["widget no-padding"]}>
-                            <LiveView currentDomain={
-                                handle ? handle : currentDomain
-                            } demoMode={demoMode} />
+                            <LiveView
+                                currentDomain={handle ? handle : currentDomain}
+                                demoMode={demoMode}
+                                onLiveDataChange={onLiveDataChange}
+                            />
                         </div>
                     </div>
                 </div>

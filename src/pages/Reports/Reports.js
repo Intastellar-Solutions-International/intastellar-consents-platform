@@ -6,7 +6,7 @@ const { useContext } = React;
 
 export const reportsLinks = [
     {
-        name: "Consent decisions overview",
+        name: "Audit log",
         path: "/reports/user-consents",
     },
     {

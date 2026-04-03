@@ -9,6 +9,26 @@ export function isCombinedOrClearDomain(domain) {
 }
 
 /**
+ * Unicode domain label for consent/statistics APIs: URL :handle wins before context sync
+ * (dashboard + reports).
+ */
+export function consentsDomainFromRoute(handle, contextDomain) {
+    if (handle == null || handle === undefined) return contextDomain;
+    const h = String(handle).trim();
+    if (h === "") return contextDomain;
+    if (h === "combined view") return "combined view";
+    const decoded = decodeDomainPathSegment(handle);
+    if (decoded == null || decoded === "combined view") return "combined view";
+    return decoded;
+}
+
+/** HTTP `Domains` header value (ASCII punycode for real hosts). */
+export function toDomainsApiHeader(domainLabel) {
+    if (isCombinedOrClearDomain(domainLabel)) return "combined view";
+    return punycode.toASCII(String(domainLabel).trim());
+}
+
+/**
  * Encode Unicode domain for a path segment (ASCII punycode + safe encoding).
  * Returns null when the selection should not appear in the URL.
  */

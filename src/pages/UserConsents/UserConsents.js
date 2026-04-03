@@ -15,32 +15,13 @@ import Authentication from "../../Authentication/Auth.js";
 import { buildDemoConsentList, buildDemoConsentRecord } from "./userConsentsDemo.js";
 import {
     useSyncDomainFromRoute,
-    decodeDomainPathSegment,
     isCombinedOrClearDomain,
+    consentsDomainFromRoute,
+    toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
 const useParams = window.ReactRouterDOM.useParams;
 const punycode = require("punycode");
 const PAGE_SIZE = 40;
-
-/**
- * Unicode domain for this page: prefer :handle from the URL on first paint so the first request
- * matches a hard reload before DomainContext catches up (avoids wrong Domains header + abort/404 races).
- */
-function consentsDomainFromRoute(handle, contextDomain) {
-    if (handle == null || handle === undefined) return contextDomain;
-    const h = String(handle).trim();
-    if (h === "") return contextDomain;
-    if (h === "combined view") return "combined view";
-    const decoded = decodeDomainPathSegment(handle);
-    if (decoded == null || decoded === "combined view") return "combined view";
-    return decoded;
-}
-
-/** Value for HTTP Domains header (ASCII punycode for real hosts). */
-function toDomainsApiHeader(domainLabel) {
-    if (isCombinedOrClearDomain(domainLabel)) return "combined view";
-    return punycode.toASCII(String(domainLabel).trim());
-}
 
 /** Parse consent time for sorting (newest first). */
 function consentTimestampMs(row) {
@@ -61,7 +42,7 @@ function sortConsentsNewestFirst(rows) {
 }
 
 export default function UserConsents(props) {
-    document.title = "Consents overview | Intastellar Consents";
+    document.title = "Audit log | Intastellar Consents";
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
     const [currentDomain, setGlobalDomain] = useContext(DomainContext);
     const { handle, id } = useParams();
@@ -277,7 +258,7 @@ export default function UserConsents(props) {
         <>
             <SideNav links={reportsLinks} title="Reports" />
             <article style={{ flex: "1"}}>
-                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Consents overview" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Audit log" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
                         {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{
