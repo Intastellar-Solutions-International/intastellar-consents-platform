@@ -46,7 +46,7 @@ export default function AddDomain({ embedded }) {
                         onClick={(e) => {
                             e.preventDefault();
                             if (!disabled) {
-                                const domain = extractHostname(e.target.previousSibling.value);
+                                const domain = extractHostname(e.target.previousSibling.children[1].value);
                                 setCurrentDomain([...currentDomain, domain]);
                                 clearTextfield(e.target.previousSibling);
                                 setDisabled(true);

@@ -21,6 +21,8 @@ const client = {
   },
   devServer: {
     historyApiFallback: true,
+    host: '0.0.0.0',           // optional: reachable from LAN too
+    allowedHosts: ['cmp.inta.dev', '.inta.dev', 'inta.cmp'],
   },
   resolve: {
     modules: [
