@@ -1,6 +1,7 @@
 const Link = window.ReactRouterDOM.Link;
 const { useEffect, useRef } = window.React;
 import "./style.css";
+import "../../Login/Login.css";
 import Authentication from "../../Authentication/Auth";
 export default function LandingPage() {
     const loginRef = useRef(null);
@@ -20,6 +21,23 @@ export default function LandingPage() {
             <main className="main-content">
                 <section className="main-content-section">
                     <h1 className="main-content-section-title">Welcome to Intastellar Consents</h1>
+                    <div className="icc-product-parent-ribbon icc-product-parent-ribbon--on-light" role="note">
+                        <span className="icc-product-parent-ribbon__product">Intastellar Consents</span>
+                        <span className="icc-product-parent-ribbon__sep" aria-hidden="true">
+                            ·
+                        </span>
+                        <span className="icc-product-parent-ribbon__rest">
+                            a consent management product from{" "}
+                            <a
+                                href="https://www.intastellarsolutions.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="icc-product-parent-ribbon__link"
+                            >
+                                Intastellar Solutions International
+                            </a>
+                        </span>
+                    </div>
                     <p className="main-content-section-description">Intastellar Consent is a consent management platform that helps you manage your user consents in a compliant way.</p>
                     <Link to="/login" className="main-content-section-button">Get Started</Link>
                     <div

@@ -56,7 +56,7 @@ function handleLogin(account) {
 }
 
 export default function Login() {
-    document.title = "Log in to Intastellar Consents";
+    document.title = "Log in to Intastellar Consents — Intastellar Solutions International";
     const { isLoading, signin, users } = useIntastellar({
         clientId: "d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d",
         appName: "Intastellar Consents",
@@ -77,10 +77,28 @@ export default function Login() {
                         <div className="int-login__brand">
                             <img
                                 src={logo}
-                                alt="Intastellar Consents"
+                                alt="Intastellar Solutions"
                                 className="int-login__logo"
                                 decoding="async"
                             />
+                        </div>
+
+                        <div className="icc-product-parent-ribbon" role="note">
+                            <span className="icc-product-parent-ribbon__product">Intastellar Consents</span>
+                            <span className="icc-product-parent-ribbon__sep" aria-hidden="true">
+                                ·
+                            </span>
+                            <span className="icc-product-parent-ribbon__rest">
+                                a consent product from{" "}
+                                <a
+                                    href="https://www.intastellarsolutions.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="icc-product-parent-ribbon__link"
+                                >
+                                    Intastellar Solutions International
+                                </a>
+                            </span>
                         </div>
 
                         <h1 id="int-login-heading" className="int-login__headline">

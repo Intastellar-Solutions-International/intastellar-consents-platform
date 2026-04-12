@@ -61,6 +61,23 @@ export default function Login() {
                     <section className="loginForm-header-content">
                         <img className="loginForm-logo" src={logo} alt="Intastellar Solutions Logo" />
                         <h1>Get started with <br /> Intastellar Consents | CMP</h1>
+                        <div className="icc-product-parent-ribbon icc-product-parent-ribbon--signup" role="note">
+                            <span className="icc-product-parent-ribbon__product">Intastellar Consents</span>
+                            <span className="icc-product-parent-ribbon__sep" aria-hidden="true">
+                                ·
+                            </span>
+                            <span className="icc-product-parent-ribbon__rest">
+                                from{" "}
+                                <a
+                                    href="https://www.intastellarsolutions.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="icc-product-parent-ribbon__link"
+                                >
+                                    Intastellar Solutions International
+                                </a>
+                            </span>
+                        </div>
                         <p>By logging in, you can navigate to your consents managment tool, where you can find <strong>reports</strong> about & regarding your <strong>users consents</strong> on <strong>your Websites</strong>.</p>
                         <section>
                             <p>Our business tools can help you:</p>

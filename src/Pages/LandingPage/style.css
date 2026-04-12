@@ -13,6 +13,28 @@
     margin: auto;
 }
 
+/* Ribbon from Login.css — tuned for light landing background */
+.main-content-section .icc-product-parent-ribbon--on-light {
+    text-align: left;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    border-color: rgba(192, 159, 83, 0.45);
+    background: rgba(255, 252, 246, 0.95);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
+}
+
+.main-content-section .icc-product-parent-ribbon--on-light .icc-product-parent-ribbon__product {
+    color: #2c2c2c;
+}
+
+.main-content-section .icc-product-parent-ribbon--on-light .icc-product-parent-ribbon__rest {
+    color: #5a5a5a;
+}
+
+.main-content-section .icc-product-parent-ribbon--on-light .icc-product-parent-ribbon__link {
+    color: #8a6f2a;
+}
+
 .main-content-section-button {
     margin-top: 20px;
     color: #f8f9fa;
