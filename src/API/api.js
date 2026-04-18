@@ -86,6 +86,16 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        /** Referrer + UTM / marketing query parameters (implement on backend). */
+        marketingAttribution: {
+            url: `${PrimaryHost}/analytics/gdpr/marketingAttribution`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
         complianceSnapshot: {
             url: `${PrimaryHost}/cmp/compliance-snapshot.php`,
             method: "GET",

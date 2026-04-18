@@ -1,0 +1,146 @@
+.marketing-report-page {
+    padding-bottom: 48px;
+}
+
+.marketing-report-hero {
+    margin: 0 0 20px;
+}
+
+.marketing-report-hero h1 {
+    margin: 0 0 8px;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: rgb(240, 240, 240);
+}
+
+.marketing-report-hero p {
+    margin: 0;
+    max-width: 52rem;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: rgba(200, 200, 205, 0.9);
+}
+
+.marketing-report-banner {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(192, 159, 83, 0.28);
+    background: rgba(192, 159, 83, 0.08);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: rgba(230, 225, 210, 0.95);
+}
+
+.marketing-report-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.marketing-report-kpi {
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.marketing-report-kpi__label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.9);
+    margin-bottom: 6px;
+}
+
+.marketing-report-kpi__value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #f4f4f4;
+}
+
+.marketing-report-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.marketing-report-toolbar__meta {
+    font-size: 0.78rem;
+    color: rgba(180, 180, 188, 0.9);
+}
+
+.marketing-report-table-wrap {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.marketing-report-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+}
+
+.marketing-report-table th,
+.marketing-report-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.marketing-report-table th {
+    font-weight: 600;
+    color: rgba(192, 159, 83, 0.92);
+    white-space: nowrap;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.marketing-report-table td {
+    color: rgba(230, 230, 232, 0.95);
+    font-variant-numeric: tabular-nums;
+}
+
+.marketing-report-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.marketing-report-table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.marketing-report-empty {
+    padding: 28px 16px;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: rgba(180, 180, 188, 0.88);
+}
+
+.marketing-report-error {
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 120, 120, 0.35);
+    background: rgba(80, 20, 20, 0.25);
+    color: rgba(255, 200, 200, 0.95);
+    font-size: 0.875rem;
+    margin-bottom: 16px;
+}
+
+.marketing-report-code {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.35);
+    font-size: 0.72rem;
+    overflow-x: auto;
+    color: rgba(220, 220, 225, 0.9);
+}

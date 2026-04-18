@@ -42,6 +42,7 @@ import CreateUser from "./Pages/Settings/CreateUser";
 import AuthLogin from "./Login/AuthLogin";
 import Experiments from "./Pages/Experiments/Experiments";
 import AuditReport from "./Pages/Reports/AuditReport";
+import MarketingReport from "./Pages/Reports/MarketingReport";
 
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
@@ -247,6 +248,13 @@ export default function App() {
                                                 </ErrorBoundary>
                                             }
                                         </Route>
+                                        <Route path="/:id/reports/view/:handle/marketing" exact>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
+                                        </Route>
                                         <Route path="/:id/reports/view/:handle" exact>
                                             {
                                                 (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
@@ -272,6 +280,13 @@ export default function App() {
                                             {
                                                 (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
+                                        </Route>
+                                        <Route path="/:id/reports/marketing" exact>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
