@@ -45,6 +45,73 @@ function extractSummary(payload) {
     return null;
 }
 
+function normUtm(s) {
+    return String(s ?? "")
+        .trim()
+        .toLowerCase();
+}
+
+/**
+ * Human-readable channel for the attribution table (source / medium / referrer heuristics).
+ */
+function deriveMarketingChannel(row) {
+    const s = normUtm(row.utmSource);
+    const m = normUtm(row.utmMedium);
+    const campaign = normUtm(row.utmCampaign);
+    const host = normUtm(row.referrer).replace(/^www\./, "");
+    const paidLike = /cpc|ppc|paid|social|ads|display|paidsocial|paid_social/.test(m);
+
+    if (s === "(fbclid)") return "Facebook Ads";
+    if (s === "(gclid)") return "Google Ads";
+    if (s === "(utm)") return "Marketing (custom parameters)";
+    if (campaign.includes("capterra") || s.includes("capterra")) return "Capterra";
+
+    if (s === "fb" || s === "facebook" || s === "meta" || host.includes("facebook.com") || host.includes("fb.com")) {
+        return paidLike || m.includes("social") ? "Facebook Ads" : "Facebook / Meta";
+    }
+    if (s.includes("instagram") || host.includes("instagram.com")) {
+        return paidLike ? "Instagram Ads" : "Instagram";
+    }
+    if (s.includes("google") || s === "google ads" || host.includes("google.")) {
+        if (m.includes("cpc") || m.includes("ppc") || m === "paid") return "Google Ads";
+        return "Google";
+    }
+    if (s.includes("linkedin") || host.includes("linkedin.com")) {
+        return paidLike ? "LinkedIn Ads" : "LinkedIn";
+    }
+    if (
+        s.includes("twitter") ||
+        s === "tw" ||
+        host.includes("twitter.com") ||
+        host.includes("x.com") ||
+        host.includes("t.co")
+    ) {
+        return paidLike ? "X (Twitter) Ads" : "X (Twitter)";
+    }
+    if (s.includes("bing") || s.includes("microsoft")) return "Microsoft Ads";
+    if (s.includes("tiktok")) return paidLike ? "TikTok Ads" : "TikTok";
+    if (s.includes("pinterest")) return paidLike ? "Pinterest Ads" : "Pinterest";
+    if (m === "email" || m.includes("newsletter") || m.includes("e-mail")) return "Email";
+    if (m.includes("affiliate")) return "Affiliate";
+    if (m === "organic" || s === "organic") return "Organic search";
+
+    const hasDims = (s && s !== "—") || (m && m !== "—");
+    if (hasDims) {
+        const srcLabel = row.utmSource === "—" ? "" : String(row.utmSource).trim();
+        const medLabel = row.utmMedium === "—" ? "" : String(row.utmMedium).trim();
+        if (srcLabel && medLabel) return `${medLabel} · ${srcLabel}`;
+        if (srcLabel) return srcLabel;
+        if (medLabel) return medLabel;
+    }
+
+    if (host && host !== "—") {
+        const pretty = String(row.referrer).replace(/^www\./i, "");
+        return `Referral (${pretty})`;
+    }
+
+    return "Other";
+}
+
 function mapRow(r) {
     const ref =
         r.referrerHost ??
@@ -53,7 +120,7 @@ function mapRow(r) {
         r.referrerUrl ??
         r.referrer_url ??
         (r.referrerDomain != null ? String(r.referrerDomain) : "—");
-    return {
+    const base = {
         referrer: ref === "" || ref == null ? "—" : String(ref),
         utmSource: String(r.utm_source ?? r.utmSource ?? r.source ?? "—"),
         utmMedium: String(r.utm_medium ?? r.utmMedium ?? r.medium ?? "—"),
@@ -67,6 +134,10 @@ function mapRow(r) {
                   : r.accept_pct != null
                     ? Number(r.accept_pct)
                     : null,
+    };
+    return {
+        ...base,
+        channel: deriveMarketingChannel(base),
     };
 }
 
@@ -255,9 +326,9 @@ export default function MarketingReport() {
                     <header className="marketing-report-hero">
                         <h1>Marketing attribution</h1>
                         <p>
-                            Consent activity broken down by <strong>referrer</strong> and{" "}
-                            <strong>UTM / marketing query parameters</strong> on the landing URL. Use the date range
-                            (and optional comparison) in the header to align with your backend filters.
+                            Consent activity grouped into a <strong>channel</strong> (for example Facebook Ads) and a{" "}
+                            <strong>campaign name</strong> from UTM and landing URL parameters. Use the date range (and
+                            optional comparison) in the header to align with your backend filters.
                         </p>
                     </header>
 
@@ -272,7 +343,7 @@ export default function MarketingReport() {
                         <div className="marketing-report-error" role="alert">
                             {error}
                             <pre className="marketing-report-code">
-                                {`Example row: { "referrerHost": "facebook.com", "utm_source": "fb", "utm_medium": "paid", "utm_campaign": "spring", "consents": 120, "acceptRate": 72.5 }`}
+                                {`Example row: { "referrerHost": "facebook.com", "utm_source": "fb", "utm_medium": "paid", "utm_campaign": "spring_sale", "consents": 120, "acceptRate": 72.5 }`}
                             </pre>
                         </div>
                     ) : null}
@@ -302,23 +373,21 @@ export default function MarketingReport() {
                             <table className="marketing-report-table">
                                 <thead>
                                     <tr>
-                                        <th>Referrer</th>
-                                        <th>UTM source</th>
-                                        <th>UTM medium</th>
-                                        <th>UTM campaign</th>
-                                        <th>Consents</th>
-                                        <th>Accept %</th>
+                                        <th className="marketing-report-table__col-channel">Channel</th>
+                                        <th className="marketing-report-table__col-campaign">Campaign name</th>
+                                        <th className="marketing-report-table__col-num">Consents</th>
+                                        <th className="marketing-report-table__col-num">Acceptance %</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {rows.map((r, i) => (
-                                        <tr key={`${r.referrer}-${r.utmCampaign}-${r.utmSource}-${i}`}>
-                                            <td>{r.referrer}</td>
-                                            <td>{r.utmSource}</td>
-                                            <td>{r.utmMedium}</td>
-                                            <td>{r.utmCampaign}</td>
-                                            <td>{r.consents.toLocaleString("de-DE")}</td>
-                                            <td>
+                                        <tr key={`${r.channel}-${r.utmCampaign}-${i}`}>
+                                            <td className="marketing-report-table__col-channel">{r.channel}</td>
+                                            <td className="marketing-report-table__col-campaign">{r.utmCampaign}</td>
+                                            <td className="marketing-report-table__col-num">
+                                                {r.consents.toLocaleString("de-DE")}
+                                            </td>
+                                            <td className="marketing-report-table__col-num">
                                                 {r.acceptPct != null && Number.isFinite(r.acceptPct)
                                                     ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
                                                     : "—"}

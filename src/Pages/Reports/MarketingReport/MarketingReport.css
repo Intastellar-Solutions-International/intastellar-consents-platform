@@ -117,6 +117,30 @@
     background: rgba(255, 255, 255, 0.03);
 }
 
+.marketing-report-table__col-channel {
+    min-width: 10.5rem;
+    max-width: 14rem;
+    white-space: normal;
+}
+
+.marketing-report-table__col-campaign {
+    min-width: 12rem;
+    max-width: 28rem;
+    white-space: normal;
+    word-break: break-word;
+    font-variant-numeric: normal;
+}
+
+.marketing-report-table__col-num {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.marketing-report-table th.marketing-report-table__col-num {
+    text-align: right;
+}
+
 .marketing-report-empty {
     padding: 28px 16px;
     text-align: center;
