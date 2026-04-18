@@ -944,7 +944,7 @@ export default function MarketingReport() {
             <div style={{ flex: "1" }}>
                 <StickyPageTitle
                     loadingUpdated={loading}
-                    finalLoaded={!loading}
+                    finalLoaded={loading}
                     title="Marketing"
                     numberofDays={setLastDays}
                     getLastDays={getLastDays}
