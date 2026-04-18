@@ -1,4 +1,4 @@
-const { useState, useRef } = React;
+const { useState, useRef, useEffect } = React;
 import Months from "./Modules/Months";
 import "./Styles/Calendar.css";
 
@@ -50,36 +50,71 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
             : months;
 
     const containerRef = useRef(null);
+    const scrollTargetMonthRef = useRef(null);
 
-    const handleScroll = (e) => {
-        if (e.target.scrollTop < 50) {
-            handlePrevYear();
-        } else if (e.target.scrollTop > containerRef.current.scrollHeight - e.target.clientHeight - 50) {
-            handleNextYear();
-        }
-    };
+    /** Month index in `monthsToShow` that should be scrolled into view (current month this year, else December). */
+    const scrollFocusMonthIndex =
+        visibleYear === currentYear ? currentMonth : visibleYear < currentYear ? 11 : 0;
+
+    useEffect(() => {
+        const el = scrollTargetMonthRef.current;
+        const scroller = containerRef.current;
+        if (!el || !scroller) return;
+
+        const run = () => {
+            el.scrollIntoView({ block: "center", behavior: "instant" });
+            if (typeof el.focus === "function") {
+                try {
+                    el.focus({ preventScroll: true });
+                } catch {
+                    el.focus();
+                }
+            }
+        };
+
+        const id = window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(run);
+        });
+        return () => window.cancelAnimationFrame(id);
+    }, [visibleYear, currentYear, currentMonth, monthsToShow.length]);
 
     return (
-        <div
-            ref={containerRef}
-            /* onScroll={handleScroll} */
-            className="overflow-auto will-change-scroll flex flex-col-reverse"
-            style={{
-                scrollSnapType: "y mandatory",
-                scrollBehavior: "smooth",
-            }}
-        >
-            <div className="p-2">
-                {/* year navigation */}
-                <div className="flex justify-between items-center mb-2 sticky">
-                    <button onClick={handlePrevYear} className="px-2">&lsaquo;</button>
-                    <span className="font-semibold">{visibleYear}</span>
-                    <button onClick={handleNextYear} className="px-2" disabled={visibleYear === currentYear}>&rsaquo;</button>
+        <div ref={containerRef} className="filter-cal-scroll will-change-scroll">
+            <div className="p-2 filter-cal-inner">
+                <div className="filter-cal-year-nav" role="navigation" aria-label="Calendar year">
+                    <button type="button" onClick={handlePrevYear} className="filter-cal-year-nav__btn" aria-label="Previous year">
+                        &lsaquo;
+                    </button>
+                    <span className="filter-cal-year-nav__label">{visibleYear}</span>
+                    <button
+                        type="button"
+                        onClick={handleNextYear}
+                        className="filter-cal-year-nav__btn"
+                        disabled={visibleYear === currentYear}
+                        aria-label="Next year"
+                    >
+                        &rsaquo;
+                    </button>
                 </div>
                 {
-                    monthsToShow.map((month, index) => (
-                        <div key={index + "-" + visibleYear} className="mt-3">
-                            <h2 className="font-semibold">{month}</h2>
+                    monthsToShow.map((month, index) => {
+                        const isScrollFocus = index === scrollFocusMonthIndex;
+                        return (
+                        <div
+                            key={visibleYear + "-" + month}
+                            ref={isScrollFocus ? scrollTargetMonthRef : null}
+                            className={
+                                "filter-cal-month-block" +
+                                (isScrollFocus ? " filter-cal-month-block--scroll-focus" : "")
+                            }
+                            tabIndex={isScrollFocus ? -1 : undefined}
+                            aria-current={
+                                visibleYear === currentYear && index === currentMonth ? "true" : undefined
+                            }
+                        >
+                            <h2 className="filter-cal-month-title" id={`filter-cal-month-h-${visibleYear}-${index}`}>
+                                {month} {visibleYear}
+                            </h2>
                             <Months
                                 currentMonth={index}
                                 year={visibleYear}
@@ -92,7 +127,8 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
                                 today={yesterdayStr}
                             />
                         </div>
-                    ))
+                        );
+                    })
                 }
             </div>
         </div>

@@ -1,8 +1,13 @@
 import "./Styles/Filter.css";
-const { useState, useEffect, useRef, useContext } = React;
+const { useState, useEffect } = React;
 /* import { ToggleButton } from "~/components"; */
 import Calendar from "./Calendar.js";
 import { useUserLocale } from "../../Functions/userLocale.js";
+
+function filterPresetBtnClass(isActive) {
+    return "filter-calendar-preset" + (isActive ? " filter-calendar-preset--active" : "");
+}
+
 export default function Filter({
     className,
     numberOfDays,
@@ -48,53 +53,42 @@ export default function Filter({
     }
 
     return (
-        <div className={className ?? className + " calendar relative z-40"}>
-            <button className="flex justify-center cursor-pointer w-max ml-auto text-slate-100 transparent" onClick={
-                handleCalendarToggle
-            }>
-                <p className="bg-primaryHover text-sm rounded-md mr-2 px-2">{(numberOfDays >= 0) ? "Last " + numberOfDays + " days" : numberOfDays}</p>
-                <section>
-                    {demoMode && <p className="text-sm text-right">Demo Mode Active</p>}
-                    {!demoMode &&
-                    <p className="text-sm text-right">{
-                        new Intl.DateTimeFormat(locale, {
-                            dateStyle: "short",
-                        }).format(
-                            new Date(startXDays)
-                        )
-                    } - {
-                            new Intl.DateTimeFormat(locale, {
-                                dateStyle: "short",
-                            }).format(
-                                new Date(endXDays)
-                            )
-                        }
-                    </p>
-                    }
+        <div
+            className={`filter-calendar-root calendar relative z-40 ${calendar ? "filter-calendar-root--open" : ""} ${className ?? ""}`.trim()}
+        >
+            <button
+                type="button"
+                className="filter-calendar-trigger transparent"
+                aria-expanded={calendar}
+                aria-haspopup="dialog"
+                onClick={handleCalendarToggle}
+            >
+                <span className="filter-calendar-trigger__badge">
+                    {numberOfDays >= 0 ? "Last " + numberOfDays + " days" : numberOfDays}
+                </span>
+                <span className="filter-calendar-trigger__dates">
+                    {demoMode && <span className="filter-calendar-trigger__line filter-calendar-trigger__line--demo">Demo mode</span>}
+                    {!demoMode && (
+                        <span className="filter-calendar-trigger__line">
+                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(startXDays))}
+                            <span className="filter-calendar-trigger__sep">→</span>
+                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(endXDays))}
+                        </span>
+                    )}
                     {compareRangeCheck ? (
-                        <p className="text-sm text-right"><span className="mx-2">compare</span>
-                            {
-                                new Intl.DateTimeFormat(locale, {
-                                    dateStyle: "short",
-                                }).format(
-                                    new Date(previousPeriod2)
-                                )
-                            } - {
-                                new Intl.DateTimeFormat(locale, {
-                                    dateStyle: "short",
-                                }).format(
-                                    new Date(previousPeriod)
-                                )
-                            }
-                        </p>
+                        <span className="filter-calendar-trigger__line filter-calendar-trigger__line--compare">
+                            <span className="filter-calendar-trigger__compare-kicker">vs</span>
+                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(previousPeriod2))}
+                            <span className="filter-calendar-trigger__sep">→</span>
+                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(previousPeriod))}
+                        </span>
                     ) : null}
-                </section>
-                {/* <RiArrowDownSLine size={25} /> */}
+                </span>
             </button>
             {calendar && (
-                <div className="calendar-grid auto-rows-max grid-cols-1 bg-slate-100 shadow-md absolute z-10 right-0 mt-3 w-[512px] h-[445px] rounded-md overflow-hidden">
-                    <section className="calendar-grid grid-cols-2 h-[406px]">
-                        <section className="border-r-2">
+                <div className="filter-calendar-popover" role="dialog" aria-label="Choose date range">
+                    <section className="filter-calendar-popover__body">
+                        <section className="filter-calendar-presets">
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 3;
@@ -115,7 +109,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value + 1 * 12);
                                 }
-                            }} className={selectedDays !== "Yesterday" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Yesterday</button>
+                            }} className={filterPresetBtnClass(selectedDays === "Yesterday")}>Yesterday</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 7;
@@ -136,7 +130,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value + 1 * 12);
                                 }
-                            }} className={selectedDays !== 7 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 7 days</button>
+                            }} className={filterPresetBtnClass(selectedDays === 7)}>Last 7 days</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 28;
@@ -157,7 +151,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value + 1 * 12);
                                 }
-                            }} className={selectedDays !== 28 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 28 days</button>
+                            }} className={filterPresetBtnClass(selectedDays === 28)}>Last 28 days</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 30;
@@ -178,7 +172,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value + 1 * 12);
                                 }
-                            }} className={selectedDays !== 30 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 30 days</button>
+                            }} className={filterPresetBtnClass(selectedDays === 30)}>Last 30 days</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 90;
@@ -200,7 +194,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value * 12);
                                 }
-                            }} className={selectedDays !== 90 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 90 days</button>
+                            }} className={filterPresetBtnClass(selectedDays === 90)}>Last 90 days</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 12 * 30;
@@ -222,7 +216,7 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value * 12);
                                 }
-                            }} className={selectedDays != "12 months" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 12 months</button>
+                            }} className={filterPresetBtnClass(selectedDays === "12 months")}>Last 12 months</button>
                             <button onClick={(e) => {
                                 e.preventDefault();
                                 const value = 365;
@@ -252,66 +246,67 @@ export default function Filter({
                                 } else if (selectedComparison === "Same period last year") {
                                     setSelectedCompareRange(value + 1 * 12);
                                 }
-                            }} className={selectedDays !== 365 ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last year</button>
-                            <section className="border-t-2 pt-4">
+                            }} className={filterPresetBtnClass(selectedDays === 365)}>Last year</button>
+                            <section className="filter-calendar-presets__compare-wrap">
                                 {/* {isCompare ? <div className="flex justify-between px-2">Compare <ToggleButton enabled={true} onChange={() => {
                                     setIsCompare(!isCompare);
                                 }} /></div> : <div className="flex justify-between px-2">Compare <ToggleButton enabled={false} onChange={() => {
                                     setIsCompare(!isCompare);
                                 }} /></div>} */}
                                 {isCompare && (
-                                    <section>
+                                    <section className="filter-calendar-presets__compare">
+                                        <p className="filter-calendar-presets__compare-label">Comparison baseline</p>
                                         <button onClick={(e) => {
                                             e.preventDefault();
                                             const name = "Previous period";
                                             setSelectedComparison(name);
                                             setSelectedCompareRange(selectedDays);
-                                        }} className={selectedComparison !== "Previous period" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Previous period</button>
+                                        }} className={filterPresetBtnClass(selectedComparison === "Previous period")}>Previous period</button>
                                         <button onClick={(e) => {
                                             e.preventDefault();
                                             const name = "Preceding period";
                                             setSelectedComparison(name);
                                             setSelectedCompareRange(selectedDays * 2);
-                                        }} className={selectedComparison !== "Preceding period" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Preceding period</button>
+                                        }} className={filterPresetBtnClass(selectedComparison === "Preceding period")}>Preceding period</button>
                                         <button onClick={(e) => {
                                             e.preventDefault();
                                             const name = "Previous quarter";
                                             setSelectedComparison(name);
                                             setSelectedCompareRange(90);
-                                        }} className={selectedComparison !== "Previous quarter" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 90 days</button>
+                                        }} className={filterPresetBtnClass(selectedComparison === "Previous quarter")}>Last 90 days</button>
                                         <button onClick={(e) => {
                                             e.preventDefault();
                                             const name = "Last 180 days";
                                             setSelectedComparison(name);
                                             setSelectedCompareRange(180);
-                                        }} className={selectedComparison !== "Last 180 days" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Last 180 days</button>
+                                        }} className={filterPresetBtnClass(selectedComparison === "Last 180 days")}>Last 180 days</button>
                                         <button onClick={(e) => {
                                             e.preventDefault();
                                             const name = "Same period last year";
                                             setSelectedComparison(name);
                                             setSelectedCompareRange(name);
-                                        }} className={selectedComparison !== "Same period last year" ? "block w-full text-left p-2 hover:bg-primaryHover hover:text-slate-100 cursor-pointer" : "block bg-primary text-slate-100 hover:text-slate-100 w-full text-left p-2 hover:bg-primaryHover cursor-pointer"}>Same period last year</button>
+                                        }} className={filterPresetBtnClass(selectedComparison === "Same period last year")}>Same period last year</button>
                                     </section>
                                 )}
                             </section>
                         </section>
-                        <Calendar compareRange={compareRange} selectedDays={selectedDays} setSelectedDays={setSelectedDays} startDate={dateRange.start} endDate={dateRange.end} setDateRange={setDateRange} handleCalendarToggle={handleCalendarToggle} />
+                        <div className="filter-calendar-popover__calendar-wrap">
+                            <Calendar compareRange={compareRange} selectedDays={selectedDays} setSelectedDays={setSelectedDays} startDate={dateRange.start} endDate={dateRange.end} setDateRange={setDateRange} handleCalendarToggle={handleCalendarToggle} />
+                        </div>
                     </section>
-                    <footer>
-                        <button onClick={
-                            handleCalendarToggle
-                        } className="bottom-0 col-span-2 text-slate-100 bg-secondaryDark w-1/2 right-0 p-2 hover:bg-slate-100 hover:text-primary cursor-pointer">
+                    <footer className="filter-calendar-popover__footer">
+                        <button type="button" onClick={handleCalendarToggle} className="filter-calendar-popover__btn filter-calendar-popover__btn--secondary">
                             Cancel
                         </button>
                         <button
+                            type="button"
                             onClick={(e) => {
                                 e.preventDefault();
                                 handleCalendarToggle();
-                                // push the new range up
                                 setFromDate(new Date(startXDays));
                                 setToDate(new Date(endXDays));
                             }}
-                            className="bottom-0 col-span-2 text-slate-100 bg-primary w-1/2 right-0 p-2 hover:bg-primaryHover cursor-pointer"
+                            className="filter-calendar-popover__btn filter-calendar-popover__btn--primary"
                         >
                             Apply
                         </button>
@@ -319,6 +314,6 @@ export default function Filter({
                 </div>
             )
             }
-        </div >
-    )
+        </div>
+    );
 }

@@ -126,6 +126,7 @@ body{
 .infoHeader{
     width: 100%;
     position: relative;
+    overflow: visible;
 }
 
 .infoHeader.sticky{

@@ -30,6 +30,18 @@
     will-change: scroll-position;
 }
 
+/* Scrollable month list inside the date popover (must have bounded height from parent flex) */
+.filter-cal-scroll {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
 .overflow-auto {
     overflow: auto;
 }
@@ -99,7 +111,96 @@
 .sticky{
     position: sticky;
     top: 0;
-    background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+    z-index: 2;
+    background: linear-gradient(180deg, rgba(40, 40, 42, 0.98) 0%, rgba(34, 34, 36, 0.96) 100%);
+    padding-bottom: 4px;
+}
+
+/* Calendar column (inside dark date popover) */
+.filter-cal-inner {
+    color: rgba(230, 230, 230, 0.95);
+}
+
+.filter-cal-year-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 8px 6px;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(52, 52, 55, 0.98) 0%, rgba(38, 38, 40, 0.92) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.filter-cal-year-nav__label {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #f2f2f2;
+}
+
+.filter-cal-year-nav__btn {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(240, 240, 240, 0.95);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.filter-cal-year-nav__btn:hover:not(:disabled) {
+    background: rgba(192, 159, 83, 0.25);
+    color: #fff;
+}
+
+.filter-cal-year-nav__btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.filter-cal-month-block {
+    margin-top: 14px;
+    scroll-margin-block: 72px;
+    border-radius: 10px;
+    outline: none;
+}
+
+.filter-cal-month-block:first-of-type {
+    margin-top: 0;
+}
+
+.filter-cal-month-block--scroll-focus:focus-visible {
+    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.65);
+    background: rgba(192, 159, 83, 0.06);
+}
+
+.filter-cal-month-title {
+    margin: 0 0 8px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.88);
+}
+
+.filter-cal-dow {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(160, 160, 165, 0.95);
 }
 
 @media screen and (max-width: 600px) {

@@ -38,7 +38,7 @@ export default function Months({ currentMonth, year, selectedStartDate, selected
                 {
                     /* Adding the week days of the current month not in US style */
                     ["M", "T", "O", "T", "F", "L", "S"].map((day, index) => (
-                        <div key={index} className="text-center">
+                        <div key={index} className="filter-cal-dow">
                             {day}
                         </div>
                     ))
