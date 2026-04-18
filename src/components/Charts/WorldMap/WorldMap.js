@@ -35,6 +35,33 @@ function colorCalulator(value) {
     return `rgba(${base.r}, ${base.g}, ${base.b}, ${opacity})`;
 }
 
+/** API uses `num.accept` or `num.accepted` for accepted counts */
+function consentCountFromNum(num) {
+    if (!num || typeof num !== "object") return null;
+    const v = num.accept ?? num.accepted;
+    return v != null && Number.isFinite(Number(v)) ? Number(v) : null;
+}
+
+function formatCountDelta(current, previous) {
+    const c = Number(current);
+    const p = Number(previous);
+    if (!Number.isFinite(c) || !Number.isFinite(p)) return null;
+    const d = Math.round(c - p);
+    if (d === 0) return "↔ 0";
+    const arrow = d > 0 ? "↑" : "↓";
+    return `${arrow} ${d > 0 ? "+" : ""}${Math.abs(d).toLocaleString("de-DE")}`;
+}
+
+function formatPctDeltaPp(currentPct, prevPct) {
+    const c = Number(currentPct);
+    const p = Number(prevPct);
+    if (!Number.isFinite(c) || !Number.isFinite(p)) return null;
+    const d = Math.round((c - p) * 10) / 10;
+    const arrow = d > 0 ? "↑" : d < 0 ? "↓" : "↔";
+    const sign = d > 0 ? "+" : "";
+    return `${arrow} ${sign}${d.toLocaleString("de-DE", { maximumFractionDigits: 1 })} pp`;
+}
+
 function buildCodeToName() {
     const m = {};
     Object.entries(countryCodes).forEach(([name, code]) => {
@@ -52,6 +79,8 @@ export default function Map(props) {
     const demoMode = props.demoMode;
     const renderCountryPanelExtras = props.renderCountryPanelExtras;
 
+    const compareOn = Boolean(data?.date?.previousStart && data?.date?.previousEnd);
+
     const [selected, setSelected] = useState(null);
     const closeDrawer = useCallback(() => setSelected(null), []);
     const [visibleCount, setVisibleCount] = useState(12);
@@ -63,6 +92,10 @@ export default function Map(props) {
             .map((country) => {
                 const code = countryCodes[country.country];
                 if (!code) return null;
+                const accCount = consentCountFromNum(country.num);
+                const pp = country.previousPeriod;
+                const ppNum = pp?.num;
+                const ppAcc = consentCountFromNum(ppNum);
                 return {
                     [code]: {
                         date: data?.date ? data.date : "No data",
@@ -76,11 +109,11 @@ export default function Map(props) {
                         marketing: country.marketing,
                         color: colorCalulator(country.num.total),
                         acceptedTotal: demoMode
-                            ? `${country.num.accepted > 9999 ? String(country.num.accepted).slice(0, 2) : String(country.num.accepted).slice(0, 1)}${country.num.accepted > 999 ? "k" : "**"}`
-                            : country.num.accepted,
+                            ? `${accCount > 9999 ? String(accCount).slice(0, 2) : String(accCount).slice(0, 1)}${accCount > 999 ? "k" : "**"}`
+                            : accCount,
                         rejectedTotal: demoMode
-                            ? `${country.num.rejected > 9999 ? String(country.num.rejected).slice(0, 2) : String(country.num.rejected).slice(0, 1)}${country.num.rejected > 999 ? "k" : "**"}`
-                            : country.num.rejected,
+                            ? `${(country.num.decline ?? country.num.rejected) > 9999 ? String(country.num.decline ?? country.num.rejected).slice(0, 2) : String(country.num.decline ?? country.num.rejected).slice(0, 1)}${(country.num.decline ?? country.num.rejected) > 999 ? "k" : "**"}`
+                            : country.num.decline ?? country.num.rejected,
                         functionalTotal: demoMode
                             ? `${country.num.functional > 9999 ? String(country.num.functional).slice(0, 2) : String(country.num.functional).slice(0, 1)}${country.num.functional > 999 ? "k" : "**"}`
                             : country.num.functional,
@@ -90,6 +123,9 @@ export default function Map(props) {
                         marketingTotal: demoMode
                             ? `${country.num.marketing > 9999 ? String(country.num.marketing).slice(0, 2) : String(country.num.marketing).slice(0, 1)}${country.num.marketing > 999 ? "k" : "**"}`
                             : country.num.marketing,
+                        previousPeriod: pp || null,
+                        _rawTotal: country.num.total,
+                        _ppTotal: ppNum?.total,
                     },
                 };
             })
@@ -228,13 +264,40 @@ export default function Map(props) {
                     { label: "Marketing", value: countryValues.marketing, total: countryValues.marketingTotal },
                     { label: "Rejected", value: countryValues.rejected, total: countryValues.rejectedTotal },
                 ];
-                return rows
+                let text = rows
                     .map((r) =>
                         r.total != null
                             ? `${r.label}: ${r.value}% (${fmt(r.total)})`
                             : `${r.label}: ${fmt(r.value)}`
                     )
                     .join("\n");
+
+                const pp = countryValues.previousPeriod;
+                if (pp && typeof pp === "object" && pp.num) {
+                    const pNum = pp.num;
+                    const curTot = countryValues._rawTotal;
+                    const prTot = pNum.total;
+                    const dTot =
+                        curTot != null && prTot != null ? formatCountDelta(Number(curTot), Number(prTot)) : null;
+                    text += "\n\n— Comparison period —";
+                    text += `\nTotal: ${fmt(pNum.total)}`;
+                    if (dTot) text += `\nΔ total vs baseline: ${dTot}`;
+                    const lines = [
+                        ["Accepted", pp.accepted, countryValues.accepted, consentCountFromNum(pNum), countryValues.acceptedTotal],
+                        ["Functional", pp.functional, countryValues.functional, pNum.functional, countryValues.functionalTotal],
+                        ["Statistics", pp.statics, countryValues.statistics, pNum.statics, countryValues.statisticsTotal],
+                        ["Marketing", pp.marketing, countryValues.marketing, pNum.marketing, countryValues.marketingTotal],
+                        ["Rejected", pp.declined, countryValues.rejected, pNum.decline ?? pNum.rejected, countryValues.rejectedTotal],
+                    ];
+                    for (const [label, ppPct, curPct, ppCnt, curCnt] of lines) {
+                        if (ppPct == null) continue;
+                        const dpp = formatPctDeltaPp(curPct, ppPct);
+                        text += `\n${label}: ${ppPct}% (${fmt(ppCnt)})`;
+                        if (dpp) text += ` · ${dpp}`;
+                    }
+                }
+
+                return text;
             },
             initialZoom: zoomLevel,
             initialLocation: center,
@@ -288,6 +351,9 @@ export default function Map(props) {
                         <h2 className="world-map__title">Global consent activity</h2>
                         <p className="world-map__subtitle">
                             Darker regions indicate more interactions. Click any country to open a detailed breakdown.
+                            {compareOn
+                                ? " Tooltips and the drawer include comparison-period totals, counts, and percentage-point deltas where baseline data exists."
+                                : ""}
                         </p>
                     </header>
                     <div className="world-map__map-shell">
@@ -297,7 +363,10 @@ export default function Map(props) {
                 <aside className="world-map__side" aria-label="Top countries by volume">
                     <div className="world-map__side-head">
                         <h3 className="world-map__side-title">Top markets</h3>
-                        <p className="world-map__side-hint">Ranked by interactions · select to explore</p>
+                        <p className="world-map__side-hint">
+                            Ranked by interactions · select to explore
+                            {compareOn ? " · Δ = change in total vs comparison period" : ""}
+                        </p>
                     </div>
                     <div className="world-map__list-scroll">
                         {ranked.slice(0, visibleCount).map((c, key) => {
@@ -319,6 +388,15 @@ export default function Map(props) {
                                                 {demoMode
                                                     ? `${c.num.total > 9999 ? String(c.num.total).slice(0, 2) : String(c.num.total).slice(0, 1)}${c.num.total > 999 ? "k" : "**"}`
                                                     : c.num.total.toLocaleString("de-DE")}
+                                                {compareOn && c.previousPeriod?.num?.total != null ? (
+                                                    <span className="world-map__row-cmp">
+                                                        {" "}
+                                                        {formatCountDelta(
+                                                            Number(c.num.total),
+                                                            Number(c.previousPeriod.num.total)
+                                                        )}
+                                                    </span>
+                                                ) : null}
                                             </span>
                                         </div>
                                         <div className="world-map__row-bar">

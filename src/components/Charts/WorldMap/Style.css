@@ -268,6 +268,16 @@
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     color: rgba(192, 159, 83, 0.95);
+    text-align: right;
+}
+
+.world-map__row-cmp {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: rgba(140, 200, 235, 0.92);
+    vertical-align: middle;
 }
 
 .world-map__row-bar {
@@ -503,6 +513,15 @@
     margin-top: 6px;
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.45);
+    font-variant-numeric: tabular-nums;
+}
+
+.world-map-drawer__stat-cmp {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: rgba(150, 200, 235, 0.9);
     font-variant-numeric: tabular-nums;
 }
 
