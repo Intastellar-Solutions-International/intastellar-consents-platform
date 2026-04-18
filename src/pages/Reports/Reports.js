@@ -20,7 +20,7 @@ export const reportsLinks = [
         path: "/reports/audit-report",
     },
     {
-        name: "Marketing attribution",
+        name: "Marketing",
         path: "/reports/marketing",
     },
 ];
@@ -41,10 +41,10 @@ const HUB_CARDS = [
         leaf: "/audit-report",
     },
     {
-        key: "marketing-attribution",
-        title: "Marketing attribution",
+        key: "marketing",
+        title: "Marketing",
         description:
-            "Consent volume and acceptance by referrer and UTM parameters (landing URL marketing tags).",
+            "Consent volume and acceptance by channel and campaign (UTMs and landing URL marketing parameters).",
         leaf: "/marketing",
     },
 ];

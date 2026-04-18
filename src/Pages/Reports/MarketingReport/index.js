@@ -66,7 +66,7 @@ function simplifyCampaignDisplay(campaignRaw) {
 }
 
 /**
- * Human-readable channel for the attribution table (source / medium / referrer heuristics).
+ * Human-readable channel for the marketing table (source / medium / referrer heuristics).
  */
 function deriveMarketingChannel(row) {
     const s = normUtm(row.utmSource);
@@ -244,7 +244,7 @@ function summarizeContextList(list, formatter) {
 
 function buildMarketingCsvCampaignRows(rows, meta) {
     const lines = [
-        `# Marketing attribution — campaign rows`,
+        `# Marketing — campaign rows`,
         `# From: ${meta.from}; To: ${meta.to}; Scope: ${meta.scope}`,
         `# Generated: ${meta.generatedAt}`,
         [
@@ -293,7 +293,7 @@ function buildMarketingCsvCampaignRows(rows, meta) {
 
 function buildMarketingCsvChannelRows(channelOverview, meta) {
     const lines = [
-        `# Marketing attribution — channel overview`,
+        `# Marketing — channel overview`,
         `# From: ${meta.from}; To: ${meta.to}; Scope: ${meta.scope}`,
         `# Generated: ${meta.generatedAt}`,
         [
@@ -492,7 +492,7 @@ function buildChannelOverview(rowList) {
 }
 
 export default function MarketingReport() {
-    document.title = "Marketing attribution | Reports | Intastellar Consents";
+    document.title = "Marketing | Reports | Intastellar Consents";
     const [currentDomain, setGlobalDomain] = useContext(DomainContext);
     const { id, handle } = useParams();
     useSyncDomainFromRoute(handle, setGlobalDomain);
@@ -545,7 +545,7 @@ export default function MarketingReport() {
 
     const fetchReport = useCallback(async () => {
         if (!endpoint?.url) {
-            setError("Marketing attribution is not configured for this platform.");
+            setError("Marketing is not configured for this platform.");
             setRows([]);
             setSummary(null);
             return;
@@ -603,7 +603,7 @@ export default function MarketingReport() {
             setSummary(extractSummary(json));
             setSelectedChannel(null);
         } catch (e) {
-            setError(e?.message || "Network error while loading marketing attribution.");
+            setError(e?.message || "Network error while loading marketing data.");
             setRows([]);
             setSummary(null);
         } finally {
@@ -660,7 +660,7 @@ export default function MarketingReport() {
         const safe = String(listDomainLabel || "report")
             .replace(/[^\w\-]+/g, "_")
             .slice(0, 60);
-        return `marketing-attribution_${toYmd(fromDate)}_${toYmd(toDate)}_${safe}`;
+        return `marketing_${toYmd(fromDate)}_${toYmd(toDate)}_${safe}`;
     }, [listDomainLabel, fromDate, toDate]);
 
     useEffect(() => {
@@ -709,7 +709,7 @@ export default function MarketingReport() {
                 <StickyPageTitle
                     loadingUpdated={loading}
                     finalLoaded={loading}
-                    title="Marketing attribution"
+                    title="Marketing"
                     numberofDays={setLastDays}
                     getLastDays={getLastDays}
                     setActiveData={setActiveData}
@@ -726,7 +726,7 @@ export default function MarketingReport() {
                 />
                 <div className="dashboard-content marketing-report-page">
                     <header className="marketing-report-hero">
-                        <h1>Marketing attribution</h1>
+                        <h1>Marketing</h1>
                         <p>
                             <strong>Channel overview</strong> rolls up campaigns by channel (one row per channel). Open
                             a channel for a <strong>campaign breakdown</strong>. <strong>Accept all</strong>,{" "}
@@ -825,7 +825,7 @@ export default function MarketingReport() {
                     <div className="marketing-report-table-wrap">
                         {rows.length === 0 && !loading ? (
                             <div className="marketing-report-empty">
-                                No attribution rows for this scope and period. When your API returns data, it will appear
+                                No marketing rows for this scope and period. When your API returns data, it will appear
                                 here.
                             </div>
                         ) : selectedChannel ? (
