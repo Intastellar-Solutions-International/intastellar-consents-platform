@@ -252,11 +252,11 @@ export default function Map(props) {
                 applyData: "total",
                 values: mapCountries,
             },
-            onGetTooltip: (tooltipDiv, countryID, countryValues) => {
+            /* onGetTooltip: (tooltipDiv, countryID, countryValues) => {
                 if (!countryValues) return "";
                 const fmt = (n) => (n != null && !isNaN(n) ? (typeof n === "number" ? n.toLocaleString("de-DE") : n) : "-");
                 const rows = [
-                    { label: "Country", value: countryID, total: null },
+                    { label: "Country", value: countryID ? CODE_TO_NAME[countryID] || countryID : "Unknown", total: null },
                     { label: "Total", value: countryValues.total, total: null },
                     { label: "Accepted", value: countryValues.accepted, total: countryValues.acceptedTotal },
                     { label: "Functional", value: countryValues.functional, total: countryValues.functionalTotal },
@@ -298,7 +298,7 @@ export default function Map(props) {
                 }
 
                 return text;
-            },
+            }, */
             initialZoom: zoomLevel,
             initialLocation: center,
         });
