@@ -284,13 +284,11 @@ export default function App() {
                                             }
                                         </Route>
                                         <Route path="/:id/reports/marketing" exact>
-                                            <div style={{ flex: "1" }}>
                                             {
                                                 (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
-                                            </div>
                                         </Route>
                                         <Route path="/dashboard">
                                             <ErrorBoundary>
