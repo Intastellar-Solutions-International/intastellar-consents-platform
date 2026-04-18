@@ -34,3 +34,9 @@
 .audit-compliance-world-map__country--selected {
     filter: drop-shadow(0 0 4px rgba(192, 159, 83, 0.55));
 }
+
+/* CCPA / CPRA: state overlay on top of country-level US polygon */
+.audit-compliance-world-map__ccpa-california {
+    paint-order: stroke fill;
+    pointer-events: auto;
+}

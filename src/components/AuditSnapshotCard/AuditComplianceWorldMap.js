@@ -3,6 +3,7 @@ import { numericToAlpha2 } from "../../Functions/isoNumericToAlpha2.js";
 import { EU_EEA_UK_NUMERIC } from "./complianceRegions.js";
 import {
     WORLD_TOPO_URL,
+    US_STATES_TOPO_URL,
     PROJECTED_MAP_VIEWBOX,
     projectMercator,
     ringToPathD,
@@ -25,7 +26,8 @@ const FILL = {
 const LABEL = [
     { fw: "GDPR", lon: 12, lat: 54 },
     { fw: "LGPD", lon: -53, lat: -12 },
-    { fw: "CCPA", lon: -99, lat: 40 },
+    /** CCPA / CPRA scope shown as California only on this map */
+    { fw: "CCPA", lon: -119.2, lat: 36.5 },
     { fw: "POPIA", lon: 25, lat: -28 },
 ];
 
@@ -37,9 +39,12 @@ const LABEL_COLOR = {
     potential: "#d4a574",
 };
 
+const US_NUMERIC = 840;
+
+/** Country-level ISO numeric → framework. CCPA is not applied to the whole US (840); California is drawn from US states TopoJSON. */
 const FRAMEWORK_BY_NUMERIC = {
     GDPR: new Set(EU_EEA_UK_NUMERIC),
-    CCPA: new Set([840]),
+    CCPA: new Set(),
     LGPD: new Set([76]),
     POPIA: new Set([710]),
 };
@@ -57,6 +62,25 @@ function frameworkForNumeric(num) {
     if (FRAMEWORK_BY_NUMERIC.LGPD.has(num)) return "LGPD";
     if (FRAMEWORK_BY_NUMERIC.POPIA.has(num)) return "POPIA";
     return null;
+}
+
+/** FIPS 06 — California (us-atlas states-10m). */
+function isCaliforniaStateTopoId(id) {
+    const s = String(id ?? "").padStart(2, "0");
+    return s === "06";
+}
+
+function fillForFrameworkStatus(st, inSample) {
+    if (st === "observed") {
+        return { fill: inSample ? FILL.observedSample : FILL.observed, stroke: "rgba(8, 12, 18, 0.85)", strokeW: "0.45" };
+    }
+    if (st === "watch") {
+        return { fill: FILL.watch, stroke: "rgba(8, 12, 18, 0.85)", strokeW: "0.45" };
+    }
+    if (st === "risk") {
+        return { fill: FILL.risk, stroke: "rgba(8, 12, 18, 0.85)", strokeW: "0.45" };
+    }
+    return { fill: FILL.potential, stroke: "rgba(8, 12, 18, 0.85)", strokeW: "0.45" };
 }
 
 function alpha2FromTopoNumeric(num) {
@@ -89,6 +113,7 @@ export default function AuditComplianceWorldMap({
     const onSelectCountryRef = useRef(onSelectCountry);
     const onSelectFrameworkRef = useRef(onSelectFramework);
     const topoRef = useRef(null);
+    const statesTopoRef = useRef(null);
 
     regionStatusRef.current = regionStatus;
     onSelectCountryRef.current = onSelectCountry;
@@ -105,7 +130,7 @@ export default function AuditComplianceWorldMap({
         selectedUpper ?? "",
     ].join("|");
 
-    function paintFromTopo(topo, sampleKey, selUpper) {
+    function paintFromTopo(topo, statesTopo, sampleKey, selUpper) {
         const sampleAlpha2Set = new Set(
             sampleKey
                 ? sampleKey.split(",").map((s) => s.trim().toUpperCase()).filter(Boolean)
@@ -123,12 +148,14 @@ export default function AuditComplianceWorldMap({
         clearGroup(labelsG);
 
         const pathsWithMeta = [];
+        const inSampleUS = sampleAlpha2Set.has("US");
 
         for (const f of features) {
             const d = f.rings.map(ringToPathD).join(" ");
             if (!d.trim()) continue;
             const num = topoIdToNumeric(f.id);
-            const fw = frameworkForNumeric(num);
+            let fw = frameworkForNumeric(num);
+            if (num === US_NUMERIC && !statesTopo) fw = "CCPA";
             const alpha2 = alpha2FromTopoNumeric(num);
             const inSample = alpha2 != null && sampleAlpha2Set.has(alpha2);
             const isSelected = alpha2 != null && selUpper != null && alpha2 === selUpper;
@@ -144,15 +171,10 @@ export default function AuditComplianceWorldMap({
             let strokeW = "0.45";
 
             if (fw) {
-                if (st === "observed") {
-                    fill = inSample ? FILL.observedSample : FILL.observed;
-                } else if (st === "watch") {
-                    fill = FILL.watch;
-                } else if (st === "risk") {
-                    fill = FILL.risk;
-                } else {
-                    fill = FILL.potential;
-                }
+                const o = fillForFrameworkStatus(st, inSample);
+                fill = o.fill;
+                stroke = o.stroke;
+                strokeW = o.strokeW;
             } else if (inSample) {
                 fill = FILL.base;
                 stroke = "rgba(192, 159, 83, 0.65)";
@@ -188,6 +210,41 @@ export default function AuditComplianceWorldMap({
 
         pathsWithMeta.sort((a, b) => Number(a.isSelected) - Number(b.isSelected));
         for (const { path } of pathsWithMeta) landG.appendChild(path);
+
+        if (statesTopo) {
+            const stCa = stOf("CCPA");
+            const caFeatures = topoToFeatures(statesTopo, "states").filter((feat) => isCaliforniaStateTopoId(feat.id));
+            const isUSSelected = selUpper === "US";
+            for (const feat of caFeatures) {
+                const dCa = feat.rings.map(ringToPathD).join(" ");
+                if (!dCa.trim()) continue;
+                const pCa = document.createElementNS(NS, "path");
+                pCa.setAttribute("d", dCa);
+                pCa.setAttribute("class", "audit-compliance-world-map__country audit-compliance-world-map__ccpa-california");
+                pCa.setAttribute("data-cc", "US");
+                pCa.setAttribute("data-subdivision", "US-CA");
+                const o = fillForFrameworkStatus(stCa, inSampleUS);
+                let { fill: fillCa, stroke: strokeCa, strokeW: strokeWCa } = o;
+                if (isUSSelected) {
+                    strokeCa = "rgba(192, 159, 83, 0.98)";
+                    strokeWCa = "2.4";
+                    pCa.classList.add("audit-compliance-world-map__country--selected");
+                }
+                pCa.setAttribute("fill", fillCa);
+                pCa.setAttribute("stroke", strokeCa);
+                pCa.setAttribute("stroke-width", strokeWCa);
+                pCa.classList.add("audit-compliance-world-map__country--clickable");
+                pCa.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onSelectCountryRef.current?.((prev) => {
+                        const p = prev ? String(prev).toUpperCase() : null;
+                        return p === "US" ? null : "US";
+                    });
+                });
+                landG.appendChild(pCa);
+            }
+        }
 
         for (const { fw, lon, lat } of LABEL) {
             const st = stOf(fw);
@@ -234,14 +291,24 @@ export default function AuditComplianceWorldMap({
             try {
                 if (topoRef.current) {
                     if (cancelled) return;
-                    paintFromTopo(topoRef.current, sampleCountryCodesKey, selectedUpper);
+                    paintFromTopo(topoRef.current, statesTopoRef.current, sampleCountryCodesKey, selectedUpper);
                     return;
                 }
-                const res = await fetch(WORLD_TOPO_URL);
-                const topo = await res.json();
+                const worldRes = await fetch(WORLD_TOPO_URL);
+                const topo = await worldRes.json();
                 if (cancelled) return;
                 topoRef.current = topo;
-                paintFromTopo(topo, sampleCountryCodesKey, selectedUpper);
+                statesTopoRef.current = null;
+                try {
+                    const statesRes = await fetch(US_STATES_TOPO_URL);
+                    if (statesRes.ok) {
+                        statesTopoRef.current = await statesRes.json();
+                    }
+                } catch (e) {
+                    console.warn("AuditComplianceWorldMap: US states map unavailable, CCPA falls back to whole US", e);
+                }
+                if (cancelled) return;
+                paintFromTopo(topo, statesTopoRef.current, sampleCountryCodesKey, selectedUpper);
             } catch (err) {
                 console.error("AuditComplianceWorldMap: failed to load map data", err);
             }
@@ -263,7 +330,7 @@ export default function AuditComplianceWorldMap({
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="xMidYMid meet"
             role="img"
-            aria-label="Regulatory world map; click a country or framework label for details and highlighting"
+            aria-label="Regulatory world map; CCPA shown for California; click a country or framework label for details"
         >
             <rect width={w} height={h} className="audit-compliance-world-map__ocean" />
             <g id="acwm-land" />

@@ -2,6 +2,9 @@
 
 export const WORLD_TOPO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
+/** US state boundaries (TopoJSON) — used to draw California-only CCPA on the compliance world map. */
+export const US_STATES_TOPO_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json";
+
 /** Vertical extent for Mercator Y (must match `projectMercator`). */
 const MERCATOR_HEIGHT = 700;
 
@@ -55,6 +58,7 @@ export function ringToPathD(coords) {
 export function topoToFeatures(topo, objName) {
     const arcs = topo.arcs;
     const geom = topo.objects[objName];
+    if (!geom?.geometries || !Array.isArray(geom.geometries)) return [];
     const [sx, sy] = topo.transform.scale;
     const [tx, ty] = topo.transform.translate;
 
