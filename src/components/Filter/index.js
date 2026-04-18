@@ -39,6 +39,7 @@ export default function Filter({
     demoMode,
 }) {
     const locale = useUserLocale();
+    const compareSwitchLabelId = React.useId();
     const compareRangeCheck = compareRange !== 0 && compareRange != null;
 
     const [calendar, setCalendar] = useState(false);
@@ -226,14 +227,22 @@ export default function Filter({
                     <section className="filter-calendar-popover__body">
                         <section className="filter-calendar-presets">
                             <div className="filter-calendar-presets__toggle-row">
-                                <label className="filter-calendar-compare-toggle">
-                                    <input
-                                        type="checkbox"
-                                        checked={isCompare}
-                                        onChange={(ev) => setIsCompare(ev.target.checked)}
-                                    />
-                                    <span>Compare to prior period</span>
-                                </label>
+                                <span className="filter-calendar-compare-toggle__label" id={compareSwitchLabelId}>
+                                    Compare to prior period
+                                </span>
+                                <button
+                                    type="button"
+                                    role="switch"
+                                    aria-checked={isCompare}
+                                    aria-labelledby={compareSwitchLabelId}
+                                    className={
+                                        "filter-calendar-compare-switch" +
+                                        (isCompare ? " filter-calendar-compare-switch--on" : "")
+                                    }
+                                    onClick={() => setIsCompare((v) => !v)}
+                                >
+                                    <span className="filter-calendar-compare-switch__thumb" aria-hidden="true" />
+                                </button>
                             </div>
 
                             <button
