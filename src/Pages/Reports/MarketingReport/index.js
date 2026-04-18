@@ -705,10 +705,10 @@ export default function MarketingReport() {
     return (
         <>
             <SideNav links={reportsLinks} title="Reports" />
-            <div>
+            <div style={{ flex: "1" }}>
                 <StickyPageTitle
                     loadingUpdated={loading}
-                    finalLoaded={!loading}
+                    finalLoaded={loading}
                     title="Marketing attribution"
                     numberofDays={setLastDays}
                     getLastDays={getLastDays}
