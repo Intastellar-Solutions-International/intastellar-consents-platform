@@ -188,6 +188,33 @@
     color: rgba(180, 180, 188, 0.88);
 }
 
+.marketing-report-table--with-choices {
+    font-size: 0.78rem;
+}
+
+.marketing-report-table__col-choice {
+    min-width: 6.75rem;
+    max-width: 9.5rem;
+    white-space: normal;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.35;
+}
+
+.marketing-report-table th.marketing-report-table__col-choice {
+    text-align: right;
+    white-space: normal;
+    line-height: 1.25;
+}
+
+.marketing-report-footnote {
+    margin: 10px 0 0;
+    max-width: 52rem;
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: rgba(165, 165, 175, 0.92);
+}
+
 .marketing-report-table__col-channel {
     min-width: 10.5rem;
     max-width: 14rem;

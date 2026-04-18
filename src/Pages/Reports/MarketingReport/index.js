@@ -160,11 +160,23 @@ function mapRow(r) {
                   : r.accept_pct != null
                     ? Number(r.accept_pct)
                     : null,
+        acceptAll: Number(r.acceptAll ?? r.accept_all ?? 0) || 0,
+        essentialOnly: Number(r.essentialOnly ?? r.essential_only ?? 0) || 0,
+        granular: Number(r.granular ?? 0) || 0,
     };
     return {
         ...base,
         channel: deriveMarketingChannel({ ...base, utmCampaign: rawCampaign }),
     };
+}
+
+/** Count + share of consents in this row (same semantics as CMP payload classification). */
+function formatChoiceCountPct(count, consents) {
+    const c = Number(count) || 0;
+    const t = Number(consents) || 0;
+    if (t <= 0) return "—";
+    const pct = (c / t) * 100;
+    return `${c.toLocaleString("de-DE")} (${pct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%)`;
 }
 
 /** Weighted average acceptance % by consent volume (rows without accept % are skipped). */
@@ -190,11 +202,15 @@ function buildChannelOverview(rowList) {
     }
     const out = [];
     for (const [channel, list] of byChannel) {
+        const consents = list.reduce((s, x) => s + x.consents, 0);
         out.push({
             channel,
-            consents: list.reduce((s, x) => s + x.consents, 0),
+            consents,
             acceptPct: aggregateWeightedAcceptPct(list),
             campaignCount: list.length,
+            acceptAll: list.reduce((s, x) => s + (x.acceptAll ?? 0), 0),
+            essentialOnly: list.reduce((s, x) => s + (x.essentialOnly ?? 0), 0),
+            granular: list.reduce((s, x) => s + (x.granular ?? 0), 0),
         });
     }
     out.sort((a, b) => b.consents - a.consents);
@@ -347,6 +363,15 @@ export default function MarketingReport() {
         [drilldownRows]
     );
 
+    const unclassifiedConsents = useMemo(
+        () =>
+            rows.reduce((sum, r) => {
+                const c = (r.acceptAll ?? 0) + (r.essentialOnly ?? 0) + (r.granular ?? 0);
+                return sum + Math.max(0, r.consents - c);
+            }, 0),
+        [rows]
+    );
+
     useEffect(() => {
         if (!selectedChannel) return undefined;
         const onKey = (e) => {
@@ -413,23 +438,18 @@ export default function MarketingReport() {
                         <h1>Marketing attribution</h1>
                         <p>
                             <strong>Channel overview</strong> rolls up campaigns by channel (one row per channel). Open
-                            a channel to see a <strong>campaign breakdown</strong> for that source. Data comes from UTM
-                            and landing URL parameters; use the date range in the header to match your backend filters.
+                            a channel for a <strong>campaign breakdown</strong>. <strong>Accept all</strong>,{" "}
+                            <strong>essential only</strong>, and <strong>granular</strong> columns count how users chose
+                            cookie categories (from the consent payload). Use the date range in the header to match
+                            your backend filters.
                         </p>
                     </header>
-
-                    <div className="marketing-report-banner" role="note">
-                        Backend contract: <code>GET …/analytics/gdpr/marketingAttribution</code> with the same auth
-                        headers as other GDPR reports, plus <code>Domains</code>, <code>FromDate</code>,{" "}
-                        <code>ToDate</code>. Response should include <code>data.rows</code> (array) or{" "}
-                        <code>data.campaigns</code>, and optional <code>data.summary</code>.
-                    </div>
 
                     {error ? (
                         <div className="marketing-report-error" role="alert">
                             {error}
                             <pre className="marketing-report-code">
-                                {`Example row: { "referrerHost": "facebook.com", "utm_source": "fb", "utm_medium": "paid", "utm_campaign": "spring_sale", "consents": 120, "acceptRate": 72.5 }`}
+                                {`Example row: { "utm_source": "fb", "utm_medium": "paid", "utm_campaign": "spring_sale", "consents": 120, "acceptRate": 72.5, "acceptAll": 72, "essentialOnly": 30, "granular": 18 }`}
                             </pre>
                         </div>
                     ) : null}
@@ -475,18 +495,21 @@ export default function MarketingReport() {
                                 here.
                             </div>
                         ) : selectedChannel ? (
-                            <table className="marketing-report-table">
+                            <table className="marketing-report-table marketing-report-table--with-choices">
                                 <thead>
                                     <tr>
                                         <th className="marketing-report-table__col-campaign">Campaign name</th>
                                         <th className="marketing-report-table__col-num">Consents</th>
                                         <th className="marketing-report-table__col-num">Acceptance %</th>
+                                        <th className="marketing-report-table__col-choice">Accept all</th>
+                                        <th className="marketing-report-table__col-choice">Essential only</th>
+                                        <th className="marketing-report-table__col-choice">Granular</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {drilldownRows.length === 0 ? (
                                         <tr>
-                                            <td colSpan={3} className="marketing-report-table__empty-row">
+                                            <td colSpan={6} className="marketing-report-table__empty-row">
                                                 No campaigns for this channel.
                                             </td>
                                         </tr>
@@ -502,19 +525,31 @@ export default function MarketingReport() {
                                                         ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
                                                         : "—"}
                                                 </td>
+                                                <td className="marketing-report-table__col-choice">
+                                                    {formatChoiceCountPct(r.acceptAll, r.consents)}
+                                                </td>
+                                                <td className="marketing-report-table__col-choice">
+                                                    {formatChoiceCountPct(r.essentialOnly, r.consents)}
+                                                </td>
+                                                <td className="marketing-report-table__col-choice">
+                                                    {formatChoiceCountPct(r.granular, r.consents)}
+                                                </td>
                                             </tr>
                                         ))
                                     )}
                                 </tbody>
                             </table>
                         ) : (
-                            <table className="marketing-report-table">
+                            <table className="marketing-report-table marketing-report-table--with-choices">
                                 <thead>
                                     <tr>
                                         <th className="marketing-report-table__col-channel">Channel</th>
                                         <th className="marketing-report-table__col-num">Campaigns</th>
                                         <th className="marketing-report-table__col-num">Consents</th>
                                         <th className="marketing-report-table__col-num">Acceptance %</th>
+                                        <th className="marketing-report-table__col-choice">Accept all</th>
+                                        <th className="marketing-report-table__col-choice">Essential only</th>
+                                        <th className="marketing-report-table__col-choice">Granular</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -554,12 +589,29 @@ export default function MarketingReport() {
                                                     ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
                                                     : "—"}
                                             </td>
+                                            <td className="marketing-report-table__col-choice">
+                                                {formatChoiceCountPct(r.acceptAll, r.consents)}
+                                            </td>
+                                            <td className="marketing-report-table__col-choice">
+                                                {formatChoiceCountPct(r.essentialOnly, r.consents)}
+                                            </td>
+                                            <td className="marketing-report-table__col-choice">
+                                                {formatChoiceCountPct(r.granular, r.consents)}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         )}
                     </div>
+                    {rows.length > 0 && unclassifiedConsents > 0 ? (
+                        <p className="marketing-report-footnote" role="note">
+                            {unclassifiedConsents.toLocaleString("de-DE")} consent
+                            {unclassifiedConsents === 1 ? "" : "s"} in this period had no classifiable choice pattern
+                            (missing or legacy payload). They are included in <strong>Consents</strong> but not in the
+                            three choice columns.
+                        </p>
+                    ) : null}
                 </div>
             </div>
         </>
