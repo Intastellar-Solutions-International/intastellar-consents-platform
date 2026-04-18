@@ -27,17 +27,27 @@ function addDaysYmd(ymd, deltaDays) {
     return toDateKey(d);
 }
 
+const MIN_SELECTABLE = "2022-01-01";
+
+function isSelectableYmd(ymd, todayStr) {
+    return Boolean(ymd && ymd >= MIN_SELECTABLE && ymd <= todayStr);
+}
+
 /**
  * Caps + horizontal bridge for a contiguous ISO date range on the month grid.
  * Bridges only when the previous/next calendar day is in range AND sits in the adjacent grid cell.
+ * Days after `todayStr` are never painted (avoids comparison styling on disabled future cells).
  */
-function rangeSegmentFlags(dateKey, rangeStart, rangeEnd, cellIndex, cells, year, monthIndex) {
+function rangeSegmentFlags(dateKey, rangeStart, rangeEnd, cellIndex, cells, year, monthIndex, todayStr) {
     if (!rangeStart || !rangeEnd || rangeStart > rangeEnd) return null;
     if (dateKey < rangeStart || dateKey > rangeEnd) return null;
+    if (!isSelectableYmd(dateKey, todayStr)) return null;
     const prevKey = addDaysYmd(dateKey, -1);
     const nextKey = addDaysYmd(dateKey, 1);
-    const prevInRange = prevKey >= rangeStart && prevKey <= rangeEnd;
-    const nextInRange = nextKey >= rangeStart && nextKey <= rangeEnd;
+    const prevInRange =
+        prevKey >= rangeStart && prevKey <= rangeEnd && isSelectableYmd(prevKey, todayStr);
+    const nextInRange =
+        nextKey >= rangeStart && nextKey <= rangeEnd && isSelectableYmd(nextKey, todayStr);
     const leftDay = cellIndex > 0 ? cells[cellIndex - 1] : null;
     const leftDate = leftDay != null ? ymdFromDay(year, monthIndex, leftDay) : null;
     const rightDay = cellIndex + 1 < cells.length ? cells[cellIndex + 1] : null;
@@ -111,19 +121,25 @@ export default function Months({
                         day != null ? `${year}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}` : null;
 
                     const disabledFuture = day != null && date != null && date > today;
-                    const disabledPast = day != null && date != null && date < "2022-01-01";
+                    const disabledPast = day != null && date != null && date < MIN_SELECTABLE;
                     const disabled = disabledFuture || disabledPast;
 
-                    const inPrimary =
-                        Boolean(date && day != null && rangeStartKey && rangeEndKey && rangeStartKey <= date && date <= rangeEndKey);
+                    const dateEligible = Boolean(date && isSelectableYmd(date, today));
 
-                    const inCompare =
-                        Boolean(date && day != null && cmpStart && cmpEnd && cmpStart <= date && date <= cmpEnd);
+                    const inPrimary = Boolean(
+                        dateEligible && rangeStartKey && rangeEndKey && rangeStartKey <= date && date <= rangeEndKey
+                    );
+
+                    const inCompare = Boolean(dateEligible && cmpStart && cmpEnd && cmpStart <= date && date <= cmpEnd);
 
                     const primarySeg =
-                        date && inPrimary ? rangeSegmentFlags(date, rangeStartKey, rangeEndKey, index, monthCells, year, currentMonth) : null;
+                        date && inPrimary
+                            ? rangeSegmentFlags(date, rangeStartKey, rangeEndKey, index, monthCells, year, currentMonth, today)
+                            : null;
                     const compareSeg =
-                        date && inCompare ? rangeSegmentFlags(date, cmpStart, cmpEnd, index, monthCells, year, currentMonth) : null;
+                        date && inCompare
+                            ? rangeSegmentFlags(date, cmpStart, cmpEnd, index, monthCells, year, currentMonth, today)
+                            : null;
 
                     const classes = ["filter-cal-day"];
 
@@ -157,7 +173,7 @@ export default function Months({
                     return (
                         <button
                             onClick={() => {
-                                if (date == null || date > today || date < "2022-01-01") {
+                                if (date == null || date > today || date < MIN_SELECTABLE) {
                                     return;
                                 }
 
