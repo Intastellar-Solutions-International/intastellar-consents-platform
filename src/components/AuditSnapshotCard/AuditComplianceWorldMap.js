@@ -13,6 +13,12 @@ import "./AuditComplianceWorldMap.css";
 
 const NS = "http://www.w3.org/2000/svg";
 
+/**
+ * Visible SVG viewBox inside projected user space (still 0…w, 0…h from {@link PROJECTED_MAP_VIEWBOX}).
+ * Crops the bottom (Mercator-inflated Antarctica / far south) and trims the top slightly so the map reads larger.
+ */
+const MAP_VIEW_CROP = { x: 0, y: 38, width: 1000, height: 465 };
+
 const FILL = {
     base: "#343d4a",
     /** Regulated jurisdiction, no consent evidence in this sample — visibility / risk lens */
@@ -321,12 +327,13 @@ export default function AuditComplianceWorldMap({
     }, [paintKey, sampleCountryCodesKey, selectedUpper, onSelectFramework]);
 
     const { w, h } = PROJECTED_MAP_VIEWBOX;
+    const vb = MAP_VIEW_CROP;
 
     return (
         <svg
             ref={svgRef}
             className="audit-compliance-world-map"
-            viewBox={`0 0 ${w} ${h}`}
+            viewBox={`${vb.x} ${vb.y} ${vb.width} ${vb.height}`}
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="xMidYMid meet"
             role="img"
