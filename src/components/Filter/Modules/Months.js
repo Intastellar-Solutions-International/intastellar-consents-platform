@@ -16,7 +16,63 @@ function parseYmd(ymd) {
     return new Date(y, m - 1, day);
 }
 
-export default function Months({ currentMonth, year, selectedStartDate, selectedEndDate, setStartDate, setEndDate, setSelectedDays, setDateRange, today }) {
+function ymdFromDay(year, monthIndex, dayNum) {
+    return `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
+}
+
+function addDaysYmd(ymd, deltaDays) {
+    const d = parseYmd(ymd);
+    if (Number.isNaN(d.getTime())) return "";
+    d.setDate(d.getDate() + deltaDays);
+    return toDateKey(d);
+}
+
+/**
+ * Caps + horizontal bridge for a contiguous ISO date range on the month grid.
+ * Bridges only when the previous/next calendar day is in range AND sits in the adjacent grid cell.
+ */
+function rangeSegmentFlags(dateKey, rangeStart, rangeEnd, cellIndex, cells, year, monthIndex) {
+    if (!rangeStart || !rangeEnd || rangeStart > rangeEnd) return null;
+    if (dateKey < rangeStart || dateKey > rangeEnd) return null;
+    const prevKey = addDaysYmd(dateKey, -1);
+    const nextKey = addDaysYmd(dateKey, 1);
+    const prevInRange = prevKey >= rangeStart && prevKey <= rangeEnd;
+    const nextInRange = nextKey >= rangeStart && nextKey <= rangeEnd;
+    const leftDay = cellIndex > 0 ? cells[cellIndex - 1] : null;
+    const leftDate = leftDay != null ? ymdFromDay(year, monthIndex, leftDay) : null;
+    const rightDay = cellIndex + 1 < cells.length ? cells[cellIndex + 1] : null;
+    const rightDate = rightDay != null ? ymdFromDay(year, monthIndex, rightDay) : null;
+    const bridgeLeft = prevInRange && leftDate === prevKey;
+    const bridgeRight = nextInRange && rightDate === nextKey;
+    return {
+        capLeft: !prevInRange,
+        capRight: !nextInRange,
+        bridgeLeft,
+        bridgeRight,
+    };
+}
+
+function appendRangeGeometry(classes, seg, prefix) {
+    if (!seg) return;
+    if (seg.capLeft) classes.push(`${prefix}cap-left`);
+    if (seg.capRight) classes.push(`${prefix}cap-right`);
+    if (seg.bridgeLeft) classes.push(`${prefix}bridge-left`);
+    if (seg.bridgeRight) classes.push(`${prefix}bridge-right`);
+}
+
+export default function Months({
+    currentMonth,
+    year,
+    selectedStartDate,
+    selectedEndDate,
+    setStartDate,
+    setEndDate,
+    setSelectedDays,
+    setDateRange,
+    today,
+    compareRangeStart = null,
+    compareRangeEnd = null,
+}) {
     const [clicked, setClicked] = useState({ isClicked: false, Date: "" });
     const getDatesBetween = (start, end) => {
         const dates = [];
@@ -32,57 +88,76 @@ export default function Months({ currentMonth, year, selectedStartDate, selected
     const rangeStartKey = toDateKey(selectedStartDate);
     const rangeEndKey = toDateKey(selectedEndDate);
 
+    const cmpStart =
+        compareRangeStart && compareRangeEnd && compareRangeStart <= compareRangeEnd ? compareRangeStart : null;
+    const cmpEnd = cmpStart ? compareRangeEnd : null;
+
+    const monthCells = [
+        ...new Array((new Date(year, currentMonth, 1).getDay() + 6) % 7).fill(null),
+        ...new Array(new Date(year, currentMonth + 1, 0).getDate()).fill(0).map((_, day) => day + 1),
+        ...new Array((7 - (new Date(year, currentMonth + 1, 0).getDay() + 6) % 7) % 7).fill(null),
+    ];
+
     return (
         <div className="w-full flex flex-wrap justify-center items-center">
             <section className="calendar-grid grid-cols-7 gap-2">
-                {
-                    /* Adding the week days of the current month not in US style */
-                    ["M", "T", "O", "T", "F", "L", "S"].map((day, index) => (
-                        <div key={index} className="filter-cal-dow">
-                            {day}
-                        </div>
-                    ))
-                }
-                {
-                    [
-                        ...new Array((new Date(year, currentMonth, 1).getDay() + 6) % 7).fill(null),
-                        ...new Array(new Date(year, currentMonth + 1, 0).getDate()).fill(0).map((_, day) => day + 1),
-                        ...new Array((7 - (new Date(year, currentMonth + 1, 0).getDay() + 6) % 7) % 7).fill(null),
-                    ].map((day, index) => {
-                        // Derive YYYY-MM-DD from the cell's month + day number — not from grid index (index math was wrong for late-month days).
-                        const date =
-                            day != null
-                                ? `${year}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`
-                                : null;
+                {["M", "T", "O", "T", "F", "L", "S"].map((day, index) => (
+                    <div key={index} className="filter-cal-dow">
+                        {day}
+                    </div>
+                ))}
+                {monthCells.map((day, index) => {
+                    const date =
+                        day != null ? `${year}-${String(currentMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}` : null;
 
-                        let resultClass = "";
+                    const disabledFuture = day != null && date != null && date > today;
+                    const disabledPast = day != null && date != null && date < "2022-01-01";
+                    const disabled = disabledFuture || disabledPast;
 
-                        if (
-                            date &&
-                            day != null &&
-                            rangeStartKey &&
-                            rangeEndKey &&
-                            rangeStartKey <= date &&
-                            date <= rangeEndKey
-                        ) {
-                            resultClass = "bg-primary text-slate-100 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
-                        } else if (day != null && (today < date || date < "2022-01-01")) {
-                            resultClass = "text-slate-200 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
-                        } else if (clicked.isClicked && clicked.Date === date) {
-                            resultClass = "bg-primary text-slate-100 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
-                        } else if (day == null) {
-                            resultClass = "flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 rounded-full";
-                        } else {
-                            resultClass = "flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
+                    const inPrimary =
+                        Boolean(date && day != null && rangeStartKey && rangeEndKey && rangeStartKey <= date && date <= rangeEndKey);
+
+                    const inCompare =
+                        Boolean(date && day != null && cmpStart && cmpEnd && cmpStart <= date && date <= cmpEnd);
+
+                    const primarySeg =
+                        date && inPrimary ? rangeSegmentFlags(date, rangeStartKey, rangeEndKey, index, monthCells, year, currentMonth) : null;
+                    const compareSeg =
+                        date && inCompare ? rangeSegmentFlags(date, cmpStart, cmpEnd, index, monthCells, year, currentMonth) : null;
+
+                    const classes = ["filter-cal-day"];
+
+                    if (day == null) {
+                        return <span key={index} className="filter-cal-day filter-cal-day--empty" aria-hidden="true" />;
+                    }
+
+                    if (disabled) {
+                        classes.push("filter-cal-day--disabled");
+                    } else if (inPrimary) {
+                        classes.push("filter-cal-day--primary");
+                        if (primarySeg) appendRangeGeometry(classes, primarySeg, "filter-cal-day--");
+                        else {
+                            classes.push("filter-cal-day--cap-left", "filter-cal-day--cap-right");
                         }
+                        if (inCompare) classes.push("filter-cal-day--primary-with-compare");
+                    } else if (inCompare) {
+                        classes.push("filter-cal-day--compare");
+                        if (compareSeg) appendRangeGeometry(classes, compareSeg, "filter-cal-day--cmp-");
+                        else {
+                            classes.push("filter-cal-day--cmp-cap-left", "filter-cal-day--cmp-cap-right");
+                        }
+                    } else if (clicked.isClicked && clicked.Date === date) {
+                        classes.push("filter-cal-day--clicked");
+                    } else {
+                        classes.push("filter-cal-day--plain");
+                    }
 
-                        return (
-                            <button onClick={() => {
-                                if (day === null || date == null || date > today) {
-                                    return;
-                                }
+                    const resultClass = classes.join(" ");
 
-                                if (date < "2022-01-01") {
+                    return (
+                        <button
+                            onClick={() => {
+                                if (date == null || date > today || date < "2022-01-01") {
                                     return;
                                 }
 
@@ -99,14 +174,16 @@ export default function Months({ currentMonth, year, selectedStartDate, selected
                                     setSelectedDays(calculatedDays);
                                     setDateRange({ start: startKey, end: endKey });
                                 }
-                            }} key={index} className={resultClass}>
-                                {
-                                    day
-                                }
-                            </button>
-                        );
-                    })
-                }
+                            }}
+                            key={index}
+                            type="button"
+                            disabled={disabled}
+                            className={resultClass}
+                        >
+                            {day}
+                        </button>
+                    );
+                })}
             </section>
         </div>
     );

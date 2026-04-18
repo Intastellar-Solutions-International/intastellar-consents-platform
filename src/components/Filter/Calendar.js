@@ -122,6 +122,9 @@ export default function Calendar({
                         <span className="filter-cal-compare-preview__range">
                             {comparePreviewStart} → {comparePreviewEnd}
                         </span>
+                        <span className="filter-cal-compare-preview__hint">
+                            Gold band: selected period · Blue band: comparison baseline
+                        </span>
                     </p>
                 ) : null}
                 {
@@ -153,6 +156,8 @@ export default function Calendar({
                                 setSelectedDays={setSelectedDays}
                                 setDateRange={setDateRange}
                                 today={yesterdayStr}
+                                compareRangeStart={comparePreviewStart}
+                                compareRangeEnd={comparePreviewEnd}
                             />
                         </div>
                         );

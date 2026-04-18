@@ -443,8 +443,20 @@ export default function Filter({
                                 endDate={dateRange.end}
                                 setDateRange={setDateRange}
                                 handleCalendarToggle={handleCalendarToggle}
-                                comparePreviewStart={previewCompare ? ymdLocal(previewCompare.start) : null}
-                                comparePreviewEnd={previewCompare ? ymdLocal(previewCompare.end) : null}
+                                comparePreviewStart={
+                                    previewCompare
+                                        ? ymdLocal(previewCompare.start)
+                                        : isCompare && compareRangeCheck && compareStart
+                                          ? ymdLocal(toCalendarDay(compareStart))
+                                          : null
+                                }
+                                comparePreviewEnd={
+                                    previewCompare
+                                        ? ymdLocal(previewCompare.end)
+                                        : isCompare && compareRangeCheck && compareEnd
+                                          ? ymdLocal(toCalendarDay(compareEnd))
+                                          : null
+                                }
                             />
                         </div>
                     </section>

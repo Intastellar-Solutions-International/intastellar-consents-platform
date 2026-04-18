@@ -17186,10 +17186,14 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.calendar-grid button{
+___CSS_LOADER_EXPORT___.push([module.id, `.calendar-grid button {
     border: none;
     cursor: pointer;
     font-size: 15px;
+}
+
+.calendar-grid button.filter-cal-day:disabled {
+    cursor: not-allowed;
 }
 
 .transparent{
@@ -17406,6 +17410,14 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar-grid button{
     font-variant-numeric: tabular-nums;
 }
 
+.filter-cal-compare-preview__hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.6875rem;
+    line-height: 1.35;
+    color: rgba(190, 195, 205, 0.88);
+}
+
 .filter-cal-dow {
     text-align: center;
     font-size: 0.65rem;
@@ -17413,6 +17425,144 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar-grid button{
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: rgba(160, 160, 165, 0.95);
+}
+
+/* Day cells: primary range (gold), optional comparison range (cool tone), connected segments */
+.filter-cal-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 15px;
+    border: none;
+    position: relative;
+    box-sizing: content-box;
+    transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.filter-cal-day--empty {
+    visibility: hidden;
+    pointer-events: none;
+    cursor: default;
+}
+
+.filter-cal-day--disabled {
+    color: rgb(209, 213, 219);
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.filter-cal-day--plain {
+    color: rgba(230, 230, 230, 0.95);
+    background: transparent;
+    border-radius: 9999px;
+}
+
+.filter-cal-day--plain:hover {
+    color: rgb(241, 245, 249);
+    background: rgba(192, 159, 83, 0.35);
+}
+
+.filter-cal-day--clicked {
+    background: rgb(192, 159, 83);
+    color: rgb(241, 245, 249);
+    border-radius: 9999px;
+}
+
+.filter-cal-day--clicked:hover {
+    background: rgb(170, 138, 70);
+    color: rgb(241, 245, 249);
+}
+
+.filter-cal-day--primary {
+    z-index: 2;
+    background: rgb(192, 159, 83);
+    color: rgb(241, 245, 249);
+}
+
+.filter-cal-day--primary:hover {
+    background: rgb(170, 138, 70);
+    color: rgb(241, 245, 249);
+}
+
+.filter-cal-day--primary.filter-cal-day--cap-left {
+    border-top-left-radius: 9999px;
+    border-bottom-left-radius: 9999px;
+}
+
+.filter-cal-day--primary.filter-cal-day--cap-right {
+    border-top-right-radius: 9999px;
+    border-bottom-right-radius: 9999px;
+}
+
+.filter-cal-day--primary:not(.filter-cal-day--cap-left) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.filter-cal-day--primary:not(.filter-cal-day--cap-right) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.filter-cal-day--primary.filter-cal-day--bridge-left {
+    margin-left: -4px;
+    padding-left: calc(1rem + 4px);
+}
+
+.filter-cal-day--primary.filter-cal-day--bridge-right {
+    margin-right: -4px;
+    padding-right: calc(1rem + 4px);
+}
+
+.filter-cal-day--primary-with-compare {
+    box-shadow: inset 0 0 0 2px rgba(120, 175, 220, 0.88);
+}
+
+.filter-cal-day--compare {
+    z-index: 1;
+    background: rgba(72, 118, 158, 0.42);
+    color: rgba(245, 248, 252, 0.98);
+    box-shadow: inset 0 0 0 1px rgba(130, 175, 215, 0.55);
+}
+
+.filter-cal-day--compare:hover {
+    background: rgba(88, 132, 175, 0.52);
+    color: #fff;
+}
+
+.filter-cal-day--compare.filter-cal-day--cmp-cap-left {
+    border-top-left-radius: 9999px;
+    border-bottom-left-radius: 9999px;
+}
+
+.filter-cal-day--compare.filter-cal-day--cmp-cap-right {
+    border-top-right-radius: 9999px;
+    border-bottom-right-radius: 9999px;
+}
+
+.filter-cal-day--compare:not(.filter-cal-day--cmp-cap-left) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.filter-cal-day--compare:not(.filter-cal-day--cmp-cap-right) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.filter-cal-day--compare.filter-cal-day--cmp-bridge-left {
+    margin-left: -4px;
+    padding-left: calc(1rem + 4px);
+}
+
+.filter-cal-day--compare.filter-cal-day--cmp-bridge-right {
+    margin-right: -4px;
+    padding-right: calc(1rem + 4px);
 }
 
 @media screen and (max-width: 600px) {
@@ -17431,7 +17581,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar-grid button{
     .grid-cols-2{
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
-}`, "",{"version":3,"sources":["webpack://./src/Components/Filter/Styles/Calendar.css"],"names":[],"mappings":"AAAA;IACI,YAAY;IACZ,eAAe;IACf,eAAe;AACnB;;AAEA;IACI,YAAY;IACZ,eAAe;IACf,6BAA6B;AACjC;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,QAAQ;AACZ;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,4BAA4B;AAChC;;AAEA,8FAA8F;AAC9F;IACI,cAAc;IACd,aAAa;IACb,gBAAgB;IAChB,WAAW;IACX,kBAAkB;IAClB,gBAAgB;IAChB,4BAA4B;IAC5B,iCAAiC;AACrC;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,uBAAuB;AAC3B;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,gDAAgD;AACpD;;AAEA;IACI,UAAU;AACd;;AAEA;IACI,YAAY;AAChB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,oBAAoB;IACpB,gDAAgD;AACpD;;AAEA;IACI,kBAAkB;IAClB,mCAAmC;AACvC;;AAEA;IACI,SAAS;AACb;;AAEA;IACI,gBAAgB;IAChB,MAAM;IACN,UAAU;IACV,2FAA2F;IAC3F,mBAAmB;AACvB;;AAEA,+CAA+C;AAC/C;IACI,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,QAAQ;IACR,mBAAmB;IACnB,gBAAgB;IAChB,gBAAgB;IAChB,MAAM;IACN,UAAU;IACV,mBAAmB;IACnB,2FAA2F;IAC3F,2CAA2C;AAC/C;;AAEA;IACI,oBAAoB;IACpB,gBAAgB;IAChB,sBAAsB;IACtB,cAAc;AAClB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,oBAAoB;IACpB,mBAAmB;IACnB,uBAAuB;IACvB,YAAY;IACZ,kBAAkB;IAClB,qCAAqC;IACrC,gCAAgC;IAChC,iBAAiB;IACjB,cAAc;IACd,eAAe;IACf,mDAAmD;AACvD;;AAEA;IACI,oCAAoC;IACpC,WAAW;AACf;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,yBAAyB;IACzB,mBAAmB;IACnB,aAAa;AACjB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,8CAA8C;IAC9C,oCAAoC;AACxC;;AAEA;IACI,eAAe;IACf,oBAAoB;IACpB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,iBAAiB;IACjB,kBAAkB;IAClB,mCAAmC;IACnC,0CAA0C;IAC1C,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,cAAc;IACd,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,+BAA+B;IAC/B,kBAAkB;AACtB;;AAEA;IACI,kCAAkC;AACtC;;AAEA;IACI,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI;QACI,sBAAsB;IAC1B;;IAEA;QACI,SAAS;IACb;;IAEA;QACI,YAAY;IAChB;;IAEA;QACI,gDAAgD;IACpD;AACJ","sourcesContent":[".calendar-grid button{\n    border: none;\n    cursor: pointer;\n    font-size: 15px;\n}\n\n.transparent{\n    border: none;\n    cursor: pointer;\n    background-color: transparent;\n}\n\n.relative {\n    position: relative;\n}\n\n.absolute {\n    position: absolute;\n}\n\n.right-0 {\n    right: 0;\n}\n\n.z-10 {\n    z-index: 10;\n}\n\n.will-change-scroll {\n    will-change: scroll-position;\n}\n\n/* Scrollable month list inside the date popover (must have bounded height from parent flex) */\n.filter-cal-scroll {\n    flex: 1 1 auto;\n    min-height: 0;\n    max-height: 100%;\n    width: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    overscroll-behavior: contain;\n    -webkit-overflow-scrolling: touch;\n}\n\n.overflow-auto {\n    overflow: auto;\n}\n\n.overflow-hidden {\n    overflow: hidden;\n}\n\n.flex-col-reverse {\n    flex-direction: column-reverse;\n}\n\n.mt-3 {\n    margin-top: .75rem;\n}\n\n.justify-center {\n    justify-content: center;\n}\n\n.flex {\n    display: flex;\n}\n\n.items-center {\n    align-items: center;\n}\n\n.flex-wrap {\n    flex-wrap: wrap;\n}\n\n.w-full {\n    width: 100%;\n}\n\n.grid-cols-7 {\n    grid-template-columns: repeat(7, minmax(0, 1fr));\n}\n\n.gap-2 {\n    gap: .5rem;\n}\n\n.h-\\[20px\\] {\n    height: 20px;\n}\n\n.w-\\[20px\\] {\n    width: 20px;\n}\n\n.text-slate-100 {\n    --tw-text-opacity: 1;\n    color: rgb(241 245 249 / var(--tw-text-opacity));\n}\n\n.bg-primary {\n    --tw-bg-opacity: 1;\n    background-color: rgb(192, 159, 83);\n}\n\n.bottom-0 {\n    bottom: 0;\n}\n\n.sticky{\n    position: sticky;\n    top: 0;\n    z-index: 2;\n    background: linear-gradient(180deg, rgba(40, 40, 42, 0.98) 0%, rgba(34, 34, 36, 0.96) 100%);\n    padding-bottom: 4px;\n}\n\n/* Calendar column (inside dark date popover) */\n.filter-cal-inner {\n    color: rgba(230, 230, 230, 0.95);\n}\n\n.filter-cal-year-nav {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 8px;\n    margin-bottom: 10px;\n    padding: 8px 6px;\n    position: sticky;\n    top: 0;\n    z-index: 3;\n    border-radius: 10px;\n    background: linear-gradient(180deg, rgba(52, 52, 55, 0.98) 0%, rgba(38, 38, 40, 0.92) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.filter-cal-year-nav__label {\n    font-size: 0.9375rem;\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    color: #f2f2f2;\n}\n\n.filter-cal-year-nav__btn {\n    width: 36px;\n    height: 36px;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    border: none;\n    border-radius: 8px;\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(240, 240, 240, 0.95);\n    font-size: 1.1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.filter-cal-year-nav__btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.25);\n    color: #fff;\n}\n\n.filter-cal-year-nav__btn:disabled {\n    opacity: 0.35;\n    cursor: not-allowed;\n}\n\n.filter-cal-month-block {\n    margin-top: 14px;\n    scroll-margin-block: 72px;\n    border-radius: 10px;\n    outline: none;\n}\n\n.filter-cal-month-block:first-of-type {\n    margin-top: 0;\n}\n\n.filter-cal-month-block--scroll-focus:focus-visible {\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.65);\n    background: rgba(192, 159, 83, 0.06);\n}\n\n.filter-cal-month-title {\n    margin: 0 0 8px;\n    font-size: 0.8125rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.filter-cal-compare-preview {\n    margin: 0 0 10px;\n    padding: 8px 10px;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.1);\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    font-size: 0.75rem;\n    line-height: 1.35;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.filter-cal-compare-preview__label {\n    display: block;\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    margin-bottom: 4px;\n}\n\n.filter-cal-compare-preview__range {\n    font-variant-numeric: tabular-nums;\n}\n\n.filter-cal-dow {\n    text-align: center;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(160, 160, 165, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .calendar button{\n        flex-direction: column;\n    }\n\n    .calendar button p{\n        margin: 0;\n    }\n\n    .w-\\[512px\\]{\n        width: 400px;\n    }\n\n    .grid-cols-2{\n        grid-template-columns: repeat(1, minmax(0, 1fr));\n    }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Components/Filter/Styles/Calendar.css"],"names":[],"mappings":"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","sourcesContent":[".calendar-grid button {\n    border: none;\n    cursor: pointer;\n    font-size: 15px;\n}\n\n.calendar-grid button.filter-cal-day:disabled {\n    cursor: not-allowed;\n}\n\n.transparent{\n    border: none;\n    cursor: pointer;\n    background-color: transparent;\n}\n\n.relative {\n    position: relative;\n}\n\n.absolute {\n    position: absolute;\n}\n\n.right-0 {\n    right: 0;\n}\n\n.z-10 {\n    z-index: 10;\n}\n\n.will-change-scroll {\n    will-change: scroll-position;\n}\n\n/* Scrollable month list inside the date popover (must have bounded height from parent flex) */\n.filter-cal-scroll {\n    flex: 1 1 auto;\n    min-height: 0;\n    max-height: 100%;\n    width: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    overscroll-behavior: contain;\n    -webkit-overflow-scrolling: touch;\n}\n\n.overflow-auto {\n    overflow: auto;\n}\n\n.overflow-hidden {\n    overflow: hidden;\n}\n\n.flex-col-reverse {\n    flex-direction: column-reverse;\n}\n\n.mt-3 {\n    margin-top: .75rem;\n}\n\n.justify-center {\n    justify-content: center;\n}\n\n.flex {\n    display: flex;\n}\n\n.items-center {\n    align-items: center;\n}\n\n.flex-wrap {\n    flex-wrap: wrap;\n}\n\n.w-full {\n    width: 100%;\n}\n\n.grid-cols-7 {\n    grid-template-columns: repeat(7, minmax(0, 1fr));\n}\n\n.gap-2 {\n    gap: .5rem;\n}\n\n.h-\\[20px\\] {\n    height: 20px;\n}\n\n.w-\\[20px\\] {\n    width: 20px;\n}\n\n.text-slate-100 {\n    --tw-text-opacity: 1;\n    color: rgb(241 245 249 / var(--tw-text-opacity));\n}\n\n.bg-primary {\n    --tw-bg-opacity: 1;\n    background-color: rgb(192, 159, 83);\n}\n\n.bottom-0 {\n    bottom: 0;\n}\n\n.sticky{\n    position: sticky;\n    top: 0;\n    z-index: 2;\n    background: linear-gradient(180deg, rgba(40, 40, 42, 0.98) 0%, rgba(34, 34, 36, 0.96) 100%);\n    padding-bottom: 4px;\n}\n\n/* Calendar column (inside dark date popover) */\n.filter-cal-inner {\n    color: rgba(230, 230, 230, 0.95);\n}\n\n.filter-cal-year-nav {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 8px;\n    margin-bottom: 10px;\n    padding: 8px 6px;\n    position: sticky;\n    top: 0;\n    z-index: 3;\n    border-radius: 10px;\n    background: linear-gradient(180deg, rgba(52, 52, 55, 0.98) 0%, rgba(38, 38, 40, 0.92) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.filter-cal-year-nav__label {\n    font-size: 0.9375rem;\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    color: #f2f2f2;\n}\n\n.filter-cal-year-nav__btn {\n    width: 36px;\n    height: 36px;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    border: none;\n    border-radius: 8px;\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(240, 240, 240, 0.95);\n    font-size: 1.1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.filter-cal-year-nav__btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.25);\n    color: #fff;\n}\n\n.filter-cal-year-nav__btn:disabled {\n    opacity: 0.35;\n    cursor: not-allowed;\n}\n\n.filter-cal-month-block {\n    margin-top: 14px;\n    scroll-margin-block: 72px;\n    border-radius: 10px;\n    outline: none;\n}\n\n.filter-cal-month-block:first-of-type {\n    margin-top: 0;\n}\n\n.filter-cal-month-block--scroll-focus:focus-visible {\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.65);\n    background: rgba(192, 159, 83, 0.06);\n}\n\n.filter-cal-month-title {\n    margin: 0 0 8px;\n    font-size: 0.8125rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.filter-cal-compare-preview {\n    margin: 0 0 10px;\n    padding: 8px 10px;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.1);\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    font-size: 0.75rem;\n    line-height: 1.35;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.filter-cal-compare-preview__label {\n    display: block;\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    margin-bottom: 4px;\n}\n\n.filter-cal-compare-preview__range {\n    font-variant-numeric: tabular-nums;\n}\n\n.filter-cal-compare-preview__hint {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.6875rem;\n    line-height: 1.35;\n    color: rgba(190, 195, 205, 0.88);\n}\n\n.filter-cal-dow {\n    text-align: center;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(160, 160, 165, 0.95);\n}\n\n/* Day cells: primary range (gold), optional comparison range (cool tone), connected segments */\n.filter-cal-day {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    text-align: center;\n    padding: 1rem;\n    width: 20px;\n    height: 20px;\n    cursor: pointer;\n    font-size: 15px;\n    border: none;\n    position: relative;\n    box-sizing: content-box;\n    transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;\n}\n\n.filter-cal-day--empty {\n    visibility: hidden;\n    pointer-events: none;\n    cursor: default;\n}\n\n.filter-cal-day--disabled {\n    color: rgb(209, 213, 219);\n    cursor: not-allowed;\n    opacity: 0.45;\n}\n\n.filter-cal-day--plain {\n    color: rgba(230, 230, 230, 0.95);\n    background: transparent;\n    border-radius: 9999px;\n}\n\n.filter-cal-day--plain:hover {\n    color: rgb(241, 245, 249);\n    background: rgba(192, 159, 83, 0.35);\n}\n\n.filter-cal-day--clicked {\n    background: rgb(192, 159, 83);\n    color: rgb(241, 245, 249);\n    border-radius: 9999px;\n}\n\n.filter-cal-day--clicked:hover {\n    background: rgb(170, 138, 70);\n    color: rgb(241, 245, 249);\n}\n\n.filter-cal-day--primary {\n    z-index: 2;\n    background: rgb(192, 159, 83);\n    color: rgb(241, 245, 249);\n}\n\n.filter-cal-day--primary:hover {\n    background: rgb(170, 138, 70);\n    color: rgb(241, 245, 249);\n}\n\n.filter-cal-day--primary.filter-cal-day--cap-left {\n    border-top-left-radius: 9999px;\n    border-bottom-left-radius: 9999px;\n}\n\n.filter-cal-day--primary.filter-cal-day--cap-right {\n    border-top-right-radius: 9999px;\n    border-bottom-right-radius: 9999px;\n}\n\n.filter-cal-day--primary:not(.filter-cal-day--cap-left) {\n    border-top-left-radius: 0;\n    border-bottom-left-radius: 0;\n}\n\n.filter-cal-day--primary:not(.filter-cal-day--cap-right) {\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n}\n\n.filter-cal-day--primary.filter-cal-day--bridge-left {\n    margin-left: -4px;\n    padding-left: calc(1rem + 4px);\n}\n\n.filter-cal-day--primary.filter-cal-day--bridge-right {\n    margin-right: -4px;\n    padding-right: calc(1rem + 4px);\n}\n\n.filter-cal-day--primary-with-compare {\n    box-shadow: inset 0 0 0 2px rgba(120, 175, 220, 0.88);\n}\n\n.filter-cal-day--compare {\n    z-index: 1;\n    background: rgba(72, 118, 158, 0.42);\n    color: rgba(245, 248, 252, 0.98);\n    box-shadow: inset 0 0 0 1px rgba(130, 175, 215, 0.55);\n}\n\n.filter-cal-day--compare:hover {\n    background: rgba(88, 132, 175, 0.52);\n    color: #fff;\n}\n\n.filter-cal-day--compare.filter-cal-day--cmp-cap-left {\n    border-top-left-radius: 9999px;\n    border-bottom-left-radius: 9999px;\n}\n\n.filter-cal-day--compare.filter-cal-day--cmp-cap-right {\n    border-top-right-radius: 9999px;\n    border-bottom-right-radius: 9999px;\n}\n\n.filter-cal-day--compare:not(.filter-cal-day--cmp-cap-left) {\n    border-top-left-radius: 0;\n    border-bottom-left-radius: 0;\n}\n\n.filter-cal-day--compare:not(.filter-cal-day--cmp-cap-right) {\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n}\n\n.filter-cal-day--compare.filter-cal-day--cmp-bridge-left {\n    margin-left: -4px;\n    padding-left: calc(1rem + 4px);\n}\n\n.filter-cal-day--compare.filter-cal-day--cmp-bridge-right {\n    margin-right: -4px;\n    padding-right: calc(1rem + 4px);\n}\n\n@media screen and (max-width: 600px) {\n    .calendar button{\n        flex-direction: column;\n    }\n\n    .calendar button p{\n        margin: 0;\n    }\n\n    .w-\\[512px\\]{\n        width: 400px;\n    }\n\n    .grid-cols-2{\n        grid-template-columns: repeat(1, minmax(0, 1fr));\n    }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -35211,7 +35361,9 @@ function Calendar(_ref) {
     className: "filter-cal-compare-preview__label"
   }, "Comparison preview"), /*#__PURE__*/React.createElement("span", {
     className: "filter-cal-compare-preview__range"
-  }, comparePreviewStart, " \u2192 ", comparePreviewEnd)) : null, monthsToShow.map(function (month, index) {
+  }, comparePreviewStart, " \u2192 ", comparePreviewEnd), /*#__PURE__*/React.createElement("span", {
+    className: "filter-cal-compare-preview__hint"
+  }, "Gold band: selected period \xB7 Blue band: comparison baseline")) : null, monthsToShow.map(function (month, index) {
     var isScrollFocus = index === scrollFocusMonthIndex;
     return /*#__PURE__*/React.createElement("div", {
       key: visibleYear + "-" + month,
@@ -35231,7 +35383,9 @@ function Calendar(_ref) {
       setEndDate: setEndDate,
       setSelectedDays: setSelectedDays,
       setDateRange: setDateRange,
-      today: yesterdayStr
+      today: yesterdayStr,
+      compareRangeStart: comparePreviewStart,
+      compareRangeEnd: comparePreviewEnd
     }));
   })));
 }
@@ -35279,6 +35433,47 @@ function parseYmd(ymd) {
     day = _ymd$split$map2[2];
   return new Date(y, m - 1, day);
 }
+function ymdFromDay(year, monthIndex, dayNum) {
+  return "".concat(year, "-").concat(String(monthIndex + 1).padStart(2, "0"), "-").concat(String(dayNum).padStart(2, "0"));
+}
+function addDaysYmd(ymd, deltaDays) {
+  var d = parseYmd(ymd);
+  if (Number.isNaN(d.getTime())) return "";
+  d.setDate(d.getDate() + deltaDays);
+  return toDateKey(d);
+}
+
+/**
+ * Caps + horizontal bridge for a contiguous ISO date range on the month grid.
+ * Bridges only when the previous/next calendar day is in range AND sits in the adjacent grid cell.
+ */
+function rangeSegmentFlags(dateKey, rangeStart, rangeEnd, cellIndex, cells, year, monthIndex) {
+  if (!rangeStart || !rangeEnd || rangeStart > rangeEnd) return null;
+  if (dateKey < rangeStart || dateKey > rangeEnd) return null;
+  var prevKey = addDaysYmd(dateKey, -1);
+  var nextKey = addDaysYmd(dateKey, 1);
+  var prevInRange = prevKey >= rangeStart && prevKey <= rangeEnd;
+  var nextInRange = nextKey >= rangeStart && nextKey <= rangeEnd;
+  var leftDay = cellIndex > 0 ? cells[cellIndex - 1] : null;
+  var leftDate = leftDay != null ? ymdFromDay(year, monthIndex, leftDay) : null;
+  var rightDay = cellIndex + 1 < cells.length ? cells[cellIndex + 1] : null;
+  var rightDate = rightDay != null ? ymdFromDay(year, monthIndex, rightDay) : null;
+  var bridgeLeft = prevInRange && leftDate === prevKey;
+  var bridgeRight = nextInRange && rightDate === nextKey;
+  return {
+    capLeft: !prevInRange,
+    capRight: !nextInRange,
+    bridgeLeft: bridgeLeft,
+    bridgeRight: bridgeRight
+  };
+}
+function appendRangeGeometry(classes, seg, prefix) {
+  if (!seg) return;
+  if (seg.capLeft) classes.push("".concat(prefix, "cap-left"));
+  if (seg.capRight) classes.push("".concat(prefix, "cap-right"));
+  if (seg.bridgeLeft) classes.push("".concat(prefix, "bridge-left"));
+  if (seg.bridgeRight) classes.push("".concat(prefix, "bridge-right"));
+}
 function Months(_ref) {
   var currentMonth = _ref.currentMonth,
     year = _ref.year,
@@ -35288,7 +35483,11 @@ function Months(_ref) {
     setEndDate = _ref.setEndDate,
     setSelectedDays = _ref.setSelectedDays,
     setDateRange = _ref.setDateRange,
-    today = _ref.today;
+    today = _ref.today,
+    _ref$compareRangeStar = _ref.compareRangeStart,
+    compareRangeStart = _ref$compareRangeStar === void 0 ? null : _ref$compareRangeStar,
+    _ref$compareRangeEnd = _ref.compareRangeEnd,
+    compareRangeEnd = _ref$compareRangeEnd === void 0 ? null : _ref$compareRangeEnd;
   var _useState = useState({
       isClicked: false,
       Date: ""
@@ -35308,39 +35507,59 @@ function Months(_ref) {
   };
   var rangeStartKey = toDateKey(selectedStartDate);
   var rangeEndKey = toDateKey(selectedEndDate);
+  var cmpStart = compareRangeStart && compareRangeEnd && compareRangeStart <= compareRangeEnd ? compareRangeStart : null;
+  var cmpEnd = cmpStart ? compareRangeEnd : null;
+  var monthCells = [].concat(_toConsumableArray(new Array((new Date(year, currentMonth, 1).getDay() + 6) % 7).fill(null)), _toConsumableArray(new Array(new Date(year, currentMonth + 1, 0).getDate()).fill(0).map(function (_, day) {
+    return day + 1;
+  })), _toConsumableArray(new Array((7 - (new Date(year, currentMonth + 1, 0).getDay() + 6) % 7) % 7).fill(null)));
   return /*#__PURE__*/React.createElement("div", {
     className: "w-full flex flex-wrap justify-center items-center"
   }, /*#__PURE__*/React.createElement("section", {
     className: "calendar-grid grid-cols-7 gap-2"
-  }, /* Adding the week days of the current month not in US style */
-  ["M", "T", "O", "T", "F", "L", "S"].map(function (day, index) {
+  }, ["M", "T", "O", "T", "F", "L", "S"].map(function (day, index) {
     return /*#__PURE__*/React.createElement("div", {
       key: index,
       className: "filter-cal-dow"
     }, day);
-  }), [].concat(_toConsumableArray(new Array((new Date(year, currentMonth, 1).getDay() + 6) % 7).fill(null)), _toConsumableArray(new Array(new Date(year, currentMonth + 1, 0).getDate()).fill(0).map(function (_, day) {
-    return day + 1;
-  })), _toConsumableArray(new Array((7 - (new Date(year, currentMonth + 1, 0).getDay() + 6) % 7) % 7).fill(null))).map(function (day, index) {
-    // Derive YYYY-MM-DD from the cell's month + day number — not from grid index (index math was wrong for late-month days).
+  }), monthCells.map(function (day, index) {
     var date = day != null ? "".concat(year, "-").concat(String(currentMonth + 1).padStart(2, "0"), "-").concat(String(day).padStart(2, "0")) : null;
-    var resultClass = "";
-    if (date && day != null && rangeStartKey && rangeEndKey && rangeStartKey <= date && date <= rangeEndKey) {
-      resultClass = "bg-primary text-slate-100 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
-    } else if (day != null && (today < date || date < "2022-01-01")) {
-      resultClass = "text-slate-200 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
-    } else if (clicked.isClicked && clicked.Date === date) {
-      resultClass = "bg-primary text-slate-100 flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
-    } else if (day == null) {
-      resultClass = "flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 rounded-full";
-    } else {
-      resultClass = "flex justify-center items-center text-center p-4 w-[20px] h-[20px] cursor-pointer hover:text-slate-100 hover:bg-primaryHover rounded-full";
+    var disabledFuture = day != null && date != null && date > today;
+    var disabledPast = day != null && date != null && date < "2022-01-01";
+    var disabled = disabledFuture || disabledPast;
+    var inPrimary = Boolean(date && day != null && rangeStartKey && rangeEndKey && rangeStartKey <= date && date <= rangeEndKey);
+    var inCompare = Boolean(date && day != null && cmpStart && cmpEnd && cmpStart <= date && date <= cmpEnd);
+    var primarySeg = date && inPrimary ? rangeSegmentFlags(date, rangeStartKey, rangeEndKey, index, monthCells, year, currentMonth) : null;
+    var compareSeg = date && inCompare ? rangeSegmentFlags(date, cmpStart, cmpEnd, index, monthCells, year, currentMonth) : null;
+    var classes = ["filter-cal-day"];
+    if (day == null) {
+      return /*#__PURE__*/React.createElement("span", {
+        key: index,
+        className: "filter-cal-day filter-cal-day--empty",
+        "aria-hidden": "true"
+      });
     }
+    if (disabled) {
+      classes.push("filter-cal-day--disabled");
+    } else if (inPrimary) {
+      classes.push("filter-cal-day--primary");
+      if (primarySeg) appendRangeGeometry(classes, primarySeg, "filter-cal-day--");else {
+        classes.push("filter-cal-day--cap-left", "filter-cal-day--cap-right");
+      }
+      if (inCompare) classes.push("filter-cal-day--primary-with-compare");
+    } else if (inCompare) {
+      classes.push("filter-cal-day--compare");
+      if (compareSeg) appendRangeGeometry(classes, compareSeg, "filter-cal-day--cmp-");else {
+        classes.push("filter-cal-day--cmp-cap-left", "filter-cal-day--cmp-cap-right");
+      }
+    } else if (clicked.isClicked && clicked.Date === date) {
+      classes.push("filter-cal-day--clicked");
+    } else {
+      classes.push("filter-cal-day--plain");
+    }
+    var resultClass = classes.join(" ");
     return /*#__PURE__*/React.createElement("button", {
       onClick: function onClick() {
-        if (day === null || date == null || date > today) {
-          return;
-        }
-        if (date < "2022-01-01") {
+        if (date == null || date > today || date < "2022-01-01") {
           return;
         }
         setClicked({
@@ -35363,6 +35582,8 @@ function Months(_ref) {
         }
       },
       key: index,
+      type: "button",
+      disabled: disabled,
       className: resultClass
     }, day);
   })));
@@ -36064,8 +36285,8 @@ function Filter(_ref) {
     endDate: dateRange.end,
     setDateRange: setDateRange,
     handleCalendarToggle: handleCalendarToggle,
-    comparePreviewStart: previewCompare ? (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(previewCompare.start) : null,
-    comparePreviewEnd: previewCompare ? (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(previewCompare.end) : null
+    comparePreviewStart: previewCompare ? (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(previewCompare.start) : isCompare && compareRangeCheck && compareStart ? (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(toCalendarDay(compareStart)) : null,
+    comparePreviewEnd: previewCompare ? (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(previewCompare.end) : isCompare && compareRangeCheck && compareEnd ? (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(toCalendarDay(compareEnd)) : null
   }))), /*#__PURE__*/React.createElement("footer", {
     className: "filter-calendar-popover__footer"
   }, /*#__PURE__*/React.createElement("button", {
