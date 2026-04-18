@@ -1,5 +1,6 @@
 const { useState, useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky";
+import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
 import API from "../../API/api";
 const useParams = window.ReactRouterDOM.useParams;
 import Fetch from "../../Functions/fetch";
@@ -32,15 +33,26 @@ function primaryDevice(deviceType) {
 export default function Compare({ organisations: _organisations, domains }) {
     document.title = "Portfolio Benchmark | Intastellar Consents | CMP";
     const { id } = useParams();
-    const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
-    const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
     const [activeData, setActiveData] = useState(null);
-    const [getLastDays, setLastDays] = useState(
-        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30
-    );
+    const initialLastDays =
+        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+    const [getLastDays, setLastDays] = useState(initialLastDays);
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - getLastDays)));
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - initialLastDays)));
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [compareRange, setCompareRange] = useState(0);
+    const [previousPeriod, setPreviousPeriod] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).start
+    );
+    const [previousPeriod2, setPreviousPeriod2] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).end
+    );
 
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
@@ -179,6 +191,10 @@ export default function Compare({ organisations: _organisations, domains }) {
                 setToDate={setToDate}
                 previousPeriod={previousPeriod}
                 previousPeriod2={previousPeriod2}
+                compareRange={compareRange}
+                setCompareRange={setCompareRange}
+                setCompareWindowStart={setPreviousPeriod}
+                setCompareWindowEnd={setPreviousPeriod2}
             />
             <div className="dashboard-content compare-page">
                 <header className="compare-hero">

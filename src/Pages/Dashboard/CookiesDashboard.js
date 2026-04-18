@@ -2,6 +2,7 @@ const { useState, useEffect } = React;
 import API from "../../API/api";
 const useParams = window.ReactRouterDOM.useParams;
 import StickyPageTitle from "../../Components/Header/Sticky";
+import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
 import Widget from "../../Components/widget/widget.js";
 import Select from "../../Components/SelectInput/Selector.js";
 import Table from "../../Components/Tabel/index.js";
@@ -32,20 +33,28 @@ export default function CookiesDashboard() {
     const [activeData, setActiveData] = useState(null);
     const [loading, setLoading] = useState(true);
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
-    const [getLastDays, setLastDays] = useState(
-        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30
-    );
+    const initialLastDays =
+        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+    const [getLastDays, setLastDays] = useState(initialLastDays);
 
     const [domainFilter, setDomainFilter] = useState("combined view");
 
     const today = new Date();
-    const [fromDate, setFromDate] = useState(
-        new Date(new Date().setDate(today.getDate() - settings?.dateRange)).toISOString().split("T")[0]
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings?.dateRange)));
+    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [compareRange, setCompareRange] = useState(0);
+    const [previousPeriod, setPreviousPeriod] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - settings?.dateRange)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).start
     );
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]);
-
-    const previousPeriod = new Date(new Date().setDate(today.getDate() - settings?.dateRange));
-    const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings?.dateRange * 2));
+    const [previousPeriod2, setPreviousPeriod2] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - settings?.dateRange)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).end
+    );
 
     useEffect(() => {
         let cancelled = false;
@@ -53,8 +62,8 @@ export default function CookiesDashboard() {
             domainFilter === "Select a Domain" || domainFilter == null ? "combined view" : domainFilter;
 
         API[id].getCookies.headers.Domains = domainsHeader;
-        API[id].getCookies.headers.FromDate = fromDate;
-        API[id].getCookies.headers.ToDate = toDate;
+        API[id].getCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
+        API[id].getCookies.headers.ToDate = toDate.toISOString().split("T")[0];
 
         const url = API[id].getCookies.url;
         const method = API[id].getCookies.method;
@@ -104,6 +113,10 @@ export default function CookiesDashboard() {
                 setToDate={setToDate}
                 previousPeriod={previousPeriod}
                 previousPeriod2={previousPeriod2}
+                compareRange={compareRange}
+                setCompareRange={setCompareRange}
+                setCompareWindowStart={setPreviousPeriod}
+                setCompareWindowEnd={setPreviousPeriod2}
             />
             <div className="dashboard-content cookies-dashboard">
                 {loading ? (

@@ -1,56 +1,192 @@
 import "./Styles/Filter.css";
-const { useState, useEffect } = React;
-/* import { ToggleButton } from "~/components"; */
+const { useState, useEffect, useMemo } = React;
 import Calendar from "./Calendar.js";
 import { useUserLocale } from "../../Functions/userLocale.js";
+import {
+    ymdLocal,
+    parseYmdLocal,
+    inclusiveDayCount,
+    rangeLastWeek,
+    rangeThisWeek,
+    rangeQuarterToDate,
+    rangeThisYearToDate,
+    computeCompareWindow,
+    addDays,
+} from "./filterDatePresets.js";
 
 function filterPresetBtnClass(isActive) {
     return "filter-calendar-preset" + (isActive ? " filter-calendar-preset--active" : "");
+}
+
+function toCalendarDay(value) {
+    if (value instanceof Date && Number.isFinite(value.getTime())) {
+        return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+    }
+    return parseYmdLocal(value);
 }
 
 export default function Filter({
     className,
     numberOfDays,
     setNumberOfDays,
-    compareRange,
+    compareRange = 0,
+    setCompareRange,
     date,
-    setFromDate,       // ← new
-    setToDate,         // ← new
-    demoMode
+    setFromDate,
+    setToDate,
+    setCompareWindowStart,
+    setCompareWindowEnd,
+    demoMode,
 }) {
     const locale = useUserLocale();
-    const compareRangeCheck = compareRange === 0 ? false : true;
+    const compareRangeCheck = compareRange !== 0 && compareRange != null;
 
     const [calendar, setCalendar] = useState(false);
     const [isCompare, setIsCompare] = useState(compareRangeCheck);
     const [selectedDays, setSelectedDays] = useState(numberOfDays);
     const [selectedCompareRange, setSelectedCompareRange] = useState(compareRange);
     const [selectedComparison, setSelectedComparison] = useState(
-        compareRange === selectedDays ? "Previous period"
-            : compareRange === selectedDays * 2 ? "Preceding period"
-                : compareRange === selectedDays * 3 ? "Previous quarter"
-                    : compareRange === selectedDays * 6 ? "Last 180 days"
-                        : compareRange === "Same period last year" ? "Same period last year"
-                            : "Previous period"
+        compareRange === numberOfDays
+            ? "Previous period"
+            : compareRange === numberOfDays * 2
+              ? "Preceding period"
+              : compareRange === numberOfDays * 3
+                ? "Previous quarter"
+                : compareRange === numberOfDays * 6
+                  ? "Last 180 days"
+                  : compareRange === "Same period last year"
+                    ? "Same period last year"
+                    : "Previous period"
     );
     const [dateRange, setDateRange] = useState({
         start: new Date(date.start)?.toISOString()?.split("T")[0],
         end: new Date(date.end)?.toISOString()?.split("T")[0],
     });
 
-    useEffect(() => {
-        setNumberOfDays(selectedDays);
-    }, [selectedDays]);
+    const compareStart = date?.previousStart;
+    const compareEnd = date?.previousEnd;
 
-    /*  const navigate = useNavigate(); */
+    const primarySpanDays = useMemo(() => {
+        const a = parseYmdLocal(dateRange?.start);
+        const b = parseYmdLocal(dateRange?.end);
+        if (!Number.isFinite(a?.getTime()) || !Number.isFinite(b?.getTime())) return 1;
+        return inclusiveDayCount(a, b);
+    }, [dateRange?.start, dateRange?.end]);
+
+    const previewCompare = useMemo(() => {
+        if (!isCompare) return null;
+        const ps = parseYmdLocal(dateRange?.start);
+        const pe = parseYmdLocal(dateRange?.end);
+        if (!Number.isFinite(ps?.getTime()) || !Number.isFinite(pe?.getTime())) return null;
+        try {
+            return computeCompareWindow(ps, pe, selectedComparison, selectedCompareRange);
+        } catch {
+            return null;
+        }
+    }, [isCompare, dateRange?.start, dateRange?.end, selectedComparison, selectedCompareRange]);
+
+    useEffect(() => {
+        setIsCompare(compareRange !== 0 && compareRange != null);
+    }, [compareRange]);
+
+    useEffect(() => {
+        if (compareRange === "Same period last year") {
+            setSelectedCompareRange("Same period last year");
+        } else if (typeof compareRange === "number") {
+            setSelectedCompareRange(compareRange);
+        }
+    }, [compareRange]);
+
+    useEffect(() => {
+        setDateRange({
+            start: new Date(date.start)?.toISOString()?.split("T")[0],
+            end: new Date(date.end)?.toISOString()?.split("T")[0],
+        });
+    }, [date?.start, date?.end]);
+
     const endXDays = dateRange?.end;
     const startXDays = dateRange?.start;
-    const previousPeriod = date?.previousStart;
-    const previousPeriod2 = date?.previousEnd;
 
     function handleCalendarToggle() {
         setCalendar(!calendar);
     }
+
+    function applyLocalRange(startDate, endDate, selectedLabel, compareRangeUpdater) {
+        const s = ymdLocal(startDate);
+        const e = ymdLocal(endDate);
+        setDateRange({ start: s, end: e });
+        setSelectedDays(selectedLabel);
+        if (typeof compareRangeUpdater === "function") {
+            compareRangeUpdater();
+        } else if (compareRangeUpdater != null) {
+            setSelectedCompareRange(compareRangeUpdater);
+        }
+    }
+
+    function lastNDaysRelative(n, labelNum) {
+        const y = addDays(new Date(), -1);
+        const end = new Date(y.getFullYear(), y.getMonth(), y.getDate());
+        const start = addDays(end, -(n - 1));
+        applyLocalRange(start, end, labelNum, () => {
+            if (selectedComparison === "Previous period") setSelectedCompareRange(n + 1);
+            else if (selectedComparison === "Preceding period") setSelectedCompareRange((n + 1) * 2);
+            else if (selectedComparison === "Previous quarter") setSelectedCompareRange((n + 1) * 3);
+            else if (selectedComparison === "Last 180 days") setSelectedCompareRange((n + 1) * 6);
+            else if (selectedComparison === "Same period last year") setSelectedCompareRange((n + 1) * 12);
+            else setSelectedCompareRange(n + 1);
+        });
+    }
+
+    function applyLastYearCalendar() {
+        const year = new Date().getFullYear();
+        const start = new Date(year - 1, 0, 2);
+        const end = new Date(year - 1, 11, 31);
+        applyLocalRange(start, end, 365, () => {
+            if (selectedComparison === "Previous period") setSelectedCompareRange(366);
+            else if (selectedComparison === "Preceding period") setSelectedCompareRange(366 * 2);
+            else if (selectedComparison === "Previous quarter") setSelectedCompareRange(366 * 3);
+            else if (selectedComparison === "Last 180 days") setSelectedCompareRange(366 * 6);
+            else if (selectedComparison === "Same period last year") setSelectedCompareRange(366 * 12);
+            else setSelectedCompareRange(366);
+        });
+    }
+
+    function handleApply(e) {
+        e.preventDefault();
+        handleCalendarToggle();
+        const ps = parseYmdLocal(startXDays);
+        const pe = parseYmdLocal(endXDays);
+        setFromDate(ps);
+        setToDate(pe);
+
+        if (typeof setNumberOfDays === "function") {
+            const n = inclusiveDayCount(ps, pe);
+            setNumberOfDays(n);
+        }
+
+        if (!isCompare) {
+            setCompareRange?.(0);
+            return;
+        }
+        if (!setCompareRange) return;
+
+        const win = computeCompareWindow(ps, pe, selectedComparison, selectedCompareRange);
+        if (win && setCompareWindowStart && setCompareWindowEnd) {
+            setCompareWindowStart(win.start);
+            setCompareWindowEnd(win.end);
+        }
+        const span = inclusiveDayCount(ps, pe);
+        if (selectedComparison === "Same period last year") {
+            setCompareRange("Same period last year");
+        } else {
+            setCompareRange(selectedCompareRange || span);
+        }
+    }
+
+    const badgeText =
+        typeof numberOfDays === "number" && numberOfDays >= 0
+            ? "Last " + numberOfDays + " days"
+            : String(numberOfDays ?? "");
 
     return (
         <div
@@ -63,24 +199,24 @@ export default function Filter({
                 aria-haspopup="dialog"
                 onClick={handleCalendarToggle}
             >
-                <span className="filter-calendar-trigger__badge">
-                    {numberOfDays >= 0 ? "Last " + numberOfDays + " days" : numberOfDays}
-                </span>
+                <span className="filter-calendar-trigger__badge">{badgeText}</span>
                 <span className="filter-calendar-trigger__dates">
-                    {demoMode && <span className="filter-calendar-trigger__line filter-calendar-trigger__line--demo">Demo mode</span>}
+                    {demoMode && (
+                        <span className="filter-calendar-trigger__line filter-calendar-trigger__line--demo">Demo mode</span>
+                    )}
                     {!demoMode && (
                         <span className="filter-calendar-trigger__line">
-                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(startXDays))}
+                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(parseYmdLocal(startXDays))}
                             <span className="filter-calendar-trigger__sep">→</span>
-                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(endXDays))}
+                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(parseYmdLocal(endXDays))}
                         </span>
                     )}
-                    {compareRangeCheck ? (
+                    {compareRangeCheck && compareStart && compareEnd ? (
                         <span className="filter-calendar-trigger__line filter-calendar-trigger__line--compare">
                             <span className="filter-calendar-trigger__compare-kicker">vs</span>
-                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(previousPeriod2))}
+                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(toCalendarDay(compareStart))}
                             <span className="filter-calendar-trigger__sep">→</span>
-                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(previousPeriod))}
+                            {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(toCalendarDay(compareEnd))}
                         </span>
                     ) : null}
                 </span>
@@ -89,231 +225,230 @@ export default function Filter({
                 <div className="filter-calendar-popover" role="dialog" aria-label="Choose date range">
                     <section className="filter-calendar-popover__body">
                         <section className="filter-calendar-presets">
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                const value = 3;
-                                const end = new Date().toISOString().split("T")[0];
+                            <div className="filter-calendar-presets__toggle-row">
+                                <label className="filter-calendar-compare-toggle">
+                                    <input
+                                        type="checkbox"
+                                        checked={isCompare}
+                                        onChange={(ev) => setIsCompare(ev.target.checked)}
+                                    />
+                                    <span>Compare to prior period</span>
+                                </label>
+                            </div>
 
-                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-                                setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays("Yesterday");
-                                if (selectedComparison === "Previous period") {
-                                    setSelectedCompareRange(value + 1);
-                                } else if (selectedComparison === "Preceding period") {
-                                    setSelectedCompareRange(value + 1 * 2);
-                                } else if (selectedComparison === "Previous quarter") {
-                                    setSelectedCompareRange(value + 1 * 3);
-                                } else if (selectedComparison === "Last 180 days") {
-                                    setSelectedCompareRange(value + 1 * 6);
-                                } else if (selectedComparison === "Same period last year") {
-                                    setSelectedCompareRange(value + 1 * 12);
-                                }
-                            }} className={filterPresetBtnClass(selectedDays === "Yesterday")}>Yesterday</button>
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                const value = 7;
-                                const end = new Date().toISOString().split("T")[0];
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const y = addDays(new Date(), -1);
+                                    const end = new Date(y.getFullYear(), y.getMonth(), y.getDate());
+                                    const start = addDays(end, -2);
+                                    applyLocalRange(start, end, "Yesterday", () => {
+                                        if (selectedComparison === "Previous period") return setSelectedCompareRange(4);
+                                        if (selectedComparison === "Preceding period") return setSelectedCompareRange(8);
+                                        if (selectedComparison === "Previous quarter") return setSelectedCompareRange(12);
+                                        if (selectedComparison === "Last 180 days") return setSelectedCompareRange(24);
+                                        if (selectedComparison === "Same period last year") return setSelectedCompareRange(48);
+                                        return setSelectedCompareRange(4);
+                                    });
+                                }}
+                                className={filterPresetBtnClass(selectedDays === "Yesterday")}
+                            >
+                                Yesterday
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    lastNDaysRelative(7, 7);
+                                }}
+                                className={filterPresetBtnClass(selectedDays === 7)}
+                            >
+                                Last 7 days
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const { start, end } = rangeLastWeek();
+                                    applyLocalRange(start, end, "last_week", () =>
+                                        setSelectedCompareRange(inclusiveDayCount(start, end) + 1)
+                                    );
+                                }}
+                                className={filterPresetBtnClass(selectedDays === "last_week")}
+                            >
+                                Last week
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const { start, end } = rangeThisWeek();
+                                    applyLocalRange(start, end, "this_week", () =>
+                                        setSelectedCompareRange(inclusiveDayCount(start, end) + 1)
+                                    );
+                                }}
+                                className={filterPresetBtnClass(selectedDays === "this_week")}
+                            >
+                                This week
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    lastNDaysRelative(28, 28);
+                                }}
+                                className={filterPresetBtnClass(selectedDays === 28)}
+                            >
+                                Last 28 days
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    lastNDaysRelative(30, 30);
+                                }}
+                                className={filterPresetBtnClass(selectedDays === 30)}
+                            >
+                                Last 30 days
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const { start, end } = rangeQuarterToDate();
+                                    applyLocalRange(start, end, "qtd", () =>
+                                        setSelectedCompareRange(inclusiveDayCount(start, end) + 1)
+                                    );
+                                }}
+                                className={filterPresetBtnClass(selectedDays === "qtd")}
+                            >
+                                Quarter to date
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    const { start, end } = rangeThisYearToDate();
+                                    applyLocalRange(start, end, "ytd", () =>
+                                        setSelectedCompareRange(inclusiveDayCount(start, end) + 1)
+                                    );
+                                }}
+                                className={filterPresetBtnClass(selectedDays === "ytd")}
+                            >
+                                This year
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    lastNDaysRelative(90, 90);
+                                }}
+                                className={filterPresetBtnClass(selectedDays === 90)}
+                            >
+                                Last 90 days
+                            </button>
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    lastNDaysRelative(12 * 30, "12 months");
+                                }}
+                                className={filterPresetBtnClass(selectedDays === "12 months")}
+                            >
+                                Last 12 months
+                            </button>
+                            <button type="button" onClick={(e) => { e.preventDefault(); applyLastYearCalendar(); }} className={filterPresetBtnClass(selectedDays === 365)}>
+                                Last year
+                            </button>
 
-                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-                                setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays(value);
-                                if (selectedComparison === "Previous period") {
-                                    setSelectedCompareRange(value + 1);
-                                } else if (selectedComparison === "Preceding period") {
-                                    setSelectedCompareRange(value + 1 * 2);
-                                } else if (selectedComparison === "Previous quarter") {
-                                    setSelectedCompareRange(value + 1 * 3);
-                                } else if (selectedComparison === "Last 180 days") {
-                                    setSelectedCompareRange(value + 1 * 6);
-                                } else if (selectedComparison === "Same period last year") {
-                                    setSelectedCompareRange(value + 1 * 12);
-                                }
-                            }} className={filterPresetBtnClass(selectedDays === 7)}>Last 7 days</button>
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                const value = 28;
-                                const end = new Date().toISOString().split("T")[0];
-
-                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-                                setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays(value);
-                                if (selectedComparison === "Previous period") {
-                                    setSelectedCompareRange(value + 1);
-                                } else if (selectedComparison === "Preceding period") {
-                                    setSelectedCompareRange(value + 1 * 2);
-                                } else if (selectedComparison === "Previous quarter") {
-                                    setSelectedCompareRange(value + 1 * 3);
-                                } else if (selectedComparison === "Last 180 days") {
-                                    setSelectedCompareRange(value + 1 * 6);
-                                } else if (selectedComparison === "Same period last year") {
-                                    setSelectedCompareRange(value + 1 * 12);
-                                }
-                            }} className={filterPresetBtnClass(selectedDays === 28)}>Last 28 days</button>
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                const value = 30;
-                                const end = new Date().toISOString().split("T")[0];
-
-                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-                                setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays(value);
-                                if (selectedComparison === "Previous period") {
-                                    setSelectedCompareRange(value + 1);
-                                } else if (selectedComparison === "Preceding period") {
-                                    setSelectedCompareRange(value + 1 * 2);
-                                } else if (selectedComparison === "Previous quarter") {
-                                    setSelectedCompareRange(value + 1 * 3);
-                                } else if (selectedComparison === "Last 180 days") {
-                                    setSelectedCompareRange(value + 1 * 6);
-                                } else if (selectedComparison === "Same period last year") {
-                                    setSelectedCompareRange(value + 1 * 12);
-                                }
-                            }} className={filterPresetBtnClass(selectedDays === 30)}>Last 30 days</button>
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                const value = 90;
-                                const end = new Date().toISOString().split("T")[0];
-
-                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-
-                                setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays(value);
-                                if (selectedComparison === "Previous period") {
-                                    setSelectedCompareRange(value);
-                                } else if (selectedComparison === "Preceding period") {
-                                    setSelectedCompareRange(value * 2);
-                                } else if (selectedComparison === "Previous quarter") {
-                                    setSelectedCompareRange(value * 3);
-                                } else if (selectedComparison === "Last 180 days") {
-                                    setSelectedCompareRange(value * 6);
-                                } else if (selectedComparison === "Same period last year") {
-                                    setSelectedCompareRange(value * 12);
-                                }
-                            }} className={filterPresetBtnClass(selectedDays === 90)}>Last 90 days</button>
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                const value = 12 * 30;
-                                const end = new Date().toISOString().split("T")[0];
-
-                                date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-                                date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-
-                                setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays("12 months");
-                                if (selectedComparison === "Previous period") {
-                                    setSelectedCompareRange(value);
-                                } else if (selectedComparison === "Preceding period") {
-                                    setSelectedCompareRange(value * 2);
-                                } else if (selectedComparison === "Previous quarter") {
-                                    setSelectedCompareRange(value * 3);
-                                } else if (selectedComparison === "Last 180 days") {
-                                    setSelectedCompareRange(value * 6);
-                                } else if (selectedComparison === "Same period last year") {
-                                    setSelectedCompareRange(value * 12);
-                                }
-                            }} className={filterPresetBtnClass(selectedDays === "12 months")}>Last 12 months</button>
-                            <button onClick={(e) => {
-                                e.preventDefault();
-                                const value = 365;
-                                // Calculate the end date to the previous 31. december of the previous year
-                                const end = new Date().toISOString().split("T")[0];
-                                const year = new Date().getFullYear();
-                                const lastYear = new Date(year - 1, 11, 32).toISOString().split("T")[0];
-
-                                // Calculate the start date to the previous 1. january of the previous year
-                                const start = new Date(year - 1, 0, 1).toISOString().split("T")[0];
-
-                                // Add to the start date + 1 day
-                                date.start = new Date(new Date(start).setDate(new Date(start).getDate() + 1)).toISOString().split("T")[0];
-
-                                date.end = lastYear;
-
-                                setDateRange({ start: date.start, end: date.end });
-                                setSelectedDays(value);
-                                if (selectedComparison === "Previous period") {
-                                    setSelectedCompareRange(value + 1);
-                                } else if (selectedComparison === "Preceding period") {
-                                    setSelectedCompareRange(value + 1 * 2);
-                                } else if (selectedComparison === "Previous quarter") {
-                                    setSelectedCompareRange(value + 1 * 3);
-                                } else if (selectedComparison === "Last 180 days") {
-                                    setSelectedCompareRange(value + 1 * 6);
-                                } else if (selectedComparison === "Same period last year") {
-                                    setSelectedCompareRange(value + 1 * 12);
-                                }
-                            }} className={filterPresetBtnClass(selectedDays === 365)}>Last year</button>
                             <section className="filter-calendar-presets__compare-wrap">
-                                {/* {isCompare ? <div className="flex justify-between px-2">Compare <ToggleButton enabled={true} onChange={() => {
-                                    setIsCompare(!isCompare);
-                                }} /></div> : <div className="flex justify-between px-2">Compare <ToggleButton enabled={false} onChange={() => {
-                                    setIsCompare(!isCompare);
-                                }} /></div>} */}
                                 {isCompare && (
                                     <section className="filter-calendar-presets__compare">
                                         <p className="filter-calendar-presets__compare-label">Comparison baseline</p>
-                                        <button onClick={(e) => {
-                                            e.preventDefault();
-                                            const name = "Previous period";
-                                            setSelectedComparison(name);
-                                            setSelectedCompareRange(selectedDays);
-                                        }} className={filterPresetBtnClass(selectedComparison === "Previous period")}>Previous period</button>
-                                        <button onClick={(e) => {
-                                            e.preventDefault();
-                                            const name = "Preceding period";
-                                            setSelectedComparison(name);
-                                            setSelectedCompareRange(selectedDays * 2);
-                                        }} className={filterPresetBtnClass(selectedComparison === "Preceding period")}>Preceding period</button>
-                                        <button onClick={(e) => {
-                                            e.preventDefault();
-                                            const name = "Previous quarter";
-                                            setSelectedComparison(name);
-                                            setSelectedCompareRange(90);
-                                        }} className={filterPresetBtnClass(selectedComparison === "Previous quarter")}>Last 90 days</button>
-                                        <button onClick={(e) => {
-                                            e.preventDefault();
-                                            const name = "Last 180 days";
-                                            setSelectedComparison(name);
-                                            setSelectedCompareRange(180);
-                                        }} className={filterPresetBtnClass(selectedComparison === "Last 180 days")}>Last 180 days</button>
-                                        <button onClick={(e) => {
-                                            e.preventDefault();
-                                            const name = "Same period last year";
-                                            setSelectedComparison(name);
-                                            setSelectedCompareRange(name);
-                                        }} className={filterPresetBtnClass(selectedComparison === "Same period last year")}>Same period last year</button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setSelectedComparison("Previous period");
+                                                setSelectedCompareRange(primarySpanDays);
+                                            }}
+                                            className={filterPresetBtnClass(selectedComparison === "Previous period")}
+                                        >
+                                            Previous period
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setSelectedComparison("Preceding period");
+                                                setSelectedCompareRange(primarySpanDays * 2);
+                                            }}
+                                            className={filterPresetBtnClass(selectedComparison === "Preceding period")}
+                                        >
+                                            Preceding period
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setSelectedComparison("Previous quarter");
+                                                setSelectedCompareRange(90);
+                                            }}
+                                            className={filterPresetBtnClass(selectedComparison === "Previous quarter")}
+                                        >
+                                            Compare window 90 days
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setSelectedComparison("Last 180 days");
+                                                setSelectedCompareRange(180);
+                                            }}
+                                            className={filterPresetBtnClass(selectedComparison === "Last 180 days")}
+                                        >
+                                            Compare window 180 days
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setSelectedComparison("Same period last year");
+                                                setSelectedCompareRange("Same period last year");
+                                            }}
+                                            className={filterPresetBtnClass(selectedComparison === "Same period last year")}
+                                        >
+                                            Same period last year
+                                        </button>
                                     </section>
                                 )}
                             </section>
                         </section>
                         <div className="filter-calendar-popover__calendar-wrap">
-                            <Calendar compareRange={compareRange} selectedDays={selectedDays} setSelectedDays={setSelectedDays} startDate={dateRange.start} endDate={dateRange.end} setDateRange={setDateRange} handleCalendarToggle={handleCalendarToggle} />
+                            <Calendar
+                                compareRange={compareRange}
+                                selectedDays={selectedDays}
+                                setSelectedDays={setSelectedDays}
+                                startDate={dateRange.start}
+                                endDate={dateRange.end}
+                                setDateRange={setDateRange}
+                                handleCalendarToggle={handleCalendarToggle}
+                                comparePreviewStart={previewCompare ? ymdLocal(previewCompare.start) : null}
+                                comparePreviewEnd={previewCompare ? ymdLocal(previewCompare.end) : null}
+                            />
                         </div>
                     </section>
                     <footer className="filter-calendar-popover__footer">
                         <button type="button" onClick={handleCalendarToggle} className="filter-calendar-popover__btn filter-calendar-popover__btn--secondary">
                             Cancel
                         </button>
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleCalendarToggle();
-                                setFromDate(new Date(startXDays));
-                                setToDate(new Date(endXDays));
-                            }}
-                            className="filter-calendar-popover__btn filter-calendar-popover__btn--primary"
-                        >
+                        <button type="button" onClick={handleApply} className="filter-calendar-popover__btn filter-calendar-popover__btn--primary">
                             Apply
                         </button>
                     </footer>
                 </div>
-            )
-            }
+            )}
         </div>
     );
 }

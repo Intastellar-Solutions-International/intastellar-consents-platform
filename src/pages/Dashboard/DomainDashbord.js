@@ -9,6 +9,7 @@ import Map from "../../Components/Charts/WorldMap/WorldMap.js";
 import { DomainContext } from "../../App.js";
 import NotAllowed from "../../Components/NotAllowed/NotAllowed";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import Select from "../../Components/SelectInput/Selector.js";
@@ -27,11 +28,24 @@ export default function DomainDashbord(props) {
     const [activeData, setActiveData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [loadingCountry, setLoadingCountry] = useState(true);
-    const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - getLastDays)));
+    const initialLastDays =
+        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+    const [getLastDays, setLastDays] = useState(initialLastDays);
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - initialLastDays)));
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
-    const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
-    const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
+    const [compareRange, setCompareRange] = useState(0);
+    const [previousPeriod, setPreviousPeriod] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).start
+    );
+    const [previousPeriod2, setPreviousPeriod2] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).end
+    );
     const [observedCookies, setObservedCookies] = useState(null);
     const [timeToDecision, setTimeToDecision] = useState("global");
 
@@ -117,7 +131,7 @@ export default function DomainDashbord(props) {
 
     return (localStorage?.getItem("domains")?.includes(punycode.toUnicode(handle)) || handle == "combined view") ? (
         <>
-            <StickyPageTitle infoType={"banner-styles"} showInfoButton={true} loadingUpdated={loading} finalLoaded={loadingCountry} title={`Domain: ${punycode.toUnicode(handle)} | Banner type: ${activeData?.bannerStyle}`} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setactiveDataCountry} fromDate={activeData?.date?.from || fromDate} toDate={activeData?.date?.to || toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+            <StickyPageTitle infoType={"banner-styles"} showInfoButton={true} loadingUpdated={loading} finalLoaded={loadingCountry} title={`Domain: ${punycode.toUnicode(handle)} | Banner type: ${activeData?.bannerStyle}`} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setactiveDataCountry} fromDate={activeData?.date?.from || fromDate} toDate={activeData?.date?.to || toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
             <div className="dashboard-content">
                 {
                     activeData != null ?

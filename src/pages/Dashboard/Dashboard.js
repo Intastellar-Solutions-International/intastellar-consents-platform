@@ -17,6 +17,7 @@ const Link = window.ReactRouterDOM.Link;
 import Crawler from "../../Components/Crawler";
 import Line from "../../Components/Charts/Line"
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import AuditSnapshotCard from "../../components/AuditSnapshotCard/AuditSnapshotCard.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
@@ -31,9 +32,6 @@ export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
-    const previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
-    const previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
-
     const subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
     const userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
 
@@ -57,10 +55,25 @@ export default function Dashboard(props) {
 
     const [activeData, setActiveData] = useState(null);
     const [activeDataCountry, setactiveDataCountry] = useState(null);
-    const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
+    const initialLastDays =
+        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+    const [getLastDays, setLastDays] = useState(initialLastDays);
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - getLastDays)));
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - initialLastDays)));
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [compareRange, setCompareRange] = useState(0);
+    const [previousPeriod, setPreviousPeriod] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).start
+    );
+    const [previousPeriod2, setPreviousPeriod2] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - initialLastDays)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).end
+    );
     const [observedCookies, setObservedCookies] = useState(null);
 
     const [loading, setLoading] = useState(false);
@@ -215,7 +228,7 @@ export default function Dashboard(props) {
 
     return (
         <>
-            <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? `Dashboard: ${punycode.toUnicode(handle)}` : "Dashboard"} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+            <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? `Dashboard: ${punycode.toUnicode(handle)}` : "Dashboard"} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
             <div className="dashboard-content">
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />

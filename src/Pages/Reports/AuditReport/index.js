@@ -1,6 +1,7 @@
 const { useState, useEffect, useMemo, useContext } = React;
 import SideNav from "../../../Components/Header/SideNav";
 import StickyPageTitle from "../../../Components/Header/Sticky";
+import { defaultCompareWindowForPrimary } from "../../../components/Filter/filterDatePresets.js";
 import { reportsLinks } from "../Reports";
 import { DomainContext } from "../../../App.js";
 import API from "../../../API/api";
@@ -70,16 +71,27 @@ export default function AuditReport() {
     })();
 
     const today = new Date();
-    const [getLastDays, setLastDays] = useState(
-        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30
-    );
+    const initialLastDays =
+        localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+    const [getLastDays, setLastDays] = useState(initialLastDays);
     const [fromDate, setFromDate] = useState(
         new Date(new Date().setDate(today.getDate() - (settings?.dateRange ?? 30)))
     );
     const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
     const [activeData, setActiveData] = useState(null);
-    const previousPeriod = new Date(new Date().setDate(today.getDate() - getLastDays));
-    const previousPeriod2 = new Date(new Date().setDate(today.getDate() - getLastDays * 2));
+    const [compareRange, setCompareRange] = useState(0);
+    const [previousPeriod, setPreviousPeriod] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - (settings?.dateRange ?? 30))),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).start
+    );
+    const [previousPeriod2, setPreviousPeriod2] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - (settings?.dateRange ?? 30))),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).end
+    );
 
     const [search, setSearch] = useState("");
     const [reports, setReports] = useState([]);
@@ -253,6 +265,10 @@ export default function AuditReport() {
                     setToDate={setToDate}
                     previousPeriod={previousPeriod}
                     previousPeriod2={previousPeriod2}
+                    compareRange={compareRange}
+                    setCompareRange={setCompareRange}
+                    setCompareWindowStart={setPreviousPeriod}
+                    setCompareWindowEnd={setPreviousPeriod2}
                 />
                 <div className="dashboard-content audit-reports-page">
                     <header className="audit-reports-hero">

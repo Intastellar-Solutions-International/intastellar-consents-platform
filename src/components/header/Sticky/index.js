@@ -21,6 +21,10 @@ export default function StickyPageTitle({
     setToDate,
     previousPeriod,
     previousPeriod2,
+    compareRange = 0,
+    setCompareRange,
+    setCompareWindowStart,
+    setCompareWindowEnd,
     children,
     showInfoButton = false,
     infoType = "information"
@@ -33,7 +37,6 @@ export default function StickyPageTitle({
         }
     })
     
-    console.log("Children in StickyPageTitle:", children);
     function openSideCart() {
         document.querySelector(".sideCart").classList.add("open");
     }
@@ -58,7 +61,10 @@ export default function StickyPageTitle({
                             <Filter
                                 numberOfDays={getLastDays}
                                 setNumberOfDays={numberofDays}
-                                compareRange={0}
+                                compareRange={compareRange}
+                                setCompareRange={setCompareRange}
+                                setCompareWindowStart={setCompareWindowStart}
+                                setCompareWindowEnd={setCompareWindowEnd}
                                 date={{
                                     start: fromDate ?? new Date(Date.now() - (getLastDays * 24 * 60 * 60 * 1000)),
                                     end: toDate ?? new Date(Date.now()),

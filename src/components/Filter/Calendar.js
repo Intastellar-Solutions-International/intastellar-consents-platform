@@ -13,7 +13,15 @@ function parseYmdLocal(s) {
     return new Date(y, m - 1, d);
 }
 
-export default function Calendar({ selectedDays, setSelectedDays, startDate, endDate, setDateRange }) {
+export default function Calendar({
+    selectedDays,
+    setSelectedDays,
+    startDate,
+    endDate,
+    setDateRange,
+    comparePreviewStart,
+    comparePreviewEnd,
+}) {
     const today = new Date();
     today.setDate(today.getDate() - 1);
     const yesterdayStr = formatLocalYmd(today);
@@ -29,7 +37,7 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
 
     // compute initial dateToBegin (local calendar math — avoids UTC shifts from toISOString)
     let dateToBegin = startDate;
-    if (selectedDays > 0 && endDate) {
+    if (typeof selectedDays === "number" && selectedDays > 0 && endDate) {
         const endLocal = parseYmdLocal(endDate);
         const begin = new Date(endLocal);
         begin.setDate(begin.getDate() - selectedDays);
@@ -37,6 +45,18 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
     }
     const [selectedStartDate, setStartDate] = useState(dateToBegin);
     const [selectedEndDate, setEndDate] = useState(endDate);
+
+    useEffect(() => {
+        setEndDate(endDate);
+        if (typeof selectedDays === "number" && selectedDays > 0 && endDate) {
+            const endLocal = parseYmdLocal(endDate);
+            const begin = new Date(endLocal);
+            begin.setDate(begin.getDate() - selectedDays);
+            setStartDate(formatLocalYmd(begin));
+        } else if (startDate) {
+            setStartDate(startDate);
+        }
+    }, [startDate, endDate, selectedDays]);
 
     const months = [
         "January", "February", "March", "April", "May", "June",
@@ -96,6 +116,14 @@ export default function Calendar({ selectedDays, setSelectedDays, startDate, end
                         &rsaquo;
                     </button>
                 </div>
+                {comparePreviewStart && comparePreviewEnd ? (
+                    <p className="filter-cal-compare-preview" role="status">
+                        <span className="filter-cal-compare-preview__label">Comparison preview</span>
+                        <span className="filter-cal-compare-preview__range">
+                            {comparePreviewStart} → {comparePreviewEnd}
+                        </span>
+                    </p>
+                ) : null}
                 {
                     monthsToShow.map((month, index) => {
                         const isScrollFocus = index === scrollFocusMonthIndex;

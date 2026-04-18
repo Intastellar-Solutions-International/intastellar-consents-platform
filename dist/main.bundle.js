@@ -17382,6 +17382,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar-grid button{
     color: rgba(192, 159, 83, 0.88);
 }
 
+.filter-cal-compare-preview {
+    margin: 0 0 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: rgba(192, 159, 83, 0.1);
+    border: 1px solid rgba(192, 159, 83, 0.22);
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: rgba(230, 225, 210, 0.95);
+}
+
+.filter-cal-compare-preview__label {
+    display: block;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.95);
+    margin-bottom: 4px;
+}
+
+.filter-cal-compare-preview__range {
+    font-variant-numeric: tabular-nums;
+}
+
 .filter-cal-dow {
     text-align: center;
     font-size: 0.65rem;
@@ -17407,7 +17431,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar-grid button{
     .grid-cols-2{
         grid-template-columns: repeat(1, minmax(0, 1fr));
     }
-}`, "",{"version":3,"sources":["webpack://./src/Components/Filter/Styles/Calendar.css"],"names":[],"mappings":"AAAA;IACI,YAAY;IACZ,eAAe;IACf,eAAe;AACnB;;AAEA;IACI,YAAY;IACZ,eAAe;IACf,6BAA6B;AACjC;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,QAAQ;AACZ;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,4BAA4B;AAChC;;AAEA,8FAA8F;AAC9F;IACI,cAAc;IACd,aAAa;IACb,gBAAgB;IAChB,WAAW;IACX,kBAAkB;IAClB,gBAAgB;IAChB,4BAA4B;IAC5B,iCAAiC;AACrC;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,uBAAuB;AAC3B;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,gDAAgD;AACpD;;AAEA;IACI,UAAU;AACd;;AAEA;IACI,YAAY;AAChB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,oBAAoB;IACpB,gDAAgD;AACpD;;AAEA;IACI,kBAAkB;IAClB,mCAAmC;AACvC;;AAEA;IACI,SAAS;AACb;;AAEA;IACI,gBAAgB;IAChB,MAAM;IACN,UAAU;IACV,2FAA2F;IAC3F,mBAAmB;AACvB;;AAEA,+CAA+C;AAC/C;IACI,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,QAAQ;IACR,mBAAmB;IACnB,gBAAgB;IAChB,gBAAgB;IAChB,MAAM;IACN,UAAU;IACV,mBAAmB;IACnB,2FAA2F;IAC3F,2CAA2C;AAC/C;;AAEA;IACI,oBAAoB;IACpB,gBAAgB;IAChB,sBAAsB;IACtB,cAAc;AAClB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,oBAAoB;IACpB,mBAAmB;IACnB,uBAAuB;IACvB,YAAY;IACZ,kBAAkB;IAClB,qCAAqC;IACrC,gCAAgC;IAChC,iBAAiB;IACjB,cAAc;IACd,eAAe;IACf,mDAAmD;AACvD;;AAEA;IACI,oCAAoC;IACpC,WAAW;AACf;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,yBAAyB;IACzB,mBAAmB;IACnB,aAAa;AACjB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,8CAA8C;IAC9C,oCAAoC;AACxC;;AAEA;IACI,eAAe;IACf,oBAAoB;IACpB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,+BAA+B;AACnC;;AAEA;IACI,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI;QACI,sBAAsB;IAC1B;;IAEA;QACI,SAAS;IACb;;IAEA;QACI,YAAY;IAChB;;IAEA;QACI,gDAAgD;IACpD;AACJ","sourcesContent":[".calendar-grid button{\n    border: none;\n    cursor: pointer;\n    font-size: 15px;\n}\n\n.transparent{\n    border: none;\n    cursor: pointer;\n    background-color: transparent;\n}\n\n.relative {\n    position: relative;\n}\n\n.absolute {\n    position: absolute;\n}\n\n.right-0 {\n    right: 0;\n}\n\n.z-10 {\n    z-index: 10;\n}\n\n.will-change-scroll {\n    will-change: scroll-position;\n}\n\n/* Scrollable month list inside the date popover (must have bounded height from parent flex) */\n.filter-cal-scroll {\n    flex: 1 1 auto;\n    min-height: 0;\n    max-height: 100%;\n    width: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    overscroll-behavior: contain;\n    -webkit-overflow-scrolling: touch;\n}\n\n.overflow-auto {\n    overflow: auto;\n}\n\n.overflow-hidden {\n    overflow: hidden;\n}\n\n.flex-col-reverse {\n    flex-direction: column-reverse;\n}\n\n.mt-3 {\n    margin-top: .75rem;\n}\n\n.justify-center {\n    justify-content: center;\n}\n\n.flex {\n    display: flex;\n}\n\n.items-center {\n    align-items: center;\n}\n\n.flex-wrap {\n    flex-wrap: wrap;\n}\n\n.w-full {\n    width: 100%;\n}\n\n.grid-cols-7 {\n    grid-template-columns: repeat(7, minmax(0, 1fr));\n}\n\n.gap-2 {\n    gap: .5rem;\n}\n\n.h-\\[20px\\] {\n    height: 20px;\n}\n\n.w-\\[20px\\] {\n    width: 20px;\n}\n\n.text-slate-100 {\n    --tw-text-opacity: 1;\n    color: rgb(241 245 249 / var(--tw-text-opacity));\n}\n\n.bg-primary {\n    --tw-bg-opacity: 1;\n    background-color: rgb(192, 159, 83);\n}\n\n.bottom-0 {\n    bottom: 0;\n}\n\n.sticky{\n    position: sticky;\n    top: 0;\n    z-index: 2;\n    background: linear-gradient(180deg, rgba(40, 40, 42, 0.98) 0%, rgba(34, 34, 36, 0.96) 100%);\n    padding-bottom: 4px;\n}\n\n/* Calendar column (inside dark date popover) */\n.filter-cal-inner {\n    color: rgba(230, 230, 230, 0.95);\n}\n\n.filter-cal-year-nav {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 8px;\n    margin-bottom: 10px;\n    padding: 8px 6px;\n    position: sticky;\n    top: 0;\n    z-index: 3;\n    border-radius: 10px;\n    background: linear-gradient(180deg, rgba(52, 52, 55, 0.98) 0%, rgba(38, 38, 40, 0.92) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.filter-cal-year-nav__label {\n    font-size: 0.9375rem;\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    color: #f2f2f2;\n}\n\n.filter-cal-year-nav__btn {\n    width: 36px;\n    height: 36px;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    border: none;\n    border-radius: 8px;\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(240, 240, 240, 0.95);\n    font-size: 1.1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.filter-cal-year-nav__btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.25);\n    color: #fff;\n}\n\n.filter-cal-year-nav__btn:disabled {\n    opacity: 0.35;\n    cursor: not-allowed;\n}\n\n.filter-cal-month-block {\n    margin-top: 14px;\n    scroll-margin-block: 72px;\n    border-radius: 10px;\n    outline: none;\n}\n\n.filter-cal-month-block:first-of-type {\n    margin-top: 0;\n}\n\n.filter-cal-month-block--scroll-focus:focus-visible {\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.65);\n    background: rgba(192, 159, 83, 0.06);\n}\n\n.filter-cal-month-title {\n    margin: 0 0 8px;\n    font-size: 0.8125rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.filter-cal-dow {\n    text-align: center;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(160, 160, 165, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .calendar button{\n        flex-direction: column;\n    }\n\n    .calendar button p{\n        margin: 0;\n    }\n\n    .w-\\[512px\\]{\n        width: 400px;\n    }\n\n    .grid-cols-2{\n        grid-template-columns: repeat(1, minmax(0, 1fr));\n    }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Components/Filter/Styles/Calendar.css"],"names":[],"mappings":"AAAA;IACI,YAAY;IACZ,eAAe;IACf,eAAe;AACnB;;AAEA;IACI,YAAY;IACZ,eAAe;IACf,6BAA6B;AACjC;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,QAAQ;AACZ;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,4BAA4B;AAChC;;AAEA,8FAA8F;AAC9F;IACI,cAAc;IACd,aAAa;IACb,gBAAgB;IAChB,WAAW;IACX,kBAAkB;IAClB,gBAAgB;IAChB,4BAA4B;IAC5B,iCAAiC;AACrC;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,uBAAuB;AAC3B;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,gDAAgD;AACpD;;AAEA;IACI,UAAU;AACd;;AAEA;IACI,YAAY;AAChB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,oBAAoB;IACpB,gDAAgD;AACpD;;AAEA;IACI,kBAAkB;IAClB,mCAAmC;AACvC;;AAEA;IACI,SAAS;AACb;;AAEA;IACI,gBAAgB;IAChB,MAAM;IACN,UAAU;IACV,2FAA2F;IAC3F,mBAAmB;AACvB;;AAEA,+CAA+C;AAC/C;IACI,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,QAAQ;IACR,mBAAmB;IACnB,gBAAgB;IAChB,gBAAgB;IAChB,MAAM;IACN,UAAU;IACV,mBAAmB;IACnB,2FAA2F;IAC3F,2CAA2C;AAC/C;;AAEA;IACI,oBAAoB;IACpB,gBAAgB;IAChB,sBAAsB;IACtB,cAAc;AAClB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,oBAAoB;IACpB,mBAAmB;IACnB,uBAAuB;IACvB,YAAY;IACZ,kBAAkB;IAClB,qCAAqC;IACrC,gCAAgC;IAChC,iBAAiB;IACjB,cAAc;IACd,eAAe;IACf,mDAAmD;AACvD;;AAEA;IACI,oCAAoC;IACpC,WAAW;AACf;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,yBAAyB;IACzB,mBAAmB;IACnB,aAAa;AACjB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,8CAA8C;IAC9C,oCAAoC;AACxC;;AAEA;IACI,eAAe;IACf,oBAAoB;IACpB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,iBAAiB;IACjB,kBAAkB;IAClB,mCAAmC;IACnC,0CAA0C;IAC1C,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,cAAc;IACd,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,+BAA+B;IAC/B,kBAAkB;AACtB;;AAEA;IACI,kCAAkC;AACtC;;AAEA;IACI,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI;QACI,sBAAsB;IAC1B;;IAEA;QACI,SAAS;IACb;;IAEA;QACI,YAAY;IAChB;;IAEA;QACI,gDAAgD;IACpD;AACJ","sourcesContent":[".calendar-grid button{\n    border: none;\n    cursor: pointer;\n    font-size: 15px;\n}\n\n.transparent{\n    border: none;\n    cursor: pointer;\n    background-color: transparent;\n}\n\n.relative {\n    position: relative;\n}\n\n.absolute {\n    position: absolute;\n}\n\n.right-0 {\n    right: 0;\n}\n\n.z-10 {\n    z-index: 10;\n}\n\n.will-change-scroll {\n    will-change: scroll-position;\n}\n\n/* Scrollable month list inside the date popover (must have bounded height from parent flex) */\n.filter-cal-scroll {\n    flex: 1 1 auto;\n    min-height: 0;\n    max-height: 100%;\n    width: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    overscroll-behavior: contain;\n    -webkit-overflow-scrolling: touch;\n}\n\n.overflow-auto {\n    overflow: auto;\n}\n\n.overflow-hidden {\n    overflow: hidden;\n}\n\n.flex-col-reverse {\n    flex-direction: column-reverse;\n}\n\n.mt-3 {\n    margin-top: .75rem;\n}\n\n.justify-center {\n    justify-content: center;\n}\n\n.flex {\n    display: flex;\n}\n\n.items-center {\n    align-items: center;\n}\n\n.flex-wrap {\n    flex-wrap: wrap;\n}\n\n.w-full {\n    width: 100%;\n}\n\n.grid-cols-7 {\n    grid-template-columns: repeat(7, minmax(0, 1fr));\n}\n\n.gap-2 {\n    gap: .5rem;\n}\n\n.h-\\[20px\\] {\n    height: 20px;\n}\n\n.w-\\[20px\\] {\n    width: 20px;\n}\n\n.text-slate-100 {\n    --tw-text-opacity: 1;\n    color: rgb(241 245 249 / var(--tw-text-opacity));\n}\n\n.bg-primary {\n    --tw-bg-opacity: 1;\n    background-color: rgb(192, 159, 83);\n}\n\n.bottom-0 {\n    bottom: 0;\n}\n\n.sticky{\n    position: sticky;\n    top: 0;\n    z-index: 2;\n    background: linear-gradient(180deg, rgba(40, 40, 42, 0.98) 0%, rgba(34, 34, 36, 0.96) 100%);\n    padding-bottom: 4px;\n}\n\n/* Calendar column (inside dark date popover) */\n.filter-cal-inner {\n    color: rgba(230, 230, 230, 0.95);\n}\n\n.filter-cal-year-nav {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 8px;\n    margin-bottom: 10px;\n    padding: 8px 6px;\n    position: sticky;\n    top: 0;\n    z-index: 3;\n    border-radius: 10px;\n    background: linear-gradient(180deg, rgba(52, 52, 55, 0.98) 0%, rgba(38, 38, 40, 0.92) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.filter-cal-year-nav__label {\n    font-size: 0.9375rem;\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    color: #f2f2f2;\n}\n\n.filter-cal-year-nav__btn {\n    width: 36px;\n    height: 36px;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    border: none;\n    border-radius: 8px;\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(240, 240, 240, 0.95);\n    font-size: 1.1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.filter-cal-year-nav__btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.25);\n    color: #fff;\n}\n\n.filter-cal-year-nav__btn:disabled {\n    opacity: 0.35;\n    cursor: not-allowed;\n}\n\n.filter-cal-month-block {\n    margin-top: 14px;\n    scroll-margin-block: 72px;\n    border-radius: 10px;\n    outline: none;\n}\n\n.filter-cal-month-block:first-of-type {\n    margin-top: 0;\n}\n\n.filter-cal-month-block--scroll-focus:focus-visible {\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.65);\n    background: rgba(192, 159, 83, 0.06);\n}\n\n.filter-cal-month-title {\n    margin: 0 0 8px;\n    font-size: 0.8125rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.filter-cal-compare-preview {\n    margin: 0 0 10px;\n    padding: 8px 10px;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.1);\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    font-size: 0.75rem;\n    line-height: 1.35;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.filter-cal-compare-preview__label {\n    display: block;\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    margin-bottom: 4px;\n}\n\n.filter-cal-compare-preview__range {\n    font-variant-numeric: tabular-nums;\n}\n\n.filter-cal-dow {\n    text-align: center;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(160, 160, 165, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .calendar button{\n        flex-direction: column;\n    }\n\n    .calendar button p{\n        margin: 0;\n    }\n\n    .w-\\[512px\\]{\n        width: 400px;\n    }\n\n    .grid-cols-2{\n        grid-template-columns: repeat(1, minmax(0, 1fr));\n    }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -17706,6 +17730,28 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar {
     align-items: stretch;
 }
 
+.filter-calendar-presets__toggle-row {
+    padding: 8px 12px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+}
+
+.filter-calendar-compare-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+    color: rgba(220, 220, 220, 0.92);
+    cursor: pointer;
+    user-select: none;
+}
+
+.filter-calendar-compare-toggle input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: rgb(192, 159, 83);
+}
+
 .filter-calendar-presets {
     display: flex;
     flex-direction: column;
@@ -17849,7 +17895,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar {
         max-height: none;
         min-height: 0;
     }
-}`, "",{"version":3,"sources":["webpack://./src/Components/Filter/Styles/Filter.css"],"names":[],"mappings":"AAAA;IACI,cAAc;AAClB;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,iBAAiB;AACrB;;AAEA;IACI,uBAAuB;IACvB,kBAAkB;AACtB;;AAEA;IACI,mBAAmB;IACnB,oBAAoB;AACxB;;AAEA;IACI,kBAAkB;IAClB,oBAAoB;AACxB;;AAEA;IACI,kBAAkB;IAClB,yDAAyD;AAC7D;;AAEA;IACI,2EAA2E;IAC3E,iGAAiG;IACjG,uGAAuG;AAC3G;;AAEA;IACI,sBAAsB;AAC1B;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,gDAAgD;AACpD;;AAEA;IACI,2BAA2B;AAC/B;;AAEA;IACI,YAAY;AAChB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,gDAAgD;IAChD,SAAS;AACb;;AAEA;IACI,aAAa;IACb,gDAAgD;IAChD,SAAS;AACb;;AAEA;IACI,2DAA2D;IAC3D,SAAS;AACb;;AAEA;IACI,2DAA2D;IAC3D,SAAS;IACT,aAAa;AACjB;;AAEA;IACI,uBAAuB;AAC3B;;AAEA;IACI,kBAAkB;IAClB,mBAAmB;AACvB;;AAEA;IACI,2BAA2B;AAC/B;;AAEA;IACI,kBAAkB;IAClB,yDAAyD;AAC7D;;AAEA;IACI,2BAA2B;AAC/B;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,UAAU;AACd;;AAEA;IACI,qBAAqB;AACzB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,oBAAoB;IACpB,gDAAgD;AACpD;;AAEA;IACI,8BAA8B;AAClC;;AAEA,yEAAyE;;AAEzE;IACI,kBAAkB;IAClB,iBAAiB;IACjB,yFAAyF;AAC7F;;AAEA,oEAAoE;AACpE;IACI,YAAY;AAChB;;AAEA;IACI,aAAa;IACb,qBAAqB;IACrB,yBAAyB;IACzB,cAAc;IACd,eAAe;IACf,iBAAiB;IACjB,kBAAkB;IAClB,eAAe;IACf,iBAAiB;IACjB,iBAAiB;IACjB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;IAC/B,0DAA0D;AAC9D;;AAEA;IACI,sCAAsC;IACtC,+BAA+B;AACnC;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,cAAc;IACd,oCAAoC;IACpC,0CAA0C;IAC1C,iBAAiB;IACjB,kBAAkB;AACtB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,qBAAqB;IACrB,QAAQ;IACR,YAAY;AAChB;;AAEA;IACI,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,+BAA+B;IAC/B,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;IAClB,gCAAgC;AACpC;;AAEA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,kBAAkB;IAClB,8BAA8B;AAClC;;AAEA;IACI,gBAAgB;IAChB,aAAa;IACb,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;IAClB,YAAY;IACZ,QAAQ;IACR,sBAAsB;IACtB,qCAAqC;IACrC,kHAAkH;IAClH,sCAAsC;IACtC,8BAA8B;IAC9B,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,gBAAgB;IAChB,6EAA6E;IAC7E,0CAA0C;IAC1C;;oCAEgC;AACpC;;AAEA;IACI,aAAa;IACb,wDAAwD;IACxD,MAAM;IACN,YAAY;IACZ,aAAa;IACb,gBAAgB;IAChB,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,MAAM;IACN,eAAe;IACf,iDAAiD;IACjD,8BAA8B;IAC9B,aAAa;IACb,gBAAgB;IAChB,kBAAkB;IAClB,gBAAgB;IAChB,iCAAiC;AACrC;;AAEA;IACI,cAAc;IACd,WAAW;IACX,SAAS;IACT,0BAA0B;IAC1B,YAAY;IACZ,kCAAkC;IAClC,uBAAuB;IACvB,gCAAgC;IAChC,oBAAoB;IACpB,gBAAgB;IAChB,gBAAgB;IAChB,eAAe;IACf,4EAA4E;AAChF;;AAEA;IACI,oCAAoC;IACpC,WAAW;AACf;;AAEA;IACI,oCAAoC;IACpC,oCAAoC;IACpC,WAAW;IACX,gBAAgB;AACpB;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,8CAA8C;AAClD;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,MAAM;AACV;;AAEA;IACI,eAAe;IACf,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,YAAY;IACZ,gBAAgB;IAChB,gBAAgB;IAChB,aAAa;IACb,sBAAsB;AAC1B;;AAEA;IACI,cAAc;IACd,aAAa;IACb,kBAAkB;IAClB,gBAAgB;IAChB,iCAAiC;IACjC,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,cAAc;IACd,+CAA+C;AACnD;;AAEA;IACI,OAAO;IACP,SAAS;IACT,kBAAkB;IAClB,YAAY;IACZ,mBAAmB;IACnB,gBAAgB;IAChB,sBAAsB;IACtB,eAAe;IACf,mDAAmD;AACvD;;AAEA;IACI,kCAAkC;IAClC,gCAAgC;AACpC;;AAEA;IACI,+BAA+B;AACnC;;AAEA;IACI,6BAA6B;IAC7B,cAAc;AAClB;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI;QACI,qCAAqC;QACrC,QAAQ;QACR,UAAU;QACV,sCAAsC;IAC1C;;IAEA;QACI,0BAA0B;QAC1B,8DAA8D;QAC9D,aAAa;IACjB;;IAEA;QACI,kBAAkB;QAClB,kDAAkD;QAClD,gBAAgB;QAChB,aAAa;IACjB;;IAEA;QACI,gBAAgB;QAChB,aAAa;IACjB;AACJ","sourcesContent":[".calendar {\n    color: #474747;\n}\n\n.p-2 {\n    padding: .5rem;\n}\n\n.flex {\n    display: flex;\n}\n\n.ml-auto {\n    margin-left: auto;\n}\n\n.w-max {\n    width: -moz-max-content;\n    width: max-content;\n}\n\n.px-2 {\n    padding-left: .5rem;\n    padding-right: .5rem;\n}\n\n.text-sm {\n    font-size: .875rem;\n    line-height: 1.25rem;\n}\n\n.bg-slate-100 {\n    --tw-bg-opacity: 1;\n    background-color: rgb(241 245 249 / var(--tw-bg-opacity));\n}\n\n.shadow-md {\n    --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);\n    --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);\n    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\n\n.rounded-md {\n    border-radius: .375rem;\n}\n\n.overflow-hidden {\n    overflow: hidden;\n}\n\n.calendar-grid {\n    display: grid;\n}\n\n.grid-cols-1 {\n    grid-template-columns: repeat(1, minmax(0, 1fr));\n}\n\n.auto-rows-max {\n    grid-auto-rows: max-content;\n}\n\n.w-\\[512px\\] {\n    width: 512px;\n}\n\n.h-\\[445px\\] {\n    height: 445px;\n}\n\n.grid-cols-2 {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n    gap: 10px;\n}\n\n.grid-cols-3 {\n    display: grid;\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    gap: 10px;\n}\n\n.grid-cols-4 {\n    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;\n    gap: 10px;\n}\n\n.grid-cols-5 {\n    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;\n    gap: 10px;\n    display: grid;\n}\n\n.border-r-2 {\n    border-right-width: 2px;\n}\n\n.mx-2 {\n    margin-left: .5rem;\n    margin-right: .5rem;\n}\n\n.auto-rows-max {\n    grid-auto-rows: max-content;\n}\n\n.bg-secondaryDark {\n    --tw-bg-opacity: 1;\n    background-color: rgb(108 108 108 / var(--tw-bg-opacity));\n}\n\n.auto-rows-max {\n    grid-auto-rows: max-content;\n}\n\n.h-\\[406px\\] {\n    height: 406px;\n}\n\n.block {\n    display: block;\n}\n\n.w-full {\n    width: 100%;\n}\n\n.w-1\\/2 {\n    width: 50%;\n}\n\n.rounded-full {\n    border-radius: 9999px;\n}\n\n.p-4 {\n    padding: 1rem;\n}\n\n.cursor-pointer {\n    cursor: pointer;\n}\n\n.text-slate-200 {\n    --tw-text-opacity: 1;\n    color: rgb(209 213 219 / var(--tw-text-opacity));\n}\n\n.justify-between{\n    justify-content: space-between;\n}\n\n/* ——— Date filter: redesigned calendar popover (dashboard-aligned) ——— */\n\n.filter-calendar-root {\n    position: relative;\n    overflow: visible;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n/* Popover must stack above sticky dashboard header (z-index ~100) */\n.filter-calendar-root.filter-calendar-root--open {\n    z-index: 400;\n}\n\n.filter-calendar-trigger {\n    display: flex;\n    align-items: flex-end;\n    justify-content: flex-end;\n    gap: 12px 16px;\n    flex-wrap: wrap;\n    margin-left: auto;\n    width: max-content;\n    max-width: 100%;\n    text-align: right;\n    padding: 8px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n    transition: border-color 0.15s ease, background 0.15s ease;\n}\n\n.filter-calendar-trigger:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(0, 0, 0, 0.28);\n}\n\n.filter-calendar-trigger:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 2px;\n}\n\n.filter-calendar-trigger__badge {\n    flex-shrink: 0;\n    font-size: 0.75rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: #f4f4f4;\n    background: rgba(192, 159, 83, 0.35);\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    padding: 6px 10px;\n    border-radius: 8px;\n}\n\n.filter-calendar-trigger__dates {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-end;\n    gap: 4px;\n    min-width: 0;\n}\n\n.filter-calendar-trigger__line {\n    font-size: 0.8125rem;\n    line-height: 1.35;\n    color: rgba(230, 230, 230, 0.92);\n}\n\n.filter-calendar-trigger__line--demo {\n    color: rgba(192, 159, 83, 0.95);\n    font-weight: 600;\n}\n\n.filter-calendar-trigger__line--compare {\n    font-size: 0.75rem;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n.filter-calendar-trigger__compare-kicker {\n    margin-right: 6px;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.9);\n}\n\n.filter-calendar-trigger__sep {\n    margin: 0 0.35em;\n    opacity: 0.55;\n    font-weight: 400;\n}\n\n.filter-calendar-popover {\n    position: absolute;\n    z-index: 450;\n    right: 0;\n    top: calc(100% + 10px);\n    width: min(520px, calc(100vw - 24px));\n    /* Definite height so flex children (body + footer) get a real budget — avoids clipping presets/calendar/buttons */\n    height: min(520px, calc(100vh - 80px));\n    max-height: calc(100vh - 16px);\n    display: flex;\n    flex-direction: column;\n    border-radius: 14px;\n    overflow: hidden;\n    background: linear-gradient(165deg, rgb(48, 48, 50) 0%, rgb(34, 34, 36) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 48px rgba(0, 0, 0, 0.45),\n        0 0 0 1px rgba(0, 0, 0, 0.2);\n}\n\n.filter-calendar-popover__body {\n    display: grid;\n    grid-template-columns: minmax(168px, 40%) minmax(0, 1fr);\n    gap: 0;\n    flex: 1 1 0%;\n    min-height: 0;\n    overflow: hidden;\n    align-items: stretch;\n}\n\n.filter-calendar-presets {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n    padding: 10px 0;\n    border-right: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n    min-height: 0;\n    max-height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    -webkit-overflow-scrolling: touch;\n}\n\n.filter-calendar-preset {\n    display: block;\n    width: 100%;\n    margin: 0;\n    padding: 9px 12px 9px 14px;\n    border: none;\n    border-left: 3px solid transparent;\n    background: transparent;\n    color: rgba(220, 220, 220, 0.95);\n    font-size: 0.8125rem;\n    line-height: 1.3;\n    text-align: left;\n    cursor: pointer;\n    transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;\n}\n\n.filter-calendar-preset:hover {\n    background: rgba(192, 159, 83, 0.12);\n    color: #fff;\n}\n\n.filter-calendar-preset--active {\n    border-left-color: rgb(192, 159, 83);\n    background: rgba(192, 159, 83, 0.18);\n    color: #fff;\n    font-weight: 600;\n}\n\n.filter-calendar-presets__compare-wrap {\n    margin-top: 6px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255, 255, 255, 0.1);\n}\n\n.filter-calendar-presets__compare {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.filter-calendar-presets__compare-label {\n    margin: 0 0 6px;\n    padding: 0 12px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(160, 160, 160, 0.95);\n}\n\n.filter-calendar-popover__calendar-wrap {\n    min-height: 0;\n    min-width: 0;\n    max-height: 100%;\n    overflow: hidden;\n    display: flex;\n    flex-direction: column;\n}\n\n.filter-calendar-popover__calendar-wrap .filter-cal-scroll {\n    flex: 1 1 auto;\n    min-height: 0;\n    overflow-x: hidden;\n    overflow-y: auto;\n    -webkit-overflow-scrolling: touch;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.filter-calendar-popover__footer {\n    display: flex;\n    flex-shrink: 0;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.filter-calendar-popover__btn {\n    flex: 1;\n    margin: 0;\n    padding: 12px 16px;\n    border: none;\n    font-size: 0.875rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.filter-calendar-popover__btn--secondary {\n    background: rgba(70, 70, 72, 0.95);\n    color: rgba(240, 240, 240, 0.95);\n}\n\n.filter-calendar-popover__btn--secondary:hover {\n    background: rgba(90, 90, 92, 1);\n}\n\n.filter-calendar-popover__btn--primary {\n    background: rgb(192, 159, 83);\n    color: #1a1a1a;\n}\n\n.filter-calendar-popover__btn--primary:hover {\n    background: rgb(205, 175, 105);\n}\n\n@media screen and (max-width: 600px) {\n    .filter-calendar-popover {\n        width: min(400px, calc(100vw - 16px));\n        right: 0;\n        left: auto;\n        height: min(560px, calc(100vh - 72px));\n    }\n\n    .filter-calendar-popover__body {\n        grid-template-columns: 1fr;\n        grid-template-rows: minmax(0, min(220px, 36vh)) minmax(0, 1fr);\n        min-height: 0;\n    }\n\n    .filter-calendar-presets {\n        border-right: none;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n        max-height: none;\n        min-height: 0;\n    }\n\n    .filter-calendar-popover__calendar-wrap {\n        max-height: none;\n        min-height: 0;\n    }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Components/Filter/Styles/Filter.css"],"names":[],"mappings":"AAAA;IACI,cAAc;AAClB;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,iBAAiB;AACrB;;AAEA;IACI,uBAAuB;IACvB,kBAAkB;AACtB;;AAEA;IACI,mBAAmB;IACnB,oBAAoB;AACxB;;AAEA;IACI,kBAAkB;IAClB,oBAAoB;AACxB;;AAEA;IACI,kBAAkB;IAClB,yDAAyD;AAC7D;;AAEA;IACI,2EAA2E;IAC3E,iGAAiG;IACjG,uGAAuG;AAC3G;;AAEA;IACI,sBAAsB;AAC1B;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,gDAAgD;AACpD;;AAEA;IACI,2BAA2B;AAC/B;;AAEA;IACI,YAAY;AAChB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,gDAAgD;IAChD,SAAS;AACb;;AAEA;IACI,aAAa;IACb,gDAAgD;IAChD,SAAS;AACb;;AAEA;IACI,2DAA2D;IAC3D,SAAS;AACb;;AAEA;IACI,2DAA2D;IAC3D,SAAS;IACT,aAAa;AACjB;;AAEA;IACI,uBAAuB;AAC3B;;AAEA;IACI,kBAAkB;IAClB,mBAAmB;AACvB;;AAEA;IACI,2BAA2B;AAC/B;;AAEA;IACI,kBAAkB;IAClB,yDAAyD;AAC7D;;AAEA;IACI,2BAA2B;AAC/B;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,UAAU;AACd;;AAEA;IACI,qBAAqB;AACzB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,oBAAoB;IACpB,gDAAgD;AACpD;;AAEA;IACI,8BAA8B;AAClC;;AAEA,yEAAyE;;AAEzE;IACI,kBAAkB;IAClB,iBAAiB;IACjB,yFAAyF;AAC7F;;AAEA,oEAAoE;AACpE;IACI,YAAY;AAChB;;AAEA;IACI,aAAa;IACb,qBAAqB;IACrB,yBAAyB;IACzB,cAAc;IACd,eAAe;IACf,iBAAiB;IACjB,kBAAkB;IAClB,eAAe;IACf,iBAAiB;IACjB,iBAAiB;IACjB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;IAC/B,0DAA0D;AAC9D;;AAEA;IACI,sCAAsC;IACtC,+BAA+B;AACnC;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,cAAc;IACd,oCAAoC;IACpC,0CAA0C;IAC1C,iBAAiB;IACjB,kBAAkB;AACtB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,qBAAqB;IACrB,QAAQ;IACR,YAAY;AAChB;;AAEA;IACI,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,+BAA+B;IAC/B,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;IAClB,gCAAgC;AACpC;;AAEA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,kBAAkB;IAClB,8BAA8B;AAClC;;AAEA;IACI,gBAAgB;IAChB,aAAa;IACb,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;IAClB,YAAY;IACZ,QAAQ;IACR,sBAAsB;IACtB,qCAAqC;IACrC,kHAAkH;IAClH,sCAAsC;IACtC,8BAA8B;IAC9B,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,gBAAgB;IAChB,6EAA6E;IAC7E,0CAA0C;IAC1C;;oCAEgC;AACpC;;AAEA;IACI,aAAa;IACb,wDAAwD;IACxD,MAAM;IACN,YAAY;IACZ,aAAa;IACb,gBAAgB;IAChB,oBAAoB;AACxB;;AAEA;IACI,sBAAsB;IACtB,kDAAkD;IAClD,cAAc;AAClB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;IACR,oBAAoB;IACpB,gCAAgC;IAChC,eAAe;IACf,iBAAiB;AACrB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,MAAM;IACN,eAAe;IACf,iDAAiD;IACjD,8BAA8B;IAC9B,aAAa;IACb,gBAAgB;IAChB,kBAAkB;IAClB,gBAAgB;IAChB,iCAAiC;AACrC;;AAEA;IACI,cAAc;IACd,WAAW;IACX,SAAS;IACT,0BAA0B;IAC1B,YAAY;IACZ,kCAAkC;IAClC,uBAAuB;IACvB,gCAAgC;IAChC,oBAAoB;IACpB,gBAAgB;IAChB,gBAAgB;IAChB,eAAe;IACf,4EAA4E;AAChF;;AAEA;IACI,oCAAoC;IACpC,WAAW;AACf;;AAEA;IACI,oCAAoC;IACpC,oCAAoC;IACpC,WAAW;IACX,gBAAgB;AACpB;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,8CAA8C;AAClD;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,MAAM;AACV;;AAEA;IACI,eAAe;IACf,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,YAAY;IACZ,gBAAgB;IAChB,gBAAgB;IAChB,aAAa;IACb,sBAAsB;AAC1B;;AAEA;IACI,cAAc;IACd,aAAa;IACb,kBAAkB;IAClB,gBAAgB;IAChB,iCAAiC;IACjC,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,cAAc;IACd,+CAA+C;AACnD;;AAEA;IACI,OAAO;IACP,SAAS;IACT,kBAAkB;IAClB,YAAY;IACZ,mBAAmB;IACnB,gBAAgB;IAChB,sBAAsB;IACtB,eAAe;IACf,mDAAmD;AACvD;;AAEA;IACI,kCAAkC;IAClC,gCAAgC;AACpC;;AAEA;IACI,+BAA+B;AACnC;;AAEA;IACI,6BAA6B;IAC7B,cAAc;AAClB;;AAEA;IACI,8BAA8B;AAClC;;AAEA;IACI;QACI,qCAAqC;QACrC,QAAQ;QACR,UAAU;QACV,sCAAsC;IAC1C;;IAEA;QACI,0BAA0B;QAC1B,8DAA8D;QAC9D,aAAa;IACjB;;IAEA;QACI,kBAAkB;QAClB,kDAAkD;QAClD,gBAAgB;QAChB,aAAa;IACjB;;IAEA;QACI,gBAAgB;QAChB,aAAa;IACjB;AACJ","sourcesContent":[".calendar {\n    color: #474747;\n}\n\n.p-2 {\n    padding: .5rem;\n}\n\n.flex {\n    display: flex;\n}\n\n.ml-auto {\n    margin-left: auto;\n}\n\n.w-max {\n    width: -moz-max-content;\n    width: max-content;\n}\n\n.px-2 {\n    padding-left: .5rem;\n    padding-right: .5rem;\n}\n\n.text-sm {\n    font-size: .875rem;\n    line-height: 1.25rem;\n}\n\n.bg-slate-100 {\n    --tw-bg-opacity: 1;\n    background-color: rgb(241 245 249 / var(--tw-bg-opacity));\n}\n\n.shadow-md {\n    --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);\n    --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);\n    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);\n}\n\n.rounded-md {\n    border-radius: .375rem;\n}\n\n.overflow-hidden {\n    overflow: hidden;\n}\n\n.calendar-grid {\n    display: grid;\n}\n\n.grid-cols-1 {\n    grid-template-columns: repeat(1, minmax(0, 1fr));\n}\n\n.auto-rows-max {\n    grid-auto-rows: max-content;\n}\n\n.w-\\[512px\\] {\n    width: 512px;\n}\n\n.h-\\[445px\\] {\n    height: 445px;\n}\n\n.grid-cols-2 {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n    gap: 10px;\n}\n\n.grid-cols-3 {\n    display: grid;\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    gap: 10px;\n}\n\n.grid-cols-4 {\n    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;\n    gap: 10px;\n}\n\n.grid-cols-5 {\n    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;\n    gap: 10px;\n    display: grid;\n}\n\n.border-r-2 {\n    border-right-width: 2px;\n}\n\n.mx-2 {\n    margin-left: .5rem;\n    margin-right: .5rem;\n}\n\n.auto-rows-max {\n    grid-auto-rows: max-content;\n}\n\n.bg-secondaryDark {\n    --tw-bg-opacity: 1;\n    background-color: rgb(108 108 108 / var(--tw-bg-opacity));\n}\n\n.auto-rows-max {\n    grid-auto-rows: max-content;\n}\n\n.h-\\[406px\\] {\n    height: 406px;\n}\n\n.block {\n    display: block;\n}\n\n.w-full {\n    width: 100%;\n}\n\n.w-1\\/2 {\n    width: 50%;\n}\n\n.rounded-full {\n    border-radius: 9999px;\n}\n\n.p-4 {\n    padding: 1rem;\n}\n\n.cursor-pointer {\n    cursor: pointer;\n}\n\n.text-slate-200 {\n    --tw-text-opacity: 1;\n    color: rgb(209 213 219 / var(--tw-text-opacity));\n}\n\n.justify-between{\n    justify-content: space-between;\n}\n\n/* ——— Date filter: redesigned calendar popover (dashboard-aligned) ——— */\n\n.filter-calendar-root {\n    position: relative;\n    overflow: visible;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n/* Popover must stack above sticky dashboard header (z-index ~100) */\n.filter-calendar-root.filter-calendar-root--open {\n    z-index: 400;\n}\n\n.filter-calendar-trigger {\n    display: flex;\n    align-items: flex-end;\n    justify-content: flex-end;\n    gap: 12px 16px;\n    flex-wrap: wrap;\n    margin-left: auto;\n    width: max-content;\n    max-width: 100%;\n    text-align: right;\n    padding: 8px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n    transition: border-color 0.15s ease, background 0.15s ease;\n}\n\n.filter-calendar-trigger:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(0, 0, 0, 0.28);\n}\n\n.filter-calendar-trigger:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 2px;\n}\n\n.filter-calendar-trigger__badge {\n    flex-shrink: 0;\n    font-size: 0.75rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: #f4f4f4;\n    background: rgba(192, 159, 83, 0.35);\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    padding: 6px 10px;\n    border-radius: 8px;\n}\n\n.filter-calendar-trigger__dates {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-end;\n    gap: 4px;\n    min-width: 0;\n}\n\n.filter-calendar-trigger__line {\n    font-size: 0.8125rem;\n    line-height: 1.35;\n    color: rgba(230, 230, 230, 0.92);\n}\n\n.filter-calendar-trigger__line--demo {\n    color: rgba(192, 159, 83, 0.95);\n    font-weight: 600;\n}\n\n.filter-calendar-trigger__line--compare {\n    font-size: 0.75rem;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n.filter-calendar-trigger__compare-kicker {\n    margin-right: 6px;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.9);\n}\n\n.filter-calendar-trigger__sep {\n    margin: 0 0.35em;\n    opacity: 0.55;\n    font-weight: 400;\n}\n\n.filter-calendar-popover {\n    position: absolute;\n    z-index: 450;\n    right: 0;\n    top: calc(100% + 10px);\n    width: min(520px, calc(100vw - 24px));\n    /* Definite height so flex children (body + footer) get a real budget — avoids clipping presets/calendar/buttons */\n    height: min(520px, calc(100vh - 80px));\n    max-height: calc(100vh - 16px);\n    display: flex;\n    flex-direction: column;\n    border-radius: 14px;\n    overflow: hidden;\n    background: linear-gradient(165deg, rgb(48, 48, 50) 0%, rgb(34, 34, 36) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 48px rgba(0, 0, 0, 0.45),\n        0 0 0 1px rgba(0, 0, 0, 0.2);\n}\n\n.filter-calendar-popover__body {\n    display: grid;\n    grid-template-columns: minmax(168px, 40%) minmax(0, 1fr);\n    gap: 0;\n    flex: 1 1 0%;\n    min-height: 0;\n    overflow: hidden;\n    align-items: stretch;\n}\n\n.filter-calendar-presets__toggle-row {\n    padding: 8px 12px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n}\n\n.filter-calendar-compare-toggle {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    font-size: 0.8125rem;\n    color: rgba(220, 220, 220, 0.92);\n    cursor: pointer;\n    user-select: none;\n}\n\n.filter-calendar-compare-toggle input {\n    width: 1rem;\n    height: 1rem;\n    accent-color: rgb(192, 159, 83);\n}\n\n.filter-calendar-presets {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n    padding: 10px 0;\n    border-right: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n    min-height: 0;\n    max-height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    -webkit-overflow-scrolling: touch;\n}\n\n.filter-calendar-preset {\n    display: block;\n    width: 100%;\n    margin: 0;\n    padding: 9px 12px 9px 14px;\n    border: none;\n    border-left: 3px solid transparent;\n    background: transparent;\n    color: rgba(220, 220, 220, 0.95);\n    font-size: 0.8125rem;\n    line-height: 1.3;\n    text-align: left;\n    cursor: pointer;\n    transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;\n}\n\n.filter-calendar-preset:hover {\n    background: rgba(192, 159, 83, 0.12);\n    color: #fff;\n}\n\n.filter-calendar-preset--active {\n    border-left-color: rgb(192, 159, 83);\n    background: rgba(192, 159, 83, 0.18);\n    color: #fff;\n    font-weight: 600;\n}\n\n.filter-calendar-presets__compare-wrap {\n    margin-top: 6px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255, 255, 255, 0.1);\n}\n\n.filter-calendar-presets__compare {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.filter-calendar-presets__compare-label {\n    margin: 0 0 6px;\n    padding: 0 12px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(160, 160, 160, 0.95);\n}\n\n.filter-calendar-popover__calendar-wrap {\n    min-height: 0;\n    min-width: 0;\n    max-height: 100%;\n    overflow: hidden;\n    display: flex;\n    flex-direction: column;\n}\n\n.filter-calendar-popover__calendar-wrap .filter-cal-scroll {\n    flex: 1 1 auto;\n    min-height: 0;\n    overflow-x: hidden;\n    overflow-y: auto;\n    -webkit-overflow-scrolling: touch;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.filter-calendar-popover__footer {\n    display: flex;\n    flex-shrink: 0;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.filter-calendar-popover__btn {\n    flex: 1;\n    margin: 0;\n    padding: 12px 16px;\n    border: none;\n    font-size: 0.875rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.filter-calendar-popover__btn--secondary {\n    background: rgba(70, 70, 72, 0.95);\n    color: rgba(240, 240, 240, 0.95);\n}\n\n.filter-calendar-popover__btn--secondary:hover {\n    background: rgba(90, 90, 92, 1);\n}\n\n.filter-calendar-popover__btn--primary {\n    background: rgb(192, 159, 83);\n    color: #1a1a1a;\n}\n\n.filter-calendar-popover__btn--primary:hover {\n    background: rgb(205, 175, 105);\n}\n\n@media screen and (max-width: 600px) {\n    .filter-calendar-popover {\n        width: min(400px, calc(100vw - 16px));\n        right: 0;\n        left: auto;\n        height: min(560px, calc(100vh - 72px));\n    }\n\n    .filter-calendar-popover__body {\n        grid-template-columns: 1fr;\n        grid-template-rows: minmax(0, min(220px, 36vh)) minmax(0, 1fr);\n        min-height: 0;\n    }\n\n    .filter-calendar-presets {\n        border-right: none;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n        max-height: none;\n        min-height: 0;\n    }\n\n    .filter-calendar-popover__calendar-wrap {\n        max-height: none;\n        min-height: 0;\n    }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -34901,7 +34947,9 @@ function Calendar(_ref) {
     setSelectedDays = _ref.setSelectedDays,
     startDate = _ref.startDate,
     endDate = _ref.endDate,
-    setDateRange = _ref.setDateRange;
+    setDateRange = _ref.setDateRange,
+    comparePreviewStart = _ref.comparePreviewStart,
+    comparePreviewEnd = _ref.comparePreviewEnd;
   var today = new Date();
   today.setDate(today.getDate() - 1);
   var yesterdayStr = formatLocalYmd(today);
@@ -34926,7 +34974,7 @@ function Calendar(_ref) {
 
   // compute initial dateToBegin (local calendar math — avoids UTC shifts from toISOString)
   var dateToBegin = startDate;
-  if (selectedDays > 0 && endDate) {
+  if (typeof selectedDays === "number" && selectedDays > 0 && endDate) {
     var endLocal = parseYmdLocal(endDate);
     var begin = new Date(endLocal);
     begin.setDate(begin.getDate() - selectedDays);
@@ -34940,6 +34988,17 @@ function Calendar(_ref) {
     _useState6 = _slicedToArray(_useState5, 2),
     selectedEndDate = _useState6[0],
     setEndDate = _useState6[1];
+  useEffect(function () {
+    setEndDate(endDate);
+    if (typeof selectedDays === "number" && selectedDays > 0 && endDate) {
+      var _endLocal = parseYmdLocal(endDate);
+      var _begin = new Date(_endLocal);
+      _begin.setDate(_begin.getDate() - selectedDays);
+      setStartDate(formatLocalYmd(_begin));
+    } else if (startDate) {
+      setStartDate(startDate);
+    }
+  }, [startDate, endDate, selectedDays]);
   var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   // decide which months to render
@@ -34997,7 +35056,14 @@ function Calendar(_ref) {
     className: "filter-cal-year-nav__btn",
     disabled: visibleYear === currentYear,
     "aria-label": "Next year"
-  }, "\u203A")), monthsToShow.map(function (month, index) {
+  }, "\u203A")), comparePreviewStart && comparePreviewEnd ? /*#__PURE__*/React.createElement("p", {
+    className: "filter-cal-compare-preview",
+    role: "status"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "filter-cal-compare-preview__label"
+  }, "Comparison preview"), /*#__PURE__*/React.createElement("span", {
+    className: "filter-cal-compare-preview__range"
+  }, comparePreviewStart, " \u2192 ", comparePreviewEnd)) : null, monthsToShow.map(function (month, index) {
     var isScrollFocus = index === scrollFocusMonthIndex;
     return /*#__PURE__*/React.createElement("div", {
       key: visibleYear + "-" + month,
@@ -35260,6 +35326,193 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
+/***/ "./src/Components/Filter/filterDatePresets.js":
+/*!****************************************************!*\
+  !*** ./src/Components/Filter/filterDatePresets.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   addDays: () => (/* binding */ addDays),
+/* harmony export */   computeCompareWindow: () => (/* binding */ computeCompareWindow),
+/* harmony export */   defaultCompareWindowForPrimary: () => (/* binding */ defaultCompareWindowForPrimary),
+/* harmony export */   inclusiveDayCount: () => (/* binding */ inclusiveDayCount),
+/* harmony export */   mondayOfWeekContaining: () => (/* binding */ mondayOfWeekContaining),
+/* harmony export */   parseYmdLocal: () => (/* binding */ parseYmdLocal),
+/* harmony export */   rangeLastWeek: () => (/* binding */ rangeLastWeek),
+/* harmony export */   rangeQuarterToDate: () => (/* binding */ rangeQuarterToDate),
+/* harmony export */   rangeThisWeek: () => (/* binding */ rangeThisWeek),
+/* harmony export */   rangeThisYearToDate: () => (/* binding */ rangeThisYearToDate),
+/* harmony export */   startOfQuarter: () => (/* binding */ startOfQuarter),
+/* harmony export */   yesterdayLocal: () => (/* binding */ yesterdayLocal),
+/* harmony export */   ymdLocal: () => (/* binding */ ymdLocal)
+/* harmony export */ });
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+/** Local calendar date helpers for dashboard date filter (no UTC midnight shifts). */
+
+function ymdLocal(d) {
+  var x = d instanceof Date ? d : new Date(d);
+  if (!Number.isFinite(x.getTime())) return "";
+  return "".concat(x.getFullYear(), "-").concat(String(x.getMonth() + 1).padStart(2, "0"), "-").concat(String(x.getDate()).padStart(2, "0"));
+}
+function parseYmdLocal(s) {
+  if (s == null || s === "") return new Date(NaN);
+  var part = String(s).split("T")[0];
+  var _part$split$map = part.split("-").map(Number),
+    _part$split$map2 = _slicedToArray(_part$split$map, 3),
+    y = _part$split$map2[0],
+    m = _part$split$map2[1],
+    d = _part$split$map2[2];
+  if (!y || !m || !d) return new Date(NaN);
+  return new Date(y, m - 1, d);
+}
+function addDays(d, n) {
+  var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() + n);
+  return x;
+}
+
+/** Inclusive day count from start to end (local dates). */
+function inclusiveDayCount(start, end) {
+  var a = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  var b = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  return Math.round((b - a) / (24 * 60 * 60 * 1000)) + 1;
+}
+
+/** Monday of the week containing `d` (local). */
+function mondayOfWeekContaining(d) {
+  var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  var dow = (x.getDay() + 6) % 7;
+  return addDays(x, -dow);
+}
+
+/** "Yesterday" for analytics (last complete day). */
+function yesterdayLocal() {
+  var t = new Date();
+  return addDays(new Date(t.getFullYear(), t.getMonth(), t.getDate()), -1);
+}
+
+/** Last calendar week Mon–Sun, capped end at `yesterday` if that week is still partial. */
+function rangeLastWeek() {
+  var y = yesterdayLocal();
+  var thisMon = mondayOfWeekContaining(y);
+  var start = addDays(thisMon, -7);
+  var endRaw = addDays(start, 6);
+  var end = endRaw > y ? y : endRaw;
+  return {
+    start: start,
+    end: end
+  };
+}
+
+/** This calendar week Mon–`yesterday`. */
+function rangeThisWeek() {
+  var y = yesterdayLocal();
+  var start = mondayOfWeekContaining(y);
+  var end = y < start ? start : y;
+  return {
+    start: start,
+    end: end
+  };
+}
+
+/** Quarter containing `d`: Jan–Mar, Apr–Jun, Jul–Sep, Oct–Dec. */
+function startOfQuarter(d) {
+  var m = d.getMonth();
+  var q = Math.floor(m / 3);
+  return new Date(d.getFullYear(), q * 3, 1);
+}
+
+/** Quarter to date through yesterday. */
+function rangeQuarterToDate() {
+  var y = yesterdayLocal();
+  var start = startOfQuarter(y);
+  return {
+    start: start,
+    end: y
+  };
+}
+
+/** Jan 1 this year through yesterday. */
+function rangeThisYearToDate() {
+  var y = yesterdayLocal();
+  var start = new Date(y.getFullYear(), 0, 1);
+  return {
+    start: start,
+    end: y
+  };
+}
+
+/**
+ * Comparison window for KPI / UI (chronological: start ≤ end).
+ * @param {Date} primaryStart
+ * @param {Date} primaryEnd
+ * @param {"Previous period"|"Preceding period"|"Previous quarter"|"Last 180 days"|"Same period last year"} mode
+ * @param {number|string} [compareHint] legacy span from preset buttons
+ */
+function computeCompareWindow(primaryStart, primaryEnd, mode, compareHint) {
+  var ps = new Date(primaryStart.getFullYear(), primaryStart.getMonth(), primaryStart.getDate());
+  var pe = new Date(primaryEnd.getFullYear(), primaryEnd.getMonth(), primaryEnd.getDate());
+  var days = Math.max(1, inclusiveDayCount(ps, pe));
+  if (mode === "Same period last year") {
+    var _start = addDays(ps, -365);
+    var _end = addDays(pe, -365);
+    return {
+      start: _start,
+      end: _end
+    };
+  }
+  if (mode === "Previous quarter") {
+    var span = 90;
+    var _end2 = addDays(ps, -1);
+    var _start2 = addDays(_end2, -(span - 1));
+    return {
+      start: _start2,
+      end: _end2
+    };
+  }
+  if (mode === "Last 180 days") {
+    var _span = 180;
+    var _end3 = addDays(ps, -1);
+    var _start3 = addDays(_end3, -(_span - 1));
+    return {
+      start: _start3,
+      end: _end3
+    };
+  }
+  if (mode === "Preceding period") {
+    var prevEnd = addDays(ps, -1);
+    var prevStart = addDays(prevEnd, -(days - 1));
+    var compEnd = addDays(prevStart, -1);
+    var compStart = addDays(compEnd, -(days - 1));
+    return {
+      start: compStart,
+      end: compEnd
+    };
+  }
+
+  // "Previous period" — same length, immediately before primary
+  var end = addDays(ps, -1);
+  var start = addDays(end, -(days - 1));
+  return {
+    start: start,
+    end: end
+  };
+}
+
+/** Default “previous period” window for KPIs when compare mode is off (same length, immediately before primary). */
+function defaultCompareWindowForPrimary(primaryStart, primaryEnd) {
+  return computeCompareWindow(primaryStart, primaryEnd, "Previous period", 0);
+}
+
+/***/ }),
+
 /***/ "./src/Components/Filter/index.js":
 /*!****************************************!*\
   !*** ./src/Components/Filter/index.js ***!
@@ -35273,6 +35526,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Styles_Filter_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Styles/Filter.css */ "./src/Components/Filter/Styles/Filter.css");
 /* harmony import */ var _Calendar_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Calendar.js */ "./src/Components/Filter/Calendar.js");
 /* harmony import */ var _Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Functions/userLocale.js */ "./src/Functions/userLocale.js");
+/* harmony import */ var _filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -35282,25 +35536,36 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 var _React = React,
   useState = _React.useState,
-  useEffect = _React.useEffect;
-/* import { ToggleButton } from "~/components"; */
+  useEffect = _React.useEffect,
+  useMemo = _React.useMemo;
+
 
 
 function filterPresetBtnClass(isActive) {
   return "filter-calendar-preset" + (isActive ? " filter-calendar-preset--active" : "");
+}
+function toCalendarDay(value) {
+  if (value instanceof Date && Number.isFinite(value.getTime())) {
+    return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+  }
+  return (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(value);
 }
 function Filter(_ref) {
   var _Date, _Date2;
   var className = _ref.className,
     numberOfDays = _ref.numberOfDays,
     setNumberOfDays = _ref.setNumberOfDays,
-    compareRange = _ref.compareRange,
+    _ref$compareRange = _ref.compareRange,
+    compareRange = _ref$compareRange === void 0 ? 0 : _ref$compareRange,
+    setCompareRange = _ref.setCompareRange,
     date = _ref.date,
     setFromDate = _ref.setFromDate,
     setToDate = _ref.setToDate,
+    setCompareWindowStart = _ref.setCompareWindowStart,
+    setCompareWindowEnd = _ref.setCompareWindowEnd,
     demoMode = _ref.demoMode;
   var locale = (0,_Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_2__.useUserLocale)();
-  var compareRangeCheck = compareRange === 0 ? false : true;
+  var compareRangeCheck = compareRange !== 0 && compareRange != null;
   var _useState = useState(false),
     _useState2 = _slicedToArray(_useState, 2),
     calendar = _useState2[0],
@@ -35317,7 +35582,7 @@ function Filter(_ref) {
     _useState8 = _slicedToArray(_useState7, 2),
     selectedCompareRange = _useState8[0],
     setSelectedCompareRange = _useState8[1];
-  var _useState9 = useState(compareRange === selectedDays ? "Previous period" : compareRange === selectedDays * 2 ? "Preceding period" : compareRange === selectedDays * 3 ? "Previous quarter" : compareRange === selectedDays * 6 ? "Last 180 days" : compareRange === "Same period last year" ? "Same period last year" : "Previous period"),
+  var _useState9 = useState(compareRange === numberOfDays ? "Previous period" : compareRange === numberOfDays * 2 ? "Preceding period" : compareRange === numberOfDays * 3 ? "Previous quarter" : compareRange === numberOfDays * 6 ? "Last 180 days" : compareRange === "Same period last year" ? "Same period last year" : "Previous period"),
     _useState0 = _slicedToArray(_useState9, 2),
     selectedComparison = _useState0[0],
     setSelectedComparison = _useState0[1];
@@ -35328,18 +35593,106 @@ function Filter(_ref) {
     _useState10 = _slicedToArray(_useState1, 2),
     dateRange = _useState10[0],
     setDateRange = _useState10[1];
+  var compareStart = date === null || date === void 0 ? void 0 : date.previousStart;
+  var compareEnd = date === null || date === void 0 ? void 0 : date.previousEnd;
+  var primarySpanDays = useMemo(function () {
+    var a = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(dateRange === null || dateRange === void 0 ? void 0 : dateRange.start);
+    var b = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(dateRange === null || dateRange === void 0 ? void 0 : dateRange.end);
+    if (!Number.isFinite(a === null || a === void 0 ? void 0 : a.getTime()) || !Number.isFinite(b === null || b === void 0 ? void 0 : b.getTime())) return 1;
+    return (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.inclusiveDayCount)(a, b);
+  }, [dateRange === null || dateRange === void 0 ? void 0 : dateRange.start, dateRange === null || dateRange === void 0 ? void 0 : dateRange.end]);
+  var previewCompare = useMemo(function () {
+    if (!isCompare) return null;
+    var ps = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(dateRange === null || dateRange === void 0 ? void 0 : dateRange.start);
+    var pe = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(dateRange === null || dateRange === void 0 ? void 0 : dateRange.end);
+    if (!Number.isFinite(ps === null || ps === void 0 ? void 0 : ps.getTime()) || !Number.isFinite(pe === null || pe === void 0 ? void 0 : pe.getTime())) return null;
+    try {
+      return (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.computeCompareWindow)(ps, pe, selectedComparison, selectedCompareRange);
+    } catch (_unused) {
+      return null;
+    }
+  }, [isCompare, dateRange === null || dateRange === void 0 ? void 0 : dateRange.start, dateRange === null || dateRange === void 0 ? void 0 : dateRange.end, selectedComparison, selectedCompareRange]);
   useEffect(function () {
-    setNumberOfDays(selectedDays);
-  }, [selectedDays]);
-
-  /*  const navigate = useNavigate(); */
+    setIsCompare(compareRange !== 0 && compareRange != null);
+  }, [compareRange]);
+  useEffect(function () {
+    if (compareRange === "Same period last year") {
+      setSelectedCompareRange("Same period last year");
+    } else if (typeof compareRange === "number") {
+      setSelectedCompareRange(compareRange);
+    }
+  }, [compareRange]);
+  useEffect(function () {
+    var _Date3, _Date4;
+    setDateRange({
+      start: (_Date3 = new Date(date.start)) === null || _Date3 === void 0 || (_Date3 = _Date3.toISOString()) === null || _Date3 === void 0 ? void 0 : _Date3.split("T")[0],
+      end: (_Date4 = new Date(date.end)) === null || _Date4 === void 0 || (_Date4 = _Date4.toISOString()) === null || _Date4 === void 0 ? void 0 : _Date4.split("T")[0]
+    });
+  }, [date === null || date === void 0 ? void 0 : date.start, date === null || date === void 0 ? void 0 : date.end]);
   var endXDays = dateRange === null || dateRange === void 0 ? void 0 : dateRange.end;
   var startXDays = dateRange === null || dateRange === void 0 ? void 0 : dateRange.start;
-  var previousPeriod = date === null || date === void 0 ? void 0 : date.previousStart;
-  var previousPeriod2 = date === null || date === void 0 ? void 0 : date.previousEnd;
   function handleCalendarToggle() {
     setCalendar(!calendar);
   }
+  function applyLocalRange(startDate, endDate, selectedLabel, compareRangeUpdater) {
+    var s = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(startDate);
+    var e = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(endDate);
+    setDateRange({
+      start: s,
+      end: e
+    });
+    setSelectedDays(selectedLabel);
+    if (typeof compareRangeUpdater === "function") {
+      compareRangeUpdater();
+    } else if (compareRangeUpdater != null) {
+      setSelectedCompareRange(compareRangeUpdater);
+    }
+  }
+  function lastNDaysRelative(n, labelNum) {
+    var y = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.addDays)(new Date(), -1);
+    var end = new Date(y.getFullYear(), y.getMonth(), y.getDate());
+    var start = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.addDays)(end, -(n - 1));
+    applyLocalRange(start, end, labelNum, function () {
+      if (selectedComparison === "Previous period") setSelectedCompareRange(n + 1);else if (selectedComparison === "Preceding period") setSelectedCompareRange((n + 1) * 2);else if (selectedComparison === "Previous quarter") setSelectedCompareRange((n + 1) * 3);else if (selectedComparison === "Last 180 days") setSelectedCompareRange((n + 1) * 6);else if (selectedComparison === "Same period last year") setSelectedCompareRange((n + 1) * 12);else setSelectedCompareRange(n + 1);
+    });
+  }
+  function applyLastYearCalendar() {
+    var year = new Date().getFullYear();
+    var start = new Date(year - 1, 0, 2);
+    var end = new Date(year - 1, 11, 31);
+    applyLocalRange(start, end, 365, function () {
+      if (selectedComparison === "Previous period") setSelectedCompareRange(366);else if (selectedComparison === "Preceding period") setSelectedCompareRange(366 * 2);else if (selectedComparison === "Previous quarter") setSelectedCompareRange(366 * 3);else if (selectedComparison === "Last 180 days") setSelectedCompareRange(366 * 6);else if (selectedComparison === "Same period last year") setSelectedCompareRange(366 * 12);else setSelectedCompareRange(366);
+    });
+  }
+  function handleApply(e) {
+    e.preventDefault();
+    handleCalendarToggle();
+    var ps = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(startXDays);
+    var pe = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(endXDays);
+    setFromDate(ps);
+    setToDate(pe);
+    if (typeof setNumberOfDays === "function") {
+      var n = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.inclusiveDayCount)(ps, pe);
+      setNumberOfDays(n);
+    }
+    if (!isCompare) {
+      setCompareRange === null || setCompareRange === void 0 || setCompareRange(0);
+      return;
+    }
+    if (!setCompareRange) return;
+    var win = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.computeCompareWindow)(ps, pe, selectedComparison, selectedCompareRange);
+    if (win && setCompareWindowStart && setCompareWindowEnd) {
+      setCompareWindowStart(win.start);
+      setCompareWindowEnd(win.end);
+    }
+    var span = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.inclusiveDayCount)(ps, pe);
+    if (selectedComparison === "Same period last year") {
+      setCompareRange("Same period last year");
+    } else {
+      setCompareRange(selectedCompareRange || span);
+    }
+  }
+  var badgeText = typeof numberOfDays === "number" && numberOfDays >= 0 ? "Last " + numberOfDays + " days" : String(numberOfDays !== null && numberOfDays !== void 0 ? numberOfDays : "");
   return /*#__PURE__*/React.createElement("div", {
     className: "filter-calendar-root calendar relative z-40 ".concat(calendar ? "filter-calendar-root--open" : "", " ").concat(className !== null && className !== void 0 ? className : "").trim()
   }, /*#__PURE__*/React.createElement("button", {
@@ -35350,7 +35703,7 @@ function Filter(_ref) {
     onClick: handleCalendarToggle
   }, /*#__PURE__*/React.createElement("span", {
     className: "filter-calendar-trigger__badge"
-  }, numberOfDays >= 0 ? "Last " + numberOfDays + " days" : numberOfDays), /*#__PURE__*/React.createElement("span", {
+  }, badgeText), /*#__PURE__*/React.createElement("span", {
     className: "filter-calendar-trigger__dates"
   }, demoMode && /*#__PURE__*/React.createElement("span", {
     className: "filter-calendar-trigger__line filter-calendar-trigger__line--demo"
@@ -35358,21 +35711,21 @@ function Filter(_ref) {
     className: "filter-calendar-trigger__line"
   }, new Intl.DateTimeFormat(locale, {
     dateStyle: "medium"
-  }).format(new Date(startXDays)), /*#__PURE__*/React.createElement("span", {
+  }).format((0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(startXDays)), /*#__PURE__*/React.createElement("span", {
     className: "filter-calendar-trigger__sep"
   }, "\u2192"), new Intl.DateTimeFormat(locale, {
     dateStyle: "medium"
-  }).format(new Date(endXDays))), compareRangeCheck ? /*#__PURE__*/React.createElement("span", {
+  }).format((0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.parseYmdLocal)(endXDays))), compareRangeCheck && compareStart && compareEnd ? /*#__PURE__*/React.createElement("span", {
     className: "filter-calendar-trigger__line filter-calendar-trigger__line--compare"
   }, /*#__PURE__*/React.createElement("span", {
     className: "filter-calendar-trigger__compare-kicker"
   }, "vs"), new Intl.DateTimeFormat(locale, {
     dateStyle: "medium"
-  }).format(new Date(previousPeriod2)), /*#__PURE__*/React.createElement("span", {
+  }).format(toCalendarDay(compareStart)), /*#__PURE__*/React.createElement("span", {
     className: "filter-calendar-trigger__sep"
   }, "\u2192"), new Intl.DateTimeFormat(locale, {
     dateStyle: "medium"
-  }).format(new Date(previousPeriod))) : null)), calendar && /*#__PURE__*/React.createElement("div", {
+  }).format(toCalendarDay(compareEnd))) : null)), calendar && /*#__PURE__*/React.createElement("div", {
     className: "filter-calendar-popover",
     role: "dialog",
     "aria-label": "Choose date range"
@@ -35380,187 +35733,121 @@ function Filter(_ref) {
     className: "filter-calendar-popover__body"
   }, /*#__PURE__*/React.createElement("section", {
     className: "filter-calendar-presets"
-  }, /*#__PURE__*/React.createElement("button", {
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "filter-calendar-presets__toggle-row"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "filter-calendar-compare-toggle"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "checkbox",
+    checked: isCompare,
+    onChange: function onChange(ev) {
+      return setIsCompare(ev.target.checked);
+    }
+  }), /*#__PURE__*/React.createElement("span", null, "Compare to prior period"))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var value = 3;
-      var end = new Date().toISOString().split("T")[0];
-      date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-      date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-      setDateRange({
-        start: date.start,
-        end: date.end
+      var y = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.addDays)(new Date(), -1);
+      var end = new Date(y.getFullYear(), y.getMonth(), y.getDate());
+      var start = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.addDays)(end, -2);
+      applyLocalRange(start, end, "Yesterday", function () {
+        if (selectedComparison === "Previous period") return setSelectedCompareRange(4);
+        if (selectedComparison === "Preceding period") return setSelectedCompareRange(8);
+        if (selectedComparison === "Previous quarter") return setSelectedCompareRange(12);
+        if (selectedComparison === "Last 180 days") return setSelectedCompareRange(24);
+        if (selectedComparison === "Same period last year") return setSelectedCompareRange(48);
+        return setSelectedCompareRange(4);
       });
-      setSelectedDays("Yesterday");
-      if (selectedComparison === "Previous period") {
-        setSelectedCompareRange(value + 1);
-      } else if (selectedComparison === "Preceding period") {
-        setSelectedCompareRange(value + 1 * 2);
-      } else if (selectedComparison === "Previous quarter") {
-        setSelectedCompareRange(value + 1 * 3);
-      } else if (selectedComparison === "Last 180 days") {
-        setSelectedCompareRange(value + 1 * 6);
-      } else if (selectedComparison === "Same period last year") {
-        setSelectedCompareRange(value + 1 * 12);
-      }
     },
     className: filterPresetBtnClass(selectedDays === "Yesterday")
   }, "Yesterday"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var value = 7;
-      var end = new Date().toISOString().split("T")[0];
-      date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-      date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-      setDateRange({
-        start: date.start,
-        end: date.end
-      });
-      setSelectedDays(value);
-      if (selectedComparison === "Previous period") {
-        setSelectedCompareRange(value + 1);
-      } else if (selectedComparison === "Preceding period") {
-        setSelectedCompareRange(value + 1 * 2);
-      } else if (selectedComparison === "Previous quarter") {
-        setSelectedCompareRange(value + 1 * 3);
-      } else if (selectedComparison === "Last 180 days") {
-        setSelectedCompareRange(value + 1 * 6);
-      } else if (selectedComparison === "Same period last year") {
-        setSelectedCompareRange(value + 1 * 12);
-      }
+      lastNDaysRelative(7, 7);
     },
     className: filterPresetBtnClass(selectedDays === 7)
   }, "Last 7 days"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var value = 28;
-      var end = new Date().toISOString().split("T")[0];
-      date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-      date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-      setDateRange({
-        start: date.start,
-        end: date.end
+      var _rangeLastWeek = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.rangeLastWeek)(),
+        start = _rangeLastWeek.start,
+        end = _rangeLastWeek.end;
+      applyLocalRange(start, end, "last_week", function () {
+        return setSelectedCompareRange((0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.inclusiveDayCount)(start, end) + 1);
       });
-      setSelectedDays(value);
-      if (selectedComparison === "Previous period") {
-        setSelectedCompareRange(value + 1);
-      } else if (selectedComparison === "Preceding period") {
-        setSelectedCompareRange(value + 1 * 2);
-      } else if (selectedComparison === "Previous quarter") {
-        setSelectedCompareRange(value + 1 * 3);
-      } else if (selectedComparison === "Last 180 days") {
-        setSelectedCompareRange(value + 1 * 6);
-      } else if (selectedComparison === "Same period last year") {
-        setSelectedCompareRange(value + 1 * 12);
-      }
+    },
+    className: filterPresetBtnClass(selectedDays === "last_week")
+  }, "Last week"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: function onClick(e) {
+      e.preventDefault();
+      var _rangeThisWeek = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.rangeThisWeek)(),
+        start = _rangeThisWeek.start,
+        end = _rangeThisWeek.end;
+      applyLocalRange(start, end, "this_week", function () {
+        return setSelectedCompareRange((0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.inclusiveDayCount)(start, end) + 1);
+      });
+    },
+    className: filterPresetBtnClass(selectedDays === "this_week")
+  }, "This week"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: function onClick(e) {
+      e.preventDefault();
+      lastNDaysRelative(28, 28);
     },
     className: filterPresetBtnClass(selectedDays === 28)
   }, "Last 28 days"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var value = 30;
-      var end = new Date().toISOString().split("T")[0];
-      date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-      date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-      setDateRange({
-        start: date.start,
-        end: date.end
-      });
-      setSelectedDays(value);
-      if (selectedComparison === "Previous period") {
-        setSelectedCompareRange(value + 1);
-      } else if (selectedComparison === "Preceding period") {
-        setSelectedCompareRange(value + 1 * 2);
-      } else if (selectedComparison === "Previous quarter") {
-        setSelectedCompareRange(value + 1 * 3);
-      } else if (selectedComparison === "Last 180 days") {
-        setSelectedCompareRange(value + 1 * 6);
-      } else if (selectedComparison === "Same period last year") {
-        setSelectedCompareRange(value + 1 * 12);
-      }
+      lastNDaysRelative(30, 30);
     },
     className: filterPresetBtnClass(selectedDays === 30)
   }, "Last 30 days"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var value = 90;
-      var end = new Date().toISOString().split("T")[0];
-      date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-      date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-      setDateRange({
-        start: date.start,
-        end: date.end
+      var _rangeQuarterToDate = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.rangeQuarterToDate)(),
+        start = _rangeQuarterToDate.start,
+        end = _rangeQuarterToDate.end;
+      applyLocalRange(start, end, "qtd", function () {
+        return setSelectedCompareRange((0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.inclusiveDayCount)(start, end) + 1);
       });
-      setSelectedDays(value);
-      if (selectedComparison === "Previous period") {
-        setSelectedCompareRange(value);
-      } else if (selectedComparison === "Preceding period") {
-        setSelectedCompareRange(value * 2);
-      } else if (selectedComparison === "Previous quarter") {
-        setSelectedCompareRange(value * 3);
-      } else if (selectedComparison === "Last 180 days") {
-        setSelectedCompareRange(value * 6);
-      } else if (selectedComparison === "Same period last year") {
-        setSelectedCompareRange(value * 12);
-      }
+    },
+    className: filterPresetBtnClass(selectedDays === "qtd")
+  }, "Quarter to date"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: function onClick(e) {
+      e.preventDefault();
+      var _rangeThisYearToDate = (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.rangeThisYearToDate)(),
+        start = _rangeThisYearToDate.start,
+        end = _rangeThisYearToDate.end;
+      applyLocalRange(start, end, "ytd", function () {
+        return setSelectedCompareRange((0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.inclusiveDayCount)(start, end) + 1);
+      });
+    },
+    className: filterPresetBtnClass(selectedDays === "ytd")
+  }, "This year"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: function onClick(e) {
+      e.preventDefault();
+      lastNDaysRelative(90, 90);
     },
     className: filterPresetBtnClass(selectedDays === 90)
   }, "Last 90 days"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var value = 12 * 30;
-      var end = new Date().toISOString().split("T")[0];
-      date.end = new Date(new Date(end).setDate(new Date().getDate() - 1)).toISOString().split("T")[0];
-      date.start = new Date(new Date().setDate(new Date().getDate() - value + 1)).toISOString().split("T")[0];
-      setDateRange({
-        start: date.start,
-        end: date.end
-      });
-      setSelectedDays("12 months");
-      if (selectedComparison === "Previous period") {
-        setSelectedCompareRange(value);
-      } else if (selectedComparison === "Preceding period") {
-        setSelectedCompareRange(value * 2);
-      } else if (selectedComparison === "Previous quarter") {
-        setSelectedCompareRange(value * 3);
-      } else if (selectedComparison === "Last 180 days") {
-        setSelectedCompareRange(value * 6);
-      } else if (selectedComparison === "Same period last year") {
-        setSelectedCompareRange(value * 12);
-      }
+      lastNDaysRelative(12 * 30, "12 months");
     },
     className: filterPresetBtnClass(selectedDays === "12 months")
   }, "Last 12 months"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var value = 365;
-      // Calculate the end date to the previous 31. december of the previous year
-      var end = new Date().toISOString().split("T")[0];
-      var year = new Date().getFullYear();
-      var lastYear = new Date(year - 1, 11, 32).toISOString().split("T")[0];
-
-      // Calculate the start date to the previous 1. january of the previous year
-      var start = new Date(year - 1, 0, 1).toISOString().split("T")[0];
-
-      // Add to the start date + 1 day
-      date.start = new Date(new Date(start).setDate(new Date(start).getDate() + 1)).toISOString().split("T")[0];
-      date.end = lastYear;
-      setDateRange({
-        start: date.start,
-        end: date.end
-      });
-      setSelectedDays(value);
-      if (selectedComparison === "Previous period") {
-        setSelectedCompareRange(value + 1);
-      } else if (selectedComparison === "Preceding period") {
-        setSelectedCompareRange(value + 1 * 2);
-      } else if (selectedComparison === "Previous quarter") {
-        setSelectedCompareRange(value + 1 * 3);
-      } else if (selectedComparison === "Last 180 days") {
-        setSelectedCompareRange(value + 1 * 6);
-      } else if (selectedComparison === "Same period last year") {
-        setSelectedCompareRange(value + 1 * 12);
-      }
+      applyLastYearCalendar();
     },
     className: filterPresetBtnClass(selectedDays === 365)
   }, "Last year"), /*#__PURE__*/React.createElement("section", {
@@ -35570,43 +35857,43 @@ function Filter(_ref) {
   }, /*#__PURE__*/React.createElement("p", {
     className: "filter-calendar-presets__compare-label"
   }, "Comparison baseline"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var name = "Previous period";
-      setSelectedComparison(name);
-      setSelectedCompareRange(selectedDays);
+      setSelectedComparison("Previous period");
+      setSelectedCompareRange(primarySpanDays);
     },
     className: filterPresetBtnClass(selectedComparison === "Previous period")
   }, "Previous period"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var name = "Preceding period";
-      setSelectedComparison(name);
-      setSelectedCompareRange(selectedDays * 2);
+      setSelectedComparison("Preceding period");
+      setSelectedCompareRange(primarySpanDays * 2);
     },
     className: filterPresetBtnClass(selectedComparison === "Preceding period")
   }, "Preceding period"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var name = "Previous quarter";
-      setSelectedComparison(name);
+      setSelectedComparison("Previous quarter");
       setSelectedCompareRange(90);
     },
     className: filterPresetBtnClass(selectedComparison === "Previous quarter")
-  }, "Last 90 days"), /*#__PURE__*/React.createElement("button", {
+  }, "Compare window 90 days"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var name = "Last 180 days";
-      setSelectedComparison(name);
+      setSelectedComparison("Last 180 days");
       setSelectedCompareRange(180);
     },
     className: filterPresetBtnClass(selectedComparison === "Last 180 days")
-  }, "Last 180 days"), /*#__PURE__*/React.createElement("button", {
+  }, "Compare window 180 days"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
     onClick: function onClick(e) {
       e.preventDefault();
-      var name = "Same period last year";
-      setSelectedComparison(name);
-      setSelectedCompareRange(name);
+      setSelectedComparison("Same period last year");
+      setSelectedCompareRange("Same period last year");
     },
     className: filterPresetBtnClass(selectedComparison === "Same period last year")
   }, "Same period last year")))), /*#__PURE__*/React.createElement("div", {
@@ -35618,7 +35905,9 @@ function Filter(_ref) {
     startDate: dateRange.start,
     endDate: dateRange.end,
     setDateRange: setDateRange,
-    handleCalendarToggle: handleCalendarToggle
+    handleCalendarToggle: handleCalendarToggle,
+    comparePreviewStart: previewCompare ? (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(previewCompare.start) : null,
+    comparePreviewEnd: previewCompare ? (0,_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.ymdLocal)(previewCompare.end) : null
   }))), /*#__PURE__*/React.createElement("footer", {
     className: "filter-calendar-popover__footer"
   }, /*#__PURE__*/React.createElement("button", {
@@ -35627,12 +35916,7 @@ function Filter(_ref) {
     className: "filter-calendar-popover__btn filter-calendar-popover__btn--secondary"
   }, "Cancel"), /*#__PURE__*/React.createElement("button", {
     type: "button",
-    onClick: function onClick(e) {
-      e.preventDefault();
-      handleCalendarToggle();
-      setFromDate(new Date(startXDays));
-      setToDate(new Date(endXDays));
-    },
+    onClick: handleApply,
     className: "filter-calendar-popover__btn filter-calendar-popover__btn--primary"
   }, "Apply"))));
 }
@@ -36234,6 +36518,11 @@ function StickyPageTitle(_ref) {
     setToDate = _ref.setToDate,
     previousPeriod = _ref.previousPeriod,
     previousPeriod2 = _ref.previousPeriod2,
+    _ref$compareRange = _ref.compareRange,
+    compareRange = _ref$compareRange === void 0 ? 0 : _ref$compareRange,
+    setCompareRange = _ref.setCompareRange,
+    setCompareWindowStart = _ref.setCompareWindowStart,
+    setCompareWindowEnd = _ref.setCompareWindowEnd,
     children = _ref.children,
     _ref$showInfoButton = _ref.showInfoButton,
     showInfoButton = _ref$showInfoButton === void 0 ? false : _ref$showInfoButton,
@@ -36246,7 +36535,6 @@ function StickyPageTitle(_ref) {
       document.querySelector(".infoHeader").classList.remove("sticky");
     }
   });
-  console.log("Children in StickyPageTitle:", children);
   function openSideCart() {
     document.querySelector(".sideCart").classList.add("open");
   }
@@ -36271,7 +36559,10 @@ function StickyPageTitle(_ref) {
     }, "i")), numberofDays ? /*#__PURE__*/React.createElement(_Filter_index_js__WEBPACK_IMPORTED_MODULE_0__["default"], {
       numberOfDays: getLastDays,
       setNumberOfDays: numberofDays,
-      compareRange: 0,
+      compareRange: compareRange,
+      setCompareRange: setCompareRange,
+      setCompareWindowStart: setCompareWindowStart,
+      setCompareWindowEnd: setCompareWindowEnd,
       date: {
         start: fromDate !== null && fromDate !== void 0 ? fromDate : new Date(Date.now() - getLastDays * 24 * 60 * 60 * 1000),
         end: toDate !== null && toDate !== void 0 ? toDate : new Date(Date.now()),
@@ -40150,10 +40441,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../API/api */ "./src/API/api.js");
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
-/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
-/* harmony import */ var _Components_Tabel_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Components/Tabel/index.js */ "./src/Components/Tabel/index.js");
-/* harmony import */ var _CookiesDashboard_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./CookiesDashboard.css */ "./src/Pages/Dashboard/CookiesDashboard.css");
+/* harmony import */ var _components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Filter/filterDatePresets.js */ "./src/components/Filter/filterDatePresets.js");
+/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
+/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
+/* harmony import */ var _Components_Tabel_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Components/Tabel/index.js */ "./src/Components/Tabel/index.js");
+/* harmony import */ var _CookiesDashboard_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./CookiesDashboard.css */ "./src/Pages/Dashboard/CookiesDashboard.css");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
@@ -40169,6 +40461,7 @@ var _React = React,
   useEffect = _React.useEffect;
 
 var useParams = window.ReactRouterDOM.useParams;
+
 
 
 
@@ -40205,7 +40498,8 @@ function CookiesDashboard() {
   var settings = JSON.parse(localStorage.getItem("settings")) || {
     dateRange: 30
   };
-  var _useState5 = useState(localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30),
+  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+  var _useState5 = useState(initialLastDays),
     _useState6 = _slicedToArray(_useState5, 2),
     getLastDays = _useState6[0],
     setLastDays = _useState6[1];
@@ -40214,22 +40508,36 @@ function CookiesDashboard() {
     domainFilter = _useState8[0],
     setDomainFilter = _useState8[1];
   var today = new Date();
-  var _useState9 = useState(new Date(new Date().setDate(today.getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange))).toISOString().split("T")[0]),
+  var _useState9 = useState(new Date(new Date().setDate(today.getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange)))),
     _useState0 = _slicedToArray(_useState9, 2),
     fromDate = _useState0[0],
     setFromDate = _useState0[1];
-  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]),
+  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - 1))),
     _useState10 = _slicedToArray(_useState1, 2),
     toDate = _useState10[0],
     setToDate = _useState10[1];
-  var previousPeriod = new Date(new Date().setDate(today.getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange)));
-  var previousPeriod2 = new Date(new Date().setDate(today.getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange) * 2));
+  var _useState11 = useState(0),
+    _useState12 = _slicedToArray(_useState11, 2),
+    compareRange = _useState12[0],
+    setCompareRange = _useState12[1];
+  var _useState13 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange))), new Date(new Date().setDate(new Date().getDate() - 1))).start;
+    }),
+    _useState14 = _slicedToArray(_useState13, 2),
+    previousPeriod = _useState14[0],
+    setPreviousPeriod = _useState14[1];
+  var _useState15 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange))), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+    }),
+    _useState16 = _slicedToArray(_useState15, 2),
+    previousPeriod2 = _useState16[0],
+    setPreviousPeriod2 = _useState16[1];
   useEffect(function () {
     var cancelled = false;
     var domainsHeader = domainFilter === "Select a Domain" || domainFilter == null ? "combined view" : domainFilter;
     _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers.Domains = domainsHeader;
-    _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers.FromDate = fromDate;
-    _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers.ToDate = toDate;
+    _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
+    _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers.ToDate = toDate.toISOString().split("T")[0];
     var url = _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.url;
     var method = _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.method;
     var headers = _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers;
@@ -40267,7 +40575,11 @@ function CookiesDashboard() {
     setFromDate: setFromDate,
     setToDate: setToDate,
     previousPeriod: previousPeriod,
-    previousPeriod2: previousPeriod2
+    previousPeriod2: previousPeriod2,
+    compareRange: compareRange,
+    setCompareRange: setCompareRange,
+    setCompareWindowStart: setPreviousPeriod,
+    setCompareWindowEnd: setPreviousPeriod2
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content cookies-dashboard"
   }, loading ? /*#__PURE__*/React.createElement("p", {
@@ -40276,7 +40588,7 @@ function CookiesDashboard() {
     className: "cookies-dashboard__toolbar"
   }, /*#__PURE__*/React.createElement("p", {
     className: "cookies-dashboard__toolbar-label"
-  }, "Domain scope"), /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, "Domain scope"), /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
     defaultValue: domainFilter === "Select a Domain" ? "combined view" : domainFilter,
     items: domainItems,
     onChange: function onChange(e) {
@@ -40347,16 +40659,16 @@ function CookiesDashboard() {
       className: "cookies-section__title"
     }, "Overview"), /*#__PURE__*/React.createElement("div", {
       className: "cookies-stats"
-    }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
       type: "First-party cookies",
       totalNumber: domainData.firstPartyCookies
-    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
       type: "Third-party cookies",
       totalNumber: domainData.thirdPartyCookies
-    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
       type: "Pre-consent cookies",
       totalNumber: domainData.preConsent
-    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
       type: "Post-consent cookies",
       totalNumber: domainData.postConsent
     }))), /*#__PURE__*/React.createElement("div", {
@@ -40365,7 +40677,7 @@ function CookiesDashboard() {
       className: "cookies-section__title"
     }, "Cookie inventory"), /*#__PURE__*/React.createElement("div", {
       className: "cookies-table-wrap"
-    }, /*#__PURE__*/React.createElement(_Components_Tabel_index_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    }, /*#__PURE__*/React.createElement(_Components_Tabel_index_js__WEBPACK_IMPORTED_MODULE_5__["default"], {
       data: rows,
       headers: ["Cookie", "first- / third-party", "Domain", "First Seen", "Last Seen", "Seen Post Consent", "Seen Pre Consent"]
     })))));
@@ -40397,14 +40709,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Crawler__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Components/Crawler */ "./src/Components/Crawler/index.js");
 /* harmony import */ var _Components_Charts_Line__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Components/Charts/Line */ "./src/Components/Charts/Line/index.js");
 /* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
-/* harmony import */ var _components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../components/AuditSnapshotCard/AuditSnapshotCard.js */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.js");
-/* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
-/* harmony import */ var _Components_Charts_Pie_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../Components/Charts/Pie/index.js */ "./src/Components/Charts/Pie/index.js");
-/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
-/* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
+/* harmony import */ var _components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../components/Filter/filterDatePresets.js */ "./src/components/Filter/filterDatePresets.js");
+/* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
+/* harmony import */ var _components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../components/AuditSnapshotCard/AuditSnapshotCard.js */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.js");
+/* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
+/* harmony import */ var _Components_Charts_Pie_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../Components/Charts/Pie/index.js */ "./src/Components/Charts/Pie/index.js");
+/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
+/* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -40443,6 +40756,7 @@ var Link = window.ReactRouterDOM.Link;
 
 
 
+
 var punycode = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 function Dashboard(props) {
   var _jsData$Total, _jsData$JS, _jsData$WP, _activeData$activeUse, _activeData$changeRat, _activeData$relativeD, _activeData$changeRat2, _activeData$relativeD2, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da;
@@ -40455,11 +40769,9 @@ function Dashboard(props) {
     _useContext4 = _slicedToArray(_useContext3, 2),
     organisation = _useContext4[0],
     setOrganisation = _useContext4[1];
-  var previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
-  var previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
   var subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
   var userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
-  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_17__["default"].DemoMode),
+  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_18__["default"].DemoMode),
     _useState2 = _slicedToArray(_useState, 2),
     demoMode = _useState2[0],
     setDemoMode = _useState2[1];
@@ -40490,12 +40802,13 @@ function Dashboard(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     activeDataCountry = _useState8[0],
     setactiveDataCountry = _useState8[1];
-  var _useState9 = useState(localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30),
+  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+  var _useState9 = useState(initialLastDays),
     _useState0 = _slicedToArray(_useState9, 2),
     getLastDays = _useState0[0],
     setLastDays = _useState0[1];
   var today = new Date();
-  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - getLastDays))),
+  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - initialLastDays))),
     _useState10 = _slicedToArray(_useState1, 2),
     fromDate = _useState10[0],
     setFromDate = _useState10[1];
@@ -40503,18 +40816,34 @@ function Dashboard(props) {
     _useState12 = _slicedToArray(_useState11, 2),
     toDate = _useState12[0],
     setToDate = _useState12[1];
-  var _useState13 = useState(null),
+  var _useState13 = useState(0),
     _useState14 = _slicedToArray(_useState13, 2),
-    observedCookies = _useState14[0],
-    setObservedCookies = _useState14[1];
-  var _useState15 = useState(false),
+    compareRange = _useState14[0],
+    setCompareRange = _useState14[1];
+  var _useState15 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_11__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
+    }),
     _useState16 = _slicedToArray(_useState15, 2),
-    loading = _useState16[0],
-    setLoading = _useState16[1];
-  var _useState17 = useState(false),
+    previousPeriod = _useState16[0],
+    setPreviousPeriod = _useState16[1];
+  var _useState17 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_11__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+    }),
     _useState18 = _slicedToArray(_useState17, 2),
-    loadingCountry = _useState18[0],
-    setLoadingCountry = _useState18[1];
+    previousPeriod2 = _useState18[0],
+    setPreviousPeriod2 = _useState18[1];
+  var _useState19 = useState(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    observedCookies = _useState20[0],
+    setObservedCookies = _useState20[1];
+  var _useState21 = useState(false),
+    _useState22 = _slicedToArray(_useState21, 2),
+    loading = _useState22[0],
+    setLoading = _useState22[1];
+  var _useState23 = useState(false),
+    _useState24 = _slicedToArray(_useState23, 2),
+    loadingCountry = _useState24[0],
+    setLoadingCountry = _useState24[1];
   var dashboardView = props.dashboardView;
   var url = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.url;
   var method = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.method;
@@ -40551,15 +40880,15 @@ function Dashboard(props) {
     if (slice == null || _typeof(slice) !== "object") return null;
     return slice;
   }, [activeData, timeToDecision]);
-  var _useState19 = useState(null),
-    _useState20 = _slicedToArray(_useState19, 2),
-    liveViewData = _useState20[0],
-    setLiveViewData = _useState20[1];
+  var _useState25 = useState(null),
+    _useState26 = _slicedToArray(_useState25, 2),
+    liveViewData = _useState26[0],
+    setLiveViewData = _useState26[1];
   var onLiveDataChange = useCallback(function (data) {
     setLiveViewData(data);
   }, []);
   useEffect(function () {
-    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_17__["default"].onDemoModeChange(setDemoMode);
+    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_18__["default"].onDemoModeChange(setDemoMode);
     return unsubscribe; // Clean up on unmount
   }, []);
   useEffect(function () {
@@ -40669,7 +40998,11 @@ function Dashboard(props) {
     setFromDate: setFromDate,
     setToDate: setToDate,
     previousPeriod: previousPeriod,
-    previousPeriod2: previousPeriod2
+    previousPeriod2: previousPeriod2,
+    compareRange: compareRange,
+    setCompareRange: setCompareRange,
+    setCompareWindowStart: setPreviousPeriod,
+    setCompareWindowEnd: setPreviousPeriod2
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content"
   }, organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle ? /*#__PURE__*/React.createElement("div", {
@@ -40679,19 +41012,19 @@ function Dashboard(props) {
       gap: "10px",
       marginBottom: "20px"
     }
-  }, jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }, jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_17__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: (_jsData$Total = jsData.Total) === null || _jsData$Total === void 0 ? void 0 : _jsData$Total.toLocaleString("de-DE"),
     type: "Websites"
-  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_17__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: (jsData === null || jsData === void 0 || (_jsData$JS = jsData.JS) === null || _jsData$JS === void 0 ? void 0 : _jsData$JS.toLocaleString("de-DE")) + "%",
     type: "JavaScript"
-  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_16__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_17__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: (jsData === null || jsData === void 0 || (_jsData$WP = jsData.WP) === null || _jsData$WP === void 0 ? void 0 : _jsData$WP.toLocaleString("de-DE")) + "%",
     type: "WordPress"
-  }))) : null, id ? /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  }))) : null, id ? /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_13__["default"], {
     platformId: id,
     handle: handle,
     currentDomain: currentDomain,
@@ -40707,14 +41040,14 @@ function Dashboard(props) {
       gap: "10px",
       marginBottom: "20px"
     }
-  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: activeData,
     activeUsers: activeData === null || activeData === void 0 || (_activeData$activeUse = activeData.activeUsers) === null || _activeData$activeUse === void 0 ? void 0 : _activeData$activeUse.toLocaleString("de-DE"),
     type: "Stored consent decisions",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     kpi: true,
     styleType: "small",
     change: {
@@ -40727,7 +41060,7 @@ function Dashboard(props) {
     type: "Consent acceptance",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     kpi: true,
     change: {
       change: activeData === null || activeData === void 0 || (_activeData$changeRat2 = activeData.changeRate) === null || _activeData$changeRat2 === void 0 ? void 0 : _activeData$changeRat2.declined
@@ -40745,7 +41078,7 @@ function Dashboard(props) {
     type: "Essential-only rate",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     explainer: {
       exist: true,
       title: "EU based users",
@@ -40757,7 +41090,7 @@ function Dashboard(props) {
     type: "EU-based users",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     explainer: {
       exist: true,
       title: "Non-EU based users",
@@ -40769,7 +41102,7 @@ function Dashboard(props) {
     type: "Non-EU-based users",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     explainer: {
       exist: true,
       title: "Detected (pre-consent) cookies",
@@ -40780,7 +41113,7 @@ function Dashboard(props) {
     type: "Detected (pre-consent)",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     explainer: {
       exist: true,
@@ -40791,7 +41124,7 @@ function Dashboard(props) {
     type: "Detected (post-consent)",
     fromDate: fromDate,
     toDate: toDate
-  })), hasTimeToDecision ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
+  })), hasTimeToDecision ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_19__["default"], {
     type: "timeToDecision",
     items: ["global", "eu", "noneEU"],
     labels: ["Global", "EU", "Non-EU"],
@@ -40804,7 +41137,7 @@ function Dashboard(props) {
     style: {
       marginTop: "20px"
     }
-  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
     explainer: {
@@ -40825,7 +41158,7 @@ function Dashboard(props) {
       "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
       "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
     }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
     explainer: {
@@ -40846,7 +41179,7 @@ function Dashboard(props) {
       "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
       "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
     }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
     explainer: {
@@ -40867,7 +41200,7 @@ function Dashboard(props) {
       "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
       "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
     }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
     explainer: {
@@ -40886,7 +41219,7 @@ function Dashboard(props) {
       "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
       "deviceType": timeToDecisionSlice.deviceType
     }
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
     explainer: {
@@ -40980,11 +41313,11 @@ function Dashboard(props) {
                } */
   }), /*#__PURE__*/React.createElement("div", {
     className: ["widget no-padding"]
-  }, /*#__PURE__*/React.createElement(_components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_11__.LiveView, {
+  }, /*#__PURE__*/React.createElement(_components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_12__.LiveView, {
     currentDomain: handle ? handle : currentDomain,
     demoMode: demoMode,
     onLiveDataChange: onLiveDataChange
-  })))), /*#__PURE__*/React.createElement(_Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_13__.PremiumTier, {
+  })))), /*#__PURE__*/React.createElement(_Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_14__.PremiumTier, {
     loading: loading,
     activeData: activeData,
     fromDate: fromDate,
@@ -41015,10 +41348,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
 /* harmony import */ var _Components_NotAllowed_NotAllowed__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Components/NotAllowed/NotAllowed */ "./src/Components/NotAllowed/NotAllowed.js");
 /* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
-/* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
-/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
-/* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
+/* harmony import */ var _components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../components/Filter/filterDatePresets.js */ "./src/components/Filter/filterDatePresets.js");
+/* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
+/* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
+/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
+/* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -41035,6 +41369,7 @@ var _React = React,
   useRef = _React.useRef,
   useContext = _React.useContext,
   useMemo = _React.useMemo;
+
 
 
 
@@ -41075,11 +41410,12 @@ function DomainDashbord(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     loadingCountry = _useState8[0],
     setLoadingCountry = _useState8[1];
-  var _useState9 = useState(localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30),
+  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+  var _useState9 = useState(initialLastDays),
     _useState0 = _slicedToArray(_useState9, 2),
     getLastDays = _useState0[0],
     setLastDays = _useState0[1];
-  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - getLastDays))),
+  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - initialLastDays))),
     _useState10 = _slicedToArray(_useState1, 2),
     fromDate = _useState10[0],
     setFromDate = _useState10[1];
@@ -41087,16 +41423,30 @@ function DomainDashbord(props) {
     _useState12 = _slicedToArray(_useState11, 2),
     toDate = _useState12[0],
     setToDate = _useState12[1];
-  var previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
-  var previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
-  var _useState13 = useState(null),
+  var _useState13 = useState(0),
     _useState14 = _slicedToArray(_useState13, 2),
-    observedCookies = _useState14[0],
-    setObservedCookies = _useState14[1];
-  var _useState15 = useState("global"),
+    compareRange = _useState14[0],
+    setCompareRange = _useState14[1];
+  var _useState15 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_10__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
+    }),
     _useState16 = _slicedToArray(_useState15, 2),
-    timeToDecision = _useState16[0],
-    setTimeToDecision = _useState16[1];
+    previousPeriod = _useState16[0],
+    setPreviousPeriod = _useState16[1];
+  var _useState17 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_10__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+    }),
+    _useState18 = _slicedToArray(_useState17, 2),
+    previousPeriod2 = _useState18[0],
+    setPreviousPeriod2 = _useState18[1];
+  var _useState19 = useState(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    observedCookies = _useState20[0],
+    setObservedCookies = _useState20[1];
+  var _useState21 = useState("global"),
+    _useState22 = _slicedToArray(_useState21, 2),
+    timeToDecision = _useState22[0],
+    setTimeToDecision = _useState22[1];
   var url = _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].getInteractions.url;
   var method = _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].getInteractions.method;
   var header = _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].getInteractions.headers;
@@ -41186,7 +41536,11 @@ function DomainDashbord(props) {
     setFromDate: setFromDate,
     setToDate: setToDate,
     previousPeriod: previousPeriod,
-    previousPeriod2: previousPeriod2
+    previousPeriod2: previousPeriod2,
+    compareRange: compareRange,
+    setCompareRange: setCompareRange,
+    setCompareWindowStart: setPreviousPeriod,
+    setCompareWindowEnd: setPreviousPeriod2
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content"
   }, activeData != null ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
@@ -41279,7 +41633,7 @@ function DomainDashbord(props) {
     type: "Detected (post-consent)",
     fromDate: fromDate,
     toDate: toDate
-  })), hasTimeToDecision ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  })), hasTimeToDecision ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_13__["default"], {
     type: "timeToDecision",
     items: ["global", "eu", "noneEU"],
     labels: ["Global", "EU", "Non-EU"],
@@ -41468,10 +41822,10 @@ function DomainDashbord(props) {
                } */
   }), /*#__PURE__*/React.createElement("div", {
     className: ["widget no-padding"]
-  }, /*#__PURE__*/React.createElement(_components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_11__.LiveView, {
+  }, /*#__PURE__*/React.createElement(_components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_12__.LiveView, {
     currentDomain: punycode.toUnicode(handle),
     demoMode: demoMode
-  })))), /*#__PURE__*/React.createElement(_Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_13__.PremiumTier, {
+  })))), /*#__PURE__*/React.createElement(_Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_14__.PremiumTier, {
     loading: loading,
     activeData: activeData,
     fromDate: fromDate,
@@ -42186,14 +42540,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Reports__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Reports */ "./src/Pages/Reports/Reports.js");
-/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
-/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
-/* harmony import */ var _AuditReports_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./AuditReports.css */ "./src/Pages/Reports/AuditReport/AuditReports.css");
-/* harmony import */ var _Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/auditReportsStorage */ "./src/Functions/auditReportsStorage.js");
-/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../components/Filter/filterDatePresets.js */ "./src/components/Filter/filterDatePresets.js");
+/* harmony import */ var _Reports__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Reports */ "./src/Pages/Reports/Reports.js");
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
+/* harmony import */ var _AuditReports_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./AuditReports.css */ "./src/Pages/Reports/AuditReport/AuditReports.css");
+/* harmony import */ var _Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../Functions/auditReportsStorage */ "./src/Functions/auditReportsStorage.js");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
@@ -42215,6 +42570,7 @@ var _React = React,
   useEffect = _React.useEffect,
   useMemo = _React.useMemo,
   useContext = _React.useContext;
+
 
 
 
@@ -42265,15 +42621,15 @@ function toYmd(d) {
 function AuditReport() {
   var _settings$dateRange, _API$id, _API$id2, _API$id3;
   document.title = "Audit reports | Intastellar Consents | CMP";
-  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_3__.DomainContext),
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_4__.DomainContext),
     _useContext2 = _slicedToArray(_useContext, 2),
     currentDomain = _useContext2[0],
     setGlobalDomain = _useContext2[1];
   var _useParams = useParams(),
     id = _useParams.id,
     handle = _useParams.handle;
-  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_9__.useSyncDomainFromRoute)(handle, setGlobalDomain);
-  var orgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getOrganisation();
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_10__.useSyncDomainFromRoute)(handle, setGlobalDomain);
+  var orgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_6__["default"].getOrganisation();
   var settings = function () {
     try {
       return JSON.parse(localStorage.getItem("settings")) || {
@@ -42286,7 +42642,8 @@ function AuditReport() {
     }
   }();
   var today = new Date();
-  var _useState = useState(localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30),
+  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+  var _useState = useState(initialLastDays),
     _useState2 = _slicedToArray(_useState, 2),
     getLastDays = _useState2[0],
     setLastDays = _useState2[1];
@@ -42302,34 +42659,50 @@ function AuditReport() {
     _useState8 = _slicedToArray(_useState7, 2),
     activeData = _useState8[0],
     setActiveData = _useState8[1];
-  var previousPeriod = new Date(new Date().setDate(today.getDate() - getLastDays));
-  var previousPeriod2 = new Date(new Date().setDate(today.getDate() - getLastDays * 2));
-  var _useState9 = useState(""),
+  var _useState9 = useState(0),
     _useState0 = _slicedToArray(_useState9, 2),
-    search = _useState0[0],
-    setSearch = _useState0[1];
-  var _useState1 = useState([]),
+    compareRange = _useState0[0],
+    setCompareRange = _useState0[1];
+  var _useState1 = useState(function () {
+      var _settings$dateRange2;
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - ((_settings$dateRange2 = settings === null || settings === void 0 ? void 0 : settings.dateRange) !== null && _settings$dateRange2 !== void 0 ? _settings$dateRange2 : 30))), new Date(new Date().setDate(new Date().getDate() - 1))).start;
+    }),
     _useState10 = _slicedToArray(_useState1, 2),
-    reports = _useState10[0],
-    setReports = _useState10[1];
-  var _useState11 = useState(false),
+    previousPeriod = _useState10[0],
+    setPreviousPeriod = _useState10[1];
+  var _useState11 = useState(function () {
+      var _settings$dateRange3;
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - ((_settings$dateRange3 = settings === null || settings === void 0 ? void 0 : settings.dateRange) !== null && _settings$dateRange3 !== void 0 ? _settings$dateRange3 : 30))), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+    }),
     _useState12 = _slicedToArray(_useState11, 2),
-    generating = _useState12[0],
-    setGenerating = _useState12[1];
-  var _useState13 = useState(null),
+    previousPeriod2 = _useState12[0],
+    setPreviousPeriod2 = _useState12[1];
+  var _useState13 = useState(""),
     _useState14 = _slicedToArray(_useState13, 2),
-    regeneratingId = _useState14[0],
-    setRegeneratingId = _useState14[1];
-  var url = (_API$id = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getInteractions) === null || _API$id === void 0 ? void 0 : _API$id.url;
-  var method = (_API$id2 = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id]) === null || _API$id2 === void 0 || (_API$id2 = _API$id2.getInteractions) === null || _API$id2 === void 0 ? void 0 : _API$id2.method;
-  var header = (_API$id3 = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id]) === null || _API$id3 === void 0 || (_API$id3 = _API$id3.getInteractions) === null || _API$id3 === void 0 ? void 0 : _API$id3.headers;
+    search = _useState14[0],
+    setSearch = _useState14[1];
+  var _useState15 = useState([]),
+    _useState16 = _slicedToArray(_useState15, 2),
+    reports = _useState16[0],
+    setReports = _useState16[1];
+  var _useState17 = useState(false),
+    _useState18 = _slicedToArray(_useState17, 2),
+    generating = _useState18[0],
+    setGenerating = _useState18[1];
+  var _useState19 = useState(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    regeneratingId = _useState20[0],
+    setRegeneratingId = _useState20[1];
+  var url = (_API$id = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getInteractions) === null || _API$id === void 0 ? void 0 : _API$id.url;
+  var method = (_API$id2 = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) === null || _API$id2 === void 0 || (_API$id2 = _API$id2.getInteractions) === null || _API$id2 === void 0 ? void 0 : _API$id2.method;
+  var header = (_API$id3 = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) === null || _API$id3 === void 0 || (_API$id3 = _API$id3.getInteractions) === null || _API$id3 === void 0 ? void 0 : _API$id3.headers;
   var combinedView = !currentDomain || currentDomain === "combined view";
   useEffect(function () {
     if (orgId == null || combinedView) {
       setReports([]);
       return;
     }
-    setReports((0,_Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_8__.loadAuditReportIndex)(orgId, currentDomain));
+    setReports((0,_Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_9__.loadAuditReportIndex)(orgId, currentDomain));
   }, [orgId, currentDomain, combinedView]);
   var filteredReports = useMemo(function () {
     var q = search.trim().toLowerCase();
@@ -42349,18 +42722,18 @@ function AuditReport() {
       return _regenerator().w(function (_context) {
         while (1) switch (_context.p = _context.n) {
           case 0:
-            if ((_API$id4 = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id]) !== null && _API$id4 !== void 0 && _API$id4.exportPDF) {
+            if ((_API$id4 = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) !== null && _API$id4 !== void 0 && _API$id4.exportPDF) {
               _context.n = 1;
               break;
             }
             throw new Error("Export not configured");
           case 1:
-            _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id].exportPDF.headers.FromDate = fromYmd;
-            _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id].exportPDF.headers.ToDate = toYmd;
+            _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].exportPDF.headers.FromDate = fromYmd;
+            _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].exportPDF.headers.ToDate = toYmd;
             _context.n = 2;
-            return fetch(_API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id].exportPDF.url, {
-              method: _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id].exportPDF.method,
-              headers: _objectSpread(_objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id].exportPDF.headers), {}, {
+            return fetch(_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].exportPDF.url, {
+              method: _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].exportPDF.method,
+              headers: _objectSpread(_objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].exportPDF.headers), {}, {
                 "Content-Type": "application/json"
               }),
               body: JSON.stringify({
@@ -42477,7 +42850,7 @@ function AuditReport() {
               reportType: "portfolio_audit",
               title: "Consent audit \xB7 ".concat(currentDomain)
             };
-            next = (0,_Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_8__.addAuditReportEntry)(orgId, currentDomain, entry);
+            next = (0,_Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_9__.addAuditReportEntry)(orgId, currentDomain, entry);
             setReports(next);
             _context2.n = 7;
             break;
@@ -42546,11 +42919,11 @@ function AuditReport() {
     if (!window.confirm("Remove this entry from your saved list? (The PDF file is not stored on our servers in this version.)")) {
       return;
     }
-    var next = (0,_Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_8__.removeAuditReportEntry)(orgId, currentDomain, entryId);
+    var next = (0,_Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_9__.removeAuditReportEntry)(orgId, currentDomain, entryId);
     setReports(next);
   }
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_0__["default"], {
-    links: _Reports__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
+    links: _Reports__WEBPACK_IMPORTED_MODULE_3__.reportsLinks,
     title: "Reports"
   }), /*#__PURE__*/React.createElement("article", {
     style: {
@@ -42571,7 +42944,11 @@ function AuditReport() {
     setFromDate: setFromDate,
     setToDate: setToDate,
     previousPeriod: previousPeriod,
-    previousPeriod2: previousPeriod2
+    previousPeriod2: previousPeriod2,
+    compareRange: compareRange,
+    setCompareRange: setCompareRange,
+    setCompareWindowStart: setPreviousPeriod,
+    setCompareWindowEnd: setPreviousPeriod2
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content audit-reports-page"
   }, /*#__PURE__*/React.createElement("header", {
@@ -42684,10 +43061,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Compare)
 /* harmony export */ });
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../API/api */ "./src/API/api.js");
-/* harmony import */ var _Functions_fetch__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Functions/fetch */ "./src/Functions/fetch.js");
-/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
-/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/Reports/Style.css");
+/* harmony import */ var _components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/Filter/filterDatePresets.js */ "./src/components/Filter/filterDatePresets.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../API/api */ "./src/API/api.js");
+/* harmony import */ var _Functions_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Functions/fetch */ "./src/Functions/fetch.js");
+/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/Reports/Style.css");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -42711,6 +43089,7 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 var _React = React,
   useState = _React.useState,
   useMemo = _React.useMemo;
+
 
 
 var useParams = window.ReactRouterDOM.useParams;
@@ -42757,18 +43136,17 @@ function Compare(_ref) {
   document.title = "Portfolio Benchmark | Intastellar Consents | CMP";
   var _useParams = useParams(),
     id = _useParams.id;
-  var previousPeriod = new Date(new Date().setDate(new Date().getDate() - 30));
-  var previousPeriod2 = new Date(new Date().setDate(new Date().getDate() - 60));
   var _useState = useState(null),
     _useState2 = _slicedToArray(_useState, 2),
     activeData = _useState2[0],
     setActiveData = _useState2[1];
-  var _useState3 = useState(localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30),
+  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+  var _useState3 = useState(initialLastDays),
     _useState4 = _slicedToArray(_useState3, 2),
     getLastDays = _useState4[0],
     setLastDays = _useState4[1];
   var today = new Date();
-  var _useState5 = useState(new Date(new Date().setDate(today.getDate() - getLastDays))),
+  var _useState5 = useState(new Date(new Date().setDate(today.getDate() - initialLastDays))),
     _useState6 = _slicedToArray(_useState5, 2),
     fromDate = _useState6[0],
     setFromDate = _useState6[1];
@@ -42776,28 +43154,44 @@ function Compare(_ref) {
     _useState8 = _slicedToArray(_useState7, 2),
     toDate = _useState8[0],
     setToDate = _useState8[1];
-  var _useState9 = useState(false),
+  var _useState9 = useState(0),
     _useState0 = _slicedToArray(_useState9, 2),
-    loading = _useState0[0],
-    setLoading = _useState0[1];
-  var _useState1 = useState(false),
+    compareRange = _useState0[0],
+    setCompareRange = _useState0[1];
+  var _useState1 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_1__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
+    }),
     _useState10 = _slicedToArray(_useState1, 2),
-    loadingCountry = _useState10[0],
-    setLoadingCountry = _useState10[1];
-  var _useState11 = useState(false),
+    previousPeriod = _useState10[0],
+    setPreviousPeriod = _useState10[1];
+  var _useState11 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_1__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+    }),
     _useState12 = _slicedToArray(_useState11, 2),
-    loadingExport = _useState12[0],
-    setLoadingExport = _useState12[1];
-  var _useState13 = useState(null),
+    previousPeriod2 = _useState12[0],
+    setPreviousPeriod2 = _useState12[1];
+  var _useState13 = useState(false),
     _useState14 = _slicedToArray(_useState13, 2),
-    comparisonData = _useState14[0],
-    setComparisonData = _useState14[1];
-  var _useState15 = useState(function () {
+    loading = _useState14[0],
+    setLoading = _useState14[1];
+  var _useState15 = useState(false),
+    _useState16 = _slicedToArray(_useState15, 2),
+    loadingCountry = _useState16[0],
+    setLoadingCountry = _useState16[1];
+  var _useState17 = useState(false),
+    _useState18 = _slicedToArray(_useState17, 2),
+    loadingExport = _useState18[0],
+    setLoadingExport = _useState18[1];
+  var _useState19 = useState(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    comparisonData = _useState20[0],
+    setComparisonData = _useState20[1];
+  var _useState21 = useState(function () {
       return Array(SLOT_COUNT).fill("");
     }),
-    _useState16 = _slicedToArray(_useState15, 2),
-    domainSlots = _useState16[0],
-    setDomainSlots = _useState16[1];
+    _useState22 = _slicedToArray(_useState21, 2),
+    domainSlots = _useState22[0],
+    setDomainSlots = _useState22[1];
   var domainList = useMemo(function () {
     return (domains || []).filter(function (d) {
       return (d === null || d === void 0 ? void 0 : d.domain) && d.domain !== "combined view";
@@ -42837,13 +43231,13 @@ function Compare(_ref) {
         while (1) switch (_context.p = _context.n) {
           case 0:
             setLoadingExport(true);
-            _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].exportPDF.headers.FromDate = fromDate.toISOString().split("T")[0];
-            _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].exportPDF.headers.ToDate = toDate.toISOString().split("T")[0];
+            _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].exportPDF.headers.FromDate = fromDate.toISOString().split("T")[0];
+            _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].exportPDF.headers.ToDate = toDate.toISOString().split("T")[0];
             _context.p = 1;
             _context.n = 2;
-            return fetch(_API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].exportPDF.url, {
-              method: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].exportPDF.method,
-              headers: _objectSpread(_objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].exportPDF.headers), {}, {
+            return fetch(_API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].exportPDF.url, {
+              method: _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].exportPDF.method,
+              headers: _objectSpread(_objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].exportPDF.headers), {}, {
                 "Content-Type": "application/json"
               }),
               body: JSON.stringify({
@@ -42907,9 +43301,9 @@ function Compare(_ref) {
   function handleDomainCompare() {
     if (comparisonDomains.length === 0) return;
     setLoading(true);
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].compareDomains.headers.FromDate = fromDate.toISOString().split("T")[0];
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].compareDomains.headers.ToDate = toDate.toISOString().split("T")[0];
-    (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_2__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].compareDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].compareDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].compareDomains.headers, JSON.stringify({
+    _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].compareDomains.headers.FromDate = fromDate.toISOString().split("T")[0];
+    _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].compareDomains.headers.ToDate = toDate.toISOString().split("T")[0];
+    (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].compareDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].compareDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].compareDomains.headers, JSON.stringify({
       domains: comparisonDomains
     })).then(function (data) {
       if (data === "Err_Login_Expired") {
@@ -42926,9 +43320,9 @@ function Compare(_ref) {
       setLoading(false);
     });
   }
-  var url = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.url;
-  var method = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.method;
-  var header = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers;
+  var url = _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].getInteractions.url;
+  var method = _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].getInteractions.method;
+  var header = _API_api__WEBPACK_IMPORTED_MODULE_2__["default"][id].getInteractions.headers;
   var cardCount = comparisonData !== null && comparisonData !== void 0 && comparisonData.length ? Math.min(comparisonData.length, SLOT_COUNT) : 1;
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_0__["default"], {
     loadingUpdated: loading,
@@ -42945,7 +43339,11 @@ function Compare(_ref) {
     setFromDate: setFromDate,
     setToDate: setToDate,
     previousPeriod: previousPeriod,
-    previousPeriod2: previousPeriod2
+    previousPeriod2: previousPeriod2,
+    compareRange: compareRange,
+    setCompareRange: setCompareRange,
+    setCompareWindowStart: setPreviousPeriod,
+    setCompareWindowEnd: setPreviousPeriod2
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content compare-page"
   }, /*#__PURE__*/React.createElement("header", {
@@ -45434,6 +45832,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
 /* harmony import */ var _userConsentsDemo_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./userConsentsDemo.js */ "./src/Pages/UserConsents/userConsentsDemo.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../components/Filter/filterDatePresets.js */ "./src/components/Filter/filterDatePresets.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
@@ -45476,9 +45875,15 @@ var _React = React,
 
 
 
+
 var useParams = window.ReactRouterDOM.useParams;
 var punycode = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 var PAGE_SIZE = 40;
+function consentDateKey(d) {
+  if (d == null) return "";
+  if (d instanceof Date && Number.isFinite(d.getTime())) return d.toISOString().split("T")[0];
+  return String(d).split("T")[0];
+}
 
 /** Parse consent time for sorting (newest first). */
 function consentTimestampMs(row) {
@@ -45499,6 +45904,7 @@ function sortConsentsNewestFirst(rows) {
   });
 }
 function UserConsents(props) {
+  var _settings$dateRange;
   document.title = "Audit log | Intastellar Consents";
   var settings = JSON.parse(localStorage.getItem("settings")) || {
     dateRange: 30
@@ -45517,9 +45923,6 @@ function UserConsents(props) {
   var domainsApiHeader = useMemo(function () {
     return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_14__.toDomainsApiHeader)(listDomainLabel);
   }, [listDomainLabel]);
-  var consentsQueryKey = useMemo(function () {
-    return "".concat(id, "|").concat(domainsApiHeader, "|").concat(fromDate, "|").concat(toDate);
-  }, [id, domainsApiHeader, fromDate, toDate]);
   var _useState = useState(null),
     _useState2 = _slicedToArray(_useState, 2),
     activeData = _useState2[0],
@@ -45541,21 +45944,39 @@ function UserConsents(props) {
     getLastDays = _useState0[0],
     setLastDays = _useState0[1];
   var today = new Date();
-  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange))).toISOString().split("T")[0]),
+  var rangeDays = (_settings$dateRange = settings === null || settings === void 0 ? void 0 : settings.dateRange) !== null && _settings$dateRange !== void 0 ? _settings$dateRange : 30;
+  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - rangeDays))),
     _useState10 = _slicedToArray(_useState1, 2),
     fromDate = _useState10[0],
     setFromDate = _useState10[1];
-  var _useState11 = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]),
+  var _useState11 = useState(new Date(new Date().setDate(today.getDate() - 1))),
     _useState12 = _slicedToArray(_useState11, 2),
     toDate = _useState12[0],
     setToDate = _useState12[1];
-  var previousPeriod = new Date(new Date().setDate(today.getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange)));
-  var previousPeriod2 = new Date(new Date().setDate(today.getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange) * 2));
+  var _useState13 = useState(0),
+    _useState14 = _slicedToArray(_useState13, 2),
+    compareRange = _useState14[0],
+    setCompareRange = _useState14[1];
+  var _useState15 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_15__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - rangeDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
+    }),
+    _useState16 = _slicedToArray(_useState15, 2),
+    previousPeriod = _useState16[0],
+    setPreviousPeriod = _useState16[1];
+  var _useState17 = useState(function () {
+      return (0,_components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_15__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - rangeDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+    }),
+    _useState18 = _slicedToArray(_useState17, 2),
+    previousPeriod2 = _useState18[0],
+    setPreviousPeriod2 = _useState18[1];
+  var consentsQueryKey = useMemo(function () {
+    return "".concat(id, "|").concat(domainsApiHeader, "|").concat(consentDateKey(fromDate), "|").concat(consentDateKey(toDate));
+  }, [id, domainsApiHeader, fromDate, toDate]);
   _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.headers.Domains = domainsApiHeader;
   _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.headers.Offset = "0";
   _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.headers.Limit = String(PAGE_SIZE);
-  _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.headers.FromDate = fromDate;
-  _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.headers.ToDate = toDate;
+  _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.headers.FromDate = consentDateKey(fromDate);
+  _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.headers.ToDate = consentDateKey(toDate);
   _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.headers.SortOrder = "desc";
   var url = _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.url;
   var method = _API_api_js__WEBPACK_IMPORTED_MODULE_5__["default"][id].getDomainsUrl.method;
@@ -45644,8 +46065,8 @@ function UserConsents(props) {
             Domains: domainsApiHeader,
             Offset: String(offset),
             Limit: String(PAGE_SIZE),
-            FromDate: fromDate,
-            ToDate: toDate,
+            FromDate: consentDateKey(fromDate),
+            ToDate: consentDateKey(toDate),
             SortOrder: "desc"
           });
           _context.n = 3;
@@ -45761,7 +46182,11 @@ function UserConsents(props) {
     setFromDate: setFromDate,
     setToDate: setToDate,
     previousPeriod: previousPeriod,
-    previousPeriod2: previousPeriod2
+    previousPeriod2: previousPeriod2,
+    compareRange: compareRange,
+    setCompareRange: setCompareRange,
+    setCompareWindowStart: setPreviousPeriod,
+    setCompareWindowEnd: setPreviousPeriod2
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content"
   }, /*#__PURE__*/React.createElement("section", {
@@ -47980,6 +48405,193 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
+
+/***/ }),
+
+/***/ "./src/components/Filter/filterDatePresets.js":
+/*!****************************************************!*\
+  !*** ./src/components/Filter/filterDatePresets.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   addDays: () => (/* binding */ addDays),
+/* harmony export */   computeCompareWindow: () => (/* binding */ computeCompareWindow),
+/* harmony export */   defaultCompareWindowForPrimary: () => (/* binding */ defaultCompareWindowForPrimary),
+/* harmony export */   inclusiveDayCount: () => (/* binding */ inclusiveDayCount),
+/* harmony export */   mondayOfWeekContaining: () => (/* binding */ mondayOfWeekContaining),
+/* harmony export */   parseYmdLocal: () => (/* binding */ parseYmdLocal),
+/* harmony export */   rangeLastWeek: () => (/* binding */ rangeLastWeek),
+/* harmony export */   rangeQuarterToDate: () => (/* binding */ rangeQuarterToDate),
+/* harmony export */   rangeThisWeek: () => (/* binding */ rangeThisWeek),
+/* harmony export */   rangeThisYearToDate: () => (/* binding */ rangeThisYearToDate),
+/* harmony export */   startOfQuarter: () => (/* binding */ startOfQuarter),
+/* harmony export */   yesterdayLocal: () => (/* binding */ yesterdayLocal),
+/* harmony export */   ymdLocal: () => (/* binding */ ymdLocal)
+/* harmony export */ });
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+/** Local calendar date helpers for dashboard date filter (no UTC midnight shifts). */
+
+function ymdLocal(d) {
+  var x = d instanceof Date ? d : new Date(d);
+  if (!Number.isFinite(x.getTime())) return "";
+  return "".concat(x.getFullYear(), "-").concat(String(x.getMonth() + 1).padStart(2, "0"), "-").concat(String(x.getDate()).padStart(2, "0"));
+}
+function parseYmdLocal(s) {
+  if (s == null || s === "") return new Date(NaN);
+  var part = String(s).split("T")[0];
+  var _part$split$map = part.split("-").map(Number),
+    _part$split$map2 = _slicedToArray(_part$split$map, 3),
+    y = _part$split$map2[0],
+    m = _part$split$map2[1],
+    d = _part$split$map2[2];
+  if (!y || !m || !d) return new Date(NaN);
+  return new Date(y, m - 1, d);
+}
+function addDays(d, n) {
+  var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() + n);
+  return x;
+}
+
+/** Inclusive day count from start to end (local dates). */
+function inclusiveDayCount(start, end) {
+  var a = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  var b = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  return Math.round((b - a) / (24 * 60 * 60 * 1000)) + 1;
+}
+
+/** Monday of the week containing `d` (local). */
+function mondayOfWeekContaining(d) {
+  var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  var dow = (x.getDay() + 6) % 7;
+  return addDays(x, -dow);
+}
+
+/** "Yesterday" for analytics (last complete day). */
+function yesterdayLocal() {
+  var t = new Date();
+  return addDays(new Date(t.getFullYear(), t.getMonth(), t.getDate()), -1);
+}
+
+/** Last calendar week Mon–Sun, capped end at `yesterday` if that week is still partial. */
+function rangeLastWeek() {
+  var y = yesterdayLocal();
+  var thisMon = mondayOfWeekContaining(y);
+  var start = addDays(thisMon, -7);
+  var endRaw = addDays(start, 6);
+  var end = endRaw > y ? y : endRaw;
+  return {
+    start: start,
+    end: end
+  };
+}
+
+/** This calendar week Mon–`yesterday`. */
+function rangeThisWeek() {
+  var y = yesterdayLocal();
+  var start = mondayOfWeekContaining(y);
+  var end = y < start ? start : y;
+  return {
+    start: start,
+    end: end
+  };
+}
+
+/** Quarter containing `d`: Jan–Mar, Apr–Jun, Jul–Sep, Oct–Dec. */
+function startOfQuarter(d) {
+  var m = d.getMonth();
+  var q = Math.floor(m / 3);
+  return new Date(d.getFullYear(), q * 3, 1);
+}
+
+/** Quarter to date through yesterday. */
+function rangeQuarterToDate() {
+  var y = yesterdayLocal();
+  var start = startOfQuarter(y);
+  return {
+    start: start,
+    end: y
+  };
+}
+
+/** Jan 1 this year through yesterday. */
+function rangeThisYearToDate() {
+  var y = yesterdayLocal();
+  var start = new Date(y.getFullYear(), 0, 1);
+  return {
+    start: start,
+    end: y
+  };
+}
+
+/**
+ * Comparison window for KPI / UI (chronological: start ≤ end).
+ * @param {Date} primaryStart
+ * @param {Date} primaryEnd
+ * @param {"Previous period"|"Preceding period"|"Previous quarter"|"Last 180 days"|"Same period last year"} mode
+ * @param {number|string} [compareHint] legacy span from preset buttons
+ */
+function computeCompareWindow(primaryStart, primaryEnd, mode, compareHint) {
+  var ps = new Date(primaryStart.getFullYear(), primaryStart.getMonth(), primaryStart.getDate());
+  var pe = new Date(primaryEnd.getFullYear(), primaryEnd.getMonth(), primaryEnd.getDate());
+  var days = Math.max(1, inclusiveDayCount(ps, pe));
+  if (mode === "Same period last year") {
+    var _start = addDays(ps, -365);
+    var _end = addDays(pe, -365);
+    return {
+      start: _start,
+      end: _end
+    };
+  }
+  if (mode === "Previous quarter") {
+    var span = 90;
+    var _end2 = addDays(ps, -1);
+    var _start2 = addDays(_end2, -(span - 1));
+    return {
+      start: _start2,
+      end: _end2
+    };
+  }
+  if (mode === "Last 180 days") {
+    var _span = 180;
+    var _end3 = addDays(ps, -1);
+    var _start3 = addDays(_end3, -(_span - 1));
+    return {
+      start: _start3,
+      end: _end3
+    };
+  }
+  if (mode === "Preceding period") {
+    var prevEnd = addDays(ps, -1);
+    var prevStart = addDays(prevEnd, -(days - 1));
+    var compEnd = addDays(prevStart, -1);
+    var compStart = addDays(compEnd, -(days - 1));
+    return {
+      start: compStart,
+      end: compEnd
+    };
+  }
+
+  // "Previous period" — same length, immediately before primary
+  var end = addDays(ps, -1);
+  var start = addDays(end, -(days - 1));
+  return {
+    start: start,
+    end: end
+  };
+}
+
+/** Default “previous period” window for KPIs when compare mode is off (same length, immediately before primary). */
+function defaultCompareWindowForPrimary(primaryStart, primaryEnd) {
+  return computeCompareWindow(primaryStart, primaryEnd, "Previous period", 0);
+}
 
 /***/ }),
 

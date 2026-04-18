@@ -19,9 +19,16 @@ import {
     consentsDomainFromRoute,
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
+import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
 const useParams = window.ReactRouterDOM.useParams;
 const punycode = require("punycode");
 const PAGE_SIZE = 40;
+
+function consentDateKey(d) {
+    if (d == null) return "";
+    if (d instanceof Date && Number.isFinite(d.getTime())) return d.toISOString().split("T")[0];
+    return String(d).split("T")[0];
+}
 
 /** Parse consent time for sorting (newest first). */
 function consentTimestampMs(row) {
@@ -53,10 +60,6 @@ export default function UserConsents(props) {
         [handle, currentDomain]
     );
     const domainsApiHeader = useMemo(() => toDomainsApiHeader(listDomainLabel), [listDomainLabel]);
-    const consentsQueryKey = useMemo(
-        () => `${id}|${domainsApiHeader}|${fromDate}|${toDate}`,
-        [id, domainsApiHeader, fromDate, toDate]
-    );
 
     const [activeData, setActiveData] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);
@@ -67,17 +70,33 @@ export default function UserConsents(props) {
     const [getLastDays, setLastDays] = useState((localStorage.getItem("settings") != null) ? JSON.parse(localStorage.getItem("settings")).dateRange : 30);
 
     const today = new Date();
-    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - settings?.dateRange)).toISOString().split("T")[0]);
-    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)).toISOString().split("T")[0]);
+    const rangeDays = settings?.dateRange ?? 30;
+    const [fromDate, setFromDate] = useState(new Date(new Date().setDate(today.getDate() - rangeDays)));
+    const [toDate, setToDate] = useState(new Date(new Date().setDate(today.getDate() - 1)));
+    const [compareRange, setCompareRange] = useState(0);
+    const [previousPeriod, setPreviousPeriod] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - rangeDays)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).start
+    );
+    const [previousPeriod2, setPreviousPeriod2] = useState(() =>
+        defaultCompareWindowForPrimary(
+            new Date(new Date().setDate(new Date().getDate() - rangeDays)),
+            new Date(new Date().setDate(new Date().getDate() - 1))
+        ).end
+    );
 
-    const previousPeriod = new Date(new Date().setDate(today.getDate() - settings?.dateRange));
-    const previousPeriod2 = new Date(new Date().setDate(today.getDate() - settings?.dateRange * 2));
+    const consentsQueryKey = useMemo(
+        () => `${id}|${domainsApiHeader}|${consentDateKey(fromDate)}|${consentDateKey(toDate)}`,
+        [id, domainsApiHeader, fromDate, toDate]
+    );
 
     API[id].getDomainsUrl.headers.Domains = domainsApiHeader;
     API[id].getDomainsUrl.headers.Offset = "0";
     API[id].getDomainsUrl.headers.Limit = String(PAGE_SIZE);
-    API[id].getDomainsUrl.headers.FromDate = fromDate;
-    API[id].getDomainsUrl.headers.ToDate = toDate;
+    API[id].getDomainsUrl.headers.FromDate = consentDateKey(fromDate);
+    API[id].getDomainsUrl.headers.ToDate = consentDateKey(toDate);
     API[id].getDomainsUrl.headers.SortOrder = "desc";
 
     const url = API[id].getDomainsUrl.url;
@@ -177,8 +196,8 @@ export default function UserConsents(props) {
                 Domains: domainsApiHeader,
                 Offset: String(offset),
                 Limit: String(PAGE_SIZE),
-                FromDate: fromDate,
-                ToDate: toDate,
+                FromDate: consentDateKey(fromDate),
+                ToDate: consentDateKey(toDate),
                 SortOrder: "desc",
             };
             const res = await fetch(url, { method, headers });
@@ -258,7 +277,7 @@ export default function UserConsents(props) {
         <>
             <SideNav links={reportsLinks} title="Reports" />
             <article style={{ flex: "1"}}>
-                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Audit log" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} />
+                <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Audit log" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
                 <div className="dashboard-content">
                     <section className="filter">
                         {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{
