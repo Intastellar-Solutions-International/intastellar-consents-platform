@@ -52,6 +52,20 @@ function normUtm(s) {
 }
 
 /**
+ * Shorten redundant Capterra UTM fragments in the campaign cell, e.g. utm_Capterra=capterra → Capterra.
+ */
+function simplifyCampaignDisplay(campaignRaw) {
+    let t = String(campaignRaw ?? "").trim();
+    if (!t || t === "—") {
+        return t || "—";
+    }
+    t = t.replace(/\butm_capterra\s*=\s*capterra\b/gi, "Capterra");
+    t = t.replace(/\s*·\s*(?:·\s*)+/g, " · ").replace(/^\s*·\s*|\s*·\s*$/g, "").trim();
+    t = t.replace(/\s{2,}/g, " ");
+    return t === "" ? "—" : t;
+}
+
+/**
  * Human-readable channel for the attribution table (source / medium / referrer heuristics).
  */
 function deriveMarketingChannel(row) {
@@ -66,11 +80,22 @@ function deriveMarketingChannel(row) {
     if (s === "(utm)") return "Marketing (custom parameters)";
     if (campaign.includes("capterra") || s.includes("capterra")) return "Capterra";
 
-    if (s === "fb" || s === "facebook" || s === "meta" || host.includes("facebook.com") || host.includes("fb.com")) {
-        return paidLike || m.includes("social") ? "Facebook Ads" : "Facebook / Meta";
-    }
     if (s.includes("instagram") || host.includes("instagram.com")) {
         return paidLike ? "Instagram Ads" : "Instagram";
+    }
+
+    const isFacebookFamily =
+        s === "fb" ||
+        s === "facebook" ||
+        s === "meta" ||
+        s.includes("facebook") ||
+        host.includes("facebook.com") ||
+        host.includes("fb.com") ||
+        host.includes("m.facebook.com");
+
+    if (isFacebookFamily) {
+        const isPaidFacebook = paidLike;
+        return isPaidFacebook ? "Facebook Ads" : "Facebook (Organic)";
     }
     if (s.includes("google") || s === "google ads" || host.includes("google.")) {
         if (m.includes("cpc") || m.includes("ppc") || m === "paid") return "Google Ads";
@@ -120,11 +145,12 @@ function mapRow(r) {
         r.referrerUrl ??
         r.referrer_url ??
         (r.referrerDomain != null ? String(r.referrerDomain) : "—");
+    const rawCampaign = String(r.utm_campaign ?? r.utmCampaign ?? r.campaign ?? "—");
     const base = {
         referrer: ref === "" || ref == null ? "—" : String(ref),
         utmSource: String(r.utm_source ?? r.utmSource ?? r.source ?? "—"),
         utmMedium: String(r.utm_medium ?? r.utmMedium ?? r.medium ?? "—"),
-        utmCampaign: String(r.utm_campaign ?? r.utmCampaign ?? r.campaign ?? "—"),
+        utmCampaign: simplifyCampaignDisplay(rawCampaign),
         consents: Number(r.consents ?? r.consent_count ?? r.count ?? r.total ?? 0) || 0,
         acceptPct:
             r.acceptRate != null
@@ -137,7 +163,7 @@ function mapRow(r) {
     };
     return {
         ...base,
-        channel: deriveMarketingChannel(base),
+        channel: deriveMarketingChannel({ ...base, utmCampaign: rawCampaign }),
     };
 }
 
