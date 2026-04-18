@@ -1,71 +1,83 @@
-const { useState, useEffect, useRef, useContext } = React;
+const { useEffect, useRef } = React;
 import "./Style.css";
 
-export default function Line({ data, data2, title, fromDate, toDate }) {
-    const dailyData = data?.map((d, i) => {
-        return {
-            "name": (fromDate === toDate) ? new Intl.DateTimeFormat('de-DE', {
-                hour: 'numeric',
-                minute: 'numeric',
-            }).format(new Date(d.date)) : new Intl.DateTimeFormat('de-DE').format(new Date(d.date)),
-            "domain": d.num
-        }
-    })
+function formatXLabel(d, fromDate, toDate) {
+    const t = new Date(d?.date);
+    if (!Number.isFinite(t.getTime())) return "";
+    return fromDate === toDate
+        ? new Intl.DateTimeFormat("de-DE", { hour: "numeric", minute: "numeric" }).format(t)
+        : new Intl.DateTimeFormat("de-DE").format(t);
+}
 
-    const dailyData2 = data2?.map((d, i) => {
+export default function Line({ data, data2, title, fromDate, toDate, compareEnabled = false }) {
+    const chartDomId = useRef(
+        `line-chart-${typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now())}`
+    ).current;
+
+    const series = data ?? [];
+    const compareSeries = data2 ?? series;
+
+    const dailyData = series.map((d) => ({
+        name: formatXLabel(d, fromDate, toDate),
+        domain: Number(d?.num) || 0,
+    }));
+
+    // Same x-axis as current period (day in range); y = aligned baseline count from API previousPeriod
+    const dailyData2 = compareSeries.map((d) => {
+        const prev = d?.previousPeriod;
+        const n = prev != null && prev.num != null ? Number(prev.num) : null;
         return {
-            "name": (fromDate === toDate) ? new Intl.DateTimeFormat('de-DE', {
-                hour: 'numeric',
-                minute: 'numeric',
-            }).format(new Date(d.previousPeriod.date)) : new Intl.DateTimeFormat('de-DE').format(new Date(d.previousPeriod.date)),
-            "domain": d.previousPeriod.num
-        }
-    })
+            name: formatXLabel(d, fromDate, toDate),
+            domain: Number.isFinite(n) ? n : 0,
+        };
+    });
+
+    const hasComparePoints = compareSeries.some(
+        (d) => d?.previousPeriod != null && d.previousPeriod.num != null && Number.isFinite(Number(d.previousPeriod.num))
+    );
 
     useEffect(() => {
-
         anychart.onDocumentReady(function () {
-            // The main JS line charting code will be here.
-            let dataSet = anychart.data.set(dailyData);
-            const mapping = dataSet.mapAs({ x: "name", value: "domain" });
-            if (dataSet.oc != dailyData) {
-                document.getElementById("line-chart").innerHTML = "";
+            const el = document.getElementById(chartDomId);
+            if (el) {
+                el.innerHTML = "";
             }
 
-            let dataSet2 = anychart.data.set(dailyData2);
+            const dataSet = anychart.data.set(dailyData);
+            const mapping = dataSet.mapAs({ x: "name", value: "domain" });
 
-            let chart = anychart.line();
-
+            const chart = anychart.line();
             chart.background().fill("transparent");
-            chart.xAxis().title("Day");
+            chart.xAxis().title(fromDate === toDate ? "Time" : "Day");
             chart.yAxis().title(title);
             chart.tooltip().format(title + ": {%Value}");
             chart.xScale().mode("continuous");
 
-            const series = chart.line(mapping);
-            const series2 = chart.line(dataSet2.mapAs({ x: "name", value: "domain" }));
+            const series1 = chart.line(mapping);
+            series1.name("Current period");
+            series1.normal().stroke("#C09F53");
+            series1.hovered().stroke("#C09F53", 2, "10 5", "round");
+            series1.selected().stroke("#C09F53", 4, "10 5", "round");
 
-            series.name("Current Period");
-            series.normal().stroke("#C09F53");
-            series.hovered().stroke("#C09F53", 2, "10 5", "round");
-            series.selected().stroke("#C09F53", 4, "10 5", "round");
+            if (compareEnabled && hasComparePoints && dailyData2.length > 0) {
+                const dataSet2 = anychart.data.set(dailyData2);
+                const series2 = chart.line(dataSet2.mapAs({ x: "name", value: "domain" }));
+                series2.name("Comparison period");
+                series2.normal().stroke("rgb(220, 209, 154)", 1, "8 4", "round");
+                series2.hovered().stroke("#C09F53", 2, "10 5", "round");
+                series2.selected().stroke("#C09F53", 4, "10 5", "round");
+            }
 
-            series2.name("Previous Period");
-            series2.normal().stroke("rgb(220,209,154)", 1, "10 5", "round");
-            series2.hovered().stroke("#C09F53", 2, "10 5", "round");
-            series2.selected().stroke("#C09F53", 4, "10 5", "round");
-
-            chart.container("line-chart");
-            if (data !== null) {
+            chart.container(chartDomId);
+            if (data != null && dailyData.length > 0) {
                 chart.draw();
             }
         });
-    }, [dailyData, dailyData2]);
+    }, [dailyData, dailyData2, hasComparePoints, compareEnabled, chartDomId, data, fromDate, toDate, title]);
 
     return (
         <div className={"no-padding"}>
-            <div className="chart" id="line-chart">
-            </div>
+            <div className="chart" id={chartDomId} />
         </div>
-    )
+    );
 }

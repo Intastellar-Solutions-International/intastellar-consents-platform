@@ -16,6 +16,15 @@ function formatPeriodLabel(fromDate, toDate) {
     }
 }
 
+function formatCmpArrow(value, unit) {
+    if (value == null || Number.isNaN(Number(value))) return null;
+    const n = Number(value);
+    const arrow = n > 0 ? "\u2191" : n < 0 ? "\u2193" : "\u2194";
+    const body = Math.abs(n).toLocaleString("de-DE", { maximumFractionDigits: 1 });
+    const sign = n > 0 ? "+" : n < 0 ? "\u2212" : "";
+    return `${arrow} ${sign}${body}${unit}`;
+}
+
 /** Derive peak, average, and comparison to embedded previousPeriod (same shape Line chart uses). */
 function summarizeDailySeries(daily) {
     if (!Array.isArray(daily) || daily.length === 0) return null;
@@ -58,6 +67,7 @@ export default function Widget(props) {
     const relativeDrop = (props?.relativeDrop) ? props.relativeDrop : null;
 
     const activeUsers = (props?.activeUsers) ? props.activeUsers : null;
+    const compareOn = Boolean(props.compareOn);
 
     if (props?.styleType == "small"){
         let displayValue = "";
@@ -117,6 +127,38 @@ export default function Widget(props) {
                     ) : null}{" "}
                     {percentage ? <span className="small-widget-percentage">{`${percentage}% accepted`}</span> : null}
                 </h3>
+                {compareOn && (props.comparisonDelta != null || props.comparisonRelative != null) ? (
+                    <div className="small-widget-comparison" aria-label="Comparison vs baseline period">
+                        {props.comparisonDelta != null ? (
+                            <span
+                                className={
+                                    "small-widget-comparison__line small-widget-comparison__line--pp " +
+                                    (Number(props.comparisonDelta) > 0
+                                        ? "is-up"
+                                        : Number(props.comparisonDelta) < 0
+                                          ? "is-down"
+                                          : "is-flat")
+                                }
+                            >
+                                {formatCmpArrow(props.comparisonDelta, "pp")}
+                            </span>
+                        ) : null}
+                        {props.comparisonRelative != null ? (
+                            <span
+                                className={
+                                    "small-widget-comparison__line small-widget-comparison__line--rel " +
+                                    (Number(props.comparisonRelative) > 0
+                                        ? "is-up"
+                                        : Number(props.comparisonRelative) < 0
+                                          ? "is-down"
+                                          : "is-flat")
+                                }
+                            >
+                                {formatCmpArrow(props.comparisonRelative, "%")}
+                            </span>
+                        ) : null}
+                    </div>
+                ) : null}
                 {explainer?.exist && explainerVisible ? (
                     <div className="explainer-tooltip" role="tooltip">
                         <span className="explainer-tooltip-text">{explainer.content}</span>
@@ -148,6 +190,19 @@ export default function Widget(props) {
                   })()
                 : null;
         const lineTitle = props?.lineTitle || "Consents giving";
+        const comparisonObj = props?.totalNumber?.comaprison ?? props?.totalNumber?.comparison;
+        const comparisonRows = [
+            { label: "Accept", deltaKey: "accepted", relKey: "acceptedRelativeDrop" },
+            { label: "Essential", deltaKey: "declined", relKey: "declinedRelativeDrop" },
+            { label: "Marketing", deltaKey: "marketing", relKey: "marketingRelativeDrop" },
+            { label: "Functional", deltaKey: "functional", relKey: "functionalRelativeDrop" },
+            { label: "Statics", deltaKey: "statics", relKey: "staticsRelativeDrop" },
+        ];
+        const showInlineComparison =
+            compareOn &&
+            comparisonObj != null &&
+            typeof comparisonObj === "object" &&
+            comparisonRows.some((r) => comparisonObj[r.deltaKey] != null || comparisonObj[r.relKey] != null);
 
         return (
             <div
@@ -188,7 +243,7 @@ export default function Widget(props) {
                                         {seriesSummary.days} {seriesSummary.days === 1 ? "day" : "days"}
                                     </span>
                                 </div>
-                                {seriesSummary.vsPrevPct != null ? (
+                                {compareOn && seriesSummary.vsPrevPct != null ? (
                                     <div
                                         className={`widget__insight widget__insight--trend ${
                                             seriesSummary.vsPrevPct >= 0
@@ -206,11 +261,46 @@ export default function Widget(props) {
                                 ) : null}
                             </div>
                         ) : null}
+                        {showInlineComparison ? (
+                            <div className="widget__comparison-inline" aria-label="Share change vs comparison period">
+                                {comparisonRows.map((row) => {
+                                    const d = comparisonObj[row.deltaKey];
+                                    const r = comparisonObj[row.relKey];
+                                    if (d == null && r == null) return null;
+                                    return (
+                                        <div className="widget__comparison-chip" key={row.deltaKey}>
+                                            <span className="widget__comparison-chip-label">{row.label}</span>
+                                            {d != null ? (
+                                                <span
+                                                    className={
+                                                        "widget__comparison-chip-metric " +
+                                                        (Number(d) > 0 ? "is-up" : Number(d) < 0 ? "is-down" : "is-flat")
+                                                    }
+                                                >
+                                                    {formatCmpArrow(d, "pp")}
+                                                </span>
+                                            ) : null}
+                                            {r != null ? (
+                                                <span
+                                                    className={
+                                                        "widget__comparison-chip-metric widget__comparison-chip-metric--rel " +
+                                                        (Number(r) > 0 ? "is-up" : Number(r) < 0 ? "is-down" : "is-flat")
+                                                    }
+                                                >
+                                                    {formatCmpArrow(r, "%")}
+                                                </span>
+                                            ) : null}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : null}
                         <div className="widget__chart-wrap">
                             <Line
                                 title={lineTitle}
                                 data={daily}
-                                data2={daily.previousPeriod}
+                                data2={daily}
+                                compareEnabled={compareOn}
                                 fromDate={props?.fromDate}
                                 toDate={props?.toDate}
                             />

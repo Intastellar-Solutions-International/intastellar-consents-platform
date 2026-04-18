@@ -92,6 +92,14 @@ export default function Dashboard(props) {
     API[id].getInteractionsByCountry.headers.FromDate = fromDate.toISOString().split("T")[0];
     API[id].getInteractionsByCountry.headers.ToDate = toDate.toISOString().split("T")[0];
 
+    API[id].getInteractions.headers.CompareRange = compareRange;
+    API[id].getInteractions.headers.PreviousPeriod = previousPeriod.toISOString().split("T")[0];
+    API[id].getInteractions.headers.PreviousPeriod2 = previousPeriod2.toISOString().split("T")[0];
+    API[id].getInteractions.headers["X-Compare-Start"] = previousPeriod.toISOString().split("T")[0];
+    API[id].getInteractions.headers["X-Compare-End"] = previousPeriod2.toISOString().split("T")[0];
+    API[id].getInteractions.headers["X-Compare-Range"] =
+        compareRange === 0 || compareRange == null ? "" : String(compareRange);
+
     const APIUrl = API[id].getTotalNumber.url;
     const APIMethod = API[id].getTotalNumber.method;
     const APIHeader = API[id].getTotalNumber.headers;
@@ -166,6 +174,21 @@ export default function Dashboard(props) {
         API[id].observedCookies.headers.Domains = currentDomain;
         API[id].observedCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
         API[id].observedCookies.headers.ToDate = toDate.toISOString().split("T")[0];
+        API[id].observedCookies.headers.CompareRange = compareRange;
+        API[id].observedCookies.headers.PreviousPeriod = previousPeriod.toISOString().split("T")[0];
+        API[id].observedCookies.headers.PreviousPeriod2 = previousPeriod2.toISOString().split("T")[0];
+        API[id].observedCookies.headers["X-Compare-Start"] = previousPeriod.toISOString().split("T")[0];
+        API[id].observedCookies.headers["X-Compare-End"] = previousPeriod2.toISOString().split("T")[0];
+        API[id].observedCookies.headers["X-Compare-Range"] =
+            compareRange === 0 || compareRange == null ? "" : String(compareRange);
+
+        API[id].getInteractionsByCountry.headers.CompareRange = compareRange;
+        API[id].getInteractionsByCountry.headers.PreviousPeriod = previousPeriod.toISOString().split("T")[0];
+        API[id].getInteractionsByCountry.headers.PreviousPeriod2 = previousPeriod2.toISOString().split("T")[0];
+        API[id].getInteractionsByCountry.headers["X-Compare-Start"] = previousPeriod.toISOString().split("T")[0];
+        API[id].getInteractionsByCountry.headers["X-Compare-End"] = previousPeriod2.toISOString().split("T")[0];
+        API[id].getInteractionsByCountry.headers["X-Compare-Range"] =
+            compareRange === 0 || compareRange == null ? "" : String(compareRange);
 
         fetch(API[id].observedCookies.url, {
             method: API[id].observedCookies.method,
@@ -198,7 +221,7 @@ export default function Dashboard(props) {
             setLoadingCountry(false);
         });
 
-    }, [fromDate, toDate, handle]);
+    }, [fromDate, toDate, handle, compareRange, previousPeriod, previousPeriod2]);
 
     document.querySelectorAll(".intInput").forEach((input) => {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
@@ -225,6 +248,8 @@ export default function Dashboard(props) {
             console.error(err);
         });
     }
+
+    const compareOn = compareRange !== 0 && compareRange != null;
 
     return (
         <>
@@ -266,22 +291,49 @@ export default function Dashboard(props) {
                     activeData != null ?
                         <>
                         <div className={`grid-container grid-7 topWidget`} style={{ gap: "10px", marginBottom: "20px" }}>
-
-                            <Widget styleType="small" totalNumber={activeData} activeUsers={activeData?.activeUsers?.toLocaleString("de-DE")} type="Stored consent decisions" fromDate={fromDate} toDate={toDate} />
-                            <Widget kpi={true} styleType="small" change={{
-                                change: activeData?.changeRate?.accepted,
-                            }} relativeDrop={{
-                                relativeDrop: activeData?.relativeDrop?.accepted,
-                            }} totalNumber={(activeData?.Accepted != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%"} type="Consent acceptance" fromDate={fromDate} toDate={toDate} />
-                            <Widget kpi={true} change={{
-                                change: activeData?.changeRate?.declined,
-                            }} relativeDrop={{
-                                relativeDrop: activeData?.relativeDrop?.declined,
-                            }} explainer={{
-                                exist: true,
-                                title: "Essential-only rate",
-                                content: "Share of users who declined analytics and marketing cookies, allowing only required cookies..",
-                            }} styleType="small" totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%"} type="Essential-only rate" fromDate={fromDate} toDate={toDate} />
+                            <Widget
+                                kpi={true}
+                                styleType="small"
+                                compareOn={compareOn}
+                                comparisonDelta={activeData?.comaprison?.accepted ?? activeData?.comparison?.accepted}
+                                comparisonRelative={
+                                    activeData?.comaprison?.acceptedRelativeDrop ?? activeData?.comparison?.acceptedRelativeDrop
+                                }
+                                change={{
+                                    change: activeData?.changeRate?.accepted,
+                                }}
+                                relativeDrop={{
+                                    relativeDrop: activeData?.relativeDrop?.accepted,
+                                }}
+                                totalNumber={(activeData?.Accepted != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%"}
+                                type="Consent acceptance"
+                                fromDate={fromDate}
+                                toDate={toDate}
+                            />
+                            <Widget
+                                kpi={true}
+                                styleType="small"
+                                compareOn={compareOn}
+                                comparisonDelta={activeData?.comaprison?.declined ?? activeData?.comparison?.declined}
+                                comparisonRelative={
+                                    activeData?.comaprison?.declinedRelativeDrop ?? activeData?.comparison?.declinedRelativeDrop
+                                }
+                                change={{
+                                    change: activeData?.changeRate?.declined,
+                                }}
+                                relativeDrop={{
+                                    relativeDrop: activeData?.relativeDrop?.declined,
+                                }}
+                                explainer={{
+                                    exist: true,
+                                    title: "Essential-only rate",
+                                    content: "Share of users who declined analytics and marketing cookies, allowing only required cookies..",
+                                }}
+                                totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%"}
+                                type="Essential-only rate"
+                                fromDate={fromDate}
+                                toDate={toDate}
+                            />
                             <Widget explainer={{
                                 exist: true,
                                 title: "EU based users",
@@ -477,7 +529,14 @@ export default function Dashboard(props) {
                         </div>
                     </div>
                 </div>
-                <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} toDate={toDate} demoMode={demoMode} />
+                <PremiumTier
+                    loading={loading}
+                    activeData={activeData}
+                    fromDate={fromDate}
+                    toDate={toDate}
+                    demoMode={demoMode}
+                    compareOn={compareOn}
+                />
                 {/* {subscriptionStatus?.tier === "premium" ?
                     <PremiumTier loading={loading} activeData={activeData} />
                     : (subscriptionStatus?.tier === "professional") ?

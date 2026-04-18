@@ -120,6 +120,11 @@
     color: green;
 }
 
+.grid-7 .span-2 {
+    grid-column: span 2;
+    min-width: 0;
+}
+
 @media screen and (max-width: 900px) {
     .dashboard-content {
         padding: 0 20px;
