@@ -72,9 +72,40 @@
     margin-bottom: 12px;
 }
 
+.marketing-report-toolbar__placeholder {
+    flex: 0 0 auto;
+    min-width: 1px;
+}
+
+.marketing-report-back {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    background: rgba(192, 159, 83, 0.1);
+    color: rgba(230, 220, 195, 0.98);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.marketing-report-back:hover {
+    background: rgba(192, 159, 83, 0.18);
+    border-color: rgba(192, 159, 83, 0.5);
+}
+
 .marketing-report-toolbar__meta {
     font-size: 0.78rem;
     color: rgba(180, 180, 188, 0.9);
+    text-align: right;
+}
+
+.marketing-report-drill-title {
+    margin: 0 0 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: rgba(235, 232, 225, 0.98);
 }
 
 .marketing-report-table-wrap {
@@ -115,6 +146,46 @@
 
 .marketing-report-table tbody tr:hover td {
     background: rgba(255, 255, 255, 0.03);
+}
+
+.marketing-report-table__row--clickable {
+    cursor: pointer;
+}
+
+.marketing-report-table__row--clickable:hover td {
+    background: rgba(192, 159, 83, 0.07);
+}
+
+.marketing-report-table__row--clickable:focus {
+    outline: none;
+}
+
+.marketing-report-table__row--clickable:focus-visible td:first-child {
+    box-shadow: inset 3px 0 0 0 rgba(192, 159, 83, 0.85);
+}
+
+.marketing-report-channel-cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.marketing-report-channel-cell__label {
+    flex: 1;
+    min-width: 0;
+}
+
+.marketing-report-channel-cell__chevron {
+    flex-shrink: 0;
+    font-size: 0.9rem;
+    color: rgba(192, 159, 83, 0.75);
+}
+
+.marketing-report-table__empty-row {
+    text-align: center;
+    font-variant-numeric: normal;
+    color: rgba(180, 180, 188, 0.88);
 }
 
 .marketing-report-table__col-channel {

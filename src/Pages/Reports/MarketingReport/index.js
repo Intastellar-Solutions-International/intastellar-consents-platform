@@ -167,6 +167,40 @@ function mapRow(r) {
     };
 }
 
+/** Weighted average acceptance % by consent volume (rows without accept % are skipped). */
+function aggregateWeightedAcceptPct(rowList) {
+    let numerator = 0;
+    let denominator = 0;
+    for (const r of rowList) {
+        if (r.acceptPct == null || !Number.isFinite(r.acceptPct)) continue;
+        numerator += r.acceptPct * r.consents;
+        denominator += r.consents;
+    }
+    if (denominator <= 0) return null;
+    return Math.round((numerator / denominator) * 10) / 10;
+}
+
+/** One row per channel for level-1 overview. */
+function buildChannelOverview(rowList) {
+    const byChannel = new Map();
+    for (const r of rowList) {
+        const ch = r.channel;
+        if (!byChannel.has(ch)) byChannel.set(ch, []);
+        byChannel.get(ch).push(r);
+    }
+    const out = [];
+    for (const [channel, list] of byChannel) {
+        out.push({
+            channel,
+            consents: list.reduce((s, x) => s + x.consents, 0),
+            acceptPct: aggregateWeightedAcceptPct(list),
+            campaignCount: list.length,
+        });
+    }
+    out.sort((a, b) => b.consents - a.consents);
+    return out;
+}
+
 export default function MarketingReport() {
     document.title = "Marketing attribution | Reports | Intastellar Consents";
     const [currentDomain, setGlobalDomain] = useContext(DomainContext);
@@ -214,6 +248,8 @@ export default function MarketingReport() {
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    /** Level 2: which channel’s campaigns are shown; null = channel overview. */
+    const [selectedChannel, setSelectedChannel] = useState(null);
 
     const endpoint = API[id]?.marketingAttribution;
 
@@ -275,6 +311,7 @@ export default function MarketingReport() {
             const rawRows = extractRows(json);
             setRows(rawRows.map(mapRow).sort((a, b) => b.consents - a.consents));
             setSummary(extractSummary(json));
+            setSelectedChannel(null);
         } catch (e) {
             setError(e?.message || "Network error while loading marketing attribution.");
             setRows([]);
@@ -298,15 +335,38 @@ export default function MarketingReport() {
 
     const totalConsents = useMemo(() => rows.reduce((s, r) => s + r.consents, 0), [rows]);
 
+    const channelOverview = useMemo(() => buildChannelOverview(rows), [rows]);
+
+    const drilldownRows = useMemo(() => {
+        if (!selectedChannel) return [];
+        return rows.filter((r) => r.channel === selectedChannel).sort((a, b) => b.consents - a.consents);
+    }, [rows, selectedChannel]);
+
+    const drillConsents = useMemo(
+        () => drilldownRows.reduce((s, r) => s + r.consents, 0),
+        [drilldownRows]
+    );
+
+    useEffect(() => {
+        if (!selectedChannel) return undefined;
+        const onKey = (e) => {
+            if (e.key === "Escape") setSelectedChannel(null);
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [selectedChannel]);
+
     const kpiCards = useMemo(() => {
         const cards = [
             {
-                label: "Attributed rows",
-                value: rows.length.toLocaleString("de-DE"),
+                label: selectedChannel ? "Campaigns in channel" : "Channels",
+                value: selectedChannel
+                    ? drilldownRows.length.toLocaleString("de-DE")
+                    : channelOverview.length.toLocaleString("de-DE"),
             },
             {
-                label: "Consents in view",
-                value: totalConsents.toLocaleString("de-DE"),
+                label: selectedChannel ? "Consents (this channel)" : "Consents in view",
+                value: (selectedChannel ? drillConsents : totalConsents).toLocaleString("de-DE"),
             },
         ];
         if (summary && typeof summary === "object") {
@@ -324,7 +384,7 @@ export default function MarketingReport() {
             }
         }
         return cards;
-    }, [rows.length, totalConsents, summary]);
+    }, [totalConsents, drillConsents, summary, selectedChannel, drilldownRows.length, channelOverview.length]);
 
     return (
         <>
@@ -352,9 +412,9 @@ export default function MarketingReport() {
                     <header className="marketing-report-hero">
                         <h1>Marketing attribution</h1>
                         <p>
-                            Consent activity grouped into a <strong>channel</strong> (for example Facebook Ads) and a{" "}
-                            <strong>campaign name</strong> from UTM and landing URL parameters. Use the date range (and
-                            optional comparison) in the header to align with your backend filters.
+                            <strong>Channel overview</strong> rolls up campaigns by channel (one row per channel). Open
+                            a channel to see a <strong>campaign breakdown</strong> for that source. Data comes from UTM
+                            and landing URL parameters; use the date range in the header to match your backend filters.
                         </p>
                     </header>
 
@@ -384,10 +444,29 @@ export default function MarketingReport() {
                     </div>
 
                     <div className="marketing-report-toolbar">
+                        {selectedChannel ? (
+                            <button
+                                type="button"
+                                className="marketing-report-back"
+                                onClick={() => setSelectedChannel(null)}
+                            >
+                                ← Channel overview
+                            </button>
+                        ) : (
+                            <span className="marketing-report-toolbar__placeholder" aria-hidden="true" />
+                        )}
                         <span className="marketing-report-toolbar__meta">
-                            {loading ? "Loading…" : `${rows.length} row${rows.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString("de-DE")} consents`}
+                            {loading
+                                ? "Loading…"
+                                : selectedChannel
+                                  ? `${drilldownRows.length} campaign${drilldownRows.length === 1 ? "" : "s"} · ${drilldownRows.reduce((s, r) => s + r.consents, 0).toLocaleString("de-DE")} consents in “${selectedChannel}”`
+                                  : `${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString("de-DE")} consents`}
                         </span>
                     </div>
+
+                    {selectedChannel ? (
+                        <h2 className="marketing-report-drill-title">{selectedChannel}</h2>
+                    ) : null}
 
                     <div className="marketing-report-table-wrap">
                         {rows.length === 0 && !loading ? (
@@ -395,21 +474,78 @@ export default function MarketingReport() {
                                 No attribution rows for this scope and period. When your API returns data, it will appear
                                 here.
                             </div>
-                        ) : (
+                        ) : selectedChannel ? (
                             <table className="marketing-report-table">
                                 <thead>
                                     <tr>
-                                        <th className="marketing-report-table__col-channel">Channel</th>
                                         <th className="marketing-report-table__col-campaign">Campaign name</th>
                                         <th className="marketing-report-table__col-num">Consents</th>
                                         <th className="marketing-report-table__col-num">Acceptance %</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {rows.map((r, i) => (
-                                        <tr key={`${r.channel}-${r.utmCampaign}-${i}`}>
-                                            <td className="marketing-report-table__col-channel">{r.channel}</td>
-                                            <td className="marketing-report-table__col-campaign">{r.utmCampaign}</td>
+                                    {drilldownRows.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={3} className="marketing-report-table__empty-row">
+                                                No campaigns for this channel.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        drilldownRows.map((r, i) => (
+                                            <tr key={`${r.channel}-${r.utmCampaign}-${i}`}>
+                                                <td className="marketing-report-table__col-campaign">{r.utmCampaign}</td>
+                                                <td className="marketing-report-table__col-num">
+                                                    {r.consents.toLocaleString("de-DE")}
+                                                </td>
+                                                <td className="marketing-report-table__col-num">
+                                                    {r.acceptPct != null && Number.isFinite(r.acceptPct)
+                                                        ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
+                                                        : "—"}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <table className="marketing-report-table">
+                                <thead>
+                                    <tr>
+                                        <th className="marketing-report-table__col-channel">Channel</th>
+                                        <th className="marketing-report-table__col-num">Campaigns</th>
+                                        <th className="marketing-report-table__col-num">Consents</th>
+                                        <th className="marketing-report-table__col-num">Acceptance %</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {channelOverview.map((r) => (
+                                        <tr
+                                            key={r.channel}
+                                            className="marketing-report-table__row--clickable"
+                                            tabIndex={0}
+                                            role="button"
+                                            aria-label={`Open campaign breakdown for ${r.channel}`}
+                                            onClick={() => setSelectedChannel(r.channel)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter" || e.key === " ") {
+                                                    e.preventDefault();
+                                                    setSelectedChannel(r.channel);
+                                                }
+                                            }}
+                                        >
+                                            <td className="marketing-report-table__col-channel">
+                                                <span className="marketing-report-channel-cell">
+                                                    <span className="marketing-report-channel-cell__label">
+                                                        {r.channel}
+                                                    </span>
+                                                    <span className="marketing-report-channel-cell__chevron" aria-hidden>
+                                                        →
+                                                    </span>
+                                                </span>
+                                            </td>
+                                            <td className="marketing-report-table__col-num">
+                                                {r.campaignCount.toLocaleString("de-DE")}
+                                            </td>
                                             <td className="marketing-report-table__col-num">
                                                 {r.consents.toLocaleString("de-DE")}
                                             </td>
