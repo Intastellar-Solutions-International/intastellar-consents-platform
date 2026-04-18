@@ -163,11 +163,285 @@ function mapRow(r) {
         acceptAll: Number(r.acceptAll ?? r.accept_all ?? 0) || 0,
         essentialOnly: Number(r.essentialOnly ?? r.essential_only ?? 0) || 0,
         granular: Number(r.granular ?? 0) || 0,
+        context: normalizeContext(r.context),
     };
     return {
         ...base,
         channel: deriveMarketingChannel({ ...base, utmCampaign: rawCampaign }),
     };
+}
+
+function normalizeContext(ctx) {
+    if (!ctx || typeof ctx !== "object") {
+        return null;
+    }
+    return {
+        topCountries: Array.isArray(ctx.topCountries) ? ctx.topCountries : [],
+        topLandingPaths: Array.isArray(ctx.topLandingPaths) ? ctx.topLandingPaths : [],
+        topUtmContent: Array.isArray(ctx.topUtmContent) ? ctx.topUtmContent : [],
+        topUtmTerms: Array.isArray(ctx.topUtmTerms) ? ctx.topUtmTerms : [],
+    };
+}
+
+function mergeContextDim(rows, listKey, idFn, topN) {
+    const map = new Map();
+    for (const r of rows) {
+        const list = r.context?.[listKey];
+        if (!Array.isArray(list)) {
+            continue;
+        }
+        for (const it of list) {
+            const id = String(idFn(it) ?? "—");
+            const cur = map.get(id) ?? { consents: 0, acceptAll: 0, essentialOnly: 0, granular: 0 };
+            cur.consents += Number(it.consents) || 0;
+            cur.acceptAll += Number(it.acceptAll) || 0;
+            cur.essentialOnly += Number(it.essentialOnly) || 0;
+            cur.granular += Number(it.granular) || 0;
+            map.set(id, cur);
+        }
+    }
+    return [...map.entries()]
+        .map(([id, st]) => {
+            const decided = st.acceptAll + st.essentialOnly + st.granular;
+            const acceptPct =
+                decided > 0 ? Math.round((st.acceptAll / decided) * 1000) / 10 : null;
+            return { id, ...st, acceptPct };
+        })
+        .sort((a, b) => b.consents - a.consents)
+        .slice(0, topN);
+}
+
+function mergeAllContext(rows) {
+    const topCountries = mergeContextDim(rows, "topCountries", (it) => it.country, 12);
+    const topLandingPaths = mergeContextDim(rows, "topLandingPaths", (it) => it.path, 8);
+    const topUtmContent = mergeContextDim(rows, "topUtmContent", (it) => it.value, 5);
+    const topUtmTerms = mergeContextDim(rows, "topUtmTerms", (it) => it.value, 5);
+    const hasAny =
+        topCountries.length > 0 ||
+        topLandingPaths.length > 0 ||
+        topUtmContent.length > 0 ||
+        topUtmTerms.length > 0;
+    return { topCountries, topLandingPaths, topUtmContent, topUtmTerms, hasAny };
+}
+
+function escapeCsvCell(value) {
+    const s = value == null ? "" : String(value);
+    if (/[",\n\r]/.test(s)) {
+        return `"${s.replace(/"/g, '""')}"`;
+    }
+    return s;
+}
+
+function summarizeContextList(list, formatter) {
+    if (!Array.isArray(list) || list.length === 0) {
+        return "";
+    }
+    return list
+        .map(formatter)
+        .join(" | ")
+        .replace(/\r?\n/g, " ");
+}
+
+function buildMarketingCsvCampaignRows(rows, meta) {
+    const lines = [
+        `# Marketing attribution — campaign rows`,
+        `# From: ${meta.from}; To: ${meta.to}; Scope: ${meta.scope}`,
+        `# Generated: ${meta.generatedAt}`,
+        [
+            "channel",
+            "utm_source",
+            "utm_medium",
+            "utm_campaign",
+            "referrer_host",
+            "consents",
+            "accept_rate_pct",
+            "accept_all",
+            "essential_only",
+            "granular",
+            "top_countries",
+            "top_landing_paths",
+            "top_utm_content",
+            "top_utm_terms",
+        ].join(","),
+    ];
+    for (const r of rows) {
+        const ctx = r.context;
+        const topCountries = summarizeContextList(ctx?.topCountries, (x) => `${x.country}:${x.consents}`);
+        const topPaths = summarizeContextList(ctx?.topLandingPaths, (x) => `${x.path}:${x.consents}`);
+        const topContent = summarizeContextList(ctx?.topUtmContent, (x) => `${x.value}:${x.consents}`);
+        const topTerms = summarizeContextList(ctx?.topUtmTerms, (x) => `${x.value}:${x.consents}`);
+        const row = [
+            r.channel,
+            r.utmSource,
+            r.utmMedium,
+            r.utmCampaign,
+            r.referrer,
+            String(r.consents),
+            r.acceptPct != null && Number.isFinite(r.acceptPct) ? String(r.acceptPct) : "",
+            String(r.acceptAll ?? 0),
+            String(r.essentialOnly ?? 0),
+            String(r.granular ?? 0),
+            topCountries,
+            topPaths,
+            topContent,
+            topTerms,
+        ].map(escapeCsvCell);
+        lines.push(row.join(","));
+    }
+    return lines.join("\r\n");
+}
+
+function buildMarketingCsvChannelRows(channelOverview, meta) {
+    const lines = [
+        `# Marketing attribution — channel overview`,
+        `# From: ${meta.from}; To: ${meta.to}; Scope: ${meta.scope}`,
+        `# Generated: ${meta.generatedAt}`,
+        [
+            "channel",
+            "campaigns",
+            "consents",
+            "accept_rate_pct_weighted",
+            "accept_all",
+            "essential_only",
+            "granular",
+        ].join(","),
+    ];
+    for (const r of channelOverview) {
+        const row = [
+            r.channel,
+            String(r.campaignCount),
+            String(r.consents),
+            r.acceptPct != null && Number.isFinite(r.acceptPct) ? String(r.acceptPct) : "",
+            String(r.acceptAll ?? 0),
+            String(r.essentialOnly ?? 0),
+            String(r.granular ?? 0),
+        ].map(escapeCsvCell);
+        lines.push(row.join(","));
+    }
+    return lines.join("\r\n");
+}
+
+function triggerCsvDownload(filename, csvText) {
+    const blob = new Blob(["\uFEFF", csvText], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function MarketingContextSection({ heading, rows }) {
+    const merged = useMemo(() => mergeAllContext(rows), [rows]);
+    if (!merged.hasAny) {
+        return (
+            <section className="marketing-context marketing-context--empty" aria-labelledby="marketing-context-h">
+                <h2 id="marketing-context-h" className="marketing-context__title">
+                    {heading}
+                </h2>
+                <p className="marketing-context__empty-note">
+                    No geographic or landing-path breakdown in the API response yet. After you deploy the updated{" "}
+                    <code>marketingAttribution</code> endpoint, top countries, paths, and UTM content/term slices appear
+                    here.
+                </p>
+            </section>
+        );
+    }
+
+    const fmtPct = (p) =>
+        p != null && Number.isFinite(p) ? `${p.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%` : "—";
+
+    const miniRows = (items) =>
+        items.map((row) => (
+            <tr key={row.id}>
+                <td className="marketing-context__label">{row.id}</td>
+                <td className="marketing-context__num">{row.consents.toLocaleString("de-DE")}</td>
+                <td className="marketing-context__num">{fmtPct(row.acceptPct)}</td>
+                <td className="marketing-context__split">
+                    {formatChoiceCountPct(row.acceptAll, row.consents)} ·{" "}
+                    {formatChoiceCountPct(row.essentialOnly, row.consents)} ·{" "}
+                    {formatChoiceCountPct(row.granular, row.consents)}
+                </td>
+            </tr>
+        ));
+
+    return (
+        <section className="marketing-context" aria-labelledby="marketing-context-h">
+            <h2 id="marketing-context-h" className="marketing-context__title">
+                {heading}
+            </h2>
+            <p className="marketing-context__lede">
+                Merged from campaign-level slices in this view (union of each campaign’s top dimensions). Percentages
+                use accept-all vs all classified choices within each slice.
+            </p>
+            <div className="marketing-context__grid">
+                {merged.topCountries.length > 0 ? (
+                    <div className="marketing-context__block">
+                        <h3 className="marketing-context__block-title">Top countries</h3>
+                        <table className="marketing-context__table">
+                            <thead>
+                                <tr>
+                                    <th>Country</th>
+                                    <th className="marketing-context__num">Consents</th>
+                                    <th className="marketing-context__num">Accept %</th>
+                                    <th>All / Essential / Granular</th>
+                                </tr>
+                            </thead>
+                            <tbody>{miniRows(merged.topCountries)}</tbody>
+                        </table>
+                    </div>
+                ) : null}
+                {merged.topLandingPaths.length > 0 ? (
+                    <div className="marketing-context__block">
+                        <h3 className="marketing-context__block-title">Top landing paths</h3>
+                        <table className="marketing-context__table">
+                            <thead>
+                                <tr>
+                                    <th>Path</th>
+                                    <th className="marketing-context__num">Consents</th>
+                                    <th className="marketing-context__num">Accept %</th>
+                                    <th>All / Essential / Granular</th>
+                                </tr>
+                            </thead>
+                            <tbody>{miniRows(merged.topLandingPaths)}</tbody>
+                        </table>
+                    </div>
+                ) : null}
+                {merged.topUtmContent.length > 0 ? (
+                    <div className="marketing-context__block">
+                        <h3 className="marketing-context__block-title">UTM content</h3>
+                        <table className="marketing-context__table">
+                            <thead>
+                                <tr>
+                                    <th>Value</th>
+                                    <th className="marketing-context__num">Consents</th>
+                                    <th className="marketing-context__num">Accept %</th>
+                                    <th>All / Essential / Granular</th>
+                                </tr>
+                            </thead>
+                            <tbody>{miniRows(merged.topUtmContent)}</tbody>
+                        </table>
+                    </div>
+                ) : null}
+                {merged.topUtmTerms.length > 0 ? (
+                    <div className="marketing-context__block">
+                        <h3 className="marketing-context__block-title">UTM term</h3>
+                        <table className="marketing-context__table">
+                            <thead>
+                                <tr>
+                                    <th>Value</th>
+                                    <th className="marketing-context__num">Consents</th>
+                                    <th className="marketing-context__num">Accept %</th>
+                                    <th>All / Essential / Granular</th>
+                                </tr>
+                            </thead>
+                            <tbody>{miniRows(merged.topUtmTerms)}</tbody>
+                        </table>
+                    </div>
+                ) : null}
+            </div>
+        </section>
+    );
 }
 
 /** Count + share of consents in this row (same semantics as CMP payload classification). */
@@ -372,6 +646,23 @@ export default function MarketingReport() {
         [rows]
     );
 
+    const exportCsvMeta = useMemo(
+        () => ({
+            from: toYmd(fromDate),
+            to: toYmd(toDate),
+            scope: listDomainLabel,
+            generatedAt: new Date().toISOString(),
+        }),
+        [fromDate, toDate, listDomainLabel]
+    );
+
+    const exportFilenameBase = useMemo(() => {
+        const safe = String(listDomainLabel || "report")
+            .replace(/[^\w\-]+/g, "_")
+            .slice(0, 60);
+        return `marketing-attribution_${toYmd(fromDate)}_${toYmd(toDate)}_${safe}`;
+    }, [listDomainLabel, fromDate, toDate]);
+
     useEffect(() => {
         if (!selectedChannel) return undefined;
         const onKey = (e) => {
@@ -464,17 +755,49 @@ export default function MarketingReport() {
                     </div>
 
                     <div className="marketing-report-toolbar">
-                        {selectedChannel ? (
-                            <button
-                                type="button"
-                                className="marketing-report-back"
-                                onClick={() => setSelectedChannel(null)}
-                            >
-                                ← Channel overview
-                            </button>
-                        ) : (
-                            <span className="marketing-report-toolbar__placeholder" aria-hidden="true" />
-                        )}
+                        <div className="marketing-report-toolbar__left">
+                            {selectedChannel ? (
+                                <button
+                                    type="button"
+                                    className="marketing-report-back"
+                                    onClick={() => setSelectedChannel(null)}
+                                >
+                                    ← Channel overview
+                                </button>
+                            ) : null}
+                            {rows.length > 0 ? (
+                                <>
+                                    <button
+                                        type="button"
+                                        className="marketing-report-export"
+                                        onClick={() => {
+                                            const data = selectedChannel ? drilldownRows : rows;
+                                            const slug = selectedChannel
+                                                ? selectedChannel.replace(/[^\w\-]+/g, "_").slice(0, 48)
+                                                : "";
+                                            triggerCsvDownload(
+                                                `${exportFilenameBase}_campaigns${slug ? `_${slug}` : ""}.csv`,
+                                                buildMarketingCsvCampaignRows(data, exportCsvMeta)
+                                            );
+                                        }}
+                                    >
+                                        {selectedChannel ? "Export this channel (campaigns) CSV" : "Export campaigns CSV"}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="marketing-report-export marketing-report-export--secondary"
+                                        onClick={() =>
+                                            triggerCsvDownload(
+                                                `${exportFilenameBase}_channels.csv`,
+                                                buildMarketingCsvChannelRows(channelOverview, exportCsvMeta)
+                                            )
+                                        }
+                                    >
+                                        Export channels CSV
+                                    </button>
+                                </>
+                            ) : null}
+                        </div>
                         <span className="marketing-report-toolbar__meta">
                             {loading
                                 ? "Loading…"
@@ -483,6 +806,17 @@ export default function MarketingReport() {
                                   : `${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString("de-DE")} consents`}
                         </span>
                     </div>
+
+                    {rows.length > 0 ? (
+                        <MarketingContextSection
+                            heading={
+                                selectedChannel
+                                    ? `Performance context · ${selectedChannel}`
+                                    : "Performance context · all channels"
+                            }
+                            rows={selectedChannel ? drilldownRows : rows}
+                        />
+                    ) : null}
 
                     {selectedChannel ? (
                         <h2 className="marketing-report-drill-title">{selectedChannel}</h2>
