@@ -50,22 +50,72 @@ export default function Line({ data, data2, title, fromDate, toDate, compareEnab
             chart.background().fill("transparent");
             chart.xAxis().title(fromDate === toDate ? "Time" : "Day");
             chart.yAxis().title(title);
-            chart.tooltip().format(title + ": {%Value}");
             chart.xScale().mode("continuous");
+
+            const compareActive = compareEnabled && hasComparePoints && dailyData2.length > 0;
+            const currentStroke = "#C09F53";
+            const compareStroke = "#6eb3e0";
+            const compareStrokeHover = "#9ad4ff";
+
+            const tooltip = chart.tooltip();
+            tooltip.useHtml(true);
+            tooltip.fontSize(12);
+            tooltip.fontColor("#f0f0f5");
+
+            if (compareActive) {
+                tooltip.displayMode("union");
+                tooltip.titleFormat("<span style=\"color:#c4c4cc;font-weight:600\">{%x}</span>");
+                tooltip.separator(true);
+                chart.legend().enabled(true);
+                chart.legend().position("bottom");
+                chart.legend().align("center");
+                chart.legend().itemsLayout("horizontal");
+                chart.legend().fontSize(11);
+                chart.legend().fontColor("#e8e8ee");
+                chart.legend().padding(10, 0, 0, 0);
+                chart.legend().iconSize(10);
+            } else {
+                tooltip.displayMode("single");
+                tooltip.titleFormat(false);
+                tooltip.format(
+                    "<span style=\"color:#C09F53;font-weight:600\">" +
+                        title +
+                        "</span><br/><b>{%value}</b>"
+                );
+                chart.legend().enabled(false);
+            }
 
             const series1 = chart.line(mapping);
             series1.name("Current period");
-            series1.normal().stroke("#C09F53");
-            series1.hovered().stroke("#C09F53", 2, "10 5", "round");
-            series1.selected().stroke("#C09F53", 4, "10 5", "round");
+            series1.normal().stroke(currentStroke);
+            series1.hovered().stroke(currentStroke, 2, "10 5", "round");
+            series1.selected().stroke(currentStroke, 4, "10 5", "round");
+            if (compareActive) {
+                series1.legendItem().iconType("circle");
+                series1.legendItem().iconFill(currentStroke);
+                series1.tooltip().format(
+                    "<span style=\"color:" +
+                        currentStroke +
+                        ";font-weight:700\">Current period</span>" +
+                        " · <b>{%value}</b>"
+                );
+            }
 
-            if (compareEnabled && hasComparePoints && dailyData2.length > 0) {
+            if (compareActive) {
                 const dataSet2 = anychart.data.set(dailyData2);
                 const series2 = chart.line(dataSet2.mapAs({ x: "name", value: "domain" }));
                 series2.name("Comparison period");
-                series2.normal().stroke("rgb(220, 209, 154)", 1, "8 4", "round");
-                series2.hovered().stroke("#C09F53", 2, "10 5", "round");
-                series2.selected().stroke("#C09F53", 4, "10 5", "round");
+                series2.normal().stroke(compareStroke, 1.5, "6 4", "round");
+                series2.hovered().stroke(compareStrokeHover, 2.5, "6 4", "round");
+                series2.selected().stroke(compareStrokeHover, 4, "6 4", "round");
+                series2.legendItem().iconType("circle");
+                series2.legendItem().iconFill(compareStroke);
+                series2.tooltip().format(
+                    "<span style=\"color:" +
+                        compareStroke +
+                        ";font-weight:700\">Comparison period</span>" +
+                        " · <b>{%value}</b>"
+                );
             }
 
             chart.container(chartDomId);

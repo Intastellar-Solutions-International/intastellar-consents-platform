@@ -1,10 +1,16 @@
-.chart{
+.chart {
     width: 100%;
-    height: 290px;
+    height: 318px;
     overflow: hidden;
     border-radius: 10px;
 }
 
 .anychart-credits{
     display: none;
+}
+
+/* Line chart with comparison: legend + tooltip read on dark widget backgrounds */
+.anychart-legend-item {
+    font-weight: 600;
+    letter-spacing: 0.02em;
 }
