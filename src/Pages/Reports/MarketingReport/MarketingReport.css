@@ -13,12 +13,121 @@
     color: rgb(240, 240, 240);
 }
 
-.marketing-report-hero p {
+.marketing-report-hero p,
+.marketing-report-hero__lede {
     margin: 0;
     max-width: 52rem;
     font-size: 0.875rem;
     line-height: 1.55;
     color: rgba(200, 200, 205, 0.9);
+}
+
+.marketing-report-section {
+    margin-bottom: 28px;
+}
+
+.marketing-report-section__title {
+    margin: 0 0 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.92);
+}
+
+.marketing-report-section__hint {
+    margin: 0 0 14px;
+    max-width: 44rem;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: rgba(165, 165, 175, 0.9);
+}
+
+.marketing-highlights {
+    margin-bottom: 28px;
+    padding: 18px 18px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(192, 159, 83, 0.24);
+    background: linear-gradient(155deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 55%);
+}
+
+.marketing-highlights__h2 {
+    margin-bottom: 10px;
+}
+
+.marketing-highlights__eyebrow {
+    margin: 0 0 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.88);
+}
+
+.marketing-highlights__headline {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: rgba(245, 243, 238, 0.98);
+}
+
+.marketing-highlights__sub {
+    margin: 0 0 16px;
+    max-width: 44rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(185, 185, 192, 0.92);
+}
+
+.marketing-highlights__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+}
+
+.marketing-highlights__item {
+    margin: 0;
+    padding: 12px 14px 12px 16px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-left-width: 3px;
+}
+
+.marketing-highlights__item--spotlight {
+    border-left-color: rgba(192, 159, 83, 0.95);
+}
+
+.marketing-highlights__item--win {
+    border-left-color: rgba(110, 185, 130, 0.9);
+}
+
+.marketing-highlights__item--watch {
+    border-left-color: rgba(220, 145, 115, 0.9);
+}
+
+.marketing-highlights__item--data {
+    border-left-color: rgba(140, 155, 190, 0.75);
+}
+
+.marketing-highlights__item-title {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(210, 205, 195, 0.95);
+    margin-bottom: 6px;
+}
+
+.marketing-highlights__item-body {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(225, 225, 228, 0.94);
 }
 
 .marketing-report-banner {

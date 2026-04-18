@@ -336,9 +336,9 @@ function MarketingContextSection({ heading, rows }) {
     if (!merged.hasAny) {
         return (
             <section className="marketing-context marketing-context--empty" aria-labelledby="marketing-context-h">
-                <h2 id="marketing-context-h" className="marketing-context__title">
+                <h3 id="marketing-context-h" className="marketing-context__title">
                     {heading}
-                </h2>
+                </h3>
                 <p className="marketing-context__empty-note">
                     No geographic or landing-path breakdown in the API response yet. After you deploy the updated{" "}
                     <code>marketingAttribution</code> endpoint, top countries, paths, and UTM content/term slices appear
@@ -367,9 +367,9 @@ function MarketingContextSection({ heading, rows }) {
 
     return (
         <section className="marketing-context" aria-labelledby="marketing-context-h">
-            <h2 id="marketing-context-h" className="marketing-context__title">
+            <h3 id="marketing-context-h" className="marketing-context__title">
                 {heading}
-            </h2>
+            </h3>
             <p className="marketing-context__lede">
                 Merged from campaign-level slices in this view (union of each campaign’s top dimensions). Percentages
                 use accept-all vs all classified choices within each slice.
@@ -489,6 +489,218 @@ function buildChannelOverview(rowList) {
     }
     out.sort((a, b) => b.consents - a.consents);
     return out;
+}
+
+function formatPeriodRange(fromDate, toDate) {
+    const a = toYmd(fromDate);
+    const b = toYmd(toDate);
+    if (!a && !b) {
+        return "";
+    }
+    return a === b ? a : `${a} – ${b}`;
+}
+
+function truncateLabel(str, maxLen) {
+    const s = String(str ?? "").trim() || "—";
+    if (s.length <= maxLen) {
+        return s;
+    }
+    return `${s.slice(0, Math.max(0, maxLen - 1))}…`;
+}
+
+/**
+ * Marketer-first signals: volume, acceptance, choice mix, data gaps.
+ */
+function computeMarketingHighlights({
+    selectedChannel,
+    channelOverview,
+    drilldownRows,
+    totalConsents,
+    drillConsents,
+    unclassifiedConsents,
+    fromDate,
+    toDate,
+}) {
+    const period = formatPeriodRange(fromDate, toDate);
+    const periodPhrase = period ? `For ${period}` : "For your selected dates";
+
+    if (selectedChannel) {
+        const total = drillConsents;
+        const nCamp = drilldownRows.length;
+        const headline = `${total.toLocaleString("de-DE")} consents · ${nCamp} campaign${nCamp === 1 ? "" : "s"}`;
+        const subline = `${selectedChannel} · ${periodPhrase.toLowerCase()}. Compare campaigns, then use Performance context for geography and paths.`;
+        const items = [];
+        if (nCamp === 0) {
+            return {
+                eyebrow: "Here's what to care about in this channel",
+                headline,
+                subline,
+                items: [],
+            };
+        }
+
+        const sorted = [...drilldownRows].sort((a, b) => b.consents - a.consents);
+        const topCamp = sorted[0];
+        const share = total > 0 ? Math.round((topCamp.consents / total) * 1000) / 10 : 0;
+        items.push({
+            accent: "spotlight",
+            title: "Campaign carrying the load",
+            body: `“${truncateLabel(topCamp.utmCampaign, 64)}” represents about ${share}% of this channel (${topCamp.consents.toLocaleString("de-DE")} events).`,
+        });
+
+        const minC = Math.max(5, Math.floor(total * 0.05));
+        const withRate = sorted.filter(
+            (r) => r.consents >= minC && r.acceptPct != null && Number.isFinite(r.acceptPct)
+        );
+        if (withRate.length >= 2) {
+            const best = [...withRate].sort((a, b) => b.acceptPct - a.acceptPct)[0];
+            const worst = [...withRate].sort((a, b) => a.acceptPct - b.acceptPct)[0];
+            items.push({
+                accent: "win",
+                title: "Strongest acceptance",
+                body: `“${truncateLabel(best.utmCampaign, 56)}” leads at ${best.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% among campaigns with enough volume to compare.`,
+            });
+            if (worst.utmCampaign !== best.utmCampaign) {
+                items.push({
+                    accent: "watch",
+                    title: "Review next",
+                    body: `“${truncateLabel(worst.utmCampaign, 56)}” is lowest in that set (${worst.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%)—worth checking creative, landing, or consent timing.`,
+                });
+            }
+        } else if (withRate.length === 1) {
+            const only = withRate[0];
+            items.push({
+                accent: "data",
+                title: "Acceptance",
+                body: `One campaign clears the volume bar: ${only.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% on “${truncateLabel(only.utmCampaign, 48)}”.`,
+            });
+        }
+
+        const merged = mergeAllContext(drilldownRows);
+        if (merged.topCountries.length > 0) {
+            const c = merged.topCountries[0];
+            items.push({
+                accent: "data",
+                title: "Top geography (merged)",
+                body: `${c.id} shows the most volume in the slices returned (${c.consents.toLocaleString("de-DE")} consents). Expand Performance context for the full list.`,
+            });
+        }
+
+        return {
+            eyebrow: "Here's what to care about in this channel",
+            headline,
+            subline,
+            items: items.slice(0, 5),
+        };
+    }
+
+    if (channelOverview.length === 0) {
+        return {
+            eyebrow: "Here's what to care about today",
+            headline: "No attributed marketing traffic in this window yet",
+            subline: `${periodPhrase}. Widen the range, switch domain scope, or confirm UTMs on landing URLs.`,
+            items: [],
+        };
+    }
+
+    const headline = `${totalConsents.toLocaleString("de-DE")} tagged consent events · ${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"}`;
+    const subline = `${periodPhrase}. Scan highlights first, then open a channel to compare campaigns.`;
+    const items = [];
+    const topCh = channelOverview[0];
+    if (totalConsents > 0 && topCh) {
+        const pct = Math.round((topCh.consents / totalConsents) * 1000) / 10;
+        items.push({
+            accent: "spotlight",
+            title: "Where volume concentrates",
+            body: `${topCh.channel} drives about ${pct}% of consents (${topCh.consents.toLocaleString("de-DE")} events)—often the first place to optimize spend and messaging.`,
+        });
+    }
+
+    const minCh = Math.max(10, Math.floor(totalConsents * 0.04));
+    const chWithRate = channelOverview.filter(
+        (c) => c.consents >= minCh && c.acceptPct != null && Number.isFinite(c.acceptPct)
+    );
+    if (chWithRate.length >= 2) {
+        const best = [...chWithRate].sort((a, b) => b.acceptPct - a.acceptPct)[0];
+        const worst = [...chWithRate].sort((a, b) => a.acceptPct - b.acceptPct)[0];
+        items.push({
+            accent: "win",
+            title: "Best acceptance among larger channels",
+            body: `${best.channel} leads at ${best.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% weighted acceptance (channels above a small volume floor).`,
+        });
+        if (worst.channel !== best.channel) {
+            items.push({
+                accent: "watch",
+                title: "Softest signal in that set",
+                body: `${worst.channel} is lowest at ${worst.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%—creative, landing page, or banner timing may deserve a pass.`,
+            });
+        }
+    } else if (chWithRate.length === 1) {
+        const only = chWithRate[0];
+        items.push({
+            accent: "data",
+            title: "Acceptance snapshot",
+            body: `With current volume, ${only.channel} is the main comparable signal: ${only.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% weighted acceptance.`,
+        });
+    }
+
+    const topEssential = [...channelOverview]
+        .map((c) => ({
+            ...c,
+            essentialPct: c.consents > 0 ? (c.essentialOnly / c.consents) * 100 : 0,
+        }))
+        .sort((a, b) => b.essentialPct - a.essentialPct)[0];
+    if (topEssential && topEssential.consents >= minCh && topEssential.essentialPct >= 18) {
+        items.push({
+            accent: "watch",
+            title: "Necessary-only lean",
+            body: `${topEssential.channel}: ${Math.round(topEssential.essentialPct * 10) / 10}% chose essential cookies only—align tags and analytics with how people actually consent.`,
+        });
+    }
+
+    if (unclassifiedConsents > 0) {
+        items.push({
+            accent: "data",
+            title: "Incomplete choice data",
+            body: `${unclassifiedConsents.toLocaleString("de-DE")} events could not be split into accept / essential / granular; consent totals still include them.`,
+        });
+    }
+
+    return {
+        eyebrow: "Here's what to care about today",
+        headline,
+        subline,
+        items: items.slice(0, 5),
+    };
+}
+
+function MarketingHighlightsSection({ highlights }) {
+    if (!highlights) {
+        return null;
+    }
+    return (
+        <section className="marketing-highlights" aria-labelledby="marketing-highlights-heading">
+            <h2 id="marketing-highlights-heading" className="marketing-report-section__title marketing-highlights__h2">
+                Highlights
+            </h2>
+            <p className="marketing-highlights__eyebrow">{highlights.eyebrow}</p>
+            <p className="marketing-highlights__headline">{highlights.headline}</p>
+            <p className="marketing-highlights__sub">{highlights.subline}</p>
+            {highlights.items.length > 0 ? (
+                <ul className="marketing-highlights__list">
+                    {highlights.items.map((it, i) => (
+                        <li
+                            key={`${it.title}-${i}`}
+                            className={`marketing-highlights__item marketing-highlights__item--${it.accent}`}
+                        >
+                            <span className="marketing-highlights__item-title">{it.title}</span>
+                            <p className="marketing-highlights__item-body">{it.body}</p>
+                        </li>
+                    ))}
+                </ul>
+            ) : null}
+        </section>
+    );
 }
 
 export default function MarketingReport() {
@@ -646,6 +858,30 @@ export default function MarketingReport() {
         [rows]
     );
 
+    const highlights = useMemo(
+        () =>
+            computeMarketingHighlights({
+                selectedChannel,
+                channelOverview,
+                drilldownRows,
+                totalConsents,
+                drillConsents,
+                unclassifiedConsents,
+                fromDate,
+                toDate,
+            }),
+        [
+            selectedChannel,
+            channelOverview,
+            drilldownRows,
+            totalConsents,
+            drillConsents,
+            unclassifiedConsents,
+            fromDate,
+            toDate,
+        ]
+    );
+
     const exportCsvMeta = useMemo(
         () => ({
             from: toYmd(fromDate),
@@ -708,7 +944,7 @@ export default function MarketingReport() {
             <div style={{ flex: "1" }}>
                 <StickyPageTitle
                     loadingUpdated={loading}
-                    finalLoaded={loading}
+                    finalLoaded={!loading}
                     title="Marketing"
                     numberofDays={setLastDays}
                     getLastDays={getLastDays}
@@ -727,12 +963,10 @@ export default function MarketingReport() {
                 <div className="dashboard-content marketing-report-page">
                     <header className="marketing-report-hero">
                         <h1>Marketing</h1>
-                        <p>
-                            <strong>Channel overview</strong> rolls up campaigns by channel (one row per channel). Open
-                            a channel for a <strong>campaign breakdown</strong>. <strong>Accept all</strong>,{" "}
-                            <strong>essential only</strong>, and <strong>granular</strong> columns count how users chose
-                            cookie categories (from the consent payload). Use the date range in the header to match
-                            your backend filters.
+                        <p className="marketing-report-hero__lede">
+                            <strong>Start with Highlights</strong> for what deserves attention in your selected period,
+                            then drill into channels and campaigns. Cookie choices (accept all, essential only, granular)
+                            explain how tags can fire—exports sit below if you need a spreadsheet.
                         </p>
                     </header>
 
@@ -745,15 +979,34 @@ export default function MarketingReport() {
                         </div>
                     ) : null}
 
-                    <div className="marketing-report-summary">
-                        {kpiCards.map((c) => (
-                            <div key={c.label} className="marketing-report-kpi">
-                                <span className="marketing-report-kpi__label">{c.label}</span>
-                                <span className="marketing-report-kpi__value">{c.value}</span>
-                            </div>
-                        ))}
-                    </div>
+                    {!error && !(loading && rows.length === 0) ? (
+                        <MarketingHighlightsSection highlights={highlights} />
+                    ) : null}
 
+                    <section className="marketing-report-section" aria-labelledby="at-a-glance-heading">
+                        <h2 id="at-a-glance-heading" className="marketing-report-section__title">
+                            At a glance
+                        </h2>
+                        <p className="marketing-report-section__hint">
+                            Quick counts for the same date range as the header filter.
+                        </p>
+                        <div className="marketing-report-summary">
+                            {kpiCards.map((c) => (
+                                <div key={c.label} className="marketing-report-kpi">
+                                    <span className="marketing-report-kpi__label">{c.label}</span>
+                                    <span className="marketing-report-kpi__value">{c.value}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    <section className="marketing-report-section" aria-labelledby="exports-heading">
+                        <h2 id="exports-heading" className="marketing-report-section__title">
+                            Exports & navigation
+                        </h2>
+                        <p className="marketing-report-section__hint">
+                            Download CSV for stakeholders; use back to return to all channels.
+                        </p>
                     <div className="marketing-report-toolbar">
                         <div className="marketing-report-toolbar__left">
                             {selectedChannel ? (
@@ -806,21 +1059,36 @@ export default function MarketingReport() {
                                   : `${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString("de-DE")} consents`}
                         </span>
                     </div>
+                    </section>
 
+                    <section className="marketing-report-section" aria-labelledby="perf-context-section-h">
+                        <h2 id="perf-context-section-h" className="marketing-report-section__title">
+                            What's driving differences
+                        </h2>
+                        <p className="marketing-report-section__hint">
+                            Geography, landing paths, and UTM variants (merged from campaign-level API slices).
+                        </p>
                     {rows.length > 0 ? (
                         <MarketingContextSection
                             heading={
                                 selectedChannel
-                                    ? `Performance context · ${selectedChannel}`
-                                    : "Performance context · all channels"
+                                    ? `${selectedChannel} · detail`
+                                    : "All channels · detail"
                             }
                             rows={selectedChannel ? drilldownRows : rows}
                         />
                     ) : null}
+                    </section>
 
-                    {selectedChannel ? (
-                        <h2 className="marketing-report-drill-title">{selectedChannel}</h2>
-                    ) : null}
+                    <section className="marketing-report-section" aria-labelledby="detail-table-heading">
+                        <h2 id="detail-table-heading" className="marketing-report-section__title">
+                            {selectedChannel ? `Campaigns · ${selectedChannel}` : "Channels & campaigns"}
+                        </h2>
+                        <p className="marketing-report-section__hint">
+                            {selectedChannel
+                                ? "Per-campaign consent and cookie-choice mix for this channel."
+                                : "Open a channel row to see individual campaigns."}
+                        </p>
 
                     <div className="marketing-report-table-wrap">
                         {rows.length === 0 && !loading ? (
@@ -938,6 +1206,7 @@ export default function MarketingReport() {
                             </table>
                         )}
                     </div>
+                    </section>
                     {rows.length > 0 && unclassifiedConsents > 0 ? (
                         <p className="marketing-report-footnote" role="note">
                             {unclassifiedConsents.toLocaleString("de-DE")} consent
