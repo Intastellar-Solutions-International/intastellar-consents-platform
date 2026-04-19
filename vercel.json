@@ -1,18 +1,15 @@
 {
   "version": 2,
+  "builds": [
+    { "src": "api/**/*.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1.js" }
+  ],
   "functions": {
     "api/cookie-audit.js": {
       "memory": 1536,
       "maxDuration": 20
-    },
-    "api/domain-classification-cron.js": {
-      "maxDuration": 300
     }
-  },
-  "crons": [
-    {
-      "path": "/api/domain-classification-cron",
-      "schedule": "0 3 1 * *"
-    }
-  ]
+  }
 }
