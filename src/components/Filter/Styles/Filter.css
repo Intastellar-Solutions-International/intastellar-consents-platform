@@ -241,6 +241,10 @@
     font-weight: 400;
 }
 
+.filter-calendar-backdrop {
+    display: none;
+}
+
 .filter-calendar-popover {
     position: absolute;
     z-index: 450;
@@ -250,6 +254,7 @@
     /* Definite height so flex children (body + footer) get a real budget — avoids clipping presets/calendar/buttons */
     height: min(520px, calc(100vh - 80px));
     max-height: calc(100vh - 16px);
+    max-height: min(calc(100vh - 16px), calc(100dvh - 16px));
     display: flex;
     flex-direction: column;
     border-radius: 14px;
@@ -421,6 +426,7 @@
     display: flex;
     flex-shrink: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgb(34, 34, 36);
 }
 
 .filter-calendar-popover__btn {
@@ -453,18 +459,48 @@
     background: rgb(205, 175, 105);
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 640px) {
+    .filter-calendar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1195;
+        background: rgba(0, 0, 0, 0.52);
+        touch-action: none;
+    }
+
+    .filter-calendar-root.filter-calendar-root--open {
+        z-index: 1200;
+    }
+
+    /* Full-viewport sheet: Apply / Cancel sit above home indicator (parent safe-area padding) */
     .filter-calendar-popover {
-        width: min(400px, calc(100vw - 16px));
+        position: fixed;
+        left: 0;
         right: 0;
-        left: auto;
-        height: min(560px, calc(100vh - 72px));
+        top: env(safe-area-inset-top, 0px);
+        bottom: 0;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        height: calc(100vh - env(safe-area-inset-top, 0px));
+        height: calc(100dvh - env(safe-area-inset-top, 0px));
+        max-height: calc(100vh - env(safe-area-inset-top, 0px));
+        max-height: calc(100dvh - env(safe-area-inset-top, 0px));
+        min-height: 0;
+        border-radius: 16px 16px 0 0;
+        z-index: 1201;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        box-sizing: border-box;
+        box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.55);
     }
 
     .filter-calendar-popover__body {
         grid-template-columns: 1fr;
-        grid-template-rows: minmax(0, min(220px, 36vh)) minmax(0, 1fr);
+        grid-template-rows: minmax(0, min(200px, 32dvh)) minmax(0, 1fr);
         min-height: 0;
+        flex: 1 1 auto;
+        overflow: hidden;
     }
 
     .filter-calendar-presets {
@@ -477,5 +513,15 @@
     .filter-calendar-popover__calendar-wrap {
         max-height: none;
         min-height: 0;
+    }
+
+    .filter-calendar-popover__footer {
+        flex-shrink: 0;
+        box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.4);
+    }
+
+    .filter-calendar-popover__btn {
+        padding: 14px 16px;
+        min-height: 48px;
     }
 }

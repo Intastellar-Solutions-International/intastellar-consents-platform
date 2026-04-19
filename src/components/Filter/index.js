@@ -105,6 +105,15 @@ export default function Filter({
         });
     }, [date?.start, date?.end]);
 
+    useEffect(() => {
+        if (!calendar) return undefined;
+        const prevOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        return () => {
+            document.body.style.overflow = prevOverflow;
+        };
+    }, [calendar]);
+
     const endXDays = dateRange?.end;
     const startXDays = dateRange?.start;
 
@@ -223,7 +232,13 @@ export default function Filter({
                 </span>
             </button>
             {calendar && (
-                <div className="filter-calendar-popover" role="dialog" aria-label="Choose date range">
+                <>
+                    <div
+                        className="filter-calendar-backdrop"
+                        aria-hidden="true"
+                        onClick={handleCalendarToggle}
+                    />
+                    <div className="filter-calendar-popover" role="dialog" aria-label="Choose date range">
                     <section className="filter-calendar-popover__body">
                         <section className="filter-calendar-presets">
                             <div className="filter-calendar-presets__toggle-row">
@@ -468,7 +483,8 @@ export default function Filter({
                             Apply
                         </button>
                     </footer>
-                </div>
+                    </div>
+                </>
             )}
         </div>
     );
