@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-const punycode = require("punycode");
+import punycode from "punycode";
 
 /** Domains that mean “all domains” / no specific host in the URL */
 export function isCombinedOrClearDomain(domain) {

@@ -1,10 +1,4 @@
-const { useState, useEffect, useRef, createContext } = React;
-const Router = window.ReactRouterDOM.BrowserRouter;
-const Route = window.ReactRouterDOM.Route;
-const Switch = window.ReactRouterDOM.Switch;
-const Redirect = window.ReactRouterDOM.Redirect;
-const punycode = require("punycode");
-
+import punycode from "punycode";
 import "./App.css";
 import Header from "./Components/Header/header";
 import Footer from "./Components/Footer";
@@ -44,6 +38,11 @@ import Experiments from "./Pages/Experiments/Experiments";
 import AuditReport from "./Pages/Reports/AuditReport";
 import MarketingReport from "./Pages/Reports/MarketingReport";
 
+const { useState, useEffect, useRef, createContext } = React;
+const Router = window.ReactRouterDOM.BrowserRouter;
+const Route = window.ReactRouterDOM.Route;
+const Switch = window.ReactRouterDOM.Switch;
+const Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 

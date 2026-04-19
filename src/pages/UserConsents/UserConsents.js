@@ -21,7 +21,7 @@ import {
 } from "../../Functions/domainPathSegments.js";
 import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
 const useParams = window.ReactRouterDOM.useParams;
-const punycode = require("punycode");
+import punycode from "punycode";
 const PAGE_SIZE = 40;
 
 function consentDateKey(d) {

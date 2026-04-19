@@ -14,7 +14,7 @@ import {
 } from "../../Functions/domainPathSegments.js";
 const useHistory = window.ReactRouterDOM.useHistory;
 const useLocation = window.ReactRouterDOM.useLocation;
-const punycode = require("punycode");
+import punycode from "punycode";
 
 function domainLabelForHeader(pathname, globalDomain) {
     const pathHandle = parseHandleFromPath(pathname);

@@ -8,7 +8,7 @@ const useParams = window.ReactRouterDOM.useParams;
 const Link = window.ReactRouterDOM.Link;
 const { useContext, useMemo } = React;
 
-const punycode = require("punycode");
+import punycode from "punycode";
 
 export const reportsLinks = [
     {

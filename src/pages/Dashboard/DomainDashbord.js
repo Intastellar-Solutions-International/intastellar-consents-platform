@@ -14,7 +14,7 @@ import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import Select from "../../Components/SelectInput/Selector.js";
 const useParams = window.ReactRouterDOM.useParams;
-const punycode = require("punycode");
+import punycode from "punycode";
 import { PremiumTier } from "../../Components/tiers/index.js";
 
 export default function DomainDashbord(props) {

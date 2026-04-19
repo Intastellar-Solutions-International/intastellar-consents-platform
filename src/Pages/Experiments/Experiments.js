@@ -5,7 +5,7 @@ import API from "../../API/api";
 const { useState, useEffect } = React;
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-const punycode = require("punycode");
+import punycode from "punycode";
 const useParams = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
 

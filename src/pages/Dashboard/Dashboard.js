@@ -26,7 +26,7 @@ import Widget from "../../Components/widget/widget.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
 import Select from "../../Components/SelectInput/Selector.js";
-const punycode = require("punycode");
+import punycode from "punycode";
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
