@@ -1,3 +1,4 @@
+import punycode from "punycode";
 import SideNav from "../../Components/Header/SideNav";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import { DomainContext } from "../../App.js";
@@ -7,8 +8,6 @@ import "./Reports.css";
 const useParams = window.ReactRouterDOM.useParams;
 const Link = window.ReactRouterDOM.Link;
 const { useContext, useMemo } = React;
-
-import punycode from "punycode";
 
 export const reportsLinks = [
     {

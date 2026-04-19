@@ -1,4 +1,3 @@
-const { useState, useEffect, useContext, useMemo } = React;
 import { OrganisationContext, DomainContext } from "../../App";
 import "./header.css";
 import logo from "./logo.svg";
@@ -12,9 +11,11 @@ import {
     decodeDomainPathSegment,
     navigateWithDomain,
 } from "../../Functions/domainPathSegments.js";
+import punycode from "punycode";
+
+const { useState, useEffect, useContext, useMemo } = React;
 const useHistory = window.ReactRouterDOM.useHistory;
 const useLocation = window.ReactRouterDOM.useLocation;
-import punycode from "punycode";
 
 function domainLabelForHeader(pathname, globalDomain) {
     const pathHandle = parseHandleFromPath(pathname);

@@ -3,8 +3,10 @@ import API from "../../API/api";
 import "./Style.css";
 import { Loading, CurrentPageLoading } from "../../Components/widget/Loading";
 import StickyPageTitle from "../../Components/Header/Sticky";
-const { useState, useEffect, useRef } = React;
 import punycode from "punycode";
+
+const { useState, useEffect, useRef } = React;
+
 export default function Websites() {
 
     const [loading, data, error] = Fetch(10, API.gdpr.getDomains.url, API.gdpr.getDomains.method, API.gdpr.getDomains.headers);

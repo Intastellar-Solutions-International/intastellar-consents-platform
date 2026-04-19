@@ -1,5 +1,6 @@
 {
   "include": [
+    "legacy-modules.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/.server/**/*.ts",

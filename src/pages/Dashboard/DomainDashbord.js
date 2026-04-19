@@ -1,4 +1,3 @@
-const { useState, useEffect, useRef, useContext, useMemo } = React;
 import useFetch from "../../Functions/FetchHook";
 import Fetch from "../../Functions/fetch";
 import API from "../../API/api";
@@ -13,9 +12,11 @@ import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDa
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import Select from "../../Components/SelectInput/Selector.js";
-const useParams = window.ReactRouterDOM.useParams;
 import punycode from "punycode";
 import { PremiumTier } from "../../Components/tiers/index.js";
+
+const { useState, useEffect, useRef, useContext, useMemo } = React;
+const useParams = window.ReactRouterDOM.useParams;
 
 export default function DomainDashbord(props) {
     const { handle, id } = useParams();

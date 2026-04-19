@@ -1,4 +1,3 @@
-const { useState, useEffect, useRef, useContext, useMemo, useCallback } = React;
 import useFetch from "../../Functions/FetchHook";
 import API from "../../API/api";
 import { Loading, LoadingBar } from "../../Components/widget/Loading";
@@ -12,8 +11,6 @@ import {
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
 import { isJson } from "../../Functions/isJson.js";
-const useParams = window.ReactRouterDOM.useParams;
-const Link = window.ReactRouterDOM.Link;
 import Crawler from "../../Components/Crawler";
 import Line from "../../Components/Charts/Line"
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
@@ -27,6 +24,10 @@ import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
 import Select from "../../Components/SelectInput/Selector.js";
 import punycode from "punycode";
+
+const { useState, useEffect, useRef, useContext, useMemo, useCallback } = React;
+const useParams = window.ReactRouterDOM.useParams;
+const Link = window.ReactRouterDOM.Link;
 
 export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";

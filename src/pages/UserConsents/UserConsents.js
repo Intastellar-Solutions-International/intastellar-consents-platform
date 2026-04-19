@@ -1,4 +1,3 @@
-const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 import { isJson } from "../../Functions/isJson.js";
 import useFetch from "../../Functions/FetchHook";
 import Unknown from "../../Components/Error/Unknown.js";
@@ -20,8 +19,10 @@ import {
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
 import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
-const useParams = window.ReactRouterDOM.useParams;
 import punycode from "punycode";
+
+const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
+const useParams = window.ReactRouterDOM.useParams;
 const PAGE_SIZE = 40;
 
 function consentDateKey(d) {

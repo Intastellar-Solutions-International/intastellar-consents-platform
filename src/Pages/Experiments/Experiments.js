@@ -2,16 +2,16 @@ import Authentication from "../../Authentication/Auth";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import Fetch from "../../Functions/FetchHook";
 import API from "../../API/api";
-const { useState, useEffect } = React;
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import punycode from "punycode";
-const useParams = window.ReactRouterDOM.useParams;
-const useHistory = window.ReactRouterDOM.useHistory;
-
 import experimentsIcon from "../../components/header/icons/experiment.svg";
 
 import "./Experiments.css";
+
+const { useState, useEffect } = React;
+const useParams = window.ReactRouterDOM.useParams;
+const useHistory = window.ReactRouterDOM.useHistory;
 
 const DEFAULT_EXPERIMENT_IDS = ["asa-banner-design", "banner-test"];
 
