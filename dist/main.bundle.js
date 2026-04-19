@@ -32181,7 +32181,8 @@ function App() {
   useEffect(function () {
     var globals = localStorage.getItem("globals");
     var path = window.location.pathname;
-    if (!globals && path !== "/login" && path !== "/") {
+    var isApiRoute = path === "/api" || path.startsWith("/api/");
+    if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
       window.location.replace("/login");
     }
   }, []);
@@ -32400,7 +32401,18 @@ function App() {
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/experiments/:experimentId"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Redirect, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/api",
+        render: function render() {
+          return /*#__PURE__*/React.createElement("p", {
+            className: "api-route-spa-fallback",
+            style: {
+              padding: "1.5rem",
+              maxWidth: "40rem"
+            }
+          }, "This URL is a serverless API route. If you see this page, the host is still serving the web app for ", /*#__PURE__*/React.createElement("code", null, "/api/*"), " instead of the function. On production, redeploy with correct Vercel routing; locally use ", /*#__PURE__*/React.createElement("code", null, "vercel dev"), " or call the function URL directly.");
+        }
+      }), /*#__PURE__*/React.createElement(Redirect, {
         to: "/login"
       }))), /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_Footer__WEBPACK_IMPORTED_MODULE_2__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
         path: "/check"
@@ -32425,7 +32437,18 @@ function App() {
     }, /*#__PURE__*/React.createElement("img", {
       src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
       className: "crawlerPage-logo"
-    }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International"))))));
+    }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(Route, {
+      path: "/api",
+      render: function render() {
+        return /*#__PURE__*/React.createElement("p", {
+          className: "api-route-spa-fallback",
+          style: {
+            padding: "1.5rem",
+            maxWidth: "40rem"
+          }
+        }, "This URL is a serverless API route. Use ", /*#__PURE__*/React.createElement("code", null, "vercel dev"), " locally or fix hosting so", " ", /*#__PURE__*/React.createElement("code", null, "/api/*"), " is not rewritten to this app.");
+      }
+    })));
   }
 }
 

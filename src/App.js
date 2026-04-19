@@ -69,7 +69,8 @@ export default function App() {
     useEffect(() => {
         const globals = localStorage.getItem("globals");
         const path = window.location.pathname;
-        if (!globals && path !== "/login" && path !== "/") {
+        const isApiRoute = path === "/api" || path.startsWith("/api/");
+        if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
             window.location.replace("/login");
         }
     }, []);
@@ -334,6 +335,17 @@ export default function App() {
                                                 <Experiments />
                                             </ErrorBoundary>
                                         </Route>
+                                        <Route
+                                            path="/api"
+                                            render={() => (
+                                                <p className="api-route-spa-fallback" style={{ padding: "1.5rem", maxWidth: "40rem" }}>
+                                                    This URL is a serverless API route. If you see this page, the host is still serving the
+                                                    web app for <code>/api/*</code> instead of the function. On production, redeploy with
+                                                    correct Vercel routing; locally use <code>vercel dev</code> or call the function URL
+                                                    directly.
+                                                </p>
+                                            )}
+                                        />
                                         <Redirect to="/login" />
                                     </Switch>
                                 </div>
@@ -378,6 +390,15 @@ export default function App() {
                             </footer>
                         </div>
                     </Route>
+                    <Route
+                        path="/api"
+                        render={() => (
+                            <p className="api-route-spa-fallback" style={{ padding: "1.5rem", maxWidth: "40rem" }}>
+                                This URL is a serverless API route. Use <code>vercel dev</code> locally or fix hosting so{" "}
+                                <code>/api/*</code> is not rewritten to this app.
+                            </p>
+                        )}
+                    />
                 </Switch>
             </Router>
         )
