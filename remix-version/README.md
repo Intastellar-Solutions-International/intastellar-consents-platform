@@ -1,12 +1,18 @@
-# Welcome to Remix!
+# Intastellar Consents — Remix migration (`remix-version`)
+
+This is the **Remix + Vite** port of the webpack/React Router app in the repo root. It mirrors legacy URLs; most routes are **placeholders** until components are moved over. See **[MIGRATION.md](./MIGRATION.md)** for the route map and porting notes.
 
 - 📖 [Remix docs](https://remix.run/docs)
 
+## Requirements
+
+Use **Node 18+** (see `.nvmrc` for **20**). The sandbox default may be older; run `nvm use` before `npm run dev`.
+
 ## Development
 
-Run the dev server:
-
 ```shellscript
+cd remix-version
+npm install
 npm run dev
 ```
 

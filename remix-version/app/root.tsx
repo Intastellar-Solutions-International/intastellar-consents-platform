@@ -6,6 +6,8 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import "./tailwind.css";
+// Global styles from the webpack app (variables, layout helpers). Trim over time.
+import "../../src/App.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
