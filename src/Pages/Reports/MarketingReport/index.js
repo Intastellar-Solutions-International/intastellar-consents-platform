@@ -236,6 +236,40 @@ function simplifyCampaignDisplay(campaignRaw) {
 }
 
 /**
+ * Google paid traffic → single "Google Ads" bucket (Search, Display, legacy AdWords / PPC labels).
+ */
+function isGoogleOrganicMedium(mediumNorm) {
+    const m = mediumNorm;
+    return m === "organic" || m.includes("organic") || m === "natural" || m === "seo";
+}
+
+function isGooglePaidMedium(mediumNorm) {
+    const m = mediumNorm;
+    return (
+        m.includes("cpc") ||
+        m.includes("ppc") ||
+        m === "paid" ||
+        m.includes("paidsearch") ||
+        m.includes("paid search") ||
+        m.includes("adwords") ||
+        m.includes("display") ||
+        m.includes("cpm") ||
+        /cpc|ppc|paid|social|ads|display|paidsocial|paid_social/.test(m)
+    );
+}
+
+function isGoogleAdsFamilySource(sourceNorm) {
+    const s = sourceNorm;
+    return (
+        s.includes("google") ||
+        s === "google ads" ||
+        s.includes("googleads") ||
+        s.includes("google_ads") ||
+        s.includes("adwords")
+    );
+}
+
+/**
  * Human-readable channel for the marketing table (source / medium / referrer heuristics).
  */
 function deriveMarketingChannel(row) {
@@ -267,10 +301,24 @@ function deriveMarketingChannel(row) {
         const isPaidFacebook = paidLike;
         return isPaidFacebook ? "Facebook Ads" : "Facebook (Organic)";
     }
-    if (s.includes("google") || s === "google ads" || host.includes("google.")) {
-        if (m.includes("cpc") || m.includes("ppc") || m === "paid") return "Google Ads";
+
+    const fromGoogleReferrer = host.includes("google.") && !host.includes("doubleclick.net");
+    const googleSource = isGoogleAdsFamilySource(s);
+    if (googleSource || fromGoogleReferrer) {
+        if (isGoogleOrganicMedium(m)) return "Google";
+        if (isGooglePaidMedium(m) || paidLike) return "Google Ads";
         return "Google";
     }
+
+    // Legacy UTM: "ppc" as source only (old labels) — fold into Google Ads when clearly paid
+    if (!s.includes("bing") && !s.includes("microsoft")) {
+        const legacyPpcSource =
+            s === "ppc" || s.startsWith("ppc/") || (s.includes("ppc") && s.includes("adwords"));
+        if (legacyPpcSource && (isGooglePaidMedium(m) || paidLike)) {
+            return "Google Ads";
+        }
+    }
+
     if (s.includes("linkedin") || host.includes("linkedin.com")) {
         return paidLike ? "LinkedIn Ads" : "LinkedIn";
     }
