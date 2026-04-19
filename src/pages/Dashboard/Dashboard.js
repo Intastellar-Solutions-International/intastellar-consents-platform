@@ -253,17 +253,26 @@ export default function Dashboard(props) {
                         </div> : null
                 }
                 {id ? (
-                    <AuditSnapshotCard
-                        platformId={id}
-                        handle={handle}
-                        currentDomain={currentDomain}
-                        fromDate={fromDate}
-                        toDate={toDate}
-                        activeData={activeData}
-                        demoMode={demoMode}
-                        liveData={liveViewData}
-                        interactionsLoading={loading}
-                    />
+                    <>
+                        <AuditSnapshotCard
+                            platformId={id}
+                            handle={handle}
+                            currentDomain={currentDomain}
+                            fromDate={fromDate}
+                            toDate={toDate}
+                            activeData={activeData}
+                            demoMode={demoMode}
+                            liveData={liveViewData}
+                            interactionsLoading={loading}
+                        />
+                        <section className="dashboard-marketing-teaser" aria-label="Marketing dashboard">
+                            <p>
+                                See consent through a marketing lens — campaigns, trends, and usable traffic after
+                                opt-in.{" "}
+                                <Link to={reportsPath(id, currentDomain, "/marketing")}>Open marketing dashboard</Link>
+                            </p>
+                        </section>
+                    </>
                 ) : null}
                 {
                     activeData != null ?

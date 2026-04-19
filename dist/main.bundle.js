@@ -22136,6 +22136,32 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.grid-3 {
     min-width: 0;
 }
 
+.dashboard-marketing-teaser {
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: #2a2a2a;
+    background: linear-gradient(105deg, #f6f1e8 0%, #f0ebe3 100%);
+    border: 1px solid rgba(163, 133, 64, 0.35);
+    border-radius: 8px;
+}
+
+.dashboard-marketing-teaser p {
+    margin: 0;
+}
+
+.dashboard-marketing-teaser a {
+    font-weight: 600;
+    color: #a38540;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.dashboard-marketing-teaser a:hover {
+    text-decoration: underline;
+}
+
 @media screen and (max-width: 900px) {
     .dashboard-content {
         padding: 0 20px;
@@ -22155,7 +22181,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.grid-3 {
         flex: 0 0 auto;
     }
 
-}`, "",{"version":3,"sources":["webpack://./src/Pages/Dashboard/Style.css"],"names":[],"mappings":"AAAA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,8BAA8B;IAC9B,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,aAAa;IACb,+BAA+B;AACnC;;AAEA;IACI,WAAW;IACX,iBAAiB;IACjB,cAAc;IACd,OAAO;IACP,eAAe;AACnB;;AAEA;IACI,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;AAC7B;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,uBAAuB;IACvB,mBAAmB;IACnB,mBAAmB;IACnB,yBAAyB;IACzB,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,YAAY;IACZ,aAAa;IACb,kBAAkB;IAClB,iBAAiB;AACrB;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;AACrB;;AAEA;IACI,UAAU;AACd;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,aAAa;IACb,iBAAiB;IACjB,iBAAiB;AACrB;;AAEA;IACI,cAAc;IACd,iBAAiB;IACjB,iBAAiB;AACrB;;AAEA;IACI,aAAa;AACjB;AACA;IACI,YAAY;AAChB;;AAEA;IACI,mBAAmB;IACnB,YAAY;AAChB;;AAEA;IACI;QACI,eAAe;IACnB;;IAEA;QACI,0BAA0B;IAC9B;;IAEA;QACI,aAAa;QACb,gBAAgB;QAChB,2BAA2B;IAC/B;;IAEA;QACI,cAAc;IAClB;;AAEJ","sourcesContent":[".grid-3 {\n    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-4 {\n    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-5 {\n    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-7{\n    grid-template-columns: repeat(auto-fit, minmax(12%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 10px;\n}\n\n.grid-8 {\n    grid-template-columns: repeat(auto-fit, minmax(10%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-2 {\n    grid-template-columns: 1fr 1fr;\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-3-4{\n    display: grid;\n    grid-template-columns: 1fr .4fr;\n}\n\n.dashboard-content {\n    width: 100%;\n    max-width: 1480px;\n    margin: 0 auto;\n    flex: 1;\n    padding: 0 20px;\n}\n\n.activeDomain {\n    color: aliceblue;\n    text-decoration: none;\n    text-transform: uppercase;\n}\n\n.user {\n    padding: 20px;\n    background-color: #fff;\n    color: #3d3d3d;\n    border-radius: 10px;\n}\n\n.profile-user {\n    font-size: 30px;\n}\n\n.profilePicture-container {\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    align-items: center;\n    margin-bottom: 30px;\n    background-color: #464646;\n    padding: 30px;\n    border-radius: 10px;\n}\n\n.profilePicture {\n    width: 190px;\n    height: 190px;\n    border-radius: 50%;\n    object-fit: cover;\n}\n\n.warning{\n    margin-right: 10px;\n    font-weight: bold;\n}\n\n.warning.critical{\n    color: red;\n}\n\n.warning.high{\n    color: orange;\n}\n\n.warning.high::before{\n    content: \"!!\";\n    margin-right: 5px;\n    font-weight: bold;\n}\n\n.warning.critical::before {\n    content: \"!!!\";\n    margin-right: 5px;\n    font-weight: bold;\n}\n\n.warning.medium{\n    color: yellow;\n}\n.warning.low{\n    color: green;\n}\n\n.grid-7 .span-2 {\n    grid-column: span 2;\n    min-width: 0;\n}\n\n@media screen and (max-width: 900px) {\n    .dashboard-content {\n        padding: 0 20px;\n    }\n\n    .grid-3-4 {\n        grid-template-columns: 1fr;\n    }\n\n    .topWidget{\n        display: flex;\n        overflow-x: auto;\n        justify-content: flex-start;\n    }\n\n    .topWidget > * {\n        flex: 0 0 auto;\n    }\n\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Pages/Dashboard/Style.css"],"names":[],"mappings":"AAAA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,yDAAyD;IACzD,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,8BAA8B;IAC9B,uBAAuB;IACvB,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,aAAa;IACb,+BAA+B;AACnC;;AAEA;IACI,WAAW;IACX,iBAAiB;IACjB,cAAc;IACd,OAAO;IACP,eAAe;AACnB;;AAEA;IACI,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;AAC7B;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,uBAAuB;IACvB,mBAAmB;IACnB,mBAAmB;IACnB,yBAAyB;IACzB,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,YAAY;IACZ,aAAa;IACb,kBAAkB;IAClB,iBAAiB;AACrB;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;AACrB;;AAEA;IACI,UAAU;AACd;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,aAAa;IACb,iBAAiB;IACjB,iBAAiB;AACrB;;AAEA;IACI,cAAc;IACd,iBAAiB;IACjB,iBAAiB;AACrB;;AAEA;IACI,aAAa;AACjB;AACA;IACI,YAAY;AAChB;;AAEA;IACI,mBAAmB;IACnB,YAAY;AAChB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,iBAAiB;IACjB,cAAc;IACd,6DAA6D;IAC7D,0CAA0C;IAC1C,kBAAkB;AACtB;;AAEA;IACI,SAAS;AACb;;AAEA;IACI,gBAAgB;IAChB,cAAc;IACd,qBAAqB;IACrB,mBAAmB;AACvB;;AAEA;IACI,0BAA0B;AAC9B;;AAEA;IACI;QACI,eAAe;IACnB;;IAEA;QACI,0BAA0B;IAC9B;;IAEA;QACI,aAAa;QACb,gBAAgB;QAChB,2BAA2B;IAC/B;;IAEA;QACI,cAAc;IAClB;;AAEJ","sourcesContent":[".grid-3 {\n    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-4 {\n    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-5 {\n    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-7{\n    grid-template-columns: repeat(auto-fit, minmax(12%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 10px;\n}\n\n.grid-8 {\n    grid-template-columns: repeat(auto-fit, minmax(10%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-2 {\n    grid-template-columns: 1fr 1fr;\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-3-4{\n    display: grid;\n    grid-template-columns: 1fr .4fr;\n}\n\n.dashboard-content {\n    width: 100%;\n    max-width: 1480px;\n    margin: 0 auto;\n    flex: 1;\n    padding: 0 20px;\n}\n\n.activeDomain {\n    color: aliceblue;\n    text-decoration: none;\n    text-transform: uppercase;\n}\n\n.user {\n    padding: 20px;\n    background-color: #fff;\n    color: #3d3d3d;\n    border-radius: 10px;\n}\n\n.profile-user {\n    font-size: 30px;\n}\n\n.profilePicture-container {\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    align-items: center;\n    margin-bottom: 30px;\n    background-color: #464646;\n    padding: 30px;\n    border-radius: 10px;\n}\n\n.profilePicture {\n    width: 190px;\n    height: 190px;\n    border-radius: 50%;\n    object-fit: cover;\n}\n\n.warning{\n    margin-right: 10px;\n    font-weight: bold;\n}\n\n.warning.critical{\n    color: red;\n}\n\n.warning.high{\n    color: orange;\n}\n\n.warning.high::before{\n    content: \"!!\";\n    margin-right: 5px;\n    font-weight: bold;\n}\n\n.warning.critical::before {\n    content: \"!!!\";\n    margin-right: 5px;\n    font-weight: bold;\n}\n\n.warning.medium{\n    color: yellow;\n}\n.warning.low{\n    color: green;\n}\n\n.grid-7 .span-2 {\n    grid-column: span 2;\n    min-width: 0;\n}\n\n.dashboard-marketing-teaser {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    font-size: 0.9rem;\n    line-height: 1.45;\n    color: #2a2a2a;\n    background: linear-gradient(105deg, #f6f1e8 0%, #f0ebe3 100%);\n    border: 1px solid rgba(163, 133, 64, 0.35);\n    border-radius: 8px;\n}\n\n.dashboard-marketing-teaser p {\n    margin: 0;\n}\n\n.dashboard-marketing-teaser a {\n    font-weight: 600;\n    color: #a38540;\n    text-decoration: none;\n    white-space: nowrap;\n}\n\n.dashboard-marketing-teaser a:hover {\n    text-decoration: underline;\n}\n\n@media screen and (max-width: 900px) {\n    .dashboard-content {\n        padding: 0 20px;\n    }\n\n    .grid-3-4 {\n        grid-template-columns: 1fr;\n    }\n\n    .topWidget{\n        display: flex;\n        overflow-x: auto;\n        justify-content: flex-start;\n    }\n\n    .topWidget > * {\n        flex: 0 0 auto;\n    }\n\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -42357,7 +42383,7 @@ function Dashboard(props) {
     styleType: "small",
     totalNumber: (jsData === null || jsData === void 0 || (_jsData$WP = jsData.WP) === null || _jsData$WP === void 0 ? void 0 : _jsData$WP.toLocaleString("de-DE")) + "%",
     type: "WordPress"
-  }))) : null, id ? /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_13__["default"], {
+  }))) : null, id ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_13__["default"], {
     platformId: id,
     handle: handle,
     currentDomain: currentDomain,
@@ -42367,7 +42393,12 @@ function Dashboard(props) {
     demoMode: demoMode,
     liveData: liveViewData,
     interactionsLoading: loading
-  }) : null, activeData != null ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("section", {
+    className: "dashboard-marketing-teaser",
+    "aria-label": "Marketing dashboard"
+  }, /*#__PURE__*/React.createElement("p", null, "See consent through a marketing lens \u2014 campaigns, trends, and usable traffic after opt-in.", " ", /*#__PURE__*/React.createElement(Link, {
+    to: (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__.reportsPath)(id, currentDomain, "/marketing")
+  }, "Open marketing dashboard")))) : null, activeData != null ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "grid-container grid-7 topWidget",
     style: {
       gap: "10px",
