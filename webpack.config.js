@@ -23,6 +23,15 @@ const client = {
     historyApiFallback: true,
     host: '0.0.0.0',           // optional: reachable from LAN too
     allowedHosts: ['cmp.inta.dev', '.inta.dev', 'inta.cmp'],
+    // Forward /api/* to Vercel serverless (run `npm run dev:api` in another terminal, default port 3000).
+    // Override with env: API_PROXY_TARGET=http://127.0.0.1:9999 npm start
+    proxy: [
+      {
+        context: ['/api'],
+        target: process.env.API_PROXY_TARGET || 'http://127.0.0.1:3000',
+        changeOrigin: true,
+      },
+    ],
   },
   resolve: {
     modules: [

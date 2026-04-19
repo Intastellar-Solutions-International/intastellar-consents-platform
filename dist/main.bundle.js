@@ -32404,13 +32404,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/api",
         render: function render() {
-          return /*#__PURE__*/React.createElement("p", {
-            className: "api-route-spa-fallback",
-            style: {
-              padding: "1.5rem",
-              maxWidth: "40rem"
-            }
-          }, "This URL is a serverless API route. If you see this page, the host is still serving the web app for ", /*#__PURE__*/React.createElement("code", null, "/api/*"), " instead of the function. On production, redeploy with correct Vercel routing; locally use ", /*#__PURE__*/React.createElement("code", null, "vercel dev"), " or call the function URL directly.");
+          return null;
         }
       }), /*#__PURE__*/React.createElement(Redirect, {
         to: "/login"
@@ -32440,13 +32434,7 @@ function App() {
     }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(Route, {
       path: "/api",
       render: function render() {
-        return /*#__PURE__*/React.createElement("p", {
-          className: "api-route-spa-fallback",
-          style: {
-            padding: "1.5rem",
-            maxWidth: "40rem"
-          }
-        }, "This URL is a serverless API route. Use ", /*#__PURE__*/React.createElement("code", null, "vercel dev"), " locally or fix hosting so", " ", /*#__PURE__*/React.createElement("code", null, "/api/*"), " is not rewritten to this app.");
+        return null;
       }
     })));
   }
