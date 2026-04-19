@@ -1,16 +1,21 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" }
+    {
+      "src": "api/cookie-audit.js",
+      "use": "@vercel/node",
+      "config": {
+        "memory": 1536,
+        "maxDuration": 20
+      }
+    },
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1.js" },
     { "src": "/[^.]+", "dest": "/", "status": 200 }
-  ],
-  "functions": {
-    "api/cookie-audit.js": {
-      "memory": 1536,
-      "maxDuration": 20
-    }
-  }
+  ]
 }
