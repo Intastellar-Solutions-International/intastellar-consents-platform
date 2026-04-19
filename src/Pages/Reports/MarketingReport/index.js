@@ -45,6 +45,27 @@ function extractSummary(payload) {
     return null;
 }
 
+/** Prefer API summary (full dataset) when rows are paginated. */
+function pickTotalConsentsFromSummary(summary, rowList) {
+    const v = summary && summary.totalConsents != null ? Number(summary.totalConsents) : NaN;
+    if (Number.isFinite(v) && v >= 0) return v;
+    return rowList.reduce((s, r) => s + (Number(r.consents) || 0), 0);
+}
+
+function pickMeasurementReadyCount(summary, rowList) {
+    const v = summary && summary.measurementReadyConsents != null ? Number(summary.measurementReadyConsents) : NaN;
+    if (Number.isFinite(v) && v >= 0) return v;
+    return rowList.reduce((s, r) => s + (Number(r.acceptAll) || 0), 0);
+}
+
+function pickMeasurementReadySharePct(summary, rowList) {
+    const v = summary && summary.measurementReadySharePct != null ? Number(summary.measurementReadySharePct) : NaN;
+    if (Number.isFinite(v)) return v;
+    const t = rowList.reduce((s, r) => s + (Number(r.consents) || 0), 0);
+    const a = rowList.reduce((s, r) => s + (Number(r.acceptAll) || 0), 0);
+    return t > 0 ? Math.round((a / t) * 1000) / 10 : null;
+}
+
 function compareRangeActive(compareRange) {
     return compareRange !== 0 && compareRange != null;
 }
@@ -270,6 +291,25 @@ function isGoogleAdsFamilySource(sourceNorm) {
 }
 
 /**
+ * Meta Ads Manager often sends placement as utm_medium (e.g. Facebook_Mobile_Feed, Instagram_Stories)
+ * without "cpc" / "paid" — still paid inventory.
+ */
+function isMetaPaidPlacementMedium(mediumNorm) {
+    const m = mediumNorm;
+    if (!m || m === "—") return false;
+    if (/mobile_feed|desktop_feed|inline_feed|instagram_stories|instagram_story|instagram_reels|instagram_reel/i.test(m)) {
+        return true;
+    }
+    if (/(^|_)(facebook|fb|meta|instagram|ig)($|_)/i.test(m) && /(_feed|_stories|_story|_reels|_reel|marketplace|messenger|carousel|_search|instream|video)/i.test(m)) {
+        return true;
+    }
+    if ((m.includes("facebook") || m.includes("instagram")) && (m.includes("feed") || m.includes("story") || m.includes("reel"))) {
+        return true;
+    }
+    return false;
+}
+
+/**
  * Human-readable channel for the marketing table (source / medium / referrer heuristics).
  */
 function deriveMarketingChannel(row) {
@@ -278,6 +318,7 @@ function deriveMarketingChannel(row) {
     const campaign = normUtm(row.utmCampaign);
     const host = normUtm(row.referrer).replace(/^www\./, "");
     const paidLike = /cpc|ppc|paid|social|ads|display|paidsocial|paid_social/.test(m);
+    const metaPaidPlacement = isMetaPaidPlacementMedium(m);
 
     if (s === "(fbclid)") return "Facebook Ads";
     if (s === "(gclid)") return "Google Ads";
@@ -285,7 +326,7 @@ function deriveMarketingChannel(row) {
     if (campaign.includes("capterra") || s.includes("capterra")) return "Capterra";
 
     if (s.includes("instagram") || host.includes("instagram.com")) {
-        return paidLike ? "Instagram Ads" : "Instagram";
+        return paidLike || metaPaidPlacement ? "Instagram Ads" : "Instagram";
     }
 
     const isFacebookFamily =
@@ -298,7 +339,7 @@ function deriveMarketingChannel(row) {
         host.includes("m.facebook.com");
 
     if (isFacebookFamily) {
-        const isPaidFacebook = paidLike;
+        const isPaidFacebook = paidLike || metaPaidPlacement;
         return isPaidFacebook ? "Facebook Ads" : "Facebook (Organic)";
     }
 
@@ -1325,6 +1366,7 @@ export default function MarketingReport() {
     const [rows, setRows] = useState([]);
     /** Raw baseline window rows (same shape as primary) when period comparison is on. */
     const [baselineRows, setBaselineRows] = useState([]);
+    const [baselineSummary, setBaselineSummary] = useState(null);
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -1342,6 +1384,7 @@ export default function MarketingReport() {
             setRows([]);
             setBaselineRows([]);
             setSummary(null);
+            setBaselineSummary(null);
             return;
         }
         setLoading(true);
@@ -1402,6 +1445,7 @@ export default function MarketingReport() {
                 setRows([]);
                 setBaselineRows([]);
                 setSummary(null);
+                setBaselineSummary(null);
                 return;
             }
             if (!res.ok) {
@@ -1409,6 +1453,7 @@ export default function MarketingReport() {
                 setRows([]);
                 setBaselineRows([]);
                 setSummary(null);
+                setBaselineSummary(null);
                 return;
             }
             if (json === "Err_Login_Expired") {
@@ -1418,6 +1463,7 @@ export default function MarketingReport() {
             }
 
             let baselineMapped = [];
+            let baselineSummaryNext = null;
             if (compareOn && resBaseline) {
                 const textB = await resBaseline.text();
                 let jsonB = null;
@@ -1435,6 +1481,7 @@ export default function MarketingReport() {
                     setCompareBaselineNote(jsonB?.message || `Comparison request failed (${resBaseline.status}).`);
                 } else if (jsonB != null) {
                     baselineMapped = extractRows(jsonB).map(mapRow);
+                    baselineSummaryNext = extractSummary(jsonB);
                 }
             }
 
@@ -1444,12 +1491,14 @@ export default function MarketingReport() {
             setRows(merged);
             setBaselineRows(compareOn ? baselineMapped : []);
             setSummary(extractSummary(json));
+            setBaselineSummary(compareOn ? baselineSummaryNext : null);
             setSelectedChannel(null);
         } catch (e) {
             setError(e?.message || "Network error while loading marketing data.");
             setRows([]);
             setBaselineRows([]);
             setSummary(null);
+            setBaselineSummary(null);
         } finally {
             setLoading(false);
         }
@@ -1470,12 +1519,15 @@ export default function MarketingReport() {
     const compareOn = useMemo(() => compareRangeActive(compareRange), [compareRange]);
     const compareUi = compareOn && !compareBaselineNote;
 
-    const totalConsents = useMemo(() => rows.reduce((s, r) => s + r.consents, 0), [rows]);
-
-    const totalBaselineConsents = useMemo(
-        () => (compareUi ? baselineRows.reduce((s, r) => s + (Number(r.consents) || 0), 0) : null),
-        [compareUi, baselineRows]
+    const totalConsents = useMemo(
+        () => pickTotalConsentsFromSummary(summary, rows),
+        [summary, rows]
     );
+
+    const totalBaselineConsents = useMemo(() => {
+        if (!compareUi) return null;
+        return pickTotalConsentsFromSummary(baselineSummary, baselineRows);
+    }, [compareUi, baselineSummary, baselineRows]);
 
     const channelOverview = useMemo(() => buildChannelOverview(rows), [rows]);
 
@@ -1511,6 +1563,43 @@ export default function MarketingReport() {
         () => drilldownRows.reduce((s, r) => s + r.consents, 0),
         [drilldownRows]
     );
+
+    const measurementReadyCount = useMemo(() => {
+        if (selectedChannel) {
+            return drilldownRows.reduce((s, r) => s + (Number(r.acceptAll) || 0), 0);
+        }
+        return pickMeasurementReadyCount(summary, rows);
+    }, [selectedChannel, drilldownRows, summary, rows]);
+
+    const measurementReadySharePct = useMemo(() => {
+        if (selectedChannel) {
+            const t = drilldownRows.reduce((s, r) => s + (Number(r.consents) || 0), 0);
+            const a = drilldownRows.reduce((s, r) => s + (Number(r.acceptAll) || 0), 0);
+            return t > 0 ? Math.round((a / t) * 1000) / 10 : null;
+        }
+        return pickMeasurementReadySharePct(summary, rows);
+    }, [selectedChannel, drilldownRows, summary, rows]);
+
+    const baselineMeasurementReadyCount = useMemo(() => {
+        if (!compareUi) return null;
+        if (selectedChannel) {
+            return baselineRows
+                .filter((r) => r.channel === selectedChannel)
+                .reduce((s, r) => s + (Number(r.acceptAll) || 0), 0);
+        }
+        return pickMeasurementReadyCount(baselineSummary, baselineRows);
+    }, [compareUi, selectedChannel, baselineRows, baselineSummary]);
+
+    const baselineMeasurementReadySharePct = useMemo(() => {
+        if (!compareUi) return null;
+        if (selectedChannel) {
+            const br = baselineRows.filter((r) => r.channel === selectedChannel);
+            const t = br.reduce((s, r) => s + (Number(r.consents) || 0), 0);
+            const a = br.reduce((s, r) => s + (Number(r.acceptAll) || 0), 0);
+            return t > 0 ? Math.round((a / t) * 1000) / 10 : null;
+        }
+        return pickMeasurementReadySharePct(baselineSummary, baselineRows);
+    }, [compareUi, selectedChannel, baselineRows, baselineSummary]);
 
     const drillBaselineConsents = useMemo(() => {
         if (!compareUi || !selectedChannel) return null;
@@ -1600,10 +1689,12 @@ export default function MarketingReport() {
     const kpiCards = useMemo(() => {
         const cards = [
             {
+                key: "channels",
                 label: selectedChannel ? "Campaigns in channel" : "Channels",
                 value: selectedChannel
                     ? drilldownRows.length.toLocaleString("de-DE")
                     : channelOverview.length.toLocaleString("de-DE"),
+                hint: null,
                 compare:
                     compareUi && selectedChannel && drillBaselineCampaignCount != null ? (
                         <MarketingCompareInline
@@ -1620,8 +1711,12 @@ export default function MarketingReport() {
                     ) : null,
             },
             {
+                key: "consents",
                 label: selectedChannel ? "Consents (this channel)" : "Consents in view",
                 value: (selectedChannel ? drillConsents : totalConsents).toLocaleString("de-DE"),
+                hint: selectedChannel
+                    ? null
+                    : "Total includes all attributed rows for this period (not only the table page).",
                 compare:
                     compareUi && selectedChannel && drillBaselineConsents != null ? (
                         <MarketingCompareInline kind="volume" current={drillConsents} previous={drillBaselineConsents} />
@@ -1629,19 +1724,58 @@ export default function MarketingReport() {
                         <MarketingCompareInline kind="volume" current={totalConsents} previous={totalBaselineConsents} />
                     ) : null,
             },
+            {
+                key: "measurement-ready",
+                label: selectedChannel ? "Full-stack consents (channel)" : "Full-stack consent events",
+                value: measurementReadyCount.toLocaleString("de-DE"),
+                hint: "Accept-all choices: optional analytics & marketing categories fully on. Useful for budget discussions — not revenue or ROAS.",
+                compare:
+                    compareUi && baselineMeasurementReadyCount != null ? (
+                        <MarketingCompareInline
+                            kind="volume"
+                            current={measurementReadyCount}
+                            previous={baselineMeasurementReadyCount}
+                        />
+                    ) : null,
+            },
+            {
+                key: "measurement-share",
+                label: selectedChannel ? "Full-stack share (channel)" : "Full-stack share of tagged traffic",
+                value:
+                    measurementReadySharePct != null && Number.isFinite(measurementReadySharePct)
+                        ? `${measurementReadySharePct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
+                        : "—",
+                hint: "Share of attributed consent events in this view with accept-all. Compare periods to see if spend reaches consenting audiences.",
+                compare:
+                    compareUi &&
+                    baselineMeasurementReadySharePct != null &&
+                    measurementReadySharePct != null &&
+                    Number.isFinite(measurementReadySharePct) &&
+                    Number.isFinite(baselineMeasurementReadySharePct) ? (
+                        <MarketingCompareInline
+                            kind="rate"
+                            current={measurementReadySharePct}
+                            previous={baselineMeasurementReadySharePct}
+                        />
+                    ) : null,
+            },
         ];
         if (summary && typeof summary === "object") {
             if (summary.sessionsWithMarketingParams != null) {
                 cards.push({
+                    key: "sessions-marketing",
                     label: "Sessions w/ marketing params",
                     value: String(summary.sessionsWithMarketingParams),
+                    hint: null,
                     compare: null,
                 });
             }
             if (summary.distinctCampaigns != null) {
                 cards.push({
+                    key: "distinct-campaigns",
                     label: "Distinct campaigns",
                     value: String(summary.distinctCampaigns),
+                    hint: null,
                     compare: null,
                 });
             }
@@ -1659,6 +1793,10 @@ export default function MarketingReport() {
         drillBaselineConsents,
         baselineChannelCount,
         totalBaselineConsents,
+        measurementReadyCount,
+        measurementReadySharePct,
+        baselineMeasurementReadyCount,
+        baselineMeasurementReadySharePct,
     ]);
 
     return (
@@ -1688,8 +1826,10 @@ export default function MarketingReport() {
                         <h1>Marketing</h1>
                         <p className="marketing-report-hero__lede">
                             <strong>Start with Highlights</strong> for what deserves attention in your selected period,
-                            then drill into channels and campaigns. Cookie choices (accept all, essential only, granular)
-                            explain how tags can fire—exports sit below if you need a spreadsheet.
+                            then drill into channels and campaigns. <strong>Full-stack consent events</strong> show how
+                            much of your tagged traffic actually accepted every optional category — a budget signal, not
+                            ROAS. Cookie choices (accept all, essential only, granular) explain how tags can fire;
+                            exports sit below if you need a spreadsheet.
                         </p>
                         {compareOn ? (
                             <p className="marketing-report-compare-banner">
@@ -1726,13 +1866,16 @@ export default function MarketingReport() {
                         <p className="marketing-report-section__hint">
                             {compareOn
                                 ? `Primary window ${formatPeriodRange(fromDate, toDate)} · Baseline ${formatPeriodRange(previousPeriod, previousPeriod2)}.`
-                                : "Quick counts for the same date range as the header filter."}
+                                : "Quick counts for the same date range as the header filter."}{" "}
+                            Full-stack metrics use the API summary when available so totals stay correct even if the
+                            campaign table is paginated.
                         </p>
                         <div className="marketing-report-summary">
                             {kpiCards.map((c) => (
-                                <div key={c.label} className="marketing-report-kpi">
+                                <div key={c.key || c.label} className="marketing-report-kpi">
                                     <span className="marketing-report-kpi__label">{c.label}</span>
                                     <span className="marketing-report-kpi__value">{c.value}</span>
+                                    {c.hint ? <p className="marketing-report-kpi__hint">{c.hint}</p> : null}
                                     {c.compare ? <div className="marketing-report-kpi__compare">{c.compare}</div> : null}
                                 </div>
                             ))}

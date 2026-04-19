@@ -1,6 +1,0 @@
-# Monthly domain classification (1st of month, 03:15 UTC)
-# Use the path where you deploy domainClassification.php (e.g. after upload from fz3temp-2).
-15 3 1 * * /usr/bin/php -d max_execution_time=7200 /var/www/apis.intastellarsolutions.com/cmp/domainClassification.php >> /var/log/domain-classification.log 2>&1
-
-# Alternative: trigger over HTTPS (set DOMAIN_CLASSIFICATION_CRON_TOKEN on server)
-# 15 3 1 * * curl -fsS -H "X-Cron-Token: YOUR_TOKEN" "https://apis.intastellarsolutions.com/cmp/domainClassification.php" >> /var/log/domain-classification.log 2>&1
