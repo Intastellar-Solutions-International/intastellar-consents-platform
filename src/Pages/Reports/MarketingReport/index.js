@@ -179,6 +179,7 @@ function mergeChannelOverviewWithBaseline(currentOverview, baselineRows) {
 }
 
 function formatPctChange(current, previous) {
+    if (current == null) return null;
     const c = Number(current);
     const p = Number(previous);
     if (!Number.isFinite(c)) return null;
@@ -192,6 +193,7 @@ function formatPctChange(current, previous) {
 }
 
 function formatPtsChange(current, previous) {
+    if (current == null) return null;
     const c = Number(current);
     const p = Number(previous);
     if (!Number.isFinite(c) || previous == null || !Number.isFinite(p)) return null;
@@ -202,9 +204,10 @@ function formatPtsChange(current, previous) {
 }
 
 function marketingCompareVolumeClass(current, previous) {
+    if (current == null || previous == null) return "";
     const c = Number(current);
     const p = Number(previous);
-    if (previous == null || !Number.isFinite(p) || !Number.isFinite(c)) return "";
+    if (!Number.isFinite(p) || !Number.isFinite(c)) return "";
     if (p === 0) return c > 0 ? "marketing-report-delta--up" : "";
     const pct = ((c - p) / p) * 100;
     if (pct > 0.5) return "marketing-report-delta--up";
@@ -413,28 +416,47 @@ function summarizeContextList(list, formatter) {
         .replace(/\r?\n/g, " ");
 }
 
+function csvRelativeChangeNumber(current, previous) {
+    const c = Number(current);
+    const p = Number(previous);
+    if (previous == null || !Number.isFinite(p) || !Number.isFinite(c)) return "";
+    if (p === 0) return c === 0 ? "0" : "";
+    return String(Math.round(((c - p) / p) * 10000) / 100);
+}
+
 function buildMarketingCsvCampaignRows(rows, meta) {
+    const cmp = Boolean(meta.compareExport);
     const lines = [
         `# Marketing — campaign rows`,
         `# From: ${meta.from}; To: ${meta.to}; Scope: ${meta.scope}`,
+        ...(meta.compareOn ? [`# Compare: ${meta.compareFrom} – ${meta.compareTo}`] : []),
         `# Generated: ${meta.generatedAt}`,
-        [
-            "channel",
-            "utm_source",
-            "utm_medium",
-            "utm_campaign",
-            "referrer_host",
-            "consents",
-            "accept_rate_pct",
-            "accept_all",
-            "essential_only",
-            "granular",
-            "top_countries",
-            "top_landing_paths",
-            "top_utm_content",
-            "top_utm_terms",
-        ].join(","),
     ];
+    const header = [
+        "channel",
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "referrer_host",
+        "consents",
+        "accept_rate_pct",
+        "accept_all",
+        "essential_only",
+        "granular",
+        "top_countries",
+        "top_landing_paths",
+        "top_utm_content",
+        "top_utm_terms",
+    ];
+    if (cmp) {
+        header.push(
+            "baseline_consents",
+            "consents_change_pct",
+            "baseline_accept_rate_pct",
+            "accept_rate_pts_change"
+        );
+    }
+    lines.push(header.join(","));
     for (const r of rows) {
         const ctx = r.context;
         const topCountries = summarizeContextList(ctx?.topCountries, (x) => `${x.country}:${x.consents}`);
@@ -456,27 +478,55 @@ function buildMarketingCsvCampaignRows(rows, meta) {
             topPaths,
             topContent,
             topTerms,
-        ].map(escapeCsvCell);
-        lines.push(row.join(","));
+        ];
+        if (cmp) {
+            const pts =
+                r.acceptPct != null &&
+                Number.isFinite(r.acceptPct) &&
+                r.prevAcceptPct != null &&
+                Number.isFinite(r.prevAcceptPct)
+                    ? String(Math.round((r.acceptPct - r.prevAcceptPct) * 10) / 10)
+                    : "";
+            row.push(
+                r.prevConsents != null ? String(r.prevConsents) : "",
+                csvRelativeChangeNumber(r.consents, r.prevConsents),
+                r.prevAcceptPct != null && Number.isFinite(r.prevAcceptPct) ? String(r.prevAcceptPct) : "",
+                pts
+            );
+        }
+        lines.push(row.map(escapeCsvCell).join(","));
     }
     return lines.join("\r\n");
 }
 
 function buildMarketingCsvChannelRows(channelOverview, meta) {
+    const cmp = Boolean(meta.compareExport);
     const lines = [
         `# Marketing — channel overview`,
         `# From: ${meta.from}; To: ${meta.to}; Scope: ${meta.scope}`,
+        ...(meta.compareOn ? [`# Compare: ${meta.compareFrom} – ${meta.compareTo}`] : []),
         `# Generated: ${meta.generatedAt}`,
-        [
-            "channel",
-            "campaigns",
-            "consents",
-            "accept_rate_pct_weighted",
-            "accept_all",
-            "essential_only",
-            "granular",
-        ].join(","),
     ];
+    const header = [
+        "channel",
+        "campaigns",
+        "consents",
+        "accept_rate_pct_weighted",
+        "accept_all",
+        "essential_only",
+        "granular",
+    ];
+    if (cmp) {
+        header.push(
+            "baseline_campaigns",
+            "baseline_consents",
+            "campaigns_change_pct",
+            "consents_change_pct",
+            "baseline_accept_rate_pct_weighted",
+            "accept_rate_pts_change"
+        );
+    }
+    lines.push(header.join(","));
     for (const r of channelOverview) {
         const row = [
             r.channel,
@@ -486,8 +536,25 @@ function buildMarketingCsvChannelRows(channelOverview, meta) {
             String(r.acceptAll ?? 0),
             String(r.essentialOnly ?? 0),
             String(r.granular ?? 0),
-        ].map(escapeCsvCell);
-        lines.push(row.join(","));
+        ];
+        if (cmp) {
+            const pts =
+                r.acceptPct != null &&
+                Number.isFinite(r.acceptPct) &&
+                r.prevAcceptPct != null &&
+                Number.isFinite(r.prevAcceptPct)
+                    ? String(Math.round((r.acceptPct - r.prevAcceptPct) * 10) / 10)
+                    : "";
+            row.push(
+                r.prevCampaignCount != null ? String(r.prevCampaignCount) : "",
+                r.prevConsents != null ? String(r.prevConsents) : "",
+                csvRelativeChangeNumber(r.campaignCount, r.prevCampaignCount),
+                csvRelativeChangeNumber(r.consents, r.prevConsents),
+                r.prevAcceptPct != null && Number.isFinite(r.prevAcceptPct) ? String(r.prevAcceptPct) : "",
+                pts
+            );
+        }
+        lines.push(row.map(escapeCsvCell).join(","));
     }
     return lines.join("\r\n");
 }
@@ -885,6 +952,11 @@ function marketingSortAriaLabel(label, columnKey, kind, sort) {
 }
 
 function MarketingCompareInline({ current, previous, kind = "volume" }) {
+    if (kind === "rate") {
+        const c = Number(current);
+        const hasCur = current != null && Number.isFinite(c);
+        if (previous == null && !hasCur) return null;
+    }
     if (previous == null) {
         return (
             <span
@@ -909,7 +981,7 @@ function MarketingCompareInline({ current, previous, kind = "volume" }) {
                       : "marketing-report-delta--flat"
                 : "";
         return (
-            <span className={`marketing-report-delta ${cls}`.trim()} title="Change vs comparison window (points)">
+            <span className={["marketing-report-delta", cls].filter(Boolean).join(" ")} title="Change vs comparison window (points)">
                 {pts}
             </span>
         );
@@ -918,11 +990,24 @@ function MarketingCompareInline({ current, previous, kind = "volume" }) {
     if (rel == null) return null;
     return (
         <span
-            className={`marketing-report-delta ${marketingCompareVolumeClass(current, previous)}`.trim()}
+            className={["marketing-report-delta", marketingCompareVolumeClass(current, previous)].filter(Boolean).join(" ")}
             title="Change vs comparison window"
         >
             {rel}
         </span>
+    );
+}
+
+function MarketingMetricStack({ compareUi, primary, current, previous, kind = "volume" }) {
+    return (
+        <div className="marketing-report-cell-stack">
+            <span className="marketing-report-cell-stack__primary">{primary}</span>
+            {compareUi ? (
+                <span className="marketing-report-cell-stack__compare">
+                    <MarketingCompareInline kind={kind} current={current} previous={previous} />
+                </span>
+            ) : null}
+        </div>
     );
 }
 
@@ -1207,6 +1292,7 @@ export default function MarketingReport() {
         if (!endpoint?.url) {
             setError("Marketing is not configured for this platform.");
             setRows([]);
+            setBaselineRows([]);
             setSummary(null);
             return;
         }
@@ -1250,10 +1336,10 @@ export default function MarketingReport() {
                 "X-Compare-Range": "",
             };
 
-            const method = endpoint.method || "GET";
-            const primaryFetch = fetch(endpoint.url, { method, headers: primaryHeaders });
+            const reqMethod = endpoint.method || "GET";
+            const primaryFetch = fetch(endpoint.url, { method: reqMethod, headers: primaryHeaders });
             const fetches = compareOn
-                ? [primaryFetch, fetch(endpoint.url, { method, headers: baselineHeaders })]
+                ? [primaryFetch, fetch(endpoint.url, { method: reqMethod, headers: baselineHeaders })]
                 : [primaryFetch];
             const responses = await Promise.all(fetches);
             const res = responses[0];
@@ -1333,9 +1419,22 @@ export default function MarketingReport() {
         fetchReport();
     }, [fetchReport]);
 
+    const compareOn = useMemo(() => compareRangeActive(compareRange), [compareRange]);
+    const compareUi = compareOn && !compareBaselineNote;
+
     const totalConsents = useMemo(() => rows.reduce((s, r) => s + r.consents, 0), [rows]);
 
+    const totalBaselineConsents = useMemo(
+        () => (compareUi ? baselineRows.reduce((s, r) => s + (Number(r.consents) || 0), 0) : null),
+        [compareUi, baselineRows]
+    );
+
     const channelOverview = useMemo(() => buildChannelOverview(rows), [rows]);
+
+    const channelOverviewWithCompare = useMemo(
+        () => mergeChannelOverviewWithBaseline(channelOverview, compareUi ? baselineRows : []),
+        [channelOverview, baselineRows, compareUi]
+    );
 
     const drilldownRows = useMemo(() => {
         if (!selectedChannel) return [];
@@ -1343,8 +1442,8 @@ export default function MarketingReport() {
     }, [rows, selectedChannel]);
 
     const sortedChannelOverview = useMemo(
-        () => sortChannelOverviewRows(channelOverview, channelTableSort),
-        [channelOverview, channelTableSort]
+        () => sortChannelOverviewRows(channelOverviewWithCompare, channelTableSort),
+        [channelOverviewWithCompare, channelTableSort]
     );
 
     const sortedDrilldownRows = useMemo(
@@ -1364,6 +1463,23 @@ export default function MarketingReport() {
         () => drilldownRows.reduce((s, r) => s + r.consents, 0),
         [drilldownRows]
     );
+
+    const drillBaselineConsents = useMemo(() => {
+        if (!compareUi || !selectedChannel) return null;
+        return baselineRows
+            .filter((r) => r.channel === selectedChannel)
+            .reduce((s, r) => s + (Number(r.consents) || 0), 0);
+    }, [compareUi, baselineRows, selectedChannel]);
+
+    const drillBaselineCampaignCount = useMemo(() => {
+        if (!compareUi || !selectedChannel) return null;
+        return baselineRows.filter((r) => r.channel === selectedChannel).length;
+    }, [compareUi, baselineRows, selectedChannel]);
+
+    const baselineChannelCount = useMemo(() => {
+        if (!compareUi) return null;
+        return buildChannelOverview(baselineRows).length;
+    }, [compareUi, baselineRows]);
 
     const unclassifiedConsents = useMemo(
         () =>
@@ -1404,8 +1520,12 @@ export default function MarketingReport() {
             to: toYmd(toDate),
             scope: listDomainLabel,
             generatedAt: new Date().toISOString(),
+            compareOn,
+            compareExport: compareUi,
+            compareFrom: compareOn ? toYmd(previousPeriod) : "",
+            compareTo: compareOn ? toYmd(previousPeriod2) : "",
         }),
-        [fromDate, toDate, listDomainLabel]
+        [fromDate, toDate, listDomainLabel, compareOn, compareUi, previousPeriod, previousPeriod2]
     );
 
     const exportFilenameBase = useMemo(() => {
@@ -1436,10 +1556,30 @@ export default function MarketingReport() {
                 value: selectedChannel
                     ? drilldownRows.length.toLocaleString("de-DE")
                     : channelOverview.length.toLocaleString("de-DE"),
+                compare:
+                    compareUi && selectedChannel && drillBaselineCampaignCount != null ? (
+                        <MarketingCompareInline
+                            kind="volume"
+                            current={drilldownRows.length}
+                            previous={drillBaselineCampaignCount}
+                        />
+                    ) : compareUi && !selectedChannel && baselineChannelCount != null ? (
+                        <MarketingCompareInline
+                            kind="volume"
+                            current={channelOverview.length}
+                            previous={baselineChannelCount}
+                        />
+                    ) : null,
             },
             {
                 label: selectedChannel ? "Consents (this channel)" : "Consents in view",
                 value: (selectedChannel ? drillConsents : totalConsents).toLocaleString("de-DE"),
+                compare:
+                    compareUi && selectedChannel && drillBaselineConsents != null ? (
+                        <MarketingCompareInline kind="volume" current={drillConsents} previous={drillBaselineConsents} />
+                    ) : compareUi && !selectedChannel && totalBaselineConsents != null ? (
+                        <MarketingCompareInline kind="volume" current={totalConsents} previous={totalBaselineConsents} />
+                    ) : null,
             },
         ];
         if (summary && typeof summary === "object") {
@@ -1447,17 +1587,31 @@ export default function MarketingReport() {
                 cards.push({
                     label: "Sessions w/ marketing params",
                     value: String(summary.sessionsWithMarketingParams),
+                    compare: null,
                 });
             }
             if (summary.distinctCampaigns != null) {
                 cards.push({
                     label: "Distinct campaigns",
                     value: String(summary.distinctCampaigns),
+                    compare: null,
                 });
             }
         }
         return cards;
-    }, [totalConsents, drillConsents, summary, selectedChannel, drilldownRows.length, channelOverview.length]);
+    }, [
+        totalConsents,
+        drillConsents,
+        summary,
+        selectedChannel,
+        drilldownRows.length,
+        channelOverview.length,
+        compareUi,
+        drillBaselineCampaignCount,
+        drillBaselineConsents,
+        baselineChannelCount,
+        totalBaselineConsents,
+    ]);
 
     return (
         <>
@@ -1489,6 +1643,19 @@ export default function MarketingReport() {
                             then drill into channels and campaigns. Cookie choices (accept all, essential only, granular)
                             explain how tags can fire—exports sit below if you need a spreadsheet.
                         </p>
+                        {compareOn ? (
+                            <p className="marketing-report-compare-banner">
+                                Period comparison is on: <strong>{formatPeriodRange(fromDate, toDate)}</strong> vs{" "}
+                                <strong>{formatPeriodRange(previousPeriod, previousPeriod2)}</strong>. Table deltas match
+                                rows by source, medium, campaign, and referrer host.
+                            </p>
+                        ) : null}
+                        {compareBaselineNote ? (
+                            <p className="marketing-report-compare-warning" role="status">
+                                {compareBaselineNote} Current-period figures are still shown; baseline deltas are hidden
+                                until the comparison request succeeds.
+                            </p>
+                        ) : null}
                     </header>
 
                     {error ? (
@@ -1509,13 +1676,16 @@ export default function MarketingReport() {
                             At a glance
                         </h2>
                         <p className="marketing-report-section__hint">
-                            Quick counts for the same date range as the header filter.
+                            {compareOn
+                                ? `Primary window ${formatPeriodRange(fromDate, toDate)} · Baseline ${formatPeriodRange(previousPeriod, previousPeriod2)}.`
+                                : "Quick counts for the same date range as the header filter."}
                         </p>
                         <div className="marketing-report-summary">
                             {kpiCards.map((c) => (
                                 <div key={c.label} className="marketing-report-kpi">
                                     <span className="marketing-report-kpi__label">{c.label}</span>
                                     <span className="marketing-report-kpi__value">{c.value}</span>
+                                    {c.compare ? <div className="marketing-report-kpi__compare">{c.compare}</div> : null}
                                 </div>
                             ))}
                         </div>
@@ -1607,8 +1777,12 @@ export default function MarketingReport() {
                         </h2>
                         <p className="marketing-report-section__hint">
                             {selectedChannel
-                                ? "Per-campaign consent and cookie-choice mix for this channel."
-                                : "Open a channel row to see individual campaigns."}
+                                ? compareUi
+                                    ? "Per-campaign metrics vs the comparison window for matched rows. Choice columns are current period only."
+                                    : "Per-campaign consent and cookie-choice mix for this channel."
+                                : compareUi
+                                  ? "Channel totals vs the comparison window. Deltas use baseline traffic grouped the same way as the primary table."
+                                  : "Open a channel row to see individual campaigns."}
                         </p>
 
                     <div className="marketing-report-table-wrap">
@@ -1683,12 +1857,26 @@ export default function MarketingReport() {
                                             <tr key={`${r.channel}-${r.utmCampaign}-${i}`}>
                                                 <td className="marketing-report-table__col-campaign">{r.utmCampaign}</td>
                                                 <td className="marketing-report-table__col-num">
-                                                    {r.consents.toLocaleString("de-DE")}
+                                                    <MarketingMetricStack
+                                                        compareUi={compareUi}
+                                                        primary={r.consents.toLocaleString("de-DE")}
+                                                        current={r.consents}
+                                                        previous={r.prevConsents}
+                                                        kind="volume"
+                                                    />
                                                 </td>
                                                 <td className="marketing-report-table__col-num">
-                                                    {r.acceptPct != null && Number.isFinite(r.acceptPct)
-                                                        ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
-                                                        : "—"}
+                                                    <MarketingMetricStack
+                                                        compareUi={compareUi}
+                                                        primary={
+                                                            r.acceptPct != null && Number.isFinite(r.acceptPct)
+                                                                ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
+                                                                : "—"
+                                                        }
+                                                        current={r.acceptPct}
+                                                        previous={r.prevAcceptPct}
+                                                        kind="rate"
+                                                    />
                                                 </td>
                                                 <td className="marketing-report-table__col-choice">
                                                     {formatChoiceCountPct(r.acceptAll, r.consents)}
@@ -1793,15 +1981,35 @@ export default function MarketingReport() {
                                                 </span>
                                             </td>
                                             <td className="marketing-report-table__col-num">
-                                                {r.campaignCount.toLocaleString("de-DE")}
+                                                <MarketingMetricStack
+                                                    compareUi={compareUi}
+                                                    primary={r.campaignCount.toLocaleString("de-DE")}
+                                                    current={r.campaignCount}
+                                                    previous={r.prevCampaignCount}
+                                                    kind="volume"
+                                                />
                                             </td>
                                             <td className="marketing-report-table__col-num">
-                                                {r.consents.toLocaleString("de-DE")}
+                                                <MarketingMetricStack
+                                                    compareUi={compareUi}
+                                                    primary={r.consents.toLocaleString("de-DE")}
+                                                    current={r.consents}
+                                                    previous={r.prevConsents}
+                                                    kind="volume"
+                                                />
                                             </td>
                                             <td className="marketing-report-table__col-num">
-                                                {r.acceptPct != null && Number.isFinite(r.acceptPct)
-                                                    ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
-                                                    : "—"}
+                                                <MarketingMetricStack
+                                                    compareUi={compareUi}
+                                                    primary={
+                                                        r.acceptPct != null && Number.isFinite(r.acceptPct)
+                                                            ? `${r.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`
+                                                            : "—"
+                                                    }
+                                                    current={r.acceptPct}
+                                                    previous={r.prevAcceptPct}
+                                                    kind="rate"
+                                                />
                                             </td>
                                             <td className="marketing-report-table__col-choice">
                                                 {formatChoiceCountPct(r.acceptAll, r.consents)}

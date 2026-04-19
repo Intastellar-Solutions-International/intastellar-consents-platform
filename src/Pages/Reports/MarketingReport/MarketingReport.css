@@ -552,3 +552,74 @@
     color: rgba(195, 195, 200, 0.9);
     font-variant-numeric: tabular-nums;
 }
+
+.marketing-report-compare-banner {
+    margin: 12px 0 0;
+    max-width: 52rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: rgba(210, 200, 175, 0.95);
+}
+
+.marketing-report-compare-warning {
+    margin: 10px 0 0;
+    max-width: 52rem;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(220, 150, 100, 0.35);
+    background: rgba(60, 30, 15, 0.35);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: rgba(255, 210, 185, 0.96);
+}
+
+.marketing-report-kpi__compare {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+.marketing-report-cell-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.marketing-report-table__col-campaign .marketing-report-cell-stack {
+    align-items: flex-start;
+}
+
+.marketing-report-cell-stack__primary {
+    font-variant-numeric: tabular-nums;
+}
+
+.marketing-report-cell-stack__compare {
+    font-size: 0.68rem;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+}
+
+.marketing-report-delta {
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.marketing-report-delta--up {
+    color: rgba(130, 205, 155, 0.95);
+}
+
+.marketing-report-delta--down {
+    color: rgba(235, 145, 125, 0.95);
+}
+
+.marketing-report-delta--flat {
+    color: rgba(175, 175, 185, 0.9);
+}
+
+.marketing-report-delta--new {
+    font-weight: 500;
+    color: rgba(160, 185, 220, 0.92);
+}
