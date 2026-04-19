@@ -1,5 +1,4 @@
 const { useState, useEffect, useRef, useContext } = React;
-import { use } from "i18next";
 import "../Line/Style.css";
 
 export default function Pie({ data, title, fromDate, toDate }) {

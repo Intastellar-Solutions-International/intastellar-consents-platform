@@ -1,5 +1,4 @@
 const { useState, useEffect, useRef, useContext } = React;
-import { use } from "i18next";
 import "../Line/Style.css";
 
 export default function BarChart({ data, data2, title, fromDate, toDate }) {

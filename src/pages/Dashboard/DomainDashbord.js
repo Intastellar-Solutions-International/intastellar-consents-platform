@@ -8,7 +8,7 @@ import Map from "../../Components/Charts/WorldMap/WorldMap.js";
 import { DomainContext } from "../../App.js";
 import NotAllowed from "../../Components/NotAllowed/NotAllowed";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
+import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import Select from "../../Components/SelectInput/Selector.js";

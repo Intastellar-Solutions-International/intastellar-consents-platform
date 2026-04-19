@@ -1,7 +1,7 @@
 const { useState, useEffect, useMemo, useContext, useCallback } = React;
 import SideNav from "../../../Components/Header/SideNav";
 import StickyPageTitle from "../../../Components/Header/Sticky";
-import { defaultCompareWindowForPrimary } from "../../../components/Filter/filterDatePresets.js";
+import { defaultCompareWindowForPrimary } from "../../../Components/Filter/filterDatePresets.js";
 import { reportsLinks } from "../Reports";
 import { DomainContext } from "../../../App.js";
 import API from "../../../API/api";

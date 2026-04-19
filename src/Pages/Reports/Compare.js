@@ -1,6 +1,6 @@
 const { useState, useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky";
-import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
+import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import API from "../../API/api";
 const useParams = window.ReactRouterDOM.useParams;
 import Fetch from "../../Functions/fetch";

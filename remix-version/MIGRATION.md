@@ -1,59 +1,40 @@
 # Webpack app → Remix (`remix-version`)
 
-This folder is a **parallel Remix app** that mirrors the URL map from `src/App.js`. Each route currently renders a **`MigrationShell`** placeholder pointing at the legacy file to port.
+## Current approach (all screens)
 
-## Run (Node ≥ 18, recommended 20)
+The legacy UI is **hosted inside Remix** via a single catch-all route (`app/routes/$.tsx`) that mounts `src/App.js` once in `app/legacy/LegacyRoot.tsx`:
+
+1. **`assignLegacyGlobals`** sets `globalThis.React`, `ReactDOM`, and `ReactRouterDOM` (React Router **v5**, npm alias `react-router-dom-v5`) so existing `App.js` and `src/**/*.js` behave like the old UMD shell.
+2. **Dynamic `import()`** loads `App.js` only in the browser after globals are set (avoids `localStorage` / `window` during SSR module init).
+3. **Vite `legacy-src-jsx` plugin** (`vite.config.ts`) transpiles JSX inside `../src/**/*.js` before Vite’s import analysis (same role Babel had in webpack).
+
+Global scripts used by charts/maps (AnyChart, svgMap, svg-pan-zoom, Stripe pricing table) are loaded from **`root.tsx`** `<head>`.
+
+## Run
 
 ```bash
 cd remix-version
 npm install
+nvm use   # Node 18+ (see .nvmrc)
 npm run dev
 ```
 
-If your default Node is older, use `nvm use` (see `.nvmrc`) or another version manager.
+Open any legacy path (`/login`, `/gdpr/dashboard`, `/gdpr/reports/marketing`, …).
 
-## What is done
+## Next steps (true Remix port)
 
-- **Vite** + **Remix v2** flat routes, **Tailwind** (optional; legacy `App.css` is imported from `root.tsx` for shared variables).
-- **Pathless layout** `routes/_app.tsx` — replace with real `Header` / `Nav` / `Footer` from `src/`.
-- **Route modules** for the same paths as the React Router `Switch` (public routes without `_app`, authenticated-style routes under `_app`).
-- **`@legacy/*`** path alias in `tsconfig.json` and Vite `resolve.alias` → `../src/*` for gradual imports (components will need refactors: no `window.React`, no `require`, ESM imports).
+Gradually replace the bridge with:
 
-## Route map (Remix file → URL → legacy)
+- **Loaders/actions** for API calls and cookies/sessions  
+- **Route modules** per URL instead of one splat  
+- **Remove globals** and React Router v5 from `src/`
 
-| Remix route module | URL | Legacy reference |
-|--------------------|-----|-------------------|
-| `_index.tsx` | `/` | Redirects to `/login` (legacy showed Login on `/`) |
-| `login.tsx` | `/login` | `src/Login/Login.js` |
-| `signup.tsx` | `/signup` | `src/Login/Signup.js` |
-| `auth-login.tsx` | `/auth-login` | `src/Login/AuthLogin.js` |
-| `check.tsx` | `/check` | `src/components/Crawler` + `App.js` |
-| `_app.dashboard.tsx` | `/dashboard` | `PlatformSelector` in `App.js` |
-| `_app.$id.dashboard.tsx` | `/:id/dashboard` | `Dashboard.js` / `ferry/Dashboard.js` |
-| `_app.$id.view.$handle.tsx` | `/:id/view/:handle` | Same dashboard shell, domain handle |
-| `_app.$id.domains.tsx` | `/:id/domains` | `src/Pages/Domains/index.js` |
-| `_app.$id.cookies.tsx` | `/:id/cookies` | `CookiesDashboard.js` |
-| `_app.$id.compare.tsx` | `/:id/compare` | `Reports/Compare.js` |
-| `_app.$id.reports.tsx` | `/:id/reports` | `Reports/Reports.js` |
-| `_app.$id.reports.user-consents.tsx` | `/:id/reports/user-consents` | `UserConsents/UserConsents.js` |
-| `_app.$id.reports.audit-report.tsx` | `/:id/reports/audit-report` | `AuditReport/index.js` |
-| `_app.$id.reports.marketing.tsx` | `/:id/reports/marketing` | `MarketingReport/index.js` |
-| `_app.$id.reports.view.$handle.tsx` | `/:id/reports/view/:handle` | `Reports.js` (scoped) |
-| `_app.$id.reports.view.$handle.user-consents.tsx` | `/:id/reports/view/:handle/user-consents` | `UserConsents.js` |
-| `_app.$id.reports.view.$handle.audit-report.tsx` | `/:id/reports/view/:handle/audit-report` | `AuditReport` |
-| `_app.$id.reports.view.$handle.marketing.tsx` | `/:id/reports/view/:handle/marketing` | `MarketingReport` |
-| `_app.settings.tsx` | `/settings` | `Pages/Settings/index.js` |
-| `_app.settings.*.tsx` | `/settings/...` | Matching files under `Pages/Settings/` |
-| `_app.experiments.tsx` | `/experiments` | `Experiments/Experiments.js` |
-| `_app.experiments.$experimentId.tsx` | `/experiments/:experimentId` | Same |
+## Legacy `src/` tweaks for Vite
 
-## Porting order (suggested)
-
-1. **Session / auth** — replace `localStorage.getItem("globals")` checks with Remix `sessionStorage` + `root` loader, or cookie sessions.
-2. **API module** — move `src/API/api.js` to `app/lib/api.ts` and call from `loader`/`action` (avoid secrets in client bundles).
-3. **Contexts** — `OrganisationContext`, `DomainContext` → Remix `Outlet` context or loaders + `useLoaderData`.
-4. **One vertical slice** — e.g. `/login` + `/:id/dashboard` end-to-end before `MarketingReport`.
+- **`punycode`**: `require("punycode")` → `import punycode from "punycode"` where needed.  
+- **ESM import order**: `import` statements moved above `const … = React` in files that mixed them.  
+- **Path casing**: imports to `Filter/filterDatePresets` use **`../../Components/Filter/...`** so TypeScript matches the same canonical path as `App.js` → `./Components/...`.
 
 ## Vercel
 
-Deploy this app as a **separate Vercel project** rooted at `remix-version`, or use a monorepo “Root Directory” setting. Port `api/*.js` as **resource routes** or keep as Vercel serverless in the parent project until merged.
+Deploy with project **Root Directory** = `remix-version`. Copy or symlink `api/` from the repo root if you need the same serverless routes, or port them to Remix resource routes.

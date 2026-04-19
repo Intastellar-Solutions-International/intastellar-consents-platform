@@ -14,7 +14,7 @@ import { isJson } from "../../Functions/isJson.js";
 import Crawler from "../../Components/Crawler";
 import Line from "../../Components/Charts/Line"
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
+import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import AuditSnapshotCard from "../../components/AuditSnapshotCard/AuditSnapshotCard.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";

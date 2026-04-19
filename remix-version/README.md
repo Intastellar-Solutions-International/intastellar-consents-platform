@@ -1,6 +1,6 @@
 # Intastellar Consents — Remix migration (`remix-version`)
 
-This is the **Remix + Vite** port of the webpack/React Router app in the repo root. It mirrors legacy URLs; most routes are **placeholders** until components are moved over. See **[MIGRATION.md](./MIGRATION.md)** for the route map and porting notes.
+This is the **Remix + Vite** shell for the existing dashboard: the full legacy app from `../src/App.js` is mounted client-side in one catch-all route (see **`app/legacy/`** and **[MIGRATION.md](./MIGRATION.md)**). All previous screens and URLs should behave as in the webpack build, while you can later replace pieces with native Remix loaders and routes.
 
 - 📖 [Remix docs](https://remix.run/docs)
 

@@ -2,7 +2,7 @@ const { useState, useEffect } = React;
 import API from "../../API/api";
 const useParams = window.ReactRouterDOM.useParams;
 import StickyPageTitle from "../../Components/Header/Sticky";
-import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
+import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import Widget from "../../Components/widget/widget.js";
 import Select from "../../Components/SelectInput/Selector.js";
 import Table from "../../Components/Tabel/index.js";

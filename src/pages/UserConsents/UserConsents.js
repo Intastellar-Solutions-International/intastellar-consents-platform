@@ -18,7 +18,7 @@ import {
     consentsDomainFromRoute,
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
-import { defaultCompareWindowForPrimary } from "../../components/Filter/filterDatePresets.js";
+import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import punycode from "punycode";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
