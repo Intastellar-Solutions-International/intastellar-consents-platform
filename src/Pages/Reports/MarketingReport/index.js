@@ -45,6 +45,173 @@ function extractSummary(payload) {
     return null;
 }
 
+function compareRangeActive(compareRange) {
+    return compareRange !== 0 && compareRange != null;
+}
+
+/** Stable join key for matching primary-period rows to baseline-period rows. */
+function marketingAttributionRowKey(utmSource, utmMedium, rawCampaign, referrer) {
+    return [
+        normUtm(utmSource),
+        normUtm(utmMedium),
+        normUtm(String(rawCampaign ?? "").trim()),
+        normUtm(referrer),
+    ].join("|");
+}
+
+function aggregateBaselineByRowKey(baselineRows) {
+    const m = new Map();
+    for (const r of baselineRows) {
+        const k = r.rowKey;
+        if (!k) continue;
+        if (!m.has(k)) {
+            m.set(k, {
+                consents: 0,
+                acceptAll: 0,
+                essentialOnly: 0,
+                granular: 0,
+                acceptNum: 0,
+                acceptDen: 0,
+            });
+        }
+        const x = m.get(k);
+        x.consents += Number(r.consents) || 0;
+        x.acceptAll += Number(r.acceptAll) || 0;
+        x.essentialOnly += Number(r.essentialOnly) || 0;
+        x.granular += Number(r.granular) || 0;
+        if (r.acceptPct != null && Number.isFinite(r.acceptPct) && r.consents > 0) {
+            x.acceptNum += r.acceptPct * r.consents;
+            x.acceptDen += r.consents;
+        }
+    }
+    const out = new Map();
+    for (const [k, x] of m) {
+        const acceptPct =
+            x.acceptDen > 0 ? Math.round((x.acceptNum / x.acceptDen) * 10) / 10 : null;
+        out.set(k, {
+            consents: x.consents,
+            acceptAll: x.acceptAll,
+            essentialOnly: x.essentialOnly,
+            granular: x.granular,
+            acceptPct,
+        });
+    }
+    return out;
+}
+
+/**
+ * Attach baseline metrics to each primary row (matched by rowKey).
+ * When no baseline row exists, prev* fields are null (treat as new / unmatched in baseline).
+ */
+function attachBaselineToRows(primaryRows, baselineRows) {
+    if (!baselineRows?.length) {
+        return primaryRows.map((r) => ({
+            ...r,
+            prevConsents: null,
+            prevAcceptPct: null,
+            prevAcceptAll: null,
+            prevEssentialOnly: null,
+            prevGranular: null,
+        }));
+    }
+    const agg = aggregateBaselineByRowKey(baselineRows);
+    return primaryRows.map((r) => {
+        const b = agg.get(r.rowKey);
+        if (!b) {
+            return {
+                ...r,
+                prevConsents: null,
+                prevAcceptPct: null,
+                prevAcceptAll: null,
+                prevEssentialOnly: null,
+                prevGranular: null,
+            };
+        }
+        return {
+            ...r,
+            prevConsents: b.consents,
+            prevAcceptPct: b.acceptPct,
+            prevAcceptAll: b.acceptAll,
+            prevEssentialOnly: b.essentialOnly,
+            prevGranular: b.granular,
+        };
+    });
+}
+
+/** Merge channel-level baseline totals for the overview table (all campaigns in baseline window). */
+function mergeChannelOverviewWithBaseline(currentOverview, baselineRows) {
+    if (!baselineRows?.length) {
+        return currentOverview.map((c) => ({
+            ...c,
+            prevConsents: null,
+            prevCampaignCount: null,
+            prevAcceptPct: null,
+            prevAcceptAll: null,
+            prevEssentialOnly: null,
+            prevGranular: null,
+        }));
+    }
+    const baselineOverview = buildChannelOverview(baselineRows);
+    const bMap = new Map(baselineOverview.map((x) => [x.channel, x]));
+    return currentOverview.map((c) => {
+        const b = bMap.get(c.channel);
+        if (!b) {
+            return {
+                ...c,
+                prevConsents: null,
+                prevCampaignCount: null,
+                prevAcceptPct: null,
+                prevAcceptAll: null,
+                prevEssentialOnly: null,
+                prevGranular: null,
+            };
+        }
+        return {
+            ...c,
+            prevConsents: b.consents,
+            prevCampaignCount: b.campaignCount,
+            prevAcceptPct: b.acceptPct,
+            prevAcceptAll: b.acceptAll,
+            prevEssentialOnly: b.essentialOnly,
+            prevGranular: b.granular,
+        };
+    });
+}
+
+function formatPctChange(current, previous) {
+    const c = Number(current);
+    const p = Number(previous);
+    if (!Number.isFinite(c)) return null;
+    if (previous == null || !Number.isFinite(p)) return null;
+    if (p === 0 && c === 0) return "0%";
+    if (p === 0) return "—";
+    const pct = ((c - p) / p) * 100;
+    const rounded = Math.round(pct * 10) / 10;
+    const sign = rounded > 0 ? "+" : "";
+    return `${sign}${rounded.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%`;
+}
+
+function formatPtsChange(current, previous) {
+    const c = Number(current);
+    const p = Number(previous);
+    if (!Number.isFinite(c) || previous == null || !Number.isFinite(p)) return null;
+    const d = c - p;
+    const rounded = Math.round(d * 10) / 10;
+    const sign = rounded > 0 ? "+" : "";
+    return `${sign}${rounded.toLocaleString("de-DE", { maximumFractionDigits: 1 })} pts`;
+}
+
+function marketingCompareVolumeClass(current, previous) {
+    const c = Number(current);
+    const p = Number(previous);
+    if (previous == null || !Number.isFinite(p) || !Number.isFinite(c)) return "";
+    if (p === 0) return c > 0 ? "marketing-report-delta--up" : "";
+    const pct = ((c - p) / p) * 100;
+    if (pct > 0.5) return "marketing-report-delta--up";
+    if (pct < -0.5) return "marketing-report-delta--down";
+    return "marketing-report-delta--flat";
+}
+
 function normUtm(s) {
     return String(s ?? "")
         .trim()
@@ -146,10 +313,13 @@ function mapRow(r) {
         r.referrer_url ??
         (r.referrerDomain != null ? String(r.referrerDomain) : "—");
     const rawCampaign = String(r.utm_campaign ?? r.utmCampaign ?? r.campaign ?? "—");
+    const utmSource = String(r.utm_source ?? r.utmSource ?? r.source ?? "—");
+    const utmMedium = String(r.utm_medium ?? r.utmMedium ?? r.medium ?? "—");
+    const referrerNorm = ref === "" || ref == null ? "—" : String(ref);
     const base = {
-        referrer: ref === "" || ref == null ? "—" : String(ref),
-        utmSource: String(r.utm_source ?? r.utmSource ?? r.source ?? "—"),
-        utmMedium: String(r.utm_medium ?? r.utmMedium ?? r.medium ?? "—"),
+        referrer: referrerNorm,
+        utmSource,
+        utmMedium,
         utmCampaign: simplifyCampaignDisplay(rawCampaign),
         consents: Number(r.consents ?? r.consent_count ?? r.count ?? r.total ?? 0) || 0,
         acceptPct:
@@ -164,6 +334,7 @@ function mapRow(r) {
         essentialOnly: Number(r.essentialOnly ?? r.essential_only ?? 0) || 0,
         granular: Number(r.granular ?? 0) || 0,
         context: normalizeContext(r.context),
+        rowKey: marketingAttributionRowKey(utmSource, utmMedium, rawCampaign, referrerNorm),
     };
     return {
         ...base,
@@ -508,6 +679,278 @@ function truncateLabel(str, maxLen) {
     return `${s.slice(0, Math.max(0, maxLen - 1))}…`;
 }
 
+/** @typedef {{ column: string | null, step: 0 | 1 | 2 }} MarketingTableSortState */
+
+const MARKETING_SORT_LOCALE = "de";
+
+const CHANNEL_SORT_KEYS = {
+    channel: "text",
+    campaignCount: "number",
+    consents: "number",
+    acceptPct: "number",
+    acceptAll: "number",
+    essentialOnly: "number",
+    granular: "number",
+};
+
+const CAMPAIGN_SORT_KEYS = {
+    utmCampaign: "text",
+    consents: "number",
+    acceptPct: "number",
+    acceptAll: "number",
+    essentialOnly: "number",
+    granular: "number",
+};
+
+function defaultChannelOverviewOrder(a, b) {
+    const c = b.consents - a.consents;
+    if (c !== 0) return c;
+    return String(a.channel).localeCompare(String(b.channel), MARKETING_SORT_LOCALE, { sensitivity: "base" });
+}
+
+function defaultCampaignRowOrder(a, b) {
+    const c = b.consents - a.consents;
+    if (c !== 0) return c;
+    return String(a.utmCampaign).localeCompare(String(b.utmCampaign), MARKETING_SORT_LOCALE, { sensitivity: "base" });
+}
+
+function cmpNullableFiniteNumber(a, b, desc) {
+    const na = a == null || !Number.isFinite(a);
+    const nb = b == null || !Number.isFinite(b);
+    if (na && nb) return 0;
+    if (na) return 1;
+    if (nb) return -1;
+    return desc ? b - a : a - b;
+}
+
+function channelRowNumberValue(row, column) {
+    switch (column) {
+        case "campaignCount":
+            return row.campaignCount;
+        case "consents":
+            return row.consents;
+        case "acceptPct":
+            return row.acceptPct;
+        case "acceptAll":
+            return row.acceptAll;
+        case "essentialOnly":
+            return row.essentialOnly;
+        case "granular":
+            return row.granular;
+        default:
+            return 0;
+    }
+}
+
+function campaignRowNumberValue(row, column) {
+    switch (column) {
+        case "consents":
+            return row.consents;
+        case "acceptPct":
+            return row.acceptPct;
+        case "acceptAll":
+            return row.acceptAll;
+        case "essentialOnly":
+            return row.essentialOnly;
+        case "granular":
+            return row.granular;
+        default:
+            return 0;
+    }
+}
+
+/** @param {MarketingTableSortState} sort */
+function sortChannelOverviewRows(rows, sort) {
+    const list = [...rows];
+    if (!sort.column || sort.step === 0) {
+        list.sort(defaultChannelOverviewOrder);
+        return list;
+    }
+    const kind = CHANNEL_SORT_KEYS[sort.column];
+    if (!kind) {
+        list.sort(defaultChannelOverviewOrder);
+        return list;
+    }
+    if (kind === "text" && sort.column === "channel") {
+        const desc = sort.step === 2;
+        list.sort((a, b) => {
+            const cmp = String(a.channel).localeCompare(String(b.channel), MARKETING_SORT_LOCALE, {
+                sensitivity: "base",
+            });
+            if (cmp !== 0) return desc ? -cmp : cmp;
+            return defaultChannelOverviewOrder(a, b);
+        });
+        return list;
+    }
+    if (kind === "number") {
+        const desc = sort.step === 1;
+        list.sort((a, b) => {
+            const va = channelRowNumberValue(a, sort.column);
+            const vb = channelRowNumberValue(b, sort.column);
+            if (sort.column === "acceptPct") {
+                const c = cmpNullableFiniteNumber(va, vb, desc);
+                if (c !== 0) return c;
+            } else {
+                const na = Number(va) || 0;
+                const nb = Number(vb) || 0;
+                if (na !== nb) return desc ? nb - na : na - nb;
+            }
+            return defaultChannelOverviewOrder(a, b);
+        });
+        return list;
+    }
+    list.sort(defaultChannelOverviewOrder);
+    return list;
+}
+
+function sortCampaignDrilldownRows(rows, sort) {
+    const list = [...rows];
+    if (!sort.column || sort.step === 0) {
+        list.sort(defaultCampaignRowOrder);
+        return list;
+    }
+    const kind = CAMPAIGN_SORT_KEYS[sort.column];
+    if (!kind) {
+        list.sort(defaultCampaignRowOrder);
+        return list;
+    }
+    if (kind === "text" && sort.column === "utmCampaign") {
+        const desc = sort.step === 2;
+        list.sort((a, b) => {
+            const cmp = String(a.utmCampaign).localeCompare(String(b.utmCampaign), MARKETING_SORT_LOCALE, {
+                sensitivity: "base",
+            });
+            if (cmp !== 0) return desc ? -cmp : cmp;
+            return defaultCampaignRowOrder(a, b);
+        });
+        return list;
+    }
+    if (kind === "number") {
+        const desc = sort.step === 1;
+        list.sort((a, b) => {
+            const va = campaignRowNumberValue(a, sort.column);
+            const vb = campaignRowNumberValue(b, sort.column);
+            if (sort.column === "acceptPct") {
+                const c = cmpNullableFiniteNumber(va, vb, desc);
+                if (c !== 0) return c;
+            } else {
+                const na = Number(va) || 0;
+                const nb = Number(vb) || 0;
+                if (na !== nb) return desc ? nb - na : na - nb;
+            }
+            return defaultCampaignRowOrder(a, b);
+        });
+        return list;
+    }
+    list.sort(defaultCampaignRowOrder);
+    return list;
+}
+
+function cycleMarketingTableSort(prev, columnKey) {
+    if (prev.column !== columnKey) {
+        return { column: columnKey, step: 1 };
+    }
+    if (prev.step >= 2) {
+        return { column: null, step: 0 };
+    }
+    return { column: columnKey, step: (prev.step + 1) };
+}
+
+function marketingSortButtonGlyph(columnKey, kind, sort) {
+    const active = sort.column === columnKey && sort.step > 0;
+    if (!active) {
+        return "↕";
+    }
+    if (kind === "text") {
+        return sort.step === 1 ? "A→Z" : "Z→A";
+    }
+    return sort.step === 1 ? "9→1" : "1→9";
+}
+
+function marketingSortAriaLabel(label, columnKey, kind, sort) {
+    const active = sort.column === columnKey && sort.step > 0;
+    if (!active) {
+        return `Sort ${label}: default (by consents). Activate for alphabetic or amount order.`;
+    }
+    if (kind === "text") {
+        if (sort.step === 1) {
+            return `Sort ${label}: A to Z. Press again for Z to A, then default.`;
+        }
+        return `Sort ${label}: Z to A. Press again for default.`;
+    }
+    if (sort.step === 1) {
+        return `Sort ${label}: highest to lowest. Press again for lowest to highest, then default.`;
+    }
+    return `Sort ${label}: lowest to highest. Press again for default.`;
+}
+
+function MarketingCompareInline({ current, previous, kind = "volume" }) {
+    if (previous == null) {
+        return (
+            <span
+                className="marketing-report-delta marketing-report-delta--new"
+                title="No matching attribution row in the comparison window"
+            >
+                new
+            </span>
+        );
+    }
+    if (kind === "rate") {
+        const pts = formatPtsChange(current, previous);
+        if (pts == null) return null;
+        const c = Number(current);
+        const p = Number(previous);
+        const cls =
+            Number.isFinite(c) && Number.isFinite(p)
+                ? c > p
+                    ? "marketing-report-delta--up"
+                    : c < p
+                      ? "marketing-report-delta--down"
+                      : "marketing-report-delta--flat"
+                : "";
+        return (
+            <span className={`marketing-report-delta ${cls}`.trim()} title="Change vs comparison window (points)">
+                {pts}
+            </span>
+        );
+    }
+    const rel = formatPctChange(current, previous);
+    if (rel == null) return null;
+    return (
+        <span
+            className={`marketing-report-delta ${marketingCompareVolumeClass(current, previous)}`.trim()}
+            title="Change vs comparison window"
+        >
+            {rel}
+        </span>
+    );
+}
+
+function MarketingTableSortTh({ label, columnKey, kind, sortState, onCycle, className }) {
+    const glyph = marketingSortButtonGlyph(columnKey, kind, sortState);
+    const active = sortState.column === columnKey && sortState.step > 0;
+    return (
+        <th className={className}>
+            <span className="marketing-report-th-inner">
+                <span className="marketing-report-th-label">{label}</span>
+                <button
+                    type="button"
+                    className={`marketing-report-col-sort${active ? " marketing-report-col-sort--active" : ""}`}
+                    aria-label={marketingSortAriaLabel(label, columnKey, kind, sortState)}
+                    title={marketingSortAriaLabel(label, columnKey, kind, sortState)}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onCycle(columnKey);
+                    }}
+                >
+                    {glyph}
+                </button>
+            </span>
+        </th>
+    );
+}
+
 /**
  * Marketer-first signals: volume, acceptance, choice mix, data gaps.
  */
@@ -747,11 +1190,16 @@ export default function MarketingReport() {
     const domainsApiHeader = useMemo(() => toDomainsApiHeader(listDomainLabel), [listDomainLabel]);
 
     const [rows, setRows] = useState([]);
+    /** Raw baseline window rows (same shape as primary) when period comparison is on. */
+    const [baselineRows, setBaselineRows] = useState([]);
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [compareBaselineNote, setCompareBaselineNote] = useState(null);
     /** Level 2: which channel’s campaigns are shown; null = channel overview. */
     const [selectedChannel, setSelectedChannel] = useState(null);
+    const [channelTableSort, setChannelTableSort] = useState({ column: null, step: 0 });
+    const [campaignTableSort, setCampaignTableSort] = useState({ column: null, step: 0 });
 
     const endpoint = API[id]?.marketingAttribution;
 
@@ -764,31 +1212,53 @@ export default function MarketingReport() {
         }
         setLoading(true);
         setError(null);
+        setCompareBaselineNote(null);
         try {
-            const headers = {
-                ...endpoint.headers,
-                Domains: domainsApiHeader,
+            const compareOn = compareRangeActive(compareRange);
+            const baseHeaders = { ...endpoint.headers, Domains: domainsApiHeader };
+            const primaryHeaders = {
+                ...baseHeaders,
                 FromDate: toYmd(fromDate),
                 ToDate: toYmd(toDate),
             };
-            if (compareRange !== 0 && compareRange != null) {
-                headers.CompareRange =
+            if (compareOn) {
+                primaryHeaders.CompareRange =
                     compareRange === "Same period last year" ? "Same period last year" : String(compareRange);
-                headers.PreviousPeriod = toYmd(previousPeriod);
-                headers.PreviousPeriod2 = toYmd(previousPeriod2);
-                headers["X-Compare-Start"] = toYmd(previousPeriod);
-                headers["X-Compare-End"] = toYmd(previousPeriod2);
-                headers["X-Compare-Range"] =
-                    compareRange === "Same period last year" ? "Same period last year" : String(compareRange);
+                primaryHeaders.PreviousPeriod = toYmd(previousPeriod);
+                primaryHeaders.PreviousPeriod2 = toYmd(previousPeriod2);
+                primaryHeaders["X-Compare-Start"] = toYmd(previousPeriod);
+                primaryHeaders["X-Compare-End"] = toYmd(previousPeriod2);
+                primaryHeaders["X-Compare-Range"] = primaryHeaders.CompareRange;
             } else {
-                headers.CompareRange = "";
-                headers["X-Compare-Range"] = "";
+                primaryHeaders.CompareRange = "";
+                primaryHeaders.PreviousPeriod = "";
+                primaryHeaders.PreviousPeriod2 = "";
+                primaryHeaders["X-Compare-Start"] = "";
+                primaryHeaders["X-Compare-End"] = "";
+                primaryHeaders["X-Compare-Range"] = "";
             }
 
-            const res = await fetch(endpoint.url, {
-                method: endpoint.method || "GET",
-                headers,
-            });
+            const baselineHeaders = {
+                ...baseHeaders,
+                FromDate: toYmd(previousPeriod),
+                ToDate: toYmd(previousPeriod2),
+                CompareRange: "",
+                PreviousPeriod: "",
+                PreviousPeriod2: "",
+                "X-Compare-Start": "",
+                "X-Compare-End": "",
+                "X-Compare-Range": "",
+            };
+
+            const method = endpoint.method || "GET";
+            const primaryFetch = fetch(endpoint.url, { method, headers: primaryHeaders });
+            const fetches = compareOn
+                ? [primaryFetch, fetch(endpoint.url, { method, headers: baselineHeaders })]
+                : [primaryFetch];
+            const responses = await Promise.all(fetches);
+            const res = responses[0];
+            const resBaseline = compareOn ? responses[1] : null;
+
             const text = await res.text();
             let json = null;
             try {
@@ -796,12 +1266,14 @@ export default function MarketingReport() {
             } catch {
                 setError("The server returned a non-JSON response.");
                 setRows([]);
+                setBaselineRows([]);
                 setSummary(null);
                 return;
             }
             if (!res.ok) {
                 setError(json?.message || `Request failed (${res.status}).`);
                 setRows([]);
+                setBaselineRows([]);
                 setSummary(null);
                 return;
             }
@@ -810,13 +1282,39 @@ export default function MarketingReport() {
                 window.location.href = "/login";
                 return;
             }
+
+            let baselineMapped = [];
+            if (compareOn && resBaseline) {
+                const textB = await resBaseline.text();
+                let jsonB = null;
+                try {
+                    jsonB = textB ? JSON.parse(textB) : null;
+                } catch {
+                    setCompareBaselineNote("Comparison window returned non-JSON data.");
+                }
+                if (jsonB === "Err_Login_Expired") {
+                    localStorage.removeItem("globals");
+                    window.location.href = "/login";
+                    return;
+                }
+                if (!resBaseline.ok) {
+                    setCompareBaselineNote(jsonB?.message || `Comparison request failed (${resBaseline.status}).`);
+                } else if (jsonB != null) {
+                    baselineMapped = extractRows(jsonB).map(mapRow);
+                }
+            }
+
             const rawRows = extractRows(json);
-            setRows(rawRows.map(mapRow).sort((a, b) => b.consents - a.consents));
+            const primaryMapped = rawRows.map(mapRow).sort((a, b) => b.consents - a.consents);
+            const merged = attachBaselineToRows(primaryMapped, compareOn ? baselineMapped : []);
+            setRows(merged);
+            setBaselineRows(compareOn ? baselineMapped : []);
             setSummary(extractSummary(json));
             setSelectedChannel(null);
         } catch (e) {
             setError(e?.message || "Network error while loading marketing data.");
             setRows([]);
+            setBaselineRows([]);
             setSummary(null);
         } finally {
             setLoading(false);
@@ -841,8 +1339,26 @@ export default function MarketingReport() {
 
     const drilldownRows = useMemo(() => {
         if (!selectedChannel) return [];
-        return rows.filter((r) => r.channel === selectedChannel).sort((a, b) => b.consents - a.consents);
+        return rows.filter((r) => r.channel === selectedChannel);
     }, [rows, selectedChannel]);
+
+    const sortedChannelOverview = useMemo(
+        () => sortChannelOverviewRows(channelOverview, channelTableSort),
+        [channelOverview, channelTableSort]
+    );
+
+    const sortedDrilldownRows = useMemo(
+        () => sortCampaignDrilldownRows(drilldownRows, campaignTableSort),
+        [drilldownRows, campaignTableSort]
+    );
+
+    const cycleChannelTableSort = useCallback((columnKey) => {
+        setChannelTableSort((prev) => cycleMarketingTableSort(prev, columnKey));
+    }, []);
+
+    const cycleCampaignTableSort = useCallback((columnKey) => {
+        setCampaignTableSort((prev) => cycleMarketingTableSort(prev, columnKey));
+    }, []);
 
     const drillConsents = useMemo(
         () => drilldownRows.reduce((s, r) => s + r.consents, 0),
@@ -906,6 +1422,11 @@ export default function MarketingReport() {
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
+    }, [selectedChannel]);
+
+    useEffect(() => {
+        setChannelTableSort({ column: null, step: 0 });
+        setCampaignTableSort({ column: null, step: 0 });
     }, [selectedChannel]);
 
     const kpiCards = useMemo(() => {
@@ -1024,7 +1545,7 @@ export default function MarketingReport() {
                                         type="button"
                                         className="marketing-report-export"
                                         onClick={() => {
-                                            const data = selectedChannel ? drilldownRows : rows;
+                                            const data = selectedChannel ? sortedDrilldownRows : rows;
                                             const slug = selectedChannel
                                                 ? selectedChannel.replace(/[^\w\-]+/g, "_").slice(0, 48)
                                                 : "";
@@ -1042,7 +1563,7 @@ export default function MarketingReport() {
                                         onClick={() =>
                                             triggerCsvDownload(
                                                 `${exportFilenameBase}_channels.csv`,
-                                                buildMarketingCsvChannelRows(channelOverview, exportCsvMeta)
+                                                buildMarketingCsvChannelRows(sortedChannelOverview, exportCsvMeta)
                                             )
                                         }
                                     >
@@ -1100,12 +1621,54 @@ export default function MarketingReport() {
                             <table className="marketing-report-table marketing-report-table--with-choices">
                                 <thead>
                                     <tr>
-                                        <th className="marketing-report-table__col-campaign">Campaign name</th>
-                                        <th className="marketing-report-table__col-num">Consents</th>
-                                        <th className="marketing-report-table__col-num">Acceptance %</th>
-                                        <th className="marketing-report-table__col-choice">Accept all</th>
-                                        <th className="marketing-report-table__col-choice">Essential only</th>
-                                        <th className="marketing-report-table__col-choice">Granular</th>
+                                        <MarketingTableSortTh
+                                            label="Campaign name"
+                                            columnKey="utmCampaign"
+                                            kind={CAMPAIGN_SORT_KEYS.utmCampaign}
+                                            sortState={campaignTableSort}
+                                            onCycle={cycleCampaignTableSort}
+                                            className="marketing-report-table__col-campaign"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Consents"
+                                            columnKey="consents"
+                                            kind={CAMPAIGN_SORT_KEYS.consents}
+                                            sortState={campaignTableSort}
+                                            onCycle={cycleCampaignTableSort}
+                                            className="marketing-report-table__col-num"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Acceptance %"
+                                            columnKey="acceptPct"
+                                            kind={CAMPAIGN_SORT_KEYS.acceptPct}
+                                            sortState={campaignTableSort}
+                                            onCycle={cycleCampaignTableSort}
+                                            className="marketing-report-table__col-num"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Accept all"
+                                            columnKey="acceptAll"
+                                            kind={CAMPAIGN_SORT_KEYS.acceptAll}
+                                            sortState={campaignTableSort}
+                                            onCycle={cycleCampaignTableSort}
+                                            className="marketing-report-table__col-choice"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Essential only"
+                                            columnKey="essentialOnly"
+                                            kind={CAMPAIGN_SORT_KEYS.essentialOnly}
+                                            sortState={campaignTableSort}
+                                            onCycle={cycleCampaignTableSort}
+                                            className="marketing-report-table__col-choice"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Granular"
+                                            columnKey="granular"
+                                            kind={CAMPAIGN_SORT_KEYS.granular}
+                                            sortState={campaignTableSort}
+                                            onCycle={cycleCampaignTableSort}
+                                            className="marketing-report-table__col-choice"
+                                        />
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1116,7 +1679,7 @@ export default function MarketingReport() {
                                             </td>
                                         </tr>
                                     ) : (
-                                        drilldownRows.map((r, i) => (
+                                        sortedDrilldownRows.map((r, i) => (
                                             <tr key={`${r.channel}-${r.utmCampaign}-${i}`}>
                                                 <td className="marketing-report-table__col-campaign">{r.utmCampaign}</td>
                                                 <td className="marketing-report-table__col-num">
@@ -1145,17 +1708,66 @@ export default function MarketingReport() {
                             <table className="marketing-report-table marketing-report-table--with-choices">
                                 <thead>
                                     <tr>
-                                        <th className="marketing-report-table__col-channel">Channel</th>
-                                        <th className="marketing-report-table__col-num">Campaigns</th>
-                                        <th className="marketing-report-table__col-num">Consents</th>
-                                        <th className="marketing-report-table__col-num">Acceptance %</th>
-                                        <th className="marketing-report-table__col-choice">Accept all</th>
-                                        <th className="marketing-report-table__col-choice">Essential only</th>
-                                        <th className="marketing-report-table__col-choice">Granular</th>
+                                        <MarketingTableSortTh
+                                            label="Channel"
+                                            columnKey="channel"
+                                            kind={CHANNEL_SORT_KEYS.channel}
+                                            sortState={channelTableSort}
+                                            onCycle={cycleChannelTableSort}
+                                            className="marketing-report-table__col-channel"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Campaigns"
+                                            columnKey="campaignCount"
+                                            kind={CHANNEL_SORT_KEYS.campaignCount}
+                                            sortState={channelTableSort}
+                                            onCycle={cycleChannelTableSort}
+                                            className="marketing-report-table__col-num"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Consents"
+                                            columnKey="consents"
+                                            kind={CHANNEL_SORT_KEYS.consents}
+                                            sortState={channelTableSort}
+                                            onCycle={cycleChannelTableSort}
+                                            className="marketing-report-table__col-num"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Acceptance %"
+                                            columnKey="acceptPct"
+                                            kind={CHANNEL_SORT_KEYS.acceptPct}
+                                            sortState={channelTableSort}
+                                            onCycle={cycleChannelTableSort}
+                                            className="marketing-report-table__col-num"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Accept all"
+                                            columnKey="acceptAll"
+                                            kind={CHANNEL_SORT_KEYS.acceptAll}
+                                            sortState={channelTableSort}
+                                            onCycle={cycleChannelTableSort}
+                                            className="marketing-report-table__col-choice"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Essential only"
+                                            columnKey="essentialOnly"
+                                            kind={CHANNEL_SORT_KEYS.essentialOnly}
+                                            sortState={channelTableSort}
+                                            onCycle={cycleChannelTableSort}
+                                            className="marketing-report-table__col-choice"
+                                        />
+                                        <MarketingTableSortTh
+                                            label="Granular"
+                                            columnKey="granular"
+                                            kind={CHANNEL_SORT_KEYS.granular}
+                                            sortState={channelTableSort}
+                                            onCycle={cycleChannelTableSort}
+                                            className="marketing-report-table__col-choice"
+                                        />
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {channelOverview.map((r) => (
+                                    {sortedChannelOverview.map((r) => (
                                         <tr
                                             key={r.channel}
                                             className="marketing-report-table__row--clickable"

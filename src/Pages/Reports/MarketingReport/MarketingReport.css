@@ -384,6 +384,51 @@
     text-align: right;
 }
 
+.marketing-report-th-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.marketing-report-table th.marketing-report-table__col-num .marketing-report-th-inner,
+.marketing-report-table th.marketing-report-table__col-choice .marketing-report-th-inner {
+    justify-content: flex-end;
+}
+
+.marketing-report-th-label {
+    min-width: 0;
+}
+
+.marketing-report-col-sort {
+    flex-shrink: 0;
+    margin: 0;
+    padding: 2px 6px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.2);
+    color: rgba(175, 175, 185, 0.95);
+    font-size: 0.65rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.marketing-report-col-sort:hover {
+    border-color: rgba(192, 159, 83, 0.45);
+    color: rgba(235, 228, 210, 0.98);
+    background: rgba(192, 159, 83, 0.1);
+}
+
+.marketing-report-col-sort--active {
+    border-color: rgba(192, 159, 83, 0.55);
+    color: rgba(240, 232, 210, 0.98);
+    background: rgba(192, 159, 83, 0.14);
+}
+
 .marketing-report-empty {
     padding: 28px 16px;
     text-align: center;
