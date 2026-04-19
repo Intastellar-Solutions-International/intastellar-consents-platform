@@ -95,7 +95,8 @@ module.exports = (env, argv) => {
 
   if (argv.mode === 'production') {
     //...
-    client.mode = 'production';
+    client.mode = "production";
+    client.output.filename = "bundle.js";
     client.plugins = [
       new HtmlWebpackPlugin({
         template: "./production.html",

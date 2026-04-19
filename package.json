@@ -8,7 +8,7 @@
     "start": "webpack serve --open --mode development --hot",
     "dev:api": "vercel dev --listen 3000",
     "startNodeServer": "nodemon index.js",
-    "buildProd": "webpack build --mode=production && cp -R",
+    "buildProd": "webpack build --mode=production",
     "buildDev": "webpack build --mode=development"
   },
   "repository": {
