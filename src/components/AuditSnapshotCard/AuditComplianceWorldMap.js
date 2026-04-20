@@ -35,6 +35,7 @@ const LABEL = [
     /** CCPA / CPRA scope shown as California only on this map */
     { fw: "CCPA", lon: -119.2, lat: 36.5 },
     { fw: "POPIA", lon: 25, lat: -28 },
+    { fw: "PDPA", lon: 101.5, lat: 3.1 },
 ];
 
 const LABEL_COLOR = {
@@ -53,6 +54,7 @@ const FRAMEWORK_BY_NUMERIC = {
     CCPA: new Set(),
     LGPD: new Set([76]),
     POPIA: new Set([710]),
+    PDPA: new Set([760]),
 };
 
 function topoIdToNumeric(id) {
