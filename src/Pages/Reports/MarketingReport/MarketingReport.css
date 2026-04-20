@@ -349,7 +349,7 @@
     min-width: 6.75rem;
     max-width: 9.5rem;
     white-space: normal;
-    text-align: right;
+    text-align: right !important;
     font-variant-numeric: tabular-nums;
     line-height: 1.35;
 }

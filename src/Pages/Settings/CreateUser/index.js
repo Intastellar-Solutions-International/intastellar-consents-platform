@@ -15,6 +15,7 @@ const Link = window.ReactRouterDOM.Link;
 const ROLE_ITEMS = [
     { id: "Admin", name: "Admin" },
     { id: "Manager", name: "Manager" },
+    { id: "Marketing", name: "Marketing" },
 ];
 
 function normaliseOrganisationList(re) {
