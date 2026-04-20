@@ -139,6 +139,59 @@ function formatConsentMethod(method) {
     return NAMES[s] || s.replace(/_/g, " ");
 }
 
+/**
+ * Short label for a data-transfer basis code. These match the `basis` values
+ * written by collect.php / domain_data_transfer.
+ */
+const TRANSFER_BASIS_SHORT = {
+    sccs: "SCCs",
+    bcrs: "BCRs",
+    adequacy: "Adequacy",
+    certification: "Certification",
+    consent: "Consent",
+    intra_group: "Intra-group",
+    derogation: "Derogation",
+    none_required: "No transfer",
+    disclosure_only: "Disclosure only",
+};
+
+/**
+ * Build the structured transfer summary shown on an audit card. Accepts the
+ * new snapshot columns (`transfer_basis`, `transfer_destination`, …) and
+ * falls back to the legacy single-string fields.
+ * Returns { primary, secondary } or null if nothing is known.
+ */
+function formatTransfer(row) {
+    if (!row) return null;
+    const basisRaw = String(row.transfer_basis ?? "").trim().toLowerCase();
+    const destination = String(row.transfer_destination ?? "").trim();
+    const instrument = String(row.transfer_instrument ?? "").trim();
+    const importer = String(row.transfer_data_importer ?? "").trim();
+    const effective = String(row.transfer_effective_from ?? "").trim();
+
+    if (basisRaw || destination || instrument) {
+        const basisLabel = TRANSFER_BASIS_SHORT[basisRaw] || (basisRaw ? basisRaw.replace(/_/g, " ") : "");
+        const primary = [basisLabel, destination].filter(Boolean).join(" → ");
+        const secondaryParts = [];
+        if (instrument) secondaryParts.push(instrument);
+        if (importer) secondaryParts.push(importer);
+        if (effective) secondaryParts.push(`since ${effective.slice(0, 10)}`);
+        return {
+            primary: primary || "—",
+            secondary: secondaryParts.join(" · ") || null,
+        };
+    }
+
+    const legacy =
+        row.transfer_mechanism ??
+        row.data_transfer ??
+        row.data_residency ??
+        row.hosting_region ??
+        null;
+    if (legacy) return { primary: String(legacy), secondary: null };
+    return null;
+}
+
 export default function UserConsents(props) {
     document.title = "Audit log | Intastellar Consents";
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
@@ -479,12 +532,7 @@ export default function UserConsents(props) {
                                     const methodLabel = formatConsentMethod(
                                         d?.consent_method ?? d?.consentMethod ?? d?.method
                                     );
-                                    const transferLabel =
-                                        d?.transfer_mechanism ??
-                                        d?.data_transfer ??
-                                        d?.data_residency ??
-                                        d?.hosting_region ??
-                                        null;
+                                    const transferInfo = formatTransfer(d);
                                     const priorConsentId =
                                         d?.prior_consent_id ?? d?.previous_consent_id ?? null;
 
@@ -535,7 +583,25 @@ export default function UserConsents(props) {
                                                 </div>
                                                 <div className="user-consent-card__row">
                                                     <dt>Data transfer</dt>
-                                                    <dd>{transferLabel ?? "—"}</dd>
+                                                    <dd>
+                                                        {transferInfo ? (
+                                                            <>
+                                                                <span className="user-consent-card__transfer-primary">
+                                                                    {transferInfo.primary}
+                                                                </span>
+                                                                {transferInfo.secondary ? (
+                                                                    <span
+                                                                        className="user-consent-card__transfer-secondary"
+                                                                        title={transferInfo.secondary}
+                                                                    >
+                                                                        {transferInfo.secondary}
+                                                                    </span>
+                                                                ) : null}
+                                                            </>
+                                                        ) : (
+                                                            "—"
+                                                        )}
+                                                    </dd>
                                                 </div>
                                             </dl>
 
