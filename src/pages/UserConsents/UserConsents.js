@@ -50,28 +50,75 @@ function sortConsentsNewestFirst(rows) {
     });
 }
 
-/** Human-readable language tag, e.g. "th-TH" → "th-TH (Thai)". Returns null when missing. */
+/**
+ * Human-readable language tag, e.g. "th" → "th (Thai)", "en-GB" → "en-GB (English (UK))".
+ * Accepts both bare ISO 639-1 codes (en, th, de) and BCP 47 tags (en-GB, th-TH).
+ * Falls back to Intl.DisplayNames when available so uncommon codes still resolve.
+ * Returns null when missing.
+ */
+const LANGUAGE_NAMES_STATIC = {
+    en: "English",
+    "en-GB": "English (UK)",
+    "en-US": "English (US)",
+    da: "Danish",
+    "da-DK": "Danish",
+    sv: "Swedish",
+    "sv-SE": "Swedish",
+    nb: "Norwegian",
+    "nb-NO": "Norwegian",
+    no: "Norwegian",
+    fi: "Finnish",
+    "fi-FI": "Finnish",
+    de: "German",
+    "de-DE": "German",
+    "de-AT": "German (Austria)",
+    "de-CH": "German (Switzerland)",
+    fr: "French",
+    "fr-FR": "French",
+    es: "Spanish",
+    "es-ES": "Spanish",
+    pt: "Portuguese",
+    "pt-BR": "Portuguese (Brazil)",
+    "pt-PT": "Portuguese (Portugal)",
+    nl: "Dutch",
+    "nl-NL": "Dutch",
+    it: "Italian",
+    "it-IT": "Italian",
+    pl: "Polish",
+    "pl-PL": "Polish",
+    ja: "Japanese",
+    "ja-JP": "Japanese",
+    zh: "Chinese",
+    "zh-CN": "Chinese (Simplified)",
+    "zh-TW": "Chinese (Traditional)",
+    ko: "Korean",
+    "ko-KR": "Korean",
+    th: "Thai",
+    "th-TH": "Thai",
+    vi: "Vietnamese",
+    id: "Indonesian",
+    ms: "Malay",
+};
+
 function formatLanguage(lang) {
     if (lang == null || lang === "") return null;
-    const s = String(lang).trim();
-    if (!s) return null;
-    const NAMES = {
-        en: "English",
-        "en-GB": "English (UK)",
-        "en-US": "English (US)",
-        "da-DK": "Danish",
-        "sv-SE": "Swedish",
-        "nb-NO": "Norwegian",
-        "fi-FI": "Finnish",
-        "de-DE": "German",
-        "fr-FR": "French",
-        "es-ES": "Spanish",
-        "pt-BR": "Portuguese (BR)",
-        "nl-NL": "Dutch",
-        "th-TH": "Thai",
-        th: "Thai",
-    };
-    return NAMES[s] ? `${s} (${NAMES[s]})` : s;
+    const raw = String(lang).trim();
+    if (!raw) return null;
+    const bcp47 = raw.includes("-")
+        ? raw.replace(/^([a-z]{2,3})-([a-z]{2})$/i, (_, l, r) => `${l.toLowerCase()}-${r.toUpperCase()}`)
+        : raw.toLowerCase();
+    const fromStatic = LANGUAGE_NAMES_STATIC[bcp47] || LANGUAGE_NAMES_STATIC[raw];
+    if (fromStatic) return `${bcp47} (${fromStatic})`;
+    try {
+        if (typeof Intl !== "undefined" && typeof Intl.DisplayNames === "function") {
+            const dn = new Intl.DisplayNames(["en"], { type: "language" });
+            const name = dn.of(bcp47);
+            if (name && name !== bcp47) return `${bcp47} (${name})`;
+        }
+    } catch {
+        /* Intl may throw on invalid tags; fall through to returning the raw tag. */
+    }
+    return bcp47;
 }
 
 /** Human-readable consent method, e.g. "banner_granular" → "Banner — granular". */
