@@ -19,6 +19,7 @@ import {
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
+import { FRAMEWORK_IDS, frameworksForAuditRow } from "../../components/AuditSnapshotCard/complianceRegions.js";
 import punycode from "punycode";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
@@ -49,6 +50,48 @@ function sortConsentsNewestFirst(rows) {
     });
 }
 
+/** Human-readable language tag, e.g. "th-TH" → "th-TH (Thai)". Returns null when missing. */
+function formatLanguage(lang) {
+    if (lang == null || lang === "") return null;
+    const s = String(lang).trim();
+    if (!s) return null;
+    const NAMES = {
+        en: "English",
+        "en-GB": "English (UK)",
+        "en-US": "English (US)",
+        "da-DK": "Danish",
+        "sv-SE": "Swedish",
+        "nb-NO": "Norwegian",
+        "fi-FI": "Finnish",
+        "de-DE": "German",
+        "fr-FR": "French",
+        "es-ES": "Spanish",
+        "pt-BR": "Portuguese (BR)",
+        "nl-NL": "Dutch",
+        "th-TH": "Thai",
+        th: "Thai",
+    };
+    return NAMES[s] ? `${s} (${NAMES[s]})` : s;
+}
+
+/** Human-readable consent method, e.g. "banner_granular" → "Banner — granular". */
+function formatConsentMethod(method) {
+    if (method == null || method === "") return null;
+    const s = String(method).trim();
+    if (!s) return null;
+    const NAMES = {
+        banner_accept_all: "Banner — accept all",
+        banner_reject_all: "Banner — reject all",
+        banner_granular: "Banner — granular",
+        banner_essential_only: "Banner — essential only",
+        preferences_updated: "Preferences updated",
+        preferences_withdrawn: "Preferences withdrawn",
+        withdrawal: "Withdrawal",
+        api_import: "API import",
+    };
+    return NAMES[s] || s.replace(/_/g, " ");
+}
+
 export default function UserConsents(props) {
     document.title = "Audit log | Intastellar Consents";
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
@@ -65,6 +108,7 @@ export default function UserConsents(props) {
     const [activeData, setActiveData] = useState(null);
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [selectedFramework, setSelectedFramework] = useState("all");
 
     const [demoMode, setDemoMode] = useState(Authentication.DemoMode); 
 
@@ -261,6 +305,34 @@ export default function UserConsents(props) {
         return activeData.map((d, i) => buildDemoConsentRecord(i, d));
     }, [demoMode, activeData, getDomainsUrlLoading]);
 
+    /** Union of frameworks observed in loaded records + the full static list, preserving static order. */
+    const availableFrameworks = useMemo(() => {
+        const observed = new Set();
+        if (Array.isArray(displayData)) {
+            for (const row of displayData) {
+                for (const fw of frameworksForAuditRow(row)) observed.add(fw);
+            }
+        }
+        const ordered = FRAMEWORK_IDS.filter((id) => observed.has(id) || FRAMEWORK_IDS.includes(id));
+        for (const fw of observed) if (!ordered.includes(fw)) ordered.push(fw);
+        return ordered;
+    }, [displayData]);
+
+    /** Reset framework filter when the underlying query changes so stale selections don't hide new data. */
+    useEffect(() => {
+        setSelectedFramework("all");
+    }, [consentsQueryKey]);
+
+    const filteredDisplayData = useMemo(() => {
+        if (!Array.isArray(displayData) || selectedFramework === "all") return displayData;
+        return displayData.filter((row) => frameworksForAuditRow(row).has(selectedFramework));
+    }, [displayData, selectedFramework]);
+
+    const filteredAway =
+        Array.isArray(displayData) && Array.isArray(filteredDisplayData)
+            ? displayData.length - filteredDisplayData.length
+            : 0;
+
     const showNoData =
         !demoMode &&
         (getDomainsUrlData === "Err_No_Data_Found" ||
@@ -280,13 +352,36 @@ export default function UserConsents(props) {
             <article style={{ flex: "1"}}>
                 <StickyPageTitle demoMode={demoMode} loadingUpdated={getDomainsUrlLoading} finalLoaded={getDomainsUrlLoading} title={"Audit log" + (titleDomainLabel ? " for " + punycode.toUnicode(titleDomainLabel) : "")} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
                 <div className="dashboard-content">
-                    <section className="filter">
-                        {/* <Filter url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} date={{
-                            start: fromDate,
-                            end: toDate,
-                            previousStart: previousPeriod,
-                            previousEnd: previousPeriod2,
-                        }} setFromDate={setFromDate} setToDate={setToDate} /> */}
+                    <section className="filter user-consents-filter-bar" aria-label="Audit log filters">
+                        <label className="user-consents-filter-field" htmlFor="user-consents-framework-filter">
+                            <span className="user-consents-filter-label">Framework</span>
+                            <select
+                                id="user-consents-framework-filter"
+                                className="user-consents-filter-select"
+                                value={selectedFramework}
+                                onChange={(e) => setSelectedFramework(e.target.value)}
+                            >
+                                <option value="all">All frameworks</option>
+                                {availableFrameworks.map((fw) => (
+                                    <option key={fw} value={fw}>
+                                        {fw}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+                        {selectedFramework !== "all" && filteredAway > 0 ? (
+                            <span className="user-consents-filter-note" role="status" aria-live="polite">
+                                Showing {filteredDisplayData.length} of {displayData.length} loaded records ·{" "}
+                                <button
+                                    type="button"
+                                    className="user-consents-filter-reset"
+                                    onClick={() => setSelectedFramework("all")}
+                                >
+                                    Clear filter
+                                </button>
+                                {hasMore ? " · scroll to load more" : ""}
+                            </span>
+                        ) : null}
                     </section>
                     {(getDomainsUrlLoading && !showFetchFailure) ? 
                         <div className="user-consents-grid">
@@ -300,9 +395,22 @@ export default function UserConsents(props) {
                             <Loading />
                         </div>
                     : showFetchFailure ? <Unknown /> : (showNoData) ? <NoDataFound /> : <>
+                        {selectedFramework !== "all" && Array.isArray(filteredDisplayData) && filteredDisplayData.length === 0 ? (
+                            <div className="user-consents-empty-filter" role="status">
+                                No records match <strong>{selectedFramework}</strong> in the currently loaded page.{" "}
+                                {hasMore ? "Scroll to load more, or " : ""}
+                                <button
+                                    type="button"
+                                    className="user-consents-filter-reset"
+                                    onClick={() => setSelectedFramework("all")}
+                                >
+                                    clear the filter
+                                </button>.
+                            </div>
+                        ) : null}
                         <div className="user-consents-grid">
                             {
-                                displayData?.map((d, key) => {
+                                filteredDisplayData?.map((d, key) => {
                                     let consent = "";
                                     if (isJson(d?.consent)) {
                                         consent = JSON.parse(d?.consent);
@@ -319,6 +427,19 @@ export default function UserConsents(props) {
                                     const consentLabel = (t) => (t === "statics" ? "analytics" : t);
 
                                     const isNecessaryType = (t) => String(t || "").toLowerCase() === "necessary";
+
+                                    const languageLabel = formatLanguage(d?.language ?? d?.banner_language);
+                                    const methodLabel = formatConsentMethod(
+                                        d?.consent_method ?? d?.consentMethod ?? d?.method
+                                    );
+                                    const transferLabel =
+                                        d?.transfer_mechanism ??
+                                        d?.data_transfer ??
+                                        d?.data_residency ??
+                                        d?.hosting_region ??
+                                        null;
+                                    const priorConsentId =
+                                        d?.prior_consent_id ?? d?.previous_consent_id ?? null;
 
                                     return (
                                         <div
@@ -350,12 +471,24 @@ export default function UserConsents(props) {
                                                     <dd>{d?.country_code ?? "—"}</dd>
                                                 </div>
                                                 <div className="user-consent-card__row">
+                                                    <dt>Language</dt>
+                                                    <dd>{languageLabel ?? "—"}</dd>
+                                                </div>
+                                                <div className="user-consent-card__row">
                                                     <dt>Applied framework</dt>
                                                     <dd><span className="regulation">{d?.regulation_applied ?? "—"}</span></dd>
                                                 </div>
                                                 <div className="user-consent-card__row">
+                                                    <dt>Method</dt>
+                                                    <dd>{methodLabel ?? "—"}</dd>
+                                                </div>
+                                                <div className="user-consent-card__row">
                                                     <dt>Time</dt>
                                                     <dd>{timeStr}</dd>
+                                                </div>
+                                                <div className="user-consent-card__row">
+                                                    <dt>Data transfer</dt>
+                                                    <dd>{transferLabel ?? "—"}</dd>
                                                 </div>
                                             </dl>
 
@@ -402,12 +535,34 @@ export default function UserConsents(props) {
                                             </section>
 
                                             <footer className="user-consent-card__footer">
-                                                <span className="user-consent-card__version-label">Version</span>
-                                                {d?.github_link ? (
-                                                    <a className="link user-consent-card__version-link" href={d.github_link} target="_blank" rel="noopener noreferrer">{d?.code_version ?? "—"}</a>
-                                                ) : (
-                                                    <span>{d?.code_version ?? "—"}</span>
-                                                )}
+                                                {priorConsentId ? (
+                                                    <span
+                                                        className="user-consent-card__prior"
+                                                        title={String(priorConsentId)}
+                                                    >
+                                                        <span className="user-consent-card__version-label">
+                                                            Prior consent
+                                                        </span>
+                                                        <span className="user-consent-card__prior-id">
+                                                            {String(priorConsentId)}
+                                                        </span>
+                                                    </span>
+                                                ) : null}
+                                                <span className="user-consent-card__footer-version">
+                                                    <span className="user-consent-card__version-label">Version</span>
+                                                    {d?.github_link ? (
+                                                        <a
+                                                            className="link user-consent-card__version-link"
+                                                            href={d.github_link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            {d?.code_version ?? "—"}
+                                                        </a>
+                                                    ) : (
+                                                        <span>{d?.code_version ?? "—"}</span>
+                                                    )}
+                                                </span>
                                             </footer>
                                         </div>
                                     );

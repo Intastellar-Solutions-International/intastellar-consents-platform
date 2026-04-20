@@ -424,7 +424,23 @@ function mapRow(r) {
                     : null,
         acceptAll: Number(r.acceptAll ?? r.accept_all ?? 0) || 0,
         essentialOnly: Number(r.essentialOnly ?? r.essential_only ?? 0) || 0,
-        granular: Number(r.granular ?? 0) || 0,
+        granular:
+            Number(
+                r.granular ??
+                    r.granular_choices ??
+                    r.granularChoices ??
+                    r.granular_consents ??
+                    r.granularConsents ??
+                    r.partial ??
+                    r.partial_consents ??
+                    r.partialConsents ??
+                    r.custom ??
+                    r.custom_choice ??
+                    r.customChoice ??
+                    r.custom_consents ??
+                    r.customConsents ??
+                    0
+            ) || 0,
         context: normalizeContext(r.context),
         rowKey: marketingAttributionRowKey(utmSource, utmMedium, rawCampaign, referrerNorm),
     };
@@ -880,6 +896,7 @@ function cmpNullableFiniteNumber(a, b, desc) {
 }
 
 function channelRowNumberValue(row, column) {
+    console.log(row, column);
     switch (column) {
         case "campaignCount":
             return row.campaignCount;

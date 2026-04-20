@@ -74,7 +74,7 @@ export const EU_EEA_UK_NUMERIC = [
     833, // Isle of Man
 ];
 
-const FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "POPIA"];
+const FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "POPIA", "PDPA"];
 
 /**
  * Which frameworks a single audit row suggests (regulation_applied first, then country inference).
@@ -89,10 +89,12 @@ export function frameworksForAuditRow(row) {
     if (reg.includes("LGPD")) out.add("LGPD");
     if (reg.includes("CCPA") || reg.includes("CPRA")) out.add("CCPA");
     if (reg.includes("POPIA")) out.add("POPIA");
+    if (reg.includes("PDPA")) out.add("PDPA");
     if (out.size > 0) return out;
     if (cc === "BR") out.add("LGPD");
     else if (cc === "US") out.add("CCPA");
     else if (cc === "ZA") out.add("POPIA");
+    else if (cc === "TH") out.add("PDPA");
     else if (EU_EEA_UK.has(cc)) out.add("GDPR");
     return out;
 }
