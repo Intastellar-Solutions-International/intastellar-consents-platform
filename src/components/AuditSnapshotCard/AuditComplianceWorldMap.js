@@ -54,7 +54,7 @@ const FRAMEWORK_BY_NUMERIC = {
     CCPA: new Set(),
     LGPD: new Set([76]),
     POPIA: new Set([710]),
-    PDPA: new Set([760]),
+    PDPA: new Set([760, 840]),
 };
 
 function topoIdToNumeric(id) {
@@ -69,6 +69,7 @@ function frameworkForNumeric(num) {
     if (FRAMEWORK_BY_NUMERIC.CCPA.has(num)) return "CCPA";
     if (FRAMEWORK_BY_NUMERIC.LGPD.has(num)) return "LGPD";
     if (FRAMEWORK_BY_NUMERIC.POPIA.has(num)) return "POPIA";
+    if (FRAMEWORK_BY_NUMERIC.PDPA.has(num)) return "PDPA";
     return null;
 }
 
@@ -134,6 +135,7 @@ export default function AuditComplianceWorldMap({
         regionStatus?.LGPD?.status,
         regionStatus?.CCPA?.status,
         regionStatus?.POPIA?.status,
+        regionStatus?.PDPA?.status,
         sampleCountryCodesKey,
         selectedUpper ?? "",
     ].join("|");
