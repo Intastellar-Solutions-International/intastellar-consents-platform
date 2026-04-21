@@ -232,6 +232,12 @@ export default function Experiments() {
                                             {row.domain}
                                         </span>
                                     ) : null}
+                                    {row.text_override ? (
+                                        <span className="experiment-card__chip experiment-card__chip--text-override">
+                                            <span className="experiment-card__chip-key">Text override</span>
+                                            {row.text_override}
+                                        </span>
+                                    ) : null}
                                 </div>
                             </header>
 
