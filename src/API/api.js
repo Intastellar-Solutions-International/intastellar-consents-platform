@@ -96,6 +96,24 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        /*
+         * Daily time-series variant of marketingAttribution. Returns
+         * per-day rows grouped by (utm_source, utm_medium, utm_campaign,
+         * referrer_host) so the frontend can filter by channel (client-
+         * side derivation) without a separate query per channel. See the
+         * companion PHP stub in /docs/marketingAttributionTimeseries.md
+         * for the expected JSON contract — the frontend tolerates a
+         * missing endpoint (404 / non-JSON) by hiding the Line chart.
+         */
+        marketingAttributionTimeseries: {
+            url: `${PrimaryHost}/analytics/gdpr/marketingAttributionTimeseries`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
         complianceSnapshot: {
             url: `${PrimaryHost}/cmp/compliance-snapshot.php`,
             method: "GET",

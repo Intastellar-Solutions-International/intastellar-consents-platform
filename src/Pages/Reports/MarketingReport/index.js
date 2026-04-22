@@ -12,6 +12,11 @@ import {
     consentsDomainFromRoute,
     toDomainsApiHeader,
 } from "../../../Functions/domainPathSegments.js";
+import {
+    MarketingOverviewCharts,
+    MarketingChannelCharts,
+    MarketingTimeseriesChart,
+} from "./MarketingCharts.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -1393,7 +1398,21 @@ export default function MarketingReport() {
     const [channelTableSort, setChannelTableSort] = useState({ column: null, step: 0 });
     const [campaignTableSort, setCampaignTableSort] = useState({ column: null, step: 0 });
 
+    /*
+     * Phase 2: daily time-series payload for the channel Line chart.
+     * Fetched alongside the aggregated marketing report — one call per
+     * window, reused for every channel drill-down. The fetch is
+     * deliberately best-effort: if the endpoint is missing or the
+     * response isn't JSON, we keep the old dashboard fully functional
+     * and surface a friendly note in the chart card instead of an error.
+     */
+    const [timeseriesRows, setTimeseriesRows] = useState([]);
+    const [baselineTimeseriesRows, setBaselineTimeseriesRows] = useState([]);
+    const [timeseriesLoading, setTimeseriesLoading] = useState(false);
+    const [timeseriesError, setTimeseriesError] = useState(null);
+
     const endpoint = API[id]?.marketingAttribution;
+    const timeseriesEndpoint = API[id]?.marketingAttributionTimeseries;
 
     const fetchReport = useCallback(async () => {
         if (!endpoint?.url) {
@@ -1533,6 +1552,102 @@ export default function MarketingReport() {
         fetchReport();
     }, [fetchReport]);
 
+    /*
+     * Fetch the daily time-series for the current window. Runs in
+     * parallel to the main report (independent state), so a slow or
+     * failing timeseries request never blocks the aggregated view.
+     */
+    useEffect(() => {
+        let cancelled = false;
+        async function loadTimeseries() {
+            if (!timeseriesEndpoint?.url) {
+                setTimeseriesRows([]);
+                setBaselineTimeseriesRows([]);
+                setTimeseriesError(null);
+                return;
+            }
+            setTimeseriesLoading(true);
+            setTimeseriesError(null);
+            try {
+                const compareOnLocal = compareRangeActive(compareRange);
+                const baseHeaders = { ...timeseriesEndpoint.headers, Domains: domainsApiHeader };
+                const headers = {
+                    ...baseHeaders,
+                    FromDate: toYmd(fromDate),
+                    ToDate: toYmd(toDate),
+                    CompareRange: compareOnLocal
+                        ? compareRange === "Same period last year"
+                            ? "Same period last year"
+                            : String(compareRange)
+                        : "",
+                    PreviousPeriod: compareOnLocal ? toYmd(previousPeriod) : "",
+                    PreviousPeriod2: compareOnLocal ? toYmd(previousPeriod2) : "",
+                    "X-Compare-Start": compareOnLocal ? toYmd(previousPeriod) : "",
+                    "X-Compare-End": compareOnLocal ? toYmd(previousPeriod2) : "",
+                    "X-Compare-Range": compareOnLocal
+                        ? compareRange === "Same period last year"
+                            ? "Same period last year"
+                            : String(compareRange)
+                        : "",
+                };
+                const res = await fetch(timeseriesEndpoint.url, {
+                    method: timeseriesEndpoint.method || "GET",
+                    headers,
+                });
+                if (cancelled) return;
+                if (!res.ok) {
+                    setTimeseriesRows([]);
+                    setBaselineTimeseriesRows([]);
+                    setTimeseriesError(
+                        res.status === 404
+                            ? "Daily trend endpoint not available yet."
+                            : `Daily trend request failed (${res.status}).`
+                    );
+                    return;
+                }
+                const text = await res.text();
+                let json = null;
+                try {
+                    json = text ? JSON.parse(text) : null;
+                } catch {
+                    setTimeseriesRows([]);
+                    setBaselineTimeseriesRows([]);
+                    setTimeseriesError("Daily trend response was not JSON.");
+                    return;
+                }
+                if (json === "Err_Login_Expired") {
+                    localStorage.removeItem("globals");
+                    window.location.href = "/login";
+                    return;
+                }
+                const ts = Array.isArray(json?.timeseries) ? json.timeseries : [];
+                const baseline = Array.isArray(json?.compareTimeseries) ? json.compareTimeseries : [];
+                setTimeseriesRows(ts);
+                setBaselineTimeseriesRows(compareOnLocal ? baseline : []);
+                setTimeseriesError(null);
+            } catch (e) {
+                if (cancelled) return;
+                setTimeseriesRows([]);
+                setBaselineTimeseriesRows([]);
+                setTimeseriesError(e?.message || "Network error while loading daily trend.");
+            } finally {
+                if (!cancelled) setTimeseriesLoading(false);
+            }
+        }
+        loadTimeseries();
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        timeseriesEndpoint,
+        domainsApiHeader,
+        fromDate,
+        toDate,
+        compareRange,
+        previousPeriod,
+        previousPeriod2,
+    ]);
+
     const compareOn = useMemo(() => compareRangeActive(compareRange), [compareRange]);
     const compareUi = compareOn && !compareBaselineNote;
 
@@ -1642,6 +1757,18 @@ export default function MarketingReport() {
                 return sum + Math.max(0, r.consents - c);
             }, 0),
         [rows]
+    );
+
+    /*
+     * Merged geo / landing-path / utm context for the chart strip.
+     * Channel view uses the subset of rows in the selected channel so the
+     * "top countries" / "top paths" bars reflect that channel only. The
+     * overview view pools all rows. Memoising once here keeps the charts
+     * and the existing <MarketingContextSection/> tables consistent.
+     */
+    const mergedContext = useMemo(
+        () => mergeAllContext(selectedChannel ? drilldownRows : rows),
+        [selectedChannel, drilldownRows, rows]
     );
 
     const highlights = useMemo(
@@ -1898,6 +2025,35 @@ export default function MarketingReport() {
                             ))}
                         </div>
                     </section>
+
+                    {!error && rows.length > 0 ? (
+                        selectedChannel ? (
+                            <>
+                                <MarketingChannelCharts
+                                    channelName={selectedChannel}
+                                    drilldownRows={drilldownRows}
+                                    drillConsents={drillConsents}
+                                    mergedContext={mergedContext}
+                                />
+                                <MarketingTimeseriesChart
+                                    channelName={selectedChannel}
+                                    rowKeys={drilldownRows.map((r) => r.rowKey)}
+                                    timeseriesRows={timeseriesRows}
+                                    baselineTimeseriesRows={baselineTimeseriesRows}
+                                    fromDate={fromDate}
+                                    toDate={toDate}
+                                    compareEnabled={compareUi}
+                                    loading={timeseriesLoading}
+                                    errorMessage={timeseriesError}
+                                />
+                            </>
+                        ) : (
+                            <MarketingOverviewCharts
+                                channelOverview={channelOverview}
+                                rows={rows}
+                            />
+                        )
+                    ) : null}
 
                     <section className="marketing-report-section" aria-labelledby="exports-heading">
                         <h2 id="exports-heading" className="marketing-report-section__title">

@@ -1,38 +1,39 @@
-const { useState, useEffect, useRef, useContext } = React;
+const { useEffect, useRef } = React;
 import "../Line/Style.css";
 
-export default function Pie({ data, title, fromDate, toDate }) {
-    const dailyData = data;
+/*
+ * Pie renders an AnyChart pie in a DOM node with a *per-instance* id.
+ * Previously the component hard-coded `id="pie-chart"`, which meant two
+ * Pie components on the same page collided on the same container and the
+ * second one silently overwrote the first. The unique id is generated
+ * once per mount via `useRef` so the draw effect can target exactly this
+ * instance — and so parents can render as many pies as they need (e.g.
+ * the marketing dashboard channel view).
+ */
+export default function Pie({ data, title }) {
+    const chartDomId = useRef(
+        `pie-chart-${typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random())}`
+    ).current;
 
     useEffect(() => {
-
         anychart.onDocumentReady(function () {
-            // The main JS line charting code will be here.
-            let dataSet = anychart.data.set(dailyData);
-            if (dataSet.oc != dailyData) {
-                document.getElementById("pie-chart").innerHTML = "";
+            const el = document.getElementById(chartDomId);
+            if (el) {
+                el.innerHTML = "";
             }
-            let chart = anychart.pie(dailyData);
+            if (data == null) return;
+            const chart = anychart.pie(data);
             chart.background().fill("transparent");
-            chart.radius("90%")
-
-            // Loop through all document.getElementById("pie-chart") elements
-            // and set the chart container to the container for each element
-            chart.container("pie-chart");
-
-            if (data !== null || data !== undefined) {
-                chart.draw();
-            }
+            chart.radius("90%");
+            chart.container(chartDomId);
+            chart.draw();
         });
-    }, [dailyData]);
+    }, [data, chartDomId]);
 
     return (
         <div className={"widget no-padding"}>
-            {
-                (title) ? <h2>{title}</h2> : null
-            }
-            <div className="chart" id="pie-chart">
-            </div>
+            {title ? <h2>{title}</h2> : null}
+            <div className="chart" id={chartDomId}></div>
         </div>
-    )
+    );
 }
