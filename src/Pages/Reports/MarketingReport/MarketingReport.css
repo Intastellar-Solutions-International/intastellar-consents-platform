@@ -758,3 +758,78 @@
 .marketing-charts__card-body--tall .chart {
     min-height: 320px;
 }
+
+/*
+ * --- Visibility reframe --------------------------------------------------
+ *
+ * The "analytics-invisible traffic" narrative and supporting cues.
+ * Color palette stays in the platform gold/amber family so the warning
+ * reads as "pay attention" rather than "something is broken" — this is a
+ * product-level insight, not an error state.
+ */
+
+.marketing-report-visibility-narrative {
+    margin: 4px 0 16px;
+    padding: 12px 14px 13px;
+    max-width: 62rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: rgba(240, 230, 205, 0.95);
+    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.25) 65%);
+    border: 1px solid rgba(210, 165, 80, 0.28);
+    border-left: 3px solid rgba(210, 165, 80, 0.82);
+    border-radius: 10px;
+}
+
+.marketing-report-visibility-narrative strong {
+    color: rgba(255, 235, 195, 1);
+    font-weight: 600;
+}
+
+.marketing-report-kpi--warn {
+    border-color: rgba(210, 165, 80, 0.45);
+    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.24) 60%);
+}
+
+.marketing-report-kpi--warn .marketing-report-kpi__label {
+    color: rgba(235, 205, 145, 0.92);
+}
+
+.marketing-report-kpi--warn .marketing-report-kpi__value {
+    color: rgba(255, 235, 195, 1);
+}
+
+/*
+ * Per-row "analytics blind spot" highlight.
+ *
+ * A faint amber tint + a thick leading border drawn via a box-shadow
+ * inset so it doesn't shift row layout. The badge sits next to the
+ * campaign / channel name in lowercase to read as a label, not a button.
+ */
+
+.marketing-report-table__row--blind-spot {
+    background: rgba(210, 165, 80, 0.06);
+    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.6);
+}
+
+.marketing-report-table__row--blind-spot.marketing-report-table__row--clickable:hover,
+.marketing-report-table__row--blind-spot:hover {
+    background: rgba(210, 165, 80, 0.12);
+}
+
+.marketing-report-blind-spot-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 8px;
+    padding: 2px 8px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+    color: rgba(255, 225, 170, 0.98);
+    background: rgba(210, 165, 80, 0.18);
+    border: 1px solid rgba(210, 165, 80, 0.45);
+    border-radius: 999px;
+    vertical-align: middle;
+    white-space: nowrap;
+}

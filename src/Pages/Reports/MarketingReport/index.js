@@ -75,6 +75,30 @@ function compareRangeActive(compareRange) {
     return compareRange !== 0 && compareRange != null;
 }
 
+/*
+ * Blind-spot row threshold.
+ *
+ * A row counts as an "analytics blind spot" when both:
+ *   - it has enough volume to be worth worrying about (≥ 10 consents), and
+ *   - fewer than half of those consents were accept-all (the measurable
+ *     slice that actually reaches GA4 / Ads Manager / Meta pixel).
+ *
+ * The 10-consent floor keeps tiny, statistically-noisy rows from getting
+ * the warning treatment. The 50% visibility cutoff is the industry-typical
+ * "half your traffic is invisible" line — anything worse than that is
+ * worth surfacing in the UI.
+ */
+const BLIND_SPOT_MIN_CONSENTS = 10;
+const BLIND_SPOT_MAX_VISIBILITY_PCT = 50;
+
+function isAnalyticsBlindSpot(row) {
+    const consents = Number(row?.consents) || 0;
+    if (consents < BLIND_SPOT_MIN_CONSENTS) return false;
+    const visibility = Number(row?.acceptPct);
+    if (!Number.isFinite(visibility)) return false;
+    return visibility < BLIND_SPOT_MAX_VISIBILITY_PCT;
+}
+
 /** Stable join key for matching primary-period rows to baseline-period rows. */
 function marketingAttributionRowKey(utmSource, utmMedium, rawCampaign, referrer) {
     return [
@@ -1062,7 +1086,20 @@ function marketingSortAriaLabel(label, columnKey, kind, sort) {
     return `Sort ${label}: lowest to highest. Press again for default.`;
 }
 
-function MarketingCompareInline({ current, previous, kind = "volume" }) {
+/*
+ * Flip the up/down class when lowerIsBetter: for metrics like
+ * "analytics-invisible traffic", an increase is a regression. The text
+ * (the percent-change value itself) stays the same — only the color/
+ * arrow semantics are inverted so green always means "good".
+ */
+function invertTrendClassIfNeeded(cls, lowerIsBetter) {
+    if (!lowerIsBetter) return cls;
+    if (cls === "marketing-report-delta--up") return "marketing-report-delta--down";
+    if (cls === "marketing-report-delta--down") return "marketing-report-delta--up";
+    return cls;
+}
+
+function MarketingCompareInline({ current, previous, kind = "volume", lowerIsBetter = false }) {
     if (kind === "rate") {
         const c = Number(current);
         const hasCur = current != null && Number.isFinite(c);
@@ -1083,7 +1120,7 @@ function MarketingCompareInline({ current, previous, kind = "volume" }) {
         if (pts == null) return null;
         const c = Number(current);
         const p = Number(previous);
-        const cls =
+        const rawCls =
             Number.isFinite(c) && Number.isFinite(p)
                 ? c > p
                     ? "marketing-report-delta--up"
@@ -1091,6 +1128,7 @@ function MarketingCompareInline({ current, previous, kind = "volume" }) {
                       ? "marketing-report-delta--down"
                       : "marketing-report-delta--flat"
                 : "";
+        const cls = invertTrendClassIfNeeded(rawCls, lowerIsBetter);
         return (
             <span className={["marketing-report-delta", cls].filter(Boolean).join(" ")} title="Change vs comparison window (points)">
                 {pts}
@@ -1099,9 +1137,11 @@ function MarketingCompareInline({ current, previous, kind = "volume" }) {
     }
     const rel = formatPctChange(current, previous);
     if (rel == null) return null;
+    const rawCls = marketingCompareVolumeClass(current, previous);
+    const cls = invertTrendClassIfNeeded(rawCls, lowerIsBetter);
     return (
         <span
-            className={["marketing-report-delta", marketingCompareVolumeClass(current, previous)].filter(Boolean).join(" ")}
+            className={["marketing-report-delta", cls].filter(Boolean).join(" ")}
             title="Change vs comparison window"
         >
             {rel}
@@ -1109,13 +1149,18 @@ function MarketingCompareInline({ current, previous, kind = "volume" }) {
     );
 }
 
-function MarketingMetricStack({ compareUi, primary, current, previous, kind = "volume" }) {
+function MarketingMetricStack({ compareUi, primary, current, previous, kind = "volume", lowerIsBetter = false }) {
     return (
         <div className="marketing-report-cell-stack">
             <span className="marketing-report-cell-stack__primary">{primary}</span>
             {compareUi ? (
                 <span className="marketing-report-cell-stack__compare">
-                    <MarketingCompareInline kind={kind} current={current} previous={previous} />
+                    <MarketingCompareInline
+                        kind={kind}
+                        current={current}
+                        previous={previous}
+                        lowerIsBetter={lowerIsBetter}
+                    />
                 </span>
             ) : null}
         </div>
@@ -1760,6 +1805,52 @@ export default function MarketingReport() {
     );
 
     /*
+     * Analytics-visibility reframe.
+     *
+     * "Visible" = accept-all (measurement-ready). Everything else —
+     * essential-only, granular, or unclassified — is invisible to GA4 /
+     * Ads Manager / Meta pixel because the relevant analytics/marketing
+     * categories weren't fully enabled. This is the single number a
+     * marketer cross-referencing the dashboard with their ad platform
+     * actually needs: "how much of this campaign's traffic won't reach
+     * my conversion tracking?"
+     */
+    const visibilityScopeTotal = selectedChannel ? drillConsents : totalConsents;
+    const invisibleConsents = useMemo(() => {
+        const visible = Number(measurementReadyCount) || 0;
+        const total = Number(visibilityScopeTotal) || 0;
+        return Math.max(0, total - visible);
+    }, [measurementReadyCount, visibilityScopeTotal]);
+
+    const invisibleSharePct = useMemo(() => {
+        const total = Number(visibilityScopeTotal) || 0;
+        if (total <= 0) return null;
+        return Math.round((invisibleConsents / total) * 1000) / 10;
+    }, [invisibleConsents, visibilityScopeTotal]);
+
+    const baselineInvisibleConsents = useMemo(() => {
+        if (!compareUi) return null;
+        const visible = baselineMeasurementReadyCount;
+        const totalBaseline = selectedChannel ? drillBaselineConsents : totalBaselineConsents;
+        if (visible == null || totalBaseline == null) return null;
+        return Math.max(0, Number(totalBaseline) - Number(visible));
+    }, [
+        compareUi,
+        baselineMeasurementReadyCount,
+        selectedChannel,
+        drillBaselineConsents,
+        totalBaselineConsents,
+    ]);
+
+    const baselineInvisibleSharePct = useMemo(() => {
+        if (!compareUi) return null;
+        if (baselineMeasurementReadySharePct == null) return null;
+        const s = Number(baselineMeasurementReadySharePct);
+        if (!Number.isFinite(s)) return null;
+        return Math.round((100 - s) * 10) / 10;
+    }, [compareUi, baselineMeasurementReadySharePct]);
+
+    /*
      * Merged geo / landing-path / utm context for the chart strip.
      * Channel view uses the subset of rows in the selected channel so the
      * "top countries" / "top paths" bars reflect that channel only. The
@@ -1903,6 +1994,34 @@ export default function MarketingReport() {
                         />
                     ) : null,
             },
+            /*
+             * The reconciliation-first KPI: this is the number a marketer
+             * looking at GA4 / Ads Manager actually cares about. We show
+             * it with a warning variant so it reads as something to act
+             * on, not just a neutral fact. Growth is a regression, so the
+             * compare delta uses `lowerIsBetter` to flip up/down colors.
+             */
+            {
+                key: "invisible-traffic",
+                label: selectedChannel
+                    ? "Analytics-invisible (channel)"
+                    : "Analytics-invisible traffic",
+                value: invisibleConsents.toLocaleString("de-DE"),
+                hint:
+                    invisibleSharePct != null
+                        ? `${invisibleSharePct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% of attributed consents chose essential-only or granular — these visits won't reach GA4, Ads Manager, or the Meta pixel.`
+                        : "Attributed consents that chose essential-only or granular — they won't reach GA4, Ads Manager, or the Meta pixel.",
+                variant: "warn",
+                compare:
+                    compareUi && baselineInvisibleConsents != null ? (
+                        <MarketingCompareInline
+                            kind="volume"
+                            current={invisibleConsents}
+                            previous={baselineInvisibleConsents}
+                            lowerIsBetter
+                        />
+                    ) : null,
+            },
         ];
         if (summary && typeof summary === "object") {
             if (summary.sessionsWithMarketingParams != null) {
@@ -1941,6 +2060,9 @@ export default function MarketingReport() {
         measurementReadySharePct,
         baselineMeasurementReadyCount,
         baselineMeasurementReadySharePct,
+        invisibleConsents,
+        invisibleSharePct,
+        baselineInvisibleConsents,
     ]);
 
     return (
@@ -2014,9 +2136,55 @@ export default function MarketingReport() {
                             Full-stack metrics use the API summary when available so totals stay correct even if the
                             campaign table is paginated.
                         </p>
+                        {!error && rows.length > 0 && invisibleSharePct != null ? (
+                            <p
+                                className="marketing-report-visibility-narrative"
+                                role="note"
+                                aria-live="polite"
+                            >
+                                {selectedChannel ? (
+                                    <>
+                                        In{" "}
+                                        <strong>{selectedChannel}</strong>,{" "}
+                                        <strong>
+                                            {invisibleConsents.toLocaleString("de-DE")}
+                                        </strong>{" "}
+                                        of{" "}
+                                        <strong>{visibilityScopeTotal.toLocaleString("de-DE")}</strong>{" "}
+                                        attributed consents
+                                    </>
+                                ) : (
+                                    <>
+                                        <strong>
+                                            {invisibleConsents.toLocaleString("de-DE")}
+                                        </strong>{" "}
+                                        of{" "}
+                                        <strong>{visibilityScopeTotal.toLocaleString("de-DE")}</strong>{" "}
+                                        attributed consents in this view
+                                    </>
+                                )}{" "}
+                                (
+                                <strong>
+                                    {invisibleSharePct.toLocaleString("de-DE", {
+                                        maximumFractionDigits: 1,
+                                    })}
+                                    %
+                                </strong>
+                                ) won't reach your analytics tools — those visits chose essential-only or
+                                granular categories, so GA4, Ads Manager, and the Meta pixel won't record them.
+                            </p>
+                        ) : null}
                         <div className="marketing-report-summary">
                             {kpiCards.map((c) => (
-                                <div key={c.key || c.label} className="marketing-report-kpi">
+                                <div
+                                    key={c.key || c.label}
+                                    className={[
+                                        "marketing-report-kpi",
+                                        c.variant ? `marketing-report-kpi--${c.variant}` : "",
+                                    ]
+                                        .filter(Boolean)
+                                        .join(" ")}
+                                >
                                     <span className="marketing-report-kpi__label">{c.label}</span>
                                     <span className="marketing-report-kpi__value">{c.value}</span>
                                     {c.hint ? <p className="marketing-report-kpi__hint">{c.hint}</p> : null}
@@ -2217,9 +2385,28 @@ export default function MarketingReport() {
                                             </td>
                                         </tr>
                                     ) : (
-                                        sortedDrilldownRows.map((r, i) => (
-                                            <tr key={`${r.channel}-${r.utmCampaign}-${i}`}>
-                                                <td className="marketing-report-table__col-campaign">{r.utmCampaign}</td>
+                                        sortedDrilldownRows.map((r, i) => {
+                                            const blindSpot = isAnalyticsBlindSpot(r);
+                                            return (
+                                            <tr
+                                                key={`${r.channel}-${r.utmCampaign}-${i}`}
+                                                className={
+                                                    blindSpot
+                                                        ? "marketing-report-table__row--blind-spot"
+                                                        : undefined
+                                                }
+                                            >
+                                                <td className="marketing-report-table__col-campaign">
+                                                    {r.utmCampaign}
+                                                    {blindSpot ? (
+                                                        <span
+                                                            className="marketing-report-blind-spot-badge"
+                                                            title={`Under ${BLIND_SPOT_MAX_VISIBILITY_PCT}% of this campaign's consents will reach your analytics tools.`}
+                                                        >
+                                                            analytics blind spot
+                                                        </span>
+                                                    ) : null}
+                                                </td>
                                                 <td className="marketing-report-table__col-num">
                                                     <MarketingMetricStack
                                                         compareUi={compareUi}
@@ -2252,7 +2439,8 @@ export default function MarketingReport() {
                                                     {formatChoiceCountPct(r.granular, r.consents)}
                                                 </td>
                                             </tr>
-                                        ))
+                                            );
+                                        })
                                     )}
                                 </tbody>
                             </table>
@@ -2319,13 +2507,24 @@ export default function MarketingReport() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {sortedChannelOverview.map((r) => (
+                                    {sortedChannelOverview.map((r) => {
+                                        const blindSpot = isAnalyticsBlindSpot(r);
+                                        return (
                                         <tr
                                             key={r.channel}
-                                            className="marketing-report-table__row--clickable"
+                                            className={[
+                                                "marketing-report-table__row--clickable",
+                                                blindSpot ? "marketing-report-table__row--blind-spot" : "",
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" ")}
                                             tabIndex={0}
                                             role="button"
-                                            aria-label={`Open campaign breakdown for ${r.channel}`}
+                                            aria-label={
+                                                blindSpot
+                                                    ? `Open campaign breakdown for ${r.channel} — analytics blind spot`
+                                                    : `Open campaign breakdown for ${r.channel}`
+                                            }
                                             onClick={() => setSelectedChannel(r.channel)}
                                             onKeyDown={(e) => {
                                                 if (e.key === "Enter" || e.key === " ") {
@@ -2339,6 +2538,14 @@ export default function MarketingReport() {
                                                     <span className="marketing-report-channel-cell__label">
                                                         {r.channel}
                                                     </span>
+                                                    {blindSpot ? (
+                                                        <span
+                                                            className="marketing-report-blind-spot-badge"
+                                                            title={`Under ${BLIND_SPOT_MAX_VISIBILITY_PCT}% of ${r.channel}'s consents will reach your analytics tools.`}
+                                                        >
+                                                            analytics blind spot
+                                                        </span>
+                                                    ) : null}
                                                     <span className="marketing-report-channel-cell__chevron" aria-hidden>
                                                         →
                                                     </span>
@@ -2385,7 +2592,8 @@ export default function MarketingReport() {
                                                 {formatChoiceCountPct(r.granular, r.consents)}
                                             </td>
                                         </tr>
-                                    ))}
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         )}
