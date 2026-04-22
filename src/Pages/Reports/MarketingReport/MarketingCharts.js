@@ -295,47 +295,55 @@ export function MarketingChannelCharts({
  * --- Time series --------------------------------------------------------
  *
  * The timeseries endpoint returns per-day rows grouped by
- * (utm_source, utm_medium, utm_campaign, referrer_host). The channel is
- * a client-side derivation of that tuple, so to show "consents per day
- * for this channel" we:
+ * (utm_source, utm_medium, utm_campaign, referrer_host). The "channel"
+ * is a client-side derivation of that tuple, so to show "consents per
+ * day for this channel" we:
  *
- *   1. Match each timeseries row to the caller's rowKey set (same hash
- *      used by the table) so we only sum rows that belong to the channel.
+ *   1. For each timeseries row, rebuild the same row shape the table's
+ *      `deriveMarketingChannel(...)` expects and run it through that
+ *      derivation. We match by the resulting channel name — not by a
+ *      rowKey hash — because the aggregated `marketingAttribution`
+ *      endpoint (a) hard-codes `referrerHost = "—"` and (b) collapses
+ *      varying `utm_medium` values onto one bucket, so any rowKey we
+ *      computed from a well-populated timeseries row would never match
+ *      the table's rowKey. Channel derivation is the single source of
+ *      truth for "what bucket does this row belong to".
  *   2. Aggregate by date.
- *   3. Reshape into the payload the existing <Line/> chart expects —
- *      `{name, num, previousPeriod: {num}}` keyed by x-axis label.
+ *   3. Reshape into the payload `<Line/>` expects —
+ *      `{date, num, previousPeriod: {date, num}}`.
  *
- * When the compare series is aligned by position (not date), we pair the
- * i-th current-period day with the i-th baseline day so the Line chart
- * can overlay them. Date granularity is a day; if the baseline has fewer
- * or more days we pad / trim to the primary axis length.
+ * When a comparison period is on, we pair the i-th current-period day
+ * with the i-th baseline day so the Line chart can overlay them.
  */
 
-function normUtm(s) {
-    return String(s ?? "")
-        .trim()
-        .toLowerCase();
+function tsChannelRow(r) {
+    /*
+     * Normalise a raw timeseries row (snake_case or camelCase) into the
+     * shape `deriveMarketingChannel` reads. `"—"` is the same "missing"
+     * sentinel the aggregated endpoint returns, so derivation heuristics
+     * see identical input regardless of which endpoint produced the row.
+     */
+    const utmSource = String(r.utm_source ?? r.utmSource ?? "—") || "—";
+    const utmMedium = String(r.utm_medium ?? r.utmMedium ?? "—") || "—";
+    const utmCampaign = String(r.utm_campaign ?? r.utmCampaign ?? "—") || "—";
+    const referrer = String(
+        r.referrer_host ?? r.referrerHost ?? r.referrer ?? "—"
+    );
+    return {
+        utmSource,
+        utmMedium,
+        utmCampaign,
+        referrer: referrer || "—",
+    };
 }
 
-function simplifyRawCampaign(s) {
-    return String(s ?? "").trim();
-}
-
-function tsRowKey(row) {
-    return [
-        normUtm(row.utm_source ?? row.utmSource),
-        normUtm(row.utm_medium ?? row.utmMedium),
-        normUtm(simplifyRawCampaign(row.utm_campaign ?? row.utmCampaign)),
-        normUtm(row.referrer_host ?? row.referrerHost ?? row.referrer),
-    ].join("|");
-}
-
-function dailyConsentsForChannel(timeseriesRows, rowKeySet) {
+function dailyConsentsForChannel(timeseriesRows, selectedChannel, deriveChannel) {
     if (!Array.isArray(timeseriesRows) || timeseriesRows.length === 0) return [];
+    if (!selectedChannel || typeof deriveChannel !== "function") return [];
     const byDate = new Map();
     for (const r of timeseriesRows) {
-        const k = tsRowKey(r);
-        if (rowKeySet && !rowKeySet.has(k)) continue;
+        const channel = deriveChannel(tsChannelRow(r));
+        if (channel !== selectedChannel) continue;
         const d = String(r.date ?? "").slice(0, 10);
         if (!d) continue;
         const cur = byDate.get(d) ?? 0;
@@ -363,7 +371,7 @@ function buildLineSeries(primaryDaily, baselineDaily) {
 
 export function MarketingTimeseriesChart({
     channelName,
-    rowKeys,
+    deriveChannel,
     timeseriesRows,
     baselineTimeseriesRows,
     fromDate,
@@ -372,18 +380,16 @@ export function MarketingTimeseriesChart({
     loading,
     errorMessage,
 }) {
-    const rowKeySet = useMemo(
-        () => (Array.isArray(rowKeys) ? new Set(rowKeys) : null),
-        [rowKeys]
-    );
-
     const primaryDaily = useMemo(
-        () => dailyConsentsForChannel(timeseriesRows, rowKeySet),
-        [timeseriesRows, rowKeySet]
+        () => dailyConsentsForChannel(timeseriesRows, channelName, deriveChannel),
+        [timeseriesRows, channelName, deriveChannel]
     );
     const baselineDaily = useMemo(
-        () => (compareEnabled ? dailyConsentsForChannel(baselineTimeseriesRows, rowKeySet) : []),
-        [baselineTimeseriesRows, rowKeySet, compareEnabled]
+        () =>
+            compareEnabled
+                ? dailyConsentsForChannel(baselineTimeseriesRows, channelName, deriveChannel)
+                : [],
+        [baselineTimeseriesRows, channelName, deriveChannel, compareEnabled]
     );
 
     const lineData = useMemo(
@@ -392,6 +398,7 @@ export function MarketingTimeseriesChart({
     );
 
     const hasPoints = lineData.length > 0;
+    const endpointReturnedRows = Array.isArray(timeseriesRows) && timeseriesRows.length > 0;
     const fromYmd = fromDate ? ymdLocal(fromDate) : "";
     const toYmd = toDate ? ymdLocal(toDate) : "";
 
@@ -415,9 +422,9 @@ export function MarketingTimeseriesChart({
                         <EmptyNote>{errorMessage}</EmptyNote>
                     ) : !hasPoints ? (
                         <EmptyNote>
-                            No daily consent data for this channel yet. Once the backend
-                            <code> marketingAttributionTimeseries </code> endpoint is live, the
-                            line will appear here — see <code>docs/marketingAttributionTimeseries.md</code>.
+                            {endpointReturnedRows
+                                ? `The daily trend endpoint returned data for this window, but no rows classified into "${channelName}" under the current channel rules.`
+                                : "No daily consent data for this window yet. Once the backend marketingAttributionTimeseries endpoint is live (see docs/marketingAttributionTimeseries.md), the line will appear here."}
                         </EmptyNote>
                     ) : (
                         <Line

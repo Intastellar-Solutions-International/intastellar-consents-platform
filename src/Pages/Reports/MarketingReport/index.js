@@ -2037,7 +2037,7 @@ export default function MarketingReport() {
                                 />
                                 <MarketingTimeseriesChart
                                     channelName={selectedChannel}
-                                    rowKeys={drilldownRows.map((r) => r.rowKey)}
+                                    deriveChannel={deriveMarketingChannel}
                                     timeseriesRows={timeseriesRows}
                                     baselineTimeseriesRows={baselineTimeseriesRows}
                                     fromDate={fromDate}
