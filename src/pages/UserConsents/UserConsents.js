@@ -24,7 +24,25 @@ import punycode from "punycode";
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
+const useLocation = window.ReactRouterDOM.useLocation;
 const PAGE_SIZE = 40;
+
+/**
+ * Pull the `country` query param out of a react-router `location` object.
+ * Normalised to upper-case ISO-3166 alpha-2 so it compares cleanly against
+ * `row.country_code` which `collect.php` already stores upper-cased.
+ */
+function readCountryFromSearch(search) {
+    if (!search || typeof search !== "string") return "";
+    try {
+        const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+        const raw = params.get("country");
+        if (!raw) return "";
+        return String(raw).trim().toUpperCase();
+    } catch (_) {
+        return "";
+    }
+}
 
 function consentDateKey(d) {
     if (d == null) return "";
@@ -209,6 +227,35 @@ export default function UserConsents(props) {
     const [loadingMore, setLoadingMore] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const [selectedFramework, setSelectedFramework] = useState("all");
+
+    /**
+     * Country filter driven by the `?country=XX` query param. This is how the
+     * world map drawer deep-links into a country-scoped view of the audit log.
+     * We keep it in React state so the UI can also clear it; the URL is kept
+     * in sync via `history.replaceState` so the link stays copy/paste-able.
+     */
+    const routerLocation = typeof useLocation === "function" ? useLocation() : null;
+    const initialCountry = readCountryFromSearch(
+        routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")
+    );
+    const [selectedCountry, setSelectedCountry] = useState(initialCountry);
+
+    useEffect(() => {
+        const fromUrl = readCountryFromSearch(routerLocation?.search ?? "");
+        if (fromUrl !== selectedCountry) setSelectedCountry(fromUrl);
+    }, [routerLocation?.search]);
+
+    const clearCountryFilter = useCallback(() => {
+        setSelectedCountry("");
+        if (typeof window === "undefined" || !window.history?.replaceState) return;
+        try {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("country");
+            window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+        } catch (_) {
+            /* non-fatal: the in-memory state is still cleared */
+        }
+    }, []);
 
     const [demoMode, setDemoMode] = useState(Authentication.DemoMode); 
 
@@ -424,9 +471,20 @@ export default function UserConsents(props) {
     }, [consentsQueryKey]);
 
     const filteredDisplayData = useMemo(() => {
-        if (!Array.isArray(displayData) || selectedFramework === "all") return displayData;
-        return displayData.filter((row) => frameworksForAuditRow(row).has(selectedFramework));
-    }, [displayData, selectedFramework]);
+        if (!Array.isArray(displayData)) return displayData;
+        const country = selectedCountry ? selectedCountry.toUpperCase() : "";
+        if (selectedFramework === "all" && !country) return displayData;
+        return displayData.filter((row) => {
+            if (selectedFramework !== "all" && !frameworksForAuditRow(row).has(selectedFramework)) {
+                return false;
+            }
+            if (country) {
+                const rowCc = String(row?.country_code ?? "").trim().toUpperCase();
+                if (rowCc !== country) return false;
+            }
+            return true;
+        });
+    }, [displayData, selectedFramework, selectedCountry]);
 
     const filteredAway =
         Array.isArray(displayData) && Array.isArray(filteredDisplayData)
@@ -469,16 +527,28 @@ export default function UserConsents(props) {
                                 ))}
                             </select>
                         </label>
-                        {selectedFramework !== "all" && filteredAway > 0 ? (
-                            <span className="user-consents-filter-note" role="status" aria-live="polite">
-                                Showing {filteredDisplayData.length} of {displayData.length} loaded records ·{" "}
+                        {selectedCountry ? (
+                            <span
+                                className="user-consents-filter-chip"
+                                role="status"
+                                aria-live="polite"
+                                title={`Showing records where country_code = ${selectedCountry}`}
+                            >
+                                <span className="user-consents-filter-chip__label">Country</span>
+                                <span className="user-consents-filter-chip__value">{selectedCountry}</span>
                                 <button
                                     type="button"
-                                    className="user-consents-filter-reset"
-                                    onClick={() => setSelectedFramework("all")}
+                                    className="user-consents-filter-chip__clear"
+                                    onClick={clearCountryFilter}
+                                    aria-label={`Clear country filter (${selectedCountry})`}
                                 >
-                                    Clear filter
+                                    ×
                                 </button>
+                            </span>
+                        ) : null}
+                        {(selectedFramework !== "all" || selectedCountry) && filteredAway > 0 ? (
+                            <span className="user-consents-filter-note" role="status" aria-live="polite">
+                                Showing {filteredDisplayData.length} of {displayData.length} loaded records
                                 {hasMore ? " · scroll to load more" : ""}
                             </span>
                         ) : null}
@@ -495,17 +565,36 @@ export default function UserConsents(props) {
                             <Loading />
                         </div>
                     : showFetchFailure ? <Unknown /> : (showNoData) ? <NoDataFound /> : <>
-                        {selectedFramework !== "all" && Array.isArray(filteredDisplayData) && filteredDisplayData.length === 0 ? (
+                        {(selectedFramework !== "all" || selectedCountry) &&
+                            Array.isArray(filteredDisplayData) &&
+                            filteredDisplayData.length === 0 ? (
                             <div className="user-consents-empty-filter" role="status">
-                                No records match <strong>{selectedFramework}</strong> in the currently loaded page.{" "}
+                                No records match{" "}
+                                {selectedFramework !== "all" ? <strong>{selectedFramework}</strong> : null}
+                                {selectedFramework !== "all" && selectedCountry ? " in " : ""}
+                                {selectedCountry ? <strong>{selectedCountry}</strong> : null}
+                                {" "}in the currently loaded page.{" "}
                                 {hasMore ? "Scroll to load more, or " : ""}
-                                <button
-                                    type="button"
-                                    className="user-consents-filter-reset"
-                                    onClick={() => setSelectedFramework("all")}
-                                >
-                                    clear the filter
-                                </button>.
+                                {selectedFramework !== "all" ? (
+                                    <button
+                                        type="button"
+                                        className="user-consents-filter-reset"
+                                        onClick={() => setSelectedFramework("all")}
+                                    >
+                                        clear framework
+                                    </button>
+                                ) : null}
+                                {selectedFramework !== "all" && selectedCountry ? " · " : ""}
+                                {selectedCountry ? (
+                                    <button
+                                        type="button"
+                                        className="user-consents-filter-reset"
+                                        onClick={clearCountryFilter}
+                                    >
+                                        clear country
+                                    </button>
+                                ) : null}
+                                .
                             </div>
                         ) : null}
                         <div className="user-consents-grid">

@@ -1,5 +1,22 @@
 const { useEffect } = React;
+const Link = window.ReactRouterDOM.Link;
+const useParams = window.ReactRouterDOM.useParams;
 import { lockBodyScroll, unlockBodyScroll } from "../../../Functions/bodyScrollLock.js";
+
+/**
+ * Build the deep-link to the UserConsents audit log filtered by a country.
+ * Preserves the current tenant (:id) and domain handle (:handle) when they
+ * are present in the current route; falls back to the no-handle variant
+ * when the user is on a combined / handle-less view.
+ */
+function buildAuditLogHref(id, handle, isoCode) {
+    if (!id || !isoCode) return null;
+    const q = `?country=${encodeURIComponent(isoCode)}`;
+    if (handle && handle !== "combined view") {
+        return `/${id}/reports/view/${handle}/user-consents${q}`;
+    }
+    return `/${id}/reports/user-consents${q}`;
+}
 
 function fmt(n, demoMode) {
     if (n == null || (typeof n === "number" && !Number.isFinite(n))) return "—";
@@ -39,6 +56,9 @@ function formatPctDeltaPp(currentPct, prevPct) {
 }
 
 export default function CountryDetailDrawer({ country, total, demoMode, onClose, renderCountryPanelExtras }) {
+    const { id, handle } = useParams() || {};
+    const auditLogHref = country?.__iso ? buildAuditLogHref(id, handle, country.__iso) : null;
+
     const extrasNode =
         country &&
         country.__empty !== true &&
@@ -197,6 +217,24 @@ export default function CountryDetailDrawer({ country, total, demoMode, onClose,
                     <div className="world-map-drawer__extras">
                         <h3 className="world-map-drawer__extras-title">More detail</h3>
                         <div className="world-map-drawer__embed">{extrasNode}</div>
+                    </div>
+                ) : null}
+
+                {auditLogHref ? (
+                    <div className="world-map-drawer__cta">
+                        <Link
+                            to={auditLogHref}
+                            className="world-map-drawer__cta-link"
+                            onClick={onClose}
+                        >
+                            <span className="world-map-drawer__cta-label">
+                                View audit log for {name}
+                            </span>
+                            <span className="world-map-drawer__cta-sub">
+                                Opens the consent records page filtered by {country.__iso}
+                            </span>
+                            <span className="world-map-drawer__cta-arrow" aria-hidden>→</span>
+                        </Link>
                     </div>
                 ) : null}
             </aside>
