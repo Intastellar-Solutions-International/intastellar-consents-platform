@@ -562,8 +562,8 @@ export default function UserConsents(props) {
 
                                             <dl className="user-consent-card__meta">
                                                 <div className="user-consent-card__row">
-                                                    <dt>Country</dt>
-                                                    <dd>{d?.country_code ?? "—"}</dd>
+                                                    <dt>Country | State</dt>
+                                                    <dd>{d?.country_code ?? "—"} | {d?.state_code ?? "—"}</dd>
                                                 </div>
                                                 <div className="user-consent-card__row">
                                                     <dt>Language</dt>
