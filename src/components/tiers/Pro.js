@@ -14,7 +14,7 @@ export default function ProTier(props) {
                     { x: "Declined", value: activeData?.interactions_number.decline },
                     { x: "Only Marketing", value: activeData?.interactions_number.marketing },
                     { x: "Only Functional", value: activeData?.interactions_number.functional },
-                    { x: "Only Statics", value: activeData?.interactions_number.statics }
+                    { x: "Only Statistics", value: activeData?.interactions_number.statics }
                 ]} />
             }
             {(loading) ? <Loading /> : <Widget totalNumber={activeData?.Accepted.toLocaleString("de-DE") + "%"} type="Accepted cookies" />}

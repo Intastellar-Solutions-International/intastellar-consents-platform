@@ -196,7 +196,7 @@ export default function Widget(props) {
             { label: "Essential", deltaKey: "declined", relKey: "declinedRelativeDrop" },
             { label: "Marketing", deltaKey: "marketing", relKey: "marketingRelativeDrop" },
             { label: "Functional", deltaKey: "functional", relKey: "functionalRelativeDrop" },
-            { label: "Statics", deltaKey: "statics", relKey: "staticsRelativeDrop" },
+            { label: "Statistics", deltaKey: "statics", relKey: "staticsRelativeDrop" },
         ];
         const showInlineComparison =
             compareOn &&
