@@ -17,6 +17,7 @@ import {
     MarketingChannelCharts,
     MarketingTimeseriesChart,
 } from "./MarketingCharts.js";
+import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -2193,6 +2194,19 @@ export default function MarketingReport() {
                             ))}
                         </div>
                     </section>
+
+                    {!error && rows.length > 0 ? (
+                        <MarketingReconciliationPanel
+                            scopeLabel={selectedChannel || "all channels"}
+                            scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
+                            domainKey={listDomainLabel}
+                            consents={visibilityScopeTotal}
+                            visibleConsents={measurementReadyCount}
+                            invisibleConsents={invisibleConsents}
+                            fromDate={toYmd(fromDate)}
+                            toDate={toYmd(toDate)}
+                        />
+                    ) : null}
 
                     {!error && rows.length > 0 ? (
                         selectedChannel ? (
