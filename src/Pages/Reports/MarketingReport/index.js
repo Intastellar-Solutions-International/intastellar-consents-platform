@@ -2203,6 +2203,7 @@ export default function MarketingReport() {
                             consents={visibilityScopeTotal}
                             visibleConsents={measurementReadyCount}
                             invisibleConsents={invisibleConsents}
+                            scopeRows={selectedChannel ? drilldownRows : rows}
                             fromDate={toYmd(fromDate)}
                             toDate={toYmd(toDate)}
                         />

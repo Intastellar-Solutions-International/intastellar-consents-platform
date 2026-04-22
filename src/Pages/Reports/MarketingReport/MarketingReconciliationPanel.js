@@ -53,6 +53,76 @@ const PLATFORM_BY_ID = PLATFORMS.reduce((acc, p) => {
     return acc;
 }, {});
 
+/*
+ * Per-platform utm_source matchers.
+ *
+ * A scope (channel or overview) usually contains traffic from several
+ * ad platforms — we can't reconcile Microsoft clicks against "all paid
+ * search consents" because that pool also contains Google and Baidu.
+ * Each platform gets a regex that matches the canonicalised utm_source
+ * (lowercased, punctuation-stripped); rows whose source matches are
+ * treated as belonging to that platform.
+ *
+ * `null` means "no source filter" — applied to GA4 (which is analytics
+ * downstream of every ad source) and "Other / custom" (user opt-out of
+ * filtering, useful for bespoke UTM schemes the matcher doesn't know).
+ *
+ * The matchers err on the generous side (e.g. "fb*" → Meta) because
+ * false negatives are the worse UX: a marketer seeing "0 matched" is
+ * confusing, while a false positive gets caught when they review the
+ * "matched sources" list we render under the inputs.
+ */
+const PLATFORM_SOURCE_PATTERNS = {
+    google_ads: /^(?:google|adwords|gads)/,
+    meta_ads: /^(?:facebook|meta|instagram|fb|ig)/,
+    microsoft_ads: /^(?:bing|microsoft|msads|msn)/,
+    linkedin_ads: /^(?:linkedin|liads)/,
+    tiktok_ads: /^(?:tiktok|ttads)/,
+    pinterest_ads: /^pinterest/,
+    twitter_ads: /^(?:twitter|twtr|xads|x$)/,
+    ga4: null,
+    other: null,
+};
+
+function canonUtmSource(s) {
+    return String(s || "")
+        .toLowerCase()
+        .replace(/[\s_\-.]+/g, "");
+}
+
+function platformPattern(platformId) {
+    if (!Object.prototype.hasOwnProperty.call(PLATFORM_SOURCE_PATTERNS, platformId)) {
+        return null;
+    }
+    return PLATFORM_SOURCE_PATTERNS[platformId];
+}
+
+function rowMatchesPlatform(row, pattern) {
+    if (!pattern) return true;
+    const raw = row && row.utmSource ? row.utmSource : "";
+    if (!raw || raw === "—") return false;
+    const canon = canonUtmSource(raw);
+    if (!canon) return false;
+    return pattern.test(canon);
+}
+
+/*
+ * Describe what a platform's pattern accepts in marketer-friendly terms.
+ * We surface this under the inputs when a filter is active so the user
+ * can self-diagnose "why didn't my utm_source tag count?"
+ */
+const PLATFORM_EXAMPLE_SOURCES = {
+    google_ads: ["google", "googleads", "adwords", "gads"],
+    meta_ads: ["facebook", "fb", "meta", "instagram", "ig"],
+    microsoft_ads: ["bing", "microsoft", "msads", "msn"],
+    linkedin_ads: ["linkedin", "liads"],
+    tiktok_ads: ["tiktok", "ttads"],
+    pinterest_ads: ["pinterest"],
+    twitter_ads: ["twitter", "twtr", "xads", "x"],
+    ga4: [],
+    other: [],
+};
+
 function platformOrFallback(id) {
     return PLATFORM_BY_ID[id] || PLATFORMS[0];
 }
@@ -84,6 +154,23 @@ function formatInt(n) {
 function formatPct(n, maxFraction = 1) {
     const x = Number(n);
     if (!Number.isFinite(x)) return "—";
+    return `${x.toLocaleString("de-DE", { maximumFractionDigits: maxFraction })}%`;
+}
+
+/*
+ * Display helper for "X as a share of reported clicks" percentages.
+ *
+ * When consents exceed reported clicks (multi-session visits,
+ * pre-consented returns, UTM-tagged URLs shared beyond the ad, or a
+ * cross-platform attribution overlap), the derived share can exceed
+ * 100% and reads like broken math. We clamp the label to "100%+" so
+ * the UI stays honest — the raw numbers remain visible next to it and
+ * the row gets an "over-count" badge, so the user can see why.
+ */
+function formatShareOfReportedPct(n, maxFraction = 1) {
+    const x = Number(n);
+    if (!Number.isFinite(x)) return "—";
+    if (x > 100) return "100%+";
     return `${x.toLocaleString("de-DE", { maximumFractionDigits: maxFraction })}%`;
 }
 
@@ -236,6 +323,10 @@ function snapshotsToCsv(snapshots) {
         "spend",
         "currency",
         "cost_per_visible",
+        "source_filter_active",
+        "matched_utm_sources",
+        "scope_consents",
+        "coverage_of_scope_pct",
         "from_date",
         "to_date",
     ];
@@ -258,6 +349,10 @@ function snapshotsToCsv(snapshots) {
                 s.spend,
                 s.currency,
                 s.costPerVisible,
+                s.sourceFilterActive ? "yes" : "no",
+                s.matchedSources || "",
+                s.scopeConsents ?? "",
+                s.coverageOfScopePct ?? "",
                 s.fromDate,
                 s.toDate,
             ]
@@ -309,6 +404,7 @@ export default function MarketingReconciliationPanel({
     consents,
     visibleConsents,
     invisibleConsents,
+    scopeRows,
     fromDate,
     toDate,
 }) {
@@ -407,9 +503,78 @@ export default function MarketingReconciliationPanel({
         }));
     }, []);
 
-    const numConsents = Math.max(0, Number(consents) || 0);
-    const numVisible = Math.max(0, Number(visibleConsents) || 0);
-    const numInvisible = Math.max(0, Number(invisibleConsents) || 0);
+    /*
+     * Scope-wide totals come from the parent (single source of truth
+     * for "how much traffic this channel saw"). We keep them around
+     * because the platform-filtered numbers below are a strict subset
+     * and we want to show coverage ("X of Y scope consents matched").
+     */
+    const scopeConsents = Math.max(0, Number(consents) || 0);
+    const scopeVisible = Math.max(0, Number(visibleConsents) || 0);
+    const scopeInvisible = Math.max(0, Number(invisibleConsents) || 0);
+
+    /*
+     * Platform-filtered slice. When the selected platform has a
+     * utm_source pattern (every platform except GA4 and Other), we
+     * aggregate only the scope rows whose source matches, so each
+     * platform snapshot reconciles against its own traffic — not the
+     * whole pool, which would make Microsoft and Google look identical.
+     */
+    const pattern = platformPattern(inputs.platform);
+    const filterActive = pattern != null;
+
+    const platformStats = useMemo(() => {
+        const rowsArr = Array.isArray(scopeRows) ? scopeRows : [];
+        if (!filterActive) {
+            return {
+                consents: scopeConsents,
+                visible: scopeVisible,
+                invisible: scopeInvisible,
+                matchedSources: [],
+                rowsMatched: rowsArr.length,
+                scopeRowCount: rowsArr.length,
+            };
+        }
+        let totalConsents = 0;
+        let totalVisible = 0;
+        let rowsMatched = 0;
+        const matchedSourcesSet = new Set();
+        for (const r of rowsArr) {
+            if (!rowMatchesPlatform(r, pattern)) continue;
+            rowsMatched += 1;
+            totalConsents += Number(r.consents) || 0;
+            totalVisible += Number(r.acceptAll) || 0;
+            if (r.utmSource && r.utmSource !== "—") {
+                matchedSourcesSet.add(String(r.utmSource));
+            }
+        }
+        const invisible = Math.max(0, totalConsents - totalVisible);
+        return {
+            consents: totalConsents,
+            visible: totalVisible,
+            invisible,
+            matchedSources: [...matchedSourcesSet].sort((a, b) => a.localeCompare(b)),
+            rowsMatched,
+            scopeRowCount: rowsArr.length,
+        };
+    }, [scopeRows, pattern, filterActive, scopeConsents, scopeVisible, scopeInvisible]);
+
+    const numConsents = platformStats.consents;
+    const numVisible = platformStats.visible;
+    const numInvisible = platformStats.invisible;
+
+    /*
+     * "Coverage" = what share of the scope's consents was attributable
+     * to this platform's utm_source. A low coverage hints at either
+     * missing UTM tags on the campaign or a scope where this platform
+     * was a minor contributor.
+     */
+    const coverageOfScopePct =
+        filterActive && scopeConsents > 0
+            ? Math.round((numConsents / scopeConsents) * 1000) / 10
+            : null;
+    const hasScopeRows = Array.isArray(scopeRows) && scopeRows.length > 0;
+    const noMatchedRows = filterActive && hasScopeRows && numConsents === 0;
 
     const clicksNum = Math.max(0, Number(currentValues.adClicks) || 0);
     const spendNum = Math.max(0, Number(currentValues.spend) || 0);
@@ -477,6 +642,17 @@ export default function MarketingReconciliationPanel({
                 visibilityOfConsentsPct != null
                     ? Math.round(visibilityOfConsentsPct * 10) / 10
                     : "",
+            /*
+             * Audit trail for the platform filter. Without this the
+             * snapshot CSV can't tell a stakeholder why a channel's
+             * total consents differ between rows — the `matchedSources`
+             * list is the ground truth for that.
+             */
+            sourceFilterActive: filterActive,
+            sourcePattern: pattern ? pattern.source : "",
+            matchedSources: platformStats.matchedSources.join("|"),
+            scopeConsents,
+            coverageOfScopePct: coverageOfScopePct != null ? coverageOfScopePct : "",
             fromDate: fromDate || "",
             toDate: toDate || "",
         };
@@ -500,6 +676,11 @@ export default function MarketingReconciliationPanel({
         visibleSharePct,
         invisibleSharePct,
         visibilityOfConsentsPct,
+        filterActive,
+        pattern,
+        platformStats.matchedSources,
+        scopeConsents,
+        coverageOfScopePct,
         fromDate,
         toDate,
     ]);
@@ -639,6 +820,62 @@ export default function MarketingReconciliationPanel({
 
             <p className="marketing-reconciliation__window-hint">{windowHint}</p>
 
+            {filterActive ? (
+                noMatchedRows ? (
+                    <div
+                        className="marketing-reconciliation__filter-note marketing-reconciliation__filter-note--empty"
+                        role="status"
+                    >
+                        <p>
+                            No traffic tagged as <strong>{selectedPlatform.label}</strong> in {scopeSentence}.
+                            We match canonical <code>utm_source</code> values like{" "}
+                            <code>{(PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).join(", ") || "—"}</code>
+                            . Either your campaigns aren't UTM-tagged with a recognised source, or the
+                            traffic lives in a different channel — switch to{" "}
+                            <strong>Other / custom</strong> to reconcile against the scope total
+                            instead, or adjust your UTM tagging.
+                        </p>
+                    </div>
+                ) : (
+                    <div className="marketing-reconciliation__filter-note" role="status">
+                        <p>
+                            Filtered to <strong>{selectedPlatform.label}</strong> traffic:{" "}
+                            <strong>{formatInt(numConsents)}</strong> of{" "}
+                            <strong>{formatInt(scopeConsents)}</strong> scope consents
+                            {coverageOfScopePct != null ? (
+                                <>
+                                    {" "}
+                                    ({formatPct(coverageOfScopePct)} coverage)
+                                </>
+                            ) : null}
+                            .
+                            {platformStats.matchedSources.length > 0 ? (
+                                <>
+                                    {" "}
+                                    Matched <code>utm_source</code>:{" "}
+                                    <code>
+                                        {platformStats.matchedSources.slice(0, 6).join(", ")}
+                                        {platformStats.matchedSources.length > 6
+                                            ? `, +${platformStats.matchedSources.length - 6} more`
+                                            : ""}
+                                    </code>
+                                    .
+                                </>
+                            ) : null}
+                        </p>
+                    </div>
+                )
+            ) : (
+                <div className="marketing-reconciliation__filter-note" role="status">
+                    <p>
+                        {selectedPlatform.id === "ga4"
+                            ? "GA4 sits downstream of every ad source, so we don't filter by utm_source — the consent totals below are the whole scope."
+                            : "Reconciling against the full scope. Pick a specific ad platform above to narrow consents to that platform's utm_source."}{" "}
+                        Scope total: <strong>{formatInt(scopeConsents)}</strong> consents.
+                    </p>
+                </div>
+            )}
+
             {hasClicks ? (
                 <div className="marketing-reconciliation__results">
                     <ResultCard
@@ -664,7 +901,7 @@ export default function MarketingReconciliationPanel({
                             visibilityOfConsentsPct != null && visibleSharePct != null
                                 ? `${formatPct(
                                       visibilityOfConsentsPct
-                                  )} of consents, ${formatPct(
+                                  )} of consents, ${formatShareOfReportedPct(
                                       visibleSharePct
                                   )} of your ${selectedPlatform.metric}. These will appear in GA4 / Ads Manager / Meta pixel.`
                                 : null
@@ -675,11 +912,17 @@ export default function MarketingReconciliationPanel({
                         title="Invisible gap"
                         headline={`${formatInt(numInvisible)} visits`}
                         detail={
-                            invisibleSharePct != null
-                                ? `${formatPct(
-                                      invisibleSharePct
-                                  )} of your ${selectedPlatform.metric} will be missing from ${selectedPlatform.label}'s conversion tracking.`
-                                : null
+                            invisibleSharePct == null
+                                ? null
+                                : numConsents > clicksNum
+                                  ? `${formatInt(
+                                        numInvisible
+                                    )} of your ${formatInt(
+                                        numConsents
+                                    )} attributed consents won't reach ${selectedPlatform.label}. We saw more consent traffic than the ${clicksNum.toLocaleString("de-DE")} ${selectedPlatform.metric} you reported, so the gap can't be expressed as a clean share of ${selectedPlatform.metric}.`
+                                  : `${formatPct(
+                                        invisibleSharePct
+                                    )} of your ${selectedPlatform.metric} will be missing from ${selectedPlatform.label}'s conversion tracking.`
                         }
                     />
                     {hasSpend ? (
@@ -776,6 +1019,18 @@ export default function MarketingReconciliationPanel({
                             id="marketing-reconciliation-snapshots-list"
                             className="marketing-reconciliation__snapshots-table-wrap"
                         >
+                            <p className="marketing-reconciliation__snapshots-caption">
+                                Consents / visible / gap are the slice of scope traffic tagged with
+                                the platform's <code>utm_source</code> — so the same scope will show
+                                different numbers per platform. GA4 and "Other / custom" don't
+                                filter by source and reconcile against the whole scope. Rows flagged
+                                <span className="marketing-reconciliation__over-count-badge marketing-reconciliation__over-count-badge--inline">
+                                    over-count
+                                </span>
+                                had more attributed consents than reported clicks (multi-session
+                                visits, pre-consented returns, or UTM overlap), so the share label
+                                is capped at 100%+.
+                            </p>
                             <table className="marketing-reconciliation__snapshots-table">
                                 <thead>
                                     <tr>
@@ -792,63 +1047,93 @@ export default function MarketingReconciliationPanel({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {snapshots.map((s) => (
-                                        <tr key={s.id}>
-                                            <td>{formatTimestamp(s.savedAt)}</td>
-                                            <td>{s.scopeLabel}</td>
-                                            <td>
-                                                {s.platformLabel}
-                                                <span className="marketing-reconciliation__snapshots-metric">
-                                                    {" "}
-                                                    · {s.metric}
-                                                </span>
-                                            </td>
-                                            <td className="num">{formatInt(s.adClicks)}</td>
-                                            <td className="num">{formatInt(s.consents)}</td>
-                                            <td className="num">
-                                                {formatInt(s.visibleConsents)}
-                                                {s.visibleSharePct !== "" &&
-                                                s.visibleSharePct != null ? (
-                                                    <span className="marketing-reconciliation__snapshots-sub">
+                                    {snapshots.map((s) => {
+                                        const reported = Number(s.adClicks) || 0;
+                                        const consentsN = Number(s.consents) || 0;
+                                        const overCount = reported > 0 && consentsN > reported;
+                                        return (
+                                            <tr
+                                                key={s.id}
+                                                className={
+                                                    overCount
+                                                        ? "marketing-reconciliation__snapshots-row--overcount"
+                                                        : undefined
+                                                }
+                                            >
+                                                <td>{formatTimestamp(s.savedAt)}</td>
+                                                <td>{s.scopeLabel}</td>
+                                                <td>
+                                                    {s.platformLabel}
+                                                    <span className="marketing-reconciliation__snapshots-metric">
                                                         {" "}
-                                                        ({formatPct(s.visibleSharePct)})
+                                                        · {s.metric}
                                                     </span>
-                                                ) : null}
-                                            </td>
-                                            <td className="num">
-                                                {formatInt(s.invisibleConsents)}
-                                                {s.invisibleSharePct !== "" &&
-                                                s.invisibleSharePct != null ? (
-                                                    <span className="marketing-reconciliation__snapshots-sub">
-                                                        {" "}
-                                                        ({formatPct(s.invisibleSharePct)})
-                                                    </span>
-                                                ) : null}
-                                            </td>
-                                            <td className="num">
-                                                {s.costPerVisible !== "" &&
-                                                s.costPerVisible != null
-                                                    ? formatMoney(s.costPerVisible, s.currency)
-                                                    : "—"}
-                                            </td>
-                                            <td>
-                                                {s.fromDate && s.toDate
-                                                    ? `${s.fromDate} → ${s.toDate}`
-                                                    : "—"}
-                                            </td>
-                                            <td>
-                                                <button
-                                                    type="button"
-                                                    className="marketing-reconciliation__snapshots-delete"
-                                                    onClick={() => handleDeleteSnapshot(s.id)}
-                                                    aria-label={`Delete snapshot from ${formatTimestamp(s.savedAt)}`}
-                                                    title="Delete snapshot"
-                                                >
-                                                    ×
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                                </td>
+                                                <td className="num">
+                                                    {formatInt(s.adClicks)}
+                                                    {overCount ? (
+                                                        <span
+                                                            className="marketing-reconciliation__over-count-badge"
+                                                            title={`Attributed consents (${formatInt(
+                                                                consentsN
+                                                            )}) exceed reported ${s.metric} (${formatInt(
+                                                                reported
+                                                            )}).`}
+                                                        >
+                                                            over-count
+                                                        </span>
+                                                    ) : null}
+                                                </td>
+                                                <td className="num">{formatInt(s.consents)}</td>
+                                                <td className="num">
+                                                    {formatInt(s.visibleConsents)}
+                                                    {s.visibleSharePct !== "" &&
+                                                    s.visibleSharePct != null ? (
+                                                        <span className="marketing-reconciliation__snapshots-sub">
+                                                            {" "}
+                                                            ({formatShareOfReportedPct(
+                                                                s.visibleSharePct
+                                                            )})
+                                                        </span>
+                                                    ) : null}
+                                                </td>
+                                                <td className="num">
+                                                    {formatInt(s.invisibleConsents)}
+                                                    {s.invisibleSharePct !== "" &&
+                                                    s.invisibleSharePct != null ? (
+                                                        <span className="marketing-reconciliation__snapshots-sub">
+                                                            {" "}
+                                                            ({formatShareOfReportedPct(
+                                                                s.invisibleSharePct
+                                                            )})
+                                                        </span>
+                                                    ) : null}
+                                                </td>
+                                                <td className="num">
+                                                    {s.costPerVisible !== "" &&
+                                                    s.costPerVisible != null
+                                                        ? formatMoney(s.costPerVisible, s.currency)
+                                                        : "—"}
+                                                </td>
+                                                <td>
+                                                    {s.fromDate && s.toDate
+                                                        ? `${s.fromDate} → ${s.toDate}`
+                                                        : "—"}
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        type="button"
+                                                        className="marketing-reconciliation__snapshots-delete"
+                                                        onClick={() => handleDeleteSnapshot(s.id)}
+                                                        aria-label={`Delete snapshot from ${formatTimestamp(s.savedAt)}`}
+                                                        title="Delete snapshot"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
