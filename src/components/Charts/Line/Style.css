@@ -1,6 +1,7 @@
 .chart {
     width: 100%;
-    height: 318px;
+    height: 100%;
+    min-height: 350px;
     overflow: hidden;
     border-radius: 10px;
 }
@@ -13,4 +14,61 @@
 .anychart-legend-item {
     font-weight: 600;
     letter-spacing: 0.02em;
+}
+
+.line-chart__insights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.line-chart__insight-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    color: rgba(235, 235, 242, 0.95);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.line-chart__insight-chip--up {
+    border-color: rgba(126, 186, 140, 0.6);
+    color: rgba(198, 243, 209, 0.96);
+}
+
+.line-chart__insight-chip--down {
+    border-color: rgba(214, 122, 122, 0.6);
+    color: rgba(246, 196, 196, 0.96);
+}
+
+.line-chart__controls {
+    display: inline-flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.line-chart__control-btn {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(225, 225, 235, 0.95);
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 140ms ease;
+}
+
+.line-chart__control-btn:hover {
+    border-color: rgba(192, 159, 83, 0.55);
+    background: rgba(192, 159, 83, 0.14);
+}
+
+.line-chart__control-btn.is-active {
+    border-color: rgba(192, 159, 83, 0.78);
+    color: rgba(246, 229, 182, 1);
+    background: rgba(192, 159, 83, 0.22);
 }

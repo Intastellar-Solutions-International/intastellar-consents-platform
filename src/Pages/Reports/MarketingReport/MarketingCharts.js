@@ -433,6 +433,8 @@ export function MarketingTimeseriesChart({
                             fromDate={fromYmd}
                             toDate={toYmd}
                             compareEnabled={compareEnabled}
+                            showInsights
+                            showRangeControls
                         />
                     )}
                 </div>
