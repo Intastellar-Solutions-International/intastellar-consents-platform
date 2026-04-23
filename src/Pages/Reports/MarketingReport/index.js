@@ -286,6 +286,45 @@ function simplifyCampaignDisplay(campaignRaw) {
     return t === "" ? "—" : t;
 }
 
+/*
+ * Known search-engine hosts for classifying untagged organic traffic.
+ *
+ * We match Google's country TLDs (google.com, google.de, google.co.uk,
+ * google.com.au…) with a regex, and the rest of the long tail with an
+ * exact-host set. Hostnames are compared lowercased and with a stripped
+ * `www.` prefix. The list intentionally excludes platform-specific
+ * hosts (instagram.com, facebook.com, linkedin.com, etc.) because those
+ * are already classified as platform-organic channels earlier in
+ * `deriveMarketingChannel` and we don't want to collapse that detail.
+ */
+const SEARCH_ENGINE_HOSTS = new Set([
+    "bing.com",
+    "duckduckgo.com",
+    "yahoo.com",
+    "search.yahoo.com",
+    "baidu.com",
+    "yandex.com",
+    "yandex.ru",
+    "ecosia.org",
+    "qwant.com",
+    "startpage.com",
+    "search.brave.com",
+    "ask.com",
+    "naver.com",
+    "kagi.com",
+    "search.aol.com",
+    "search.aol.co.uk",
+    "presearch.com",
+]);
+
+function isSearchEngineHost(host) {
+    if (!host || host === "—") return false;
+    const h = String(host).toLowerCase().replace(/^www\./, "");
+    if (!h) return false;
+    if (/^google(?:\.[a-z]{2,}){1,3}$/.test(h)) return true;
+    return SEARCH_ENGINE_HOSTS.has(h);
+}
+
 /**
  * Google paid traffic → single "Google Ads" bucket (Search, Display, legacy AdWords / PPC labels).
  */
@@ -349,6 +388,15 @@ function deriveMarketingChannel(row) {
     const host = normUtm(row.referrer).replace(/^www\./, "");
     const paidLike = /cpc|ppc|paid|social|ads|display|paidsocial|paid_social/.test(m);
     const metaPaidPlacement = isMetaPaidPlacementMedium(m);
+    /*
+     * A row is "untagged" when neither utm_source nor utm_medium carry
+     * a real value (both null/empty or the COALESCE'd "—" placeholder).
+     * Platform-family host checks below still short-circuit first, so
+     * organic Instagram / Facebook / LinkedIn / X referrals keep their
+     * own labels. Everything that falls past those checks gets routed
+     * into Direct / Organic search / Referral by referrer host.
+     */
+    const isUntagged = (!s || s === "—") && (!m || m === "—");
 
     if (s === "(fbclid)") return "Facebook Ads";
     if (s === "(gclid)") return "Google Ads";
@@ -376,7 +424,14 @@ function deriveMarketingChannel(row) {
     const fromGoogleReferrer = host.includes("google.") && !host.includes("doubleclick.net");
     const googleSource = isGoogleAdsFamilySource(s);
     if (googleSource || fromGoogleReferrer) {
-        if (isGoogleOrganicMedium(m)) return "Google";
+        /*
+         * A referrer from google.com with no UTM tags at all is
+         * an organic SERP click, not a campaign. Routing it under
+         * "Google" used to conflate it with branded paid traffic
+         * and inflated the "Google" channel with SEO visits.
+         */
+        if (isUntagged && fromGoogleReferrer) return "Organic search";
+        if (isGoogleOrganicMedium(m)) return "Organic search";
         if (isGooglePaidMedium(m) || paidLike) return "Google Ads";
         return "Google";
     }
@@ -418,12 +473,20 @@ function deriveMarketingChannel(row) {
         if (medLabel) return medLabel;
     }
 
+    /*
+     * Untagged traffic fallback. Three buckets:
+     *   - no referrer host        → Direct traffic (typed URL, bookmark, app, etc.)
+     *   - referrer is a search UI → Organic search (Bing, DuckDuckGo, Yahoo, Yandex, Ecosia, …)
+     *   - any other referrer      → Referral (host) — a blog post, partner link, email client, etc.
+     * Google organic is handled earlier in the Google block.
+     */
     if (host && host !== "—") {
+        if (isSearchEngineHost(host)) return "Organic search";
         const pretty = String(row.referrer).replace(/^www\./i, "");
         return `Referral (${pretty})`;
     }
 
-    return "Other";
+    return "Direct traffic";
 }
 
 function mapRow(r) {
