@@ -1256,6 +1256,98 @@ function MarketingTableSortTh({ label, columnKey, kind, sortState, onCycle, clas
     );
 }
 
+const CHANNEL_TABLE_PAGE_SIZE = 10;
+
+/**
+ * Build a compact list of page numbers with "…" gaps for the pagination nav.
+ * Always keeps the first page, last page, current page, and its two neighbours
+ * visible so the user can jump to edges without scanning 20+ buttons.
+ */
+function buildMarketingPageNumbers(current, total) {
+    if (total <= 7) {
+        const list = [];
+        for (let i = 1; i <= total; i += 1) list.push(i);
+        return list;
+    }
+    const keep = new Set([1, total, current, current - 1, current + 1]);
+    const sorted = [...keep]
+        .filter((p) => p >= 1 && p <= total)
+        .sort((a, b) => a - b);
+    const result = [];
+    let prev = 0;
+    for (const p of sorted) {
+        if (p - prev > 1) result.push("gap");
+        result.push(p);
+        prev = p;
+    }
+    return result;
+}
+
+function MarketingTablePagination({ page, pageCount, totalRows, pageSize, onPageChange, label = "channels" }) {
+    if (pageCount <= 1) return null;
+    const goTo = (p) => {
+        const safe = Math.max(1, Math.min(pageCount, p));
+        if (safe !== page) onPageChange(safe);
+    };
+    const firstRow = (page - 1) * pageSize + 1;
+    const lastRow = Math.min(totalRows, page * pageSize);
+    const pageNumbers = buildMarketingPageNumbers(page, pageCount);
+    return (
+        <nav className="marketing-report-pagination" aria-label={`${label} pagination`}>
+            <button
+                type="button"
+                className="marketing-report-pagination__btn"
+                onClick={() => goTo(page - 1)}
+                disabled={page <= 1}
+                aria-label="Previous page"
+            >
+                ← Previous
+            </button>
+            <ul className="marketing-report-pagination__pages">
+                {pageNumbers.map((p, i) =>
+                    p === "gap" ? (
+                        <li
+                            key={`gap-${i}`}
+                            className="marketing-report-pagination__gap"
+                            aria-hidden="true"
+                        >
+                            …
+                        </li>
+                    ) : (
+                        <li key={p}>
+                            <button
+                                type="button"
+                                className={`marketing-report-pagination__page${
+                                    p === page ? " marketing-report-pagination__page--active" : ""
+                                }`}
+                                onClick={() => goTo(p)}
+                                aria-current={p === page ? "page" : undefined}
+                                aria-label={`Page ${p}`}
+                            >
+                                {p}
+                            </button>
+                        </li>
+                    )
+                )}
+            </ul>
+            <button
+                type="button"
+                className="marketing-report-pagination__btn"
+                onClick={() => goTo(page + 1)}
+                disabled={page >= pageCount}
+                aria-label="Next page"
+            >
+                Next →
+            </button>
+            <span className="marketing-report-pagination__meta">
+                Showing <strong>{firstRow.toLocaleString("de-DE")}</strong>
+                –<strong>{lastRow.toLocaleString("de-DE")}</strong> of{" "}
+                <strong>{totalRows.toLocaleString("de-DE")}</strong> {label}
+            </span>
+        </nav>
+    );
+}
+
 /**
  * Marketer-first signals: volume, acceptance, choice mix, data gaps.
  */
@@ -1506,6 +1598,7 @@ export default function MarketingReport() {
     const [selectedChannel, setSelectedChannel] = useState(null);
     const [channelTableSort, setChannelTableSort] = useState({ column: null, step: 0 });
     const [campaignTableSort, setCampaignTableSort] = useState({ column: null, step: 0 });
+    const [channelTablePage, setChannelTablePage] = useState(1);
 
     /*
      * Phase 2: daily time-series payload for the channel Line chart.
@@ -1786,6 +1879,28 @@ export default function MarketingReport() {
         () => sortChannelOverviewRows(channelOverviewWithCompare, channelTableSort),
         [channelOverviewWithCompare, channelTableSort]
     );
+
+    const channelTablePageCount = Math.max(
+        1,
+        Math.ceil(sortedChannelOverview.length / CHANNEL_TABLE_PAGE_SIZE)
+    );
+
+    // Reset to page 1 whenever the sort changes so the user doesn't land on an
+    // empty/irrelevant page after re-ordering the table.
+    useEffect(() => {
+        setChannelTablePage(1);
+    }, [channelTableSort]);
+
+    // Clamp the current page if the underlying data shrinks (e.g. a date filter
+    // drops the channel count from 23 to 4).
+    useEffect(() => {
+        setChannelTablePage((prev) => Math.min(Math.max(1, prev), channelTablePageCount));
+    }, [channelTablePageCount]);
+
+    const pagedChannelOverview = useMemo(() => {
+        const start = (channelTablePage - 1) * CHANNEL_TABLE_PAGE_SIZE;
+        return sortedChannelOverview.slice(start, start + CHANNEL_TABLE_PAGE_SIZE);
+    }, [sortedChannelOverview, channelTablePage]);
 
     const sortedDrilldownRows = useMemo(
         () => sortCampaignDrilldownRows(drilldownRows, campaignTableSort),
@@ -2523,6 +2638,7 @@ export default function MarketingReport() {
                                 </tbody>
                             </table>
                         ) : (
+                            <>
                             <table className="marketing-report-table marketing-report-table--with-choices">
                                 <thead>
                                     <tr>
@@ -2585,7 +2701,7 @@ export default function MarketingReport() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {sortedChannelOverview.map((r) => {
+                                    {pagedChannelOverview.map((r) => {
                                         const blindSpot = isAnalyticsBlindSpot(r);
                                         return (
                                         <tr
@@ -2674,6 +2790,15 @@ export default function MarketingReport() {
                                     })}
                                 </tbody>
                             </table>
+                            <MarketingTablePagination
+                                page={channelTablePage}
+                                pageCount={channelTablePageCount}
+                                totalRows={sortedChannelOverview.length}
+                                pageSize={CHANNEL_TABLE_PAGE_SIZE}
+                                onPageChange={setChannelTablePage}
+                                label="channels"
+                            />
+                            </>
                         )}
                     </div>
                     </section>

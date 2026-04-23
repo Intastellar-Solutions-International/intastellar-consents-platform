@@ -834,6 +834,122 @@
 }
 
 /*
+ * --- Channels table pagination -----------------------------------------
+ *
+ * Compact pager shown under the overview table so the list never grows
+ * past ten rows. Prev/Next buttons sit to either side of the numbered
+ * pages; ellipsis gaps compress long page lists. Meta text reports the
+ * window so totals stay visible without the user opening the CSV export.
+ */
+
+.marketing-report-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 10px;
+    padding: 14px 8px 2px;
+}
+
+.marketing-report-pagination__btn {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    color: rgba(225, 225, 230, 0.94);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+}
+
+.marketing-report-pagination__btn:hover:not(:disabled) {
+    border-color: rgba(210, 165, 80, 0.55);
+    color: rgba(255, 225, 170, 0.98);
+    background: rgba(210, 165, 80, 0.08);
+}
+
+.marketing-report-pagination__btn:focus-visible {
+    outline: 2px solid rgba(210, 165, 80, 0.7);
+    outline-offset: 2px;
+}
+
+.marketing-report-pagination__btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+}
+
+.marketing-report-pagination__pages {
+    display: flex;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.marketing-report-pagination__page {
+    min-width: 34px;
+    padding: 7px 10px;
+    font-size: 0.8rem;
+    font-family: inherit;
+    color: rgba(225, 225, 230, 0.88);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.marketing-report-pagination__page:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 225, 170, 0.98);
+}
+
+.marketing-report-pagination__page:focus-visible {
+    outline: 2px solid rgba(210, 165, 80, 0.7);
+    outline-offset: 2px;
+}
+
+.marketing-report-pagination__page--active,
+.marketing-report-pagination__page--active:hover {
+    color: rgba(20, 18, 12, 0.96);
+    background: linear-gradient(155deg, rgba(216, 181, 106, 0.96) 0%, rgba(184, 141, 60, 0.96) 100%);
+    border-color: rgba(192, 159, 83, 0.65);
+    font-weight: 600;
+    cursor: default;
+}
+
+.marketing-report-pagination__gap {
+    padding: 7px 2px;
+    color: rgba(160, 160, 170, 0.7);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.marketing-report-pagination__meta {
+    flex-basis: 100%;
+    margin-top: 2px;
+    font-size: 0.76rem;
+    line-height: 1.4;
+    color: rgba(180, 180, 190, 0.86);
+    text-align: center;
+}
+
+.marketing-report-pagination__meta strong {
+    color: rgba(230, 230, 235, 0.95);
+    font-weight: 600;
+}
+
+@media (min-width: 720px) {
+    .marketing-report-pagination__meta {
+        flex-basis: auto;
+        margin-top: 0;
+        margin-left: 12px;
+        text-align: left;
+    }
+}
+
+/*
  * --- Ad-platform reconciliation panel ----------------------------------
  *
  * Sits between the KPI grid and the chart strip. Inputs stack responsively;
