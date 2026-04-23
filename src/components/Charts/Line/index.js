@@ -28,6 +28,14 @@ export default function Line({
     compareEnabled = false,
     showInsights = false,
     showRangeControls = false,
+    /*
+     * AnyChart measures the container's offsetHeight at draw() time
+     * and its own child elements are height:100% — so the container
+     * needs an explicit pixel height, not just min-height, or the SVG
+     * renders at its (small) default and gets clipped. Accepts number
+     * (interpreted as px) or a CSS length string like "420px" / "60vh".
+     */
+    height = 350,
 }) {
     const chartDomId = useRef(
         `line-chart-${typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now())}`
@@ -279,7 +287,11 @@ export default function Line({
                     </button>
                 </div>
             ) : null}
-            <div className="chart" id={chartDomId} />
+            <div
+                className="chart"
+                id={chartDomId}
+                style={{ height: typeof height === "number" ? `${height}px` : height }}
+            />
         </div>
     );
 }
