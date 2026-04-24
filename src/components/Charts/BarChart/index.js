@@ -24,6 +24,7 @@ export default function BarChart({
     yTitle = "",
     fill = "#C09F53",
     tooltipFormat = "{%Value}",
+    chartCard = false,
 }) {
     const chartDomId = useRef(
         `bar-chart-${typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random())}`
@@ -58,7 +59,7 @@ export default function BarChart({
     }, [data, chartDomId, xTitle, yTitle, fill, tooltipFormat]);
 
     return (
-        <div className={"widget no-padding"}>
+        <div className={(chartCard ? "chart-card chart-card--horizontal" : "widget no-padding")}>
             {title ? <h2>{title}</h2> : null}
             <div className="chart" id={chartDomId}></div>
         </div>

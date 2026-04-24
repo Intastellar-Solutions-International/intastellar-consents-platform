@@ -156,10 +156,11 @@ export function MarketingOverviewCharts({ channelOverview, rows }) {
             <div className="marketing-charts__grid marketing-charts__grid--two-up">
                 <ChartCard
                     title="Cookie choice mix"
+                    chartCard={true}
                     subtitle="Share of accept-all, essential-only, and granular choices across all channels."
                 >
                     {mixData ? (
-                        <Pie data={mixData} />
+                        <Pie data={mixData} chartCard={true} />
                     ) : (
                         <EmptyNote>No classified choice data in this window.</EmptyNote>
                     )}
@@ -169,7 +170,7 @@ export function MarketingOverviewCharts({ channelOverview, rows }) {
                     subtitle="Top channels by consent volume (up to 10)."
                 >
                     {channelsData ? (
-                        <BarChart data={channelsData} xTitle="Channel" yTitle="Consents" />
+                        <BarChart data={channelsData} xTitle="Channel" yTitle="Consents" chartCard={true} />
                     ) : (
                         <EmptyNote>No attributed channels yet.</EmptyNote>
                     )}
@@ -228,6 +229,7 @@ export function MarketingChannelCharts({
                             data={topCampaignsData}
                             xTitle="Campaign"
                             yTitle="Consents"
+                            chartCard={true}
                         />
                     ) : (
                         <EmptyNote>No campaigns with consent volume yet.</EmptyNote>
@@ -238,7 +240,7 @@ export function MarketingChannelCharts({
                     subtitle="How people decided on the banner for this channel."
                 >
                     {mixData ? (
-                        <Pie data={mixData} />
+                        <Pie data={mixData} chartCard={true} />
                     ) : (
                         <EmptyNote>No classified choice data for this channel.</EmptyNote>
                     )}
@@ -253,6 +255,7 @@ export function MarketingChannelCharts({
                             xTitle="Campaign"
                             yTitle="Acceptance %"
                             tooltipFormat="{%Value}%"
+                            chartCard={true}
                         />
                     ) : (
                         <EmptyNote>
@@ -269,6 +272,7 @@ export function MarketingChannelCharts({
                             data={topCountriesData}
                             xTitle="Country"
                             yTitle="Consents"
+                            chartCard={true}
                         />
                     ) : (
                         <EmptyNote>
@@ -281,7 +285,7 @@ export function MarketingChannelCharts({
                     subtitle="Pages that received the most attributed consent events."
                 >
                     {topPathsData ? (
-                        <BarChart data={topPathsData} xTitle="Path" yTitle="Consents" />
+                        <BarChart data={topPathsData} xTitle="Path" yTitle="Consents" chartCard={true} />
                     ) : (
                         <EmptyNote>No landing-path context returned for this channel yet.</EmptyNote>
                     )}

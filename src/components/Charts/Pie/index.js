@@ -10,7 +10,7 @@ import "../Line/Style.css";
  * instance — and so parents can render as many pies as they need (e.g.
  * the marketing dashboard channel view).
  */
-export default function Pie({ data, title }) {
+export default function Pie({ data, title, chartCard = false }) {
     const chartDomId = useRef(
         `pie-chart-${typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + Math.random())}`
     ).current;
@@ -31,7 +31,7 @@ export default function Pie({ data, title }) {
     }, [data, chartDomId]);
 
     return (
-        <div className={"widget no-padding"}>
+        <div className={(chartCard ? "chart-card" : "widget no-padding")}>
             {title ? <h2>{title}</h2> : null}
             <div className="chart" id={chartDomId}></div>
         </div>

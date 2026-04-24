@@ -34,6 +34,13 @@
         transform 0.2s ease;
 }
 
+.chart-card {
+    padding: 14px 16px 16px;
+    border-radius: 14px;
+    min-height: 200px;
+    height: 100%;
+}
+
 .widget::before {
     content: "";
     position: absolute;
