@@ -315,7 +315,7 @@ export default function Experiments() {
     API.experiments.getExperiments.headers.Organisation = Authentication.getOrganisation();
     API.experiments.getExperiments.headers.FromDate = today.toISOString();
     API.experiments.getExperiments.headers.ToDate = today.toISOString();
-    API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? null : currentDomain;
+    API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? "combined view" : currentDomain;
     API.experiments.getExperiments.headers.ExperimentID = (effectiveExperimentId && effectiveExperimentId !== "Choose experiment") ? effectiveExperimentId : null;
 
     API.gdpr.getDomains.headers.Organisation = Authentication.getOrganisation();
@@ -328,7 +328,7 @@ export default function Experiments() {
         }
         setLoading(true);
         API.experiments.getExperiments.headers.ExperimentID = effectiveExperimentId;
-        API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? null : currentDomain;
+        API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? "combined view" : currentDomain;
         fetch(API.experiments.getExperiments.url, {
             method: API.experiments.getExperiments.method,
             headers: API.experiments.getExperiments.headers,
@@ -345,7 +345,7 @@ export default function Experiments() {
 
 
     useEffect(() => {
-        API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? null : currentDomain;
+        API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? "combined view" : currentDomain;
         API.experiments.getExperiments.headers.ExperimentID = (effectiveExperimentId && effectiveExperimentId !== "Choose experiment") ? effectiveExperimentId : null;
     }, [currentDomain, effectiveExperimentId]);
 
