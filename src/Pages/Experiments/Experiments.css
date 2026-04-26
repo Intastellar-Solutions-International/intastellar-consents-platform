@@ -363,6 +363,110 @@
     justify-content: flex-end;
 }
 
+/* ——— Channel filter bar (above the variant grid) ——— */
+.experiments-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+    margin: 0 0 18px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.experiments-filter-bar__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.92);
+    flex-shrink: 0;
+}
+
+.experiments-filter-bar__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.experiments-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: rgba(220, 220, 230, 0.92);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.experiments-filter-chip:hover,
+.experiments-filter-chip:focus-visible {
+    color: #faf6ee;
+    border-color: rgba(192, 159, 83, 0.45);
+    background: rgba(192, 159, 83, 0.08);
+}
+
+.experiments-filter-chip:focus-visible {
+    outline: 2px solid rgba(192, 159, 83, 0.55);
+    outline-offset: 2px;
+}
+
+.experiments-filter-chip.is-active {
+    color: #20180c;
+    background: linear-gradient(
+        165deg,
+        rgba(216, 181, 106, 0.96) 0%,
+        rgba(184, 141, 60, 0.96) 100%
+    );
+    border-color: rgba(192, 159, 83, 0.55);
+}
+
+.experiments-filter-chip.is-active .experiments-filter-chip__count {
+    color: rgba(20, 18, 12, 0.78);
+    background: rgba(0, 0, 0, 0.18);
+    border-color: rgba(0, 0, 0, 0.18);
+}
+
+.experiments-filter-chip--untargeted:not(.is-active) {
+    color: rgba(180, 180, 190, 0.86);
+    border-style: dashed;
+}
+
+.experiments-filter-chip__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5em;
+    padding: 1px 7px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(220, 220, 230, 0.92);
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ——— Audience chip on variant cards ——— */
+.experiment-card__chip--channel .experiment-card__chip-key {
+    color: rgba(190, 220, 245, 0.92);
+}
+
+.experiment-card__chip--channel {
+    border-color: rgba(130, 175, 220, 0.32);
+    background: rgba(130, 175, 220, 0.08);
+}
+
 @media screen and (max-width: 640px) {
     .experiment-card__charts {
         grid-template-columns: 1fr;
@@ -962,3 +1066,416 @@
         justify-self: start;
     }
 }
+
+/* ---------------------------------------------------------------- */
+/* Experiment summary strip                                         */
+/* ---------------------------------------------------------------- */
+
+.experiment-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    padding: 18px 22px;
+    margin: 0 0 18px;
+    background: linear-gradient(
+        180deg,
+        rgba(192, 159, 83, 0.08) 0%,
+        rgba(22, 22, 26, 0.3) 100%
+    );
+    border: 1px solid rgba(192, 159, 83, 0.22);
+    border-radius: 12px;
+}
+
+.experiment-summary__cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.experiment-summary__label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(192, 159, 83, 0.85);
+    font-weight: 600;
+}
+
+.experiment-summary__value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f3f3f3;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.experiment-summary__value--leader {
+    color: #f5d27a;
+}
+
+.experiment-summary__sub {
+    font-size: 12px;
+    color: #a4a4a8;
+    line-height: 1.35;
+}
+
+.experiment-summary__cell--leader {
+    border-left: 1px solid rgba(192, 159, 83, 0.18);
+    padding-left: 18px;
+}
+
+.experiment-summary__confidence {
+    margin-top: 6px;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.experiment-summary__confidence--high {
+    background: rgba(76, 175, 80, 0.18);
+    color: #8de08e;
+    border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.experiment-summary__confidence--mid {
+    background: rgba(255, 152, 0, 0.18);
+    color: #ffc97a;
+    border: 1px solid rgba(255, 152, 0, 0.4);
+}
+
+.experiment-summary__confidence--low {
+    background: rgba(158, 158, 158, 0.18);
+    color: #c4c4c4;
+    border: 1px solid rgba(158, 158, 158, 0.35);
+}
+
+@media screen and (max-width: 720px) {
+    .experiment-summary {
+        padding: 14px 16px;
+    }
+
+    .experiment-summary__value {
+        font-size: 19px;
+    }
+
+    .experiment-summary__cell--leader {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid rgba(192, 159, 83, 0.18);
+        padding-top: 12px;
+    }
+}
+
+/* ---------------------------------------------------------------- */
+/* Sort + view toolbar                                              */
+/* ---------------------------------------------------------------- */
+
+.experiments-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    background: rgba(22, 22, 26, 0.55);
+    border: 1px solid rgba(192, 159, 83, 0.14);
+    border-radius: 10px;
+}
+
+.experiments-toolbar__field {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.experiments-toolbar__label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(192, 159, 83, 0.85);
+    font-weight: 600;
+}
+
+.experiments-toolbar__select {
+    background: rgba(34, 34, 40, 0.95);
+    color: #ececec;
+    border: 1px solid rgba(192, 159, 83, 0.25);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+
+.experiments-toolbar__select:hover,
+.experiments-toolbar__select:focus {
+    border-color: rgba(192, 159, 83, 0.55);
+    outline: none;
+}
+
+.experiments-toolbar__view {
+    display: inline-flex;
+    border: 1px solid rgba(192, 159, 83, 0.25);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.experiments-toolbar__view-btn {
+    appearance: none;
+    background: rgba(34, 34, 40, 0.6);
+    color: #c4c4c4;
+    border: none;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.experiments-toolbar__view-btn:not(:last-child) {
+    border-right: 1px solid rgba(192, 159, 83, 0.25);
+}
+
+.experiments-toolbar__view-btn.is-active {
+    background: rgba(192, 159, 83, 0.22);
+    color: #f5d27a;
+}
+
+.experiments-toolbar__view-btn:not(.is-active):hover {
+    background: rgba(192, 159, 83, 0.1);
+    color: #ececec;
+}
+
+/* ---------------------------------------------------------------- */
+/* Lift chip + confidence badge on variant cards                    */
+/* ---------------------------------------------------------------- */
+
+.experiment-card__control-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(96, 125, 139, 0.22);
+    color: #c2d1d9;
+    border: 1px solid rgba(96, 125, 139, 0.45);
+}
+
+.experiment-card__lift-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+.experiment-card__lift {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.experiment-card__lift--up {
+    background: rgba(76, 175, 80, 0.18);
+    color: #8de08e;
+    border: 1px solid rgba(76, 175, 80, 0.4);
+}
+
+.experiment-card__lift--down {
+    background: rgba(244, 67, 54, 0.18);
+    color: #ff8a80;
+    border: 1px solid rgba(244, 67, 54, 0.4);
+}
+
+.experiment-card__lift--flat {
+    background: rgba(158, 158, 158, 0.18);
+    color: #c4c4c4;
+    border: 1px solid rgba(158, 158, 158, 0.35);
+}
+
+.experiment-card__confidence {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.experiment-card__confidence--win {
+    background: rgba(76, 175, 80, 0.14);
+    color: #8de08e;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.experiment-card__confidence--loss {
+    background: rgba(244, 67, 54, 0.14);
+    color: #ff8a80;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.experiment-card__confidence--warn {
+    background: rgba(255, 152, 0, 0.14);
+    color: #ffc97a;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.experiment-card__confidence--soft {
+    background: rgba(120, 144, 156, 0.18);
+    color: #b0bec5;
+    border: 1px solid rgba(120, 144, 156, 0.32);
+}
+
+.experiment-card__confidence--neutral {
+    background: rgba(158, 158, 158, 0.14);
+    color: #c4c4c4;
+    border: 1px solid rgba(158, 158, 158, 0.3);
+}
+
+/* ---------------------------------------------------------------- */
+/* Compact table view                                               */
+/* ---------------------------------------------------------------- */
+
+.experiments-compact {
+    overflow-x: auto;
+    background: rgba(22, 22, 26, 0.55);
+    border: 1px solid rgba(192, 159, 83, 0.14);
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.experiments-compact__table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #ececec;
+    font-size: 13px;
+    min-width: 760px;
+}
+
+.experiments-compact__table thead th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.85);
+    border-bottom: 1px solid rgba(192, 159, 83, 0.18);
+    white-space: nowrap;
+}
+
+.experiments-compact__table tbody td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+
+.experiments-compact__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.experiments-compact__table tbody tr:hover {
+    background: rgba(192, 159, 83, 0.06);
+}
+
+.experiments-compact__num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.experiments-compact__variant-name {
+    font-weight: 600;
+    color: #f3f3f3;
+}
+
+.experiments-compact__tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    background: rgba(96, 125, 139, 0.22);
+    color: #c2d1d9;
+    border: 1px solid rgba(96, 125, 139, 0.4);
+}
+
+.experiments-compact__tag--winning {
+    background: rgba(192, 159, 83, 0.22);
+    color: #f5d27a;
+    border-color: rgba(192, 159, 83, 0.5);
+}
+
+.experiments-compact__row--control td {
+    background: rgba(96, 125, 139, 0.06);
+}
+
+.experiments-compact__row--winning td {
+    background: rgba(192, 159, 83, 0.07);
+}
+
+.experiments-compact__sig {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: rgba(158, 158, 158, 0.14);
+    color: #c4c4c4;
+    border: 1px solid rgba(158, 158, 158, 0.3);
+    white-space: nowrap;
+}
+
+.experiments-compact__sig--win {
+    background: rgba(76, 175, 80, 0.18);
+    color: #8de08e;
+    border-color: rgba(76, 175, 80, 0.4);
+}
+
+.experiments-compact__sig--loss {
+    background: rgba(244, 67, 54, 0.18);
+    color: #ff8a80;
+    border-color: rgba(244, 67, 54, 0.4);
+}
+
+.experiments-compact__sig--warn {
+    background: rgba(255, 152, 0, 0.18);
+    color: #ffc97a;
+    border-color: rgba(255, 152, 0, 0.4);
+}
+
+.experiments-compact__sig--soft {
+    background: rgba(120, 144, 156, 0.18);
+    color: #b0bec5;
+    border-color: rgba(120, 144, 156, 0.32);
+}
+
+.experiments-compact__sig--control {
+    background: rgba(96, 125, 139, 0.22);
+    color: #c2d1d9;
+    border-color: rgba(96, 125, 139, 0.4);
+}
+
