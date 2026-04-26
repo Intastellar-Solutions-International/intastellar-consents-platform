@@ -508,10 +508,92 @@
 }
 
 .experiment-builder__field,
+.experiment-builder__channel,
 .experiment-builder__variants,
 .experiment-builder__split,
 .experiment-builder__output {
     margin-bottom: 20px;
+}
+
+/* ——— Audience targeting (channel) section ——— */
+.experiment-builder__channel-head {
+    margin-bottom: 12px;
+}
+
+.experiment-builder__channel-head em {
+    font-style: italic;
+    color: rgba(220, 220, 230, 0.95);
+}
+
+.experiment-builder__channel-controls {
+    display: grid;
+    gap: 14px;
+}
+
+.experiment-builder__channel-detail {
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.experiment-builder__channel-detail .experiment-builder__hint:first-child {
+    margin-top: 0;
+}
+
+.experiment-builder__alias-list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+}
+
+.experiment-builder__alias-list li {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: rgba(192, 159, 83, 0.1);
+    border: 1px solid rgba(192, 159, 83, 0.28);
+    border-radius: 999px;
+}
+
+.experiment-builder__alias-list code {
+    font-size: 0.74rem;
+    color: rgba(232, 220, 200, 0.95);
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.experiment-builder__channel-custom {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(180px, 1fr);
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.experiment-builder__channel-custom .experiment-builder__variant-field:nth-child(3),
+.experiment-builder__channel-custom > .experiment-builder__hint {
+    grid-column: 1 / -1;
+}
+
+.experiment-builder__input--textarea {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 48px;
+}
+
+@media screen and (max-width: 720px) {
+    .experiment-builder__channel-custom {
+        grid-template-columns: 1fr;
+    }
 }
 
 .experiment-builder__label {

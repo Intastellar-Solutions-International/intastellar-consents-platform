@@ -36,11 +36,14 @@
  *    validation here — the form is small.
  */
 
+import { KNOWN_CHANNELS, getChannelById, findChannelFromHint } from "./marketingChannels.js";
+
 const { useState, useMemo } = React;
 
 const KNOWN_DESIGNS = ["overlay", "banner", "popover", "modal", "drawer"];
 const ID_PATTERN = /^[a-z][a-z0-9-]*$/;
 const VARIANT_KEY_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/;
+const CHANNEL_ID_PATTERN = /^[a-z][a-z0-9_-]*$/;
 
 let _rowSeq = 0;
 function uid(prefix) {
@@ -63,9 +66,30 @@ function slugify(value) {
  * both translate cleanly into a starter ID so the user doesn't face an
  * empty form on arrival.
  */
+function blankChannelState() {
+    return {
+        // mode: "all" | "known" | "custom"
+        mode: "all",
+        // Which entry in KNOWN_CHANNELS is selected when mode === "known".
+        knownId: KNOWN_CHANNELS[0]?.id || "",
+        // Free-form fields used when mode === "custom".
+        customId: "",
+        customLabel: "",
+        // Comma-separated string for the textarea; parsed into an array on output.
+        customSourcesText: "",
+    };
+}
+
 function makeDefaultDraft({ idHint = "", scopeHint = "", hypothesisHint = "" } = {}) {
     let suggestedId = idHint;
-    if (!suggestedId && scopeHint) {
+    const matchedChannel = findChannelFromHint(scopeHint);
+
+    // Seed the experiment ID from whatever hint we have. Paid channel
+    // matches yield the cleanest IDs ("google-ads-banner-test"); free-form
+    // hints fall back to a slugified variant.
+    if (!suggestedId && matchedChannel) {
+        suggestedId = `${matchedChannel.id.replace(/_/g, "-")}-banner-test`;
+    } else if (!suggestedId && scopeHint) {
         const channel = scopeHint.startsWith("channel:")
             ? scopeHint.slice("channel:".length)
             : scopeHint;
@@ -76,8 +100,16 @@ function makeDefaultDraft({ idHint = "", scopeHint = "", hypothesisHint = "" } =
         const slug = slugify(hypothesisHint);
         if (slug) suggestedId = `${slug}-test`;
     }
+
+    const channelState = blankChannelState();
+    if (matchedChannel) {
+        channelState.mode = "known";
+        channelState.knownId = matchedChannel.id;
+    }
+
     return {
         id: suggestedId || "",
+        channel: channelState,
         variants: [
             {
                 rowId: uid("v"),
@@ -95,6 +127,69 @@ function makeDefaultDraft({ idHint = "", scopeHint = "", hypothesisHint = "" } =
             },
         ],
     };
+}
+
+/**
+ * Parse a comma/space/newline-separated list of utm_source aliases into a
+ * de-duplicated, lowercased array. Empty inputs collapse to `[]` so the
+ * caller can decide whether to drop the field entirely.
+ */
+function parseSourceAliases(text) {
+    if (!text) return [];
+    const seen = new Set();
+    const out = [];
+    String(text)
+        .split(/[\s,]+/)
+        .forEach((raw) => {
+            const tok = raw.trim().toLowerCase();
+            if (!tok) return;
+            if (seen.has(tok)) return;
+            seen.add(tok);
+            out.push(tok);
+        });
+    return out;
+}
+
+/**
+ * Translate the in-memory channel state into the output shape the banner
+ * runtime consumes. Returns `null` when the experiment should run for
+ * everyone; the caller drops the `channel` key in that case.
+ *
+ * Output shape:
+ *   {
+ *     id: "google_ads",
+ *     label: "Google Ads",
+ *     match: { utmSource: ["google", "googleads", ...] }
+ *   }
+ *
+ * `id` is stable and machine-readable (think: log key, segment name).
+ * `label` is the human form for hover/tooltip use on the banner side.
+ * `match.utmSource` is the literal alias list — the banner runtime
+ * canonicalises the visitor's utm_source the same way and prefix-matches.
+ */
+function buildChannelObject(channelDraft) {
+    if (!channelDraft || channelDraft.mode === "all") return null;
+    if (channelDraft.mode === "known") {
+        const known = getChannelById(channelDraft.knownId);
+        if (!known) return null;
+        return {
+            id: known.id,
+            label: known.label,
+            match: { utmSource: [...known.utmSource] },
+        };
+    }
+    if (channelDraft.mode === "custom") {
+        const id = String(channelDraft.customId || "").trim();
+        if (!id) return null;
+        const label = String(channelDraft.customLabel || "").trim() || id;
+        const sources = parseSourceAliases(channelDraft.customSourcesText);
+        const channel = { id, label };
+        if (sources.length > 0) {
+            channel.match = { utmSource: sources };
+        }
+        return channel;
+    }
+    return null;
 }
 
 function buildExperimentObject(draft) {
@@ -119,7 +214,16 @@ function buildExperimentObject(draft) {
         }
         variants[key] = out;
     }
-    return { id: String(draft.id || "").trim(), variants };
+    /*
+     * Channel sits between id and variants in the snippet — that's where
+     * a marketer reading the JSON expects "scope" to be. Variants are the
+     * heaviest field and read most naturally last.
+     */
+    const experiment = { id: String(draft.id || "").trim() };
+    const channel = buildChannelObject(draft.channel);
+    if (channel) experiment.channel = channel;
+    experiment.variants = variants;
+    return experiment;
 }
 
 function formatSnippet(experiment) {
@@ -167,6 +271,27 @@ function validateDraft(draft) {
     if (totalWeight <= 0) {
         errors.push("At least one variant needs a positive weight.");
     }
+
+    // Channel validation only fires for custom mode; "all" and "known"
+    // are always valid by construction (dropdown can't pick an invalid
+    // entry).
+    const channel = draft.channel;
+    if (channel && channel.mode === "custom") {
+        const customId = String(channel.customId || "").trim();
+        if (!customId) {
+            errors.push("Custom audience needs an ID.");
+        } else if (!CHANNEL_ID_PATTERN.test(customId)) {
+            errors.push(
+                "Custom audience ID must be lowercase letters, digits, _ and - (start with a letter)."
+            );
+        }
+        if (parseSourceAliases(channel.customSourcesText).length === 0) {
+            errors.push(
+                "Custom audience needs at least one utm_source alias to match (e.g. mysource1, mysource2)."
+            );
+        }
+    }
+
     return errors;
 }
 
@@ -231,6 +356,13 @@ export default function ExperimentBuilder({
 
     const updateField = (key, value) =>
         setDraft((d) => ({ ...d, [key]: value }));
+
+    const updateChannel = (patch) =>
+        setDraft((d) => ({ ...d, channel: { ...d.channel, ...patch } }));
+
+    const channelMode = draft.channel?.mode || "all";
+    const knownChannel =
+        channelMode === "known" ? getChannelById(draft.channel.knownId) : null;
 
     const updateVariant = (rowId, patch) =>
         setDraft((d) => ({
@@ -328,6 +460,137 @@ export default function ExperimentBuilder({
                     stable handle in your reports — pick something descriptive and don't
                     rename it once data starts flowing.
                 </p>
+            </div>
+
+            <div className="experiment-builder__channel">
+                <div className="experiment-builder__channel-head">
+                    <h3 className="experiment-builder__subtitle">Audience targeting</h3>
+                    <p className="experiment-builder__hint">
+                        Restrict the experiment to visitors arriving from one channel.
+                        Other visitors see your default banner unchanged. Pick{" "}
+                        <em>All visitors</em> to enrol everyone (the experiment then has
+                        no <code>channel</code> property).
+                    </p>
+                </div>
+
+                <div className="experiment-builder__channel-controls">
+                    <label className="experiment-builder__variant-field">
+                        <span className="experiment-builder__field-key">Audience</span>
+                        <select
+                            className="experiment-builder__input"
+                            value={
+                                channelMode === "all"
+                                    ? "__all__"
+                                    : channelMode === "custom"
+                                    ? "__custom__"
+                                    : draft.channel.knownId
+                            }
+                            onChange={(e) => {
+                                const v = e.target.value;
+                                if (v === "__all__") {
+                                    updateChannel({ mode: "all" });
+                                } else if (v === "__custom__") {
+                                    updateChannel({ mode: "custom" });
+                                } else {
+                                    updateChannel({ mode: "known", knownId: v });
+                                }
+                            }}
+                        >
+                            <option value="__all__">All visitors (no targeting)</option>
+                            <optgroup label="Paid channels">
+                                {KNOWN_CHANNELS.map((c) => (
+                                    <option key={c.id} value={c.id}>
+                                        {c.label}
+                                    </option>
+                                ))}
+                            </optgroup>
+                            <option value="__custom__">Other / custom…</option>
+                        </select>
+                    </label>
+
+                    {channelMode === "known" && knownChannel ? (
+                        <div className="experiment-builder__channel-detail">
+                            <p className="experiment-builder__hint">
+                                Visitors are enrolled when their <code>utm_source</code>{" "}
+                                matches one of these aliases (case-insensitive,
+                                punctuation-stripped, prefix match):
+                            </p>
+                            <ul className="experiment-builder__alias-list">
+                                {knownChannel.utmSource.map((alias) => (
+                                    <li key={alias}>
+                                        <code>{alias}</code>
+                                    </li>
+                                ))}
+                            </ul>
+                            <p className="experiment-builder__hint">
+                                Need to extend the alias list (e.g. a custom UTM you use
+                                internally)? Pick <em>Other / custom</em> and define your
+                                own.
+                            </p>
+                        </div>
+                    ) : null}
+
+                    {channelMode === "custom" ? (
+                        <div className="experiment-builder__channel-custom">
+                            <label className="experiment-builder__variant-field">
+                                <span className="experiment-builder__field-key">
+                                    Channel ID
+                                </span>
+                                <input
+                                    className="experiment-builder__input"
+                                    type="text"
+                                    value={draft.channel.customId}
+                                    onChange={(e) =>
+                                        updateChannel({ customId: e.target.value })
+                                    }
+                                    placeholder="newsletter_q4"
+                                    autoComplete="off"
+                                    spellCheck="false"
+                                />
+                            </label>
+                            <label className="experiment-builder__variant-field">
+                                <span className="experiment-builder__field-key">
+                                    Channel label (optional)
+                                </span>
+                                <input
+                                    className="experiment-builder__input"
+                                    type="text"
+                                    value={draft.channel.customLabel}
+                                    onChange={(e) =>
+                                        updateChannel({ customLabel: e.target.value })
+                                    }
+                                    placeholder="Q4 Newsletter"
+                                    autoComplete="off"
+                                />
+                            </label>
+                            <label className="experiment-builder__variant-field">
+                                <span className="experiment-builder__field-key">
+                                    utm_source aliases
+                                </span>
+                                <textarea
+                                    className="experiment-builder__input experiment-builder__input--textarea"
+                                    rows="2"
+                                    value={draft.channel.customSourcesText}
+                                    onChange={(e) =>
+                                        updateChannel({
+                                            customSourcesText: e.target.value,
+                                        })
+                                    }
+                                    placeholder="newsletter, q4-newsletter, mailchimp"
+                                    autoComplete="off"
+                                    spellCheck="false"
+                                />
+                            </label>
+                            <p className="experiment-builder__hint">
+                                Comma- or space-separated. The banner runtime lower-cases
+                                and strips punctuation from the visitor's{" "}
+                                <code>utm_source</code> before matching, so{" "}
+                                <code>Q4-Newsletter</code> and <code>q4newsletter</code>{" "}
+                                are equivalent.
+                            </p>
+                        </div>
+                    ) : null}
+                </div>
             </div>
 
             <div className="experiment-builder__variants">
