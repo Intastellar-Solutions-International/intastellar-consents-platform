@@ -1,17 +1,16 @@
 import Authentication from "../../Authentication/Auth";
 import StickyPageTitle from "../../Components/Header/Sticky";
-import Fetch from "../../Functions/FetchHook";
 import API from "../../API/api";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import punycode from "punycode";
 import experimentsIcon from "../../components/header/icons/experiment.svg";
 import ExperimentBuilder from "./ExperimentBuilder.js";
 import { getChannelById } from "./marketingChannels.js";
+import { DomainContext } from "../../App.js";
 
 import "./Experiments.css";
 
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useMemo, useContext } = React;
 
 /*
  * Sentinel id used for rows that carry no `channel` field — i.e.
@@ -71,7 +70,22 @@ function getChannelInfo(row) {
 const useParams = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
 
-const DEFAULT_EXPERIMENT_IDS = ["asa-banner-design", "banner-test"];
+/*
+ * Pull a stable experiment id off a row regardless of casing. The
+ * backend currently emits `experimentid` (one word) but we accept the
+ * snake_case and camelCase spellings too so the page doesn't silently
+ * drop rows if the field name is later normalised.
+ */
+function getRowExperimentId(row) {
+    if (!row) return null;
+    return (
+        row.experimentid ||
+        row.experiment_id ||
+        row.experimentID ||
+        row.experimentName ||
+        null
+    );
+}
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -283,15 +297,23 @@ export default function Experiments() {
     document.title = "A/B Testing | Intastellar Consents";
     const { experimentId: urlExperimentId } = useParams();
     const history = useHistory();
+    /*
+     * Read the global domain from context — the header's domain
+     * dropdown writes here, so reusing the context keeps the page in
+     * sync with whatever the user picked elsewhere. Falls back to
+     * "combined view" (the same default the rest of the app uses) when
+     * the provider is missing during an isolated render.
+     */
+    const domainCtx = useContext(DomainContext);
+    const currentDomain = (domainCtx && domainCtx[0]) || "combined view";
     const [activeData, setActiveData] = useState(null);
+    const [listData, setListData] = useState(null);
     const today = new Date();
-    const [currentDomain, setCurrentDomain] = useState("Choose domain");
-    const [experimentID, setExperimentID] = useState("Choose experiment");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const isListView = !urlExperimentId;
-    const effectiveExperimentId = urlExperimentId || experimentID;
+    const effectiveExperimentId = urlExperimentId || null;
 
     /*
      * Marketing-suggestions deep links land here with ?new=1 and an
@@ -315,39 +337,134 @@ export default function Experiments() {
     API.experiments.getExperiments.headers.Organisation = Authentication.getOrganisation();
     API.experiments.getExperiments.headers.FromDate = today.toISOString();
     API.experiments.getExperiments.headers.ToDate = today.toISOString();
-    API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? "combined view" : currentDomain;
-    API.experiments.getExperiments.headers.ExperimentID = (effectiveExperimentId && effectiveExperimentId !== "Choose experiment") ? effectiveExperimentId : null;
 
-    API.gdpr.getDomains.headers.Organisation = Authentication.getOrganisation();
-
-
+    /*
+     * Detail view fetch — single experiment scoped to the current
+     * domain. Cleared whenever we switch back to the list view so
+     * stale variants from a previous experiment don't briefly flash
+     * before the list-view fetch resolves.
+     */
     useEffect(() => {
-        if (!effectiveExperimentId || effectiveExperimentId === "Choose experiment") {
+        if (isListView || !effectiveExperimentId) {
             setActiveData(null);
             return;
         }
         setLoading(true);
-        API.experiments.getExperiments.headers.ExperimentID = effectiveExperimentId;
-        API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? "combined view" : currentDomain;
+        setError(null);
+        const headers = { ...API.experiments.getExperiments.headers };
+        headers.Organisation = Authentication.getOrganisation();
+        headers.Domains = currentDomain || "combined view";
+        headers.ExperimentID = effectiveExperimentId;
         fetch(API.experiments.getExperiments.url, {
             method: API.experiments.getExperiments.method,
-            headers: API.experiments.getExperiments.headers,
-        }).then(response => response.json()).then((data) => {
-            setActiveData(Array.isArray(data) ? data : (data?.experiments ?? data?.variants ?? []));
+            headers,
+        }).then((response) => response.json()).then((data) => {
+            setActiveData(
+                Array.isArray(data) ? data : data?.experiments ?? data?.variants ?? []
+            );
         }).catch((err) => {
             setError(err);
         }).finally(() => {
             setLoading(false);
         });
-    }, [currentDomain, effectiveExperimentId]);
-    
-    const [loadingDomains, domains, errorDomains] = Fetch(5, API.gdpr.getDomains.url, API.gdpr.getDomains.method, API.gdpr.getDomains.headers);
+    }, [currentDomain, effectiveExperimentId, isListView]);
 
-
+    /*
+     * List view fetch — two-phase, matching the backend contract:
+     *
+     *   1. With no `ExperimentID` header the endpoint returns a flat
+     *      array of experiment-id strings, e.g. ["asa-banner-design",
+     *      "banner-test"]. When there are no experiments it returns
+     *      `{"error": "No data found"}` — we treat that as empty.
+     *
+     *   2. To populate the summary cards we then issue one detail
+     *      fetch per id, in parallel, and merge the variant rows.
+     *      The detail rows carry `experiment_variant` and metrics but
+     *      *not* an `experimentid` field, so we inject it client-side
+     *      so the grouping memo below has something to key on.
+     *
+     * We also synthesise a placeholder row for any id whose detail
+     * call returns nothing, so the user still sees the experiment in
+     * the list (with zeroed metrics) instead of it silently vanishing.
+     *
+     * `cancelled` guards against the user switching domains mid-load
+     * — without it, a stale resolution would clobber the new domain's
+     * data.
+     */
     useEffect(() => {
-        API.experiments.getExperiments.headers.Domains = currentDomain === "Choose domain" ? "combined view" : currentDomain;
-        API.experiments.getExperiments.headers.ExperimentID = (effectiveExperimentId && effectiveExperimentId !== "Choose experiment") ? effectiveExperimentId : null;
-    }, [currentDomain, effectiveExperimentId]);
+        if (!isListView) {
+            setListData(null);
+            return undefined;
+        }
+        let cancelled = false;
+        setLoading(true);
+        setError(null);
+
+        const buildBaseHeaders = () => {
+            const h = { ...API.experiments.getExperiments.headers };
+            h.Organisation = Authentication.getOrganisation();
+            h.FromDate = today.toISOString();
+            h.ToDate = today.toISOString();
+            h.Domains = currentDomain || "combined view";
+            return h;
+        };
+
+        (async () => {
+            try {
+                const idsHeaders = buildBaseHeaders();
+                delete idsHeaders.ExperimentID;
+                const idsResp = await fetch(API.experiments.getExperiments.url, {
+                    method: API.experiments.getExperiments.method,
+                    headers: idsHeaders,
+                });
+                const idsJson = await idsResp.json();
+                if (cancelled) return;
+
+                const ids = Array.isArray(idsJson)
+                    ? idsJson.filter((x) => typeof x === "string" && x.length > 0)
+                    : [];
+
+                if (ids.length === 0) {
+                    setListData([]);
+                    return;
+                }
+
+                const detailGroups = await Promise.all(
+                    ids.map(async (id) => {
+                        try {
+                            const detailHeaders = buildBaseHeaders();
+                            detailHeaders.ExperimentID = id;
+                            const resp = await fetch(API.experiments.getExperiments.url, {
+                                method: API.experiments.getExperiments.method,
+                                headers: detailHeaders,
+                            });
+                            const json = await resp.json();
+                            const rows = Array.isArray(json) ? json : [];
+                            return rows.map((row) => ({ ...row, experimentid: id }));
+                        } catch {
+                            return [];
+                        }
+                    })
+                );
+                if (cancelled) return;
+
+                const flat = detailGroups.flat();
+                const seen = new Set(flat.map((r) => r.experimentid));
+                for (const id of ids) {
+                    if (!seen.has(id)) flat.push({ experimentid: id });
+                }
+                setListData(flat);
+            } catch (err) {
+                if (!cancelled) setError(err);
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [currentDomain, isListView]);
 
     const experiments = activeData ?? [];
 
@@ -528,15 +645,65 @@ export default function Experiments() {
         return cmp ? arr.sort(cmp) : arr;
     }, [filteredExperiments, sortKey, significanceByVariant]);
 
-    let domainList = [];
-    if (domains) {
-        domainList = domains?.map((d) => {
-            return {
-                icon: d.icon || null,
-                name: punycode.toUnicode(d.domain)
+    /*
+     * List-view derivation: collapse the flat array of variant rows
+     * into one summary entry per experiment. We compute lightweight
+     * top-line metrics here so the list cards can show the leader
+     * variant + audience + total users without a second round-trip.
+     * Rows missing an `experimentid` field are dropped — they
+     * shouldn't happen, but guarding keeps the page from crashing if
+     * the backend ever emits a malformed row.
+     */
+    const listExperiments = useMemo(() => {
+        if (!isListView || !listData) return [];
+        const map = new Map();
+        for (const row of listData) {
+            const id = getRowExperimentId(row);
+            if (!id) continue;
+            if (!map.has(id)) {
+                map.set(id, {
+                    id,
+                    rows: [],
+                    channelInfo: getChannelInfo(row),
+                    domain: row.domain || null,
+                });
             }
-        })
-    }
+            map.get(id).rows.push(row);
+        }
+        return Array.from(map.values()).map((entry) => {
+            let totalUsers = 0;
+            let totalAccepts = 0;
+            let leader = null;
+            let leaderRate = -1;
+            const channelIds = new Set();
+            for (const r of entry.rows) {
+                const n = getUsersAssigned(r);
+                const a = getUsersAccepted(r);
+                const rate = n ? a / n : 0;
+                totalUsers += n;
+                totalAccepts += a;
+                if (n > 0 && rate > leaderRate) {
+                    leaderRate = rate;
+                    leader = r;
+                }
+                channelIds.add(getChannelInfo(r).id);
+            }
+            return {
+                ...entry,
+                variantCount: entry.rows.length,
+                totalUsers,
+                overallAcceptRate: totalUsers ? totalAccepts / totalUsers : null,
+                leaderName: leader?.experiment_variant ?? null,
+                leaderRate: leaderRate >= 0 ? leaderRate : null,
+                /*
+                 * If every variant in the experiment shares the same
+                 * channel we can show a single audience badge; mixed
+                 * audiences fall back to an "Mixed" hint instead.
+                 */
+                hasMixedAudience: channelIds.size > 1,
+            };
+        });
+    }, [isListView, listData]);
 
     return <>
         <StickyPageTitle>
@@ -562,7 +729,18 @@ export default function Experiments() {
             {isListView ? (
                 <div className="experiments-list">
                     <div className="experiments-list-actions">
-                        <p className="experiments-list-intro">Select an experiment to view variants and metrics.</p>
+                        <div className="experiments-list-intro-block">
+                            <p className="experiments-list-intro">
+                                {currentDomain && currentDomain !== "combined view"
+                                    ? `Experiments running on ${currentDomain}.`
+                                    : "Experiments across all your domains. Pick a domain in the header to scope this list."}
+                            </p>
+                            {currentDomain && currentDomain !== "combined view" ? (
+                                <span className="experiments-list-domain-pill">
+                                    Domain · {currentDomain}
+                                </span>
+                            ) : null}
+                        </div>
                         <button
                             type="button"
                             className="experiments-create-toggle"
@@ -582,19 +760,110 @@ export default function Experiments() {
                             />
                         </div>
                     ) : null}
-                    <ul className="experiments-id-list">
-                        {DEFAULT_EXPERIMENT_IDS.map((id) => (
-                            <li key={id}>
-                                <a
-                                    href={`/experiments/${id}`}
-                                    className="experiments-id-link"
-                                    onClick={(e) => { e.preventDefault(); history.push(`/experiments/${id}`); }}
-                                >
-                                    {id}
-                                </a>
-                            </li>
-                        ))}
-                    </ul>
+
+                    {loading && (
+                        <p className="experiments-loading">Loading experiments…</p>
+                    )}
+                    {error && (
+                        <p className="experiments-error">Failed to load experiments.</p>
+                    )}
+                    {!loading && !error && listExperiments.length === 0 ? (
+                        <div className="experiments-list-empty">
+                            <p className="experiments-list-empty__title">
+                                No experiments yet
+                                {currentDomain && currentDomain !== "combined view"
+                                    ? ` for ${currentDomain}`
+                                    : ""}
+                                .
+                            </p>
+                            <p className="experiments-list-empty__sub">
+                                Use <strong>+ Create experiment</strong> above to define one,
+                                paste the snippet into your site's <code>window.INTA</code>
+                                , and the dashboard will populate as visitors see it.
+                            </p>
+                        </div>
+                    ) : null}
+
+                    {!loading && !error && listExperiments.length > 0 ? (
+                        <ul className="experiments-list-grid" role="list">
+                            {listExperiments.map((exp) => (
+                                <li key={exp.id} className="experiments-list-card-wrap">
+                                    <a
+                                        href={`/experiments/${exp.id}`}
+                                        className="experiments-list-card"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            history.push(`/experiments/${exp.id}`);
+                                        }}
+                                    >
+                                        <div className="experiments-list-card__header">
+                                            <h3 className="experiments-list-card__title">
+                                                {exp.id}
+                                            </h3>
+                                            <div className="experiments-list-card__chips">
+                                                {exp.hasMixedAudience ? (
+                                                    <span className="experiments-list-card__chip experiments-list-card__chip--mixed">
+                                                        Mixed audiences
+                                                    </span>
+                                                ) : exp.channelInfo.id !== UNTARGETED_CHANNEL_ID ? (
+                                                    <span className="experiments-list-card__chip experiments-list-card__chip--channel">
+                                                        {exp.channelInfo.label}
+                                                    </span>
+                                                ) : (
+                                                    <span className="experiments-list-card__chip experiments-list-card__chip--untargeted">
+                                                        Untargeted
+                                                    </span>
+                                                )}
+                                                {exp.domain ? (
+                                                    <span className="experiments-list-card__chip experiments-list-card__chip--domain">
+                                                        {exp.domain}
+                                                    </span>
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                        <dl className="experiments-list-card__metrics">
+                                            <div>
+                                                <dt>Variants</dt>
+                                                <dd>{exp.variantCount}</dd>
+                                            </div>
+                                            <div>
+                                                <dt>Users</dt>
+                                                <dd>{formatInt(exp.totalUsers)}</dd>
+                                            </div>
+                                            <div>
+                                                <dt>Accept rate</dt>
+                                                <dd>
+                                                    {exp.overallAcceptRate != null
+                                                        ? `${(exp.overallAcceptRate * 100).toFixed(1)}%`
+                                                        : "—"}
+                                                </dd>
+                                            </div>
+                                            <div>
+                                                <dt>Leader</dt>
+                                                <dd>
+                                                    {exp.leaderName ? (
+                                                        <span className="experiments-list-card__leader">
+                                                            {exp.leaderName}
+                                                            {exp.leaderRate != null ? (
+                                                                <span className="experiments-list-card__leader-rate">
+                                                                    {(exp.leaderRate * 100).toFixed(1)}%
+                                                                </span>
+                                                            ) : null}
+                                                        </span>
+                                                    ) : (
+                                                        "—"
+                                                    )}
+                                                </dd>
+                                            </div>
+                                        </dl>
+                                        <span className="experiments-list-card__cta" aria-hidden="true">
+                                            View breakdown →
+                                        </span>
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : null}
                 </div>
             ) : (
             <>

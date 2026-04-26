@@ -487,15 +487,27 @@
 .experiments-list-actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    /*
+     * Center-align so the intro copy sits at the same vertical
+     * midpoint as the (taller, padded) "Create experiment" button.
+     * Using flex-start let the paragraph baseline ride up to the top
+     * of the row while the button's label centered inside its
+     * padding, which read as the intro being "too high".
+     */
+    align-items: center;
     justify-content: space-between;
     gap: 14px 18px;
     margin-bottom: 18px;
 }
 
 .experiments-list-actions .experiments-list-intro {
-    margin-bottom: 0;
-    flex: 1 1 320px;
+    /*
+     * <p> defaults to 1em top + bottom margin which would push the
+     * intro down inside its intro-block flex column and add a stray
+     * gap above the optional domain pill. Reset both — the intro-
+     * block already provides spacing via its own `gap`.
+     */
+    margin: 0;
 }
 
 .experiments-create-toggle {
@@ -1479,3 +1491,208 @@
     border-color: rgba(96, 125, 139, 0.4);
 }
 
+/* ---------------------------------------------------------------- */
+/* Experiments list view — domain-scoped summary cards              */
+/* ---------------------------------------------------------------- */
+
+.experiments-list-intro-block {
+    flex: 1 1 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.experiments-list-domain-pill {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: rgba(192, 159, 83, 0.16);
+    color: #f5d27a;
+    border: 1px solid rgba(192, 159, 83, 0.35);
+}
+
+.experiments-list-empty {
+    background: rgba(22, 22, 26, 0.55);
+    border: 1px dashed rgba(192, 159, 83, 0.25);
+    border-radius: 12px;
+    padding: 32px 28px;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.experiments-list-empty__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #f3f3f3;
+    margin: 0 0 6px;
+}
+
+.experiments-list-empty__sub {
+    font-size: 13px;
+    color: #a4a4a8;
+    margin: 0;
+    line-height: 1.55;
+}
+
+.experiments-list-empty__sub code {
+    background: rgba(192, 159, 83, 0.12);
+    color: #f5d27a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.experiments-list-grid {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+}
+
+.experiments-list-card-wrap {
+    list-style: none;
+}
+
+.experiments-list-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 18px 20px;
+    background: rgba(22, 22, 26, 0.6);
+    border: 1px solid rgba(192, 159, 83, 0.18);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s ease, transform 0.15s ease,
+        background 0.15s ease;
+    height: 100%;
+}
+
+.experiments-list-card:hover,
+.experiments-list-card:focus-visible {
+    border-color: rgba(192, 159, 83, 0.5);
+    background: rgba(34, 34, 40, 0.85);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.experiments-list-card__header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.experiments-list-card__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #f3f3f3;
+    letter-spacing: -0.01em;
+    word-break: break-word;
+}
+
+.experiments-list-card__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.experiments-list-card__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: rgba(96, 125, 139, 0.18);
+    color: #c2d1d9;
+    border: 1px solid rgba(96, 125, 139, 0.35);
+}
+
+.experiments-list-card__chip--channel {
+    background: rgba(192, 159, 83, 0.16);
+    color: #f5d27a;
+    border-color: rgba(192, 159, 83, 0.4);
+}
+
+.experiments-list-card__chip--mixed {
+    background: rgba(120, 144, 156, 0.18);
+    color: #b0bec5;
+    border-color: rgba(120, 144, 156, 0.35);
+}
+
+.experiments-list-card__chip--untargeted {
+    background: rgba(158, 158, 158, 0.14);
+    color: #c4c4c4;
+    border-color: rgba(158, 158, 158, 0.3);
+}
+
+.experiments-list-card__chip--domain {
+    background: rgba(34, 34, 40, 0.95);
+    color: #ececec;
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.experiments-list-card__metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px 14px;
+    margin: 0;
+}
+
+.experiments-list-card__metrics > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.experiments-list-card__metrics dt {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(192, 159, 83, 0.85);
+    font-weight: 600;
+}
+
+.experiments-list-card__metrics dd {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #f3f3f3;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.experiments-list-card__leader {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.experiments-list-card__leader-rate {
+    font-size: 11px;
+    color: #8de08e;
+    font-weight: 600;
+}
+
+.experiments-list-card__cta {
+    margin-top: auto;
+    align-self: flex-start;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(192, 159, 83, 0.9);
+    letter-spacing: 0.02em;
+}
