@@ -18,6 +18,8 @@ import {
     MarketingTimeseriesChart,
 } from "./MarketingCharts.js";
 import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
+import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
+import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -2030,6 +2032,50 @@ export default function MarketingReport() {
     }, [compareUi, baselineMeasurementReadySharePct]);
 
     /*
+     * Cheap rollup of the three classifiable choice buckets across the
+     * current scope (channel drill-down or full overview). The marketing
+     * suggestions registry needs essential-only / granular shares to
+     * fire its banner-copy rule; computing them once here avoids forcing
+     * each rule to re-walk the row list.
+     */
+    const choiceMixTotals = useMemo(() => {
+        const target = selectedChannel ? drilldownRows : rows;
+        let acceptAll = 0;
+        let essentialOnly = 0;
+        let granular = 0;
+        for (const r of target) {
+            acceptAll += Number(r.acceptAll) || 0;
+            essentialOnly += Number(r.essentialOnly) || 0;
+            granular += Number(r.granular) || 0;
+        }
+        return { acceptAll, essentialOnly, granular };
+    }, [rows, drilldownRows, selectedChannel]);
+
+    const invisibleSuggestions = useMemo(
+        () =>
+            buildInvisibleTrafficSuggestions({
+                selectedChannel,
+                invisibleSharePct,
+                baselineInvisibleSharePct,
+                compareEnabled: compareUi,
+                channelOverview,
+                totalConsents: visibilityScopeTotal,
+                essentialOnlyTotal: choiceMixTotals.essentialOnly,
+                granularTotal: choiceMixTotals.granular,
+            }),
+        [
+            selectedChannel,
+            invisibleSharePct,
+            baselineInvisibleSharePct,
+            compareUi,
+            channelOverview,
+            visibilityScopeTotal,
+            choiceMixTotals.essentialOnly,
+            choiceMixTotals.granular,
+        ]
+    );
+
+    /*
      * Merged geo / landing-path / utm context for the chart strip.
      * Channel view uses the subset of rows in the selected channel so the
      * "top countries" / "top paths" bars reflect that channel only. The
@@ -2373,18 +2419,27 @@ export default function MarketingReport() {
                         </div>
                     </section>
 
-                    {!error && rows.length > 0 ? (
-                        <MarketingReconciliationPanel
-                            scopeLabel={selectedChannel || "all channels"}
-                            scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
+                    {!error && rows.length > 0 && invisibleSuggestions.length > 0 ? (
+                        <MarketingSuggestionsStrip
+                            suggestions={invisibleSuggestions}
                             domainKey={listDomainLabel}
-                            consents={visibilityScopeTotal}
-                            visibleConsents={measurementReadyCount}
-                            invisibleConsents={invisibleConsents}
-                            scopeRows={selectedChannel ? drilldownRows : rows}
-                            fromDate={toYmd(fromDate)}
-                            toDate={toYmd(toDate)}
                         />
+                    ) : null}
+
+                    {!error && rows.length > 0 ? (
+                        <div id="marketing-reconciliation-panel">
+                            <MarketingReconciliationPanel
+                                scopeLabel={selectedChannel || "all channels"}
+                                scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
+                                domainKey={listDomainLabel}
+                                consents={visibilityScopeTotal}
+                                visibleConsents={measurementReadyCount}
+                                invisibleConsents={invisibleConsents}
+                                scopeRows={selectedChannel ? drilldownRows : rows}
+                                fromDate={toYmd(fromDate)}
+                                toDate={toYmd(toDate)}
+                            />
+                        </div>
                     ) : null}
 
                     {!error && rows.length > 0 ? (

@@ -1485,3 +1485,247 @@
     );
     border-color: rgba(220, 140, 90, 0.45);
 }
+
+/*
+ * --- Suggestions strip ------------------------------------------------
+ *
+ * Sits between the KPI grid and the reconciliation panel. Visually quieter
+ * than the KPI cards (no large numbers) so it reads as a *next move*
+ * footnote, not as another metric. Severity is encoded in (1) a chip in
+ * the card head, (2) a coloured left border, and (3) a faint background
+ * tint — three independent cues so colour-blind readers still see the
+ * priority distinction.
+ */
+
+.marketing-suggestions {
+    margin: 0 0 28px;
+    padding: 16px 18px 18px;
+    border-radius: 14px;
+    background: linear-gradient(
+        155deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.01) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.marketing-suggestions__head {
+    margin: 0 0 12px;
+}
+
+.marketing-suggestions__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(240, 232, 210, 0.95);
+}
+
+.marketing-suggestions__hint {
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: rgba(165, 165, 175, 0.9);
+    max-width: 56rem;
+}
+
+.marketing-suggestions__list {
+    display: grid;
+    gap: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.marketing-suggestions__card {
+    position: relative;
+    padding: 14px 16px 14px 18px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    border-left-width: 3px;
+}
+
+.marketing-suggestions__card--critical {
+    border-left-color: rgba(232, 95, 95, 0.85);
+    background: linear-gradient(
+        155deg,
+        rgba(232, 95, 95, 0.08) 0%,
+        rgba(255, 255, 255, 0.015) 70%
+    );
+}
+
+.marketing-suggestions__card--high {
+    border-left-color: rgba(210, 165, 80, 0.85);
+    background: linear-gradient(
+        155deg,
+        rgba(210, 165, 80, 0.07) 0%,
+        rgba(255, 255, 255, 0.015) 70%
+    );
+}
+
+.marketing-suggestions__card--medium {
+    border-left-color: rgba(130, 175, 220, 0.85);
+    background: linear-gradient(
+        155deg,
+        rgba(130, 175, 220, 0.05) 0%,
+        rgba(255, 255, 255, 0.015) 70%
+    );
+}
+
+.marketing-suggestions__card--low {
+    border-left-color: rgba(160, 160, 170, 0.6);
+}
+
+.marketing-suggestions__card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.marketing-suggestions__severity {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    line-height: 1.4;
+}
+
+.marketing-suggestions__severity--critical {
+    color: rgba(255, 180, 180, 0.95);
+    background: rgba(232, 95, 95, 0.12);
+}
+
+.marketing-suggestions__severity--high {
+    color: rgba(255, 225, 170, 0.95);
+    background: rgba(210, 165, 80, 0.14);
+}
+
+.marketing-suggestions__severity--medium {
+    color: rgba(190, 220, 245, 0.95);
+    background: rgba(130, 175, 220, 0.12);
+}
+
+.marketing-suggestions__severity--low {
+    color: rgba(200, 200, 210, 0.85);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.marketing-suggestions__card-title {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: rgba(240, 232, 210, 0.96);
+    line-height: 1.35;
+}
+
+.marketing-suggestions__card-body {
+    margin: 0 0 10px;
+    font-size: 0.84rem;
+    line-height: 1.5;
+    color: rgba(200, 200, 210, 0.92);
+}
+
+.marketing-suggestions__card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+}
+
+.marketing-suggestions__cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(20, 18, 12, 0.96);
+    background: linear-gradient(
+        155deg,
+        rgba(216, 181, 106, 0.96) 0%,
+        rgba(184, 141, 60, 0.96) 100%
+    );
+    border-radius: 7px;
+    text-decoration: none;
+    transition: filter 120ms ease, transform 120ms ease;
+}
+
+.marketing-suggestions__cta:hover,
+.marketing-suggestions__cta:focus-visible {
+    filter: brightness(1.07);
+    text-decoration: none;
+}
+
+.marketing-suggestions__cta:focus-visible {
+    outline: 2px solid rgba(255, 225, 170, 0.85);
+    outline-offset: 2px;
+}
+
+.marketing-suggestions__snooze {
+    padding: 6px 10px;
+    font-size: 0.76rem;
+    font-family: inherit;
+    color: rgba(200, 200, 210, 0.86);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 7px;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
+}
+
+.marketing-suggestions__snooze:hover,
+.marketing-suggestions__snooze:focus-visible {
+    border-color: rgba(255, 255, 255, 0.32);
+    color: rgba(240, 240, 245, 0.96);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.marketing-suggestions__snooze:focus-visible {
+    outline: 2px solid rgba(160, 160, 170, 0.6);
+    outline-offset: 2px;
+}
+
+.marketing-suggestions__evidence {
+    margin-top: 10px;
+    font-size: 0.76rem;
+    color: rgba(160, 160, 170, 0.9);
+}
+
+.marketing-suggestions__evidence summary {
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    color: rgba(180, 180, 190, 0.86);
+    transition: color 120ms ease;
+}
+
+.marketing-suggestions__evidence summary:hover {
+    color: rgba(220, 220, 230, 0.96);
+}
+
+.marketing-suggestions__evidence ul {
+    margin: 8px 0 0;
+    padding: 0 0 0 18px;
+    line-height: 1.55;
+}
+
+.marketing-suggestions__evidence code {
+    padding: 1px 6px;
+    font-size: 0.74rem;
+    color: rgba(220, 220, 230, 0.92);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+}
+
+@media (min-width: 720px) {
+    .marketing-suggestions__card-head {
+        flex-wrap: nowrap;
+    }
+}
