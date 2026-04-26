@@ -121,6 +121,33 @@ export default function App() {
                             return d !== undefined && d !== "" && d !== "undefined.";
                         });
                         setDomains(data);
+                        /*
+                         * Mirror the names-only cache the header
+                         * relies on to hydrate its dropdown
+                         * synchronously on reload — even on routes
+                         * (e.g. /experiments) whose API namespace
+                         * doesn't expose getDomains and would
+                         * otherwise leave the selector blank until a
+                         * refetch resolves. We deliberately reuse the
+                         * existing `domains` key rather than
+                         * introducing a parallel one.
+                         */
+                        try {
+                            const allowedDomains = data
+                                .map((d) => punycode.toUnicode(d.domain))
+                                .filter(
+                                    (d) =>
+                                        d &&
+                                        d !== "undefined." &&
+                                        d !== "combined view"
+                                );
+                            localStorage.setItem(
+                                "domains",
+                                JSON.stringify(allowedDomains)
+                            );
+                        } catch {
+                            /* quota / privacy mode — ignore */
+                        }
                     }
                 });
             }
