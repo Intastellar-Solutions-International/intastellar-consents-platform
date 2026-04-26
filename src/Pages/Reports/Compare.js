@@ -330,7 +330,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                                                 ["Accepted", domain.Accepted],
                                                 ["Declined", domain.Declined],
                                                 ["Functional", domain.Functional],
-                                                ["Marketing", domain.Marketing],
+                                                ["Channel Analytics", domain.Marketing],
                                                 ["Statistics", domain.Statics],
                                             ].map(([label, val]) => (
                                                 <div key={label} className="compare-stat">
@@ -444,7 +444,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                                             {[
                                                 ["Accepted", domain.interactions_number?.accept],
                                                 ["Declined", domain.interactions_number?.decline],
-                                                ["Marketing", domain.interactions_number?.marketing],
+                                                ["Channel Analytics", domain.interactions_number?.marketing],
                                                 ["Functional", domain.interactions_number?.functional],
                                                 ["Statistics", domain.interactions_number?.statics],
                                             ].map(([label, n]) => (

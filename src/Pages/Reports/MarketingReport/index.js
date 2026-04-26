@@ -2251,7 +2251,7 @@ export default function MarketingReport() {
                 <StickyPageTitle
                     loadingUpdated={loading}
                     finalLoaded={loading}
-                    title="Marketing"
+                    title="Channel Analytics"
                     numberofDays={setLastDays}
                     getLastDays={getLastDays}
                     setActiveData={setActiveData}
@@ -2268,7 +2268,7 @@ export default function MarketingReport() {
                 />
                 <div className="dashboard-content marketing-report-page">
                     <header className="marketing-report-hero">
-                        <h1>Marketing</h1>
+                        <h1>Channel Analytics</h1>
                         <p className="marketing-report-hero__lede">
                             <strong>Start with Highlights</strong> for what deserves attention in your selected period,
                             then drill into channels and campaigns. <strong>Full-stack consent events</strong> show how

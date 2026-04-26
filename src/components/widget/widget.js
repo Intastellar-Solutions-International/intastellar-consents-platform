@@ -194,7 +194,7 @@ export default function Widget(props) {
         const comparisonRows = [
             { label: "Accept", deltaKey: "accepted", relKey: "acceptedRelativeDrop" },
             { label: "Essential", deltaKey: "declined", relKey: "declinedRelativeDrop" },
-            { label: "Marketing", deltaKey: "marketing", relKey: "marketingRelativeDrop" },
+            { label: "Marketing", deltaKey: "makrekting", relKey: "marketingRelativeDrop" },
             { label: "Functional", deltaKey: "functional", relKey: "functionalRelativeDrop" },
             { label: "Statistics", deltaKey: "statics", relKey: "staticsRelativeDrop" },
         ];

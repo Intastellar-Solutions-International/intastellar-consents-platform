@@ -19,7 +19,7 @@ export const reportsLinks = [
         path: "/reports/audit-report",
     },
     {
-        name: "Marketing",
+        name: "Channel Analytics",
         path: "/reports/marketing",
     },
 ];
@@ -41,7 +41,7 @@ const HUB_CARDS = [
     },
     {
         key: "marketing",
-        title: "Marketing",
+        title: "Channel Analytics",
         description:
             "Consent volume and acceptance by channel and campaign (UTMs and landing URL marketing parameters).",
         leaf: "/marketing",

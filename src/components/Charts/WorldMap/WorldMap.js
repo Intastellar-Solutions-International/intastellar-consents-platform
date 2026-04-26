@@ -261,7 +261,7 @@ export default function Map(props) {
                     { label: "Accepted", value: countryValues.accepted, total: countryValues.acceptedTotal },
                     { label: "Functional", value: countryValues.functional, total: countryValues.functionalTotal },
                     { label: "Statistics", value: countryValues.statistics, total: countryValues.statisticsTotal },
-                    { label: "Marketing", value: countryValues.marketing, total: countryValues.marketingTotal },
+                    { label: Channel Analytics, value: countryValues.marketing, total: countryValues.marketingTotal },
                     { label: "Rejected", value: countryValues.rejected, total: countryValues.rejectedTotal },
                 ];
                 let text = rows
@@ -286,7 +286,7 @@ export default function Map(props) {
                         ["Accepted", pp.accepted, countryValues.accepted, consentCountFromNum(pNum), countryValues.acceptedTotal],
                         ["Functional", pp.functional, countryValues.functional, pNum.functional, countryValues.functionalTotal],
                         ["Statistics", pp.statics, countryValues.statistics, pNum.statics, countryValues.statisticsTotal],
-                        ["Marketing", pp.marketing, countryValues.marketing, pNum.marketing, countryValues.marketingTotal],
+                        [Channel Analytics, pp.marketing, countryValues.marketing, pNum.marketing, countryValues.marketingTotal],
                         ["Rejected", pp.declined, countryValues.rejected, pNum.decline ?? pNum.rejected, countryValues.rejectedTotal],
                     ];
                     for (const [label, ppPct, curPct, ppCnt, curCnt] of lines) {
