@@ -6,6 +6,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import punycode from "punycode";
 import experimentsIcon from "../../components/header/icons/experiment.svg";
+import ExperimentBuilder from "./ExperimentBuilder.js";
 
 import "./Experiments.css";
 
@@ -110,6 +111,25 @@ export default function Experiments() {
     const isListView = !urlExperimentId;
     const effectiveExperimentId = urlExperimentId || experimentID;
 
+    /*
+     * Marketing-suggestions deep links land here with ?new=1 and an
+     * optional scope= or hypothesis= prefill. Read the params once on
+     * mount; subsequent open/close is driven by component state so we
+     * don't have to keep the URL and the UI in sync.
+     */
+    const initialBuilderHints = useState(() => {
+        if (typeof window === "undefined") {
+            return { open: false, scope: "", hypothesis: "" };
+        }
+        const params = new URLSearchParams(window.location.search);
+        return {
+            open: params.get("new") === "1",
+            scope: params.get("scope") || "",
+            hypothesis: params.get("hypothesis") || "",
+        };
+    })[0];
+    const [showBuilder, setShowBuilder] = useState(initialBuilderHints.open);
+
     API.experiments.getExperiments.headers.Organisation = Authentication.getOrganisation();
     API.experiments.getExperiments.headers.FromDate = today.toISOString();
     API.experiments.getExperiments.headers.ToDate = today.toISOString();
@@ -181,7 +201,27 @@ export default function Experiments() {
         <div className="dashboard-content experiments-page">
             {isListView ? (
                 <div className="experiments-list">
-                    <p className="experiments-list-intro">Select an experiment to view variants and metrics.</p>
+                    <div className="experiments-list-actions">
+                        <p className="experiments-list-intro">Select an experiment to view variants and metrics.</p>
+                        <button
+                            type="button"
+                            className="experiments-create-toggle"
+                            onClick={() => setShowBuilder((prev) => !prev)}
+                            aria-expanded={showBuilder}
+                            aria-controls="experiment-builder-panel"
+                        >
+                            {showBuilder ? "Close builder" : "+ Create experiment"}
+                        </button>
+                    </div>
+                    {showBuilder ? (
+                        <div id="experiment-builder-panel">
+                            <ExperimentBuilder
+                                initialScopeHint={initialBuilderHints.scope}
+                                initialHypothesisHint={initialBuilderHints.hypothesis}
+                                onClose={() => setShowBuilder(false)}
+                            />
+                        </div>
+                    ) : null}
                     <ul className="experiments-id-list">
                         {DEFAULT_EXPERIMENT_IDS.map((id) => (
                             <li key={id}>
