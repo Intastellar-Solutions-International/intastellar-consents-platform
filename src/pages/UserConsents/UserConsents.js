@@ -25,6 +25,7 @@ import punycode from "punycode";
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
 const useLocation = window.ReactRouterDOM.useLocation;
+const useHistory = window.ReactRouterDOM.useHistory;
 const PAGE_SIZE = 40;
 
 /**
@@ -39,6 +40,21 @@ function readCountryFromSearch(search) {
         const raw = params.get("country");
         if (!raw) return "";
         return String(raw).trim().toUpperCase();
+    } catch (_) {
+        return "";
+    }
+}
+
+/**
+ * Pull the `uid` query param from URL search.
+ * Kept as a raw trimmed string (UIDs can be alphanumeric, UUIDs, etc.).
+ */
+function readUidFromSearch(search) {
+    if (!search || typeof search !== "string") return "";
+    try {
+        const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+        const raw = params.get("uid");
+        return raw ? String(raw).trim() : "";
     } catch (_) {
         return "";
     }
@@ -214,7 +230,8 @@ export default function UserConsents(props) {
     document.title = "Audit log | Intastellar Consents";
     const settings = JSON.parse(localStorage.getItem("settings")) || { dateRange: 30 };
     const [currentDomain, setGlobalDomain] = useContext(DomainContext);
-    const { handle, id } = useParams();
+    const history = typeof useHistory === "function" ? useHistory() : null;
+    const { handle, id, uid: uidFromPath } = useParams();
     useSyncDomainFromRoute(handle, setGlobalDomain);
 
     const listDomainLabel = useMemo(
@@ -238,12 +255,36 @@ export default function UserConsents(props) {
     const initialCountry = readCountryFromSearch(
         routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")
     );
+    const initialUid = readUidFromSearch(
+        routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")
+    );
+    const routeUid =
+        uidFromPath != null && String(uidFromPath).trim() !== ""
+            ? decodeURIComponent(String(uidFromPath))
+            : "";
+    const effectiveInitialUid = routeUid || initialUid;
     const [selectedCountry, setSelectedCountry] = useState(initialCountry);
+    const [uidQueryInput, setUidQueryInput] = useState(effectiveInitialUid);
+    const [uidQuery, setUidQuery] = useState(effectiveInitialUid);
 
     useEffect(() => {
         const fromUrl = readCountryFromSearch(routerLocation?.search ?? "");
         if (fromUrl !== selectedCountry) setSelectedCountry(fromUrl);
     }, [routerLocation?.search]);
+
+    useEffect(() => {
+        const fromPath =
+            uidFromPath != null && String(uidFromPath).trim() !== ""
+                ? decodeURIComponent(String(uidFromPath))
+                : "";
+        const fromUrl = fromPath || readUidFromSearch(routerLocation?.search ?? "");
+        if (fromUrl !== uidQuery) {
+            setUidQuery(fromUrl);
+        }
+        if (fromUrl !== uidQueryInput) {
+            setUidQueryInput(fromUrl);
+        }
+    }, [routerLocation?.search, uidFromPath]);
 
     const clearCountryFilter = useCallback(() => {
         setSelectedCountry("");
@@ -256,6 +297,29 @@ export default function UserConsents(props) {
             /* non-fatal: the in-memory state is still cleared */
         }
     }, []);
+
+    const clearUidFilter = useCallback(() => {
+        setUidQueryInput("");
+        setUidQuery("");
+        const currentPath = routerLocation?.pathname ?? (typeof window !== "undefined" ? window.location.pathname : "");
+        const basePath = String(currentPath).replace(/\/user-consents(?:\/[^/?#]+)?$/, "/user-consents");
+        const params = new URLSearchParams(
+            (routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")).replace(/^\?/, "")
+        );
+        params.delete("uid");
+        const search = params.toString();
+        const next = `${basePath}${search ? `?${search}` : ""}`;
+        if (history?.replace) {
+            history.replace(next);
+            return;
+        }
+        if (typeof window === "undefined" || !window.history?.replaceState) return;
+        try {
+            window.history.replaceState({}, "", next);
+        } catch (_) {
+            /* non-fatal: in-memory state already cleared */
+        }
+    }, [history, routerLocation?.pathname, routerLocation?.search]);
 
     const [demoMode, setDemoMode] = useState(Authentication.DemoMode); 
 
@@ -280,8 +344,8 @@ export default function UserConsents(props) {
     );
 
     const consentsQueryKey = useMemo(
-        () => `${id}|${domainsApiHeader}|${consentDateKey(fromDate)}|${consentDateKey(toDate)}`,
-        [id, domainsApiHeader, fromDate, toDate]
+        () => `${id}|${domainsApiHeader}|${consentDateKey(fromDate)}|${consentDateKey(toDate)}|${uidQuery}`,
+        [id, domainsApiHeader, fromDate, toDate, uidQuery]
     );
 
     API[id].getDomainsUrl.headers.Domains = domainsApiHeader;
@@ -290,6 +354,11 @@ export default function UserConsents(props) {
     API[id].getDomainsUrl.headers.FromDate = consentDateKey(fromDate);
     API[id].getDomainsUrl.headers.ToDate = consentDateKey(toDate);
     API[id].getDomainsUrl.headers.SortOrder = "desc";
+    if (uidQuery) {
+        API[id].getDomainsUrl.headers.UID = uidQuery;
+    } else {
+        delete API[id].getDomainsUrl.headers.UID;
+    }
 
     const url = API[id].getDomainsUrl.url;
     const method = API[id].getDomainsUrl.method;
@@ -392,6 +461,11 @@ export default function UserConsents(props) {
                 ToDate: consentDateKey(toDate),
                 SortOrder: "desc",
             };
+            if (uidQuery) {
+                headers.UID = uidQuery;
+            } else {
+                delete headers.UID;
+            }
             const res = await fetch(url, { method, headers });
             if (res.status === 401) {
                 localStorage.removeItem("globals");
@@ -422,7 +496,35 @@ export default function UserConsents(props) {
         } finally {
             setLoadingMore(false);
         }
-    }, [domainsApiHeader, fromDate, toDate, id, getDomainsUrlLoading, method, url]);
+    }, [domainsApiHeader, fromDate, toDate, id, getDomainsUrlLoading, method, url, uidQuery]);
+
+    const applyUidFilter = useCallback(() => {
+        const targetUid = uidQueryInput.trim();
+        if (!targetUid) {
+            clearUidFilter();
+            return;
+        }
+        setUidQuery(targetUid);
+        const currentPath = routerLocation?.pathname ?? (typeof window !== "undefined" ? window.location.pathname : "");
+        const basePath = String(currentPath).replace(/\/user-consents(?:\/[^/?#]+)?$/, "/user-consents");
+        const nextPath = `${basePath}/${encodeURIComponent(targetUid)}`;
+        const params = new URLSearchParams(
+            (routerLocation?.search ?? (typeof window !== "undefined" ? window.location.search : "")).replace(/^\?/, "")
+        );
+        params.delete("uid");
+        const search = params.toString();
+        const next = `${nextPath}${search ? `?${search}` : ""}`;
+        if (history?.replace) {
+            history.replace(next);
+            return;
+        }
+        if (typeof window === "undefined" || !window.history?.replaceState) return;
+        try {
+            window.history.replaceState({}, "", next);
+        } catch (_) {
+            /* non-fatal: server-side filter still applies in memory */
+        }
+    }, [uidQueryInput, clearUidFilter, history, routerLocation?.pathname, routerLocation?.search]);
 
     useEffect(() => {
         const onScroll = () => {
@@ -470,11 +572,13 @@ export default function UserConsents(props) {
         setSelectedFramework("all");
     }, [consentsQueryKey]);
 
+    const baseDisplayData = displayData;
+
     const filteredDisplayData = useMemo(() => {
-        if (!Array.isArray(displayData)) return displayData;
+        if (!Array.isArray(baseDisplayData)) return baseDisplayData;
         const country = selectedCountry ? selectedCountry.toUpperCase() : "";
-        if (selectedFramework === "all" && !country) return displayData;
-        return displayData.filter((row) => {
+        if (selectedFramework === "all" && !country) return baseDisplayData;
+        return baseDisplayData.filter((row) => {
             if (selectedFramework !== "all" && !frameworksForAuditRow(row).has(selectedFramework)) {
                 return false;
             }
@@ -484,11 +588,11 @@ export default function UserConsents(props) {
             }
             return true;
         });
-    }, [displayData, selectedFramework, selectedCountry]);
+    }, [baseDisplayData, selectedFramework, selectedCountry]);
 
     const filteredAway =
-        Array.isArray(displayData) && Array.isArray(filteredDisplayData)
-            ? displayData.length - filteredDisplayData.length
+        Array.isArray(baseDisplayData) && Array.isArray(filteredDisplayData)
+            ? baseDisplayData.length - filteredDisplayData.length
             : 0;
 
     const showNoData =
@@ -527,6 +631,40 @@ export default function UserConsents(props) {
                                 ))}
                             </select>
                         </label>
+                        <form
+                            className="user-consents-filter-field user-consents-filter-field--uid"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                applyUidFilter();
+                            }}
+                        >
+                            <label className="user-consents-filter-label" htmlFor="user-consents-uid-filter">
+                                UID
+                            </label>
+                            <input
+                                id="user-consents-uid-filter"
+                                className="user-consents-filter-input"
+                                type="text"
+                                placeholder="Exact UID…"
+                                value={uidQueryInput}
+                                onChange={(e) => setUidQueryInput(e.target.value)}
+                            />
+                            <button
+                                type="submit"
+                                className="user-consents-filter-apply"
+                            >
+                                Find
+                            </button>
+                            {uidQuery ? (
+                                <button
+                                    type="button"
+                                    className="user-consents-filter-reset"
+                                    onClick={clearUidFilter}
+                                >
+                                    clear
+                                </button>
+                            ) : null}
+                        </form>
                         {selectedCountry ? (
                             <span
                                 className="user-consents-filter-chip"
@@ -546,10 +684,29 @@ export default function UserConsents(props) {
                                 </button>
                             </span>
                         ) : null}
+                        {uidQuery ? (
+                            <span className="user-consents-filter-chip" role="status" aria-live="polite">
+                                <span className="user-consents-filter-chip__label">UID</span>
+                                <span className="user-consents-filter-chip__value">{uidQuery}</span>
+                                <button
+                                    type="button"
+                                    className="user-consents-filter-chip__clear"
+                                    onClick={clearUidFilter}
+                                    aria-label={`Clear UID filter (${uidQuery})`}
+                                >
+                                    ×
+                                </button>
+                            </span>
+                        ) : null}
+                        {uidQuery ? (
+                            <span className="user-consents-filter-note" role="status" aria-live="polite">
+                                UID mode active: server-side filter for {uidQuery}
+                            </span>
+                        ) : null}
                         {(selectedFramework !== "all" || selectedCountry) && filteredAway > 0 ? (
                             <span className="user-consents-filter-note" role="status" aria-live="polite">
-                                Showing {filteredDisplayData.length} of {displayData.length} loaded records
-                                {hasMore ? " · scroll to load more" : ""}
+                                Showing {filteredDisplayData.length} of {baseDisplayData.length} loaded records
+                                {hasMore && !uidQuery ? " · scroll to load more" : ""}
                             </span>
                         ) : null}
                     </section>
@@ -574,7 +731,7 @@ export default function UserConsents(props) {
                                 {selectedFramework !== "all" && selectedCountry ? " in " : ""}
                                 {selectedCountry ? <strong>{selectedCountry}</strong> : null}
                                 {" "}in the currently loaded page.{" "}
-                                {hasMore ? "Scroll to load more, or " : ""}
+                                {hasMore && !uidQuery ? "Scroll to load more, or " : ""}
                                 {selectedFramework !== "all" ? (
                                     <button
                                         type="button"

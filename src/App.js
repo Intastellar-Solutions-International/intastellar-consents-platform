@@ -268,6 +268,13 @@ export default function App() {
                                                 </ErrorBoundary>
                                             }
                                         </Route>
+                                        <Route path="/:id/reports/view/:handle/user-consents/:uid" exact>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
+                                        </Route>
                                         <Route path="/:id/reports/view/:handle/audit-report" exact>
                                             {
                                                 (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
@@ -297,6 +304,13 @@ export default function App() {
                                             }
                                         </Route>
                                         <Route path="/:id/reports/user-consents" exact>
+                                            {
+                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
+                                        </Route>
+                                        <Route path="/:id/reports/user-consents/:uid" exact>
                                             {
                                                 (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}

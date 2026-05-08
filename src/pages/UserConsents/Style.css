@@ -15,6 +15,10 @@
     gap: 8px;
 }
 
+.user-consents-filter-field--uid {
+    flex-wrap: wrap;
+}
+
 .user-consents-filter-label {
     font-size: 0.72rem;
     text-transform: uppercase;
@@ -34,6 +38,41 @@
     min-width: 160px;
 }
 
+.user-consents-filter-input {
+    background: rgba(0, 0, 0, 0.25);
+    color: #e8e8e8;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    min-width: 180px;
+}
+
+.user-consents-filter-input:focus-visible {
+    outline: 2px solid var(--intastellarGold, #d9b255);
+    outline-offset: 2px;
+}
+
+.user-consents-filter-apply {
+    border: 1px solid rgba(192, 159, 83, 0.4);
+    background: rgba(192, 159, 83, 0.16);
+    color: #f5e6c5;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.user-consents-filter-apply:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.user-consents-filter-apply:hover:not(:disabled) {
+    background: rgba(192, 159, 83, 0.24);
+}
+
 .user-consents-filter-select:focus-visible {
     outline: 2px solid var(--intastellarGold, #d9b255);
     outline-offset: 2px;
@@ -42,6 +81,10 @@
 .user-consents-filter-note {
     font-size: 0.8rem;
     color: #a5a5a5;
+}
+
+.user-consents-filter-note--error {
+    color: #ffaeae;
 }
 
 .user-consents-filter-reset {
