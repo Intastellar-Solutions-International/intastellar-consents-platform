@@ -27986,7 +27986,235 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
     font-size: 0.6875rem;
     color: rgba(180, 180, 180, 0.75);
     font-weight: 500;
-}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"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","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px 20px;\n    margin-bottom: 18px;\n}\n\n.settings-subpage__toolbar .cta {\n    margin-top: 0;\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn--danger {\n    border-color: rgba(220, 100, 100, 0.5);\n    background: rgba(160, 50, 50, 0.22);\n    color: #ffd8d8;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}\n\n.settings-org-modal__divider {\n    margin: 20px 0 14px;\n    border: none;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-org-modal__danger-title {\n    margin: 0 0 8px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 160, 160, 0.85);\n}\n\n.settings-org-modal__danger-desc {\n    margin: 0 0 12px;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(190, 190, 190, 0.95);\n}\n\n.settings-blacklist-modal__card .settings-org-modal__text-input {\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    cursor: pointer;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-org-modal__field-block {\n    margin-bottom: 14px;\n}\n\n.settings-org-modal__label {\n    display: block;\n    margin-bottom: 6px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n}\n\n/* Workspace-specific styles */\n.settings-workspace__domain {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.1);\n    padding: 3px 8px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.2);\n}\n\n.settings-workspace__description {\n    color: rgba(180, 180, 180, 0.85);\n    font-size: 0.8125rem;\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    display: inline-block;\n}\n\n.settings-workspace__badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 8px;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.settings-workspace__badge--agency {\n    background: rgba(192, 159, 83, 0.15);\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    color: #c0a053;\n}\n\n.settings-workspace__user-count {\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Wider modal for workspaces */\n.settings-blacklist-modal__card--wide {\n    max-width: 520px;\n}\n\n/* User management section */\n.settings-workspace__users-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__users-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__user-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-user-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-user-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__users-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__user-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.settings-workspace__user-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__user-email {\n    font-size: 0.8125rem;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__remove-user-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-user-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-users {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domain management section */\n.settings-workspace__domains-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__domains-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__domain-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-domain-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-domain-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__domains-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__domain-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    gap: 10px;\n}\n\n.settings-workspace__domain-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__domain-info {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    min-width: 0;\n    flex: 1;\n}\n\n.settings-workspace__domain-name {\n    font-size: 0.8125rem;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__primary-badge {\n    flex-shrink: 0;\n    font-size: 0.625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 6px;\n    border-radius: 4px;\n    background: rgba(192, 159, 83, 0.25);\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__domain-actions {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.settings-workspace__set-primary-btn {\n    padding: 4px 8px;\n    border-radius: 4px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 0.6875rem;\n    font-weight: 500;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__set-primary-btn:hover {\n    background: rgba(192, 159, 83, 0.15);\n    border-color: rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__set-primary-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__remove-domain-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-domain-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-domains {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domains cell in table */\n.settings-workspace__domains-cell {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.settings-workspace__domain-count {\n    font-size: 0.6875rem;\n    color: rgba(180, 180, 180, 0.75);\n    font-weight: 500;\n}"],"sourceRoot":""}]);
+}
+
+/* Domain verification badge */
+.settings-workspace__verify-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.settings-workspace__verify-badge--verified {
+    background: rgba(80, 180, 100, 0.15);
+    border: 1px solid rgba(80, 180, 100, 0.3);
+    color: #7dd590;
+}
+
+.settings-workspace__verify-badge--unverified {
+    background: rgba(220, 160, 60, 0.15);
+    border: 1px solid rgba(220, 160, 60, 0.3);
+    color: #e8c76a;
+}
+
+.settings-workspace__verify-badge--expired {
+    background: rgba(220, 100, 80, 0.15);
+    border: 1px solid rgba(220, 100, 80, 0.3);
+    color: #f0a8a0;
+}
+
+.settings-workspace__verify-badge--unknown {
+    background: rgba(150, 150, 150, 0.15);
+    border: 1px solid rgba(150, 150, 150, 0.3);
+    color: #aaa;
+}
+
+.settings-workspace__verify-icon {
+    font-size: 0.75rem;
+}
+
+.settings-workspace__verify-btn {
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(192, 159, 83, 0.3);
+    background: rgba(192, 159, 83, 0.1);
+    color: #c9a855;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-workspace__verify-btn:hover {
+    background: rgba(192, 159, 83, 0.2);
+    border-color: rgba(192, 159, 83, 0.5);
+}
+
+.settings-workspace__verify-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Domain Verification Modal */
+.settings-verify-modal__domain {
+    margin: 0 0 20px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9375rem;
+    color: #f0f0f0;
+}
+
+.settings-verify-modal__instructions {
+    margin-bottom: 20px;
+}
+
+.settings-verify-modal__intro {
+    margin: 0 0 16px;
+    font-size: 0.875rem;
+    color: rgba(197, 197, 197, 0.9);
+    line-height: 1.5;
+}
+
+.settings-verify-modal__method {
+    margin-bottom: 18px;
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settings-verify-modal__method h4 {
+    margin: 0 0 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgba(192, 159, 83, 0.95);
+}
+
+.settings-verify-modal__method p {
+    margin: 0 0 10px;
+    font-size: 0.8125rem;
+    color: rgba(180, 180, 180, 0.85);
+    line-height: 1.45;
+}
+
+.settings-verify-modal__method code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+}
+
+.settings-verify-modal__code-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow-x: auto;
+}
+
+.settings-verify-modal__code-block code {
+    flex: 1;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    color: #b8e0b8;
+    background: transparent;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.settings-verify-modal__copy-btn {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ccc;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.settings-verify-modal__copy-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.settings-verify-modal__token-info {
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(192, 159, 83, 0.08);
+    border: 1px solid rgba(192, 159, 83, 0.2);
+    font-size: 0.8125rem;
+    color: rgba(197, 197, 197, 0.9);
+}
+
+.settings-verify-modal__token-info strong {
+    color: rgba(192, 159, 83, 0.95);
+}
+
+.settings-verify-modal__token {
+    display: block;
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.25);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.75rem;
+    color: #d4b87a;
+    word-break: break-all;
+}
+
+.settings-verify-modal__result {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+.settings-verify-modal__result--success {
+    background: rgba(80, 180, 100, 0.12);
+    border: 1px solid rgba(80, 180, 100, 0.3);
+    color: #7dd590;
+}
+
+.settings-verify-modal__result--error {
+    background: rgba(220, 100, 80, 0.12);
+    border: 1px solid rgba(220, 100, 80, 0.3);
+    color: #f0a8a0;
+}
+
+.settings-verify-modal__result-icon {
+    font-size: 1rem;
+}
+
+.settings-verify-modal__status {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: rgba(80, 180, 100, 0.08);
+    border: 1px solid rgba(80, 180, 100, 0.2);
+    font-size: 0.8125rem;
+}
+
+.settings-verify-modal__status p {
+    margin: 0;
+    color: rgba(180, 200, 180, 0.9);
+}
+
+.settings-verify-modal__status p + p {
+    margin-top: 6px;
+}
+
+.settings-verify-modal__status strong {
+    color: #7dd590;
+}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"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","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px 20px;\n    margin-bottom: 18px;\n}\n\n.settings-subpage__toolbar .cta {\n    margin-top: 0;\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn--danger {\n    border-color: rgba(220, 100, 100, 0.5);\n    background: rgba(160, 50, 50, 0.22);\n    color: #ffd8d8;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}\n\n.settings-org-modal__divider {\n    margin: 20px 0 14px;\n    border: none;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-org-modal__danger-title {\n    margin: 0 0 8px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 160, 160, 0.85);\n}\n\n.settings-org-modal__danger-desc {\n    margin: 0 0 12px;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(190, 190, 190, 0.95);\n}\n\n.settings-blacklist-modal__card .settings-org-modal__text-input {\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    cursor: pointer;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-org-modal__field-block {\n    margin-bottom: 14px;\n}\n\n.settings-org-modal__label {\n    display: block;\n    margin-bottom: 6px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n}\n\n/* Workspace-specific styles */\n.settings-workspace__domain {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.1);\n    padding: 3px 8px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.2);\n}\n\n.settings-workspace__description {\n    color: rgba(180, 180, 180, 0.85);\n    font-size: 0.8125rem;\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    display: inline-block;\n}\n\n.settings-workspace__badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 8px;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.settings-workspace__badge--agency {\n    background: rgba(192, 159, 83, 0.15);\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    color: #c0a053;\n}\n\n.settings-workspace__user-count {\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Wider modal for workspaces */\n.settings-blacklist-modal__card--wide {\n    max-width: 520px;\n}\n\n/* User management section */\n.settings-workspace__users-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__users-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__user-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-user-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-user-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__users-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__user-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.settings-workspace__user-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__user-email {\n    font-size: 0.8125rem;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__remove-user-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-user-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-users {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domain management section */\n.settings-workspace__domains-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__domains-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__domain-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-domain-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-domain-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__domains-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__domain-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    gap: 10px;\n}\n\n.settings-workspace__domain-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__domain-info {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    min-width: 0;\n    flex: 1;\n}\n\n.settings-workspace__domain-name {\n    font-size: 0.8125rem;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__primary-badge {\n    flex-shrink: 0;\n    font-size: 0.625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 6px;\n    border-radius: 4px;\n    background: rgba(192, 159, 83, 0.25);\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__domain-actions {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.settings-workspace__set-primary-btn {\n    padding: 4px 8px;\n    border-radius: 4px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 0.6875rem;\n    font-weight: 500;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__set-primary-btn:hover {\n    background: rgba(192, 159, 83, 0.15);\n    border-color: rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__set-primary-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__remove-domain-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-domain-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-domains {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domains cell in table */\n.settings-workspace__domains-cell {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.settings-workspace__domain-count {\n    font-size: 0.6875rem;\n    color: rgba(180, 180, 180, 0.75);\n    font-weight: 500;\n}\n\n/* Domain verification badge */\n.settings-workspace__verify-badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 4px;\n    padding: 2px 8px;\n    border-radius: 4px;\n    font-size: 0.625rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.settings-workspace__verify-badge--verified {\n    background: rgba(80, 180, 100, 0.15);\n    border: 1px solid rgba(80, 180, 100, 0.3);\n    color: #7dd590;\n}\n\n.settings-workspace__verify-badge--unverified {\n    background: rgba(220, 160, 60, 0.15);\n    border: 1px solid rgba(220, 160, 60, 0.3);\n    color: #e8c76a;\n}\n\n.settings-workspace__verify-badge--expired {\n    background: rgba(220, 100, 80, 0.15);\n    border: 1px solid rgba(220, 100, 80, 0.3);\n    color: #f0a8a0;\n}\n\n.settings-workspace__verify-badge--unknown {\n    background: rgba(150, 150, 150, 0.15);\n    border: 1px solid rgba(150, 150, 150, 0.3);\n    color: #aaa;\n}\n\n.settings-workspace__verify-icon {\n    font-size: 0.75rem;\n}\n\n.settings-workspace__verify-btn {\n    padding: 4px 10px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c9a855;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__verify-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-workspace__verify-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Domain Verification Modal */\n.settings-verify-modal__domain {\n    margin: 0 0 20px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.9375rem;\n    color: #f0f0f0;\n}\n\n.settings-verify-modal__instructions {\n    margin-bottom: 20px;\n}\n\n.settings-verify-modal__intro {\n    margin: 0 0 16px;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.9);\n    line-height: 1.5;\n}\n\n.settings-verify-modal__method {\n    margin-bottom: 18px;\n    padding: 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.2);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-verify-modal__method h4 {\n    margin: 0 0 8px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-verify-modal__method p {\n    margin: 0 0 10px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n    line-height: 1.45;\n}\n\n.settings-verify-modal__method code {\n    background: rgba(0, 0, 0, 0.3);\n    padding: 1px 4px;\n    border-radius: 3px;\n    font-size: 0.75rem;\n}\n\n.settings-verify-modal__code-block {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    overflow-x: auto;\n}\n\n.settings-verify-modal__code-block code {\n    flex: 1;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.75rem;\n    color: #b8e0b8;\n    background: transparent;\n    padding: 0;\n    white-space: nowrap;\n}\n\n.settings-verify-modal__copy-btn {\n    flex-shrink: 0;\n    padding: 5px 10px;\n    border-radius: 5px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.08);\n    color: #ccc;\n    font-size: 0.6875rem;\n    font-weight: 500;\n    cursor: pointer;\n    transition: background 0.2s ease;\n}\n\n.settings-verify-modal__copy-btn:hover {\n    background: rgba(255, 255, 255, 0.15);\n}\n\n.settings-verify-modal__token-info {\n    margin-top: 14px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    background: rgba(192, 159, 83, 0.08);\n    border: 1px solid rgba(192, 159, 83, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-verify-modal__token-info strong {\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-verify-modal__token {\n    display: block;\n    margin-top: 6px;\n    padding: 6px 10px;\n    border-radius: 5px;\n    background: rgba(0, 0, 0, 0.25);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.75rem;\n    color: #d4b87a;\n    word-break: break-all;\n}\n\n.settings-verify-modal__result {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 16px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n}\n\n.settings-verify-modal__result--success {\n    background: rgba(80, 180, 100, 0.12);\n    border: 1px solid rgba(80, 180, 100, 0.3);\n    color: #7dd590;\n}\n\n.settings-verify-modal__result--error {\n    background: rgba(220, 100, 80, 0.12);\n    border: 1px solid rgba(220, 100, 80, 0.3);\n    color: #f0a8a0;\n}\n\n.settings-verify-modal__result-icon {\n    font-size: 1rem;\n}\n\n.settings-verify-modal__status {\n    margin-top: 16px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    background: rgba(80, 180, 100, 0.08);\n    border: 1px solid rgba(80, 180, 100, 0.2);\n    font-size: 0.8125rem;\n}\n\n.settings-verify-modal__status p {\n    margin: 0;\n    color: rgba(180, 200, 180, 0.9);\n}\n\n.settings-verify-modal__status p + p {\n    margin-top: 6px;\n}\n\n.settings-verify-modal__status strong {\n    color: #7dd590;\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -40700,19 +40928,9 @@ function SideNav(props) {
     // Check agency subscription requirement
     if (link.requiresAgency) {
       try {
-        var _org;
         // Allow access for Intastellar Solutions (org ID 1)
-        var orgRaw = localStorage.getItem("organisation");
-        var org = null;
-        if (orgRaw) {
-          try {
-            org = JSON.parse(orgRaw);
-          } catch (_unused) {
-            /* not JSON */
-          }
-        }
-        // Compare as strings to handle both number and string id
-        if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") {
+        var org = JSON.parse(localStorage.getItem("organisation"));
+        if ((org === null || org === void 0 ? void 0 : org.id) === 1) {
           // Org 1 has access, continue
         } else {
           var _JSON$parse;
@@ -40721,7 +40939,7 @@ function SideNav(props) {
             return null;
           }
         }
-      } catch (_unused2) {
+      } catch (_unused) {
         return null;
       }
     }
@@ -41155,25 +41373,14 @@ function readCachedDomains() {
 function hasAgencySubscription() {
   try {
     // Allow access for Intastellar Solutions (org ID 1)
-    var orgRaw = localStorage.getItem("organisation");
-    if (orgRaw) {
-      var _org;
-      // Handle both JSON string and plain value formats
-      var org = orgRaw;
-      try {
-        org = JSON.parse(orgRaw);
-      } catch (_unused4) {
-        /* not JSON, use raw value */
-      }
-      // Check for org ID 1 (compare as strings to handle both number and string)
-      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
-    }
+    var org = JSON.parse(localStorage.getItem("organisation"));
+    if ((org === null || org === void 0 ? void 0 : org.id) === 1) return true;
     var sub = localStorage.getItem("subscription");
     if (sub) {
       var parsed = JSON.parse(sub);
       return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
     }
-  } catch (_unused5) {
+  } catch (_unused4) {
     /* ignore */
   }
   return false;
@@ -41200,7 +41407,7 @@ function readAgencyWorkspaces() {
         return ws;
       });
     }
-  } catch (_unused6) {
+  } catch (_unused5) {
     /* ignore */
   }
   return [];
@@ -44133,6 +44340,361 @@ function useSyncDomainFromRoute(handle, setCurrentDomain) {
     }
     setCurrentDomain(decoded);
   }, [handle, setCurrentDomain]);
+}
+
+/***/ }),
+
+/***/ "./src/Functions/domainVerification.js":
+/*!*********************************************!*\
+  !*** ./src/Functions/domainVerification.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   checkDomainVerification: () => (/* binding */ checkDomainVerification),
+/* harmony export */   generateVerificationToken: () => (/* binding */ generateVerificationToken),
+/* harmony export */   getDaysUntilReverification: () => (/* binding */ getDaysUntilReverification),
+/* harmony export */   getDomainsNeedingReverification: () => (/* binding */ getDomainsNeedingReverification),
+/* harmony export */   getOrCreateVerificationRecord: () => (/* binding */ getOrCreateVerificationRecord),
+/* harmony export */   getOrCreateVerificationToken: () => (/* binding */ getOrCreateVerificationToken),
+/* harmony export */   getVerificationStatus: () => (/* binding */ getVerificationStatus),
+/* harmony export */   getVerificationStatusLabel: () => (/* binding */ getVerificationStatusLabel),
+/* harmony export */   isDomainVerified: () => (/* binding */ isDomainVerified),
+/* harmony export */   isVerificationExpired: () => (/* binding */ isVerificationExpired),
+/* harmony export */   manuallyVerifyDomain: () => (/* binding */ manuallyVerifyDomain),
+/* harmony export */   resetVerification: () => (/* binding */ resetVerification)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+/**
+ * Domain Verification Utility
+ *
+ * Handles domain ownership verification for organisations and workspaces.
+ * Currently uses localStorage for storage - will be replaced with backend API.
+ */
+
+var STORAGE_KEY = "domain_verifications";
+var REVERIFICATION_DAYS = 14; // Re-verify every 14 days
+
+/**
+ * Generate a unique verification token for a domain + organisation combination
+ */
+function generateVerificationToken(domain, organisationId) {
+  var timestamp = Date.now().toString(36);
+  var random = Math.random().toString(36).substring(2, 10);
+  return "inta_".concat(organisationId, "_").concat(timestamp, "_").concat(random);
+}
+
+/**
+ * Get all stored verification records
+ */
+function getStoredVerifications() {
+  try {
+    var stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (_unused) {
+    /* ignore */
+  }
+  return {};
+}
+
+/**
+ * Save verification records to localStorage
+ */
+function saveVerifications(verifications) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(verifications));
+  } catch (_unused2) {
+    /* ignore */
+  }
+}
+
+/**
+ * Create a unique key for domain + organisation combination
+ */
+function createKey(domain, organisationId) {
+  return "".concat(organisationId, ":").concat(domain.toLowerCase());
+}
+
+/**
+ * Get verification status for a domain
+ * @returns {Object|null} Verification record or null if not found
+ */
+function getVerificationStatus(domain, organisationId) {
+  var verifications = getStoredVerifications();
+  var key = createKey(domain, organisationId);
+  return verifications[key] || null;
+}
+
+/**
+ * Check if a domain is verified and verification hasn't expired
+ */
+function isDomainVerified(domain, organisationId) {
+  var status = getVerificationStatus(domain, organisationId);
+  if (!status || !status.verified) {
+    return false;
+  }
+
+  // Check if re-verification is needed
+  if (status.nextVerificationDue) {
+    var dueDate = new Date(status.nextVerificationDue);
+    if (new Date() > dueDate) {
+      return false; // Verification expired
+    }
+  }
+  return true;
+}
+
+/**
+ * Check if verification is expired (was verified but needs re-verification)
+ */
+function isVerificationExpired(domain, organisationId) {
+  var status = getVerificationStatus(domain, organisationId);
+  if (!status || !status.verified) {
+    return false; // Never verified, not "expired"
+  }
+  if (status.nextVerificationDue) {
+    var dueDate = new Date(status.nextVerificationDue);
+    return new Date() > dueDate;
+  }
+  return false;
+}
+
+/**
+ * Get or create a verification token for a domain
+ * If token already exists, return it; otherwise generate a new one
+ */
+function getOrCreateVerificationToken(domain, organisationId) {
+  var _verifications$key;
+  var verifications = getStoredVerifications();
+  var key = createKey(domain, organisationId);
+  if ((_verifications$key = verifications[key]) !== null && _verifications$key !== void 0 && _verifications$key.token) {
+    return verifications[key].token;
+  }
+
+  // Generate new token
+  var token = generateVerificationToken(domain, organisationId);
+  verifications[key] = {
+    domain: domain.toLowerCase(),
+    organisationId: organisationId,
+    token: token,
+    verified: false,
+    verifiedAt: null,
+    lastCheckedAt: null,
+    nextVerificationDue: null,
+    createdAt: new Date().toISOString()
+  };
+  saveVerifications(verifications);
+  return token;
+}
+
+/**
+ * Get full verification record, creating one if it doesn't exist
+ */
+function getOrCreateVerificationRecord(domain, organisationId) {
+  var token = getOrCreateVerificationToken(domain, organisationId);
+  return getVerificationStatus(domain, organisationId);
+}
+
+/**
+ * Simulate verification check (will be replaced with actual API call)
+ * In production, this would fetch the domain and check for the token
+ *
+ * @param {string} domain - Domain to verify
+ * @param {number} organisationId - Organisation ID
+ * @returns {Promise<{success: boolean, message: string}>}
+ */
+function checkDomainVerification(_x, _x2) {
+  return _checkDomainVerification.apply(this, arguments);
+}
+
+/**
+ * Mark a domain as manually verified (for testing/admin purposes)
+ */
+function _checkDomainVerification() {
+  _checkDomainVerification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(domain, organisationId) {
+    var verifications, key, record, simulatedSuccess, now, nextDue;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          verifications = getStoredVerifications();
+          key = createKey(domain, organisationId);
+          record = verifications[key];
+          if (record) {
+            _context.n = 1;
+            break;
+          }
+          return _context.a(2, {
+            success: false,
+            message: "No verification token found. Please generate a token first."
+          });
+        case 1:
+          _context.n = 2;
+          return new Promise(function (resolve) {
+            return setTimeout(resolve, 1500);
+          });
+        case 2:
+          // TODO: Replace with actual verification API call
+          // The backend would:
+          // 1. Fetch the domain's HTML
+          // 2. Look for <meta name="intastellar-verification" content="TOKEN">
+          // 3. Or check for window.INTA.verification === TOKEN
+          // 4. Return success/failure
+          // For now, simulate random success/failure for testing
+          // In production, remove this and use actual API
+          simulatedSuccess = Math.random() > 0.3; // 70% success rate for testing
+          if (!simulatedSuccess) {
+            _context.n = 3;
+            break;
+          }
+          now = new Date();
+          nextDue = new Date(now);
+          nextDue.setDate(nextDue.getDate() + REVERIFICATION_DAYS);
+          verifications[key] = _objectSpread(_objectSpread({}, record), {}, {
+            verified: true,
+            verifiedAt: now.toISOString(),
+            lastCheckedAt: now.toISOString(),
+            nextVerificationDue: nextDue.toISOString()
+          });
+          saveVerifications(verifications);
+          return _context.a(2, {
+            success: true,
+            message: "Domain verified successfully!",
+            verifiedAt: now.toISOString(),
+            nextVerificationDue: nextDue.toISOString()
+          });
+        case 3:
+          verifications[key] = _objectSpread(_objectSpread({}, record), {}, {
+            lastCheckedAt: new Date().toISOString()
+          });
+          saveVerifications(verifications);
+          return _context.a(2, {
+            success: false,
+            message: "Verification token not found on domain. Please ensure the token is properly installed."
+          });
+        case 4:
+          return _context.a(2);
+      }
+    }, _callee);
+  }));
+  return _checkDomainVerification.apply(this, arguments);
+}
+function manuallyVerifyDomain(domain, organisationId) {
+  var verifications = getStoredVerifications();
+  var key = createKey(domain, organisationId);
+  var now = new Date();
+  var nextDue = new Date(now);
+  nextDue.setDate(nextDue.getDate() + REVERIFICATION_DAYS);
+  var existingRecord = verifications[key] || {
+    domain: domain.toLowerCase(),
+    organisationId: organisationId,
+    token: generateVerificationToken(domain, organisationId),
+    createdAt: now.toISOString()
+  };
+  verifications[key] = _objectSpread(_objectSpread({}, existingRecord), {}, {
+    verified: true,
+    verifiedAt: now.toISOString(),
+    lastCheckedAt: now.toISOString(),
+    nextVerificationDue: nextDue.toISOString()
+  });
+  saveVerifications(verifications);
+}
+
+/**
+ * Reset verification status for a domain (for testing)
+ */
+function resetVerification(domain, organisationId) {
+  var verifications = getStoredVerifications();
+  var key = createKey(domain, organisationId);
+  if (verifications[key]) {
+    verifications[key] = _objectSpread(_objectSpread({}, verifications[key]), {}, {
+      verified: false,
+      verifiedAt: null,
+      lastCheckedAt: null,
+      nextVerificationDue: null
+    });
+    saveVerifications(verifications);
+  }
+}
+
+/**
+ * Get verification status label for UI display
+ */
+function getVerificationStatusLabel(domain, organisationId) {
+  var status = getVerificationStatus(domain, organisationId);
+  if (!status) {
+    return {
+      label: "Unverified",
+      type: "unverified",
+      icon: "?"
+    };
+  }
+  if (!status.verified) {
+    return {
+      label: "Unverified",
+      type: "unverified",
+      icon: "?"
+    };
+  }
+  if (isVerificationExpired(domain, organisationId)) {
+    return {
+      label: "Expired",
+      type: "expired",
+      icon: "!"
+    };
+  }
+  return {
+    label: "Verified",
+    type: "verified",
+    icon: "✓"
+  };
+}
+
+/**
+ * Get days until re-verification is required
+ */
+function getDaysUntilReverification(domain, organisationId) {
+  var status = getVerificationStatus(domain, organisationId);
+  if (!(status !== null && status !== void 0 && status.nextVerificationDue)) {
+    return null;
+  }
+  var dueDate = new Date(status.nextVerificationDue);
+  var now = new Date();
+  var diffTime = dueDate - now;
+  var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+
+/**
+ * Get all domains that need re-verification soon (within X days)
+ */
+function getDomainsNeedingReverification() {
+  var withinDays = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
+  var verifications = getStoredVerifications();
+  var needsReverification = [];
+  for (var key in verifications) {
+    var record = verifications[key];
+    if (record.verified && record.nextVerificationDue) {
+      var daysUntil = getDaysUntilReverification(record.domain, record.organisationId);
+      if (daysUntil !== null && daysUntil <= withinDays) {
+        needsReverification.push(_objectSpread(_objectSpread({}, record), {}, {
+          daysUntilDue: daysUntil
+        }));
+      }
+    }
+  }
+  return needsReverification;
 }
 
 /***/ }),
@@ -57079,12 +57641,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
 /* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Functions/domainVerification */ "./src/Functions/domainVerification.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -57106,7 +57673,24 @@ var _React = React,
 
 
 
+
 var Link = window.ReactRouterDOM.Link;
+
+/**
+ * Get current organisation ID
+ */
+function getCurrentOrgId() {
+  try {
+    var orgRaw = localStorage.getItem("organisation");
+    if (orgRaw) {
+      var org = JSON.parse(orgRaw);
+      return (org === null || org === void 0 ? void 0 : org.id) || null;
+    }
+  } catch (_unused) {
+    /* ignore */
+  }
+  return null;
+}
 
 /**
  * Generate a simple unique ID for workspaces (temporary until backend)
@@ -57136,7 +57720,7 @@ function getStoredWorkspaces() {
         return ws;
       });
     }
-  } catch (_unused) {
+  } catch (_unused2) {
     /* ignore */
   }
   return [];
@@ -57148,7 +57732,7 @@ function getStoredWorkspaces() {
 function saveWorkspaces(workspaces) {
   try {
     localStorage.setItem("agency_workspaces", JSON.stringify(workspaces));
-  } catch (_unused2) {
+  } catch (_unused3) {
     /* ignore */
   }
 }
@@ -57167,6 +57751,7 @@ function isValidDomain(domain) {
   return /^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/.test(domain);
 }
 function Workspaces() {
+  var _verifyModalDomain$re, _verifyModalDomain$re3, _verifyModalDomain$re5, _verifyModalDomain$re6;
   document.title = "Client Workspaces | Settings | Intastellar Consents | CMP";
   var _useState = useState(true),
     _useState2 = _slicedToArray(_useState, 2),
@@ -57227,6 +57812,25 @@ function Workspaces() {
     successMessage = _useState26[0],
     setSuccessMessage = _useState26[1];
 
+  // Verification modal state
+  var _useState27 = useState(null),
+    _useState28 = _slicedToArray(_useState27, 2),
+    verifyModalDomain = _useState28[0],
+    setVerifyModalDomain = _useState28[1];
+  var _useState29 = useState(false),
+    _useState30 = _slicedToArray(_useState29, 2),
+    verifyPending = _useState30[0],
+    setVerifyPending = _useState30[1];
+  var _useState31 = useState(null),
+    _useState32 = _slicedToArray(_useState31, 2),
+    verifyResult = _useState32[0],
+    setVerifyResult = _useState32[1];
+  var _useState33 = useState(0),
+    _useState34 = _slicedToArray(_useState33, 2),
+    verificationRefreshKey = _useState34[0],
+    setVerificationRefreshKey = _useState34[1];
+  var orgId = getCurrentOrgId();
+
   // Load workspaces on mount
   useEffect(function () {
     // Simulate loading delay for consistency with other pages
@@ -57252,17 +57856,94 @@ function Workspaces() {
     setDeleteConfirm(false);
   }, []);
 
+  // Verification modal handlers
+  function openVerifyModal(domain) {
+    if (!orgId) return;
+    var record = (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__.getOrCreateVerificationRecord)(domain, orgId);
+    setVerifyModalDomain({
+      domain: domain,
+      record: record
+    });
+    setVerifyResult(null);
+    setVerifyPending(false);
+  }
+  function closeVerifyModal() {
+    setVerifyModalDomain(null);
+    setVerifyResult(null);
+    setVerifyPending(false);
+  }
+  function handleVerifyCheck() {
+    return _handleVerifyCheck.apply(this, arguments);
+  }
+  function _handleVerifyCheck() {
+    _handleVerifyCheck = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var result, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            if (!(!verifyModalDomain || !orgId)) {
+              _context.n = 1;
+              break;
+            }
+            return _context.a(2);
+          case 1:
+            setVerifyPending(true);
+            setVerifyResult(null);
+            _context.p = 2;
+            _context.n = 3;
+            return (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__.checkDomainVerification)(verifyModalDomain.domain, orgId);
+          case 3:
+            result = _context.v;
+            setVerifyResult(result);
+            if (result.success) {
+              // Refresh the verification status display
+              setVerificationRefreshKey(function (k) {
+                return k + 1;
+              });
+            }
+            _context.n = 5;
+            break;
+          case 4:
+            _context.p = 4;
+            _t = _context.v;
+            setVerifyResult({
+              success: false,
+              message: "An error occurred while checking verification."
+            });
+          case 5:
+            _context.p = 5;
+            setVerifyPending(false);
+            return _context.f(5);
+          case 6:
+            return _context.a(2);
+        }
+      }, _callee, null, [[2, 4, 5, 6]]);
+    }));
+    return _handleVerifyCheck.apply(this, arguments);
+  }
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function () {
+      // Could show a toast, but keeping it simple
+    });
+  }
+
   // Escape key handler
   useEffect(function () {
-    if (!showCreateModal && !modalWorkspace) return undefined;
+    if (!showCreateModal && !modalWorkspace && !verifyModalDomain) return undefined;
     var onKey = function onKey(e) {
-      if (e.key === "Escape") closeModal();
+      if (e.key === "Escape") {
+        if (verifyModalDomain) {
+          closeVerifyModal();
+        } else {
+          closeModal();
+        }
+      }
     };
     window.addEventListener("keydown", onKey);
     return function () {
       return window.removeEventListener("keydown", onKey);
     };
-  }, [showCreateModal, modalWorkspace, closeModal]);
+  }, [showCreateModal, modalWorkspace, verifyModalDomain, closeModal]);
   function openCreateModal() {
     setShowCreateModal(true);
     setEditName("");
@@ -57482,8 +58163,17 @@ function Workspaces() {
     return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains2 = ws.domains) === null || _ws$domains2 === void 0 || (_ws$domains2 = _ws$domains2[0]) === null || _ws$domains2 === void 0 ? void 0 : _ws$domains2.domain) || ws.domain || "—";
   }
 
-  // Domain list component
+  // Domain list component with verification status
   var DomainManagementSection = function DomainManagementSection() {
+    // Get verification status for each domain
+    var getVerificationInfo = function getVerificationInfo(domain) {
+      if (!orgId) return {
+        label: "—",
+        type: "unknown",
+        icon: "?"
+      };
+      return (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__.getVerificationStatusLabel)(domain, orgId);
+    };
     return /*#__PURE__*/React.createElement("div", {
       className: "settings-workspace__domains-section"
     }, /*#__PURE__*/React.createElement("label", {
@@ -57511,8 +58201,11 @@ function Workspaces() {
       onClick: addDomain,
       disabled: !!pending
     }, "Add")), editDomains.length > 0 ? /*#__PURE__*/React.createElement("ul", {
-      className: "settings-workspace__domains-list"
+      className: "settings-workspace__domains-list",
+      key: verificationRefreshKey
     }, editDomains.map(function (d) {
+      var verifyInfo = getVerificationInfo(d.domain);
+      var daysUntil = orgId ? (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__.getDaysUntilReverification)(d.domain, orgId) : null;
       return /*#__PURE__*/React.createElement("li", {
         key: d.domain,
         className: "settings-workspace__domain-item"
@@ -57522,9 +58215,22 @@ function Workspaces() {
         className: "settings-workspace__domain-name"
       }, d.domain), d.isPrimary && /*#__PURE__*/React.createElement("span", {
         className: "settings-workspace__primary-badge"
-      }, "Primary")), /*#__PURE__*/React.createElement("div", {
+      }, "Primary"), /*#__PURE__*/React.createElement("span", {
+        className: "settings-workspace__verify-badge settings-workspace__verify-badge--".concat(verifyInfo.type),
+        title: verifyInfo.type === "verified" && daysUntil != null ? "Re-verification in ".concat(daysUntil, " days") : verifyInfo.label
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "settings-workspace__verify-icon"
+      }, verifyInfo.icon), verifyInfo.label)), /*#__PURE__*/React.createElement("div", {
         className: "settings-workspace__domain-actions"
-      }, !d.isPrimary && /*#__PURE__*/React.createElement("button", {
+      }, /*#__PURE__*/React.createElement("button", {
+        type: "button",
+        className: "settings-workspace__verify-btn",
+        onClick: function onClick() {
+          return openVerifyModal(d.domain);
+        },
+        disabled: !!pending,
+        title: "Verify domain ownership"
+      }, "Verify"), !d.isPrimary && /*#__PURE__*/React.createElement("button", {
         type: "button",
         className: "settings-workspace__set-primary-btn",
         onClick: function onClick() {
@@ -57809,7 +58515,71 @@ function Workspaces() {
     className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--danger",
     onClick: handleDelete,
     disabled: !!pending
-  }, pending === "delete" ? "Deleting…" : "Yes, delete permanently")))));
+  }, pending === "delete" ? "Deleting…" : "Yes, delete permanently")))), verifyModalDomain && /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-labelledby": "verify-modal-title",
+    onClick: function onClick(e) {
+      if (e.target === e.currentTarget) closeVerifyModal();
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal__card settings-blacklist-modal__card--wide"
+  }, /*#__PURE__*/React.createElement("h2", {
+    id: "verify-modal-title"
+  }, "Verify Domain Ownership"), /*#__PURE__*/React.createElement("p", {
+    className: "settings-verify-modal__domain"
+  }, verifyModalDomain.domain), /*#__PURE__*/React.createElement("div", {
+    className: "settings-verify-modal__instructions"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "settings-verify-modal__intro"
+  }, "To verify ownership of this domain, add one of the following to your website:"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-verify-modal__method"
+  }, /*#__PURE__*/React.createElement("h4", null, "Option 1: Meta Tag"), /*#__PURE__*/React.createElement("p", null, "Add this meta tag to the ", /*#__PURE__*/React.createElement("code", null, "<head>"), " section of your homepage:"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-verify-modal__code-block"
+  }, /*#__PURE__*/React.createElement("code", null, "<meta name=\"intastellar-verification\" content=\"".concat(((_verifyModalDomain$re = verifyModalDomain.record) === null || _verifyModalDomain$re === void 0 ? void 0 : _verifyModalDomain$re.token) || "", "\">")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-verify-modal__copy-btn",
+    onClick: function onClick() {
+      var _verifyModalDomain$re2;
+      return copyToClipboard("<meta name=\"intastellar-verification\" content=\"".concat(((_verifyModalDomain$re2 = verifyModalDomain.record) === null || _verifyModalDomain$re2 === void 0 ? void 0 : _verifyModalDomain$re2.token) || "", "\">"));
+    },
+    title: "Copy to clipboard"
+  }, "Copy"))), /*#__PURE__*/React.createElement("div", {
+    className: "settings-verify-modal__method"
+  }, /*#__PURE__*/React.createElement("h4", null, "Option 2: JavaScript Variable"), /*#__PURE__*/React.createElement("p", null, "Add this to your Intastellar banner configuration:"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-verify-modal__code-block"
+  }, /*#__PURE__*/React.createElement("code", null, "window.INTA = { verification: \"".concat(((_verifyModalDomain$re3 = verifyModalDomain.record) === null || _verifyModalDomain$re3 === void 0 ? void 0 : _verifyModalDomain$re3.token) || "", "\" };")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-verify-modal__copy-btn",
+    onClick: function onClick() {
+      var _verifyModalDomain$re4;
+      return copyToClipboard("window.INTA = { verification: \"".concat(((_verifyModalDomain$re4 = verifyModalDomain.record) === null || _verifyModalDomain$re4 === void 0 ? void 0 : _verifyModalDomain$re4.token) || "", "\" };"));
+    },
+    title: "Copy to clipboard"
+  }, "Copy"))), /*#__PURE__*/React.createElement("div", {
+    className: "settings-verify-modal__token-info"
+  }, /*#__PURE__*/React.createElement("strong", null, "Your verification token:"), /*#__PURE__*/React.createElement("code", {
+    className: "settings-verify-modal__token"
+  }, ((_verifyModalDomain$re5 = verifyModalDomain.record) === null || _verifyModalDomain$re5 === void 0 ? void 0 : _verifyModalDomain$re5.token) || "—"))), verifyResult && /*#__PURE__*/React.createElement("div", {
+    className: "settings-verify-modal__result settings-verify-modal__result--".concat(verifyResult.success ? "success" : "error")
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "settings-verify-modal__result-icon"
+  }, verifyResult.success ? "✓" : "✗"), verifyResult.message), /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal__actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn",
+    onClick: closeVerifyModal,
+    disabled: verifyPending
+  }, "Close"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--primary",
+    onClick: handleVerifyCheck,
+    disabled: verifyPending
+  }, verifyPending ? "Checking…" : "Check Verification")), ((_verifyModalDomain$re6 = verifyModalDomain.record) === null || _verifyModalDomain$re6 === void 0 ? void 0 : _verifyModalDomain$re6.verified) && /*#__PURE__*/React.createElement("div", {
+    className: "settings-verify-modal__status"
+  }, /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("strong", null, "Status:"), " Verified on", " ", new Date(verifyModalDomain.record.verifiedAt).toLocaleDateString()), verifyModalDomain.record.nextVerificationDue && /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("strong", null, "Next verification due:"), " ", new Date(verifyModalDomain.record.nextVerificationDue).toLocaleDateString())))));
 }
 
 /***/ }),
@@ -62421,7 +63191,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../SelectInput/Selector */ "./src/components/SelectInput/Selector.js");
 /* harmony import */ var _IntastellarAccounts_IntastellarAccounts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../IntastellarAccounts/IntastellarAccounts */ "./src/components/IntastellarAccounts/IntastellarAccounts.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+/* harmony import */ var _Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Functions/domainVerification.js */ "./src/Functions/domainVerification.js");
+/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -62438,6 +63209,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+
 
 
 
@@ -62636,6 +63408,38 @@ function getPrimaryDomainFromWorkspace(ws) {
   return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains$ = ws.domains[0]) === null || _ws$domains$ === void 0 ? void 0 : _ws$domains$.domain) || null;
 }
 
+/**
+ * Get verification status for dropdown display
+ */
+function getDomainVerificationStatus(domain, orgId) {
+  if (!orgId || !domain || domain === "combined view") {
+    return null;
+  }
+  if ((0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__.isDomainVerified)(domain, orgId)) {
+    return "verified";
+  }
+  if ((0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__.isVerificationExpired)(domain, orgId)) {
+    return "expired";
+  }
+  return "unverified";
+}
+
+/**
+ * Get current organisation ID for verification checks
+ */
+function getCurrentOrgId() {
+  try {
+    var orgRaw = localStorage.getItem("organisation");
+    if (orgRaw) {
+      var org = JSON.parse(orgRaw);
+      return (org === null || org === void 0 ? void 0 : org.id) || null;
+    }
+  } catch (_unused7) {
+    /* ignore */
+  }
+  return null;
+}
+
 /*
  * Resolve the platform key whose `getDomains` we should call. Routes
  * like /experiments or /settings aren't platform namespaces in the
@@ -62739,13 +63543,13 @@ function Header(props) {
           lastedVisited: null
         });
         data === null || data === void 0 || data.map(function (d) {
-          return punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain);
+          return punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
         }).filter(function (d) {
           return d !== undefined && d !== "" && d !== "undefined.";
         });
         setDomains(data);
         var allowedDomains = data === null || data === void 0 ? void 0 : data.map(function (d) {
-          return punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain);
+          return punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
         }).filter(function (d) {
           return d !== undefined && d !== "" && d !== "undefined." && d !== "combined view";
         });
@@ -62756,6 +63560,7 @@ function Header(props) {
 
   // Build domain list based on whether a workspace is active
   domainList = [];
+  var orgId = getCurrentOrgId();
   if (activeWorkspace) {
     var _activeWorkspace$doma;
     // When workspace is active, show only workspace domains
@@ -62777,14 +63582,16 @@ function Header(props) {
       })) || []
     });
 
-    // Add workspace domains
+    // Add workspace domains with verification status
     if (activeWorkspace.domains && activeWorkspace.domains.length > 0) {
       activeWorkspace.domains.forEach(function (d) {
+        var verifyStatus = getDomainVerificationStatus(d.domain, orgId);
         domainList.push({
           icon: null,
           name: d.domain,
           type: "workspace-domain",
-          isPrimary: d.isPrimary
+          isPrimary: d.isPrimary,
+          verificationStatus: verifyStatus
         });
       });
     }
@@ -62832,12 +63639,15 @@ function Header(props) {
       }
     }
 
-    // Add domains from API
+    // Add domains from API with verification status
     var apiDomains = (domains === null || domains === void 0 ? void 0 : domains.map(function (d) {
+      var domainName = punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
+      var verifyStatus = getDomainVerificationStatus(domainName, orgId);
       return {
         icon: d.icon || null,
-        name: punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain),
-        type: "domain"
+        name: domainName,
+        type: "domain",
+        verificationStatus: verifyStatus
       };
     })) || [];
     if (apiDomains.length > 0) {

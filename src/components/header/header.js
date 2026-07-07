@@ -11,6 +11,10 @@ import {
     decodeDomainPathSegment,
     navigateWithDomain,
 } from "../../Functions/domainPathSegments.js";
+import {
+    isDomainVerified,
+    isVerificationExpired,
+} from "../../Functions/domainVerification.js";
 import punycode from "punycode";
 
 const { useState, useEffect, useContext, useMemo } = React;
@@ -190,6 +194,38 @@ function getPrimaryDomainFromWorkspace(ws) {
     return primary?.domain || ws.domains[0]?.domain || null;
 }
 
+/**
+ * Get verification status for dropdown display
+ */
+function getDomainVerificationStatus(domain, orgId) {
+    if (!orgId || !domain || domain === "combined view") {
+        return null;
+    }
+    if (isDomainVerified(domain, orgId)) {
+        return "verified";
+    }
+    if (isVerificationExpired(domain, orgId)) {
+        return "expired";
+    }
+    return "unverified";
+}
+
+/**
+ * Get current organisation ID for verification checks
+ */
+function getCurrentOrgId() {
+    try {
+        const orgRaw = localStorage.getItem("organisation");
+        if (orgRaw) {
+            const org = JSON.parse(orgRaw);
+            return org?.id || null;
+        }
+    } catch {
+        /* ignore */
+    }
+    return null;
+}
+
 /*
  * Resolve the platform key whose `getDomains` we should call. Routes
  * like /experiments or /settings aren't platform namespaces in the
@@ -296,6 +332,7 @@ export default function Header(props) {
 
     // Build domain list based on whether a workspace is active
     domainList = [];
+    const orgId = getCurrentOrgId();
 
     if (activeWorkspace) {
         // When workspace is active, show only workspace domains
@@ -315,14 +352,16 @@ export default function Header(props) {
             workspaceDomains: activeWorkspace.domains?.map(d => d.domain) || []
         });
 
-        // Add workspace domains
+        // Add workspace domains with verification status
         if (activeWorkspace.domains && activeWorkspace.domains.length > 0) {
             activeWorkspace.domains.forEach((d) => {
+                const verifyStatus = getDomainVerificationStatus(d.domain, orgId);
                 domainList.push({
                     icon: null,
                     name: d.domain,
                     type: "workspace-domain",
-                    isPrimary: d.isPrimary
+                    isPrimary: d.isPrimary,
+                    verificationStatus: verifyStatus
                 });
             });
         }
@@ -369,12 +408,15 @@ export default function Header(props) {
             }
         }
 
-        // Add domains from API
+        // Add domains from API with verification status
         const apiDomains = domains?.map((d) => {
+            const domainName = punycode.toUnicode(d.domain);
+            const verifyStatus = getDomainVerificationStatus(domainName, orgId);
             return {
                 icon: d.icon || null,
-                name: punycode.toUnicode(d.domain),
-                type: "domain"
+                name: domainName,
+                type: "domain",
+                verificationStatus: verifyStatus
             }
         }) || [];
 

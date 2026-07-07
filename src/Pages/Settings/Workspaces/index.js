@@ -4,9 +4,32 @@ import { CurrentPageLoading } from "../../../Components/widget/Loading";
 import SideNav from "../../../Components/Header/SideNav";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 import StickyPageTitle from "../../../Components/Header/Sticky";
+import {
+    getOrCreateVerificationRecord,
+    getVerificationStatusLabel,
+    checkDomainVerification,
+    isDomainVerified,
+    getDaysUntilReverification,
+} from "../../../Functions/domainVerification";
 import "../Style.css";
 
 const Link = window.ReactRouterDOM.Link;
+
+/**
+ * Get current organisation ID
+ */
+function getCurrentOrgId() {
+    try {
+        const orgRaw = localStorage.getItem("organisation");
+        if (orgRaw) {
+            const org = JSON.parse(orgRaw);
+            return org?.id || null;
+        }
+    } catch {
+        /* ignore */
+    }
+    return null;
+}
 
 /**
  * Generate a simple unique ID for workspaces (temporary until backend)
@@ -86,6 +109,14 @@ export default function Workspaces() {
     const [deleteConfirm, setDeleteConfirm] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
 
+    // Verification modal state
+    const [verifyModalDomain, setVerifyModalDomain] = useState(null);
+    const [verifyPending, setVerifyPending] = useState(false);
+    const [verifyResult, setVerifyResult] = useState(null);
+    const [verificationRefreshKey, setVerificationRefreshKey] = useState(0);
+
+    const orgId = getCurrentOrgId();
+
     // Load workspaces on mount
     useEffect(() => {
         // Simulate loading delay for consistency with other pages
@@ -110,15 +141,64 @@ export default function Workspaces() {
         setDeleteConfirm(false);
     }, []);
 
+    // Verification modal handlers
+    function openVerifyModal(domain) {
+        if (!orgId) return;
+        const record = getOrCreateVerificationRecord(domain, orgId);
+        setVerifyModalDomain({ domain, record });
+        setVerifyResult(null);
+        setVerifyPending(false);
+    }
+
+    function closeVerifyModal() {
+        setVerifyModalDomain(null);
+        setVerifyResult(null);
+        setVerifyPending(false);
+    }
+
+    async function handleVerifyCheck() {
+        if (!verifyModalDomain || !orgId) return;
+        setVerifyPending(true);
+        setVerifyResult(null);
+
+        try {
+            const result = await checkDomainVerification(verifyModalDomain.domain, orgId);
+            setVerifyResult(result);
+            if (result.success) {
+                // Refresh the verification status display
+                setVerificationRefreshKey((k) => k + 1);
+            }
+        } catch (err) {
+            setVerifyResult({
+                success: false,
+                message: "An error occurred while checking verification.",
+            });
+        } finally {
+            setVerifyPending(false);
+        }
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            // Could show a toast, but keeping it simple
+        });
+    }
+
     // Escape key handler
     useEffect(() => {
-        if (!showCreateModal && !modalWorkspace) return undefined;
+        if (!showCreateModal && !modalWorkspace && !verifyModalDomain) return undefined;
         const onKey = (e) => {
-            if (e.key === "Escape") closeModal();
+            if (e.key === "Escape") {
+                if (verifyModalDomain) {
+                    closeVerifyModal();
+                } else {
+                    closeModal();
+                }
+            }
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
-    }, [showCreateModal, modalWorkspace, closeModal]);
+    }, [showCreateModal, modalWorkspace, verifyModalDomain, closeModal]);
 
     function openCreateModal() {
         setShowCreateModal(true);
@@ -326,78 +406,111 @@ export default function Workspaces() {
         return primary?.domain || ws.domains?.[0]?.domain || ws.domain || "—";
     }
 
-    // Domain list component
-    const DomainManagementSection = () => (
-        <div className="settings-workspace__domains-section">
-            <label className="settings-org-modal__label">
-                Domains
-            </label>
-            <div className="settings-workspace__domains-add">
-                <input
-                    type="text"
-                    className="settings-org-modal__text-input settings-workspace__domain-input"
-                    placeholder="e.g., client-site.com"
-                    value={newDomain}
-                    onChange={(e) => setNewDomain(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                            addDomain();
-                        }
-                    }}
-                    disabled={!!pending}
-                />
-                <button
-                    type="button"
-                    className="settings-workspace__add-domain-btn"
-                    onClick={addDomain}
-                    disabled={!!pending}
-                >
-                    Add
-                </button>
+    // Domain list component with verification status
+    const DomainManagementSection = () => {
+        // Get verification status for each domain
+        const getVerificationInfo = (domain) => {
+            if (!orgId) return { label: "—", type: "unknown", icon: "?" };
+            return getVerificationStatusLabel(domain, orgId);
+        };
+
+        return (
+            <div className="settings-workspace__domains-section">
+                <label className="settings-org-modal__label">
+                    Domains
+                </label>
+                <div className="settings-workspace__domains-add">
+                    <input
+                        type="text"
+                        className="settings-org-modal__text-input settings-workspace__domain-input"
+                        placeholder="e.g., client-site.com"
+                        value={newDomain}
+                        onChange={(e) => setNewDomain(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                addDomain();
+                            }
+                        }}
+                        disabled={!!pending}
+                    />
+                    <button
+                        type="button"
+                        className="settings-workspace__add-domain-btn"
+                        onClick={addDomain}
+                        disabled={!!pending}
+                    >
+                        Add
+                    </button>
+                </div>
+                {editDomains.length > 0 ? (
+                    <ul className="settings-workspace__domains-list" key={verificationRefreshKey}>
+                        {editDomains.map((d) => {
+                            const verifyInfo = getVerificationInfo(d.domain);
+                            const daysUntil = orgId ? getDaysUntilReverification(d.domain, orgId) : null;
+
+                            return (
+                                <li key={d.domain} className="settings-workspace__domain-item">
+                                    <div className="settings-workspace__domain-info">
+                                        <span className="settings-workspace__domain-name">{d.domain}</span>
+                                        {d.isPrimary && (
+                                            <span className="settings-workspace__primary-badge">Primary</span>
+                                        )}
+                                        <span
+                                            className={`settings-workspace__verify-badge settings-workspace__verify-badge--${verifyInfo.type}`}
+                                            title={
+                                                verifyInfo.type === "verified" && daysUntil != null
+                                                    ? `Re-verification in ${daysUntil} days`
+                                                    : verifyInfo.label
+                                            }
+                                        >
+                                            <span className="settings-workspace__verify-icon">{verifyInfo.icon}</span>
+                                            {verifyInfo.label}
+                                        </span>
+                                    </div>
+                                    <div className="settings-workspace__domain-actions">
+                                        <button
+                                            type="button"
+                                            className="settings-workspace__verify-btn"
+                                            onClick={() => openVerifyModal(d.domain)}
+                                            disabled={!!pending}
+                                            title="Verify domain ownership"
+                                        >
+                                            Verify
+                                        </button>
+                                        {!d.isPrimary && (
+                                            <button
+                                                type="button"
+                                                className="settings-workspace__set-primary-btn"
+                                                onClick={() => setPrimaryDomain(d.domain)}
+                                                disabled={!!pending}
+                                                title="Set as primary"
+                                            >
+                                                Set primary
+                                            </button>
+                                        )}
+                                        <button
+                                            type="button"
+                                            className="settings-workspace__remove-domain-btn"
+                                            onClick={() => removeDomain(d.domain)}
+                                            disabled={!!pending}
+                                            title="Remove domain"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                ) : (
+                    <p className="settings-workspace__no-domains">
+                        No domains added yet. Add at least one domain above.
+                    </p>
+                )}
             </div>
-            {editDomains.length > 0 ? (
-                <ul className="settings-workspace__domains-list">
-                    {editDomains.map((d) => (
-                        <li key={d.domain} className="settings-workspace__domain-item">
-                            <div className="settings-workspace__domain-info">
-                                <span className="settings-workspace__domain-name">{d.domain}</span>
-                                {d.isPrimary && (
-                                    <span className="settings-workspace__primary-badge">Primary</span>
-                                )}
-                            </div>
-                            <div className="settings-workspace__domain-actions">
-                                {!d.isPrimary && (
-                                    <button
-                                        type="button"
-                                        className="settings-workspace__set-primary-btn"
-                                        onClick={() => setPrimaryDomain(d.domain)}
-                                        disabled={!!pending}
-                                        title="Set as primary"
-                                    >
-                                        Set primary
-                                    </button>
-                                )}
-                                <button
-                                    type="button"
-                                    className="settings-workspace__remove-domain-btn"
-                                    onClick={() => removeDomain(d.domain)}
-                                    disabled={!!pending}
-                                    title="Remove domain"
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="settings-workspace__no-domains">
-                    No domains added yet. Add at least one domain above.
-                </p>
-            )}
-        </div>
-    );
+        );
+    };
 
     // User list component
     const UserManagementSection = () => (
@@ -757,6 +870,114 @@ export default function Workspaces() {
                                         ? "Deleting…"
                                         : "Yes, delete permanently"}
                                 </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Domain Verification Modal */}
+            {verifyModalDomain && (
+                <div
+                    className="settings-blacklist-modal"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="verify-modal-title"
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) closeVerifyModal();
+                    }}
+                >
+                    <div className="settings-blacklist-modal__card settings-blacklist-modal__card--wide">
+                        <h2 id="verify-modal-title">Verify Domain Ownership</h2>
+                        <p className="settings-verify-modal__domain">
+                            {verifyModalDomain.domain}
+                        </p>
+
+                        <div className="settings-verify-modal__instructions">
+                            <p className="settings-verify-modal__intro">
+                                To verify ownership of this domain, add one of the following to your website:
+                            </p>
+
+                            <div className="settings-verify-modal__method">
+                                <h4>Option 1: Meta Tag</h4>
+                                <p>Add this meta tag to the <code>&lt;head&gt;</code> section of your homepage:</p>
+                                <div className="settings-verify-modal__code-block">
+                                    <code>{`<meta name="intastellar-verification" content="${verifyModalDomain.record?.token || ""}">`}</code>
+                                    <button
+                                        type="button"
+                                        className="settings-verify-modal__copy-btn"
+                                        onClick={() => copyToClipboard(`<meta name="intastellar-verification" content="${verifyModalDomain.record?.token || ""}">`)}
+                                        title="Copy to clipboard"
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="settings-verify-modal__method">
+                                <h4>Option 2: JavaScript Variable</h4>
+                                <p>Add this to your Intastellar banner configuration:</p>
+                                <div className="settings-verify-modal__code-block">
+                                    <code>{`window.INTA = { verification: "${verifyModalDomain.record?.token || ""}" };`}</code>
+                                    <button
+                                        type="button"
+                                        className="settings-verify-modal__copy-btn"
+                                        onClick={() => copyToClipboard(`window.INTA = { verification: "${verifyModalDomain.record?.token || ""}" };`)}
+                                        title="Copy to clipboard"
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="settings-verify-modal__token-info">
+                                <strong>Your verification token:</strong>
+                                <code className="settings-verify-modal__token">{verifyModalDomain.record?.token || "—"}</code>
+                            </div>
+                        </div>
+
+                        {verifyResult && (
+                            <div
+                                className={`settings-verify-modal__result settings-verify-modal__result--${verifyResult.success ? "success" : "error"}`}
+                            >
+                                <span className="settings-verify-modal__result-icon">
+                                    {verifyResult.success ? "✓" : "✗"}
+                                </span>
+                                {verifyResult.message}
+                            </div>
+                        )}
+
+                        <div className="settings-blacklist-modal__actions">
+                            <button
+                                type="button"
+                                className="settings-blacklist-modal__btn"
+                                onClick={closeVerifyModal}
+                                disabled={verifyPending}
+                            >
+                                Close
+                            </button>
+                            <button
+                                type="button"
+                                className="settings-blacklist-modal__btn settings-blacklist-modal__btn--primary"
+                                onClick={handleVerifyCheck}
+                                disabled={verifyPending}
+                            >
+                                {verifyPending ? "Checking…" : "Check Verification"}
+                            </button>
+                        </div>
+
+                        {verifyModalDomain.record?.verified && (
+                            <div className="settings-verify-modal__status">
+                                <p>
+                                    <strong>Status:</strong> Verified on{" "}
+                                    {new Date(verifyModalDomain.record.verifiedAt).toLocaleDateString()}
+                                </p>
+                                {verifyModalDomain.record.nextVerificationDue && (
+                                    <p>
+                                        <strong>Next verification due:</strong>{" "}
+                                        {new Date(verifyModalDomain.record.nextVerificationDue).toLocaleDateString()}
+                                    </p>
+                                )}
                             </div>
                         )}
                     </div>
