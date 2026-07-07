@@ -167,7 +167,7 @@ export default function App() {
 
         const subscriptionLoading = subscriptionStatus?.subscription == null;
         const orgId = (() => { try { return JSON.parse(localStorage.getItem("organisation"))?.id; } catch { return null; } })();
-        const needsPayment = !subscriptionLoading && subscriptionStatus?.subscription === "none" && orgId !== 1;
+        const needsPayment = !subscriptionLoading && subscriptionStatus?.subscription === "none" && Number(orgId) !== 1;
 
         if (id === null && organisations) {
             return (
