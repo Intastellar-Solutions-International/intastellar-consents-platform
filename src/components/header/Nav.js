@@ -17,6 +17,7 @@ import logout from "./icons/logout.svg";
 import dashboard from "./icons/dashboard.svg";
 import experiments from "./icons/experiment.svg";
 import benchmark from "./icons/benchmark.svg";
+import compliance from "./icons/compliance.svg";
 
 export default function Nav() {
     const [currentDomain] = useContext(DomainContext);
@@ -24,6 +25,7 @@ export default function Nav() {
     const platform = localStorage.getItem("platform") || "gdpr";
     const homePath = dashboardPath(platform, currentDomain);
     const reportsPathResolved = reportsPath(platform, currentDomain, "");
+    const compliancePath = reportsPath(platform, currentDomain, "/compliance");
     const path = location.pathname;
     // Dashboard: /:id/dashboard or /:id/view/:handle — not /:id/reports/view/... (that also contains "/view/")
     const homeActive =
@@ -48,6 +50,9 @@ export default function Nav() {
                                 backgroundImage: `url(${experiments})`
                             }} data-icon={experiments}></i> <span className="hiddenCollapsed">A/B Testing</span>
                         </Link>
+                        <Link className={"navItems" + (path.indexOf("/compliance") > -1 ? " --active" : "")} to={compliancePath}><i className="dashboard-icons compliance" style={{
+                            backgroundImage: `url(${compliance})`
+                        }} data-icon={compliance}></i> <span className="hiddenCollapsed">Compliance</span></Link>
                         <Link className={"navItems" + (path.indexOf("/cookies") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/cookies"}><i className="dashboard-icons cookies" style={{
                             backgroundImage: `url(${cookies})`
                         }} data-icon={cookies}></i> <span className="hiddenCollapsed">Cookies</span></Link>

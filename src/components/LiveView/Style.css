@@ -1,5 +1,13 @@
+.liveView-content-title {
+    margin: 10px 10px 0;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.3);
+}
+
 .liveView-content-data {
-    margin: 0 20px;
+    margin: 0 10px;
     padding: 10px 0;
 }
 

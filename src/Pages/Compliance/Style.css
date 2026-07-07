@@ -1,0 +1,153 @@
+/* ── Hero map — full-width ── */
+.compliance-hero {
+    position: relative;
+    width: 100%;
+    min-height: 380px;
+    max-height: 520px;
+    height: 46vh;
+    overflow: hidden;
+    background: #0e0c09;
+}
+
+/* Bottom fade to page background */
+.compliance-hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Suppress the right-side country list — map fills full width in the hero */
+.compliance-hero .world-map {
+    grid-template-columns: 1fr;
+    height: 100%;
+    min-height: 0;
+}
+
+.compliance-hero .world-map__side {
+    display: none;
+}
+
+.compliance-hero .world-map__main {
+    height: 100%;
+}
+
+.compliance-hero .world-map__header {
+    display: none;
+}
+
+.compliance-hero .world-map__map-shell {
+    height: 100%;
+    flex: 1;
+}
+
+.compliance-hero .svgMap-map-wrapper {
+    min-height: 0;
+    height: 100%;
+}
+
+/* Stats strip overlaid at the bottom of the hero, above the gradient */
+.compliance-hero__stats {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 16px 24px 20px;
+}
+
+.compliance-hero__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 0 0 auto;
+}
+
+.compliance-hero__stat-value {
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: #e8e8e8;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.compliance-hero__stat-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.compliance-hero__stat-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    margin: 0 22px;
+}
+
+.compliance-hero__audit-btn {
+    margin-left: auto;
+    flex-shrink: 0;
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(192, 159, 83, 0.4);
+    background: rgba(192, 159, 83, 0.1);
+    color: #c0a053;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(8px);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.compliance-hero__audit-btn:hover {
+    background: rgba(192, 159, 83, 0.2);
+    border-color: rgba(192, 159, 83, 0.6);
+    text-decoration: none;
+}
+
+/* ── Content area below hero ── */
+.compliance-page {
+    padding-top: 20px;
+}
+
+.compliance-page__audit .audit-snapshot-card:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);
+}
+
+@media (max-width: 680px) {
+    .compliance-hero {
+        max-height: 60vw;
+        min-height: 240px;
+    }
+
+    .compliance-hero__stats {
+        flex-wrap: wrap;
+        gap: 10px 0;
+        padding: 12px 16px 16px;
+    }
+
+    .compliance-hero__stat-divider {
+        display: none;
+    }
+
+    .compliance-hero__audit-btn {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+    }
+}

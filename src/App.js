@@ -37,6 +37,7 @@ import AuthLogin from "./Login/AuthLogin";
 import Experiments from "./Pages/Experiments/Experiments";
 import AuditReport from "./Pages/Reports/AuditReport";
 import MarketingReport from "./Pages/Reports/MarketingReport";
+import CompliancePage from "./Pages/Compliance";
 import LoadingSpinner from "./Components/LoadingSpinner/LoadingSpinner";
 import Workspaces from "./Pages/Settings/Workspaces";
 
@@ -302,6 +303,20 @@ export default function App() {
                                             {
                                                 subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
+                                                </ErrorBoundary>
+                                            }
+                                        </Route>
+                                        <Route path="/:id/reports/view/:handle/compliance" exact>
+                                            {
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <CompliancePage />}
+                                                </ErrorBoundary>
+                                            }
+                                        </Route>
+                                        <Route path="/:id/reports/compliance" exact>
+                                            {
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
+                                                    {domainError ? <AddDomain /> : <CompliancePage />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>

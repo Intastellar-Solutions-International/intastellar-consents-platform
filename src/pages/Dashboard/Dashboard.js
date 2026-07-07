@@ -21,7 +21,6 @@ import Line from "../../Components/Charts/Line"
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import { LiveView } from "../../components/LiveView/index.js";
-import AuditSnapshotCard from "../../components/AuditSnapshotCard/AuditSnapshotCard.js";
 import { DecisionBehaviourDrawer } from "../../components/DecisionBehaviourDrawer/index.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
 import Pie from "../../Components/Charts/Pie/index.js";
@@ -30,7 +29,7 @@ import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
 import punycode from "punycode";
 
-const { useState, useEffect, useRef, useContext, useMemo, useCallback } = React;
+const { useState, useEffect, useRef, useContext, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
 const Link = window.ReactRouterDOM.Link;
 
@@ -82,8 +81,6 @@ export default function Dashboard(props) {
             new Date(new Date().setDate(new Date().getDate() - 1))
         ).end
     );
-    const [observedCookies, setObservedCookies] = useState(null);
-
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
 
@@ -144,11 +141,6 @@ export default function Dashboard(props) {
         if (root == null || typeof root !== "object") return null;
         return root.global ?? null;
     }, [activeData]);
-
-    const [liveViewData, setLiveViewData] = useState(null);
-    const onLiveDataChange = useCallback((data) => {
-        setLiveViewData(data);
-    }, []);
 
     // Domain verification status check
     const verificationStatus = useMemo(() => {
@@ -231,17 +223,6 @@ export default function Dashboard(props) {
             setLoading(false);
         });
 
-        API[id].observedCookies.headers.Domains = domainsForApi;
-        API[id].observedCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
-        API[id].observedCookies.headers.ToDate = toDate.toISOString().split("T")[0];
-        API[id].observedCookies.headers.CompareRange = compareRange;
-        API[id].observedCookies.headers.PreviousPeriod = previousPeriod.toISOString().split("T")[0];
-        API[id].observedCookies.headers.PreviousPeriod2 = previousPeriod2.toISOString().split("T")[0];
-        API[id].observedCookies.headers["X-Compare-Start"] = previousPeriod.toISOString().split("T")[0];
-        API[id].observedCookies.headers["X-Compare-End"] = previousPeriod2.toISOString().split("T")[0];
-        API[id].observedCookies.headers["X-Compare-Range"] =
-            compareRange === 0 || compareRange == null ? "" : String(compareRange);
-
         API[id].getInteractionsByCountry.headers.CompareRange = compareRange;
         API[id].getInteractionsByCountry.headers.PreviousPeriod = previousPeriod.toISOString().split("T")[0];
         API[id].getInteractionsByCountry.headers.PreviousPeriod2 = previousPeriod2.toISOString().split("T")[0];
@@ -249,21 +230,6 @@ export default function Dashboard(props) {
         API[id].getInteractionsByCountry.headers["X-Compare-End"] = previousPeriod2.toISOString().split("T")[0];
         API[id].getInteractionsByCountry.headers["X-Compare-Range"] =
             compareRange === 0 || compareRange == null ? "" : String(compareRange);
-
-        fetch(API[id].observedCookies.url, {
-            method: API[id].observedCookies.method,
-            headers: API[id].observedCookies.headers,
-            body: JSON.stringify({ workspaceId }),
-        }).then((res) => res.json()).then((cookiesData) => {
-            if (cookiesData === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
-                window.location.href = "/login";
-                return;
-            }
-            setObservedCookies(cookiesData);
-        }).catch((err) => {
-            console.error(err);
-        });
 
         fetch(API[id].getInteractionsByCountry.url, {
             method: API[id].getInteractionsByCountry.method,
@@ -405,7 +371,7 @@ export default function Dashboard(props) {
                     <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
                         {loadingCountry ? <Loading /> : <Map demoMode={demoMode} data={{ Countries: activeDataCountry?.data?.Countries, total: activeData?.Total }} />}
                         <div className="widget no-padding">
-                            <LiveView currentDomain={handle ? handle : currentDomain} demoMode={demoMode} onLiveDataChange={onLiveDataChange} />
+                            <LiveView currentDomain={handle ? handle : currentDomain} demoMode={demoMode} />
                         </div>
                     </div>
                     {activeData && (
@@ -465,26 +431,26 @@ export default function Dashboard(props) {
                     />
                 )}
 
-                {/* ── 5. Compliance audit ── */}
+                {/* ── 5. Compliance ── */}
                 {id && (
                     <div className="dashboard-section">
-                        <h2 className="dashboard-section-label">Compliance audit</h2>
-                        <AuditSnapshotCard
-                            platformId={id}
-                            handle={handle}
-                            currentDomain={currentDomain}
-                            fromDate={fromDate}
-                            toDate={toDate}
-                            activeData={activeData}
-                            demoMode={demoMode}
-                            liveData={liveViewData}
-                            interactionsLoading={loading}
-                            observedCookies={observedCookies}
-                        />
-                        <p className="dashboard-marketing-link">
-                            See consent through a marketing lens —{" "}
-                            <Link to={reportsPath(id, currentDomain, "/marketing")}>Open marketing dashboard</Link>
-                        </p>
+                        <h2 className="dashboard-section-label">Compliance</h2>
+                        <div className="dashboard-compliance-links">
+                            <Link
+                                to={reportsPath(id, currentDomain, "/compliance")}
+                                className="dashboard-compliance-link"
+                            >
+                                <span className="dashboard-compliance-link__label">Audit log &amp; compliance overview</span>
+                                <span className="dashboard-compliance-link__arrow">→</span>
+                            </Link>
+                            <Link
+                                to={reportsPath(id, currentDomain, "/marketing")}
+                                className="dashboard-compliance-link"
+                            >
+                                <span className="dashboard-compliance-link__label">Marketing recoil analysis</span>
+                                <span className="dashboard-compliance-link__arrow">→</span>
+                            </Link>
+                        </div>
                     </div>
                 )}
 
