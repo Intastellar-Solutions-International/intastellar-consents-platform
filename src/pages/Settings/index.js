@@ -16,7 +16,25 @@ const SETTINGS_HUB_COPY = {
     "/settings/view-domains": "Inspect domains linked to this organisation.",
     "/settings/config-gdpr": "GDPR-related configuration for this workspace (when enabled).",
     "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting.",
+    "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains.",
 };
+
+function hasAgencySubscription() {
+    try {
+        // Allow access for Intastellar Solutions (org ID 1)
+        const org = JSON.parse(localStorage.getItem("organisation"));
+        if (org?.id === 1) return true;
+
+        const sub = localStorage.getItem("subscription");
+        if (sub) {
+            const parsed = JSON.parse(sub);
+            return parsed?.subscription === "agency";
+        }
+    } catch {
+        /* ignore */
+    }
+    return false;
+}
 
 function userCanSeeSidebarLink(link) {
     if (!link?.view?.length) return true;
@@ -37,6 +55,7 @@ export default function Settings() {
         return settingsSidebarLinks.filter((link) => {
             if (!userCanSeeSidebarLink(link)) return false;
             if (link.path === "/settings/blacklist-ip" && !canOpenBlacklistRoute()) return false;
+            if (link.requiresAgency && !hasAgencySubscription()) return false;
             return true;
         });
     }, []);

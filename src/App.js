@@ -37,6 +37,7 @@ import AuthLogin from "./Login/AuthLogin";
 import Experiments from "./Pages/Experiments/Experiments";
 import AuditReport from "./Pages/Reports/AuditReport";
 import MarketingReport from "./Pages/Reports/MarketingReport";
+import Workspaces from "./Pages/Settings/Workspaces";
 
 const { useState, useEffect, useRef, createContext } = React;
 const Router = window.ReactRouterDOM.BrowserRouter;
@@ -346,6 +347,18 @@ export default function App() {
                                         <Route path="/settings/blacklist-ip">
                                             <ErrorBoundary>
                                                 {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <BlacklistIp /> : null}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/workspaces">
+                                            <ErrorBoundary>
+                                                {(() => {
+                                                    const org = JSON.parse(localStorage.getItem("organisation"));
+                                                    const role = Authentication.getOrganisationAccessStatusForOrganisation(org.id);
+                                                    const isAdminRole = role === "admin" || role === "super-admin";
+                                                    const sub = localStorage.getItem("subscription");
+                                                    const hasAgency = (org?.id === 1) || (sub && JSON.parse(sub)?.subscription === "agency");
+                                                    return isAdminRole && hasAgency ? <Workspaces /> : <p style={{ padding: "40px", color: "#999" }}>Agency subscription required to access client workspaces.</p>;
+                                                })()}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/create-user">

@@ -148,6 +148,45 @@ export default function Select(props) {
                                         );
                                     }
                                     if (typeof item === "object") {
+                                        // Handle separator items
+                                        if (item.disabled || item.type === "separator") {
+                                            return (
+                                                <li
+                                                    key={key}
+                                                    className="dropdown-menu__separator"
+                                                    role="separator"
+                                                    aria-disabled="true"
+                                                >
+                                                    {item.name || item.label}
+                                                </li>
+                                            );
+                                        }
+                                        // Handle workspace items
+                                        if (item.type === "workspace") {
+                                            return (
+                                                <li
+                                                    key={item.workspaceId ?? key}
+                                                    data-dropdown-item
+                                                    role="option"
+                                                    className="dropdown-menu__item--workspace"
+                                                    onClick={() =>
+                                                        props.onChange(
+                                                            JSON.stringify({
+                                                                id: item.workspaceId,
+                                                                name: item.name,
+                                                                type: "workspace",
+                                                            })
+                                                        )
+                                                    }
+                                                >
+                                                    <span className="dropdown-menu__workspace-icon" aria-hidden="true">W</span>
+                                                    <span className="dropdown-menu__workspace-info">
+                                                        <span className="dropdown-menu__workspace-name">{item.label || item.name}</span>
+                                                        <span className="dropdown-menu__workspace-domain">{item.name}</span>
+                                                    </span>
+                                                </li>
+                                            );
+                                        }
                                         return (
                                             <li
                                                 key={item.id ?? key}

@@ -559,3 +559,160 @@
     font-weight: 600;
     color: #c8c8c8;
 }
+
+/* Workspace-specific styles */
+.settings-workspace__domain {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    color: #c0a053;
+    background: rgba(192, 159, 83, 0.1);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(192, 159, 83, 0.2);
+}
+
+.settings-workspace__description {
+    color: rgba(180, 180, 180, 0.85);
+    font-size: 0.8125rem;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.settings-workspace__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.settings-workspace__badge--agency {
+    background: rgba(192, 159, 83, 0.15);
+    border: 1px solid rgba(192, 159, 83, 0.3);
+    color: #c0a053;
+}
+
+.settings-workspace__user-count {
+    font-size: 0.8125rem;
+    color: rgba(180, 180, 180, 0.85);
+}
+
+/* Wider modal for workspaces */
+.settings-blacklist-modal__card--wide {
+    max-width: 520px;
+}
+
+/* User management section */
+.settings-workspace__users-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settings-workspace__users-add {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.settings-workspace__user-input {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+.settings-workspace__add-user-btn {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(192, 159, 83, 0.45);
+    background: rgba(192, 159, 83, 0.18);
+    color: #f5f0e6;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-workspace__add-user-btn:hover {
+    background: rgba(192, 159, 83, 0.28);
+    border-color: rgba(192, 159, 83, 0.6);
+}
+
+.settings-workspace__add-user-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-workspace__users-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.settings-workspace__user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settings-workspace__user-item:last-child {
+    border-bottom: none;
+}
+
+.settings-workspace__user-email {
+    font-size: 0.8125rem;
+    color: #e4e4e4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.settings-workspace__remove-user-btn {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid rgba(220, 100, 100, 0.3);
+    background: rgba(220, 80, 80, 0.12);
+    color: #f0c4c4;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-workspace__remove-user-btn:hover {
+    background: rgba(220, 80, 80, 0.25);
+    border-color: rgba(220, 100, 100, 0.5);
+}
+
+.settings-workspace__remove-user-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-workspace__no-users {
+    margin: 0;
+    padding: 14px;
+    font-size: 0.8125rem;
+    color: rgba(180, 180, 180, 0.7);
+    text-align: center;
+    border-radius: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+}

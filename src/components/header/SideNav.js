@@ -87,6 +87,24 @@ export default function SideNav(props) {
                             return null;
                         }
 
+                        // Check agency subscription requirement
+                        if (link.requiresAgency) {
+                            try {
+                                // Allow access for Intastellar Solutions (org ID 1)
+                                const org = JSON.parse(localStorage.getItem("organisation"));
+                                if (org?.id === 1) {
+                                    // Org 1 has access, continue
+                                } else {
+                                    const sub = localStorage.getItem("subscription");
+                                    if (!sub || JSON.parse(sub)?.subscription !== "agency") {
+                                        return null;
+                                    }
+                                }
+                            } catch {
+                                return null;
+                            }
+                        }
+
                         const url = (() => {
                             if (link.path.indexOf("reports") === -1) {
                                 return link.path;

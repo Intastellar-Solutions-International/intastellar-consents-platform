@@ -33,6 +33,12 @@ export const reportsLinks = [
         name: "Blacklist IP",
         path: "/settings/blacklist-ip",
         view: ["admin", "super-admin", "manager"]
+    },
+    {
+        name: "Client Workspaces",
+        path: "/settings/workspaces",
+        view: ["admin", "super-admin"],
+        requiresAgency: true
     }
 ]
 

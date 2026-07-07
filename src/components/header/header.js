@@ -17,6 +17,32 @@ const { useState, useEffect, useContext, useMemo } = React;
 const useHistory = window.ReactRouterDOM.useHistory;
 const useLocation = window.ReactRouterDOM.useLocation;
 
+/**
+ * Get current workspace info from localStorage
+ */
+function getCurrentWorkspace() {
+    try {
+        const stored = localStorage.getItem("current_workspace");
+        if (stored) {
+            return JSON.parse(stored);
+        }
+    } catch {
+        /* ignore */
+    }
+    return null;
+}
+
+/**
+ * Set current workspace in localStorage
+ */
+function setCurrentWorkspace(workspace) {
+    if (workspace) {
+        localStorage.setItem("current_workspace", JSON.stringify(workspace));
+    } else {
+        localStorage.removeItem("current_workspace");
+    }
+}
+
 function domainLabelForHeader(pathname, globalDomain) {
     const pathHandle = parseHandleFromPath(pathname);
     if (pathHandle != null) {
@@ -64,6 +90,41 @@ function readCachedDomains() {
     }
 }
 
+/**
+ * Check if user has agency subscription or is Intastellar Solutions (org ID 1)
+ */
+function hasAgencySubscription() {
+    try {
+        // Allow access for Intastellar Solutions (org ID 1)
+        const org = JSON.parse(localStorage.getItem("organisation"));
+        if (org?.id === 1) return true;
+
+        const sub = localStorage.getItem("subscription");
+        if (sub) {
+            const parsed = JSON.parse(sub);
+            return parsed?.subscription === "agency";
+        }
+    } catch {
+        /* ignore */
+    }
+    return false;
+}
+
+/**
+ * Read agency workspaces from localStorage
+ */
+function readAgencyWorkspaces() {
+    try {
+        const stored = localStorage.getItem("agency_workspaces");
+        if (stored) {
+            return JSON.parse(stored);
+        }
+    } catch {
+        /* ignore */
+    }
+    return [];
+}
+
 /*
  * Resolve the platform key whose `getDomains` we should call. Routes
  * like /experiments or /settings aren't platform namespaces in the
@@ -107,6 +168,7 @@ export default function Header(props) {
         () => props.domains || readCachedDomains()
     );
     const [viewUserProfile, setViewUserProfile] = useState(false);
+    const [activeWorkspace, setActiveWorkspace] = useState(() => getCurrentWorkspace());
     const Platform = (localStorage.getItem("platform") == "gdpr") ? "Intastellar Consents | CMP" : "Ferry Booking";
 
 
@@ -167,12 +229,52 @@ export default function Header(props) {
     }, []);
 
 
-    domainList = domains?.map((d) => {
+    // Build domain list - for agency users, show workspaces first
+    domainList = [];
+
+    // For agency users, add client workspaces at the top
+    if (hasAgencySubscription()) {
+        const workspaces = readAgencyWorkspaces();
+        if (workspaces.length > 0) {
+            // Add workspaces header
+            domainList.push({
+                name: "Client Workspaces",
+                disabled: true,
+                type: "separator"
+            });
+            // Add workspaces to the list
+            workspaces.forEach((ws) => {
+                domainList.push({
+                    icon: null,
+                    name: ws.domain,
+                    label: ws.name,
+                    type: "workspace",
+                    workspaceId: ws.id
+                });
+            });
+        }
+    }
+
+    // Add domains from API
+    const apiDomains = domains?.map((d) => {
         return {
             icon: d.icon || null,
-            name: punycode.toUnicode(d.domain)
+            name: punycode.toUnicode(d.domain),
+            type: "domain"
         }
-    })
+    }) || [];
+
+    if (apiDomains.length > 0) {
+        // Add separator if we have workspaces above
+        if (domainList.length > 0) {
+            domainList.push({
+                name: "Your Domains",
+                disabled: true,
+                type: "separator"
+            });
+        }
+        domainList.push(...apiDomains);
+    }
 
     return (
         <>
@@ -205,18 +307,54 @@ export default function Header(props) {
                                 <div className="selector selector--placeholder" aria-hidden="true" />
                             )}
                             {domains && currentDomain ? (
-                                <Select
-                                    key={`domain-${location.pathname}`}
-                                    defaultValue={currentDomain}
-                                    onChange={(e) => {
-                                        const domain = JSON.parse(e).name;
-                                        setCurrentDomain(domain);
-                                        setGlobalDomain(domain);
-                                        navigateWithDomain(history, platformId, domain, location.pathname);
-                                    }}
-                                    items={domainList}
-                                    align="left"
-                                />
+                                <>
+                                    <Select
+                                        key={`domain-${location.pathname}`}
+                                        defaultValue={currentDomain}
+                                        onChange={(e) => {
+                                            const parsed = JSON.parse(e);
+                                            const domain = parsed.name;
+                                            setCurrentDomain(domain);
+                                            setGlobalDomain(domain);
+
+                                            // Track workspace selection
+                                            if (parsed.type === "workspace") {
+                                                const workspaces = readAgencyWorkspaces();
+                                                const ws = workspaces.find(w => w.id === parsed.id);
+                                                if (ws) {
+                                                    setActiveWorkspace(ws);
+                                                    setCurrentWorkspace(ws);
+                                                }
+                                            } else {
+                                                setActiveWorkspace(null);
+                                                setCurrentWorkspace(null);
+                                            }
+
+                                            navigateWithDomain(history, platformId, domain, location.pathname);
+                                        }}
+                                        items={domainList}
+                                        align="left"
+                                    />
+                                    {activeWorkspace && (
+                                        <div className="workspace-indicator">
+                                            <span className="workspace-indicator__badge">Workspace</span>
+                                            <span className="workspace-indicator__name">{activeWorkspace.name}</span>
+                                            <button
+                                                className="workspace-indicator__exit"
+                                                onClick={() => {
+                                                    setActiveWorkspace(null);
+                                                    setCurrentWorkspace(null);
+                                                    setCurrentDomain("combined view");
+                                                    setGlobalDomain("combined view");
+                                                    navigateWithDomain(history, platformId, "combined view", location.pathname);
+                                                }}
+                                                title="Exit workspace"
+                                            >
+                                                ×
+                                            </button>
+                                        </div>
+                                    )}
+                                </>
                             ) : (
                                 <div className="selector selector--placeholder" aria-hidden="true" />
                             )}
