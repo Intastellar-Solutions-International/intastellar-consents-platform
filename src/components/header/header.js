@@ -250,55 +250,91 @@ export default function Header(props) {
     }, []);
 
 
-    // Build domain list - for agency users, show workspaces first
+    // Build domain list based on whether a workspace is active
     domainList = [];
 
-    // For agency users, add client workspaces at the top
-    if (hasAgencySubscription()) {
-        const workspaces = readAgencyWorkspaces();
-        if (workspaces.length > 0) {
-            // Add workspaces header
-            domainList.push({
-                name: "Client Workspaces",
-                disabled: true,
-                type: "separator"
-            });
-            // Add workspaces to the list
-            workspaces.forEach((ws) => {
-                const primaryDomain = getPrimaryDomainFromWorkspace(ws);
-                const domainCount = ws.domains?.length || 1;
+    if (activeWorkspace) {
+        // When workspace is active, show only workspace domains
+        domainList.push({
+            name: `${activeWorkspace.name} Domains`,
+            disabled: true,
+            type: "separator"
+        });
+
+        // Add workspace domains
+        if (activeWorkspace.domains && activeWorkspace.domains.length > 0) {
+            activeWorkspace.domains.forEach((d) => {
                 domainList.push({
                     icon: null,
-                    name: primaryDomain || ws.name,
-                    label: ws.name,
-                    sublabel: domainCount > 1 ? `${domainCount} domains` : primaryDomain,
-                    type: "workspace",
-                    workspaceId: ws.id,
-                    workspaceData: ws
+                    name: d.domain,
+                    type: "workspace-domain",
+                    isPrimary: d.isPrimary
                 });
             });
         }
-    }
 
-    // Add domains from API
-    const apiDomains = domains?.map((d) => {
-        return {
-            icon: d.icon || null,
-            name: punycode.toUnicode(d.domain),
-            type: "domain"
-        }
-    }) || [];
+        // Add option to exit workspace
+        domainList.push({
+            name: "Exit Workspace",
+            disabled: true,
+            type: "separator"
+        });
+        domainList.push({
+            icon: null,
+            name: "combined view",
+            label: "← Back to all domains",
+            type: "exit-workspace"
+        });
+    } else {
+        // Normal mode: show workspaces first, then all domains
 
-    if (apiDomains.length > 0) {
-        // Add separator if we have workspaces above
-        if (domainList.length > 0) {
-            domainList.push({
-                name: "Your Domains",
-                disabled: true,
-                type: "separator"
-            });
+        // For agency users, add client workspaces at the top
+        if (hasAgencySubscription()) {
+            const workspaces = readAgencyWorkspaces();
+            if (workspaces.length > 0) {
+                // Add workspaces header
+                domainList.push({
+                    name: "Client Workspaces",
+                    disabled: true,
+                    type: "separator"
+                });
+                // Add workspaces to the list
+                workspaces.forEach((ws) => {
+                    const primaryDomain = getPrimaryDomainFromWorkspace(ws);
+                    const domainCount = ws.domains?.length || 1;
+                    domainList.push({
+                        icon: null,
+                        name: primaryDomain || ws.name,
+                        label: ws.name,
+                        sublabel: domainCount > 1 ? `${domainCount} domains` : primaryDomain,
+                        type: "workspace",
+                        workspaceId: ws.id,
+                        workspaceData: ws
+                    });
+                });
+            }
         }
-        domainList.push(...apiDomains);
+
+        // Add domains from API
+        const apiDomains = domains?.map((d) => {
+            return {
+                icon: d.icon || null,
+                name: punycode.toUnicode(d.domain),
+                type: "domain"
+            }
+        }) || [];
+
+        if (apiDomains.length > 0) {
+            // Add separator if we have workspaces above
+            if (domainList.length > 0) {
+                domainList.push({
+                    name: "Your Domains",
+                    disabled: true,
+                    type: "separator"
+                });
+            }
+            domainList.push(...apiDomains);
+        }
     }
 
     return (
@@ -339,6 +375,17 @@ export default function Header(props) {
                                         onChange={(e) => {
                                             const parsed = JSON.parse(e);
                                             const domain = parsed.name;
+
+                                            // Handle exit workspace
+                                            if (parsed.type === "exit-workspace") {
+                                                setActiveWorkspace(null);
+                                                setCurrentWorkspace(null);
+                                                setCurrentDomain("combined view");
+                                                setGlobalDomain("combined view");
+                                                navigateWithDomain(history, platformId, "combined view", location.pathname);
+                                                return;
+                                            }
+
                                             setCurrentDomain(domain);
                                             setGlobalDomain(domain);
 
@@ -354,7 +401,8 @@ export default function Header(props) {
                                                     setActiveWorkspace(ws);
                                                     setCurrentWorkspace(ws);
                                                 }
-                                            } else {
+                                            } else if (parsed.type !== "workspace-domain") {
+                                                // Only clear workspace if selecting a regular domain (not workspace domain)
                                                 setActiveWorkspace(null);
                                                 setCurrentWorkspace(null);
                                             }

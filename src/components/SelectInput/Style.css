@@ -285,6 +285,56 @@
     white-space: nowrap;
 }
 
+/* Exit workspace item */
+.dropdown-menu__item--exit-workspace {
+    padding: 12px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dropdown-menu__item--exit-workspace:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.dropdown-menu__exit-icon {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Workspace domain items (when inside a workspace) */
+.dropdown-menu__item--workspace-domain {
+    padding: 10px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+}
+
+.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    color: #f0f0f0;
+}
+
+.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {
+    background: rgba(192, 159, 83, 0.08);
+}
+
+.dropdown-menu__primary-tag {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: rgba(192, 159, 83, 0.2);
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    color: #c0a053;
+}
+
 @media screen and (min-width: 320px) and (max-width: 900px) {
     .company_container .selector {
         max-width: none;

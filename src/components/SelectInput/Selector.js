@@ -161,6 +161,50 @@ export default function Select(props) {
                                                 </li>
                                             );
                                         }
+                                        // Handle exit workspace item
+                                        if (item.type === "exit-workspace") {
+                                            return (
+                                                <li
+                                                    key="exit-workspace"
+                                                    data-dropdown-item
+                                                    role="option"
+                                                    className="dropdown-menu__item--exit-workspace"
+                                                    onClick={() =>
+                                                        props.onChange(
+                                                            JSON.stringify({
+                                                                name: item.name,
+                                                                type: "exit-workspace",
+                                                            })
+                                                        )
+                                                    }
+                                                >
+                                                    <span className="dropdown-menu__exit-icon" aria-hidden="true">←</span>
+                                                    <span>{item.label || item.name}</span>
+                                                </li>
+                                            );
+                                        }
+                                        // Handle workspace domain items
+                                        if (item.type === "workspace-domain") {
+                                            return (
+                                                <li
+                                                    key={item.name}
+                                                    data-dropdown-item
+                                                    role="option"
+                                                    className={`dropdown-menu__item--workspace-domain ${item.isPrimary ? 'dropdown-menu__item--primary' : ''}`}
+                                                    onClick={() =>
+                                                        props.onChange(
+                                                            JSON.stringify({
+                                                                name: item.name,
+                                                                type: "workspace-domain",
+                                                            })
+                                                        )
+                                                    }
+                                                >
+                                                    <span className="dropdown-menu__domain-name">{item.name}</span>
+                                                    {item.isPrimary && <span className="dropdown-menu__primary-tag">Primary</span>}
+                                                </li>
+                                            );
+                                        }
                                         // Handle workspace items
                                         if (item.type === "workspace") {
                                             return (
