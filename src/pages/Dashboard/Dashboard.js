@@ -346,7 +346,7 @@ export default function Dashboard(props) {
                 </div> */}
                 {/* Top key data views */}
                 {
-                    organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && workspaceId == 0 ?
+                    organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ?
                         <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "20px", }}>
                             {(jsLoading) ? <Loading /> : <ErrorBoundary>
                                 <Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" />
