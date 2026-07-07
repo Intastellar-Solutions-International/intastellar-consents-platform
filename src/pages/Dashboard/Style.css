@@ -151,6 +151,98 @@
     text-decoration: underline;
 }
 
+/* Domain Verification Warning Banner */
+.dashboard-verification-warning {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: rgba(220, 160, 60, 0.1);
+    border: 1px solid rgba(220, 160, 60, 0.3);
+}
+
+.dashboard-verification-warning--expired {
+    background: rgba(220, 100, 80, 0.1);
+    border-color: rgba(220, 100, 80, 0.3);
+}
+
+.dashboard-verification-warning__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(220, 160, 60, 0.2);
+    border: 1px solid rgba(220, 160, 60, 0.4);
+    color: #e8c76a;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.dashboard-verification-warning--expired .dashboard-verification-warning__icon {
+    background: rgba(220, 100, 80, 0.2);
+    border-color: rgba(220, 100, 80, 0.4);
+    color: #f0a8a0;
+}
+
+.dashboard-verification-warning__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.dashboard-verification-warning__content strong {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #e8c76a;
+    margin-bottom: 4px;
+}
+
+.dashboard-verification-warning--expired .dashboard-verification-warning__content strong {
+    color: #f0a8a0;
+}
+
+.dashboard-verification-warning__content p {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: rgba(197, 197, 197, 0.85);
+    line-height: 1.45;
+}
+
+.dashboard-verification-warning__action {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: rgba(220, 160, 60, 0.15);
+    border: 1px solid rgba(220, 160, 60, 0.35);
+    color: #e8c76a;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.dashboard-verification-warning__action:hover {
+    background: rgba(220, 160, 60, 0.25);
+    border-color: rgba(220, 160, 60, 0.5);
+    text-decoration: none;
+}
+
+.dashboard-verification-warning--expired .dashboard-verification-warning__action {
+    background: rgba(220, 100, 80, 0.15);
+    border-color: rgba(220, 100, 80, 0.35);
+    color: #f0a8a0;
+}
+
+.dashboard-verification-warning--expired .dashboard-verification-warning__action:hover {
+    background: rgba(220, 100, 80, 0.25);
+    border-color: rgba(220, 100, 80, 0.5);
+}
+
 @media screen and (max-width: 900px) {
     .dashboard-content {
         padding: 0 20px;

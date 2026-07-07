@@ -11,6 +11,11 @@ import {
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
 import { getWorkspaceFilter } from "../../components/header/header.js";
+import {
+    isDomainVerified,
+    isVerificationExpired,
+    getOrCreateVerificationRecord,
+} from "../../Functions/domainVerification.js";
 import { isJson } from "../../Functions/isJson.js";
 import Crawler from "../../Components/Crawler";
 import Line from "../../Components/Charts/Line"
@@ -140,6 +145,43 @@ export default function Dashboard(props) {
         setLiveViewData(data);
     }, []);
 
+    // Domain verification status check
+    const verificationStatus = useMemo(() => {
+        // Get organisation ID
+        let orgId = null;
+        try {
+            const orgRaw = localStorage.getItem("organisation");
+            if (orgRaw) {
+                const org = JSON.parse(orgRaw);
+                orgId = org?.id;
+            }
+        } catch {
+            /* ignore */
+        }
+
+        // Determine which domain to check
+        const domainToCheck = handle || currentDomain;
+
+        // Skip for combined view or if no domain/org
+        if (!orgId || !domainToCheck || domainToCheck === "combined view") {
+            return { show: false };
+        }
+
+        const verified = isDomainVerified(domainToCheck, orgId);
+        const expired = isVerificationExpired(domainToCheck, orgId);
+
+        if (verified) {
+            return { show: false };
+        }
+
+        return {
+            show: true,
+            domain: domainToCheck,
+            orgId,
+            isExpired: expired,
+        };
+    }, [handle, currentDomain]);
+
     useEffect(() => {
         const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
         return unsubscribe; // Clean up on unmount
@@ -245,12 +287,38 @@ export default function Dashboard(props) {
         <>
             <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? `Dashboard: ${punycode.toUnicode(handle)}` : "Dashboard"} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
             <div className="dashboard-content">
+                {/* Domain Verification Warning Banner */}
+                {verificationStatus.show && (
+                    <div className={`dashboard-verification-warning ${verificationStatus.isExpired ? 'dashboard-verification-warning--expired' : ''}`}>
+                        <span className="dashboard-verification-warning__icon">
+                            {verificationStatus.isExpired ? "!" : "?"}
+                        </span>
+                        <div className="dashboard-verification-warning__content">
+                            <strong>
+                                {verificationStatus.isExpired
+                                    ? "Domain verification expired"
+                                    : "Domain not verified"}
+                            </strong>
+                            <p>
+                                {verificationStatus.isExpired
+                                    ? `The verification for ${verificationStatus.domain} has expired. Please re-verify to continue accessing consent data.`
+                                    : `${verificationStatus.domain} has not been verified. Verify domain ownership to ensure data accuracy.`}
+                            </p>
+                        </div>
+                        <Link
+                            to="/settings/workspaces"
+                            className="dashboard-verification-warning__action"
+                        >
+                            {verificationStatus.isExpired ? "Re-verify" : "Verify Domain"}
+                        </Link>
+                    </div>
+                )}
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
                     <p className="profile-user">Welcome, {JSON.parse(localStorage.getItem("globals")).user.name.firstName}</p>
                     <p>This dashboard shows aggregated consent interactions for the selected period. <br />
                         Use it to monitor acceptance rates and category-level consent behavior.</p>
-                    
+
                 </div> */}
                 {/* Top key data views */}
                 {
