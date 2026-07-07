@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteRule .* - [E=REDIRECT_HTTP_AUTHORIZATION:%{HTTP:Authorization}]

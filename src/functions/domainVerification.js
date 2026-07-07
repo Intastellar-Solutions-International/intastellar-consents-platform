@@ -2,268 +2,192 @@
  * Domain Verification Utility
  *
  * Handles domain ownership verification for organisations and workspaces.
- * Currently uses localStorage for storage - will be replaced with backend API.
+ * Uses the backend API as the source of truth; localStorage is a read-through
+ * cache so synchronous render calls (getVerificationStatusLabel) stay fast.
  */
+
+import Authentication from "../Authentication/Auth";
+import { PrimaryHost } from "../API/host";
 
 const STORAGE_KEY = "domain_verifications";
-const REVERIFICATION_DAYS = 14; // Re-verify every 14 days
+const REVERIFICATION_DAYS = 14;
 
-/**
- * Generate a unique verification token for a domain + organisation combination
- */
-export function generateVerificationToken(domain, organisationId) {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2, 10);
-    return `inta_${organisationId}_${timestamp}_${random}`;
-}
+// ── Cache helpers ─────────────────────────────────────────────────────────────
 
-/**
- * Get all stored verification records
- */
 function getStoredVerifications() {
     try {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            return JSON.parse(stored);
-        }
-    } catch {
-        /* ignore */
-    }
+        if (stored) return JSON.parse(stored);
+    } catch { /* ignore */ }
     return {};
 }
 
-/**
- * Save verification records to localStorage
- */
 function saveVerifications(verifications) {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(verifications));
-    } catch {
-        /* ignore */
-    }
+    } catch { /* ignore */ }
 }
 
-/**
- * Create a unique key for domain + organisation combination
- */
 function createKey(domain, organisationId) {
     return `${organisationId}:${domain.toLowerCase()}`;
 }
 
+// ── Auth headers (fresh at call time) ────────────────────────────────────────
+
+function authHeaders() {
+    return {
+        "Authorization": Authentication.getToken(),
+        "Content-Type": "application/json",
+    };
+}
+
+// ── Public API ────────────────────────────────────────────────────────────────
+
 /**
- * Get verification status for a domain
- * @returns {Object|null} Verification record or null if not found
+ * Reads the cached verification record for a domain (sync, for rendering).
  */
 export function getVerificationStatus(domain, organisationId) {
     const verifications = getStoredVerifications();
-    const key = createKey(domain, organisationId);
-    return verifications[key] || null;
+    return verifications[createKey(domain, organisationId)] || null;
 }
 
 /**
- * Check if a domain is verified and verification hasn't expired
+ * Returns true when a domain is verified and the verification hasn't expired.
  */
 export function isDomainVerified(domain, organisationId) {
     const status = getVerificationStatus(domain, organisationId);
-    if (!status || !status.verified) {
-        return false;
-    }
+    if (!status || !status.verified) return false;
 
-    // Check if re-verification is needed
     if (status.nextVerificationDue) {
-        const dueDate = new Date(status.nextVerificationDue);
-        if (new Date() > dueDate) {
-            return false; // Verification expired
-        }
+        return new Date() <= new Date(status.nextVerificationDue);
     }
-
     return true;
 }
 
 /**
- * Check if verification is expired (was verified but needs re-verification)
+ * Returns true when the domain was verified but the re-verification window
+ * has passed.
  */
 export function isVerificationExpired(domain, organisationId) {
     const status = getVerificationStatus(domain, organisationId);
-    if (!status || !status.verified) {
-        return false; // Never verified, not "expired"
-    }
+    if (!status || !status.verified) return false;
 
     if (status.nextVerificationDue) {
-        const dueDate = new Date(status.nextVerificationDue);
-        return new Date() > dueDate;
+        return new Date() > new Date(status.nextVerificationDue);
     }
-
     return false;
 }
 
 /**
- * Get or create a verification token for a domain
- * If token already exists, return it; otherwise generate a new one
+ * Gets or creates a verification record via the backend, then writes the
+ * result into the local cache and returns it.
+ *
+ * @returns {Promise<object>} Verification record
  */
-export function getOrCreateVerificationToken(domain, organisationId) {
-    const verifications = getStoredVerifications();
-    const key = createKey(domain, organisationId);
+export async function getOrCreateVerificationRecord(domain, organisationId) {
+    const domainLower = domain.toLowerCase();
 
-    if (verifications[key]?.token) {
-        return verifications[key].token;
+    // Return cached record if it already has a token
+    const cached = getVerificationStatus(domainLower, organisationId);
+    if (cached?.token) return cached;
+
+    const res = await fetch(
+        `${PrimaryHost}/analytics/settings/domain-verification/v1/init`,
+        {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify({ domain: domainLower, organisationId }),
+        }
+    );
+
+    if (!res.ok) {
+        throw new Error("Failed to initialise verification record");
     }
 
-    // Generate new token
-    const token = generateVerificationToken(domain, organisationId);
+    const data = await res.json();
 
+    // Populate cache
+    const verifications = getStoredVerifications();
+    const key = createKey(domainLower, organisationId);
     verifications[key] = {
-        domain: domain.toLowerCase(),
+        domain:              data.domain,
         organisationId,
-        token,
-        verified: false,
-        verifiedAt: null,
-        lastCheckedAt: null,
-        nextVerificationDue: null,
-        createdAt: new Date().toISOString(),
+        token:               data.token,
+        verified:            data.verified,
+        verifiedAt:          data.verifiedAt,
+        lastCheckedAt:       data.lastCheckedAt,
+        nextVerificationDue: data.nextVerificationDue,
+        createdAt:           data.createdAt,
     };
-
     saveVerifications(verifications);
-    return token;
+
+    return verifications[key];
 }
 
 /**
- * Get full verification record, creating one if it doesn't exist
- */
-export function getOrCreateVerificationRecord(domain, organisationId) {
-    const token = getOrCreateVerificationToken(domain, organisationId);
-    return getVerificationStatus(domain, organisationId);
-}
-
-/**
- * Simulate verification check (will be replaced with actual API call)
- * In production, this would fetch the domain and check for the token
+ * Triggers a live verification check via the backend.
+ * Updates the local cache with the result.
  *
- * @param {string} domain - Domain to verify
- * @param {number} organisationId - Organisation ID
- * @returns {Promise<{success: boolean, message: string}>}
+ * @returns {Promise<{success: boolean, message: string, verifiedAt?, nextVerificationDue?}>}
  */
 export async function checkDomainVerification(domain, organisationId) {
+    const domainLower = domain.toLowerCase();
     const verifications = getStoredVerifications();
-    const key = createKey(domain, organisationId);
-    const record = verifications[key];
+    const key = createKey(domainLower, organisationId);
 
-    if (!record) {
+    if (!verifications[key]) {
         return {
             success: false,
             message: "No verification token found. Please generate a token first.",
         };
     }
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    const res = await fetch(
+        `${PrimaryHost}/analytics/settings/domain-verification/v1/check`,
+        {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify({ domain: domainLower, organisationId }),
+        }
+    );
 
-    // TODO: Replace with actual verification API call
-    // The backend would:
-    // 1. Fetch the domain's HTML
-    // 2. Look for <meta name="intastellar-verification" content="TOKEN">
-    // 3. Or check for window.INTA.verification === TOKEN
-    // 4. Return success/failure
+    const data = await res.json();
 
-    // For now, simulate random success/failure for testing
-    // In production, remove this and use actual API
-    const simulatedSuccess = Math.random() > 0.3; // 70% success rate for testing
-
-    if (simulatedSuccess) {
-        const now = new Date();
-        const nextDue = new Date(now);
-        nextDue.setDate(nextDue.getDate() + REVERIFICATION_DAYS);
-
-        verifications[key] = {
-            ...record,
-            verified: true,
-            verifiedAt: now.toISOString(),
-            lastCheckedAt: now.toISOString(),
-            nextVerificationDue: nextDue.toISOString(),
-        };
-
-        saveVerifications(verifications);
-
+    if (!res.ok) {
         return {
-            success: true,
-            message: "Domain verified successfully!",
-            verifiedAt: now.toISOString(),
-            nextVerificationDue: nextDue.toISOString(),
+            success: false,
+            message: data.detail || data.error || "Verification check failed.",
+        };
+    }
+
+    // Update cache
+    if (data.success) {
+        verifications[key] = {
+            ...verifications[key],
+            verified:            true,
+            verifiedAt:          data.verifiedAt,
+            lastCheckedAt:       data.verifiedAt,
+            nextVerificationDue: data.nextVerificationDue,
         };
     } else {
         verifications[key] = {
-            ...record,
+            ...verifications[key],
             lastCheckedAt: new Date().toISOString(),
         };
-
-        saveVerifications(verifications);
-
-        return {
-            success: false,
-            message: "Verification token not found on domain. Please ensure the token is properly installed.",
-        };
     }
-}
-
-/**
- * Mark a domain as manually verified (for testing/admin purposes)
- */
-export function manuallyVerifyDomain(domain, organisationId) {
-    const verifications = getStoredVerifications();
-    const key = createKey(domain, organisationId);
-
-    const now = new Date();
-    const nextDue = new Date(now);
-    nextDue.setDate(nextDue.getDate() + REVERIFICATION_DAYS);
-
-    const existingRecord = verifications[key] || {
-        domain: domain.toLowerCase(),
-        organisationId,
-        token: generateVerificationToken(domain, organisationId),
-        createdAt: now.toISOString(),
-    };
-
-    verifications[key] = {
-        ...existingRecord,
-        verified: true,
-        verifiedAt: now.toISOString(),
-        lastCheckedAt: now.toISOString(),
-        nextVerificationDue: nextDue.toISOString(),
-    };
-
     saveVerifications(verifications);
+
+    return data;
 }
 
 /**
- * Reset verification status for a domain (for testing)
- */
-export function resetVerification(domain, organisationId) {
-    const verifications = getStoredVerifications();
-    const key = createKey(domain, organisationId);
-
-    if (verifications[key]) {
-        verifications[key] = {
-            ...verifications[key],
-            verified: false,
-            verifiedAt: null,
-            lastCheckedAt: null,
-            nextVerificationDue: null,
-        };
-        saveVerifications(verifications);
-    }
-}
-
-/**
- * Get verification status label for UI display
+ * Returns a UI label object for the current verification state of a domain.
+ * Reads from the local cache (synchronous, safe to call during render).
  */
 export function getVerificationStatusLabel(domain, organisationId) {
     const status = getVerificationStatus(domain, organisationId);
 
-    if (!status) {
-        return { label: "Unverified", type: "unverified", icon: "?" };
-    }
-
-    if (!status.verified) {
+    if (!status || !status.verified) {
         return { label: "Unverified", type: "unverified", icon: "?" };
     }
 
@@ -275,25 +199,18 @@ export function getVerificationStatusLabel(domain, organisationId) {
 }
 
 /**
- * Get days until re-verification is required
+ * Returns the number of days until re-verification is required, or null.
  */
 export function getDaysUntilReverification(domain, organisationId) {
     const status = getVerificationStatus(domain, organisationId);
+    if (!status?.nextVerificationDue) return null;
 
-    if (!status?.nextVerificationDue) {
-        return null;
-    }
-
-    const dueDate = new Date(status.nextVerificationDue);
-    const now = new Date();
-    const diffTime = dueDate - now;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    return diffDays;
+    const diffMs = new Date(status.nextVerificationDue) - new Date();
+    return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 }
 
 /**
- * Get all domains that need re-verification soon (within X days)
+ * Returns all locally-cached domains that need re-verification within X days.
  */
 export function getDomainsNeedingReverification(withinDays = 3) {
     const verifications = getStoredVerifications();
@@ -304,10 +221,7 @@ export function getDomainsNeedingReverification(withinDays = 3) {
         if (record.verified && record.nextVerificationDue) {
             const daysUntil = getDaysUntilReverification(record.domain, record.organisationId);
             if (daysUntil !== null && daysUntil <= withinDays) {
-                needsReverification.push({
-                    ...record,
-                    daysUntilDue: daysUntil,
-                });
+                needsReverification.push({ ...record, daysUntilDue: daysUntil });
             }
         }
     }

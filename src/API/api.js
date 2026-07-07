@@ -375,6 +375,59 @@ const API = {
             },
         }
     },
+    workspaces: {
+        list: {
+            url: `${PrimaryHost}/analytics/settings/workspaces/v1/list-workspaces`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
+        create: {
+            url: `${PrimaryHost}/analytics/settings/workspaces/v1/create-workspace`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
+        update: {
+            url: `${PrimaryHost}/analytics/settings/workspaces/v1/update-workspace`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
+        delete: {
+            url: `${PrimaryHost}/analytics/settings/workspaces/v1/delete-workspace`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
+    },
+    domainVerification: {
+        init: {
+            url: `${PrimaryHost}/analytics/settings/domain-verification/v1/init`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
+        check: {
+            url: `${PrimaryHost}/analytics/settings/domain-verification/v1/check`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Content-Type": "application/json"
+            }
+        },
+    },
     ferry: {
         getTotalSales: {
             url: `${PrimaryHost}/analytics/ferry/getTotalSales`,

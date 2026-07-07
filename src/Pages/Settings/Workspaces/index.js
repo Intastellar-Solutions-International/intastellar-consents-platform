@@ -1,5 +1,6 @@
 const { useState, useEffect, useCallback } = React;
 import Authentication from "../../../Authentication/Auth";
+import API from "../../../API/api.js";
 import { CurrentPageLoading } from "../../../Components/widget/Loading";
 import SideNav from "../../../Components/Header/SideNav";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks";
@@ -31,48 +32,6 @@ function getCurrentOrgId() {
     return null;
 }
 
-/**
- * Generate a simple unique ID for workspaces (temporary until backend)
- */
-function generateId() {
-    return "ws_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
-}
-
-/**
- * Get workspaces from localStorage (temporary storage until backend)
- */
-function getStoredWorkspaces() {
-    try {
-        const stored = localStorage.getItem("agency_workspaces");
-        if (stored) {
-            const workspaces = JSON.parse(stored);
-            // Migrate old single-domain workspaces to multi-domain format
-            return workspaces.map((ws) => {
-                if (ws.domain && !ws.domains) {
-                    return {
-                        ...ws,
-                        domains: [{ domain: ws.domain, isPrimary: true }],
-                    };
-                }
-                return ws;
-            });
-        }
-    } catch {
-        /* ignore */
-    }
-    return [];
-}
-
-/**
- * Save workspaces to localStorage (temporary storage until backend)
- */
-function saveWorkspaces(workspaces) {
-    try {
-        localStorage.setItem("agency_workspaces", JSON.stringify(workspaces));
-    } catch {
-        /* ignore */
-    }
-}
 
 /**
  * Validate email format
@@ -117,14 +76,24 @@ export default function Workspaces() {
 
     const orgId = getCurrentOrgId();
 
-    // Load workspaces on mount
+    // Load workspaces from backend on mount
     useEffect(() => {
-        // Simulate loading delay for consistency with other pages
-        const timer = setTimeout(() => {
-            setWorkspaces(getStoredWorkspaces());
+        if (!orgId) {
             setLoading(false);
-        }, 300);
-        return () => clearTimeout(timer);
+            return;
+        }
+        fetch(API.workspaces.list.url, {
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": String(orgId),
+                "Content-Type": "application/json",
+            },
+        })
+            .then((res) => res.json())
+            .then((data) => setWorkspaces(data.workspaces || []))
+            .catch(() => setWorkspaces([]))
+            .finally(() => setLoading(false));
     }, []);
 
     const closeModal = useCallback(() => {
@@ -142,12 +111,17 @@ export default function Workspaces() {
     }, []);
 
     // Verification modal handlers
-    function openVerifyModal(domain) {
+    async function openVerifyModal(domain) {
         if (!orgId) return;
-        const record = getOrCreateVerificationRecord(domain, orgId);
-        setVerifyModalDomain({ domain, record });
+        setVerifyModalDomain({ domain, record: null });
         setVerifyResult(null);
         setVerifyPending(false);
+        try {
+            const record = await getOrCreateVerificationRecord(domain, orgId);
+            setVerifyModalDomain({ domain, record });
+        } catch {
+            // Modal stays open; token area will show "—"
+        }
     }
 
     function closeVerifyModal() {
@@ -303,7 +277,7 @@ export default function Workspaces() {
         setEditUsers(editUsers.filter((u) => u.email.toLowerCase() !== email.toLowerCase()));
     }
 
-    function handleCreate(e) {
+    async function handleCreate(e) {
         e.preventDefault();
         const name = editName.trim();
 
@@ -319,29 +293,41 @@ export default function Workspaces() {
         setModalError(null);
         setPending("create");
 
-        // Simulate API call delay
-        setTimeout(() => {
-            const newWorkspace = {
-                id: generateId(),
-                name: name,
-                description: editDescription.trim(),
-                domains: editDomains,
-                users: editUsers,
-                createdAt: new Date().toISOString(),
-                createdBy: Authentication.getUserId(),
-            };
+        try {
+            const res = await fetch(API.workspaces.create.url, {
+                method: "POST",
+                headers: {
+                    "Authorization": Authentication.getToken(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                    description: editDescription.trim(),
+                    organisationId: orgId,
+                    domains: editDomains,
+                    users: editUsers,
+                }),
+            });
+            const data = await res.json();
 
-            const updated = [...workspaces, newWorkspace];
-            setWorkspaces(updated);
-            saveWorkspaces(updated);
+            if (!res.ok) {
+                setModalError(data.error || "Failed to create workspace.");
+                setPending(null);
+                return;
+            }
+
+            setWorkspaces((prev) => [...prev, data.workspace]);
             setPending(null);
             closeModal();
             setSuccessMessage("Workspace created successfully.");
             setTimeout(() => setSuccessMessage(null), 3000);
-        }, 500);
+        } catch {
+            setModalError("Network error. Please try again.");
+            setPending(null);
+        }
     }
 
-    function handleSave(e) {
+    async function handleSave(e) {
         e.preventDefault();
         if (!modalWorkspace) return;
 
@@ -360,44 +346,77 @@ export default function Workspaces() {
         setDeleteConfirm(false);
         setPending("save");
 
-        // Simulate API call delay
-        setTimeout(() => {
-            const updated = workspaces.map((ws) =>
-                ws.id === modalWorkspace.id
-                    ? {
-                          ...ws,
-                          name: name,
-                          description: editDescription.trim(),
-                          domains: editDomains,
-                          users: editUsers,
-                          updatedAt: new Date().toISOString(),
-                      }
-                    : ws
+        try {
+            const res = await fetch(API.workspaces.update.url, {
+                method: "POST",
+                headers: {
+                    "Authorization": Authentication.getToken(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    workspaceId: modalWorkspace.id,
+                    name,
+                    description: editDescription.trim(),
+                    organisationId: orgId,
+                    domains: editDomains,
+                    users: editUsers,
+                }),
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                setModalError(data.error || "Failed to update workspace.");
+                setPending(null);
+                return;
+            }
+
+            setWorkspaces((prev) =>
+                prev.map((ws) => ws.id === modalWorkspace.id ? data.workspace : ws)
             );
-            setWorkspaces(updated);
-            saveWorkspaces(updated);
             setPending(null);
             closeModal();
             setSuccessMessage("Workspace updated successfully.");
             setTimeout(() => setSuccessMessage(null), 3000);
-        }, 500);
+        } catch {
+            setModalError("Network error. Please try again.");
+            setPending(null);
+        }
     }
 
-    function handleDelete() {
+    async function handleDelete() {
         if (!modalWorkspace) return;
         setModalError(null);
         setPending("delete");
 
-        // Simulate API call delay
-        setTimeout(() => {
-            const updated = workspaces.filter((ws) => ws.id !== modalWorkspace.id);
-            setWorkspaces(updated);
-            saveWorkspaces(updated);
+        try {
+            const res = await fetch(API.workspaces.delete.url, {
+                method: "POST",
+                headers: {
+                    "Authorization": Authentication.getToken(),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    workspaceId: modalWorkspace.id,
+                    organisationId: orgId,
+                }),
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                setModalError(data.error || "Failed to delete workspace.");
+                setPending(null);
+                return;
+            }
+
+            setWorkspaces((prev) => prev.filter((ws) => ws.id !== modalWorkspace.id));
             setPending(null);
             closeModal();
             setSuccessMessage("Workspace deleted.");
             setTimeout(() => setSuccessMessage(null), 3000);
-        }, 500);
+        } catch {
+            setModalError("Network error. Please try again.");
+            setPending(null);
+        }
     }
 
     // Get primary domain for display
