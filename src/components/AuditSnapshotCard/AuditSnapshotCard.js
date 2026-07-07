@@ -185,6 +185,7 @@ export default function AuditSnapshotCard(props) {
         liveData,
         interactionsLoading = false,
         complianceRegionRisk,
+        observedCookies = null,
     } = props;
 
     const auditLogPath = useMemo(() => {
@@ -503,7 +504,7 @@ export default function AuditSnapshotCard(props) {
             <div className="audit-snapshot-card__body">
                 <div className="audit-snapshot-card__text">
                     <div className="audit-snapshot-card__title-row">
-                        <h3 className="audit-snapshot-card__title">Audit Snapshot</h3>
+                        <h3 className="audit-snapshot-card__title">Audit log</h3>
                         <div
                             className={`audit-snapshot-card__health-pill audit-snapshot-card__health-pill--${systemHealth.level}`}
                             title={systemHealth.sub}
@@ -514,10 +515,6 @@ export default function AuditSnapshotCard(props) {
                     </div>
                     <p className="audit-snapshot-card__health-sub" role="status">
                         {systemHealth.sub}
-                    </p>
-                    <p className="audit-snapshot-card__desc">
-                        Jump to the audit log for per-user consent records, timestamps, and choices for the same domain
-                        and filters you use here.
                     </p>
                     <div className="audit-snapshot-card__meta-lines">
                         <p className="audit-snapshot-card__meta-line">
@@ -665,26 +662,34 @@ export default function AuditSnapshotCard(props) {
                             />
                         </div>
                     </div>
-                    {activeData != null ? (
+                    {(activeData != null || observedCookies != null) ? (
                         <dl className="audit-snapshot-card__stats">
-                            {activeData.Total != null ? (
+                            {activeData?.Total != null ? (
                                 <div className="audit-snapshot-card__stat">
-                                    <dt>Interactions (this period)</dt>
+                                    <dt>Interactions</dt>
                                     <dd>{Number(activeData.Total).toLocaleString(locale)}</dd>
                                 </div>
                             ) : null}
-                            {activeData.Accepted != null ? (
+                            {activeData?.Accepted != null ? (
                                 <div className="audit-snapshot-card__stat">
                                     <dt>Acceptance rate</dt>
                                     <dd>{Number(activeData.Accepted).toLocaleString(locale)}%</dd>
                                 </div>
                             ) : null}
+                            {observedCookies?.preConsent?.count != null ? (
+                                <div className="audit-snapshot-card__stat">
+                                    <dt>Pre-consent cookies</dt>
+                                    <dd>{observedCookies.preConsent.count > 0 ? observedCookies.preConsent.count.toLocaleString(locale) : "—"}</dd>
+                                </div>
+                            ) : null}
+                            {observedCookies?.consent?.count != null ? (
+                                <div className="audit-snapshot-card__stat">
+                                    <dt>Post-consent cookies</dt>
+                                    <dd>{observedCookies.consent.count > 0 ? observedCookies.consent.count.toLocaleString(locale) : "—"}</dd>
+                                </div>
+                            ) : null}
                         </dl>
-                    ) : (
-                        <p className="audit-snapshot-card__hint">
-                            Metrics load as soon as the dashboard finishes loading.
-                        </p>
-                    )}
+                    ) : null}
                     <div className="audit-snapshot-card__cta-wrap">
                         <span className="audit-snapshot-card__cta">Open audit log</span>
                     </div>

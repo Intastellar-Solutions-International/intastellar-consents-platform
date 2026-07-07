@@ -187,12 +187,56 @@
     min-height: 110px;
 }
 
-/* ── Secondary KPI row ── */
-.dashboard-secondary-kpis {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 0;
+/* ── EU / Non-EU geo stats strip (below map) ── */
+.dashboard-geo-stats {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 12px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.18);
 }
+
+.dashboard-geo-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.dashboard-geo-stat__value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e8e8e8;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.dashboard-geo-stat__label {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.dashboard-geo-stat__rate {
+    font-size: 0.75rem;
+    color: #c0a053;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.dashboard-geo-stat__divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    margin: 0 20px;
+}
+
 
 /* ── Marketing link (replaces teaser section) ── */
 .dashboard-marketing-link {

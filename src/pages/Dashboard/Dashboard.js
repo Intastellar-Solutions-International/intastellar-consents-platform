@@ -386,26 +386,14 @@ export default function Dashboard(props) {
                             />
                         </div>
 
-                        {/* ── 2. Supporting metrics ── */}
-                        <div className="grid-container grid-4 topWidget dashboard-secondary-kpis">
-                            <Widget explainer={{ exist: true, title: "EU based users", content: "Visitors detected from EU-based IP locations." }} styleType="small" totalNumber={activeData?.euUsers != null ? activeData.euUsers.toLocaleString("de-DE") : "—"} percentage={activeData?.euAcceptedRate != null ? activeData.euAcceptedRate.toLocaleString("de-DE") : null} type="EU-based users" fromDate={fromDate} toDate={toDate} />
-                            <Widget explainer={{ exist: true, title: "Non-EU based users", content: "Visitors detected from non-EU-based IP locations." }} styleType="small" totalNumber={activeData?.noneEUUsers != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—"} percentage={activeData?.noneEUAcceptedRate != null ? activeData.noneEUAcceptedRate.toLocaleString("de-DE") : null} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
-                            <Widget explainer={{ exist: true, title: "Detected (pre-consent) cookies", content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks." }} styleType="small" totalNumber={observedCookies?.preConsent?.count == null ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE")} type="Detected (pre-consent)" fromDate={fromDate} toDate={toDate} />
-                            <Widget explainer={{ exist: true, title: "Detected (post-consent) cookies", content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement." }} styleType="small" totalNumber={observedCookies?.consent?.count == null ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE")} type="Detected (post-consent)" fromDate={fromDate} toDate={toDate} />
-                        </div>
                     </>
                 ) : (
-                    <>
-                        <div className="dashboard-hero-kpis dashboard-hero-kpis--loading">
-                            <Loading small={true} /><Loading small={true} />
-                        </div>
-                        <div className="grid-container grid-4 topWidget dashboard-secondary-kpis" style={{ gap: "10px" }}>
-                            <Loading small={true} /><Loading small={true} /><Loading small={true} /><Loading small={true} />
-                        </div>
-                    </>
+                    <div className="dashboard-hero-kpis dashboard-hero-kpis--loading">
+                        <Loading small={true} /><Loading small={true} />
+                    </div>
                 )}
 
-                {/* ── 3. Geography & live ── */}
+                {/* ── 2. Geography & live (with EU/Non-EU context below) ── */}
                 <div className="dashboard-section">
                     <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
                         {loadingCountry ? <Loading /> : <Map demoMode={demoMode} data={{ Countries: activeDataCountry?.data?.Countries, total: activeData?.Total }} />}
@@ -413,6 +401,21 @@ export default function Dashboard(props) {
                             <LiveView currentDomain={handle ? handle : currentDomain} demoMode={demoMode} onLiveDataChange={onLiveDataChange} />
                         </div>
                     </div>
+                    {activeData && (
+                        <div className="dashboard-geo-stats">
+                            <div className="dashboard-geo-stat">
+                                <span className="dashboard-geo-stat__value">{activeData.euUsers != null ? activeData.euUsers.toLocaleString("de-DE") : "—"}</span>
+                                <span className="dashboard-geo-stat__label">EU visitors</span>
+                                {activeData.euAcceptedRate != null && <span className="dashboard-geo-stat__rate">{activeData.euAcceptedRate.toLocaleString("de-DE")}% accepted</span>}
+                            </div>
+                            <div className="dashboard-geo-stat__divider" aria-hidden />
+                            <div className="dashboard-geo-stat">
+                                <span className="dashboard-geo-stat__value">{activeData.noneEUUsers != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—"}</span>
+                                <span className="dashboard-geo-stat__label">Non-EU visitors</span>
+                                {activeData.noneEUAcceptedRate != null && <span className="dashboard-geo-stat__rate">{activeData.noneEUAcceptedRate.toLocaleString("de-DE")}% accepted</span>}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* ── 4. Decision behaviour ── */}
@@ -457,6 +460,7 @@ export default function Dashboard(props) {
                             demoMode={demoMode}
                             liveData={liveViewData}
                             interactionsLoading={loading}
+                            observedCookies={observedCookies}
                         />
                         <p className="dashboard-marketing-link">
                             See consent through a marketing lens —{" "}
