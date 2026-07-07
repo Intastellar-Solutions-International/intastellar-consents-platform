@@ -344,20 +344,109 @@ export default function Dashboard(props) {
                         Use it to monitor acceptance rates and category-level consent behavior.</p>
 
                 </div> */}
-                {/* Top key data views */}
-                {
-                    organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ?
-                        <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "20px", }}>
-                            {(jsLoading) ? <Loading /> : <ErrorBoundary>
-                                <Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" />
-                            </ErrorBoundary>
-                            }
-                            {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString("de-DE") + "%"} type="JavaScript" /></ErrorBoundary>}
-                            {(jsLoading) ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString("de-DE") + "%"} type="WordPress" /></ErrorBoundary>}
-                        </div> : null
+                {/* Org-level platform stats (admin only) */}
+                {organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ?
+                    <div className="grid-container topWidget" style={{ gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "24px" }}>
+                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData.Total?.toLocaleString("de-DE")} type="Websites" /></ErrorBoundary>}
+                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.JS?.toLocaleString("de-DE") + "%"} type="JavaScript" /></ErrorBoundary>}
+                        {jsLoading ? <Loading /> : <ErrorBoundary><Widget styleType="small" totalNumber={jsData?.WP?.toLocaleString("de-DE") + "%"} type="WordPress" /></ErrorBoundary>}
+                    </div> : null
                 }
-                {id ? (
+
+                {/* ── 1. Primary consent KPIs ── */}
+                {activeData != null ? (
                     <>
+                        <div className="dashboard-hero-kpis">
+                            <Widget
+                                kpi={true}
+                                styleType="small"
+                                compareOn={compareOn}
+                                comparisonDelta={activeData?.comaprison?.accepted ?? activeData?.comparison?.accepted}
+                                comparisonRelative={activeData?.comaprison?.acceptedRelativeDrop ?? activeData?.comparison?.acceptedRelativeDrop}
+                                change={{ change: activeData?.changeRate?.accepted }}
+                                relativeDrop={{ relativeDrop: activeData?.relativeDrop?.accepted }}
+                                totalNumber={(activeData?.Accepted != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%"}
+                                type="Consent acceptance"
+                                fromDate={fromDate}
+                                toDate={toDate}
+                            />
+                            <Widget
+                                kpi={true}
+                                styleType="small"
+                                compareOn={compareOn}
+                                comparisonDelta={activeData?.comaprison?.declined ?? activeData?.comparison?.declined}
+                                comparisonRelative={activeData?.comaprison?.declinedRelativeDrop ?? activeData?.comparison?.declinedRelativeDrop}
+                                change={{ change: activeData?.changeRate?.declined }}
+                                relativeDrop={{ relativeDrop: activeData?.relativeDrop?.declined }}
+                                explainer={{ exist: true, title: "Essential-only rate", content: "Share of users who declined analytics and marketing cookies, allowing only required cookies." }}
+                                totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%"}
+                                type="Essential-only rate"
+                                fromDate={fromDate}
+                                toDate={toDate}
+                            />
+                        </div>
+
+                        {/* ── 2. Supporting metrics ── */}
+                        <div className="grid-container grid-4 topWidget dashboard-secondary-kpis">
+                            <Widget explainer={{ exist: true, title: "EU based users", content: "Visitors detected from EU-based IP locations." }} styleType="small" totalNumber={activeData?.euUsers != null ? activeData.euUsers.toLocaleString("de-DE") : "—"} percentage={activeData?.euAcceptedRate != null ? activeData.euAcceptedRate.toLocaleString("de-DE") : null} type="EU-based users" fromDate={fromDate} toDate={toDate} />
+                            <Widget explainer={{ exist: true, title: "Non-EU based users", content: "Visitors detected from non-EU-based IP locations." }} styleType="small" totalNumber={activeData?.noneEUUsers != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—"} percentage={activeData?.noneEUAcceptedRate != null ? activeData.noneEUAcceptedRate.toLocaleString("de-DE") : null} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
+                            <Widget explainer={{ exist: true, title: "Detected (pre-consent) cookies", content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks." }} styleType="small" totalNumber={observedCookies?.preConsent?.count == null ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE")} type="Detected (pre-consent)" fromDate={fromDate} toDate={toDate} />
+                            <Widget explainer={{ exist: true, title: "Detected (post-consent) cookies", content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement." }} styleType="small" totalNumber={observedCookies?.consent?.count == null ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE")} type="Detected (post-consent)" fromDate={fromDate} toDate={toDate} />
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="dashboard-hero-kpis dashboard-hero-kpis--loading">
+                            <Loading small={true} /><Loading small={true} />
+                        </div>
+                        <div className="grid-container grid-4 topWidget dashboard-secondary-kpis" style={{ gap: "10px" }}>
+                            <Loading small={true} /><Loading small={true} /><Loading small={true} /><Loading small={true} />
+                        </div>
+                    </>
+                )}
+
+                {/* ── 3. Geography & live ── */}
+                <div className="dashboard-section">
+                    <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
+                        {loadingCountry ? <Loading /> : <Map demoMode={demoMode} data={{ Countries: activeDataCountry?.data?.Countries, total: activeData?.Total }} />}
+                        <div className="widget no-padding">
+                            <LiveView currentDomain={handle ? handle : currentDomain} demoMode={demoMode} onLiveDataChange={onLiveDataChange} />
+                        </div>
+                    </div>
+                </div>
+
+                {/* ── 4. Decision behaviour ── */}
+                {hasTimeToDecision && (
+                    <div className="dashboard-section">
+                        <h2 className="dashboard-section-label">Decision behaviour</h2>
+                        <Select
+                            type="timeToDecision"
+                            items={["global", "eu", "noneEU"]}
+                            labels={["Global", "EU", "Non-EU"]}
+                            defaultValue={timeToDecision}
+                            onChange={(e) => setTimeToDecision(e)}
+                        />
+                        {timeToDecisionSlice ? (
+                            <>
+                                <p style={{ margin: "12px 0 16px", fontSize: "0.8rem", color: "#666" }}>n = {timeToDecisionSlice.count.toLocaleString("de-DE")}</p>
+                                <div className="grid-container topWidget grid-7">
+                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.median == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s"} explainer={{ exist: true, title: "Median time to decision", content: "Median time taken by users to decide on consent." }} type="Median time to decision" fromDate={fromDate} toDate={toDate} details={{ avg: timeToDecisionSlice.avg.toLocaleString("de-DE") + "s", median: timeToDecisionSlice.median.toLocaleString("de-DE") + "s", p90: timeToDecisionSlice.p90.toLocaleString("de-DE") + "s", percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
+                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.p90 == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s"} explainer={{ exist: true, title: "90th percentile time to decision", content: "Time taken by 90% of users to decide on consent." }} type="P90 decision time" fromDate={fromDate} toDate={toDate} details={{ avg: timeToDecisionSlice.avg.toLocaleString("de-DE") + "s", median: timeToDecisionSlice.median.toLocaleString("de-DE") + "s", p90: timeToDecisionSlice.p90.toLocaleString("de-DE") + "s", percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
+                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.avg == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s"} explainer={{ exist: true, title: "Average time to decision", content: "Average time taken by users to decide on consent." }} type="Average time to decision" fromDate={fromDate} toDate={toDate} details={{ avg: timeToDecisionSlice.avg.toLocaleString("de-DE") + "s", median: timeToDecisionSlice.median.toLocaleString("de-DE") + "s", p90: timeToDecisionSlice.p90.toLocaleString("de-DE") + "s", percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
+                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.percentageOver10s == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{ exist: true, title: "Percentage of users who took more than 10 seconds to decide", content: "Percentage of users who took more than 10 seconds to decide on consent." }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} details={{ percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
+                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.percentageUnder1s == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{ exist: true, title: "Percentage of users who took less than 1 second to decide", content: "Percentage of users who took less than 1 second to decide on consent." }} type="<1s time to decision" fromDate={fromDate} toDate={toDate} details={{ percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
+                                </div>
+                            </>
+                        ) : (
+                            <p style={{ marginTop: "12px", color: "#666", fontSize: "0.875rem" }}>No time-to-decision data for the selected region.</p>
+                        )}
+                    </div>
+                )}
+
+                {/* ── 5. Compliance audit ── */}
+                {id && (
+                    <div className="dashboard-section">
+                        <h2 className="dashboard-section-label">Compliance audit</h2>
                         <AuditSnapshotCard
                             platformId={id}
                             handle={handle}
@@ -369,271 +458,14 @@ export default function Dashboard(props) {
                             liveData={liveViewData}
                             interactionsLoading={loading}
                         />
-                        <section className="dashboard-marketing-teaser" aria-label="Marketing dashboard">
-                            <p>
-                                See consent through a marketing lens — campaigns, trends, and usable traffic after
-                                opt-in.{" "}
-                                <Link to={reportsPath(id, currentDomain, "/marketing")}>Open marketing dashboard</Link>
-                            </p>
-                        </section>
-                    </>
-                ) : null}
-                {
-                    activeData != null ?
-                        <>
-                        <div className={`grid-container grid-7 topWidget`} style={{ gap: "10px", marginBottom: "20px" }}>
-                            <Widget
-                                kpi={true}
-                                styleType="small"
-                                compareOn={compareOn}
-                                comparisonDelta={activeData?.comaprison?.accepted ?? activeData?.comparison?.accepted}
-                                comparisonRelative={
-                                    activeData?.comaprison?.acceptedRelativeDrop ?? activeData?.comparison?.acceptedRelativeDrop
-                                }
-                                change={{
-                                    change: activeData?.changeRate?.accepted,
-                                }}
-                                relativeDrop={{
-                                    relativeDrop: activeData?.relativeDrop?.accepted,
-                                }}
-                                totalNumber={(activeData?.Accepted != null ? activeData.Accepted.toLocaleString("de-DE") : "—") + "%"}
-                                type="Consent acceptance"
-                                fromDate={fromDate}
-                                toDate={toDate}
-                            />
-                            <Widget
-                                kpi={true}
-                                styleType="small"
-                                compareOn={compareOn}
-                                comparisonDelta={activeData?.comaprison?.declined ?? activeData?.comparison?.declined}
-                                comparisonRelative={
-                                    activeData?.comaprison?.declinedRelativeDrop ?? activeData?.comparison?.declinedRelativeDrop
-                                }
-                                change={{
-                                    change: activeData?.changeRate?.declined,
-                                }}
-                                relativeDrop={{
-                                    relativeDrop: activeData?.relativeDrop?.declined,
-                                }}
-                                explainer={{
-                                    exist: true,
-                                    title: "Essential-only rate",
-                                    content: "Share of users who declined analytics and marketing cookies, allowing only required cookies..",
-                                }}
-                                totalNumber={(activeData?.Declined != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%"}
-                                type="Essential-only rate"
-                                fromDate={fromDate}
-                                toDate={toDate}
-                            />
-                            <Widget explainer={{
-                                exist: true,
-                                title: "EU based users",
-                                    content: "Visitors detected from EU-based IP locations.",
-                            }} styleType="small" totalNumber={activeData?.euUsers != null ? activeData.euUsers.toLocaleString("de-DE") : "—"} percentage={activeData?.euAcceptedRate != null ? activeData.euAcceptedRate.toLocaleString("de-DE") : null} type="EU-based users" fromDate={fromDate} toDate={toDate} />
-                            <Widget explainer={{
-                                exist: true,
-                                title: "Non-EU based users",
-                                content: "Visitors detected from non-EU-based IP locations.",
-                            }}  styleType="small" totalNumber={activeData?.noneEUUsers != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—"} percentage={activeData?.noneEUAcceptedRate != null ? activeData.noneEUAcceptedRate.toLocaleString("de-DE") : null} type="Non-EU-based users" fromDate={fromDate} toDate={toDate} />
-                            <Widget explainer={{
-                                exist: true,
-                                title: "Detected (pre-consent) cookies",
-                                content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks.",
-                            }} styleType="small" totalNumber={observedCookies?.preConsent?.count == null ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE")} type="Detected (pre-consent)" fromDate={fromDate} toDate={toDate} />
-                            <Widget styleType="small" explainer={{
-                                exist: true,
-                                title: "Detected (post-consent) cookies",
-                                    content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement.",
-                            }} totalNumber={observedCookies?.consent?.count == null ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE")} type="Detected (post-consent)" fromDate={fromDate} toDate={toDate} />
-                        </div>
-                        {hasTimeToDecision ? (
-                        <>
-                        <Select type="timeToDecision"
-                            items={["global", "eu", "noneEU"]}
-                            labels={["Global", "EU", "Non-EU"]}
-                            defaultValue={timeToDecision}
-                            onChange={(e) => {
-                                setTimeToDecision(e);
-                            }}
-                        />
-                        {timeToDecisionSlice ? (
-                        <>
-                        <p>n= {timeToDecisionSlice.count.toLocaleString("de-DE")}</p>
-                        <div className="grid-container topWidget grid-7" style={{ marginTop: "20px" }}>
-                            <Widget styleType="small" totalNumber={timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s"} explainer={{
-                                exist: true,
-                                title: "Median time to decision",
-                                content: "Median time taken by users to decide on consent.",
-                            }} type="Median time to decision" fromDate={fromDate} toDate={toDate} details={
-                                {
-                                    "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-                                    "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-                                    "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-                                    "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-                                    "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-                                    "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-                                    "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-                                    "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
-                                    "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-                                    "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-                                    "deviceType": timeToDecisionSlice.deviceType,
-                                }
-                            } />
-                            <Widget styleType="small" totalNumber={timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s" } explainer={{
-                                exist: true,
-                                title: "90th percentile time to decision",
-                                content: "Time taken by 90% of users to decide on consent.",
-                                }} type="P90 decision time" fromDate={fromDate} toDate={toDate} details={
-                                    {
-                                        "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-                                        "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-                                        "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-                                        "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-                                        "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-                                        "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-                                        "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-                                        "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
-                                        "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-                                        "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-                                        "deviceType": timeToDecisionSlice.deviceType,
-                                    }
-                                } />
-                            <Widget styleType="small" totalNumber={timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s"} explainer={{
-                                exist: true,
-                                title: "Average time to decision",
-                                content: "Average time taken by users to decide on consent.",
-                            }} type="Average time to decision" fromDate={fromDate} toDate={toDate} details={
-                                {
-                                    "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-                                    "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-                                    "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-                                    "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-                                    "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-                                    "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-                                    "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-                                    "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
-                                    "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-                                    "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-                                    "deviceType": timeToDecisionSlice.deviceType,
-                                }
-                            } />
-                            <Widget styleType="small" totalNumber={timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{
-                                exist: true,
-                                title: "Percentage of users who took more than 10 seconds to decide",
-                                content: "Percentage of users who took more than 10 seconds to decide on consent.",
-                            }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} details={
-                                {
-                                    "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-                                    "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-                                    "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-                                    "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-                                    "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
-                                    "deviceType": timeToDecisionSlice.deviceType,
-                                }
-                            } />
-                            <Widget styleType="small" totalNumber={timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{
-                                exist: true,
-                                title: "Percentage of users who took less than 1 second to decide",
-                                content: "Percentage of users who took less than 1 second to decide on consent.",
-                            }} type="<1s time to decision" fromDate={fromDate} toDate={toDate} details={
-                                {
-                                    "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-                                    "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-                                    "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-                                    "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-                                    "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
-                                    "deviceType": timeToDecisionSlice.deviceType,
-                                }
-                            } />
-                        </div>
-                        </>
-                        ) : (
-                        <p style={{ marginTop: "12px", color: "#666" }}>No time-to-decision data for the selected region filter.</p>
-                        )}
-                        </>
-                        ) : (
-                        <p style={{ marginTop: "12px", color: "#666" }}>Time-to-decision metrics are not available for this domain or date range.</p>
-                        )}
-                        </> : <>
-                            <div className="grid-container grid-5 topWidget" style={{ gap: "20px", marginBottom: "20px" }}>
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                            </div>
-                            <div className="grid-container grid-5 topWidget" style={{ gap: "20px", marginBottom: "20px" }}>
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                                <Loading small={true} />
-                            </div>
-                        </>
-
-                }
-                {/* {
-                    (id === "gdpr" && organisation != null && JSON.parse(organisation).id == 1) ? <TopWidgets dashboardView={dashboardView} API={{
-                        url: API[id].getTotalNumber.url,
-                        method: API[id].getTotalNumber.method,
-                        header: API[id].getTotalNumber.headers
-                    }} /> : null
-                }
-                {
-                    (id === "gdpr" && organisation != null && JSON.parse(organisation).id == 1) ? <StyleWidget dashboardView={dashboardView} API={{
-                        url: API[id].getStyle.url,
-                        method: API[id].getStyle.method,
-                        header: API[id].getStyle.headers
-                    }} /> : null
-                } */}
-                {/* <div className="crawler">
-                    <Crawler />
-                </div> */}
-                <div className="" style={{ paddingTop: "40px" }}>
-                    <div className="grid-container grid-2" style={{ gridTemplateColumns: "1fr .5fr", gap: "20px" }}>
-                        {(loadingCountry) ? <>
-
-                            <Loading />
-                        </> : <Map demoMode={demoMode} data={{
-
-                            Countries: activeDataCountry?.data?.Countries,
-                            total: activeData?.Total,
-                        }} /* renderCountryPanelExtras={(c) =>
-                                        c.device_type ? (
-                                            <DeviceTypeInteractions
-                                                title="Device mix in this country"
-                                                activeData={{ device_type: c.device_type, Total: c.num?.total }}
-                                                fromDate={fromDate}
-                                                toDate={toDate}
-                                                demoMode={demoMode}
-                                            />
-                                        ) : null
-                                    } */ />}
-                        <div className={["widget no-padding"]}>
-                            <LiveView
-                                currentDomain={handle ? handle : currentDomain}
-                                demoMode={demoMode}
-                                onLiveDataChange={onLiveDataChange}
-                            />
-                        </div>
+                        <p className="dashboard-marketing-link">
+                            See consent through a marketing lens —{" "}
+                            <Link to={reportsPath(id, currentDomain, "/marketing")}>Open marketing dashboard</Link>
+                        </p>
                     </div>
-                </div>
-                <PremiumTier
-                    loading={loading}
-                    activeData={activeData}
-                    fromDate={fromDate}
-                    toDate={toDate}
-                    demoMode={demoMode}
-                    compareOn={compareOn}
-                />
-                {/* {subscriptionStatus?.tier === "premium" ?
-                    <PremiumTier loading={loading} activeData={activeData} />
-                    : (subscriptionStatus?.tier === "professional") ?
-                        <ProTier loading={loading} activeData={activeData} />
-                        : <BasicTier />
-                } */}
+                )}
+
+                <PremiumTier loading={loading} activeData={activeData} fromDate={fromDate} toDate={toDate} demoMode={demoMode} compareOn={compareOn} />
             </div>
         </>
     )

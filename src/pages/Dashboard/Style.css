@@ -151,6 +151,66 @@
     text-decoration: underline;
 }
 
+/* ── Dashboard section wrapper ── */
+.dashboard-section {
+    padding-top: 36px;
+}
+
+.dashboard-section-label {
+    margin: 0 0 16px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+}
+
+/* ── Hero KPI row (acceptance + essential-only) ── */
+.dashboard-hero-kpis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.dashboard-hero-kpis .small-widget-number {
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+}
+
+.dashboard-hero-kpis .key-highlight-widget {
+    padding: 20px 22px 18px;
+}
+
+.dashboard-hero-kpis--loading {
+    min-height: 110px;
+}
+
+/* ── Secondary KPI row ── */
+.dashboard-secondary-kpis {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 0;
+}
+
+/* ── Marketing link (replaces teaser section) ── */
+.dashboard-marketing-link {
+    margin: 16px 0 0;
+    font-size: 0.8125rem;
+    color: #666;
+}
+
+.dashboard-marketing-link a {
+    color: #a38540;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.dashboard-marketing-link a:hover {
+    text-decoration: underline;
+}
+
 /* Workspace active banner */
 .dashboard-workspace-banner {
     display: flex;
