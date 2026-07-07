@@ -1,4 +1,4 @@
-import { OrganisationContext, DomainContext } from "../../App";
+import { OrganisationContext, DomainContext, WorkspaceContext } from "../../App";
 import "./header.css";
 import logo from "./logo.svg";
 import Fetch from "../../Functions/fetch";
@@ -269,7 +269,7 @@ export default function Header(props) {
         () => props.domains || readCachedDomains()
     );
     const [viewUserProfile, setViewUserProfile] = useState(false);
-    const [activeWorkspace, setActiveWorkspace] = useState(() => getCurrentWorkspace());
+    const [activeWorkspace, setActiveWorkspace] = useContext(WorkspaceContext);
     const [agencyWorkspaces, setAgencyWorkspaces] = useState(() => readAgencyWorkspaces());
     const Platform = (localStorage.getItem("platform") == "gdpr") ? "Intastellar Consents | CMP" : "Ferry Booking";
 
@@ -568,6 +568,7 @@ export default function Header(props) {
                                                 onClick={() => {
                                                     setActiveWorkspace(null);
                                                     setCurrentWorkspace(null);
+                                                    clearWorkspaceFilter();
                                                     setCurrentDomain("combined view");
                                                     setGlobalDomain("combined view");
                                                     navigateWithDomain(history, platformId, "combined view", location.pathname);

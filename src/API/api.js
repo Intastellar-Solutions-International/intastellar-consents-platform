@@ -80,7 +80,7 @@ const API = {
         },
         getInteractions: {
             url: `${PrimaryHost}/analytics/gdpr/getInteractions`,
-            method: "GET",
+            method: "POST",
             headers: {
                 "Authorization": Authentication.getToken(),
                 "Organisation": Authentication.getOrganisation(),
@@ -89,7 +89,7 @@ const API = {
         },
         getInteractionsByCountry: {
             url: `${PrimaryHost}/analytics/gdpr/interactionsByCountry`,
-            method: "GET",
+            method: "POST",
             headers: {
                 "Authorization": Authentication.getToken(),
                 "Organisation": Authentication.getOrganisation(),
@@ -225,7 +225,7 @@ const API = {
         },
         observedCookies: {
             url: `${PrimaryHost}/cmp/observed-cookies`,
-            method: "GET",
+            method: "POST",
             headers: {
                 "Authorization": Authentication.getToken(),
                 "Organisation": Authentication.getOrganisation(),

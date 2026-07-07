@@ -51,10 +51,17 @@ const Redirect = window.ReactRouterDOM.Redirect;
 export const OrganisationContext = createContext(localStorage.getItem("organisation"));
 export const AllOrg = createContext(null);
 export const DomainContext = createContext(null);
+export const WorkspaceContext = createContext([null, () => {}]);
 
 export default function App() {
     const [dashboardView, setDashboardView] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
     const [organisation, setOrganisation] = useState((localStorage.getItem("organisation")) ? localStorage.getItem("organisation") : null);
+    const [activeWorkspace, setActiveWorkspace] = useState(() => {
+        try {
+            const s = localStorage.getItem("current_workspace");
+            return s ? JSON.parse(s) : null;
+        } catch { return null; }
+    });
     const [currentDomain, setCurrentDomain] = useState("combined view");
     const [organisations, setOrganisations] = useState(null);
     const [domains, setDomains] = useState(null);
@@ -174,6 +181,7 @@ export default function App() {
                 <>
                     <Router>
                         <OrganisationContext.Provider value={[organisation, setOrganisation]}>
+                            <WorkspaceContext.Provider value={[activeWorkspace, setActiveWorkspace]}>
                             <DomainContext.Provider value={[currentDomain, setCurrentDomain]}>
                                 <ErrorBoundary>
                                     {id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
@@ -410,6 +418,7 @@ export default function App() {
                                     <Footer />
                                 </ErrorBoundary>
                             </DomainContext.Provider>
+                            </WorkspaceContext.Provider>
                         </OrganisationContext.Provider>
                         <Route path="/check">
                             <div className="cookieCheckContainer">

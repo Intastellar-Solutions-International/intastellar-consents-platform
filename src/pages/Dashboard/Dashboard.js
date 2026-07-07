@@ -4,13 +4,12 @@ import { Loading, LoadingBar } from "../../Components/widget/Loading";
 
 import "./Style.css";
 import Map from "../../Components/Charts/WorldMap/WorldMap.js";
-import { DomainContext, OrganisationContext } from "../../App.js";
+import { DomainContext, OrganisationContext, WorkspaceContext } from "../../App.js";
 import {
     reportsPath,
     consentsDomainFromRoute,
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
-import { getWorkspaceFilter } from "../../components/header/header.js";
 import {
     isDomainVerified,
     isVerificationExpired,
@@ -39,6 +38,7 @@ export default function Dashboard(props) {
     document.title = "Home | Intastellar Consents | CMP";
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
+    const [activeWorkspace] = useContext(WorkspaceContext);
     const subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
     const userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
 
@@ -91,16 +91,14 @@ export default function Dashboard(props) {
     let method = API[id].getInteractions.method;
     let header = API[id].getInteractions.headers;
 
-    // Determine which domains to pass to API
-    const workspaceFilter = getWorkspaceFilter();
-    const routeDomain = handle ? handle : currentDomain;
+    const workspaceId = activeWorkspace?.id ?? null;
 
-    // If workspace filter is active and we're in combined view, pass workspace domains
-    // Otherwise, use the normal route-based domain
-    const domainsForApi = (workspaceFilter && (routeDomain === "combined view" || !routeDomain))
-        ? workspaceFilter.join(",")
-        : routeDomain;
-
+    // Always pass the user-selected domain (or "combined view") as-is.
+    // When a workspace is active, workspaceId is sent in the request body and
+    // the backend resolves which domains belong to that workspace itself.
+    const domainsForApi = useMemo(() => {
+        return (handle ? handle : currentDomain) || "combined view";
+    }, [handle, currentDomain]);
     API[id].getInteractions.headers.Domains = domainsForApi;
     API[id].getInteractionsByCountry.headers.Domains = domainsForApi;
     API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
@@ -211,6 +209,7 @@ export default function Dashboard(props) {
         fetch(API[id].getInteractions.url, {
             method: API[id].getInteractions.method,
             headers: API[id].getInteractions.headers,
+            body: JSON.stringify({ workspaceId }),
         }).then((res) => res.json()).then((data) => {
             if (data === "Err_Login_Expired") {
                 localStorage.removeItem("globals");
@@ -247,6 +246,7 @@ export default function Dashboard(props) {
         fetch(API[id].observedCookies.url, {
             method: API[id].observedCookies.method,
             headers: API[id].observedCookies.headers,
+            body: JSON.stringify({ workspaceId }),
         }).then((res) => res.json()).then((cookiesData) => {
             if (cookiesData === "Err_Login_Expired") {
                 localStorage.removeItem("globals");
@@ -261,6 +261,7 @@ export default function Dashboard(props) {
         fetch(API[id].getInteractionsByCountry.url, {
             method: API[id].getInteractionsByCountry.method,
             headers: API[id].getInteractionsByCountry.headers,
+            body: JSON.stringify({ workspaceId }),
         }).then((res) => res.json()).then((country) => {
             if (country === "Err_Login_Expired") {
                 localStorage.removeItem("globals");
@@ -275,7 +276,7 @@ export default function Dashboard(props) {
             setLoadingCountry(false);
         });
 
-    }, [fromDate, toDate, handle, compareRange, previousPeriod, previousPeriod2]);
+    }, [fromDate, toDate, handle, currentDomain, compareRange, previousPeriod, previousPeriod2, workspaceId]);
 
     document.querySelectorAll(".intInput").forEach((input) => {
         input.setAttribute("max", new Date().toISOString().split("T")[0]);
