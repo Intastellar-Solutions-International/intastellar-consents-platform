@@ -270,6 +270,7 @@ export default function Header(props) {
     );
     const [viewUserProfile, setViewUserProfile] = useState(false);
     const [activeWorkspace, setActiveWorkspace] = useState(() => getCurrentWorkspace());
+    const [agencyWorkspaces, setAgencyWorkspaces] = useState(() => readAgencyWorkspaces());
     const Platform = (localStorage.getItem("platform") == "gdpr") ? "Intastellar Consents | CMP" : "Ferry Booking";
 
 
@@ -293,6 +294,27 @@ export default function Header(props) {
             }
             setallOrganisations(data);
         });
+
+        // Fetch workspaces from backend so the profile switcher and domain
+        // dropdown always reflect the live DB state.
+        const wsOrgId = Authentication.getOrganisation();
+        if (wsOrgId && API.workspaces?.list?.url) {
+            fetch(API.workspaces.list.url, {
+                method: "GET",
+                headers: {
+                    "Authorization": Authentication.getToken(),
+                    "Organisation": String(wsOrgId),
+                    "Content-Type": "application/json",
+                },
+            })
+                .then((r) => r.ok ? r.json() : null)
+                .then((data) => {
+                    if (!data?.workspaces) return;
+                    setAgencyWorkspaces(data.workspaces);
+                    localStorage.setItem("agency_workspaces", JSON.stringify(data.workspaces));
+                })
+                .catch(() => {});
+        }
 
         const platformKey = resolveDomainsPlatformKey(API);
         const domainsApi = API[platformKey]?.getDomains;
@@ -383,8 +405,7 @@ export default function Header(props) {
 
         // For agency users, add client workspaces at the top
         if (hasAgencySubscription()) {
-            const workspaces = readAgencyWorkspaces();
-            if (workspaces.length > 0) {
+            if (agencyWorkspaces.length > 0) {
                 // Add workspaces header
                 domainList.push({
                     name: "Client Workspaces",
@@ -392,7 +413,7 @@ export default function Header(props) {
                     type: "separator"
                 });
                 // Add workspaces to the list
-                workspaces.forEach((ws) => {
+                agencyWorkspaces.forEach((ws) => {
                     const primaryDomain = getPrimaryDomainFromWorkspace(ws);
                     const domainCount = ws.domains?.length || 1;
                     domainList.push({
@@ -567,11 +588,28 @@ export default function Header(props) {
                         <img src={profileImage} className="content-img" onClick={() => setViewUserProfile(!viewUserProfile)} />
                     </div>
                 </div>
-                {(viewUserProfile) ? <IntastellarAccounts profile={{
-                    image: profileImage,
-                    name: JSON.parse(localStorage.getItem("globals"))?.user?.name?.firstName,
-                    email: JSON.parse(localStorage.getItem("globals"))?.user?.email,
-                }} setIsOpen={setViewUserProfile} /> : null}
+                {(viewUserProfile) ? <IntastellarAccounts
+                    profile={{
+                        image: profileImage,
+                        name: JSON.parse(localStorage.getItem("globals"))?.user?.name?.firstName,
+                        email: JSON.parse(localStorage.getItem("globals"))?.user?.email,
+                    }}
+                    workspaces={agencyWorkspaces}
+                    activeWorkspace={activeWorkspace}
+                    onWorkspaceSelect={(ws) => {
+                        setActiveWorkspace(ws);
+                        setCurrentWorkspace(ws);
+                        setWorkspaceFilter(ws.domains?.map((d) => d.domain) || []);
+                        setViewUserProfile(false);
+                    }}
+                    onWorkspaceClear={() => {
+                        setActiveWorkspace(null);
+                        setCurrentWorkspace(null);
+                        clearWorkspaceFilter();
+                        setViewUserProfile(false);
+                    }}
+                    setIsOpen={setViewUserProfile}
+                /> : null}
             </header>
         </>
     )

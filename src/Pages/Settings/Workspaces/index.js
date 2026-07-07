@@ -52,6 +52,7 @@ export default function Workspaces() {
     document.title = "Client Workspaces | Settings | Intastellar Consents | CMP";
 
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState(null);
     const [workspaces, setWorkspaces] = useState([]);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [modalWorkspace, setModalWorkspace] = useState(null);
@@ -79,19 +80,28 @@ export default function Workspaces() {
 
     // Load workspaces from backend on mount
     useEffect(() => {
-        if (!orgId) {
+        const id = Authentication.getOrganisation();
+        if (!id) {
             setLoading(false);
+            setLoadError("No organisation found. Please log in again.");
             return;
         }
+        setLoadError(null);
         fetch(API.workspaces.list.url, {
             method: "GET",
             headers: {
                 "Authorization": Authentication.getToken(),
-                "Organisation": String(orgId),
+                "Organisation": String(id),
                 "Content-Type": "application/json",
             },
         })
-            .then((res) => res.json())
+            .then(async (res) => {
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data?.error || `Server error (${res.status})`);
+                }
+                return data;
+            })
             .then((data) => {
                 const loaded = data.workspaces || [];
                 setWorkspaces(loaded);
@@ -100,12 +110,16 @@ export default function Workspaces() {
                 loaded.forEach((ws) => {
                     (ws.domains || []).forEach((d) => {
                         if (d.verification) {
-                            populateVerificationCache(d.domain, orgId, d.verification);
+                            populateVerificationCache(d.domain, id, d.verification);
                         }
                     });
                 });
             })
-            .catch(() => setWorkspaces([]))
+            .catch((err) => {
+                console.error("[Workspaces] load failed:", err);
+                setLoadError(err.message || "Failed to load workspaces.");
+                setWorkspaces([]);
+            })
             .finally(() => setLoading(false));
     }, []);
 
@@ -480,7 +494,11 @@ export default function Workspaces() {
                 <div className="settings-table-wrap">
                     {loading ? (
                         <CurrentPageLoading />
-                    ) : workspaces.length > 0 ? (
+                    ) : loadError ? (
+                        <p className="settings-subpage__status settings-subpage__status--error">{loadError}</p>
+                    ) : workspaces.length === 0 ? (
+                        <p className="settings-subpage__empty">No workspaces yet. Create one to get started.</p>
+                    ) : (
                         <table className="settings-table">
                             <thead>
                                 <tr>
@@ -536,10 +554,6 @@ export default function Workspaces() {
                                 ))}
                             </tbody>
                         </table>
-                    ) : (
-                        <p className="settings-subpage__empty">
-                            No client workspaces yet. Create one to start managing client domains.
-                        </p>
                     )}
                 </div>
             </main>

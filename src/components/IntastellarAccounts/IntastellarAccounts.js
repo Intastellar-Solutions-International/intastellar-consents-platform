@@ -46,6 +46,51 @@ export default function Account(props) {
                     </a>
                 </div>
 
+                {props.workspaces?.length > 0 && (
+                    <div className="ia-menu__workspace-panel ia-menu__workspace-panel--switcher" role="group" aria-labelledby="ia-ws-label">
+                        <span className="ia-menu__workspace-kicker" id="ia-ws-label">
+                            Client Workspaces
+                        </span>
+                        <ul className="ia-menu__ws-list" role="list">
+                            {props.workspaces.map((ws) => {
+                                const isActive = props.activeWorkspace?.id === ws.id;
+                                const primaryDomain = (ws.domains?.find((d) => d.isPrimary) || ws.domains?.[0])?.domain;
+                                return (
+                                    <li key={ws.id}>
+                                        <button
+                                            type="button"
+                                            className={`ia-menu__ws-item${isActive ? " ia-menu__ws-item--active" : ""}`}
+                                            onClick={() => isActive ? props.onWorkspaceClear() : props.onWorkspaceSelect(ws)}
+                                        >
+                                            <span className="ia-menu__ws-icon" aria-hidden="true">
+                                                {isActive ? "✓" : "○"}
+                                            </span>
+                                            <span className="ia-menu__ws-info">
+                                                <span className="ia-menu__ws-name">{ws.name}</span>
+                                                {primaryDomain && (
+                                                    <span className="ia-menu__ws-domain">{primaryDomain}</span>
+                                                )}
+                                            </span>
+                                            {ws.domains?.length > 1 && (
+                                                <span className="ia-menu__ws-count">{ws.domains.length}</span>
+                                            )}
+                                        </button>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                        {props.activeWorkspace && (
+                            <button
+                                type="button"
+                                className="ia-menu__ws-clear"
+                                onClick={props.onWorkspaceClear}
+                            >
+                                Exit workspace
+                            </button>
+                        )}
+                    </div>
+                )}
+
                 {Authentication.getOrganisation() == 1 ? (
                     <div className="ia-menu__workspace-panel" role="group" aria-labelledby="ia-workspace-section">
                         <div className="ia-menu__workspace-row">
