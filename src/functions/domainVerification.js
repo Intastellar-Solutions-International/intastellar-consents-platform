@@ -44,6 +44,38 @@ function authHeaders() {
 // ── Public API ────────────────────────────────────────────────────────────────
 
 /**
+ * Writes a verification record from an external source (e.g. workspace list
+ * response) into the local cache without hitting the backend.
+ * Only overwrites if the incoming data is newer or the cache is empty.
+ */
+export function populateVerificationCache(domain, organisationId, data) {
+    const verifications = getStoredVerifications();
+    const key = createKey(domain, organisationId);
+    const existing = verifications[key];
+
+    // Don't overwrite a more recent local check with stale backend data
+    if (
+        existing?.lastCheckedAt &&
+        data.lastCheckedAt &&
+        existing.lastCheckedAt >= data.lastCheckedAt
+    ) {
+        return;
+    }
+
+    verifications[key] = {
+        domain:              domain.toLowerCase(),
+        organisationId,
+        token:               data.token,
+        verified:            data.verified,
+        verifiedAt:          data.verifiedAt ?? null,
+        lastCheckedAt:       data.lastCheckedAt ?? null,
+        nextVerificationDue: data.nextVerificationDue ?? null,
+        createdAt:           data.createdAt ?? null,
+    };
+    saveVerifications(verifications);
+}
+
+/**
  * Reads the cached verification record for a domain (sync, for rendering).
  */
 export function getVerificationStatus(domain, organisationId) {
@@ -132,13 +164,47 @@ export async function getOrCreateVerificationRecord(domain, organisationId) {
  */
 export async function checkDomainVerification(domain, organisationId) {
     const domainLower = domain.toLowerCase();
+
+    // Always call /init directly (bypassing the localStorage cache) before
+    // checking. /init is idempotent — it returns the existing record if one
+    // exists in the DB. This self-heals the case where the localStorage was
+    // populated by the old simulation but the DB record never existed, or
+    // was lost. Without this, a cached-but-stale token would reach /check
+    // and get a 404.
+    try {
+        const initRes = await fetch(
+            `${PrimaryHost}/analytics/settings/domain-verification/v1/init`,
+            {
+                method: "POST",
+                headers: authHeaders(),
+                body: JSON.stringify({ domain: domainLower, organisationId }),
+            }
+        );
+        if (initRes.ok) {
+            const initData = await initRes.json();
+            const verifications = getStoredVerifications();
+            const key = createKey(domainLower, organisationId);
+            verifications[key] = {
+                domain:              initData.domain,
+                organisationId,
+                token:               initData.token,
+                verified:            initData.verified,
+                verifiedAt:          initData.verifiedAt,
+                lastCheckedAt:       initData.lastCheckedAt,
+                nextVerificationDue: initData.nextVerificationDue,
+                createdAt:           initData.createdAt,
+            };
+            saveVerifications(verifications);
+        }
+    } catch (_) { /* network error — proceed anyway, /check will give a clear error */ }
+
     const verifications = getStoredVerifications();
     const key = createKey(domainLower, organisationId);
 
-    if (!verifications[key]) {
+    if (!verifications[key]?.token) {
         return {
             success: false,
-            message: "No verification token found. Please generate a token first.",
+            message: "Could not create a verification token. Please try again.",
         };
     }
 
@@ -187,7 +253,12 @@ export async function checkDomainVerification(domain, organisationId) {
 export function getVerificationStatusLabel(domain, organisationId) {
     const status = getVerificationStatus(domain, organisationId);
 
-    if (!status || !status.verified) {
+    if (!status?.token) {
+        // No verification record exists yet — render nothing
+        return { label: "", type: "none", icon: "" };
+    }
+
+    if (!status.verified) {
         return { label: "Unverified", type: "unverified", icon: "?" };
     }
 

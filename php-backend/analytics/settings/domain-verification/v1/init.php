@@ -45,12 +45,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+// ── Debug mode ────────────────────────────────────────────────────────────────
+$_DEBUG  = isset($_GET['debug']) && $_GET['debug'] === '1';
+$_dbgLog = [];
+function dbg(string $k, $v): void { global $_dbgLog; $_dbgLog[$k] = $v; }
+
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 // ROOT_PATH = php-backend/  (4 levels up from analytics/settings/domain-verification/v1/)
 define('ROOT_PATH', dirname(__DIR__, 4));
+dbg('root_path', ROOT_PATH);
+dbg('root_path_exists', is_dir(ROOT_PATH));
+dbg('shared_db_exists', file_exists(ROOT_PATH . '/shared/db.php'));
 
 if (!getenv('DB_NAME') && !($_ENV['DB_NAME'] ?? null)) {
     $envFile = ROOT_PATH . '/.env';
+    dbg('env_file_path', $envFile);
+    dbg('env_file_exists', file_exists($envFile));
     if (file_exists($envFile)) {
         foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
             $line = trim($line);
@@ -65,6 +75,10 @@ if (!getenv('DB_NAME') && !($_ENV['DB_NAME'] ?? null)) {
         }
     }
 }
+dbg('db_host', getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? '(not set)'));
+dbg('db_name', getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? '(not set)'));
+dbg('db_user', getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? '(not set)'));
+dbg('db_pass_set', !empty(getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? '')));
 
 require_once ROOT_PATH . '/shared/db.php';
 
@@ -198,5 +212,12 @@ try {
 } catch (\Throwable $e) {
     error_log('[domain-verification/init] ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['error' => 'Internal server error']);
+    $resp = [
+        'error'  => 'Internal server error',
+        'detail' => $e->getMessage(),
+        'file'   => $e->getFile() . ':' . $e->getLine(),
+        'type'   => get_class($e),
+    ];
+    if ($_DEBUG) $resp['debug'] = $_dbgLog;
+    echo json_encode($resp);
 }

@@ -11,6 +11,7 @@ import {
     checkDomainVerification,
     isDomainVerified,
     getDaysUntilReverification,
+    populateVerificationCache,
 } from "../../../Functions/domainVerification";
 import "../Style.css";
 
@@ -91,7 +92,19 @@ export default function Workspaces() {
             },
         })
             .then((res) => res.json())
-            .then((data) => setWorkspaces(data.workspaces || []))
+            .then((data) => {
+                const loaded = data.workspaces || [];
+                setWorkspaces(loaded);
+                // Pre-populate verification cache so domain badges render
+                // correctly without waiting for the verify modal to open first.
+                loaded.forEach((ws) => {
+                    (ws.domains || []).forEach((d) => {
+                        if (d.verification) {
+                            populateVerificationCache(d.domain, orgId, d.verification);
+                        }
+                    });
+                });
+            })
             .catch(() => setWorkspaces([]))
             .finally(() => setLoading(false));
     }, []);
@@ -622,17 +635,19 @@ export default function Workspaces() {
                                                         {d.isPrimary && (
                                                             <span className="settings-workspace__primary-badge">Primary</span>
                                                         )}
-                                                        <span
-                                                            className={`settings-workspace__verify-badge settings-workspace__verify-badge--${verifyInfo.type}`}
-                                                            title={
-                                                                verifyInfo.type === "verified" && daysUntil != null
-                                                                    ? `Re-verification in ${daysUntil} days`
-                                                                    : verifyInfo.label
-                                                            }
-                                                        >
-                                                            <span className="settings-workspace__verify-icon">{verifyInfo.icon}</span>
-                                                            {verifyInfo.label}
-                                                        </span>
+                                                        {verifyInfo.type !== "none" && (
+                                                            <span
+                                                                className={`settings-workspace__verify-badge settings-workspace__verify-badge--${verifyInfo.type}`}
+                                                                title={
+                                                                    verifyInfo.type === "verified" && daysUntil != null
+                                                                        ? `Re-verification in ${daysUntil} days`
+                                                                        : verifyInfo.label
+                                                                }
+                                                            >
+                                                                <span className="settings-workspace__verify-icon">{verifyInfo.icon}</span>
+                                                                {verifyInfo.label}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <div className="settings-workspace__domain-actions">
                                                         <button
@@ -846,17 +861,19 @@ export default function Workspaces() {
                                                         {d.isPrimary && (
                                                             <span className="settings-workspace__primary-badge">Primary</span>
                                                         )}
-                                                        <span
-                                                            className={`settings-workspace__verify-badge settings-workspace__verify-badge--${verifyInfo.type}`}
-                                                            title={
-                                                                verifyInfo.type === "verified" && daysUntil != null
-                                                                    ? `Re-verification in ${daysUntil} days`
-                                                                    : verifyInfo.label
-                                                            }
-                                                        >
-                                                            <span className="settings-workspace__verify-icon">{verifyInfo.icon}</span>
-                                                            {verifyInfo.label}
-                                                        </span>
+                                                        {verifyInfo.type !== "none" && (
+                                                            <span
+                                                                className={`settings-workspace__verify-badge settings-workspace__verify-badge--${verifyInfo.type}`}
+                                                                title={
+                                                                    verifyInfo.type === "verified" && daysUntil != null
+                                                                        ? `Re-verification in ${daysUntil} days`
+                                                                        : verifyInfo.label
+                                                                }
+                                                            >
+                                                                <span className="settings-workspace__verify-icon">{verifyInfo.icon}</span>
+                                                                {verifyInfo.label}
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <div className="settings-workspace__domain-actions">
                                                         <button

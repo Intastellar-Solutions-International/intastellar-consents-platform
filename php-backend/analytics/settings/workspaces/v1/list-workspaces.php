@@ -136,13 +136,19 @@ try {
     $workspaceIds = array_column($workspaces, 'id');
     $placeholders = implode(',', array_fill(0, count($workspaceIds), '?'));
 
+    // LEFT JOIN domain_verifications so the frontend can show verification badges
+    // without a separate API call per domain.
     $domainStmt = $db->prepare(
-        "SELECT workspace_id, domain, is_primary, added_at
-         FROM workspace_domains
-         WHERE workspace_id IN ($placeholders)
-         ORDER BY is_primary DESC, added_at ASC"
+        "SELECT wd.workspace_id, wd.domain, wd.is_primary, wd.added_at,
+                dv.verification_token, dv.verified, dv.verified_at,
+                dv.last_checked_at, dv.next_verification_due
+         FROM workspace_domains wd
+         LEFT JOIN domain_verifications dv
+           ON dv.domain = wd.domain AND dv.organisation_id = ?
+         WHERE wd.workspace_id IN ($placeholders)
+         ORDER BY wd.is_primary DESC, wd.added_at ASC"
     );
-    $domainStmt->execute($workspaceIds);
+    $domainStmt->execute(array_merge([$organisationId], $workspaceIds));
     $allDomains = $domainStmt->fetchAll();
 
     $userStmt = $db->prepare(
@@ -154,13 +160,20 @@ try {
     $userStmt->execute($workspaceIds);
     $allUsers = $userStmt->fetchAll();
 
-    // Group by workspace_id
+    // Group by workspace_id, embedding verification status inline
     $domainsByWs = [];
     foreach ($allDomains as $d) {
         $domainsByWs[$d['workspace_id']][] = [
-            'domain'    => $d['domain'],
-            'isPrimary' => (bool)$d['is_primary'],
-            'addedAt'   => $d['added_at'],
+            'domain'       => $d['domain'],
+            'isPrimary'    => (bool)$d['is_primary'],
+            'addedAt'      => $d['added_at'],
+            'verification' => $d['verification_token'] !== null ? [
+                'token'               => $d['verification_token'],
+                'verified'            => (bool)$d['verified'],
+                'verifiedAt'          => $d['verified_at'],
+                'lastCheckedAt'       => $d['last_checked_at'],
+                'nextVerificationDue' => $d['next_verification_due'],
+            ] : null,
         ];
     }
 
