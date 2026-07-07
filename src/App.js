@@ -352,11 +352,18 @@ export default function App() {
                                         <Route path="/settings/workspaces">
                                             <ErrorBoundary>
                                                 {(() => {
-                                                    const org = JSON.parse(localStorage.getItem("organisation"));
-                                                    const role = Authentication.getOrganisationAccessStatusForOrganisation(org.id);
+                                                    const orgRaw = localStorage.getItem("organisation");
+                                                    let org = null;
+                                                    try {
+                                                        org = JSON.parse(orgRaw);
+                                                    } catch {
+                                                        /* not JSON */
+                                                    }
+                                                    const role = org?.id ? Authentication.getOrganisationAccessStatusForOrganisation(org.id) : null;
                                                     const isAdminRole = role === "admin" || role === "super-admin";
                                                     const sub = localStorage.getItem("subscription");
-                                                    const hasAgency = (org?.id === 1) || (sub && JSON.parse(sub)?.subscription === "agency");
+                                                    // Compare ID as string to handle both number and string formats
+                                                    const hasAgency = (org?.id != null && String(org.id) === "1") || (sub && JSON.parse(sub)?.subscription === "agency");
                                                     return isAdminRole && hasAgency ? <Workspaces /> : <p style={{ padding: "40px", color: "#999" }}>Agency subscription required to access client workspaces.</p>;
                                                 })()}
                                             </ErrorBoundary>

@@ -35159,12 +35159,19 @@ function App() {
         path: "/settings/blacklist-ip"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, function (_JSON$parse2) {
-        var org = JSON.parse(localStorage.getItem("organisation"));
-        var role = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(org.id);
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, function (_org, _org2, _JSON$parse2) {
+        var orgRaw = localStorage.getItem("organisation");
+        var org = null;
+        try {
+          org = JSON.parse(orgRaw);
+        } catch (_unused2) {
+          /* not JSON */
+        }
+        var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
         var sub = localStorage.getItem("subscription");
-        var hasAgency = (org === null || org === void 0 ? void 0 : org.id) === 1 || sub && ((_JSON$parse2 = JSON.parse(sub)) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.subscription) === "agency";
+        // Compare ID as string to handle both number and string formats
+        var hasAgency = ((_org2 = org) === null || _org2 === void 0 ? void 0 : _org2.id) != null && String(org.id) === "1" || sub && ((_JSON$parse2 = JSON.parse(sub)) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.subscription) === "agency";
         return isAdminRole && hasAgency ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_39__["default"], null) : /*#__PURE__*/React.createElement("p", {
           style: {
             padding: "40px",
