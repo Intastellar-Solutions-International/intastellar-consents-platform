@@ -117,12 +117,33 @@ function readAgencyWorkspaces() {
     try {
         const stored = localStorage.getItem("agency_workspaces");
         if (stored) {
-            return JSON.parse(stored);
+            const workspaces = JSON.parse(stored);
+            // Migrate old single-domain workspaces to multi-domain format
+            return workspaces.map((ws) => {
+                if (ws.domain && !ws.domains) {
+                    return {
+                        ...ws,
+                        domains: [{ domain: ws.domain, isPrimary: true }],
+                    };
+                }
+                return ws;
+            });
         }
     } catch {
         /* ignore */
     }
     return [];
+}
+
+/**
+ * Get primary domain from a workspace
+ */
+function getPrimaryDomainFromWorkspace(ws) {
+    if (!ws.domains || ws.domains.length === 0) {
+        return ws.domain || null;
+    }
+    const primary = ws.domains.find((d) => d.isPrimary);
+    return primary?.domain || ws.domains[0]?.domain || null;
 }
 
 /*
@@ -244,12 +265,16 @@ export default function Header(props) {
             });
             // Add workspaces to the list
             workspaces.forEach((ws) => {
+                const primaryDomain = getPrimaryDomainFromWorkspace(ws);
+                const domainCount = ws.domains?.length || 1;
                 domainList.push({
                     icon: null,
-                    name: ws.domain,
+                    name: primaryDomain || ws.name,
                     label: ws.name,
+                    sublabel: domainCount > 1 ? `${domainCount} domains` : primaryDomain,
                     type: "workspace",
-                    workspaceId: ws.id
+                    workspaceId: ws.id,
+                    workspaceData: ws
                 });
             });
         }
@@ -319,8 +344,12 @@ export default function Header(props) {
 
                                             // Track workspace selection
                                             if (parsed.type === "workspace") {
-                                                const workspaces = readAgencyWorkspaces();
-                                                const ws = workspaces.find(w => w.id === parsed.id);
+                                                // Use workspaceData if available, otherwise fetch from storage
+                                                let ws = parsed.workspaceData;
+                                                if (!ws) {
+                                                    const workspaces = readAgencyWorkspaces();
+                                                    ws = workspaces.find(w => w.id === parsed.id);
+                                                }
                                                 if (ws) {
                                                     setActiveWorkspace(ws);
                                                     setCurrentWorkspace(ws);
@@ -339,6 +368,11 @@ export default function Header(props) {
                                         <div className="workspace-indicator">
                                             <span className="workspace-indicator__badge">Workspace</span>
                                             <span className="workspace-indicator__name">{activeWorkspace.name}</span>
+                                            {activeWorkspace.domains?.length > 1 && (
+                                                <span className="workspace-indicator__domains">
+                                                    {activeWorkspace.domains.length} domains
+                                                </span>
+                                            )}
                                             <button
                                                 className="workspace-indicator__exit"
                                                 onClick={() => {

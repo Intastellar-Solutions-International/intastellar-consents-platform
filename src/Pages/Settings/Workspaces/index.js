@@ -22,7 +22,17 @@ function getStoredWorkspaces() {
     try {
         const stored = localStorage.getItem("agency_workspaces");
         if (stored) {
-            return JSON.parse(stored);
+            const workspaces = JSON.parse(stored);
+            // Migrate old single-domain workspaces to multi-domain format
+            return workspaces.map((ws) => {
+                if (ws.domain && !ws.domains) {
+                    return {
+                        ...ws,
+                        domains: [{ domain: ws.domain, isPrimary: true }],
+                    };
+                }
+                return ws;
+            });
         }
     } catch {
         /* ignore */
@@ -48,6 +58,13 @@ function isValidEmail(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+/**
+ * Validate domain format
+ */
+function isValidDomain(domain) {
+    return /^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/.test(domain);
+}
+
 export default function Workspaces() {
     document.title = "Client Workspaces | Settings | Intastellar Consents | CMP";
 
@@ -58,8 +75,9 @@ export default function Workspaces() {
 
     // Form fields
     const [editName, setEditName] = useState("");
-    const [editDomain, setEditDomain] = useState("");
     const [editDescription, setEditDescription] = useState("");
+    const [editDomains, setEditDomains] = useState([]);
+    const [newDomain, setNewDomain] = useState("");
     const [editUsers, setEditUsers] = useState([]);
     const [newUserEmail, setNewUserEmail] = useState("");
 
@@ -82,8 +100,9 @@ export default function Workspaces() {
         setShowCreateModal(false);
         setModalWorkspace(null);
         setEditName("");
-        setEditDomain("");
         setEditDescription("");
+        setEditDomains([]);
+        setNewDomain("");
         setEditUsers([]);
         setNewUserEmail("");
         setModalError(null);
@@ -104,8 +123,9 @@ export default function Workspaces() {
     function openCreateModal() {
         setShowCreateModal(true);
         setEditName("");
-        setEditDomain("");
         setEditDescription("");
+        setEditDomains([]);
+        setNewDomain("");
         setEditUsers([]);
         setNewUserEmail("");
         setModalError(null);
@@ -115,8 +135,9 @@ export default function Workspaces() {
     function openEditModal(workspace) {
         setModalWorkspace(workspace);
         setEditName(workspace?.name ?? "");
-        setEditDomain(workspace?.domain ?? "");
         setEditDescription(workspace?.description ?? "");
+        setEditDomains(workspace?.domains ?? []);
+        setNewDomain("");
         setEditUsers(workspace?.users ?? []);
         setNewUserEmail("");
         setModalError(null);
@@ -129,6 +150,56 @@ export default function Workspaces() {
         return role === "admin" || role === "super-admin";
     }
 
+    // Domain management
+    function addDomain() {
+        const domain = newDomain.trim().toLowerCase();
+        if (!domain) {
+            setModalError("Enter a domain.");
+            return;
+        }
+        if (!isValidDomain(domain)) {
+            setModalError("Enter a valid domain (e.g., client-site.com).");
+            return;
+        }
+        if (editDomains.some((d) => d.domain.toLowerCase() === domain)) {
+            setModalError("This domain has already been added.");
+            return;
+        }
+        // Check across all workspaces for duplicate domains
+        const allExistingDomains = workspaces
+            .filter((ws) => !modalWorkspace || ws.id !== modalWorkspace.id)
+            .flatMap((ws) => ws.domains || [])
+            .map((d) => d.domain.toLowerCase());
+        if (allExistingDomains.includes(domain)) {
+            setModalError("This domain is already assigned to another workspace.");
+            return;
+        }
+
+        const isPrimary = editDomains.length === 0;
+        setEditDomains([...editDomains, { domain, isPrimary, addedAt: new Date().toISOString() }]);
+        setNewDomain("");
+        setModalError(null);
+    }
+
+    function removeDomain(domain) {
+        const updated = editDomains.filter((d) => d.domain.toLowerCase() !== domain.toLowerCase());
+        // If we removed the primary, make the first remaining one primary
+        if (updated.length > 0 && !updated.some((d) => d.isPrimary)) {
+            updated[0].isPrimary = true;
+        }
+        setEditDomains(updated);
+    }
+
+    function setPrimaryDomain(domain) {
+        setEditDomains(
+            editDomains.map((d) => ({
+                ...d,
+                isPrimary: d.domain.toLowerCase() === domain.toLowerCase(),
+            }))
+        );
+    }
+
+    // User management
     function addUser() {
         const email = newUserEmail.trim().toLowerCase();
         if (!email) {
@@ -155,29 +226,13 @@ export default function Workspaces() {
     function handleCreate(e) {
         e.preventDefault();
         const name = editName.trim();
-        const domain = editDomain.trim();
 
         if (!name) {
             setModalError("Enter a workspace name.");
             return;
         }
-        if (!domain) {
-            setModalError("Enter a client domain.");
-            return;
-        }
-
-        // Basic domain validation
-        if (!/^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/.test(domain)) {
-            setModalError("Enter a valid domain (e.g., client-site.com).");
-            return;
-        }
-
-        // Check for duplicate domain
-        const existingDomain = workspaces.find(
-            (ws) => ws.domain.toLowerCase() === domain.toLowerCase()
-        );
-        if (existingDomain) {
-            setModalError("A workspace with this domain already exists.");
+        if (editDomains.length === 0) {
+            setModalError("Add at least one domain to the workspace.");
             return;
         }
 
@@ -189,8 +244,8 @@ export default function Workspaces() {
             const newWorkspace = {
                 id: generateId(),
                 name: name,
-                domain: domain,
                 description: editDescription.trim(),
+                domains: editDomains,
                 users: editUsers,
                 createdAt: new Date().toISOString(),
                 createdBy: Authentication.getUserId(),
@@ -211,29 +266,13 @@ export default function Workspaces() {
         if (!modalWorkspace) return;
 
         const name = editName.trim();
-        const domain = editDomain.trim();
 
         if (!name) {
             setModalError("Enter a workspace name.");
             return;
         }
-        if (!domain) {
-            setModalError("Enter a client domain.");
-            return;
-        }
-
-        // Basic domain validation
-        if (!/^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/.test(domain)) {
-            setModalError("Enter a valid domain (e.g., client-site.com).");
-            return;
-        }
-
-        // Check for duplicate domain (excluding current workspace)
-        const existingDomain = workspaces.find(
-            (ws) => ws.id !== modalWorkspace.id && ws.domain.toLowerCase() === domain.toLowerCase()
-        );
-        if (existingDomain) {
-            setModalError("A workspace with this domain already exists.");
+        if (editDomains.length === 0) {
+            setModalError("Add at least one domain to the workspace.");
             return;
         }
 
@@ -248,8 +287,8 @@ export default function Workspaces() {
                     ? {
                           ...ws,
                           name: name,
-                          domain: domain,
                           description: editDescription.trim(),
+                          domains: editDomains,
                           users: editUsers,
                           updatedAt: new Date().toISOString(),
                       }
@@ -281,7 +320,86 @@ export default function Workspaces() {
         }, 500);
     }
 
-    // User list component used in both modals
+    // Get primary domain for display
+    function getPrimaryDomain(ws) {
+        const primary = ws.domains?.find((d) => d.isPrimary);
+        return primary?.domain || ws.domains?.[0]?.domain || ws.domain || "—";
+    }
+
+    // Domain list component
+    const DomainManagementSection = () => (
+        <div className="settings-workspace__domains-section">
+            <label className="settings-org-modal__label">
+                Domains
+            </label>
+            <div className="settings-workspace__domains-add">
+                <input
+                    type="text"
+                    className="settings-org-modal__text-input settings-workspace__domain-input"
+                    placeholder="e.g., client-site.com"
+                    value={newDomain}
+                    onChange={(e) => setNewDomain(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            addDomain();
+                        }
+                    }}
+                    disabled={!!pending}
+                />
+                <button
+                    type="button"
+                    className="settings-workspace__add-domain-btn"
+                    onClick={addDomain}
+                    disabled={!!pending}
+                >
+                    Add
+                </button>
+            </div>
+            {editDomains.length > 0 ? (
+                <ul className="settings-workspace__domains-list">
+                    {editDomains.map((d) => (
+                        <li key={d.domain} className="settings-workspace__domain-item">
+                            <div className="settings-workspace__domain-info">
+                                <span className="settings-workspace__domain-name">{d.domain}</span>
+                                {d.isPrimary && (
+                                    <span className="settings-workspace__primary-badge">Primary</span>
+                                )}
+                            </div>
+                            <div className="settings-workspace__domain-actions">
+                                {!d.isPrimary && (
+                                    <button
+                                        type="button"
+                                        className="settings-workspace__set-primary-btn"
+                                        onClick={() => setPrimaryDomain(d.domain)}
+                                        disabled={!!pending}
+                                        title="Set as primary"
+                                    >
+                                        Set primary
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    className="settings-workspace__remove-domain-btn"
+                                    onClick={() => removeDomain(d.domain)}
+                                    disabled={!!pending}
+                                    title="Remove domain"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p className="settings-workspace__no-domains">
+                    No domains added yet. Add at least one domain above.
+                </p>
+            )}
+        </div>
+    );
+
+    // User list component
     const UserManagementSection = () => (
         <div className="settings-workspace__users-section">
             <label className="settings-org-modal__label">
@@ -355,8 +473,8 @@ export default function Workspaces() {
                             className="settings-subpage__intro"
                             style={{ margin: 0, flex: "1 1 280px" }}
                         >
-                            Manage client workspaces for your agency. Each workspace represents
-                            a client domain you manage on behalf of your clients.
+                            Manage client workspaces for your agency. Each workspace can contain
+                            multiple domains for clients with multiple sites.
                         </p>
                         <button className="cta" onClick={openCreateModal}>
                             Create workspace
@@ -377,7 +495,7 @@ export default function Workspaces() {
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Domain</th>
+                                    <th>Domains</th>
                                     <th>Users</th>
                                     <th>Description</th>
                                     <th style={{ width: 140 }}>Actions</th>
@@ -388,9 +506,16 @@ export default function Workspaces() {
                                     <tr key={ws.id}>
                                         <td>{ws.name}</td>
                                         <td>
-                                            <span className="settings-workspace__domain">
-                                                {ws.domain}
-                                            </span>
+                                            <div className="settings-workspace__domains-cell">
+                                                <span className="settings-workspace__domain">
+                                                    {getPrimaryDomain(ws)}
+                                                </span>
+                                                {(ws.domains?.length || 0) > 1 && (
+                                                    <span className="settings-workspace__domain-count">
+                                                        +{ws.domains.length - 1} more
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td>
                                             <span className="settings-workspace__user-count">
@@ -454,27 +579,9 @@ export default function Workspaces() {
                                     id="ws-create-name"
                                     className="settings-org-modal__text-input"
                                     type="text"
-                                    placeholder="e.g., Acme Corp Website"
+                                    placeholder="e.g., Acme Corp"
                                     value={editName}
                                     onChange={(e) => setEditName(e.target.value)}
-                                    autoComplete="off"
-                                    disabled={!!pending}
-                                />
-                            </div>
-                            <div className="settings-org-modal__field-block">
-                                <label
-                                    className="settings-org-modal__label"
-                                    htmlFor="ws-create-domain"
-                                >
-                                    Client domain
-                                </label>
-                                <input
-                                    id="ws-create-domain"
-                                    className="settings-org-modal__text-input"
-                                    type="text"
-                                    placeholder="e.g., acme-corp.com"
-                                    value={editDomain}
-                                    onChange={(e) => setEditDomain(e.target.value)}
                                     autoComplete="off"
                                     disabled={!!pending}
                                 />
@@ -490,7 +597,7 @@ export default function Workspaces() {
                                     id="ws-create-desc"
                                     className="settings-org-modal__text-input"
                                     type="text"
-                                    placeholder="e.g., Main marketing website"
+                                    placeholder="e.g., All websites for Acme Corp"
                                     value={editDescription}
                                     onChange={(e) => setEditDescription(e.target.value)}
                                     autoComplete="off"
@@ -498,6 +605,7 @@ export default function Workspaces() {
                                 />
                             </div>
 
+                            <DomainManagementSection />
                             <UserManagementSection />
 
                             {modalError && (
@@ -564,23 +672,6 @@ export default function Workspaces() {
                             <div className="settings-org-modal__field-block">
                                 <label
                                     className="settings-org-modal__label"
-                                    htmlFor="ws-edit-domain"
-                                >
-                                    Client domain
-                                </label>
-                                <input
-                                    id="ws-edit-domain"
-                                    className="settings-org-modal__text-input"
-                                    type="text"
-                                    value={editDomain}
-                                    onChange={(e) => setEditDomain(e.target.value)}
-                                    autoComplete="off"
-                                    disabled={!!pending}
-                                />
-                            </div>
-                            <div className="settings-org-modal__field-block">
-                                <label
-                                    className="settings-org-modal__label"
                                     htmlFor="ws-edit-desc"
                                 >
                                     Description (optional)
@@ -596,6 +687,7 @@ export default function Workspaces() {
                                 />
                             </div>
 
+                            <DomainManagementSection />
                             <UserManagementSection />
 
                             {modalError && (
@@ -628,8 +720,8 @@ export default function Workspaces() {
                         <hr className="settings-org-modal__divider" />
                         <p className="settings-org-modal__danger-title">Danger zone</p>
                         <p className="settings-org-modal__danger-desc">
-                            Deleting this workspace removes it from your agency. This action
-                            cannot be undone.
+                            Deleting this workspace removes it and all its domains from your agency.
+                            This action cannot be undone.
                         </p>
                         {!deleteConfirm ? (
                             <div className="settings-blacklist-modal__actions">

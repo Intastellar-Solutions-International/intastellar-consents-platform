@@ -19467,6 +19467,14 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.dashboard-header {
     white-space: nowrap;
 }
 
+.workspace-indicator__domains {
+    font-size: 0.6875rem;
+    color: rgba(192, 159, 83, 0.9);
+    padding: 2px 6px;
+    background: rgba(192, 159, 83, 0.15);
+    border-radius: 4px;
+}
+
 .workspace-indicator__exit {
     display: flex;
     align-items: center;
@@ -19502,7 +19510,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.dashboard-header {
     .workspace-indicator__badge {
         display: none;
     }
-}`, "",{"version":3,"sources":["webpack://./src/Components/Header/header.css"],"names":[],"mappings":"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","sourcesContent":[".dashboard-header {\n    width: 100%;\n    max-height: 66px;\n    position: fixed;\n    top: 0;\n    left: 0;\n    z-index: 101;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 25px 0px 0px;\n    background-color: rgb(63, 63, 63);\n    color: rgb(197, 197, 197);\n    border-bottom: 1px solid rgb(95, 95, 95);\n}\n\n.dashboard-profile {\n    display: grid;\n    grid-template-columns: 1fr min-content;\n    align-items: center;\n    justify-content: space-between;\n    width: 100%;\n    font-size: 19px;\n    padding: 10px;\n}\n\n.flex {\n    display: flex;\n    align-items: center;\n}\n\n.profileImage {\n    width: 50px;\n}\n\n.clock {\n    color: rgb(197, 197, 197);\n    margin: 0;\n}\n\n.dashboard-name {\n    font-size: 14px;\n    cursor: pointer;\n    margin: 0;\n}\n\n.dashboard-header>.dashboard-profile .content-img {\n    margin: 0;\n    width: 50px;\n    height: 50px;\n    border-width: 2.5px;\n    border-radius: 50%;\n    object-fit: cover;\n    margin-left: auto;\n}\n\n.dashboard-logo {\n    height: 56px;\n    text-align: left;\n    margin-right: 30px;\n    object-fit: contain;\n    object-position: 0;\n    position: relative;\n}\n\n.sidebar {\n    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);\n    width: 65px;\n}\n\n.collapsed {\n    width: 65px;\n    height: calc(100vh - 88px);\n\n    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);\n    display: flex;\n    flex-direction: column;\n    position: fixed;\n\n    min-height: calc(100vh - 66px);\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);\n    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);\n}\n\n.divider {\n    padding: 0 0 0 20px;\n}\n\n.platform-view {\n    padding: 0 20px;\n    display: inline-block;\n    border-right: 1px solid;\n    padding-right: 10px;\n    margin-right: 10px;\n}\n\n.collapsed .hiddenCollapsed {\n    opacity: 0;\n    width: 0;\n    visibility: hidden;\n    transition: all .25s ease-in-out;\n}\n\n.sidebar:hover,\n.sidebar:hover>.collapsed,\n.sidebar.expand,\n.collapsed.expand {\n    min-width: 231px;\n    width: auto;\n}\n\n.navOverlay {\n    display: flex;\n    z-index: 103;\n    position: relative;\n}\n\n.navOverlay.expand {\n    display: flex;\n}\n\n.collapsed nav {\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    min-height: 0;\n}\n\n.sidebar__heading {\n    margin: 0;\n    padding: 18px 14px 12px;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.45);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.sidebar__list {\n    list-style: none;\n    margin: 0;\n    padding: 0px;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n}\n\n.sidebar__item {\n    margin: 0;\n    padding: 0;\n}\n\n.collapsed .navItems,\n.collapsed .sidebar__link {\n    color: rgba(255, 255, 255, 0.88);\n    display: flex;\n    gap: 10px;\n    width: 100%;\n    padding: 12px 10px;\n    overflow: hidden;\n    align-items: center;\n    justify-content: flex-start;\n    white-space: nowrap;\n    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;\n    text-decoration: none;\n    box-sizing: border-box;\n}\n\n.navItems.--active,\n.sidebar__link.--active {\n    background: rgba(255, 255, 255, 0.08);\n    color: rgb(255, 255, 255);\n    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);\n}\n\n.navItems:hover:not(.--active),\n.sidebar__link:hover:not(.--active) {\n    background-color: rgba(255, 255, 255, 0.06);\n    color: rgb(255, 255, 255);\n}\n\n.collapsed:hover .navItems,\n.collapsed:hover .sidebar__link,\n.collapsed.expand a.navItems,\n.collapsed.expand a.sidebar__link {\n    width: 100%;\n}\n\n.collapsed:hover nav,\n.collapsed.expand nav {\n    width: 150px;\n}\n\n.collapsed.expand .hiddenCollapsed,\n.collapsed:hover .hiddenCollapsed {\n    opacity: 1;\n    width: auto;\n    visibility: visible;\n}\n\n.dashboard-icons {\n    width: 25px;\n    height: 25px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.dashboard-icons:after{\n\n}\n\n.dashboard-icons::after {\n    content: \"\";\n    font-style: normal;\n    font-size: 20px;\n    display: block;\n    width: 20px;\n    height: 20px;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.secondary{\n    background-color: transparent;\n    border: 1px solid #fff;\n    color: #fff;\n    font-size: 14px;\n    width: 30px;\n    height: 30px;\n    border-radius: 5px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0;\n    margin-left: 10px;\n}\n\n/* .dashboard-icons[data-icon]::after {\n    content: \"\";\n    background: url();\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    width: 20px;\n    height: 20px;\n} */\n\n/* .reports::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.compare::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.home::after {\n    content: \"\";\n    background: url(\"icons/home.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.user-consents::after {\n    content: \"\";\n    background: url(\"icons/user-consents.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.domains::after {\n    content: \"\";\n    background: url(\"icons/domain.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.settings::after {\n    content: \"\";\n    background: url(\"icons/settings.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.cookies {\n    content: \"\";\n    background: url(\"icons/cookies.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.logout::after {\n    content: \"\";\n    background: url(\"icons/Logout.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n} */\n\n.expandBtn {\n    float: right;\n    padding: 10px;\n    margin: 10px 0px;\n    border: none;\n    background: transparent;\n    color: #fff;\n\n    display: flex;\n    align-items: center;\n    justify-content: end;\n    cursor: pointer;\n}\n\n.navItems--bottom {\n    margin-top: auto;\n}\n\n.navLogout {\n    margin-top: auto;\n    background: transparent;\n    border: none;\n    width: 100%;\n    color: #fff;\n    padding: 30px 15px;\n    font-size: 15px;\n    text-align: center;\n    border-top: 1px solid #636363;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n}\n\n.dashboard-organisationSelector {\n    border: none;\n    padding: 0px 17px;\n    background: transparent;\n    color: #fff;\n    font-size: 12px;\n    appearance: none;\n    -webkit-appearance: none;\n    position: relative;\n}\n\n.dashboard-organisationSelector:focus,\n.dashboard-organisationSelector:focus-within,\n.dashboard-organisationSelector:focus-visible {\n    outline: none;\n}\n\n.dashboard-organisationContainer {\n    position: relative;\n}\n\n.dashboard-profile__nameContainer {\n    width: 250px;\n    margin-right: 20px;\n    text-align: right;\n}\n\n.arrowRight {\n    width: 10px;\n    height: 10px;\n    display: inline-block;\n    margin-left: 10px;\n\n}\n\n.company_container {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n\n.company_container .selectorContianer,\n.company_container .selector-container {\n    margin-right: 16px;\n    min-width: 0;\n}\n\n.company_container .selectorContianer:last-child,\n.company_container .selector-container:last-child {\n    margin-right: 0;\n}\n\n.selector.selector--placeholder {\n    min-height: 36px;\n    min-width: 120px;\n    visibility: hidden;\n    pointer-events: none;\n}\n\n.logo_container {\n    display: flex;\n    align-items: center\n}\n\n.logo-selector-container {\n    display: flex;\n    align-items: center;\n}\n\n.menu {\n    display: none;\n}\n\n.dashboard-content h1{\n    display: flex;\n}\n\n.sticky-title {\n    font-size: 1.5em;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .dashboard-header {\n        width: 100%;\n        max-height: none;\n        padding: 0 8px 0 4px;\n    }\n\n    .main-grid {\n        padding-top: 158px;\n    }\n\n    .menu {\n        display: block;\n        padding: 8px 10px;\n        margin-right: 2px;\n        cursor: pointer;\n        background-color: transparent;\n        border: none;\n        color: #fff;\n        border-radius: 8px;\n        transition: background-color 0.2s ease;\n    }\n\n    .menu:focus-visible {\n        outline: 2px solid rgba(192, 159, 83, 0.6);\n        outline-offset: 2px;\n    }\n\n    .menu:active {\n        background-color: rgba(255, 255, 255, 0.06);\n    }\n\n    .menu-bar {\n        width: 22px;\n        height: 2px;\n        background-color: rgba(255, 255, 255, 0.92);\n        margin: 5px auto;\n        transition: all 0.3s ease-in-out;\n        border-radius: 2px;\n    }\n\n    .dashboard-profile {\n        display: grid;\n        grid-template-columns: 1fr auto;\n        grid-template-rows: auto auto;\n        align-items: start;\n        gap: 10px 10px;\n        padding: 8px 4px 10px 8px;\n        width: 100%;\n    }\n\n    .logo-selector-container {\n        display: contents;\n    }\n\n    .logo_container {\n        grid-column: 1;\n        grid-row: 1;\n        display: flex;\n        align-items: center;\n        gap: 2px;\n        min-width: 0;\n    }\n\n    .company_container {\n        grid-column: 1 / -1;\n        grid-row: 2;\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 8px;\n        width: 100%;\n        max-width: 100%;\n        padding-bottom: 0;\n        padding-right: 0;\n        align-items: stretch;\n        justify-content: stretch;\n    }\n\n    .company_container .selectorContianer,\n    .company_container .selector-container {\n        margin-right: 0;\n        width: 100%;\n        min-width: 0;\n    }\n\n    .dashboard-profile > .flex.profileImage {\n        grid-column: 2;\n        grid-row: 1;\n        justify-self: end;\n        align-self: start;\n    }\n\n    .dashboard-logo {\n        height: 44px;\n        margin-right: 0;\n        max-width: min(200px, calc(100vw - 120px));\n    }\n\n    .grid-3 {\n        grid-template-columns: 1fr;\n    }\n\n    .grid-container {\n        display: block;\n    }\n\n    .dashboard-profile__nameContainer {\n        width: auto;\n    }\n\n    .navOverlay {\n        display: none;\n    }\n\n    .sidebar .collapsed{\n        width: 300px;\n        min-height: calc(100vh - 200px);\n    }\n\n    .sidebar:hover,\n    .sidebar:hover>.collapsed,\n    .sidebar.expand,\n    .collapsed.expand{\n        width: 300px;\n    }\n\n    .collapsed .hiddenCollapsed{\n        opacity: 1;\n        width: auto;\n        visibility: visible;\n    }\n\n    .dashboard-header > .dashboard-profile .content-img {\n        margin: 0;\n    }\n\n    .platform-view {\n        border: none;\n        padding: 0;\n        margin: 0;\n    }\n\n    .infoHeader {\n        position: relative;\n    }\n\n    .infoHeader.sticky {\n        top: 158px;\n    }\n\n    .infoHeader .dashboard-content {\n        grid-template-columns: .5fr 1fr !important;\n    }\n\n    .infoHeader .crawl-cta {\n        width: max-content;\n    }\n\n    .sticky-title{\n        font-size: 1em;\n        display: block !important;\n    }\n}\n\n@media screen and (min-width: 320px) and (max-width: 480px) {\n    .company_container {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* SideNav (reports/settings): mobile drawer + toggle */\n.sidebar__top {\n    display: contents;\n}\n\n.sidebar-mobile-toggle {\n    display: none;\n}\n\n.sidebar-backdrop {\n    display: none;\n}\n\n@media (max-width: 768px) {\n    .sidebar-mobile-toggle {\n        display: inline-flex;\n        align-items: center;\n        gap: 10px;\n        position: fixed;\n        top: 120px;\n        left: 12px;\n        z-index: 102;\n        padding: 8px 12px;\n        margin: 0;\n        border: 1px solid rgba(255, 255, 255, 0.12);\n        border-radius: 8px;\n        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);\n        color: rgba(255, 255, 255, 0.92);\n        font: inherit;\n        font-size: 14px;\n        cursor: pointer;\n        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);\n    }\n\n    .sidebar-mobile-toggle__bars {\n        display: flex;\n        flex-direction: column;\n        gap: 4px;\n    }\n\n    .sidebar-mobile-toggle__bar {\n        display: block;\n        width: 18px;\n        height: 2px;\n        background: currentColor;\n        border-radius: 1px;\n    }\n\n    .sidebar-mobile-toggle__label {\n        position: absolute;\n        width: 1px;\n        height: 1px;\n        padding: 0;\n        margin: -1px;\n        overflow: hidden;\n        clip: rect(0, 0, 0, 0);\n        border: 0;\n    }\n\n    .sidebar-backdrop {\n        display: block;\n        position: fixed;\n        inset: 0;\n        z-index: 100;\n        background: rgba(0, 0, 0, 0.5);\n        opacity: 0;\n        visibility: hidden;\n        pointer-events: none;\n        transition: opacity 0.25s ease, visibility 0.25s ease;\n    }\n\n    .sidebar-backdrop.sidebar-backdrop--visible {\n        opacity: 1;\n        visibility: visible;\n        pointer-events: auto;\n    }\n\n    .sidebar.expand {\n        width: 0 !important;\n        min-width: 0 !important;\n        overflow: visible;\n    }\n\n    .sidebar.expand .collapsed {\n        transform: translateX(-100%);\n        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n        width: min(86vw, 300px) !important;\n        min-width: min(86vw, 300px) !important;\n        top: 66px;\n        height: calc(100vh - 66px) !important;\n        min-height: calc(100vh - 66px) !important;\n        z-index: 102;\n        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);\n    }\n\n    .sidebar.expand.sidebar--open .collapsed {\n        transform: translateX(0);\n    }\n\n    .sidebar.expand .collapsed:hover,\n    .sidebar.expand.sidebar--open .collapsed {\n        min-width: min(86vw, 300px) !important;\n        width: min(86vw, 300px) !important;\n    }\n\n    .sidebar.expand .collapsed:hover nav,\n    .sidebar.expand.sidebar--open .collapsed nav {\n        width: 100%;\n    }\n\n    .sidebar__top {\n        display: flex;\n        flex-direction: row;\n        align-items: flex-start;\n        justify-content: space-between;\n        gap: 8px;\n        padding-right: 4px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n        margin-bottom: 4px;\n    }\n\n    .sidebar__top .sidebar__heading {\n        border-bottom: none;\n        padding-bottom: 8px;\n        flex: 1;\n        min-width: 0;\n    }\n\n    .sidebar-mobile-close {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        flex-shrink: 0;\n        width: 40px;\n        height: 40px;\n        margin: 0;\n        padding: 0;\n        border: none;\n        border-radius: 8px;\n        background: transparent;\n        color: rgba(255, 255, 255, 0.88);\n        font-size: 28px;\n        line-height: 1;\n        cursor: pointer;\n    }\n\n    .sidebar-mobile-close:hover {\n        background: rgba(255, 255, 255, 0.08);\n    }\n\n    /* Offset main content next to the fixed menu control (SideNav pages) */\n    /* .sidebar-mobile-toggle ~ article,\n    .sidebar-mobile-toggle ~ main,\n    .sidebar-mobile-toggle ~ div.dashboard-content {\n        padding-left: 52px;\n    } */\n}\n\n@media (min-width: 769px) {\n    .sidebar-mobile-close {\n        display: none !important;\n    }\n}\n\n/* Workspace indicator */\n.workspace-indicator {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 10px 6px 12px;\n    margin-left: 12px;\n    border-radius: 10px;\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 70, 0.12) 100%);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    animation: workspace-pulse 2s ease-in-out infinite;\n}\n\n@keyframes workspace-pulse {\n    0%, 100% {\n        box-shadow: 0 0 0 0 rgba(192, 159, 83, 0.3);\n    }\n    50% {\n        box-shadow: 0 0 8px 2px rgba(192, 159, 83, 0.15);\n    }\n}\n\n.workspace-indicator__badge {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 3px 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border-radius: 4px;\n}\n\n.workspace-indicator__name {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #f5f0e6;\n    max-width: 150px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.workspace-indicator__exit {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 20px;\n    height: 20px;\n    border-radius: 4px;\n    border: none;\n    background: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, color 0.2s ease;\n}\n\n.workspace-indicator__exit:hover {\n    background: rgba(220, 80, 80, 0.3);\n    color: #fff;\n}\n\n@media screen and (max-width: 600px) {\n    .workspace-indicator {\n        margin-left: 8px;\n        padding: 4px 8px;\n    }\n\n    .workspace-indicator__name {\n        max-width: 80px;\n        font-size: 0.75rem;\n    }\n\n    .workspace-indicator__badge {\n        display: none;\n    }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Components/Header/header.css"],"names":[],"mappings":"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","sourcesContent":[".dashboard-header {\n    width: 100%;\n    max-height: 66px;\n    position: fixed;\n    top: 0;\n    left: 0;\n    z-index: 101;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 25px 0px 0px;\n    background-color: rgb(63, 63, 63);\n    color: rgb(197, 197, 197);\n    border-bottom: 1px solid rgb(95, 95, 95);\n}\n\n.dashboard-profile {\n    display: grid;\n    grid-template-columns: 1fr min-content;\n    align-items: center;\n    justify-content: space-between;\n    width: 100%;\n    font-size: 19px;\n    padding: 10px;\n}\n\n.flex {\n    display: flex;\n    align-items: center;\n}\n\n.profileImage {\n    width: 50px;\n}\n\n.clock {\n    color: rgb(197, 197, 197);\n    margin: 0;\n}\n\n.dashboard-name {\n    font-size: 14px;\n    cursor: pointer;\n    margin: 0;\n}\n\n.dashboard-header>.dashboard-profile .content-img {\n    margin: 0;\n    width: 50px;\n    height: 50px;\n    border-width: 2.5px;\n    border-radius: 50%;\n    object-fit: cover;\n    margin-left: auto;\n}\n\n.dashboard-logo {\n    height: 56px;\n    text-align: left;\n    margin-right: 30px;\n    object-fit: contain;\n    object-position: 0;\n    position: relative;\n}\n\n.sidebar {\n    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);\n    width: 65px;\n}\n\n.collapsed {\n    width: 65px;\n    height: calc(100vh - 88px);\n\n    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);\n    display: flex;\n    flex-direction: column;\n    position: fixed;\n\n    min-height: calc(100vh - 66px);\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);\n    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);\n}\n\n.divider {\n    padding: 0 0 0 20px;\n}\n\n.platform-view {\n    padding: 0 20px;\n    display: inline-block;\n    border-right: 1px solid;\n    padding-right: 10px;\n    margin-right: 10px;\n}\n\n.collapsed .hiddenCollapsed {\n    opacity: 0;\n    width: 0;\n    visibility: hidden;\n    transition: all .25s ease-in-out;\n}\n\n.sidebar:hover,\n.sidebar:hover>.collapsed,\n.sidebar.expand,\n.collapsed.expand {\n    min-width: 231px;\n    width: auto;\n}\n\n.navOverlay {\n    display: flex;\n    z-index: 103;\n    position: relative;\n}\n\n.navOverlay.expand {\n    display: flex;\n}\n\n.collapsed nav {\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    min-height: 0;\n}\n\n.sidebar__heading {\n    margin: 0;\n    padding: 18px 14px 12px;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.45);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.sidebar__list {\n    list-style: none;\n    margin: 0;\n    padding: 0px;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n}\n\n.sidebar__item {\n    margin: 0;\n    padding: 0;\n}\n\n.collapsed .navItems,\n.collapsed .sidebar__link {\n    color: rgba(255, 255, 255, 0.88);\n    display: flex;\n    gap: 10px;\n    width: 100%;\n    padding: 12px 10px;\n    overflow: hidden;\n    align-items: center;\n    justify-content: flex-start;\n    white-space: nowrap;\n    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;\n    text-decoration: none;\n    box-sizing: border-box;\n}\n\n.navItems.--active,\n.sidebar__link.--active {\n    background: rgba(255, 255, 255, 0.08);\n    color: rgb(255, 255, 255);\n    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);\n}\n\n.navItems:hover:not(.--active),\n.sidebar__link:hover:not(.--active) {\n    background-color: rgba(255, 255, 255, 0.06);\n    color: rgb(255, 255, 255);\n}\n\n.collapsed:hover .navItems,\n.collapsed:hover .sidebar__link,\n.collapsed.expand a.navItems,\n.collapsed.expand a.sidebar__link {\n    width: 100%;\n}\n\n.collapsed:hover nav,\n.collapsed.expand nav {\n    width: 150px;\n}\n\n.collapsed.expand .hiddenCollapsed,\n.collapsed:hover .hiddenCollapsed {\n    opacity: 1;\n    width: auto;\n    visibility: visible;\n}\n\n.dashboard-icons {\n    width: 25px;\n    height: 25px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.dashboard-icons:after{\n\n}\n\n.dashboard-icons::after {\n    content: \"\";\n    font-style: normal;\n    font-size: 20px;\n    display: block;\n    width: 20px;\n    height: 20px;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.secondary{\n    background-color: transparent;\n    border: 1px solid #fff;\n    color: #fff;\n    font-size: 14px;\n    width: 30px;\n    height: 30px;\n    border-radius: 5px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0;\n    margin-left: 10px;\n}\n\n/* .dashboard-icons[data-icon]::after {\n    content: \"\";\n    background: url();\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    width: 20px;\n    height: 20px;\n} */\n\n/* .reports::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.compare::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.home::after {\n    content: \"\";\n    background: url(\"icons/home.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.user-consents::after {\n    content: \"\";\n    background: url(\"icons/user-consents.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.domains::after {\n    content: \"\";\n    background: url(\"icons/domain.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.settings::after {\n    content: \"\";\n    background: url(\"icons/settings.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.cookies {\n    content: \"\";\n    background: url(\"icons/cookies.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.logout::after {\n    content: \"\";\n    background: url(\"icons/Logout.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n} */\n\n.expandBtn {\n    float: right;\n    padding: 10px;\n    margin: 10px 0px;\n    border: none;\n    background: transparent;\n    color: #fff;\n\n    display: flex;\n    align-items: center;\n    justify-content: end;\n    cursor: pointer;\n}\n\n.navItems--bottom {\n    margin-top: auto;\n}\n\n.navLogout {\n    margin-top: auto;\n    background: transparent;\n    border: none;\n    width: 100%;\n    color: #fff;\n    padding: 30px 15px;\n    font-size: 15px;\n    text-align: center;\n    border-top: 1px solid #636363;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n}\n\n.dashboard-organisationSelector {\n    border: none;\n    padding: 0px 17px;\n    background: transparent;\n    color: #fff;\n    font-size: 12px;\n    appearance: none;\n    -webkit-appearance: none;\n    position: relative;\n}\n\n.dashboard-organisationSelector:focus,\n.dashboard-organisationSelector:focus-within,\n.dashboard-organisationSelector:focus-visible {\n    outline: none;\n}\n\n.dashboard-organisationContainer {\n    position: relative;\n}\n\n.dashboard-profile__nameContainer {\n    width: 250px;\n    margin-right: 20px;\n    text-align: right;\n}\n\n.arrowRight {\n    width: 10px;\n    height: 10px;\n    display: inline-block;\n    margin-left: 10px;\n\n}\n\n.company_container {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n\n.company_container .selectorContianer,\n.company_container .selector-container {\n    margin-right: 16px;\n    min-width: 0;\n}\n\n.company_container .selectorContianer:last-child,\n.company_container .selector-container:last-child {\n    margin-right: 0;\n}\n\n.selector.selector--placeholder {\n    min-height: 36px;\n    min-width: 120px;\n    visibility: hidden;\n    pointer-events: none;\n}\n\n.logo_container {\n    display: flex;\n    align-items: center\n}\n\n.logo-selector-container {\n    display: flex;\n    align-items: center;\n}\n\n.menu {\n    display: none;\n}\n\n.dashboard-content h1{\n    display: flex;\n}\n\n.sticky-title {\n    font-size: 1.5em;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .dashboard-header {\n        width: 100%;\n        max-height: none;\n        padding: 0 8px 0 4px;\n    }\n\n    .main-grid {\n        padding-top: 158px;\n    }\n\n    .menu {\n        display: block;\n        padding: 8px 10px;\n        margin-right: 2px;\n        cursor: pointer;\n        background-color: transparent;\n        border: none;\n        color: #fff;\n        border-radius: 8px;\n        transition: background-color 0.2s ease;\n    }\n\n    .menu:focus-visible {\n        outline: 2px solid rgba(192, 159, 83, 0.6);\n        outline-offset: 2px;\n    }\n\n    .menu:active {\n        background-color: rgba(255, 255, 255, 0.06);\n    }\n\n    .menu-bar {\n        width: 22px;\n        height: 2px;\n        background-color: rgba(255, 255, 255, 0.92);\n        margin: 5px auto;\n        transition: all 0.3s ease-in-out;\n        border-radius: 2px;\n    }\n\n    .dashboard-profile {\n        display: grid;\n        grid-template-columns: 1fr auto;\n        grid-template-rows: auto auto;\n        align-items: start;\n        gap: 10px 10px;\n        padding: 8px 4px 10px 8px;\n        width: 100%;\n    }\n\n    .logo-selector-container {\n        display: contents;\n    }\n\n    .logo_container {\n        grid-column: 1;\n        grid-row: 1;\n        display: flex;\n        align-items: center;\n        gap: 2px;\n        min-width: 0;\n    }\n\n    .company_container {\n        grid-column: 1 / -1;\n        grid-row: 2;\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 8px;\n        width: 100%;\n        max-width: 100%;\n        padding-bottom: 0;\n        padding-right: 0;\n        align-items: stretch;\n        justify-content: stretch;\n    }\n\n    .company_container .selectorContianer,\n    .company_container .selector-container {\n        margin-right: 0;\n        width: 100%;\n        min-width: 0;\n    }\n\n    .dashboard-profile > .flex.profileImage {\n        grid-column: 2;\n        grid-row: 1;\n        justify-self: end;\n        align-self: start;\n    }\n\n    .dashboard-logo {\n        height: 44px;\n        margin-right: 0;\n        max-width: min(200px, calc(100vw - 120px));\n    }\n\n    .grid-3 {\n        grid-template-columns: 1fr;\n    }\n\n    .grid-container {\n        display: block;\n    }\n\n    .dashboard-profile__nameContainer {\n        width: auto;\n    }\n\n    .navOverlay {\n        display: none;\n    }\n\n    .sidebar .collapsed{\n        width: 300px;\n        min-height: calc(100vh - 200px);\n    }\n\n    .sidebar:hover,\n    .sidebar:hover>.collapsed,\n    .sidebar.expand,\n    .collapsed.expand{\n        width: 300px;\n    }\n\n    .collapsed .hiddenCollapsed{\n        opacity: 1;\n        width: auto;\n        visibility: visible;\n    }\n\n    .dashboard-header > .dashboard-profile .content-img {\n        margin: 0;\n    }\n\n    .platform-view {\n        border: none;\n        padding: 0;\n        margin: 0;\n    }\n\n    .infoHeader {\n        position: relative;\n    }\n\n    .infoHeader.sticky {\n        top: 158px;\n    }\n\n    .infoHeader .dashboard-content {\n        grid-template-columns: .5fr 1fr !important;\n    }\n\n    .infoHeader .crawl-cta {\n        width: max-content;\n    }\n\n    .sticky-title{\n        font-size: 1em;\n        display: block !important;\n    }\n}\n\n@media screen and (min-width: 320px) and (max-width: 480px) {\n    .company_container {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* SideNav (reports/settings): mobile drawer + toggle */\n.sidebar__top {\n    display: contents;\n}\n\n.sidebar-mobile-toggle {\n    display: none;\n}\n\n.sidebar-backdrop {\n    display: none;\n}\n\n@media (max-width: 768px) {\n    .sidebar-mobile-toggle {\n        display: inline-flex;\n        align-items: center;\n        gap: 10px;\n        position: fixed;\n        top: 120px;\n        left: 12px;\n        z-index: 102;\n        padding: 8px 12px;\n        margin: 0;\n        border: 1px solid rgba(255, 255, 255, 0.12);\n        border-radius: 8px;\n        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);\n        color: rgba(255, 255, 255, 0.92);\n        font: inherit;\n        font-size: 14px;\n        cursor: pointer;\n        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);\n    }\n\n    .sidebar-mobile-toggle__bars {\n        display: flex;\n        flex-direction: column;\n        gap: 4px;\n    }\n\n    .sidebar-mobile-toggle__bar {\n        display: block;\n        width: 18px;\n        height: 2px;\n        background: currentColor;\n        border-radius: 1px;\n    }\n\n    .sidebar-mobile-toggle__label {\n        position: absolute;\n        width: 1px;\n        height: 1px;\n        padding: 0;\n        margin: -1px;\n        overflow: hidden;\n        clip: rect(0, 0, 0, 0);\n        border: 0;\n    }\n\n    .sidebar-backdrop {\n        display: block;\n        position: fixed;\n        inset: 0;\n        z-index: 100;\n        background: rgba(0, 0, 0, 0.5);\n        opacity: 0;\n        visibility: hidden;\n        pointer-events: none;\n        transition: opacity 0.25s ease, visibility 0.25s ease;\n    }\n\n    .sidebar-backdrop.sidebar-backdrop--visible {\n        opacity: 1;\n        visibility: visible;\n        pointer-events: auto;\n    }\n\n    .sidebar.expand {\n        width: 0 !important;\n        min-width: 0 !important;\n        overflow: visible;\n    }\n\n    .sidebar.expand .collapsed {\n        transform: translateX(-100%);\n        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n        width: min(86vw, 300px) !important;\n        min-width: min(86vw, 300px) !important;\n        top: 66px;\n        height: calc(100vh - 66px) !important;\n        min-height: calc(100vh - 66px) !important;\n        z-index: 102;\n        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);\n    }\n\n    .sidebar.expand.sidebar--open .collapsed {\n        transform: translateX(0);\n    }\n\n    .sidebar.expand .collapsed:hover,\n    .sidebar.expand.sidebar--open .collapsed {\n        min-width: min(86vw, 300px) !important;\n        width: min(86vw, 300px) !important;\n    }\n\n    .sidebar.expand .collapsed:hover nav,\n    .sidebar.expand.sidebar--open .collapsed nav {\n        width: 100%;\n    }\n\n    .sidebar__top {\n        display: flex;\n        flex-direction: row;\n        align-items: flex-start;\n        justify-content: space-between;\n        gap: 8px;\n        padding-right: 4px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n        margin-bottom: 4px;\n    }\n\n    .sidebar__top .sidebar__heading {\n        border-bottom: none;\n        padding-bottom: 8px;\n        flex: 1;\n        min-width: 0;\n    }\n\n    .sidebar-mobile-close {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        flex-shrink: 0;\n        width: 40px;\n        height: 40px;\n        margin: 0;\n        padding: 0;\n        border: none;\n        border-radius: 8px;\n        background: transparent;\n        color: rgba(255, 255, 255, 0.88);\n        font-size: 28px;\n        line-height: 1;\n        cursor: pointer;\n    }\n\n    .sidebar-mobile-close:hover {\n        background: rgba(255, 255, 255, 0.08);\n    }\n\n    /* Offset main content next to the fixed menu control (SideNav pages) */\n    /* .sidebar-mobile-toggle ~ article,\n    .sidebar-mobile-toggle ~ main,\n    .sidebar-mobile-toggle ~ div.dashboard-content {\n        padding-left: 52px;\n    } */\n}\n\n@media (min-width: 769px) {\n    .sidebar-mobile-close {\n        display: none !important;\n    }\n}\n\n/* Workspace indicator */\n.workspace-indicator {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 10px 6px 12px;\n    margin-left: 12px;\n    border-radius: 10px;\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 70, 0.12) 100%);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    animation: workspace-pulse 2s ease-in-out infinite;\n}\n\n@keyframes workspace-pulse {\n    0%, 100% {\n        box-shadow: 0 0 0 0 rgba(192, 159, 83, 0.3);\n    }\n    50% {\n        box-shadow: 0 0 8px 2px rgba(192, 159, 83, 0.15);\n    }\n}\n\n.workspace-indicator__badge {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 3px 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border-radius: 4px;\n}\n\n.workspace-indicator__name {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #f5f0e6;\n    max-width: 150px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.workspace-indicator__domains {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.9);\n    padding: 2px 6px;\n    background: rgba(192, 159, 83, 0.15);\n    border-radius: 4px;\n}\n\n.workspace-indicator__exit {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 20px;\n    height: 20px;\n    border-radius: 4px;\n    border: none;\n    background: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, color 0.2s ease;\n}\n\n.workspace-indicator__exit:hover {\n    background: rgba(220, 80, 80, 0.3);\n    color: #fff;\n}\n\n@media screen and (max-width: 600px) {\n    .workspace-indicator {\n        margin-left: 8px;\n        padding: 4px 8px;\n    }\n\n    .workspace-indicator__name {\n        max-width: 80px;\n        font-size: 0.75rem;\n    }\n\n    .workspace-indicator__badge {\n        display: none;\n    }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -27729,7 +27737,182 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
     border-radius: 10px;
     border: 1px dashed rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
-}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"AAAA;IACI,qBAAqB;IACrB,aAAa;IACb,cAAc;IACd,qBAAqB;AACzB;;AAEA;IACI,oCAAoC;IACpC,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,SAAS;AACb;;AAEA,0DAA0D;AAC1D;IACI,mBAAmB;IACnB,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,mBAAmB;IACnB,iBAAiB;IACjB,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,oBAAoB;IACpB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,cAAc;IACd,sBAAsB;AAC1B;;AAEA;IACI,SAAS;IACT,mBAAmB;IACnB,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,4DAA4D;IAC5D,SAAS;AACb;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,uBAAuB;IACvB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,2FAA2F;IAC3F;;+CAE2C;IAC3C,qBAAqB;IACrB,cAAc;IACd;;;;4BAIwB;AAC5B;;AAEA;IACI,sCAAsC;IACtC,2FAA2F;IAC3F;;+CAE2C;IAC3C,2BAA2B;AAC/B;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,cAAc;IACd,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,WAAW;AACf;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,iBAAiB;IACjB,gDAAgD;IAChD,iDAAiD;IACjD,yBAAyB;IACzB,eAAe;AACnB;;AAEA;IACI,SAAS;IACT,oBAAoB;IACpB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI;QACI,0BAA0B;IAC9B;AACJ;;AAEA,gDAAgD;AAChD;IACI,gBAAgB;IAChB,mBAAmB;IACnB,gGAAgG;AACpG;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,8BAA8B;IAC9B,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,mBAAmB;IACnB,mBAAmB;IACnB,gBAAgB;IAChB,cAAc;IACd,qBAAqB;IACrB,oCAAoC;IACpC;;8BAE0B;AAC9B;;AAEA;IACI,cAAc;IACd,6CAA6C;AACjD;;AAEA;IACI,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,2FAA2F;IAC3F;;+CAE2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,UAAU;IACV,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,mBAAmB;IACnB,mBAAmB;IACnB,oCAAoC;IACpC,0CAA0C;IAC1C,cAAc;AAClB;;AAEA;IACI,mCAAmC;IACnC,uCAAuC;IACvC,cAAc;AAClB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,SAAS;AACb;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,cAAc;AAClB;;AAEA;IACI,mBAAmB;IACnB,gBAAgB;IAChB,cAAc;IACd,gBAAgB;AACpB;;AAEA;IACI,OAAO;IACP,gBAAgB;IAChB,kBAAkB;IAClB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;IAC/B,cAAc;IACd,mBAAmB;IACnB,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb,sCAAsC;IACtC,8CAA8C;AAClD;;AAEA;;IAEI,sBAAsB;IACtB,eAAe;IACf,kBAAkB;IAClB,mBAAmB;IACnB,0CAA0C;IAC1C,+FAA+F;IAC/F,cAAc;IACd,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf;;;4BAGwB;AAC5B;;AAEA;;IAEI,sCAAsC;IACtC,+FAA+F;AACnG;;AAEA;;IAEI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;;IAEI,aAAa;IACb,mBAAmB;IACnB,eAAe;AACnB;;AAEA,uCAAuC;AACvC;IACI,eAAe;IACf,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,gBAAgB;AACpB;;AAEA;IACI,WAAW;IACX,gBAAgB;IAChB,yBAAyB;IACzB,mBAAmB;IACnB,cAAc;AAClB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,+BAA+B;IAC/B,iDAAiD;IACjD,+BAA+B;AACnC;;AAEA;IACI,kBAAkB;IAClB,kDAAkD;IAClD,sBAAsB;AAC1B;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,qCAAqC;AACzC;;AAEA;IACI,aAAa;IACb,iBAAiB;IACjB,oBAAoB;AACxB;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,kBAAkB;IAClB,mBAAmB;IACnB,gCAAgC;AACpC;;AAEA,6CAA6C;AAC7C;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,8BAA8B;IAC9B,SAAS;IACT,mBAAmB;IACnB,kBAAkB;IAClB,mBAAmB;IACnB,0CAA0C;IAC1C,0FAA0F;AAC9F;;AAEA;IACI,SAAS;IACT,mBAAmB;IACnB,gCAAgC;IAChC,iBAAiB;AACrB;;AAEA;IACI,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,mBAAmB;IACnB,yCAAyC;IACzC,oCAAoC;IACpC,cAAc;IACd,iBAAiB;IACjB,cAAc;IACd,eAAe;IACf;;8BAE0B;AAC9B;;AAEA;IACI,oCAAoC;IACpC,qCAAqC;AACzC;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,cAAc;IACd,mBAAmB;IACnB,0CAA0C;IAC1C,+BAA+B;AACnC;;AAEA;IACI,kBAAkB;IAClB,kDAAkD;IAClD,oCAAoC;IACpC,mBAAmB;IACnB,cAAc;AAClB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,QAAQ;IACR,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,aAAa;IACb,+BAA+B;IAC/B,0BAA0B;AAC9B;;AAEA;IACI,WAAW;IACX,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,2CAA2C;IAC3C,2FAA2F;IAC3F,0CAA0C;AAC9C;;AAEA;IACI,gBAAgB;IAChB,iBAAiB;IACjB,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,WAAW;IACX,sBAAsB;IACtB,kBAAkB;IAClB,mBAAmB;IACnB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;IAC/B,cAAc;IACd,mBAAmB;IACnB,oCAAoC;AACxC;;AAEA;IACI,aAAa;IACb,qCAAqC;AACzC;;AAEA;IACI,aAAa;IACb,eAAe;IACf,SAAS;IACT,yBAAyB;AAC7B;;AAEA;IACI,kBAAkB;IAClB,mBAAmB;IACnB,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf,2CAA2C;IAC3C,qCAAqC;IACrC,cAAc;AAClB;;AAEA;IACI,sCAAsC;IACtC,mCAAmC;IACnC,cAAc;AAClB;;AAEA;IACI,sCAAsC;IACtC,mCAAmC;IACnC,cAAc;AAClB;;AAEA;IACI,wBAAwB;AAC5B;;AAEA;IACI,mBAAmB;IACnB,YAAY;IACZ,+CAA+C;AACnD;;AAEA;IACI,eAAe;IACf,oBAAoB;IACpB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,yFAAyF;AAC7F;;AAEA;IACI,WAAW;IACX,sBAAsB;IACtB,kBAAkB;IAClB,mBAAmB;IACnB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;IAC/B,cAAc;IACd,mBAAmB;IACnB,oBAAoB;IACpB,eAAe;AACnB;;AAEA;IACI,aAAa;IACb,qCAAqC;AACzC;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,oBAAoB;IACpB,gBAAgB;IAChB,cAAc;AAClB;;AAEA,8BAA8B;AAC9B;IACI,gFAAgF;IAChF,oBAAoB;IACpB,cAAc;IACd,mCAAmC;IACnC,gBAAgB;IAChB,kBAAkB;IAClB,yCAAyC;AAC7C;;AAEA;IACI,gCAAgC;IAChC,oBAAoB;IACpB,gBAAgB;IAChB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,qBAAqB;AACzB;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,gBAAgB;IAChB,yBAAyB;IACzB,sBAAsB;AAC1B;;AAEA;IACI,oCAAoC;IACpC,yCAAyC;IACzC,cAAc;AAClB;;AAEA;IACI,oBAAoB;IACpB,gCAAgC;AACpC;;AAEA,+BAA+B;AAC/B;IACI,gBAAgB;AACpB;;AAEA,4BAA4B;AAC5B;IACI,gBAAgB;IAChB,iBAAiB;IACjB,+CAA+C;AACnD;;AAEA;IACI,aAAa;IACb,QAAQ;IACR,mBAAmB;AACvB;;AAEA;IACI,OAAO;IACP,2BAA2B;AAC/B;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,mBAAmB;IACnB,0CAA0C;IAC1C,oCAAoC;IACpC,cAAc;IACd,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf,wDAAwD;AAC5D;;AAEA;IACI,oCAAoC;IACpC,qCAAqC;AACzC;;AAEA;IACI,YAAY;IACZ,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,UAAU;IACV,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,iBAAiB;IACjB,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,kBAAkB;IAClB,kDAAkD;AACtD;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,oBAAoB;IACpB,cAAc;IACd,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,0CAA0C;IAC1C,mCAAmC;IACnC,cAAc;IACd,eAAe;IACf,cAAc;IACd,eAAe;IACf,wDAAwD;AAC5D;;AAEA;IACI,mCAAmC;IACnC,sCAAsC;AAC1C;;AAEA;IACI,YAAY;IACZ,mBAAmB;AACvB;;AAEA;IACI,SAAS;IACT,aAAa;IACb,oBAAoB;IACpB,+BAA+B;IAC/B,kBAAkB;IAClB,mBAAmB;IACnB,2CAA2C;IAC3C,8BAA8B;AAClC","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px 20px;\n    margin-bottom: 18px;\n}\n\n.settings-subpage__toolbar .cta {\n    margin-top: 0;\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn--danger {\n    border-color: rgba(220, 100, 100, 0.5);\n    background: rgba(160, 50, 50, 0.22);\n    color: #ffd8d8;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}\n\n.settings-org-modal__divider {\n    margin: 20px 0 14px;\n    border: none;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-org-modal__danger-title {\n    margin: 0 0 8px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 160, 160, 0.85);\n}\n\n.settings-org-modal__danger-desc {\n    margin: 0 0 12px;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(190, 190, 190, 0.95);\n}\n\n.settings-blacklist-modal__card .settings-org-modal__text-input {\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    cursor: pointer;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-org-modal__field-block {\n    margin-bottom: 14px;\n}\n\n.settings-org-modal__label {\n    display: block;\n    margin-bottom: 6px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n}\n\n/* Workspace-specific styles */\n.settings-workspace__domain {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.1);\n    padding: 3px 8px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.2);\n}\n\n.settings-workspace__description {\n    color: rgba(180, 180, 180, 0.85);\n    font-size: 0.8125rem;\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    display: inline-block;\n}\n\n.settings-workspace__badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 8px;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.settings-workspace__badge--agency {\n    background: rgba(192, 159, 83, 0.15);\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    color: #c0a053;\n}\n\n.settings-workspace__user-count {\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Wider modal for workspaces */\n.settings-blacklist-modal__card--wide {\n    max-width: 520px;\n}\n\n/* User management section */\n.settings-workspace__users-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__users-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__user-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-user-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-user-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__users-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__user-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.settings-workspace__user-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__user-email {\n    font-size: 0.8125rem;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__remove-user-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-user-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-users {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}"],"sourceRoot":""}]);
+}
+
+/* Domain management section */
+.settings-workspace__domains-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settings-workspace__domains-add {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.settings-workspace__domain-input {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+
+.settings-workspace__add-domain-btn {
+    flex-shrink: 0;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(192, 159, 83, 0.45);
+    background: rgba(192, 159, 83, 0.18);
+    color: #f5f0e6;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-workspace__add-domain-btn:hover {
+    background: rgba(192, 159, 83, 0.28);
+    border-color: rgba(192, 159, 83, 0.6);
+}
+
+.settings-workspace__add-domain-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-workspace__domains-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.settings-workspace__domain-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    gap: 10px;
+}
+
+.settings-workspace__domain-item:last-child {
+    border-bottom: none;
+}
+
+.settings-workspace__domain-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+}
+
+.settings-workspace__domain-name {
+    font-size: 0.8125rem;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    color: #e4e4e4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.settings-workspace__primary-badge {
+    flex-shrink: 0;
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(192, 159, 83, 0.25);
+    border: 1px solid rgba(192, 159, 83, 0.4);
+    color: #c0a053;
+}
+
+.settings-workspace__domain-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.settings-workspace__set-primary-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-workspace__set-primary-btn:hover {
+    background: rgba(192, 159, 83, 0.15);
+    border-color: rgba(192, 159, 83, 0.4);
+    color: #c0a053;
+}
+
+.settings-workspace__set-primary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-workspace__remove-domain-btn {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid rgba(220, 100, 100, 0.3);
+    background: rgba(220, 80, 80, 0.12);
+    color: #f0c4c4;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.settings-workspace__remove-domain-btn:hover {
+    background: rgba(220, 80, 80, 0.25);
+    border-color: rgba(220, 100, 100, 0.5);
+}
+
+.settings-workspace__remove-domain-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.settings-workspace__no-domains {
+    margin: 0;
+    padding: 14px;
+    font-size: 0.8125rem;
+    color: rgba(180, 180, 180, 0.7);
+    text-align: center;
+    border-radius: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+}
+
+/* Domains cell in table */
+.settings-workspace__domains-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-workspace__domain-count {
+    font-size: 0.6875rem;
+    color: rgba(180, 180, 180, 0.75);
+    font-weight: 500;
+}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"AAAA;IACI,qBAAqB;IACrB,aAAa;IACb,cAAc;IACd,qBAAqB;AACzB;;AAEA;IACI,oCAAoC;IACpC,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,SAAS;AACb;;AAEA,0DAA0D;AAC1D;IACI,mBAAmB;IACnB,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,mBAAmB;IACnB,iBAAiB;IACjB,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,oBAAoB;IACpB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,cAAc;IACd,sBAAsB;AAC1B;;AAEA;IACI,SAAS;IACT,mBAAmB;IACnB,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,4DAA4D;IAC5D,SAAS;AACb;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,uBAAuB;IACvB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,2FAA2F;IAC3F;;+CAE2C;IAC3C,qBAAqB;IACrB,cAAc;IACd;;;;4BAIwB;AAC5B;;AAEA;IACI,sCAAsC;IACtC,2FAA2F;IAC3F;;+CAE2C;IAC3C,2BAA2B;AAC/B;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,cAAc;IACd,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,WAAW;AACf;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,iBAAiB;IACjB,gDAAgD;IAChD,iDAAiD;IACjD,yBAAyB;IACzB,eAAe;AACnB;;AAEA;IACI,SAAS;IACT,oBAAoB;IACpB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI;QACI,0BAA0B;IAC9B;AACJ;;AAEA,gDAAgD;AAChD;IACI,gBAAgB;IAChB,mBAAmB;IACnB,gGAAgG;AACpG;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,8BAA8B;IAC9B,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,mBAAmB;IACnB,mBAAmB;IACnB,gBAAgB;IAChB,cAAc;IACd,qBAAqB;IACrB,oCAAoC;IACpC;;8BAE0B;AAC9B;;AAEA;IACI,cAAc;IACd,6CAA6C;AACjD;;AAEA;IACI,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,2FAA2F;IAC3F;;+CAE2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,UAAU;IACV,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,mBAAmB;IACnB,mBAAmB;IACnB,oCAAoC;IACpC,0CAA0C;IAC1C,cAAc;AAClB;;AAEA;IACI,mCAAmC;IACnC,uCAAuC;IACvC,cAAc;AAClB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,SAAS;AACb;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,cAAc;AAClB;;AAEA;IACI,mBAAmB;IACnB,gBAAgB;IAChB,cAAc;IACd,gBAAgB;AACpB;;AAEA;IACI,OAAO;IACP,gBAAgB;IAChB,kBAAkB;IAClB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;IAC/B,cAAc;IACd,mBAAmB;IACnB,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb,sCAAsC;IACtC,8CAA8C;AAClD;;AAEA;;IAEI,sBAAsB;IACtB,eAAe;IACf,kBAAkB;IAClB,mBAAmB;IACnB,0CAA0C;IAC1C,+FAA+F;IAC/F,cAAc;IACd,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf;;;4BAGwB;AAC5B;;AAEA;;IAEI,sCAAsC;IACtC,+FAA+F;AACnG;;AAEA;;IAEI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;;IAEI,aAAa;IACb,mBAAmB;IACnB,eAAe;AACnB;;AAEA,uCAAuC;AACvC;IACI,eAAe;IACf,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,gBAAgB;AACpB;;AAEA;IACI,WAAW;IACX,gBAAgB;IAChB,yBAAyB;IACzB,mBAAmB;IACnB,cAAc;AAClB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,+BAA+B;IAC/B,iDAAiD;IACjD,+BAA+B;AACnC;;AAEA;IACI,kBAAkB;IAClB,kDAAkD;IAClD,sBAAsB;AAC1B;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,qCAAqC;AACzC;;AAEA;IACI,aAAa;IACb,iBAAiB;IACjB,oBAAoB;AACxB;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,kBAAkB;IAClB,mBAAmB;IACnB,gCAAgC;AACpC;;AAEA,6CAA6C;AAC7C;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,8BAA8B;IAC9B,SAAS;IACT,mBAAmB;IACnB,kBAAkB;IAClB,mBAAmB;IACnB,0CAA0C;IAC1C,0FAA0F;AAC9F;;AAEA;IACI,SAAS;IACT,mBAAmB;IACnB,gCAAgC;IAChC,iBAAiB;AACrB;;AAEA;IACI,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,mBAAmB;IACnB,yCAAyC;IACzC,oCAAoC;IACpC,cAAc;IACd,iBAAiB;IACjB,cAAc;IACd,eAAe;IACf;;8BAE0B;AAC9B;;AAEA;IACI,oCAAoC;IACpC,qCAAqC;AACzC;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,cAAc;IACd,mBAAmB;IACnB,0CAA0C;IAC1C,+BAA+B;AACnC;;AAEA;IACI,kBAAkB;IAClB,kDAAkD;IAClD,oCAAoC;IACpC,mBAAmB;IACnB,cAAc;AAClB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,QAAQ;IACR,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,aAAa;IACb,+BAA+B;IAC/B,0BAA0B;AAC9B;;AAEA;IACI,WAAW;IACX,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,2CAA2C;IAC3C,2FAA2F;IAC3F,0CAA0C;AAC9C;;AAEA;IACI,gBAAgB;IAChB,iBAAiB;IACjB,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,WAAW;IACX,sBAAsB;IACtB,kBAAkB;IAClB,mBAAmB;IACnB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;IAC/B,cAAc;IACd,mBAAmB;IACnB,oCAAoC;AACxC;;AAEA;IACI,aAAa;IACb,qCAAqC;AACzC;;AAEA;IACI,aAAa;IACb,eAAe;IACf,SAAS;IACT,yBAAyB;AAC7B;;AAEA;IACI,kBAAkB;IAClB,mBAAmB;IACnB,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf,2CAA2C;IAC3C,qCAAqC;IACrC,cAAc;AAClB;;AAEA;IACI,sCAAsC;IACtC,mCAAmC;IACnC,cAAc;AAClB;;AAEA;IACI,sCAAsC;IACtC,mCAAmC;IACnC,cAAc;AAClB;;AAEA;IACI,wBAAwB;AAC5B;;AAEA;IACI,mBAAmB;IACnB,YAAY;IACZ,+CAA+C;AACnD;;AAEA;IACI,eAAe;IACf,oBAAoB;IACpB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,yFAAyF;AAC7F;;AAEA;IACI,WAAW;IACX,sBAAsB;IACtB,kBAAkB;IAClB,mBAAmB;IACnB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;IAC/B,cAAc;IACd,mBAAmB;IACnB,oBAAoB;IACpB,eAAe;AACnB;;AAEA;IACI,aAAa;IACb,qCAAqC;AACzC;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,oBAAoB;IACpB,gBAAgB;IAChB,cAAc;AAClB;;AAEA,8BAA8B;AAC9B;IACI,gFAAgF;IAChF,oBAAoB;IACpB,cAAc;IACd,mCAAmC;IACnC,gBAAgB;IAChB,kBAAkB;IAClB,yCAAyC;AAC7C;;AAEA;IACI,gCAAgC;IAChC,oBAAoB;IACpB,gBAAgB;IAChB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,qBAAqB;AACzB;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,gBAAgB;IAChB,yBAAyB;IACzB,sBAAsB;AAC1B;;AAEA;IACI,oCAAoC;IACpC,yCAAyC;IACzC,cAAc;AAClB;;AAEA;IACI,oBAAoB;IACpB,gCAAgC;AACpC;;AAEA,+BAA+B;AAC/B;IACI,gBAAgB;AACpB;;AAEA,4BAA4B;AAC5B;IACI,gBAAgB;IAChB,iBAAiB;IACjB,+CAA+C;AACnD;;AAEA;IACI,aAAa;IACb,QAAQ;IACR,mBAAmB;AACvB;;AAEA;IACI,OAAO;IACP,2BAA2B;AAC/B;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,mBAAmB;IACnB,0CAA0C;IAC1C,oCAAoC;IACpC,cAAc;IACd,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf,wDAAwD;AAC5D;;AAEA;IACI,oCAAoC;IACpC,qCAAqC;AACzC;;AAEA;IACI,YAAY;IACZ,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,UAAU;IACV,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,iBAAiB;IACjB,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,kBAAkB;IAClB,kDAAkD;AACtD;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,oBAAoB;IACpB,cAAc;IACd,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,0CAA0C;IAC1C,mCAAmC;IACnC,cAAc;IACd,eAAe;IACf,cAAc;IACd,eAAe;IACf,wDAAwD;AAC5D;;AAEA;IACI,mCAAmC;IACnC,sCAAsC;AAC1C;;AAEA;IACI,YAAY;IACZ,mBAAmB;AACvB;;AAEA;IACI,SAAS;IACT,aAAa;IACb,oBAAoB;IACpB,+BAA+B;IAC/B,kBAAkB;IAClB,mBAAmB;IACnB,2CAA2C;IAC3C,8BAA8B;AAClC;;AAEA,8BAA8B;AAC9B;IACI,gBAAgB;IAChB,iBAAiB;IACjB,+CAA+C;AACnD;;AAEA;IACI,aAAa;IACb,QAAQ;IACR,mBAAmB;AACvB;;AAEA;IACI,OAAO;IACP,2BAA2B;AAC/B;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,mBAAmB;IACnB,0CAA0C;IAC1C,oCAAoC;IACpC,cAAc;IACd,mBAAmB;IACnB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf,wDAAwD;AAC5D;;AAEA;IACI,oCAAoC;IACpC,qCAAqC;AACzC;;AAEA;IACI,YAAY;IACZ,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,UAAU;IACV,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,iBAAiB;IACjB,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,kBAAkB;IAClB,kDAAkD;IAClD,SAAS;AACb;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;IACR,YAAY;IACZ,OAAO;AACX;;AAEA;IACI,oBAAoB;IACpB,gFAAgF;IAChF,cAAc;IACd,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,mBAAmB;IACnB,gBAAgB;IAChB,yBAAyB;IACzB,sBAAsB;IACtB,gBAAgB;IAChB,kBAAkB;IAClB,oCAAoC;IACpC,yCAAyC;IACzC,cAAc;AAClB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;IACR,cAAc;AAClB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,2CAA2C;IAC3C,qCAAqC;IACrC,+BAA+B;IAC/B,oBAAoB;IACpB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf,wDAAwD;AAC5D;;AAEA;IACI,oCAAoC;IACpC,qCAAqC;IACrC,cAAc;AAClB;;AAEA;IACI,YAAY;IACZ,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,0CAA0C;IAC1C,mCAAmC;IACnC,cAAc;IACd,eAAe;IACf,cAAc;IACd,eAAe;IACf,wDAAwD;AAC5D;;AAEA;IACI,mCAAmC;IACnC,sCAAsC;AAC1C;;AAEA;IACI,YAAY;IACZ,mBAAmB;AACvB;;AAEA;IACI,SAAS;IACT,aAAa;IACb,oBAAoB;IACpB,+BAA+B;IAC/B,kBAAkB;IAClB,mBAAmB;IACnB,2CAA2C;IAC3C,8BAA8B;AAClC;;AAEA,0BAA0B;AAC1B;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;AACZ;;AAEA;IACI,oBAAoB;IACpB,gCAAgC;IAChC,gBAAgB;AACpB","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px 20px;\n    margin-bottom: 18px;\n}\n\n.settings-subpage__toolbar .cta {\n    margin-top: 0;\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn--danger {\n    border-color: rgba(220, 100, 100, 0.5);\n    background: rgba(160, 50, 50, 0.22);\n    color: #ffd8d8;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}\n\n.settings-org-modal__divider {\n    margin: 20px 0 14px;\n    border: none;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-org-modal__danger-title {\n    margin: 0 0 8px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 160, 160, 0.85);\n}\n\n.settings-org-modal__danger-desc {\n    margin: 0 0 12px;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(190, 190, 190, 0.95);\n}\n\n.settings-blacklist-modal__card .settings-org-modal__text-input {\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    cursor: pointer;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-org-modal__field-block {\n    margin-bottom: 14px;\n}\n\n.settings-org-modal__label {\n    display: block;\n    margin-bottom: 6px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n}\n\n/* Workspace-specific styles */\n.settings-workspace__domain {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.1);\n    padding: 3px 8px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.2);\n}\n\n.settings-workspace__description {\n    color: rgba(180, 180, 180, 0.85);\n    font-size: 0.8125rem;\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    display: inline-block;\n}\n\n.settings-workspace__badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 8px;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.settings-workspace__badge--agency {\n    background: rgba(192, 159, 83, 0.15);\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    color: #c0a053;\n}\n\n.settings-workspace__user-count {\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Wider modal for workspaces */\n.settings-blacklist-modal__card--wide {\n    max-width: 520px;\n}\n\n/* User management section */\n.settings-workspace__users-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__users-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__user-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-user-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-user-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__users-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__user-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.settings-workspace__user-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__user-email {\n    font-size: 0.8125rem;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__remove-user-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-user-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-users {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domain management section */\n.settings-workspace__domains-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__domains-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__domain-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-domain-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-domain-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__domains-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__domain-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    gap: 10px;\n}\n\n.settings-workspace__domain-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__domain-info {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    min-width: 0;\n    flex: 1;\n}\n\n.settings-workspace__domain-name {\n    font-size: 0.8125rem;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__primary-badge {\n    flex-shrink: 0;\n    font-size: 0.625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 6px;\n    border-radius: 4px;\n    background: rgba(192, 159, 83, 0.25);\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__domain-actions {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.settings-workspace__set-primary-btn {\n    padding: 4px 8px;\n    border-radius: 4px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 0.6875rem;\n    font-weight: 500;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__set-primary-btn:hover {\n    background: rgba(192, 159, 83, 0.15);\n    border-color: rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__set-primary-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__remove-domain-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-domain-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-domains {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domains cell in table */\n.settings-workspace__domains-cell {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.settings-workspace__domain-count {\n    font-size: 0.6875rem;\n    color: rgba(180, 180, 180, 0.75);\n    font-weight: 500;\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -39035,10 +39218,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _IntastellarAccounts_IntastellarAccounts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../IntastellarAccounts/IntastellarAccounts */ "./src/Components/IntastellarAccounts/IntastellarAccounts.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
 /* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -39164,12 +39353,38 @@ function readAgencyWorkspaces() {
   try {
     var stored = localStorage.getItem("agency_workspaces");
     if (stored) {
-      return JSON.parse(stored);
+      var workspaces = JSON.parse(stored);
+      // Migrate old single-domain workspaces to multi-domain format
+      return workspaces.map(function (ws) {
+        if (ws.domain && !ws.domains) {
+          return _objectSpread(_objectSpread({}, ws), {}, {
+            domains: [{
+              domain: ws.domain,
+              isPrimary: true
+            }]
+          });
+        }
+        return ws;
+      });
     }
   } catch (_unused4) {
     /* ignore */
   }
   return [];
+}
+
+/**
+ * Get primary domain from a workspace
+ */
+function getPrimaryDomainFromWorkspace(ws) {
+  var _ws$domains$;
+  if (!ws.domains || ws.domains.length === 0) {
+    return ws.domain || null;
+  }
+  var primary = ws.domains.find(function (d) {
+    return d.isPrimary;
+  });
+  return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains$ = ws.domains[0]) === null || _ws$domains$ === void 0 ? void 0 : _ws$domains$.domain) || null;
 }
 
 /*
@@ -39188,7 +39403,7 @@ function resolveDomainsPlatformKey(API) {
   return "gdpr";
 }
 function Header(props) {
-  var _JSON$parse, _JSON$parse2, _JSON$parse3;
+  var _JSON$parse, _activeWorkspace$doma, _JSON$parse2, _JSON$parse3;
   var _useContext = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.OrganisationContext),
     _useContext2 = _slicedToArray(_useContext, 2),
     Organisation = _useContext2[0],
@@ -39305,12 +39520,17 @@ function Header(props) {
       });
       // Add workspaces to the list
       workspaces.forEach(function (ws) {
+        var _ws$domains;
+        var primaryDomain = getPrimaryDomainFromWorkspace(ws);
+        var domainCount = ((_ws$domains = ws.domains) === null || _ws$domains === void 0 ? void 0 : _ws$domains.length) || 1;
         domainList.push({
           icon: null,
-          name: ws.domain,
+          name: primaryDomain || ws.name,
           label: ws.name,
+          sublabel: domainCount > 1 ? "".concat(domainCount, " domains") : primaryDomain,
           type: "workspace",
-          workspaceId: ws.id
+          workspaceId: ws.id,
+          workspaceData: ws
         });
       });
     }
@@ -39384,10 +39604,14 @@ function Header(props) {
 
       // Track workspace selection
       if (parsed.type === "workspace") {
-        var _workspaces = readAgencyWorkspaces();
-        var ws = _workspaces.find(function (w) {
-          return w.id === parsed.id;
-        });
+        // Use workspaceData if available, otherwise fetch from storage
+        var ws = parsed.workspaceData;
+        if (!ws) {
+          var _workspaces = readAgencyWorkspaces();
+          ws = _workspaces.find(function (w) {
+            return w.id === parsed.id;
+          });
+        }
         if (ws) {
           setActiveWorkspace(ws);
           setCurrentWorkspace(ws);
@@ -39406,7 +39630,9 @@ function Header(props) {
     className: "workspace-indicator__badge"
   }, "Workspace"), /*#__PURE__*/React.createElement("span", {
     className: "workspace-indicator__name"
-  }, activeWorkspace.name), /*#__PURE__*/React.createElement("button", {
+  }, activeWorkspace.name), ((_activeWorkspace$doma = activeWorkspace.domains) === null || _activeWorkspace$doma === void 0 ? void 0 : _activeWorkspace$doma.length) > 1 && /*#__PURE__*/React.createElement("span", {
+    className: "workspace-indicator__domains"
+  }, activeWorkspace.domains.length, " domains"), /*#__PURE__*/React.createElement("button", {
     className: "workspace-indicator__exit",
     onClick: function onClick() {
       setActiveWorkspace(null);
@@ -40407,7 +40633,8 @@ function Select(props) {
             return props.onChange(JSON.stringify({
               id: item.workspaceId,
               name: item.name,
-              type: "workspace"
+              type: "workspace",
+              workspaceData: item.workspaceData
             }));
           }
         }, /*#__PURE__*/React.createElement("span", {
@@ -40419,7 +40646,7 @@ function Select(props) {
           className: "dropdown-menu__workspace-name"
         }, item.label || item.name), /*#__PURE__*/React.createElement("span", {
           className: "dropdown-menu__workspace-domain"
-        }, item.name)));
+        }, item.sublabel || item.name)));
       }
       return /*#__PURE__*/React.createElement("li", {
         key: (_item$id = item.id) !== null && _item$id !== void 0 ? _item$id : key,
@@ -54867,11 +55094,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
@@ -54882,6 +55104,11 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
@@ -54908,7 +55135,19 @@ function getStoredWorkspaces() {
   try {
     var stored = localStorage.getItem("agency_workspaces");
     if (stored) {
-      return JSON.parse(stored);
+      var workspaces = JSON.parse(stored);
+      // Migrate old single-domain workspaces to multi-domain format
+      return workspaces.map(function (ws) {
+        if (ws.domain && !ws.domains) {
+          return _objectSpread(_objectSpread({}, ws), {}, {
+            domains: [{
+              domain: ws.domain,
+              isPrimary: true
+            }]
+          });
+        }
+        return ws;
+      });
     }
   } catch (_unused) {
     /* ignore */
@@ -54932,6 +55171,13 @@ function saveWorkspaces(workspaces) {
  */
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+/**
+ * Validate domain format
+ */
+function isValidDomain(domain) {
+  return /^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/.test(domain);
 }
 function Workspaces() {
   document.title = "Client Workspaces | Settings | Intastellar Consents | CMP";
@@ -54959,36 +55205,40 @@ function Workspaces() {
     setEditName = _useState0[1];
   var _useState1 = useState(""),
     _useState10 = _slicedToArray(_useState1, 2),
-    editDomain = _useState10[0],
-    setEditDomain = _useState10[1];
-  var _useState11 = useState(""),
+    editDescription = _useState10[0],
+    setEditDescription = _useState10[1];
+  var _useState11 = useState([]),
     _useState12 = _slicedToArray(_useState11, 2),
-    editDescription = _useState12[0],
-    setEditDescription = _useState12[1];
-  var _useState13 = useState([]),
+    editDomains = _useState12[0],
+    setEditDomains = _useState12[1];
+  var _useState13 = useState(""),
     _useState14 = _slicedToArray(_useState13, 2),
-    editUsers = _useState14[0],
-    setEditUsers = _useState14[1];
-  var _useState15 = useState(""),
+    newDomain = _useState14[0],
+    setNewDomain = _useState14[1];
+  var _useState15 = useState([]),
     _useState16 = _slicedToArray(_useState15, 2),
-    newUserEmail = _useState16[0],
-    setNewUserEmail = _useState16[1];
-  var _useState17 = useState(null),
+    editUsers = _useState16[0],
+    setEditUsers = _useState16[1];
+  var _useState17 = useState(""),
     _useState18 = _slicedToArray(_useState17, 2),
-    modalError = _useState18[0],
-    setModalError = _useState18[1];
+    newUserEmail = _useState18[0],
+    setNewUserEmail = _useState18[1];
   var _useState19 = useState(null),
     _useState20 = _slicedToArray(_useState19, 2),
-    pending = _useState20[0],
-    setPending = _useState20[1];
-  var _useState21 = useState(false),
+    modalError = _useState20[0],
+    setModalError = _useState20[1];
+  var _useState21 = useState(null),
     _useState22 = _slicedToArray(_useState21, 2),
-    deleteConfirm = _useState22[0],
-    setDeleteConfirm = _useState22[1];
-  var _useState23 = useState(null),
+    pending = _useState22[0],
+    setPending = _useState22[1];
+  var _useState23 = useState(false),
     _useState24 = _slicedToArray(_useState23, 2),
-    successMessage = _useState24[0],
-    setSuccessMessage = _useState24[1];
+    deleteConfirm = _useState24[0],
+    setDeleteConfirm = _useState24[1];
+  var _useState25 = useState(null),
+    _useState26 = _slicedToArray(_useState25, 2),
+    successMessage = _useState26[0],
+    setSuccessMessage = _useState26[1];
 
   // Load workspaces on mount
   useEffect(function () {
@@ -55005,8 +55255,9 @@ function Workspaces() {
     setShowCreateModal(false);
     setModalWorkspace(null);
     setEditName("");
-    setEditDomain("");
     setEditDescription("");
+    setEditDomains([]);
+    setNewDomain("");
     setEditUsers([]);
     setNewUserEmail("");
     setModalError(null);
@@ -55028,19 +55279,21 @@ function Workspaces() {
   function openCreateModal() {
     setShowCreateModal(true);
     setEditName("");
-    setEditDomain("");
     setEditDescription("");
+    setEditDomains([]);
+    setNewDomain("");
     setEditUsers([]);
     setNewUserEmail("");
     setModalError(null);
     setPending(null);
   }
   function openEditModal(workspace) {
-    var _workspace$name, _workspace$domain, _workspace$descriptio, _workspace$users;
+    var _workspace$name, _workspace$descriptio, _workspace$domains, _workspace$users;
     setModalWorkspace(workspace);
     setEditName((_workspace$name = workspace === null || workspace === void 0 ? void 0 : workspace.name) !== null && _workspace$name !== void 0 ? _workspace$name : "");
-    setEditDomain((_workspace$domain = workspace === null || workspace === void 0 ? void 0 : workspace.domain) !== null && _workspace$domain !== void 0 ? _workspace$domain : "");
     setEditDescription((_workspace$descriptio = workspace === null || workspace === void 0 ? void 0 : workspace.description) !== null && _workspace$descriptio !== void 0 ? _workspace$descriptio : "");
+    setEditDomains((_workspace$domains = workspace === null || workspace === void 0 ? void 0 : workspace.domains) !== null && _workspace$domains !== void 0 ? _workspace$domains : []);
+    setNewDomain("");
     setEditUsers((_workspace$users = workspace === null || workspace === void 0 ? void 0 : workspace.users) !== null && _workspace$users !== void 0 ? _workspace$users : []);
     setNewUserEmail("");
     setModalError(null);
@@ -55051,6 +55304,66 @@ function Workspaces() {
     var role = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getCurrentOrganisationRole();
     return role === "admin" || role === "super-admin";
   }
+
+  // Domain management
+  function addDomain() {
+    var domain = newDomain.trim().toLowerCase();
+    if (!domain) {
+      setModalError("Enter a domain.");
+      return;
+    }
+    if (!isValidDomain(domain)) {
+      setModalError("Enter a valid domain (e.g., client-site.com).");
+      return;
+    }
+    if (editDomains.some(function (d) {
+      return d.domain.toLowerCase() === domain;
+    })) {
+      setModalError("This domain has already been added.");
+      return;
+    }
+    // Check across all workspaces for duplicate domains
+    var allExistingDomains = workspaces.filter(function (ws) {
+      return !modalWorkspace || ws.id !== modalWorkspace.id;
+    }).flatMap(function (ws) {
+      return ws.domains || [];
+    }).map(function (d) {
+      return d.domain.toLowerCase();
+    });
+    if (allExistingDomains.includes(domain)) {
+      setModalError("This domain is already assigned to another workspace.");
+      return;
+    }
+    var isPrimary = editDomains.length === 0;
+    setEditDomains([].concat(_toConsumableArray(editDomains), [{
+      domain: domain,
+      isPrimary: isPrimary,
+      addedAt: new Date().toISOString()
+    }]));
+    setNewDomain("");
+    setModalError(null);
+  }
+  function removeDomain(domain) {
+    var updated = editDomains.filter(function (d) {
+      return d.domain.toLowerCase() !== domain.toLowerCase();
+    });
+    // If we removed the primary, make the first remaining one primary
+    if (updated.length > 0 && !updated.some(function (d) {
+      return d.isPrimary;
+    })) {
+      updated[0].isPrimary = true;
+    }
+    setEditDomains(updated);
+  }
+  function setPrimaryDomain(domain) {
+    setEditDomains(editDomains.map(function (d) {
+      return _objectSpread(_objectSpread({}, d), {}, {
+        isPrimary: d.domain.toLowerCase() === domain.toLowerCase()
+      });
+    }));
+  }
+
+  // User management
   function addUser() {
     var email = newUserEmail.trim().toLowerCase();
     if (!email) {
@@ -55082,28 +55395,12 @@ function Workspaces() {
   function handleCreate(e) {
     e.preventDefault();
     var name = editName.trim();
-    var domain = editDomain.trim();
     if (!name) {
       setModalError("Enter a workspace name.");
       return;
     }
-    if (!domain) {
-      setModalError("Enter a client domain.");
-      return;
-    }
-
-    // Basic domain validation
-    if (!/^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/.test(domain)) {
-      setModalError("Enter a valid domain (e.g., client-site.com).");
-      return;
-    }
-
-    // Check for duplicate domain
-    var existingDomain = workspaces.find(function (ws) {
-      return ws.domain.toLowerCase() === domain.toLowerCase();
-    });
-    if (existingDomain) {
-      setModalError("A workspace with this domain already exists.");
+    if (editDomains.length === 0) {
+      setModalError("Add at least one domain to the workspace.");
       return;
     }
     setModalError(null);
@@ -55114,8 +55411,8 @@ function Workspaces() {
       var newWorkspace = {
         id: generateId(),
         name: name,
-        domain: domain,
         description: editDescription.trim(),
+        domains: editDomains,
         users: editUsers,
         createdAt: new Date().toISOString(),
         createdBy: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getUserId()
@@ -55135,28 +55432,12 @@ function Workspaces() {
     e.preventDefault();
     if (!modalWorkspace) return;
     var name = editName.trim();
-    var domain = editDomain.trim();
     if (!name) {
       setModalError("Enter a workspace name.");
       return;
     }
-    if (!domain) {
-      setModalError("Enter a client domain.");
-      return;
-    }
-
-    // Basic domain validation
-    if (!/^[a-zA-Z0-9][a-zA-Z0-9-_.]*\.[a-zA-Z]{2,}$/.test(domain)) {
-      setModalError("Enter a valid domain (e.g., client-site.com).");
-      return;
-    }
-
-    // Check for duplicate domain (excluding current workspace)
-    var existingDomain = workspaces.find(function (ws) {
-      return ws.id !== modalWorkspace.id && ws.domain.toLowerCase() === domain.toLowerCase();
-    });
-    if (existingDomain) {
-      setModalError("A workspace with this domain already exists.");
+    if (editDomains.length === 0) {
+      setModalError("Add at least one domain to the workspace.");
       return;
     }
     setModalError(null);
@@ -55168,8 +55449,8 @@ function Workspaces() {
       var updated = workspaces.map(function (ws) {
         return ws.id === modalWorkspace.id ? _objectSpread(_objectSpread({}, ws), {}, {
           name: name,
-          domain: domain,
           description: editDescription.trim(),
+          domains: editDomains,
           users: editUsers,
           updatedAt: new Date().toISOString()
         }) : ws;
@@ -55205,7 +55486,80 @@ function Workspaces() {
     }, 500);
   }
 
-  // User list component used in both modals
+  // Get primary domain for display
+  function getPrimaryDomain(ws) {
+    var _ws$domains, _ws$domains2;
+    var primary = (_ws$domains = ws.domains) === null || _ws$domains === void 0 ? void 0 : _ws$domains.find(function (d) {
+      return d.isPrimary;
+    });
+    return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains2 = ws.domains) === null || _ws$domains2 === void 0 || (_ws$domains2 = _ws$domains2[0]) === null || _ws$domains2 === void 0 ? void 0 : _ws$domains2.domain) || ws.domain || "—";
+  }
+
+  // Domain list component
+  var DomainManagementSection = function DomainManagementSection() {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "settings-workspace__domains-section"
+    }, /*#__PURE__*/React.createElement("label", {
+      className: "settings-org-modal__label"
+    }, "Domains"), /*#__PURE__*/React.createElement("div", {
+      className: "settings-workspace__domains-add"
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "text",
+      className: "settings-org-modal__text-input settings-workspace__domain-input",
+      placeholder: "e.g., client-site.com",
+      value: newDomain,
+      onChange: function onChange(e) {
+        return setNewDomain(e.target.value);
+      },
+      onKeyDown: function onKeyDown(e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addDomain();
+        }
+      },
+      disabled: !!pending
+    }), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__add-domain-btn",
+      onClick: addDomain,
+      disabled: !!pending
+    }, "Add")), editDomains.length > 0 ? /*#__PURE__*/React.createElement("ul", {
+      className: "settings-workspace__domains-list"
+    }, editDomains.map(function (d) {
+      return /*#__PURE__*/React.createElement("li", {
+        key: d.domain,
+        className: "settings-workspace__domain-item"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "settings-workspace__domain-info"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "settings-workspace__domain-name"
+      }, d.domain), d.isPrimary && /*#__PURE__*/React.createElement("span", {
+        className: "settings-workspace__primary-badge"
+      }, "Primary")), /*#__PURE__*/React.createElement("div", {
+        className: "settings-workspace__domain-actions"
+      }, !d.isPrimary && /*#__PURE__*/React.createElement("button", {
+        type: "button",
+        className: "settings-workspace__set-primary-btn",
+        onClick: function onClick() {
+          return setPrimaryDomain(d.domain);
+        },
+        disabled: !!pending,
+        title: "Set as primary"
+      }, "Set primary"), /*#__PURE__*/React.createElement("button", {
+        type: "button",
+        className: "settings-workspace__remove-domain-btn",
+        onClick: function onClick() {
+          return removeDomain(d.domain);
+        },
+        disabled: !!pending,
+        title: "Remove domain"
+      }, "\xD7")));
+    })) : /*#__PURE__*/React.createElement("p", {
+      className: "settings-workspace__no-domains"
+    }, "No domains added yet. Add at least one domain above."));
+  };
+
+  // User list component
   var UserManagementSection = function UserManagementSection() {
     return /*#__PURE__*/React.createElement("div", {
       className: "settings-workspace__users-section"
@@ -55274,7 +55628,7 @@ function Workspaces() {
       margin: 0,
       flex: "1 1 280px"
     }
-  }, "Manage client workspaces for your agency. Each workspace represents a client domain you manage on behalf of your clients."), /*#__PURE__*/React.createElement("button", {
+  }, "Manage client workspaces for your agency. Each workspace can contain multiple domains for clients with multiple sites."), /*#__PURE__*/React.createElement("button", {
     className: "cta",
     onClick: openCreateModal
   }, "Create workspace")) : /*#__PURE__*/React.createElement("p", {
@@ -55283,17 +55637,21 @@ function Workspaces() {
     className: "settings-table-wrap"
   }, loading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_1__.CurrentPageLoading, null) : workspaces.length > 0 ? /*#__PURE__*/React.createElement("table", {
     className: "settings-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Domain"), /*#__PURE__*/React.createElement("th", null, "Users"), /*#__PURE__*/React.createElement("th", null, "Description"), /*#__PURE__*/React.createElement("th", {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Domains"), /*#__PURE__*/React.createElement("th", null, "Users"), /*#__PURE__*/React.createElement("th", null, "Description"), /*#__PURE__*/React.createElement("th", {
     style: {
       width: 140
     }
   }, "Actions"))), /*#__PURE__*/React.createElement("tbody", null, workspaces.map(function (ws) {
-    var _ws$users, _ws$users2;
+    var _ws$domains3, _ws$users, _ws$users2;
     return /*#__PURE__*/React.createElement("tr", {
       key: ws.id
-    }, /*#__PURE__*/React.createElement("td", null, ws.name), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+    }, /*#__PURE__*/React.createElement("td", null, ws.name), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("div", {
+      className: "settings-workspace__domains-cell"
+    }, /*#__PURE__*/React.createElement("span", {
       className: "settings-workspace__domain"
-    }, ws.domain)), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+    }, getPrimaryDomain(ws)), (((_ws$domains3 = ws.domains) === null || _ws$domains3 === void 0 ? void 0 : _ws$domains3.length) || 0) > 1 && /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__domain-count"
+    }, "+", ws.domains.length - 1, " more"))), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
       className: "settings-workspace__user-count"
     }, ((_ws$users = ws.users) === null || _ws$users === void 0 ? void 0 : _ws$users.length) || 0, " user", (((_ws$users2 = ws.users) === null || _ws$users2 === void 0 ? void 0 : _ws$users2.length) || 0) !== 1 ? "s" : "")), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
       className: "settings-workspace__description"
@@ -55333,26 +55691,10 @@ function Workspaces() {
     id: "ws-create-name",
     className: "settings-org-modal__text-input",
     type: "text",
-    placeholder: "e.g., Acme Corp Website",
+    placeholder: "e.g., Acme Corp",
     value: editName,
     onChange: function onChange(e) {
       return setEditName(e.target.value);
-    },
-    autoComplete: "off",
-    disabled: !!pending
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "settings-org-modal__field-block"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "settings-org-modal__label",
-    htmlFor: "ws-create-domain"
-  }, "Client domain"), /*#__PURE__*/React.createElement("input", {
-    id: "ws-create-domain",
-    className: "settings-org-modal__text-input",
-    type: "text",
-    placeholder: "e.g., acme-corp.com",
-    value: editDomain,
-    onChange: function onChange(e) {
-      return setEditDomain(e.target.value);
     },
     autoComplete: "off",
     disabled: !!pending
@@ -55365,14 +55707,14 @@ function Workspaces() {
     id: "ws-create-desc",
     className: "settings-org-modal__text-input",
     type: "text",
-    placeholder: "e.g., Main marketing website",
+    placeholder: "e.g., All websites for Acme Corp",
     value: editDescription,
     onChange: function onChange(e) {
       return setEditDescription(e.target.value);
     },
     autoComplete: "off",
     disabled: !!pending
-  })), /*#__PURE__*/React.createElement(UserManagementSection, null), modalError && /*#__PURE__*/React.createElement("p", {
+  })), /*#__PURE__*/React.createElement(DomainManagementSection, null), /*#__PURE__*/React.createElement(UserManagementSection, null), modalError && /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__status settings-subpage__status--error",
     style: {
       marginBottom: 14,
@@ -55422,21 +55764,6 @@ function Workspaces() {
     className: "settings-org-modal__field-block"
   }, /*#__PURE__*/React.createElement("label", {
     className: "settings-org-modal__label",
-    htmlFor: "ws-edit-domain"
-  }, "Client domain"), /*#__PURE__*/React.createElement("input", {
-    id: "ws-edit-domain",
-    className: "settings-org-modal__text-input",
-    type: "text",
-    value: editDomain,
-    onChange: function onChange(e) {
-      return setEditDomain(e.target.value);
-    },
-    autoComplete: "off",
-    disabled: !!pending
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "settings-org-modal__field-block"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "settings-org-modal__label",
     htmlFor: "ws-edit-desc"
   }, "Description (optional)"), /*#__PURE__*/React.createElement("input", {
     id: "ws-edit-desc",
@@ -55448,7 +55775,7 @@ function Workspaces() {
     },
     autoComplete: "off",
     disabled: !!pending
-  })), /*#__PURE__*/React.createElement(UserManagementSection, null), modalError && /*#__PURE__*/React.createElement("p", {
+  })), /*#__PURE__*/React.createElement(DomainManagementSection, null), /*#__PURE__*/React.createElement(UserManagementSection, null), modalError && /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__status settings-subpage__status--error",
     style: {
       marginBottom: 14,
@@ -55471,7 +55798,7 @@ function Workspaces() {
     className: "settings-org-modal__danger-title"
   }, "Danger zone"), /*#__PURE__*/React.createElement("p", {
     className: "settings-org-modal__danger-desc"
-  }, "Deleting this workspace removes it from your agency. This action cannot be undone."), !deleteConfirm ? /*#__PURE__*/React.createElement("div", {
+  }, "Deleting this workspace removes it and all its domains from your agency. This action cannot be undone."), !deleteConfirm ? /*#__PURE__*/React.createElement("div", {
     className: "settings-blacklist-modal__actions"
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",

@@ -175,6 +175,7 @@ export default function Select(props) {
                                                                 id: item.workspaceId,
                                                                 name: item.name,
                                                                 type: "workspace",
+                                                                workspaceData: item.workspaceData,
                                                             })
                                                         )
                                                     }
@@ -182,7 +183,7 @@ export default function Select(props) {
                                                     <span className="dropdown-menu__workspace-icon" aria-hidden="true">W</span>
                                                     <span className="dropdown-menu__workspace-info">
                                                         <span className="dropdown-menu__workspace-name">{item.label || item.name}</span>
-                                                        <span className="dropdown-menu__workspace-domain">{item.name}</span>
+                                                        <span className="dropdown-menu__workspace-domain">{item.sublabel || item.name}</span>
                                                     </span>
                                                 </li>
                                             );
