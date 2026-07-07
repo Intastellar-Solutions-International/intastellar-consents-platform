@@ -425,166 +425,11 @@ export default function Workspaces() {
         return primary?.domain || ws.domains?.[0]?.domain || ws.domain || "—";
     }
 
-    // Domain list component with verification status
-    const DomainManagementSection = () => {
-        // Get verification status for each domain
-        const getVerificationInfo = (domain) => {
-            if (!orgId) return { label: "—", type: "unknown", icon: "?" };
-            return getVerificationStatusLabel(domain, orgId);
-        };
-
-        return (
-            <div className="settings-workspace__domains-section">
-                <label className="settings-org-modal__label">
-                    Domains
-                </label>
-                <div className="settings-workspace__domains-add">
-                    <input
-                        type="text"
-                        className="settings-org-modal__text-input settings-workspace__domain-input"
-                        placeholder="e.g., client-site.com"
-                        value={newDomain}
-                        onChange={(e) => setNewDomain(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                e.preventDefault();
-                                addDomain();
-                            }
-                        }}
-                        disabled={!!pending}
-                    />
-                    <button
-                        type="button"
-                        className="settings-workspace__add-domain-btn"
-                        onClick={addDomain}
-                        disabled={!!pending}
-                    >
-                        Add
-                    </button>
-                </div>
-                {editDomains.length > 0 ? (
-                    <ul className="settings-workspace__domains-list" key={verificationRefreshKey}>
-                        {editDomains.map((d) => {
-                            const verifyInfo = getVerificationInfo(d.domain);
-                            const daysUntil = orgId ? getDaysUntilReverification(d.domain, orgId) : null;
-
-                            return (
-                                <li key={d.domain} className="settings-workspace__domain-item">
-                                    <div className="settings-workspace__domain-info">
-                                        <span className="settings-workspace__domain-name">{d.domain}</span>
-                                        {d.isPrimary && (
-                                            <span className="settings-workspace__primary-badge">Primary</span>
-                                        )}
-                                        <span
-                                            className={`settings-workspace__verify-badge settings-workspace__verify-badge--${verifyInfo.type}`}
-                                            title={
-                                                verifyInfo.type === "verified" && daysUntil != null
-                                                    ? `Re-verification in ${daysUntil} days`
-                                                    : verifyInfo.label
-                                            }
-                                        >
-                                            <span className="settings-workspace__verify-icon">{verifyInfo.icon}</span>
-                                            {verifyInfo.label}
-                                        </span>
-                                    </div>
-                                    <div className="settings-workspace__domain-actions">
-                                        <button
-                                            type="button"
-                                            className="settings-workspace__verify-btn"
-                                            onClick={() => openVerifyModal(d.domain)}
-                                            disabled={!!pending}
-                                            title="Verify domain ownership"
-                                        >
-                                            Verify
-                                        </button>
-                                        {!d.isPrimary && (
-                                            <button
-                                                type="button"
-                                                className="settings-workspace__set-primary-btn"
-                                                onClick={() => setPrimaryDomain(d.domain)}
-                                                disabled={!!pending}
-                                                title="Set as primary"
-                                            >
-                                                Set primary
-                                            </button>
-                                        )}
-                                        <button
-                                            type="button"
-                                            className="settings-workspace__remove-domain-btn"
-                                            onClick={() => removeDomain(d.domain)}
-                                            disabled={!!pending}
-                                            title="Remove domain"
-                                        >
-                                            ×
-                                        </button>
-                                    </div>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                ) : (
-                    <p className="settings-workspace__no-domains">
-                        No domains added yet. Add at least one domain above.
-                    </p>
-                )}
-            </div>
-        );
-    };
-
-    // User list component
-    const UserManagementSection = () => (
-        <div className="settings-workspace__users-section">
-            <label className="settings-org-modal__label">
-                Users
-            </label>
-            <div className="settings-workspace__users-add">
-                <input
-                    type="email"
-                    className="settings-org-modal__text-input settings-workspace__user-input"
-                    placeholder="user@example.com"
-                    value={newUserEmail}
-                    onChange={(e) => setNewUserEmail(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                            addUser();
-                        }
-                    }}
-                    disabled={!!pending}
-                />
-                <button
-                    type="button"
-                    className="settings-workspace__add-user-btn"
-                    onClick={addUser}
-                    disabled={!!pending}
-                >
-                    Add
-                </button>
-            </div>
-            {editUsers.length > 0 ? (
-                <ul className="settings-workspace__users-list">
-                    {editUsers.map((user) => (
-                        <li key={user.email} className="settings-workspace__user-item">
-                            <span className="settings-workspace__user-email">{user.email}</span>
-                            <button
-                                type="button"
-                                className="settings-workspace__remove-user-btn"
-                                onClick={() => removeUser(user.email)}
-                                disabled={!!pending}
-                                title="Remove user"
-                            >
-                                ×
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p className="settings-workspace__no-users">
-                    No users added yet. Add users by email above.
-                </p>
-            )}
-        </div>
-    );
+    // Helper — sync read from cache, safe to call during render
+    function getVerificationInfo(domain) {
+        if (!orgId) return { label: "—", type: "unknown", icon: "?" };
+        return getVerificationStatusLabel(domain, orgId);
+    }
 
     return (
         <>
@@ -737,8 +582,150 @@ export default function Workspaces() {
                                 />
                             </div>
 
-                            <DomainManagementSection />
-                            <UserManagementSection />
+                            <div className="settings-workspace__domains-section">
+                                <label className="settings-org-modal__label">
+                                    Domains
+                                </label>
+                                <div className="settings-workspace__domains-add">
+                                    <input
+                                        type="text"
+                                        className="settings-org-modal__text-input settings-workspace__domain-input"
+                                        placeholder="e.g., client-site.com"
+                                        value={newDomain}
+                                        onChange={(e) => setNewDomain(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                addDomain();
+                                            }
+                                        }}
+                                        disabled={!!pending}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="settings-workspace__add-domain-btn"
+                                        onClick={addDomain}
+                                        disabled={!!pending}
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                                {editDomains.length > 0 ? (
+                                    <ul className="settings-workspace__domains-list" key={verificationRefreshKey}>
+                                        {editDomains.map((d) => {
+                                            const verifyInfo = getVerificationInfo(d.domain);
+                                            const daysUntil = orgId ? getDaysUntilReverification(d.domain, orgId) : null;
+                                            return (
+                                                <li key={d.domain} className="settings-workspace__domain-item">
+                                                    <div className="settings-workspace__domain-info">
+                                                        <span className="settings-workspace__domain-name">{d.domain}</span>
+                                                        {d.isPrimary && (
+                                                            <span className="settings-workspace__primary-badge">Primary</span>
+                                                        )}
+                                                        <span
+                                                            className={`settings-workspace__verify-badge settings-workspace__verify-badge--${verifyInfo.type}`}
+                                                            title={
+                                                                verifyInfo.type === "verified" && daysUntil != null
+                                                                    ? `Re-verification in ${daysUntil} days`
+                                                                    : verifyInfo.label
+                                                            }
+                                                        >
+                                                            <span className="settings-workspace__verify-icon">{verifyInfo.icon}</span>
+                                                            {verifyInfo.label}
+                                                        </span>
+                                                    </div>
+                                                    <div className="settings-workspace__domain-actions">
+                                                        <button
+                                                            type="button"
+                                                            className="settings-workspace__verify-btn"
+                                                            onClick={() => openVerifyModal(d.domain)}
+                                                            disabled={!!pending}
+                                                            title="Verify domain ownership"
+                                                        >
+                                                            Verify
+                                                        </button>
+                                                        {!d.isPrimary && (
+                                                            <button
+                                                                type="button"
+                                                                className="settings-workspace__set-primary-btn"
+                                                                onClick={() => setPrimaryDomain(d.domain)}
+                                                                disabled={!!pending}
+                                                                title="Set as primary"
+                                                            >
+                                                                Set primary
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            type="button"
+                                                            className="settings-workspace__remove-domain-btn"
+                                                            onClick={() => removeDomain(d.domain)}
+                                                            disabled={!!pending}
+                                                            title="Remove domain"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                ) : (
+                                    <p className="settings-workspace__no-domains">
+                                        No domains added yet. Add at least one domain above.
+                                    </p>
+                                )}
+                            </div>
+                            <div className="settings-workspace__users-section">
+                                <label className="settings-org-modal__label">
+                                    Users
+                                </label>
+                                <div className="settings-workspace__users-add">
+                                    <input
+                                        type="email"
+                                        className="settings-org-modal__text-input settings-workspace__user-input"
+                                        placeholder="user@example.com"
+                                        value={newUserEmail}
+                                        onChange={(e) => setNewUserEmail(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                addUser();
+                                            }
+                                        }}
+                                        disabled={!!pending}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="settings-workspace__add-user-btn"
+                                        onClick={addUser}
+                                        disabled={!!pending}
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                                {editUsers.length > 0 ? (
+                                    <ul className="settings-workspace__users-list">
+                                        {editUsers.map((user) => (
+                                            <li key={user.email} className="settings-workspace__user-item">
+                                                <span className="settings-workspace__user-email">{user.email}</span>
+                                                <button
+                                                    type="button"
+                                                    className="settings-workspace__remove-user-btn"
+                                                    onClick={() => removeUser(user.email)}
+                                                    disabled={!!pending}
+                                                    title="Remove user"
+                                                >
+                                                    ×
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="settings-workspace__no-users">
+                                        No users added yet. Add users by email above.
+                                    </p>
+                                )}
+                            </div>
 
                             {modalError && (
                                 <p
@@ -819,8 +806,150 @@ export default function Workspaces() {
                                 />
                             </div>
 
-                            <DomainManagementSection />
-                            <UserManagementSection />
+                            <div className="settings-workspace__domains-section">
+                                <label className="settings-org-modal__label">
+                                    Domains
+                                </label>
+                                <div className="settings-workspace__domains-add">
+                                    <input
+                                        type="text"
+                                        className="settings-org-modal__text-input settings-workspace__domain-input"
+                                        placeholder="e.g., client-site.com"
+                                        value={newDomain}
+                                        onChange={(e) => setNewDomain(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                addDomain();
+                                            }
+                                        }}
+                                        disabled={!!pending}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="settings-workspace__add-domain-btn"
+                                        onClick={addDomain}
+                                        disabled={!!pending}
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                                {editDomains.length > 0 ? (
+                                    <ul className="settings-workspace__domains-list" key={verificationRefreshKey}>
+                                        {editDomains.map((d) => {
+                                            const verifyInfo = getVerificationInfo(d.domain);
+                                            const daysUntil = orgId ? getDaysUntilReverification(d.domain, orgId) : null;
+                                            return (
+                                                <li key={d.domain} className="settings-workspace__domain-item">
+                                                    <div className="settings-workspace__domain-info">
+                                                        <span className="settings-workspace__domain-name">{d.domain}</span>
+                                                        {d.isPrimary && (
+                                                            <span className="settings-workspace__primary-badge">Primary</span>
+                                                        )}
+                                                        <span
+                                                            className={`settings-workspace__verify-badge settings-workspace__verify-badge--${verifyInfo.type}`}
+                                                            title={
+                                                                verifyInfo.type === "verified" && daysUntil != null
+                                                                    ? `Re-verification in ${daysUntil} days`
+                                                                    : verifyInfo.label
+                                                            }
+                                                        >
+                                                            <span className="settings-workspace__verify-icon">{verifyInfo.icon}</span>
+                                                            {verifyInfo.label}
+                                                        </span>
+                                                    </div>
+                                                    <div className="settings-workspace__domain-actions">
+                                                        <button
+                                                            type="button"
+                                                            className="settings-workspace__verify-btn"
+                                                            onClick={() => openVerifyModal(d.domain)}
+                                                            disabled={!!pending}
+                                                            title="Verify domain ownership"
+                                                        >
+                                                            Verify
+                                                        </button>
+                                                        {!d.isPrimary && (
+                                                            <button
+                                                                type="button"
+                                                                className="settings-workspace__set-primary-btn"
+                                                                onClick={() => setPrimaryDomain(d.domain)}
+                                                                disabled={!!pending}
+                                                                title="Set as primary"
+                                                            >
+                                                                Set primary
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            type="button"
+                                                            className="settings-workspace__remove-domain-btn"
+                                                            onClick={() => removeDomain(d.domain)}
+                                                            disabled={!!pending}
+                                                            title="Remove domain"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                ) : (
+                                    <p className="settings-workspace__no-domains">
+                                        No domains added yet. Add at least one domain above.
+                                    </p>
+                                )}
+                            </div>
+                            <div className="settings-workspace__users-section">
+                                <label className="settings-org-modal__label">
+                                    Users
+                                </label>
+                                <div className="settings-workspace__users-add">
+                                    <input
+                                        type="email"
+                                        className="settings-org-modal__text-input settings-workspace__user-input"
+                                        placeholder="user@example.com"
+                                        value={newUserEmail}
+                                        onChange={(e) => setNewUserEmail(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                addUser();
+                                            }
+                                        }}
+                                        disabled={!!pending}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="settings-workspace__add-user-btn"
+                                        onClick={addUser}
+                                        disabled={!!pending}
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                                {editUsers.length > 0 ? (
+                                    <ul className="settings-workspace__users-list">
+                                        {editUsers.map((user) => (
+                                            <li key={user.email} className="settings-workspace__user-item">
+                                                <span className="settings-workspace__user-email">{user.email}</span>
+                                                <button
+                                                    type="button"
+                                                    className="settings-workspace__remove-user-btn"
+                                                    onClick={() => removeUser(user.email)}
+                                                    disabled={!!pending}
+                                                    title="Remove user"
+                                                >
+                                                    ×
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <p className="settings-workspace__no-users">
+                                        No users added yet. Add users by email above.
+                                    </p>
+                                )}
+                            </div>
 
                             {modalError && (
                                 <p

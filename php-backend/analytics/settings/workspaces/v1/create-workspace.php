@@ -41,11 +41,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+// ── Debug mode — set ?debug=1 in the request URL to enable ───────────────────
+$_DEBUG = isset($_GET['debug']) && $_GET['debug'] === '1';
+$_debugLog = [];
+
+function dbg(string $key, $value): void {
+    global $_debugLog;
+    $_debugLog[$key] = $value;
+}
+
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 define('ROOT_PATH', dirname(__DIR__, 4));
+dbg('root_path', ROOT_PATH);
+dbg('root_path_exists', is_dir(ROOT_PATH));
+dbg('shared_db_exists', file_exists(ROOT_PATH . '/shared/db.php'));
 
+$_envLoaded = false;
 if (!getenv('DB_NAME') && !($_ENV['DB_NAME'] ?? null)) {
     $envFile = ROOT_PATH . '/.env';
+    dbg('env_file_path', $envFile);
+    dbg('env_file_exists', file_exists($envFile));
     if (file_exists($envFile)) {
         foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
             $line = trim($line);
@@ -58,8 +73,16 @@ if (!getenv('DB_NAME') && !($_ENV['DB_NAME'] ?? null)) {
                 $_ENV[$key] = $val;
             }
         }
+        $_envLoaded = true;
     }
+} else {
+    $_envLoaded = true; // already set by server
 }
+dbg('env_loaded', $_envLoaded);
+dbg('db_host', getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? '(not set)'));
+dbg('db_name', getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? '(not set)'));
+dbg('db_user', getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? '(not set)'));
+dbg('db_pass_set', !empty(getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? '')));
 
 require_once ROOT_PATH . '/shared/db.php';
 
@@ -101,18 +124,30 @@ if (count($_splitToken) !== 3) {
 $_jwtPayload = json_decode(base64_decode($_splitToken[1]), true);
 $_now = time();
 
+dbg('jwt_iss',  $_jwtPayload['iss'] ?? '(missing)');
+dbg('jwt_exp',  $_jwtPayload['exp'] ?? '(missing)');
+dbg('jwt_nbf',  $_jwtPayload['nbf'] ?? '(missing)');
+dbg('jwt_now',  $_now);
+dbg('jwt_exp_ok', ($_jwtPayload['exp'] ?? 0) >= $_now);
+dbg('jwt_nbf_ok', ($_jwtPayload['nbf'] ?? 0) <= $_now);
+
 if (
     ($_jwtPayload['iss'] ?? '') !== 'Intastellar Account' ||
     ($_jwtPayload['nbf'] ?? 0) > $_now ||
     ($_jwtPayload['exp'] ?? 0) < $_now
 ) {
     http_response_code(401);
-    echo json_encode(['error' => 'Token expired or invalid issuer']);
+    $resp = ['error' => 'Token expired or invalid issuer'];
+    if ($_DEBUG) $resp['debug'] = $_debugLog;
+    echo json_encode($resp);
     exit;
 }
 
 // ── Parse body ────────────────────────────────────────────────────────────────
-$body = json_decode(file_get_contents('php://input'), true);
+$rawInput = file_get_contents('php://input');
+$body = json_decode($rawInput, true);
+dbg('raw_body', $rawInput);
+dbg('body_parsed', $body);
 
 $name           = trim((string)($body['name']          ?? ''));
 $description    = trim((string)($body['description']   ?? ''));
@@ -189,12 +224,19 @@ try {
         exit;
     }
 
+    // created_by: use JWT sub claim if it looks like a local user integer, else NULL
+    $createdBy = null;
+    $jwtSub = $_jwtPayload['sub'] ?? $_jwtPayload['userId'] ?? $_jwtPayload['user_id'] ?? null;
+    if ($jwtSub !== null && ctype_digit((string)$jwtSub) && (int)$jwtSub > 0) {
+        $createdBy = (int)$jwtSub;
+    }
+
     // Insert workspace
     $wsStmt = $db->prepare(
         'INSERT INTO workspaces (organisation_id, name, description, created_by)
-         VALUES (?, ?, ?, NULL)'
+         VALUES (?, ?, ?, ?)'
     );
-    $wsStmt->execute([$organisationId, $name, $description ?: null]);
+    $wsStmt->execute([$organisationId, $name, $description ?: null, $createdBy]);
     $workspaceId = (int)$db->lastInsertId();
 
     // Insert domains
@@ -249,5 +291,12 @@ try {
     if (isset($db) && $db->inTransaction()) $db->rollBack();
     error_log('[create-workspace] ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['error' => 'Internal server error']);
+    $resp = [
+        'error'   => 'Internal server error',
+        'detail'  => $e->getMessage(),
+        'file'    => $e->getFile() . ':' . $e->getLine(),
+        'type'    => get_class($e),
+    ];
+    if ($_DEBUG) $resp['debug'] = $_debugLog;
+    echo json_encode($resp);
 }

@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS workspaces (
     organisation_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT DEFAULT NULL,
-    created_by INT NOT NULL,
+    created_by INT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
