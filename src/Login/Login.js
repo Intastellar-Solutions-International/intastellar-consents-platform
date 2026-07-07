@@ -68,73 +68,49 @@ export default function Login() {
     return (
         <>
             <div className="int-login">
-                <main className="int-login__main">
-                    <div
-                        className="int-login__card"
-                        role="region"
-                        aria-labelledby="int-login-heading"
-                    >
-                        <div className="int-login__brand">
-                            <img
-                                src={logo}
-                                alt="Intastellar Solutions"
-                                className="int-login__logo"
-                                decoding="async"
-                            />
-                        </div>
+                <div className="int-login__split">
+                    <main className="int-login__panel int-login__panel--form">
+                        <div
+                            className="int-login__card"
+                            role="region"
+                            aria-labelledby="int-login-heading"
+                        >
+                            <div className="int-login__brand">
+                                <img
+                                    src={logo}
+                                    alt="Intastellar Solutions"
+                                    className="int-login__logo"
+                                    decoding="async"
+                                />
+                            </div>
 
-                        <div className="icc-product-parent-ribbon" role="note">
-                            <span className="icc-product-parent-ribbon__product">Intastellar Consents</span>
-                            <span className="icc-product-parent-ribbon__sep" aria-hidden="true">
-                                ·
-                            </span>
-                            <span className="icc-product-parent-ribbon__rest">
-                                a consent product from{" "}
-                                <a
-                                    href="https://www.intastellarsolutions.com"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="icc-product-parent-ribbon__link"
+                            <h1 id="int-login-heading" className="int-login__headline">
+                                Welcome back
+                            </h1>
+                            <p className="int-login__lede">
+                                Sign in to continue to Intastellar Consents.
+                            </p>
+
+                            <div className="int-login__sso">
+                                <button
+                                    type="button"
+                                    className="int-login__signin-btn"
+                                    onClick={() => signin()}
+                                    disabled={isLoading}
                                 >
-                                    Intastellar Solutions International
-                                </a>
-                            </span>
-                        </div>
-
-                        <h1 id="int-login-heading" className="int-login__headline">
-                            Sign in to Intastellar Consents
-                        </h1>
-                        <p className="int-login__lede">
-                            Access consent activity, audit logs, and reporting. Sign in with your Intastellar
-                            account.
-                        </p>
-
-                        <ul className="int-login__trust" aria-label="Security and privacy">
-                            <li className="int-login__trust-item">Secure authentication</li>
-                            <li className="int-login__trust-item">Your data is protected</li>
-                            <li className="int-login__trust-item">Audit logs are private</li>
-                        </ul>
-
-                        <div className="int-login__sso">
-                            <button
-                                type="button"
-                                className="int-login__signin-btn"
-                                onClick={() => signin()}
-                                disabled={isLoading}
-                            >
-                                {isLoading ? (
-                                    <span className="int-login__signin-btn-inner">
-                                        <span className="int-login__signin-spinner" aria-hidden="true" />
-                                        Signing in…
-                                    </span>
-                                ) : users.length == 1 ? (
-                                    <span className="int-login__signin-btn-inner">
-                                        <img src={users[0].image} className="int-login__signin-btn-inner-image" />
-                                        <span className="int-login__signin-btn-inner-text">
-                                            Continue as {users[0].name.first}
-                                            <span className="int-login__signin-btn-inner-text-email">{users[0].email}</span>
+                                    {isLoading ? (
+                                        <span className="int-login__signin-btn-inner">
+                                            <span className="int-login__signin-spinner" aria-hidden="true" />
+                                            Signing in…
                                         </span>
-                                    </span>
+                                    ) : users.length == 1 ? (
+                                        <span className="int-login__signin-btn-inner">
+                                            <img src={users[0].image} className="int-login__signin-btn-inner-image" />
+                                            <span className="int-login__signin-btn-inner-text">
+                                                Continue as {users[0].name.first}
+                                                <span className="int-login__signin-btn-inner-text-email">{users[0].email}</span>
+                                            </span>
+                                        </span>
                                     ) : users.length > 1 ? (
                                         <span className="int-login__signin-btn-inner">
                                             Choose your account
@@ -144,78 +120,107 @@ export default function Login() {
                                             Sign in with Intastellar Accounts
                                         </span>
                                     )}
-                            </button>
+                                </button>
+                            </div>
+
+                            <p className="int-login__not-you">
+                                <a
+                                    href={`https://www.intastellaraccounts.com/signin/v2/ws/identifier?service=Intastellar+Consents+%7C+CMP&continue=${window.location.host}&authuser=1&entryFlow=cHJvZmlsZQ%3D%3D&key=d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d&access_id=${window.location.hostname}&passive=true&flowName=GeneralOAuthFlow&Entry=webauthsignin&scope=profile`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="int-login__not-you-link"
+                                >
+                                    Not you? Switch account
+                                </a>
+                            </p>
                         </div>
+                    </main>
 
-                        <p className="int-login__not-you">
-                            <a
-                                href={`https://www.intastellaraccounts.com/signin/v2/ws/identifier?service=Intastellar+Consents+%7C+CMP&continue=${window.location.host}&authuser=1&entryFlow=cHJvZmlsZQ%3D%3D&key=d2eefd7f1564fa4c9714000456183a6b0f51e8c9519e1089ec41ce905ffc0c453dfac91ae8645c41ebae9c59e7a6e5233b1339e41a15723a9ba6d934bbb3e92d&access_id=${window.location.hostname}&passive=true&flowName=GeneralOAuthFlow&Entry=webauthsignin&scope=profile`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="int-login__not-you-link"
-                            >
-                                Not you? Switch account
-                            </a>
-                        </p>
-
-                        <footer
-                            className="int-login__identity"
-                            aria-label="Single sign-on and identity provider"
-                        >
-                            <div className="int-login__identity-strip">
-                                <div className="int-login__identity-icon" aria-hidden="true">
-                                    <svg
-                                        className="int-login__identity-svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        focusable="false"
-                                    >
-                                        <path
-                                            d="M12 2.5 4.5 5.25v5.5c0 4.85 3.35 9.4 7.5 10.75 4.15-1.35 7.5-5.9 7.5-10.75v-5.5L12 2.5z"
-                                            stroke="currentColor"
-                                            strokeWidth="1.35"
-                                            strokeLinejoin="round"
-                                            fill="rgba(192, 159, 83, 0.14)"
-                                        />
-                                        <path
-                                            d="m9 12 2.25 2.25L15.5 10"
-                                            stroke="currentColor"
-                                            strokeWidth="1.35"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
+                    <aside className="int-login__panel int-login__panel--features" aria-label="Product features">
+                        <div className="int-login__features-inner">
+                            <div className="int-login__features-brand">
+                                <img src={logo} alt="Intastellar Solutions" className="int-login__features-logo" decoding="async" />
+                            </div>
+                            <h2 className="int-login__features-headline">
+                                Consent intelligence<br />for the modern web
+                            </h2>
+                            <p className="int-login__features-lede">
+                                GDPR-grade consent management with real-time analytics, domain verification, and multi-client workspace management.
+                            </p>
+                            <ul className="int-login__features-list" aria-label="Key features">
+                                <li className="int-login__feature">
+                                    <span className="int-login__feature-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+                                            <circle cx="10" cy="10" r="3" fill="currentColor" opacity="0.9" />
+                                            <circle cx="10" cy="10" r="7.5" stroke="currentColor" strokeWidth="1.25" opacity="0.35" />
+                                            <circle cx="10" cy="10" r="5" stroke="currentColor" strokeWidth="1" opacity="0.55" strokeDasharray="2 2" />
+                                        </svg>
+                                    </span>
+                                    <div className="int-login__feature-copy">
+                                        <strong className="int-login__feature-title">Real-time consent monitoring</strong>
+                                        <span className="int-login__feature-desc">Live interaction feed with a 30-minute rolling window and country-level breakdown.</span>
+                                    </div>
+                                </li>
+                                <li className="int-login__feature">
+                                    <span className="int-login__feature-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+                                            <path d="M10 2L3.5 4.5v5c0 4.2 2.9 8.1 6.5 9.5C13.6 17.6 16.5 13.7 16.5 9.5v-5L10 2z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" fill="rgba(192,159,83,0.12)" />
+                                            <path d="m7 10 2 2 4-4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </span>
+                                    <div className="int-login__feature-copy">
+                                        <strong className="int-login__feature-title">GDPR &amp; ePrivacy compliance</strong>
+                                        <span className="int-login__feature-desc">Acceptance rates, essential-only breakdown, and EU vs non-EU visitor analysis.</span>
+                                    </div>
+                                </li>
+                                <li className="int-login__feature">
+                                    <span className="int-login__feature-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+                                            <rect x="2" y="13" width="3" height="5" rx="1" fill="currentColor" opacity="0.9" />
+                                            <rect x="7" y="9" width="3" height="9" rx="1" fill="currentColor" opacity="0.65" />
+                                            <rect x="12" y="5" width="3" height="13" rx="1" fill="currentColor" opacity="0.4" />
+                                            <path d="M3.5 12 8.5 8l5 3 3.5-5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </span>
+                                    <div className="int-login__feature-copy">
+                                        <strong className="int-login__feature-title">Marketing recoil analysis</strong>
+                                        <span className="int-login__feature-desc">Reconcile Google Ads, Meta, and GA4 click counts against consent-visible traffic — see exactly how opt-in rates hit your analytics.</span>
+                                    </div>
+                                </li>
+                                <li className="int-login__feature">
+                                    <span className="int-login__feature-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+                                            <rect x="2" y="2" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25" opacity="0.6" />
+                                            <rect x="11" y="2" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25" opacity="0.6" />
+                                            <rect x="2" y="11" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.25" opacity="0.6" />
+                                            <rect x="11" y="11" width="7" height="7" rx="1.5" fill="rgba(192,159,83,0.18)" stroke="currentColor" strokeWidth="1.25" />
+                                        </svg>
+                                    </span>
+                                    <div className="int-login__feature-copy">
+                                        <strong className="int-login__feature-title">Agency workspaces</strong>
+                                        <span className="int-login__feature-desc">Manage multiple clients with isolated reporting environments and workspace-level domain filtering.</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div className="int-login__features-stats">
+                                <div className="int-login__features-stat">
+                                    <span className="int-login__features-stat-value">30 min</span>
+                                    <span className="int-login__features-stat-label">live window</span>
                                 </div>
-                                <div className="int-login__identity-copy">
-                                    <p className="int-login__identity-kicker">Single sign-on (SSO)</p>
-                                    <p className="int-login__identity-lede">
-                                        <strong className="int-login__identity-product">Intastellar Accounts</strong> is
-                                        your identity provider. One verified login for Intastellar products — this app
-                                        never receives your password.
-                                    </p>
+                                <div className="int-login__features-stat-divider" aria-hidden />
+                                <div className="int-login__features-stat">
+                                    <span className="int-login__features-stat-value">Multi</span>
+                                    <span className="int-login__features-stat-label">domain support</span>
+                                </div>
+                                <div className="int-login__features-stat-divider" aria-hidden />
+                                <div className="int-login__features-stat">
+                                    <span className="int-login__features-stat-value">GDPR</span>
+                                    <span className="int-login__features-stat-label">compliant</span>
                                 </div>
                             </div>
-                            <a
-                                href="https://my.intastellaraccounts.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="int-login__identity-brand"
-                            >
-                                <span className="int-login__identity-brand-label">Secured by</span>
-                                <img
-                                    src="https://www.intastellarsolutions.com/assets/logos/intastellar-accounts-white.svg"
-                                    alt="Intastellar Accounts"
-                                    className="int-login__identity-logo"
-                                    decoding="async"
-                                />
-                            </a>
-                            <p className="int-login__identity-trustline">
-                                Identity trust · Encrypted session · Centralised access control
-                            </p>
-                        </footer>
-                    </div>
-                </main>
+                        </div>
+                    </aside>
+                </div>
             </div>
             <LPFooter />
         </>

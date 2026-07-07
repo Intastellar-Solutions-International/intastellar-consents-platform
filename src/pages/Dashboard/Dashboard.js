@@ -288,6 +288,29 @@ export default function Dashboard(props) {
         <>
             <StickyPageTitle demoMode={demoMode} loadingUpdated={loading} finalLoaded={loadingCountry} title={handle ? `Dashboard: ${punycode.toUnicode(handle)}` : "Dashboard"} url={url} method={method} header={header} numberofDays={setLastDays} getLastDays={getLastDays} setActiveData={setActiveData} fromDate={fromDate} toDate={toDate} setFromDate={setFromDate} setToDate={setToDate} previousPeriod={previousPeriod} previousPeriod2={previousPeriod2} compareRange={compareRange} setCompareRange={setCompareRange} setCompareWindowStart={setPreviousPeriod} setCompareWindowEnd={setPreviousPeriod2} />
             <div className="dashboard-content">
+                {/* Workspace banner */}
+                {activeWorkspace && (
+                    <div className="dashboard-workspace-banner">
+                        <div className="dashboard-workspace-banner__left">
+                            <span className="dashboard-workspace-banner__kicker">Workspace</span>
+                            <span className="dashboard-workspace-banner__name">{activeWorkspace.name}</span>
+                        </div>
+                        {activeWorkspace.domains?.length > 0 && (
+                            <div className="dashboard-workspace-banner__domains">
+                                {activeWorkspace.domains.slice(0, 3).map((d) => (
+                                    <span key={d.domain} className="dashboard-workspace-banner__domain-tag">
+                                        {d.domain}
+                                    </span>
+                                ))}
+                                {activeWorkspace.domains.length > 3 && (
+                                    <span className="dashboard-workspace-banner__domain-tag dashboard-workspace-banner__domain-tag--more">
+                                        +{activeWorkspace.domains.length - 3}
+                                    </span>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
                 {/* Domain Verification Warning Banner */}
                 {verificationStatus.show && (
                     <div className={`dashboard-verification-warning ${verificationStatus.isExpired ? 'dashboard-verification-warning--expired' : ''}`}>

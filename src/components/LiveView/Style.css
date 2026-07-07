@@ -243,3 +243,76 @@
     background: rgba(170, 70, 65, 0.8);
     transition: width 0.35s ease;
 }
+
+/* Pagination controls */
+.liveView-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.liveView-pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: #c6c6c6;
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.liveView-pagination-btn:hover:not(:disabled) {
+    background: rgba(192, 159, 83, 0.14);
+    border-color: rgba(192, 159, 83, 0.4);
+    color: #e8d5a8;
+}
+
+.liveView-pagination-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.liveView-pagination-info {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.38);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    min-width: 36px;
+    text-align: center;
+}
+
+/* Show more / fewer domains */
+.liveView-show-more-btn {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: transparent;
+    color: rgba(192, 159, 83, 0.75);
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    text-align: center;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.liveView-show-more-btn:hover {
+    color: #e8d5a8;
+    border-color: rgba(192, 159, 83, 0.35);
+    background: rgba(192, 159, 83, 0.07);
+}

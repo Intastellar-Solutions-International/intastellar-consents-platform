@@ -338,9 +338,15 @@ export function LiveView(props) {
         country: "",
         open: false,
     });
+    const COUNTRY_PAGE_SIZE = 5;
+    const DOMAIN_SHOW_LIMIT = 4;
+    const [countryPage, setCountryPage] = useState(0);
+    const [expandedCountries, setExpandedCountries] = useState(new Set());
     const [barRenderKey, setBarRenderKey] = useState(0);
     useEffect(() => {
         setBarRenderKey((prev) => prev + 1);
+        setCountryPage(0);
+        setExpandedCountries(new Set());
     }, [liveData]);
 
     useEffect(() => {
@@ -406,89 +412,103 @@ export function LiveView(props) {
                                 })()}
                             </div>
                             <div className="liveView-content-data-2">
-                                {Object.keys(liveData?.country || {}).map((key, countryIndex) => {
-                                    const countryCount = liveData?.country[key]?.count ?? 0;
-                                    const totalCount = liveData?.count || 1;
-                                    const countryKeys = Object.keys(liveData?.country || {});
-                                    const isLastCountry = countryIndex === countryKeys.length - 1;
-
-                                    return (
-                                        <div
-                                            key={key}
-                                            className="liveView-content-country"
-                                            style={{ marginBottom: isLastCountry ? "0" : "40px" }}
-                                        >
-                                            <div className="liveView-content-flex">
-                                                <p className="liveView-content-data-1-text">{key}</p>
-                                                <p className="liveView-content-data-1-text">{countryCount}</p>
-                                            </div>
-                                            <div
-                                                style={{
-                                                    width: "100%",
-                                                    height: "2px",
-                                                    backgroundColor: "#c4c4c4",
-                                                    marginBottom: "10px",
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        width: `${(countryCount / totalCount) * 100}%`,
-                                                        height: "2px",
-                                                        backgroundColor: "rgb(222, 189, 113)",
-                                                        marginBottom: "10px",
-                                                    }}
-                                                />
-                                            </div>
-                                            {!demoMode &&
-                                                Object.keys(liveData?.domains || {})
-                                                    .filter((domain) => {
-                                                        const domainCountries = liveData?.domains[domain]?.country;
-                                                        return Array.isArray(domainCountries) && domainCountries.includes(key);
-                                                    })
-                                                    .map((domain) => {
-                                                        const domainCountryCount = (
-                                                            liveData?.domains[domain]?.country || []
-                                                        ).filter((c) => c === key).length;
-                                                        const barWidthPercent =
-                                                            totalCount > 0
-                                                                ? (domainCountryCount / totalCount) * 100
-                                                                : 0;
-
-                                                        return (
-                                                            <div key={`${key}-${domain}`} className="liveView-domain-block">
-                                                                <button
-                                                                    type="button"
-                                                                    className="liveView-domain-row"
-                                                                    onClick={() =>
-                                                                        setDomainLiveView({
-                                                                            domain,
-                                                                            country: key,
-                                                                            open: true,
-                                                                        })
-                                                                    }
-                                                                >
-                                                                    <span className="liveView-content-data-1-text liveView-domain-row__name">
-                                                                        {domain}
-                                                                    </span>
-                                                                    <span className="liveView-content-data-1-text liveView-domain-row__count">
-                                                                        {domainCountryCount}
-                                                                    </span>
-                                                                </button>
-                                                                <div
-                                                                    className="liveView-domain-bar-track"
-                                                                    aria-hidden
-                                                                >
-                                                                    <div
-                                                                        className="liveView-domain-bar-fill"
-                                                                        style={{ width: `${barWidthPercent}%` }}
-                                                                    />
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                        </div>
+                                {(() => {
+                                    const allCountryKeys = Object.keys(liveData?.country || {});
+                                    const totalPages = Math.ceil(allCountryKeys.length / COUNTRY_PAGE_SIZE);
+                                    const visibleKeys = allCountryKeys.slice(
+                                        countryPage * COUNTRY_PAGE_SIZE,
+                                        (countryPage + 1) * COUNTRY_PAGE_SIZE
                                     );
-                                })}
+                                    const totalCount = liveData?.count || 1;
+                                    return (
+                                        <>
+                                            {visibleKeys.map((key, idx) => {
+                                                const countryCount = liveData?.country[key]?.count ?? 0;
+                                                const isLast = idx === visibleKeys.length - 1;
+                                                const allDomains = Object.keys(liveData?.domains || {}).filter((d) => {
+                                                    const dc = liveData.domains[d]?.country;
+                                                    return Array.isArray(dc) && dc.includes(key);
+                                                });
+                                                const isExpanded = expandedCountries.has(key);
+                                                const visibleDomains = isExpanded ? allDomains : allDomains.slice(0, DOMAIN_SHOW_LIMIT);
+                                                const hiddenCount = allDomains.length - DOMAIN_SHOW_LIMIT;
+
+                                                return (
+                                                    <div key={key} className="liveView-content-country" style={{ marginBottom: isLast ? "0" : "28px" }}>
+                                                        <div className="liveView-content-flex">
+                                                            <p className="liveView-content-data-1-text">{key}</p>
+                                                            <p className="liveView-content-data-1-text">{countryCount}</p>
+                                                        </div>
+                                                        <div style={{ width: "100%", height: "2px", backgroundColor: "#c4c4c4", marginBottom: "10px" }}>
+                                                            <div style={{ width: `${(countryCount / totalCount) * 100}%`, height: "2px", backgroundColor: "rgb(222, 189, 113)" }} />
+                                                        </div>
+                                                        {!demoMode && (
+                                                            <>
+                                                                {visibleDomains.map((domain) => {
+                                                                    const domainCountryCount = (liveData.domains[domain]?.country || []).filter((c) => c === key).length;
+                                                                    const barWidthPercent = totalCount > 0 ? (domainCountryCount / totalCount) * 100 : 0;
+                                                                    return (
+                                                                        <div key={`${key}-${domain}`} className="liveView-domain-block">
+                                                                            <button
+                                                                                type="button"
+                                                                                className="liveView-domain-row"
+                                                                                onClick={() => setDomainLiveView({ domain, country: key, open: true })}
+                                                                            >
+                                                                                <span className="liveView-content-data-1-text liveView-domain-row__name">{domain}</span>
+                                                                                <span className="liveView-content-data-1-text liveView-domain-row__count">{domainCountryCount}</span>
+                                                                            </button>
+                                                                            <div className="liveView-domain-bar-track" aria-hidden>
+                                                                                <div className="liveView-domain-bar-fill" style={{ width: `${barWidthPercent}%` }} />
+                                                                            </div>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                                {allDomains.length > DOMAIN_SHOW_LIMIT && (
+                                                                    <button
+                                                                        type="button"
+                                                                        className="liveView-show-more-btn"
+                                                                        onClick={() => setExpandedCountries((prev) => {
+                                                                            const next = new Set(prev);
+                                                                            if (next.has(key)) next.delete(key); else next.add(key);
+                                                                            return next;
+                                                                        })}
+                                                                    >
+                                                                        {isExpanded ? "Show less" : `+${hiddenCount} more domain${hiddenCount !== 1 ? "s" : ""}`}
+                                                                    </button>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                            {totalPages > 1 && (
+                                                <div className="liveView-pagination">
+                                                    <button
+                                                        type="button"
+                                                        className="liveView-pagination-btn"
+                                                        onClick={() => setCountryPage((p) => p - 1)}
+                                                        disabled={countryPage === 0}
+                                                        aria-label="Previous countries"
+                                                    >
+                                                        ←
+                                                    </button>
+                                                    <span className="liveView-pagination-info">
+                                                        {countryPage + 1} / {totalPages}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        className="liveView-pagination-btn"
+                                                        onClick={() => setCountryPage((p) => p + 1)}
+                                                        disabled={countryPage >= totalPages - 1}
+                                                        aria-label="Next countries"
+                                                    >
+                                                        →
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </>
+                                    );
+                                })()}
                             </div>
                         </div>
                     </div>

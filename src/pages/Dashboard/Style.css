@@ -151,6 +151,70 @@
     text-decoration: underline;
 }
 
+/* Workspace active banner */
+.dashboard-workspace-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    background: linear-gradient(105deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-workspace-banner__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.dashboard-workspace-banner__kicker {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c0a053;
+    flex-shrink: 0;
+}
+
+.dashboard-workspace-banner__name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f0e6d4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-workspace-banner__domains {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.dashboard-workspace-banner__domain-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    border: 1px solid rgba(192, 159, 83, 0.25);
+    background: rgba(192, 159, 83, 0.08);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #c0a053;
+    white-space: nowrap;
+}
+
+.dashboard-workspace-banner__domain-tag--more {
+    color: rgba(192, 159, 83, 0.6);
+    border-style: dashed;
+}
+
 /* Domain Verification Warning Banner */
 .dashboard-verification-warning {
     display: flex;
