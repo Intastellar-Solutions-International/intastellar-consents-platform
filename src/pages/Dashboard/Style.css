@@ -238,6 +238,66 @@
 }
 
 
+/* ── Decision behaviour inline KPI tile ── */
+.dashboard-behaviour-kpi {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.dashboard-behaviour-kpi__content {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.dashboard-behaviour-kpi__label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.32);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.dashboard-behaviour-kpi__value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e8e8e8;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.dashboard-behaviour-kpi__sub {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.22);
+    flex-shrink: 0;
+}
+
+.dashboard-behaviour-kpi__btn {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: 1px solid rgba(192, 159, 83, 0.3);
+    background: rgba(192, 159, 83, 0.07);
+    color: #c0a053;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    letter-spacing: 0.01em;
+}
+
+.dashboard-behaviour-kpi__btn:hover {
+    background: rgba(192, 159, 83, 0.14);
+    border-color: rgba(192, 159, 83, 0.5);
+}
+
 /* ── Marketing link (replaces teaser section) ── */
 .dashboard-marketing-link {
     margin: 16px 0 0;

@@ -22,12 +22,12 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import { LiveView } from "../../components/LiveView/index.js";
 import AuditSnapshotCard from "../../components/AuditSnapshotCard/AuditSnapshotCard.js";
+import { DecisionBehaviourDrawer } from "../../components/DecisionBehaviourDrawer/index.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
 import Pie from "../../Components/Charts/Pie/index.js";
 import Widget from "../../Components/widget/widget.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
-import Select from "../../Components/SelectInput/Selector.js";
 import punycode from "punycode";
 
 const { useState, useEffect, useRef, useContext, useMemo, useCallback } = React;
@@ -44,6 +44,7 @@ export default function Dashboard(props) {
 
     const [demoMode, setDemoMode] = useState(Authentication.DemoMode);
     const [timeToDecision, setTimeToDecision] = useState("global");
+    const [behaviourDrawerOpen, setBehaviourDrawerOpen] = useState(false);
 
     const { handle, id } = useParams();
 
@@ -137,6 +138,12 @@ export default function Dashboard(props) {
         if (slice == null || typeof slice !== "object") return null;
         return slice;
     }, [activeData, timeToDecision]);
+
+    const globalTimeToDecision = useMemo(() => {
+        const root = activeData?.timeToDecision;
+        if (root == null || typeof root !== "object") return null;
+        return root.global ?? null;
+    }, [activeData]);
 
     const [liveViewData, setLiveViewData] = useState(null);
     const onLiveDataChange = useCallback((data) => {
@@ -422,28 +429,40 @@ export default function Dashboard(props) {
                 {hasTimeToDecision && (
                     <div className="dashboard-section">
                         <h2 className="dashboard-section-label">Decision behaviour</h2>
-                        <Select
-                            type="timeToDecision"
-                            items={["global", "eu", "noneEU"]}
-                            labels={["Global", "EU", "Non-EU"]}
-                            defaultValue={timeToDecision}
-                            onChange={(e) => setTimeToDecision(e)}
-                        />
-                        {timeToDecisionSlice ? (
-                            <>
-                                <p style={{ margin: "12px 0 16px", fontSize: "0.8rem", color: "#666" }}>n = {timeToDecisionSlice.count.toLocaleString("de-DE")}</p>
-                                <div className="grid-container topWidget grid-7">
-                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.median == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s"} explainer={{ exist: true, title: "Median time to decision", content: "Median time taken by users to decide on consent." }} type="Median time to decision" fromDate={fromDate} toDate={toDate} details={{ avg: timeToDecisionSlice.avg.toLocaleString("de-DE") + "s", median: timeToDecisionSlice.median.toLocaleString("de-DE") + "s", p90: timeToDecisionSlice.p90.toLocaleString("de-DE") + "s", percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
-                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.p90 == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s"} explainer={{ exist: true, title: "90th percentile time to decision", content: "Time taken by 90% of users to decide on consent." }} type="P90 decision time" fromDate={fromDate} toDate={toDate} details={{ avg: timeToDecisionSlice.avg.toLocaleString("de-DE") + "s", median: timeToDecisionSlice.median.toLocaleString("de-DE") + "s", p90: timeToDecisionSlice.p90.toLocaleString("de-DE") + "s", percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
-                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.avg == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s"} explainer={{ exist: true, title: "Average time to decision", content: "Average time taken by users to decide on consent." }} type="Average time to decision" fromDate={fromDate} toDate={toDate} details={{ avg: timeToDecisionSlice.avg.toLocaleString("de-DE") + "s", median: timeToDecisionSlice.median.toLocaleString("de-DE") + "s", p90: timeToDecisionSlice.p90.toLocaleString("de-DE") + "s", percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
-                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.percentageOver10s == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"} explainer={{ exist: true, title: "Percentage of users who took more than 10 seconds to decide", content: "Percentage of users who took more than 10 seconds to decide on consent." }} type=">10s time to decision" fromDate={fromDate} toDate={toDate} details={{ percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
-                                    <Widget styleType="small" totalNumber={timeToDecisionSlice.percentageUnder1s == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"} explainer={{ exist: true, title: "Percentage of users who took less than 1 second to decide", content: "Percentage of users who took less than 1 second to decide on consent." }} type="<1s time to decision" fromDate={fromDate} toDate={toDate} details={{ percentageOver10s: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%", percentageUnder1s: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%", count: timeToDecisionSlice.count.toLocaleString("de-DE"), countOver10s: timeToDecisionSlice.countOver10s.toLocaleString("de-DE"), countUnder1s: timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"), deviceType: timeToDecisionSlice.deviceType }} />
-                                </div>
-                            </>
-                        ) : (
-                            <p style={{ marginTop: "12px", color: "#666", fontSize: "0.875rem" }}>No time-to-decision data for the selected region.</p>
-                        )}
+                        <div className="dashboard-behaviour-kpi">
+                            <div className="dashboard-behaviour-kpi__content">
+                                <span className="dashboard-behaviour-kpi__label">Median decision time</span>
+                                <span className="dashboard-behaviour-kpi__value">
+                                    {globalTimeToDecision?.median > 0
+                                        ? `${globalTimeToDecision.median.toLocaleString("de-DE")}s`
+                                        : "—"}
+                                </span>
+                                {globalTimeToDecision?.count > 0 && (
+                                    <span className="dashboard-behaviour-kpi__sub">
+                                        {globalTimeToDecision.count.toLocaleString("de-DE")} interactions · global
+                                    </span>
+                                )}
+                            </div>
+                            <button
+                                type="button"
+                                className="dashboard-behaviour-kpi__btn"
+                                onClick={() => setBehaviourDrawerOpen(true)}
+                            >
+                                See breakdown
+                            </button>
+                        </div>
                     </div>
+                )}
+                {hasTimeToDecision && (
+                    <DecisionBehaviourDrawer
+                        isOpen={behaviourDrawerOpen}
+                        onClose={() => setBehaviourDrawerOpen(false)}
+                        timeToDecision={timeToDecision}
+                        onChangeRegion={setTimeToDecision}
+                        timeToDecisionSlice={timeToDecisionSlice}
+                        fromDate={fromDate}
+                        toDate={toDate}
+                    />
                 )}
 
                 {/* ── 5. Compliance audit ── */}
