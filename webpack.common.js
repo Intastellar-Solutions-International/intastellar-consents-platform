@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 /* const nodeExternals = require('webpack-node-externals'); */
 
 const config = {
@@ -55,10 +56,13 @@ const config = {
 };
 
 module.exports = (env, argv) => {
+  const dotenv = new Dotenv({ systemvars: true });
+
   if (argv.mode === 'development') {
     config.devtool = 'source-map';
     config.mode = 'development';
-    config.plugins = [ 
+    config.plugins = [
+      dotenv,
       new HtmlWebpackPlugin({
         template: "./index.html",
       })
@@ -66,14 +70,13 @@ module.exports = (env, argv) => {
   }
 
   if (argv.mode === 'production') {
-    //...
     config.mode = 'production';
-    config.plugins = [ 
+    config.plugins = [
+      dotenv,
       new HtmlWebpackPlugin({
         template: "./production.html",
       })
     ]
-
   }
 
   return config;

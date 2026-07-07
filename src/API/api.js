@@ -16,6 +16,16 @@ const API = {
         method: "POST",
         headers: {
             "Authorization": Authentication.getToken(),
+            "Organisation": Authentication.getOrganisation(),
+            "Content-Type": "application/json"
+        }
+    },
+    CreateCheckoutSession: {
+        url: `${PrimaryHost}/payment/subscription/v1/create-checkout-session`,
+        method: "POST",
+        headers: {
+            "Authorization": Authentication.getToken(),
+            "Organisation": Authentication.getOrganisation(),
             "Content-Type": "application/json"
         }
     },
@@ -222,16 +232,6 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
-    },
-    ferry: {
-        getTotalSales: {
-            url: `${PrimaryHost}/analytics/ferry/getTotalSales`,
-            method: "GET",
-            headers: {
-                "Authorization": Authentication.getToken(),
-                "Content-Type": "application/json"
-            }
-        }
     },
     settings: {
         createUser: {

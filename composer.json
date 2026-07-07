@@ -1,6 +1,7 @@
 {
     "require": {
         "chrome-php/chrome": "^1.13",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "stripe/stripe-php": "^20.3"
     }
 }

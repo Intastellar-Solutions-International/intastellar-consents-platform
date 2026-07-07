@@ -29,7 +29,7 @@ import PlatformSelector from "./Components/PlatformSelector/PlatformSelector";
 import Crawler from "./Components/Crawler";
 import UserAgents from "./Pages/Reports/UserAgents";
 import UserPreferences from "./Pages/Settings/UserPreferences";
-import StripePayment from "./Components/StripePayment";
+import SubscriptionPlans from "./Components/SubscriptionPlans";
 import Compare from "./Pages/Reports/Compare";
 import BlacklistIp from "./Pages/Settings/BlacklistIp";
 import CreateUser from "./Pages/Settings/CreateUser";
@@ -37,6 +37,7 @@ import AuthLogin from "./Login/AuthLogin";
 import Experiments from "./Pages/Experiments/Experiments";
 import AuditReport from "./Pages/Reports/AuditReport";
 import MarketingReport from "./Pages/Reports/MarketingReport";
+import LoadingSpinner from "./Components/LoadingSpinner/LoadingSpinner";
 import Workspaces from "./Pages/Settings/Workspaces";
 
 const { useState, useEffect, useRef, createContext } = React;
@@ -58,10 +59,12 @@ export default function App() {
     const [organisations, setOrganisations] = useState(null);
     const [domains, setDomains] = useState(null);
     const [domainError, setDomainError] = useState(false);
-    const [subscriptionStatus, setSubscriptionStatus] = useState({
-        status: "loading",
-        loading: false,
-        subscription: null
+    const [subscriptionStatus, setSubscriptionStatus] = useState(() => {
+        const cached = localStorage.getItem("subscription");
+        if (cached) {
+            try { return JSON.parse(cached); } catch { /* ignore */ }
+        }
+        return { status: "loading", loading: true, subscription: null };
     });
     const [id, setId] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
     const navigate = window.ReactRouterDOM.useHistory();
@@ -155,6 +158,10 @@ export default function App() {
 
         }, []);
 
+        const subscriptionLoading = subscriptionStatus?.subscription == null;
+        const orgId = (() => { try { return JSON.parse(localStorage.getItem("organisation"))?.id; } catch { return null; } })();
+        const needsPayment = !subscriptionLoading && subscriptionStatus?.subscription === "none" && orgId !== 1;
+
         if (id === null && organisations) {
             return (
                 <>
@@ -182,7 +189,7 @@ export default function App() {
                                         <Route path="/:id/dashboard" exact>
                                             <div style={{ flex: "1" }}>
                                                 {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <>
                                                         {domainError ? <AddDomain /> :
                                                             (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
                                                         }
@@ -192,7 +199,7 @@ export default function App() {
                                         <Route path='/:id/view/:handle'>
                                             <div style={{ flex: "1" }}>
                                                 {
-                                                    (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1) ? <StripePayment userId={Authentication.getUserId} /> : <>
+                                                    subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <>
                                                         {domainError ? <AddDomain /> :
                                                             (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
                                                         }
@@ -206,7 +213,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/:id/domains" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <Websites />}
                                                 </ErrorBoundary>
                                             }
@@ -220,7 +227,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/settings/create-organisation">
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <CreateOrganisation /> : <p>No access</p>}
                                                 </ErrorBoundary>
                                             }
@@ -231,7 +238,7 @@ export default function App() {
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/add-domain">
-                                            {localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1 ? <StripePayment userId={Authentication.getUserId} /> :
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> :
                                                 <ErrorBoundary>
                                                     {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" 
                                                     || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin"
@@ -257,77 +264,77 @@ export default function App() {
                                         </Route>
                                         <Route path="/:id/cookies" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <CookiesDashboard />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/user-consents" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/user-consents/:uid" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/audit-report" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/marketing" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/view/:handle" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <Reports organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <Reports organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/user-consents" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/user-consents/:uid" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/audit-report" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/:id/reports/marketing" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
                                                 </ErrorBoundary>
                                             }
@@ -337,9 +344,9 @@ export default function App() {
                                                 <PlatformSelector setId={setId} platforms={JSON.parse(localStorage.getItem("globals"))?.access?.type} />
                                             </ErrorBoundary>
                                         </Route>
-                                        <Router path="/login" exact>
+                                        <Route path="/login" exact>
                                             <Login />
-                                        </Router>
+                                        </Route>
                                         <Route path="/auth-login">
                                             <AuthLogin />
                                         </Route>
@@ -380,7 +387,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/:id/compare" exact>
                                             {
-                                                (localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id  != 1) ? <StripePayment userId={Authentication.getUserId} /> : <ErrorBoundary>
+                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
                                                     {domainError ? <AddDomain /> : <Compare organisations={organisations} domains={domains} />}
                                                 </ErrorBoundary>
                                             }
