@@ -22,8 +22,18 @@ const SETTINGS_HUB_COPY = {
 function hasAgencySubscription() {
     try {
         // Allow access for Intastellar Solutions (org ID 1)
-        const org = JSON.parse(localStorage.getItem("organisation"));
-        if (org?.id === 1) return true;
+        const orgRaw = localStorage.getItem("organisation");
+        if (orgRaw) {
+            // Handle both JSON string and plain value formats
+            let org = orgRaw;
+            try {
+                org = JSON.parse(orgRaw);
+            } catch {
+                /* not JSON, use raw value */
+            }
+            // Check for org ID 1 (compare as strings to handle both number and string)
+            if (org?.id != null && String(org.id) === "1") return true;
+        }
 
         const sub = localStorage.getItem("subscription");
         if (sub) {

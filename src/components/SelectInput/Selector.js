@@ -161,6 +161,30 @@ export default function Select(props) {
                                                 </li>
                                             );
                                         }
+                                        // Handle workspace combined view
+                                        if (item.type === "workspace-combined") {
+                                            return (
+                                                <li
+                                                    key="workspace-combined"
+                                                    data-dropdown-item
+                                                    role="option"
+                                                    className="dropdown-menu__item--workspace-combined"
+                                                    onClick={() =>
+                                                        props.onChange(
+                                                            JSON.stringify({
+                                                                name: item.name,
+                                                                type: "workspace-combined",
+                                                                workspaceId: item.workspaceId,
+                                                                workspaceDomains: item.workspaceDomains,
+                                                            })
+                                                        )
+                                                    }
+                                                >
+                                                    <span className="dropdown-menu__combined-icon" aria-hidden="true">⊕</span>
+                                                    <span>{item.label || item.name}</span>
+                                                </li>
+                                            );
+                                        }
                                         // Handle exit workspace item
                                         if (item.type === "exit-workspace") {
                                             return (

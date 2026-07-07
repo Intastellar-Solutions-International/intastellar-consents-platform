@@ -43,6 +43,40 @@ function setCurrentWorkspace(workspace) {
     }
 }
 
+/**
+ * Set workspace filter domains for API calls
+ * When set, the dashboard will filter to only these domains
+ */
+function setWorkspaceFilter(domains) {
+    if (domains && domains.length > 0) {
+        localStorage.setItem("workspace_filter", JSON.stringify(domains));
+    } else {
+        localStorage.removeItem("workspace_filter");
+    }
+}
+
+/**
+ * Clear workspace filter
+ */
+function clearWorkspaceFilter() {
+    localStorage.removeItem("workspace_filter");
+}
+
+/**
+ * Get workspace filter domains (for use in API calls)
+ */
+export function getWorkspaceFilter() {
+    try {
+        const stored = localStorage.getItem("workspace_filter");
+        if (stored) {
+            return JSON.parse(stored);
+        }
+    } catch {
+        /* ignore */
+    }
+    return null;
+}
+
 function domainLabelForHeader(pathname, globalDomain) {
     const pathHandle = parseHandleFromPath(pathname);
     if (pathHandle != null) {
@@ -96,8 +130,18 @@ function readCachedDomains() {
 function hasAgencySubscription() {
     try {
         // Allow access for Intastellar Solutions (org ID 1)
-        const org = JSON.parse(localStorage.getItem("organisation"));
-        if (org?.id === 1) return true;
+        const orgRaw = localStorage.getItem("organisation");
+        if (orgRaw) {
+            // Handle both JSON string and plain value formats
+            let org = orgRaw;
+            try {
+                org = JSON.parse(orgRaw);
+            } catch {
+                /* not JSON, use raw value */
+            }
+            // Check for org ID 1 (compare as strings to handle both number and string)
+            if (org?.id != null && String(org.id) === "1") return true;
+        }
 
         const sub = localStorage.getItem("subscription");
         if (sub) {
@@ -256,9 +300,19 @@ export default function Header(props) {
     if (activeWorkspace) {
         // When workspace is active, show only workspace domains
         domainList.push({
-            name: `${activeWorkspace.name} Domains`,
+            name: `${activeWorkspace.name}`,
             disabled: true,
             type: "separator"
+        });
+
+        // Add combined view for workspace (aggregates all workspace domains)
+        domainList.push({
+            icon: null,
+            name: "combined view",
+            label: "All domains (combined)",
+            type: "workspace-combined",
+            workspaceId: activeWorkspace.id,
+            workspaceDomains: activeWorkspace.domains?.map(d => d.domain) || []
         });
 
         // Add workspace domains
@@ -380,9 +434,30 @@ export default function Header(props) {
                                             if (parsed.type === "exit-workspace") {
                                                 setActiveWorkspace(null);
                                                 setCurrentWorkspace(null);
+                                                clearWorkspaceFilter();
                                                 setCurrentDomain("combined view");
                                                 setGlobalDomain("combined view");
                                                 navigateWithDomain(history, platformId, "combined view", location.pathname);
+                                                return;
+                                            }
+
+                                            // Handle workspace combined view
+                                            if (parsed.type === "workspace-combined") {
+                                                // Store workspace domains for API filtering
+                                                setWorkspaceFilter(parsed.workspaceDomains);
+                                                setCurrentDomain("combined view");
+                                                setGlobalDomain("combined view");
+                                                navigateWithDomain(history, platformId, "combined view", location.pathname);
+                                                return;
+                                            }
+
+                                            // Handle workspace domain selection
+                                            if (parsed.type === "workspace-domain") {
+                                                // Clear workspace filter when selecting single domain
+                                                clearWorkspaceFilter();
+                                                setCurrentDomain(domain);
+                                                setGlobalDomain(domain);
+                                                navigateWithDomain(history, platformId, domain, location.pathname);
                                                 return;
                                             }
 
@@ -400,11 +475,15 @@ export default function Header(props) {
                                                 if (ws) {
                                                     setActiveWorkspace(ws);
                                                     setCurrentWorkspace(ws);
+                                                    // Set workspace filter for combined view by default
+                                                    const wsDomains = ws.domains?.map(d => d.domain) || [];
+                                                    setWorkspaceFilter(wsDomains);
                                                 }
-                                            } else if (parsed.type !== "workspace-domain") {
-                                                // Only clear workspace if selecting a regular domain (not workspace domain)
+                                            } else {
+                                                // Selecting regular domain clears workspace
                                                 setActiveWorkspace(null);
                                                 setCurrentWorkspace(null);
+                                                clearWorkspaceFilter();
                                             }
 
                                             navigateWithDomain(history, platformId, domain, location.pathname);

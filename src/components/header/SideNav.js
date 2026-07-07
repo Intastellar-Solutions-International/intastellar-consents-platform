@@ -91,8 +91,17 @@ export default function SideNav(props) {
                         if (link.requiresAgency) {
                             try {
                                 // Allow access for Intastellar Solutions (org ID 1)
-                                const org = JSON.parse(localStorage.getItem("organisation"));
-                                if (org?.id === 1) {
+                                const orgRaw = localStorage.getItem("organisation");
+                                let org = null;
+                                if (orgRaw) {
+                                    try {
+                                        org = JSON.parse(orgRaw);
+                                    } catch {
+                                        /* not JSON */
+                                    }
+                                }
+                                // Compare as strings to handle both number and string id
+                                if (org?.id != null && String(org.id) === "1") {
                                     // Org 1 has access, continue
                                 } else {
                                     const sub = localStorage.getItem("subscription");

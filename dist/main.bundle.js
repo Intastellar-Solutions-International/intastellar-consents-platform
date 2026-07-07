@@ -20386,6 +20386,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.selector {
     white-space: nowrap;
 }
 
+/* Workspace combined view item */
+.dropdown-menu__item--workspace-combined {
+    padding: 10px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: rgba(192, 159, 83, 0.08) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.dropdown-menu__item--workspace-combined:hover {
+    background: rgba(192, 159, 83, 0.18) !important;
+}
+
+.dropdown-menu__combined-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #c0a053;
+}
+
 /* Exit workspace item */
 .dropdown-menu__item--exit-workspace {
     padding: 12px 14px !important;
@@ -20458,7 +20482,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.selector {
         min-width: 0;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Components/SelectInput/Style.css"],"names":[],"mappings":"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","sourcesContent":[".selector {\n    max-width: 350px;\n    min-width: 0;\n    height: auto;\n    min-height: 36px;\n    position: relative;\n    display: flex;\n    align-items: stretch;\n    flex: 1;\n}\n\n.selectTitle {\n    margin-bottom: 10px;\n    display: block;\n}\n\n.selector select {\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    background: transparent;\n    appearance: none;\n    -webkit-appearance: none;\n    color: #fff;\n    font-size: 12px;\n    margin: 0px;\n    padding: 8px 16px;\n    border-radius: 0;\n    display: block;\n    max-width: 100%;\n    min-width: 175px;\n    vertical-align: baseline;\n    white-space: nowrap;\n}\n\n.selector select:focus,\n.selector select:focus-within,\n.selector select:focus-visible {\n    outline: none;\n    border-bottom: 1px solid;\n}\n\n.dropdown-menu {\n    position: absolute;\n    top: calc(100% + 6px);\n    z-index: 200;\n    min-width: 100%;\n}\n\n.dropdown-menu--align-left {\n    left: 0;\n    right: auto;\n}\n\n.dropdown-menu--align-right {\n    right: 0;\n    left: auto;\n}\n\n.dropdown-menu__panel {\n    position: relative;\n    width: max-content;\n    min-width: 100%;\n    max-width: min(100vw - 24px, 360px);\n    max-height: min(70vh, 420px);\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow:\n        0 20px 48px rgba(0, 0, 0, 0.45),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.dropdown-menu__content {\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #e4e4e4;\n    text-align: left;\n}\n\n.dropdown-menu__content li {\n    padding: 10px 14px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    border-bottom: 1px solid transparent;\n    transition:\n        background 0.15s ease,\n        color 0.15s ease;\n}\n\n.dropdown-menu__content li:hover,\n.dropdown-menu__content li:focus-visible {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n    outline: none;\n}\n\n.dropdown-menu__content li[hidden] {\n    display: none !important;\n}\n\n.dropdown-menu__item--with-icon {\n    display: flex;\n    align-items: center;\n}\n\n.dropdown-menu-button {\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    appearance: none;\n    -webkit-appearance: none;\n    color: #f0f0f0;\n    margin: 0;\n    padding: 8px 12px 8px 14px;\n    border-radius: 10px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    line-height: 1.3;\n    display: inline-flex;\n    flex-direction: row;\n    align-items: center;\n    width: 100%;\n    max-width: 100%;\n    min-width: 0;\n    box-sizing: border-box;\n    vertical-align: baseline;\n    justify-content: space-between;\n    gap: 8px;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.dropdown-menu-button:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu-button:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.55);\n    outline-offset: 2px;\n}\n\n.dropdown-menu-button__label {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    text-align: left;\n}\n\n.dropdown-menu-button::after {\n    content: \"\";\n    width: 8px;\n    height: 8px;\n    flex-shrink: 0;\n    margin-left: 4px;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n    transition: transform 0.2s ease;\n}\n\n.dropdown-menu-button[aria-expanded=\"true\"]::after {\n    transform: rotate(225deg) translateY(0);\n}\n\n.search-box {\n    padding: 10px 10px 8px;\n    flex-shrink: 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.search-input {\n    width: 100%;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    box-sizing: border-box;\n}\n\n.search-input::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.search-input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.company-logo {\n    margin-right: 0;\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: block;\n    object-fit: contain;\n    border-radius: 6px;\n}\n\n/* Separator styles */\n.dropdown-menu__separator {\n    padding: 8px 14px !important;\n    cursor: default !important;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85) !important;\n    background: rgba(0, 0, 0, 0.15) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n    margin-top: 4px;\n}\n\n.dropdown-menu__separator:hover {\n    background: rgba(0, 0, 0, 0.15) !important;\n    cursor: default !important;\n}\n\n/* Workspace item styles */\n.dropdown-menu__item--workspace {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__workspace-icon {\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.75rem;\n    font-weight: 700;\n}\n\n.dropdown-menu__workspace-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.dropdown-menu__workspace-name {\n    font-weight: 600;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dropdown-menu__workspace-domain {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Exit workspace item */\n.dropdown-menu__item--exit-workspace {\n    padding: 12px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 8px !important;\n    color: rgba(255, 255, 255, 0.8) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.dropdown-menu__item--exit-workspace:hover {\n    background: rgba(255, 255, 255, 0.08) !important;\n}\n\n.dropdown-menu__exit-icon {\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* Workspace domain items (when inside a workspace) */\n.dropdown-menu__item--workspace-domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n}\n\n.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .company_container .selector {\n        max-width: none;\n        width: 100%;\n    }\n\n    .dropdown-menu {\n        left: 0 !important;\n        right: 0 !important;\n        min-width: 0;\n        width: 100%;\n    }\n\n    .dropdown-menu__panel {\n        width: 100%;\n        max-width: none;\n    }\n\n    .dropdown-menu-button {\n        min-width: 0;\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Components/SelectInput/Style.css"],"names":[],"mappings":"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","sourcesContent":[".selector {\n    max-width: 350px;\n    min-width: 0;\n    height: auto;\n    min-height: 36px;\n    position: relative;\n    display: flex;\n    align-items: stretch;\n    flex: 1;\n}\n\n.selectTitle {\n    margin-bottom: 10px;\n    display: block;\n}\n\n.selector select {\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    background: transparent;\n    appearance: none;\n    -webkit-appearance: none;\n    color: #fff;\n    font-size: 12px;\n    margin: 0px;\n    padding: 8px 16px;\n    border-radius: 0;\n    display: block;\n    max-width: 100%;\n    min-width: 175px;\n    vertical-align: baseline;\n    white-space: nowrap;\n}\n\n.selector select:focus,\n.selector select:focus-within,\n.selector select:focus-visible {\n    outline: none;\n    border-bottom: 1px solid;\n}\n\n.dropdown-menu {\n    position: absolute;\n    top: calc(100% + 6px);\n    z-index: 200;\n    min-width: 100%;\n}\n\n.dropdown-menu--align-left {\n    left: 0;\n    right: auto;\n}\n\n.dropdown-menu--align-right {\n    right: 0;\n    left: auto;\n}\n\n.dropdown-menu__panel {\n    position: relative;\n    width: max-content;\n    min-width: 100%;\n    max-width: min(100vw - 24px, 360px);\n    max-height: min(70vh, 420px);\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow:\n        0 20px 48px rgba(0, 0, 0, 0.45),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.dropdown-menu__content {\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #e4e4e4;\n    text-align: left;\n}\n\n.dropdown-menu__content li {\n    padding: 10px 14px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    border-bottom: 1px solid transparent;\n    transition:\n        background 0.15s ease,\n        color 0.15s ease;\n}\n\n.dropdown-menu__content li:hover,\n.dropdown-menu__content li:focus-visible {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n    outline: none;\n}\n\n.dropdown-menu__content li[hidden] {\n    display: none !important;\n}\n\n.dropdown-menu__item--with-icon {\n    display: flex;\n    align-items: center;\n}\n\n.dropdown-menu-button {\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    appearance: none;\n    -webkit-appearance: none;\n    color: #f0f0f0;\n    margin: 0;\n    padding: 8px 12px 8px 14px;\n    border-radius: 10px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    line-height: 1.3;\n    display: inline-flex;\n    flex-direction: row;\n    align-items: center;\n    width: 100%;\n    max-width: 100%;\n    min-width: 0;\n    box-sizing: border-box;\n    vertical-align: baseline;\n    justify-content: space-between;\n    gap: 8px;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.dropdown-menu-button:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu-button:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.55);\n    outline-offset: 2px;\n}\n\n.dropdown-menu-button__label {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    text-align: left;\n}\n\n.dropdown-menu-button::after {\n    content: \"\";\n    width: 8px;\n    height: 8px;\n    flex-shrink: 0;\n    margin-left: 4px;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n    transition: transform 0.2s ease;\n}\n\n.dropdown-menu-button[aria-expanded=\"true\"]::after {\n    transform: rotate(225deg) translateY(0);\n}\n\n.search-box {\n    padding: 10px 10px 8px;\n    flex-shrink: 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.search-input {\n    width: 100%;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    box-sizing: border-box;\n}\n\n.search-input::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.search-input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.company-logo {\n    margin-right: 0;\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: block;\n    object-fit: contain;\n    border-radius: 6px;\n}\n\n/* Separator styles */\n.dropdown-menu__separator {\n    padding: 8px 14px !important;\n    cursor: default !important;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85) !important;\n    background: rgba(0, 0, 0, 0.15) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n    margin-top: 4px;\n}\n\n.dropdown-menu__separator:hover {\n    background: rgba(0, 0, 0, 0.15) !important;\n    cursor: default !important;\n}\n\n/* Workspace item styles */\n.dropdown-menu__item--workspace {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__workspace-icon {\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.75rem;\n    font-weight: 700;\n}\n\n.dropdown-menu__workspace-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.dropdown-menu__workspace-name {\n    font-weight: 600;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dropdown-menu__workspace-domain {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Workspace combined view item */\n.dropdown-menu__item--workspace-combined {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n    background: rgba(192, 159, 83, 0.08) !important;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.dropdown-menu__item--workspace-combined:hover {\n    background: rgba(192, 159, 83, 0.18) !important;\n}\n\n.dropdown-menu__combined-icon {\n    width: 20px;\n    height: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1rem;\n    color: #c0a053;\n}\n\n/* Exit workspace item */\n.dropdown-menu__item--exit-workspace {\n    padding: 12px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 8px !important;\n    color: rgba(255, 255, 255, 0.8) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.dropdown-menu__item--exit-workspace:hover {\n    background: rgba(255, 255, 255, 0.08) !important;\n}\n\n.dropdown-menu__exit-icon {\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* Workspace domain items (when inside a workspace) */\n.dropdown-menu__item--workspace-domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n}\n\n.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .company_container .selector {\n        max-width: none;\n        width: 100%;\n    }\n\n    .dropdown-menu {\n        left: 0 !important;\n        right: 0 !important;\n        min-width: 0;\n        width: 100%;\n    }\n\n    .dropdown-menu__panel {\n        width: 100%;\n        max-width: none;\n    }\n\n    .dropdown-menu-button {\n        min-width: 0;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -29864,6 +29888,364 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.top-countries{
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/components/IntastellarAccounts/Style.css":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/components/IntastellarAccounts/Style.css ***!
+  \********************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `/* Legacy panel (unused in app; kept for compatibility) */
+.services-overview-container {
+    width: 345px;
+    height: auto;
+    max-height: 600px;
+    overflow: hidden;
+    border-radius: 10px;
+    float: right;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+
+/* Account dropdown — aligned with dashboard dark UI + login gold accents */
+.ia-menu.user_content {
+    width: min(calc(100vw - 32px), 320px);
+    max-height: min(90vh, 640px);
+    overflow: hidden;
+    border-radius: 14px;
+    float: right;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 24px 56px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+}
+
+.ia-menu__accent {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38%;
+    max-width: 120px;
+    height: 3px;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);
+    pointer-events: none;
+}
+
+.ia-menu__body {
+    padding: 22px 18px 12px;
+    max-height: calc(min(90vh, 640px) - 76px);
+    overflow-y: auto;
+    text-align: center;
+}
+
+.ia-menu__brand {
+    margin-bottom: 14px;
+}
+
+.ia-menu__brand-logo {
+    display: block;
+    width: min(160px, 72%);
+    height: auto;
+    margin: 0 auto;
+    opacity: 0.92;
+    filter: brightness(0) invert(1);
+}
+
+.ia-menu__avatar-wrap {
+    position: relative;
+    width: max-content;
+    margin: 0 auto 16px;
+}
+
+.ia-menu__avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 3px solid rgba(192, 159, 83, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.ia-menu__identity {
+    color: #e8e8e8;
+}
+
+.ia-menu__greeting {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #f0f0f0;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ia-menu__email {
+    margin: 0 0 14px;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: #9aa0a6;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ia-menu__manage {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.25);
+    color: #d8d8d8 !important;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: left;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.ia-menu__manage:hover {
+    border-color: rgba(192, 159, 83, 0.45);
+    background: rgba(192, 159, 83, 0.1);
+    color: #f4f4f4 !important;
+}
+
+.ia-menu__manage-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.ia-menu__workspace-panel {
+    margin-top: 16px;
+    padding: 12px 14px 12px;
+    text-align: left;
+    border-radius: 10px;
+    border: 1px solid rgba(192, 159, 83, 0.22);
+    background: linear-gradient(
+        165deg,
+        rgba(192, 159, 83, 0.08) 0%,
+        rgba(0, 0, 0, 0.32) 58%
+    );
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.ia-menu__workspace-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.ia-menu__workspace-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.ia-menu__workspace-kicker {
+    display: block;
+    margin: 0;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c0a053;
+    line-height: 1.25;
+}
+
+.ia-menu__demo-label {
+    display: block;
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #ececec;
+    line-height: 1.3;
+}
+
+.ia-menu__demo-hint {
+    margin: 0;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.6875rem;
+    line-height: 1.45;
+    color: #8b9199;
+}
+
+.ia-menu__switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.ia-menu__switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ia-menu__switch-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.12);
+    transition: background 0.25s ease;
+    border-radius: 34px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ia-menu__switch-slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 2px;
+    background: #f0f0f0;
+    transition: transform 0.25s ease;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.ia-menu__switch input:checked + .ia-menu__switch-slider {
+    background: rgba(192, 159, 83, 0.35);
+    border-color: rgba(192, 159, 83, 0.5);
+}
+
+.ia-menu__switch input:checked + .ia-menu__switch-slider::before {
+    transform: translateX(20px);
+    background: #e8d5a8;
+}
+
+.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {
+    outline: 2px solid rgba(192, 159, 83, 0.7);
+    outline-offset: 2px;
+}
+
+.ia-menu__footer {
+    padding: 14px 16px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.ia-menu__sign-out {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: #c9cdd3;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.ia-menu__sign-out:hover {
+    border-color: rgba(220, 100, 100, 0.45);
+    background: rgba(220, 80, 80, 0.12);
+    color: #f0c4c4;
+}
+
+.ia-menu__sign-out-icon {
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.dropdown-links {
+    max-height: 140px;
+    height: auto;
+    overflow: scroll;
+}
+
+.dropdown-links a {
+    color: #000;
+    font-size: 15px;
+    padding: 15px;
+    display: block;
+    text-decoration: none;
+}
+
+.dropdown-links a:hover {
+    background: #b7b7b7;
+    text-decoration: none;
+    color: #000;
+}
+
+@media screen and (min-width: 320px) and (max-width: 900px) {
+    .ia-menu.user_content,
+    .services-overview-container {
+        top: 60px;
+        right: 10px;
+    }
+}
+`, "",{"version":3,"sources":["webpack://./src/components/IntastellarAccounts/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* Legacy panel (unused in app; kept for compatibility) */\n.services-overview-container {\n    width: 345px;\n    height: auto;\n    max-height: 600px;\n    overflow: hidden;\n    border-radius: 10px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    background: rgba(255, 255, 255, 0.8);\n    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);\n    -webkit-backdrop-filter: blur(10px);\n    backdrop-filter: blur(10px);\n}\n\n/* Account dropdown — aligned with dashboard dark UI + login gold accents */\n.ia-menu.user_content {\n    width: min(calc(100vw - 32px), 320px);\n    max-height: min(90vh, 640px);\n    overflow: hidden;\n    border-radius: 14px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 56px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    -webkit-backdrop-filter: blur(18px);\n    backdrop-filter: blur(18px);\n}\n\n.ia-menu__accent {\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 38%;\n    max-width: 120px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.ia-menu__body {\n    padding: 22px 18px 12px;\n    max-height: calc(min(90vh, 640px) - 76px);\n    overflow-y: auto;\n    text-align: center;\n}\n\n.ia-menu__brand {\n    margin-bottom: 14px;\n}\n\n.ia-menu__brand-logo {\n    display: block;\n    width: min(160px, 72%);\n    height: auto;\n    margin: 0 auto;\n    opacity: 0.92;\n    filter: brightness(0) invert(1);\n}\n\n.ia-menu__avatar-wrap {\n    position: relative;\n    width: max-content;\n    margin: 0 auto 16px;\n}\n\n.ia-menu__avatar {\n    width: 88px;\n    height: 88px;\n    border-radius: 50%;\n    object-fit: cover;\n    display: block;\n    border: 3px solid rgba(192, 159, 83, 0.35);\n    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);\n}\n\n.ia-menu__identity {\n    color: #e8e8e8;\n}\n\n.ia-menu__greeting {\n    margin: 0 0 4px;\n    font-size: 1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f0f0f0;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__email {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.4;\n    color: #9aa0a6;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__manage {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.25);\n    color: #d8d8d8 !important;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    text-decoration: none;\n    text-align: left;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n    box-sizing: border-box;\n}\n\n.ia-menu__manage:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.1);\n    color: #f4f4f4 !important;\n}\n\n.ia-menu__manage-icon {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: 8px;\n    object-fit: contain;\n}\n\n.ia-menu__workspace-panel {\n    margin-top: 16px;\n    padding: 12px 14px 12px;\n    text-align: left;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.32) 58%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.ia-menu__workspace-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 14px;\n}\n\n.ia-menu__workspace-copy {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.ia-menu__workspace-kicker {\n    display: block;\n    margin: 0;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: #c0a053;\n    line-height: 1.25;\n}\n\n.ia-menu__demo-label {\n    display: block;\n    margin: 0;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    letter-spacing: 0.01em;\n    color: #ececec;\n    line-height: 1.3;\n}\n\n.ia-menu__demo-hint {\n    margin: 0;\n    margin-top: 10px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    font-size: 0.6875rem;\n    line-height: 1.45;\n    color: #8b9199;\n}\n\n.ia-menu__switch {\n    position: relative;\n    display: inline-block;\n    width: 44px;\n    height: 24px;\n    flex-shrink: 0;\n}\n\n.ia-menu__switch input {\n    opacity: 0;\n    width: 0;\n    height: 0;\n}\n\n.ia-menu__switch-slider {\n    position: absolute;\n    cursor: pointer;\n    inset: 0;\n    background: rgba(255, 255, 255, 0.12);\n    transition: background 0.25s ease;\n    border-radius: 34px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.ia-menu__switch-slider::before {\n    position: absolute;\n    content: \"\";\n    height: 18px;\n    width: 18px;\n    left: 3px;\n    bottom: 2px;\n    background: #f0f0f0;\n    transition: transform 0.25s ease;\n    border-radius: 50%;\n    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider {\n    background: rgba(192, 159, 83, 0.35);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider::before {\n    transform: translateX(20px);\n    background: #e8d5a8;\n}\n\n.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n.ia-menu__footer {\n    padding: 14px 16px 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.ia-menu__sign-out {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    margin: 0;\n    padding: 11px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(255, 255, 255, 0.04);\n    color: #c9cdd3;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n}\n\n.ia-menu__sign-out:hover {\n    border-color: rgba(220, 100, 100, 0.45);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n}\n\n.ia-menu__sign-out-icon {\n    flex-shrink: 0;\n    opacity: 0.9;\n}\n\n.dropdown-links {\n    max-height: 140px;\n    height: auto;\n    overflow: scroll;\n}\n\n.dropdown-links a {\n    color: #000;\n    font-size: 15px;\n    padding: 15px;\n    display: block;\n    text-decoration: none;\n}\n\n.dropdown-links a:hover {\n    background: #b7b7b7;\n    text-decoration: none;\n    color: #000;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .ia-menu.user_content,\n    .services-overview-container {\n        top: 60px;\n        right: 10px;\n    }\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./src/components/LiveView/Style.css":
 /*!*********************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./src/components/LiveView/Style.css ***!
@@ -30128,6 +30510,1344 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.liveView-content-data {
     background: rgba(170, 70, 65, 0.8);
     transition: width 0.35s ease;
 }`, "",{"version":3,"sources":["webpack://./src/components/LiveView/Style.css"],"names":[],"mappings":"AAAA;IACI,cAAc;IACd,eAAe;AACnB;;AAEA;IACI,aAAa;IACb,8BAA8B;AAClC;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,eAAe;IACf,gBAAgB;IAChB,aAAa;AACjB;;AAEA,kEAAkE;AAClE;IACI,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,8BAA8B;IAC9B,mBAAmB;IACnB,WAAW;IACX,SAAS;IACT,iBAAiB;IACjB,2CAA2C;IAC3C,kBAAkB;IAClB,8BAA8B;IAC9B,eAAe;IACf,gBAAgB;IAChB,aAAa;IACb,cAAc;IACd,wDAAwD;AAC5D;;AAEA;IACI,oCAAoC;IACpC,sCAAsC;AAC1C;;AAEA;IACI,0CAA0C;IAC1C,mBAAmB;AACvB;;AAEA;IACI,qBAAqB;IACrB,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,kCAAkC;AACtC;;AAEA;IACI,WAAW;IACX,WAAW;IACX,eAAe;IACf,oBAAoB;IACpB,qCAAqC;IACrC,gBAAgB;AACpB;;AAEA;IACI,YAAY;IACZ,oBAAoB;IACpB,+EAA+E;IAC/E,4BAA4B;AAChC;;AAEA,qEAAqE;AACrE;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;IAChC,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,kDAAkD;AACtD;;AAEA;IACI,aAAa;IACb,uBAAuB;IACvB,8BAA8B;IAC9B,SAAS;IACT,eAAe;IACf,+CAA+C;AACnD;;AAEA;IACI,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,YAAY;IACZ,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,yBAAyB;AAC7B;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,+BAA+B;AACnC;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,kCAAkC;IAClC,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,WAAW;IACX,WAAW;IACX,gBAAgB;IAChB,oBAAoB;IACpB,gBAAgB;IAChB,qCAAqC;AACzC;;AAEA;IACI,YAAY;IACZ,YAAY;IACZ,4BAA4B;AAChC;;AAEA;IACI,sFAAsF;AAC1F;;AAEA;IACI,uFAAuF;AAC3F;;AAEA;IACI,uFAAuF;AAC3F;;AAEA;IACI,cAAc;IACd,sBAAsB;IACtB,kDAAkD;AACtD;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gBAAgB;IAChB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,oBAAoB;IACpB,sBAAsB;IACtB,iBAAiB;IACjB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,WAAW;IACX,WAAW;IACX,iBAAiB;IACjB,oBAAoB;IACpB,gBAAgB;IAChB,qCAAqC;AACzC;;AAEA;IACI,YAAY;IACZ,YAAY;IACZ,qCAAqC;IACrC,4BAA4B;AAChC;;AAEA;IACI,YAAY;IACZ,YAAY;IACZ,kCAAkC;IAClC,4BAA4B;AAChC","sourcesContent":[".liveView-content-data {\n    margin: 0 20px;\n    padding: 10px 0;\n}\n\n.liveView-content-flex {\n    display: flex;\n    justify-content: space-between;\n}\n\n.liveView-content-data-1-text {\n    margin: 3px 0;\n}\n\n.liveView-content-country {\n    margin-bottom: 5px;\n}\n\n.liveView-content-data-2 {\n    width: 100%;\n}\n\n.liveView-content-data-1-number {\n    font-size: 30px;\n    font-weight: 200;\n    margin-top: 0;\n}\n\n/* Domain rows: clear click target, matches dashboard affordance */\n.liveView-domain-block {\n    margin-bottom: 12px;\n}\n\n.liveView-domain-row {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    width: 100%;\n    margin: 0;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.2);\n    cursor: pointer;\n    text-align: left;\n    font: inherit;\n    color: inherit;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.liveView-domain-row:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.liveView-domain-row:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.8);\n    outline-offset: 2px;\n}\n\n.liveView-domain-row__name {\n    word-break: break-all;\n    padding-right: 12px;\n}\n\n.liveView-domain-row__count {\n    flex-shrink: 0;\n    font-variant-numeric: tabular-nums;\n}\n\n.liveView-domain-bar-track {\n    width: 100%;\n    height: 3px;\n    margin-top: 6px;\n    border-radius: 999px;\n    background: rgba(196, 196, 196, 0.35);\n    overflow: hidden;\n}\n\n.liveView-domain-bar-fill {\n    height: 100%;\n    border-radius: 999px;\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.5), rgb(222, 189, 113));\n    transition: width 0.35s ease;\n}\n\n/* Drawer extras (reuses .world-map-drawer from WorldMap/Style.css) */\n.live-view-drawer__subtitle {\n    margin: 8px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: rgba(255, 255, 255, 0.45);\n    font-weight: 400;\n}\n\n.live-view-drawer__summary-label {\n    display: block;\n    font-size: 0.62rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.38);\n    margin-bottom: 12px;\n}\n\n.live-view-drawer__visit-patterns {\n    flex-shrink: 0;\n    padding: 14px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-row {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px;\n    padding: 10px 0;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-patterns .live-view-drawer__visit-row:first-of-type {\n    border-top: none;\n    padding-top: 0;\n}\n\n.live-view-drawer__visit-row-main {\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 4px;\n}\n\n.live-view-drawer__visit-label {\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.live-view-drawer__visit-label--accept {\n    color: rgba(170, 220, 155, 0.98);\n}\n\n.live-view-drawer__visit-label--essential {\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.live-view-drawer__visit-label--granular {\n    color: rgba(150, 195, 215, 0.95);\n}\n\n.live-view-drawer__visit-meta {\n    font-size: 0.75rem;\n    line-height: 1.35;\n    color: rgba(255, 255, 255, 0.42);\n}\n\n.live-view-drawer__visit-count {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    color: rgba(255, 255, 255, 0.72);\n    padding-top: 2px;\n}\n\n.live-view-drawer__visit-mix-bar {\n    display: flex;\n    width: 100%;\n    height: 8px;\n    margin-top: 14px;\n    border-radius: 999px;\n    overflow: hidden;\n    background: rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-mix-segment {\n    height: 100%;\n    min-width: 0;\n    transition: width 0.35s ease;\n}\n\n.live-view-drawer__visit-mix-segment--accept {\n    background: linear-gradient(90deg, rgba(100, 160, 90, 0.9), rgba(140, 200, 120, 0.75));\n}\n\n.live-view-drawer__visit-mix-segment--essential {\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.55), rgba(218, 190, 120, 0.85));\n}\n\n.live-view-drawer__visit-mix-segment--granular {\n    background: linear-gradient(90deg, rgba(90, 140, 165, 0.75), rgba(120, 175, 200, 0.65));\n}\n\n.live-view-drawer__granular-head {\n    flex-shrink: 0;\n    padding: 14px 18px 6px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.04);\n}\n\n.live-view-drawer__granular-head .live-view-drawer__summary-label {\n    margin-bottom: 6px;\n}\n\n.live-view-drawer__granular-sub {\n    margin: 0;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: rgba(255, 255, 255, 0.4);\n}\n\n.live-view-drawer__type-list {\n    padding-top: 8px;\n}\n\n.live-view-drawer__type-name {\n    text-transform: none;\n    letter-spacing: 0.02em;\n    font-size: 0.8rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n}\n\n.live-view-drawer__mini-split {\n    display: flex;\n    width: 100%;\n    height: 5px;\n    margin: 8px 0 4px;\n    border-radius: 999px;\n    overflow: hidden;\n    background: rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__mini-split-accept {\n    height: 100%;\n    min-width: 0;\n    background: rgba(120, 170, 100, 0.85);\n    transition: width 0.35s ease;\n}\n\n.live-view-drawer__mini-split-decline {\n    height: 100%;\n    min-width: 0;\n    background: rgba(170, 70, 65, 0.8);\n    transition: width 0.35s ease;\n}"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/components/SelectInput/Style.css":
+/*!************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/components/SelectInput/Style.css ***!
+  \************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.selector {
+    max-width: 350px;
+    min-width: 0;
+    height: auto;
+    min-height: 36px;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+}
+
+.selectTitle {
+    margin-bottom: 10px;
+    display: block;
+}
+
+.selector select {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    appearance: none;
+    -webkit-appearance: none;
+    color: #fff;
+    font-size: 12px;
+    margin: 0px;
+    padding: 8px 16px;
+    border-radius: 0;
+    display: block;
+    max-width: 100%;
+    min-width: 175px;
+    vertical-align: baseline;
+    white-space: nowrap;
+}
+
+.selector select:focus,
+.selector select:focus-within,
+.selector select:focus-visible {
+    outline: none;
+    border-bottom: 1px solid;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    z-index: 200;
+    min-width: 100%;
+}
+
+.dropdown-menu--align-left {
+    left: 0;
+    right: auto;
+}
+
+.dropdown-menu--align-right {
+    right: 0;
+    left: auto;
+}
+
+.dropdown-menu__panel {
+    position: relative;
+    width: max-content;
+    min-width: 100%;
+    max-width: min(100vw - 24px, 360px);
+    max-height: min(70vh, 420px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.dropdown-menu__content {
+    margin: 0;
+    padding: 4px 0;
+    list-style: none;
+    overflow-y: auto;
+    flex: 1;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #e4e4e4;
+    text-align: left;
+}
+
+.dropdown-menu__content li {
+    padding: 10px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid transparent;
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
+}
+
+.dropdown-menu__content li:hover,
+.dropdown-menu__content li:focus-visible {
+    background: rgba(192, 159, 83, 0.14);
+    color: #fff;
+    outline: none;
+}
+
+.dropdown-menu__content li[hidden] {
+    display: none !important;
+}
+
+.dropdown-menu__item--with-icon {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-menu-button {
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(0, 0, 0, 0.2);
+    appearance: none;
+    -webkit-appearance: none;
+    color: #f0f0f0;
+    margin: 0;
+    padding: 8px 12px 8px 14px;
+    border-radius: 10px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.3;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    vertical-align: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.dropdown-menu-button:hover {
+    border-color: rgba(192, 159, 83, 0.35);
+    background: rgba(192, 159, 83, 0.08);
+}
+
+.dropdown-menu-button:focus-visible {
+    outline: 2px solid rgba(192, 159, 83, 0.55);
+    outline-offset: 2px;
+}
+
+.dropdown-menu-button__label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.dropdown-menu-button::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    margin-left: 4px;
+    border-right: 2px solid rgba(255, 255, 255, 0.45);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.45);
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.dropdown-menu-button[aria-expanded="true"]::after {
+    transform: rotate(225deg) translateY(0);
+}
+
+.search-box {
+    padding: 10px 10px 8px;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.25);
+    color: #f0f0f0;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: rgba(192, 159, 83, 0.45);
+    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);
+}
+
+.company-logo {
+    margin-right: 0;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    display: block;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+/* Separator styles */
+.dropdown-menu__separator {
+    padding: 8px 14px !important;
+    cursor: default !important;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.85) !important;
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    margin-top: 4px;
+}
+
+.dropdown-menu__separator:hover {
+    background: rgba(0, 0, 0, 0.15) !important;
+    cursor: default !important;
+}
+
+/* Workspace item styles */
+.dropdown-menu__item--workspace {
+    padding: 10px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.dropdown-menu__workspace-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: rgba(192, 159, 83, 0.2);
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    color: #c0a053;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.dropdown-menu__workspace-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1;
+}
+
+.dropdown-menu__workspace-name {
+    font-weight: 600;
+    font-size: 0.8125rem;
+    color: #f0f0f0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dropdown-menu__workspace-domain {
+    font-size: 0.6875rem;
+    color: rgba(192, 159, 83, 0.85);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Workspace combined view item */
+.dropdown-menu__item--workspace-combined {
+    padding: 10px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: rgba(192, 159, 83, 0.08) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.dropdown-menu__item--workspace-combined:hover {
+    background: rgba(192, 159, 83, 0.18) !important;
+}
+
+.dropdown-menu__combined-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: #c0a053;
+}
+
+/* Exit workspace item */
+.dropdown-menu__item--exit-workspace {
+    padding: 12px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dropdown-menu__item--exit-workspace:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.dropdown-menu__exit-icon {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Workspace domain items (when inside a workspace) */
+.dropdown-menu__item--workspace-domain {
+    padding: 10px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+}
+
+.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    color: #f0f0f0;
+}
+
+.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {
+    background: rgba(192, 159, 83, 0.08);
+}
+
+.dropdown-menu__primary-tag {
+    font-size: 0.5625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    background: rgba(192, 159, 83, 0.2);
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    color: #c0a053;
+}
+
+@media screen and (min-width: 320px) and (max-width: 900px) {
+    .company_container .selector {
+        max-width: none;
+        width: 100%;
+    }
+
+    .dropdown-menu {
+        left: 0 !important;
+        right: 0 !important;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .dropdown-menu__panel {
+        width: 100%;
+        max-width: none;
+    }
+
+    .dropdown-menu-button {
+        min-width: 0;
+    }
+}
+`, "",{"version":3,"sources":["webpack://./src/components/SelectInput/Style.css"],"names":[],"mappings":"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","sourcesContent":[".selector {\n    max-width: 350px;\n    min-width: 0;\n    height: auto;\n    min-height: 36px;\n    position: relative;\n    display: flex;\n    align-items: stretch;\n    flex: 1;\n}\n\n.selectTitle {\n    margin-bottom: 10px;\n    display: block;\n}\n\n.selector select {\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    background: transparent;\n    appearance: none;\n    -webkit-appearance: none;\n    color: #fff;\n    font-size: 12px;\n    margin: 0px;\n    padding: 8px 16px;\n    border-radius: 0;\n    display: block;\n    max-width: 100%;\n    min-width: 175px;\n    vertical-align: baseline;\n    white-space: nowrap;\n}\n\n.selector select:focus,\n.selector select:focus-within,\n.selector select:focus-visible {\n    outline: none;\n    border-bottom: 1px solid;\n}\n\n.dropdown-menu {\n    position: absolute;\n    top: calc(100% + 6px);\n    z-index: 200;\n    min-width: 100%;\n}\n\n.dropdown-menu--align-left {\n    left: 0;\n    right: auto;\n}\n\n.dropdown-menu--align-right {\n    right: 0;\n    left: auto;\n}\n\n.dropdown-menu__panel {\n    position: relative;\n    width: max-content;\n    min-width: 100%;\n    max-width: min(100vw - 24px, 360px);\n    max-height: min(70vh, 420px);\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow:\n        0 20px 48px rgba(0, 0, 0, 0.45),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.dropdown-menu__content {\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #e4e4e4;\n    text-align: left;\n}\n\n.dropdown-menu__content li {\n    padding: 10px 14px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    border-bottom: 1px solid transparent;\n    transition:\n        background 0.15s ease,\n        color 0.15s ease;\n}\n\n.dropdown-menu__content li:hover,\n.dropdown-menu__content li:focus-visible {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n    outline: none;\n}\n\n.dropdown-menu__content li[hidden] {\n    display: none !important;\n}\n\n.dropdown-menu__item--with-icon {\n    display: flex;\n    align-items: center;\n}\n\n.dropdown-menu-button {\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    appearance: none;\n    -webkit-appearance: none;\n    color: #f0f0f0;\n    margin: 0;\n    padding: 8px 12px 8px 14px;\n    border-radius: 10px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    line-height: 1.3;\n    display: inline-flex;\n    flex-direction: row;\n    align-items: center;\n    width: 100%;\n    max-width: 100%;\n    min-width: 0;\n    box-sizing: border-box;\n    vertical-align: baseline;\n    justify-content: space-between;\n    gap: 8px;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.dropdown-menu-button:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu-button:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.55);\n    outline-offset: 2px;\n}\n\n.dropdown-menu-button__label {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    text-align: left;\n}\n\n.dropdown-menu-button::after {\n    content: \"\";\n    width: 8px;\n    height: 8px;\n    flex-shrink: 0;\n    margin-left: 4px;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n    transition: transform 0.2s ease;\n}\n\n.dropdown-menu-button[aria-expanded=\"true\"]::after {\n    transform: rotate(225deg) translateY(0);\n}\n\n.search-box {\n    padding: 10px 10px 8px;\n    flex-shrink: 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.search-input {\n    width: 100%;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    box-sizing: border-box;\n}\n\n.search-input::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.search-input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.company-logo {\n    margin-right: 0;\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: block;\n    object-fit: contain;\n    border-radius: 6px;\n}\n\n/* Separator styles */\n.dropdown-menu__separator {\n    padding: 8px 14px !important;\n    cursor: default !important;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85) !important;\n    background: rgba(0, 0, 0, 0.15) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n    margin-top: 4px;\n}\n\n.dropdown-menu__separator:hover {\n    background: rgba(0, 0, 0, 0.15) !important;\n    cursor: default !important;\n}\n\n/* Workspace item styles */\n.dropdown-menu__item--workspace {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__workspace-icon {\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.75rem;\n    font-weight: 700;\n}\n\n.dropdown-menu__workspace-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.dropdown-menu__workspace-name {\n    font-weight: 600;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dropdown-menu__workspace-domain {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Workspace combined view item */\n.dropdown-menu__item--workspace-combined {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n    background: rgba(192, 159, 83, 0.08) !important;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.dropdown-menu__item--workspace-combined:hover {\n    background: rgba(192, 159, 83, 0.18) !important;\n}\n\n.dropdown-menu__combined-icon {\n    width: 20px;\n    height: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1rem;\n    color: #c0a053;\n}\n\n/* Exit workspace item */\n.dropdown-menu__item--exit-workspace {\n    padding: 12px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 8px !important;\n    color: rgba(255, 255, 255, 0.8) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.dropdown-menu__item--exit-workspace:hover {\n    background: rgba(255, 255, 255, 0.08) !important;\n}\n\n.dropdown-menu__exit-icon {\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* Workspace domain items (when inside a workspace) */\n.dropdown-menu__item--workspace-domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n}\n\n.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .company_container .selector {\n        max-width: none;\n        width: 100%;\n    }\n\n    .dropdown-menu {\n        left: 0 !important;\n        right: 0 !important;\n        min-width: 0;\n        width: 100%;\n    }\n\n    .dropdown-menu__panel {\n        width: 100%;\n        max-width: none;\n    }\n\n    .dropdown-menu-button {\n        min-width: 0;\n    }\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/components/header/header.css":
+/*!********************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/components/header/header.css ***!
+  \********************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.dashboard-header {
+    width: 100%;
+    max-height: 66px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 101;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 25px 0px 0px;
+    background-color: rgb(63, 63, 63);
+    color: rgb(197, 197, 197);
+    border-bottom: 1px solid rgb(95, 95, 95);
+}
+
+.dashboard-profile {
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 19px;
+    padding: 10px;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.profileImage {
+    width: 50px;
+}
+
+.clock {
+    color: rgb(197, 197, 197);
+    margin: 0;
+}
+
+.dashboard-name {
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.dashboard-header>.dashboard-profile .content-img {
+    margin: 0;
+    width: 50px;
+    height: 50px;
+    border-width: 2.5px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: auto;
+}
+
+.dashboard-logo {
+    height: 56px;
+    text-align: left;
+    margin-right: 30px;
+    object-fit: contain;
+    object-position: 0;
+    position: relative;
+}
+
+.sidebar {
+    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 65px;
+}
+
+.collapsed {
+    width: 65px;
+    height: calc(100vh - 88px);
+
+    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+
+    min-height: calc(100vh - 66px);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+}
+
+.divider {
+    padding: 0 0 0 20px;
+}
+
+.platform-view {
+    padding: 0 20px;
+    display: inline-block;
+    border-right: 1px solid;
+    padding-right: 10px;
+    margin-right: 10px;
+}
+
+.collapsed .hiddenCollapsed {
+    opacity: 0;
+    width: 0;
+    visibility: hidden;
+    transition: all .25s ease-in-out;
+}
+
+.sidebar:hover,
+.sidebar:hover>.collapsed,
+.sidebar.expand,
+.collapsed.expand {
+    min-width: 231px;
+    width: auto;
+}
+
+.navOverlay {
+    display: flex;
+    z-index: 103;
+    position: relative;
+}
+
+.navOverlay.expand {
+    display: flex;
+}
+
+.collapsed nav {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.sidebar__heading {
+    margin: 0;
+    padding: 18px 14px 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.sidebar__item {
+    margin: 0;
+    padding: 0;
+}
+
+.collapsed .navItems,
+.collapsed .sidebar__link {
+    color: rgba(255, 255, 255, 0.88);
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 10px;
+    overflow: hidden;
+    align-items: center;
+    justify-content: flex-start;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.navItems.--active,
+.sidebar__link.--active {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgb(255, 255, 255);
+    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);
+}
+
+.navItems:hover:not(.--active),
+.sidebar__link:hover:not(.--active) {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgb(255, 255, 255);
+}
+
+.collapsed:hover .navItems,
+.collapsed:hover .sidebar__link,
+.collapsed.expand a.navItems,
+.collapsed.expand a.sidebar__link {
+    width: 100%;
+}
+
+.collapsed:hover nav,
+.collapsed.expand nav {
+    width: 150px;
+}
+
+.collapsed.expand .hiddenCollapsed,
+.collapsed:hover .hiddenCollapsed {
+    opacity: 1;
+    width: auto;
+    visibility: visible;
+}
+
+.dashboard-icons {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    background-position: center;
+}
+
+.dashboard-icons:after{
+
+}
+
+.dashboard-icons::after {
+    content: "";
+    font-style: normal;
+    font-size: 20px;
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    background-position: center;
+}
+
+.secondary{
+    background-color: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin-left: 10px;
+}
+
+/* .dashboard-icons[data-icon]::after {
+    content: "";
+    background: url();
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    width: 20px;
+    height: 20px;
+} */
+
+/* .reports::after {
+    content: "";
+    background: url("icons/reports.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.compare::after {
+    content: "";
+    background: url("icons/reports.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.home::after {
+    content: "";
+    background: url("icons/home.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.user-consents::after {
+    content: "";
+    background: url("icons/user-consents.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.domains::after {
+    content: "";
+    background: url("icons/domain.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.settings::after {
+    content: "";
+    background: url("icons/settings.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.cookies {
+    content: "";
+    background: url("icons/cookies.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.logout::after {
+    content: "";
+    background: url("icons/Logout.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-blend-mode: lighten;
+    display: block;
+    font-style: normal;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+} */
+
+.expandBtn {
+    float: right;
+    padding: 10px;
+    margin: 10px 0px;
+    border: none;
+    background: transparent;
+    color: #fff;
+
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    cursor: pointer;
+}
+
+.navItems--bottom {
+    margin-top: auto;
+}
+
+.navLogout {
+    margin-top: auto;
+    background: transparent;
+    border: none;
+    width: 100%;
+    color: #fff;
+    padding: 30px 15px;
+    font-size: 15px;
+    text-align: center;
+    border-top: 1px solid #636363;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.dashboard-organisationSelector {
+    border: none;
+    padding: 0px 17px;
+    background: transparent;
+    color: #fff;
+    font-size: 12px;
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+}
+
+.dashboard-organisationSelector:focus,
+.dashboard-organisationSelector:focus-within,
+.dashboard-organisationSelector:focus-visible {
+    outline: none;
+}
+
+.dashboard-organisationContainer {
+    position: relative;
+}
+
+.dashboard-profile__nameContainer {
+    width: 250px;
+    margin-right: 20px;
+    text-align: right;
+}
+
+.arrowRight {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin-left: 10px;
+
+}
+
+.company_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.company_container .selectorContianer,
+.company_container .selector-container {
+    margin-right: 16px;
+    min-width: 0;
+}
+
+.company_container .selectorContianer:last-child,
+.company_container .selector-container:last-child {
+    margin-right: 0;
+}
+
+.selector.selector--placeholder {
+    min-height: 36px;
+    min-width: 120px;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.logo_container {
+    display: flex;
+    align-items: center
+}
+
+.logo-selector-container {
+    display: flex;
+    align-items: center;
+}
+
+.menu {
+    display: none;
+}
+
+.dashboard-content h1{
+    display: flex;
+}
+
+.sticky-title {
+    font-size: 1.5em;
+}
+
+@media screen and (min-width: 320px) and (max-width: 900px) {
+    .dashboard-header {
+        width: 100%;
+        max-height: none;
+        padding: 0 8px 0 4px;
+    }
+
+    .main-grid {
+        padding-top: 158px;
+    }
+
+    .menu {
+        display: block;
+        padding: 8px 10px;
+        margin-right: 2px;
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        border-radius: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+    .menu:focus-visible {
+        outline: 2px solid rgba(192, 159, 83, 0.6);
+        outline-offset: 2px;
+    }
+
+    .menu:active {
+        background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .menu-bar {
+        width: 22px;
+        height: 2px;
+        background-color: rgba(255, 255, 255, 0.92);
+        margin: 5px auto;
+        transition: all 0.3s ease-in-out;
+        border-radius: 2px;
+    }
+
+    .dashboard-profile {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        align-items: start;
+        gap: 10px 10px;
+        padding: 8px 4px 10px 8px;
+        width: 100%;
+    }
+
+    .logo-selector-container {
+        display: contents;
+    }
+
+    .logo_container {
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .company_container {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+        max-width: 100%;
+        padding-bottom: 0;
+        padding-right: 0;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+
+    .company_container .selectorContianer,
+    .company_container .selector-container {
+        margin-right: 0;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .dashboard-profile > .flex.profileImage {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: start;
+    }
+
+    .dashboard-logo {
+        height: 44px;
+        margin-right: 0;
+        max-width: min(200px, calc(100vw - 120px));
+    }
+
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-container {
+        display: block;
+    }
+
+    .dashboard-profile__nameContainer {
+        width: auto;
+    }
+
+    .navOverlay {
+        display: none;
+    }
+
+    .sidebar .collapsed{
+        width: 300px;
+        min-height: calc(100vh - 200px);
+    }
+
+    .sidebar:hover,
+    .sidebar:hover>.collapsed,
+    .sidebar.expand,
+    .collapsed.expand{
+        width: 300px;
+    }
+
+    .collapsed .hiddenCollapsed{
+        opacity: 1;
+        width: auto;
+        visibility: visible;
+    }
+
+    .dashboard-header > .dashboard-profile .content-img {
+        margin: 0;
+    }
+
+    .platform-view {
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .infoHeader {
+        position: relative;
+    }
+
+    .infoHeader.sticky {
+        top: 158px;
+    }
+
+    .infoHeader .dashboard-content {
+        grid-template-columns: .5fr 1fr !important;
+    }
+
+    .infoHeader .crawl-cta {
+        width: max-content;
+    }
+
+    .sticky-title{
+        font-size: 1em;
+        display: block !important;
+    }
+}
+
+@media screen and (min-width: 320px) and (max-width: 480px) {
+    .company_container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* SideNav (reports/settings): mobile drawer + toggle */
+.sidebar__top {
+    display: contents;
+}
+
+.sidebar-mobile-toggle {
+    display: none;
+}
+
+.sidebar-backdrop {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar-mobile-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        position: fixed;
+        top: 120px;
+        left: 12px;
+        z-index: 102;
+        padding: 8px 12px;
+        margin: 0;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);
+        color: rgba(255, 255, 255, 0.92);
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .sidebar-mobile-toggle__bars {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .sidebar-mobile-toggle__bar {
+        display: block;
+        width: 18px;
+        height: 2px;
+        background: currentColor;
+        border-radius: 1px;
+    }
+
+    .sidebar-mobile-toggle__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .sidebar-backdrop.sidebar-backdrop--visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .sidebar.expand {
+        width: 0 !important;
+        min-width: 0 !important;
+        overflow: visible;
+    }
+
+    .sidebar.expand .collapsed {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: min(86vw, 300px) !important;
+        min-width: min(86vw, 300px) !important;
+        top: 66px;
+        height: calc(100vh - 66px) !important;
+        min-height: calc(100vh - 66px) !important;
+        z-index: 102;
+        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .sidebar.expand.sidebar--open .collapsed {
+        transform: translateX(0);
+    }
+
+    .sidebar.expand .collapsed:hover,
+    .sidebar.expand.sidebar--open .collapsed {
+        min-width: min(86vw, 300px) !important;
+        width: min(86vw, 300px) !important;
+    }
+
+    .sidebar.expand .collapsed:hover nav,
+    .sidebar.expand.sidebar--open .collapsed nav {
+        width: 100%;
+    }
+
+    .sidebar__top {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        padding-right: 4px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        margin-bottom: 4px;
+    }
+
+    .sidebar__top .sidebar__heading {
+        border-bottom: none;
+        padding-bottom: 8px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .sidebar-mobile-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .sidebar-mobile-close:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Offset main content next to the fixed menu control (SideNav pages) */
+    /* .sidebar-mobile-toggle ~ article,
+    .sidebar-mobile-toggle ~ main,
+    .sidebar-mobile-toggle ~ div.dashboard-content {
+        padding-left: 52px;
+    } */
+}
+
+@media (min-width: 769px) {
+    .sidebar-mobile-close {
+        display: none !important;
+    }
+}
+
+/* Workspace indicator */
+.workspace-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 6px 12px;
+    margin-left: 12px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 70, 0.12) 100%);
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    animation: workspace-pulse 2s ease-in-out infinite;
+}
+
+@keyframes workspace-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(192, 159, 83, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 8px 2px rgba(192, 159, 83, 0.15);
+    }
+}
+
+.workspace-indicator__badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #c0a053;
+    padding: 3px 6px;
+    background: rgba(192, 159, 83, 0.2);
+    border-radius: 4px;
+}
+
+.workspace-indicator__name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #f5f0e6;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.workspace-indicator__domains {
+    font-size: 0.6875rem;
+    color: rgba(192, 159, 83, 0.9);
+    padding: 2px 6px;
+    background: rgba(192, 159, 83, 0.15);
+    border-radius: 4px;
+}
+
+.workspace-indicator__exit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.workspace-indicator__exit:hover {
+    background: rgba(220, 80, 80, 0.3);
+    color: #fff;
+}
+
+@media screen and (max-width: 600px) {
+    .workspace-indicator {
+        margin-left: 8px;
+        padding: 4px 8px;
+    }
+
+    .workspace-indicator__name {
+        max-width: 80px;
+        font-size: 0.75rem;
+    }
+
+    .workspace-indicator__badge {
+        display: none;
+    }
+}`, "",{"version":3,"sources":["webpack://./src/components/header/header.css"],"names":[],"mappings":"AAAA;IACI,WAAW;IACX,gBAAgB;IAChB,eAAe;IACf,MAAM;IACN,OAAO;IACP,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,yBAAyB;IACzB,iCAAiC;IACjC,yBAAyB;IACzB,wCAAwC;AAC5C;;AAEA;IACI,aAAa;IACb,sCAAsC;IACtC,mBAAmB;IACnB,8BAA8B;IAC9B,WAAW;IACX,eAAe;IACf,aAAa;AACjB;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,yBAAyB;IACzB,SAAS;AACb;;AAEA;IACI,eAAe;IACf,eAAe;IACf,SAAS;AACb;;AAEA;IACI,SAAS;IACT,WAAW;IACX,YAAY;IACZ,mBAAmB;IACnB,kBAAkB;IAClB,iBAAiB;IACjB,iBAAiB;AACrB;;AAEA;IACI,YAAY;IACZ,gBAAgB;IAChB,kBAAkB;IAClB,mBAAmB;IACnB,kBAAkB;IAClB,kBAAkB;AACtB;;AAEA;IACI,mDAAmD;IACnD,WAAW;AACf;;AAEA;IACI,WAAW;IACX,0BAA0B;;IAE1B,kDAAkD;IAClD,aAAa;IACb,sBAAsB;IACtB,eAAe;;IAEf,8BAA8B;IAC9B,iDAAiD;IACjD,kGAAkG;IAClG,8CAA8C;AAClD;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,qBAAqB;IACrB,uBAAuB;IACvB,mBAAmB;IACnB,kBAAkB;AACtB;;AAEA;IACI,UAAU;IACV,QAAQ;IACR,kBAAkB;IAClB,gCAAgC;AACpC;;AAEA;;;;IAII,gBAAgB;IAChB,WAAW;AACf;;AAEA;IACI,aAAa;IACb,YAAY;IACZ,kBAAkB;AACtB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,WAAW;IACX,aAAa;IACb,sBAAsB;IACtB,OAAO;IACP,aAAa;AACjB;;AAEA;IACI,SAAS;IACT,uBAAuB;IACvB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;IAChC,kDAAkD;IAClD,mBAAmB;IACnB,gBAAgB;IAChB,uBAAuB;AAC3B;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,YAAY;IACZ,aAAa;IACb,sBAAsB;IACtB,QAAQ;IACR,OAAO;AACX;;AAEA;IACI,SAAS;IACT,UAAU;AACd;;AAEA;;IAEI,gCAAgC;IAChC,aAAa;IACb,SAAS;IACT,WAAW;IACX,kBAAkB;IAClB,gBAAgB;IAChB,mBAAmB;IACnB,2BAA2B;IAC3B,mBAAmB;IACnB,6EAA6E;IAC7E,qBAAqB;IACrB,sBAAsB;AAC1B;;AAEA;;IAEI,qCAAqC;IACrC,yBAAyB;IACzB,6CAA6C;AACjD;;AAEA;;IAEI,2CAA2C;IAC3C,yBAAyB;AAC7B;;AAEA;;;;IAII,WAAW;AACf;;AAEA;;IAEI,YAAY;AAChB;;AAEA;;IAEI,UAAU;IACV,WAAW;IACX,mBAAmB;AACvB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,aAAa;IACb,uBAAuB;IACvB,mBAAmB;IACnB,wBAAwB;IACxB,4BAA4B;IAC5B,8BAA8B;IAC9B,2BAA2B;AAC/B;;AAEA;;AAEA;;AAEA;IACI,WAAW;IACX,kBAAkB;IAClB,eAAe;IACf,cAAc;IACd,WAAW;IACX,YAAY;IACZ,wBAAwB;IACxB,4BAA4B;IAC5B,8BAA8B;IAC9B,2BAA2B;AAC/B;;AAEA;IACI,6BAA6B;IAC7B,sBAAsB;IACtB,WAAW;IACX,eAAe;IACf,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,eAAe;IACf,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,UAAU;IACV,iBAAiB;AACrB;;AAEA;;;;;;;;;GASG;;AAEH;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;GAsGG;;AAEH;IACI,YAAY;IACZ,aAAa;IACb,gBAAgB;IAChB,YAAY;IACZ,uBAAuB;IACvB,WAAW;;IAEX,aAAa;IACb,mBAAmB;IACnB,oBAAoB;IACpB,eAAe;AACnB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,uBAAuB;IACvB,YAAY;IACZ,WAAW;IACX,WAAW;IACX,kBAAkB;IAClB,eAAe;IACf,kBAAkB;IAClB,6BAA6B;IAC7B,eAAe;IACf,aAAa;IACb,mBAAmB;IACnB,uBAAuB;;AAE3B;;AAEA;IACI,YAAY;IACZ,iBAAiB;IACjB,uBAAuB;IACvB,WAAW;IACX,eAAe;IACf,gBAAgB;IAChB,wBAAwB;IACxB,kBAAkB;AACtB;;AAEA;;;IAGI,aAAa;AACjB;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,YAAY;IACZ,kBAAkB;IAClB,iBAAiB;AACrB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,qBAAqB;IACrB,iBAAiB;;AAErB;;AAEA;IACI,aAAa;IACb,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;;IAEI,kBAAkB;IAClB,YAAY;AAChB;;AAEA;;IAEI,eAAe;AACnB;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,kBAAkB;IAClB,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb;AACJ;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI;QACI,WAAW;QACX,gBAAgB;QAChB,oBAAoB;IACxB;;IAEA;QACI,kBAAkB;IACtB;;IAEA;QACI,cAAc;QACd,iBAAiB;QACjB,iBAAiB;QACjB,eAAe;QACf,6BAA6B;QAC7B,YAAY;QACZ,WAAW;QACX,kBAAkB;QAClB,sCAAsC;IAC1C;;IAEA;QACI,0CAA0C;QAC1C,mBAAmB;IACvB;;IAEA;QACI,2CAA2C;IAC/C;;IAEA;QACI,WAAW;QACX,WAAW;QACX,2CAA2C;QAC3C,gBAAgB;QAChB,gCAAgC;QAChC,kBAAkB;IACtB;;IAEA;QACI,aAAa;QACb,+BAA+B;QAC/B,6BAA6B;QAC7B,kBAAkB;QAClB,cAAc;QACd,yBAAyB;QACzB,WAAW;IACf;;IAEA;QACI,iBAAiB;IACrB;;IAEA;QACI,cAAc;QACd,WAAW;QACX,aAAa;QACb,mBAAmB;QACnB,QAAQ;QACR,YAAY;IAChB;;IAEA;QACI,mBAAmB;QACnB,WAAW;QACX,aAAa;QACb,8BAA8B;QAC9B,QAAQ;QACR,WAAW;QACX,eAAe;QACf,iBAAiB;QACjB,gBAAgB;QAChB,oBAAoB;QACpB,wBAAwB;IAC5B;;IAEA;;QAEI,eAAe;QACf,WAAW;QACX,YAAY;IAChB;;IAEA;QACI,cAAc;QACd,WAAW;QACX,iBAAiB;QACjB,iBAAiB;IACrB;;IAEA;QACI,YAAY;QACZ,eAAe;QACf,0CAA0C;IAC9C;;IAEA;QACI,0BAA0B;IAC9B;;IAEA;QACI,cAAc;IAClB;;IAEA;QACI,WAAW;IACf;;IAEA;QACI,aAAa;IACjB;;IAEA;QACI,YAAY;QACZ,+BAA+B;IACnC;;IAEA;;;;QAII,YAAY;IAChB;;IAEA;QACI,UAAU;QACV,WAAW;QACX,mBAAmB;IACvB;;IAEA;QACI,SAAS;IACb;;IAEA;QACI,YAAY;QACZ,UAAU;QACV,SAAS;IACb;;IAEA;QACI,kBAAkB;IACtB;;IAEA;QACI,UAAU;IACd;;IAEA;QACI,0CAA0C;IAC9C;;IAEA;QACI,kBAAkB;IACtB;;IAEA;QACI,cAAc;QACd,yBAAyB;IAC7B;AACJ;;AAEA;IACI;QACI,0BAA0B;IAC9B;AACJ;;AAEA,uDAAuD;AACvD;IACI,iBAAiB;AACrB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI;QACI,oBAAoB;QACpB,mBAAmB;QACnB,SAAS;QACT,eAAe;QACf,UAAU;QACV,UAAU;QACV,YAAY;QACZ,iBAAiB;QACjB,SAAS;QACT,2CAA2C;QAC3C,kBAAkB;QAClB,6EAA6E;QAC7E,gCAAgC;QAChC,aAAa;QACb,eAAe;QACf,eAAe;QACf,0CAA0C;IAC9C;;IAEA;QACI,aAAa;QACb,sBAAsB;QACtB,QAAQ;IACZ;;IAEA;QACI,cAAc;QACd,WAAW;QACX,WAAW;QACX,wBAAwB;QACxB,kBAAkB;IACtB;;IAEA;QACI,kBAAkB;QAClB,UAAU;QACV,WAAW;QACX,UAAU;QACV,YAAY;QACZ,gBAAgB;QAChB,sBAAsB;QACtB,SAAS;IACb;;IAEA;QACI,cAAc;QACd,eAAe;QACf,QAAQ;QACR,YAAY;QACZ,8BAA8B;QAC9B,UAAU;QACV,kBAAkB;QAClB,oBAAoB;QACpB,qDAAqD;IACzD;;IAEA;QACI,UAAU;QACV,mBAAmB;QACnB,oBAAoB;IACxB;;IAEA;QACI,mBAAmB;QACnB,uBAAuB;QACvB,iBAAiB;IACrB;;IAEA;QACI,4BAA4B;QAC5B,uDAAuD;QACvD,kCAAkC;QAClC,sCAAsC;QACtC,SAAS;QACT,qCAAqC;QACrC,yCAAyC;QACzC,YAAY;QACZ,0CAA0C;IAC9C;;IAEA;QACI,wBAAwB;IAC5B;;IAEA;;QAEI,sCAAsC;QACtC,kCAAkC;IACtC;;IAEA;;QAEI,WAAW;IACf;;IAEA;QACI,aAAa;QACb,mBAAmB;QACnB,uBAAuB;QACvB,8BAA8B;QAC9B,QAAQ;QACR,kBAAkB;QAClB,kDAAkD;QAClD,kBAAkB;IACtB;;IAEA;QACI,mBAAmB;QACnB,mBAAmB;QACnB,OAAO;QACP,YAAY;IAChB;;IAEA;QACI,aAAa;QACb,mBAAmB;QACnB,uBAAuB;QACvB,cAAc;QACd,WAAW;QACX,YAAY;QACZ,SAAS;QACT,UAAU;QACV,YAAY;QACZ,kBAAkB;QAClB,uBAAuB;QACvB,gCAAgC;QAChC,eAAe;QACf,cAAc;QACd,eAAe;IACnB;;IAEA;QACI,qCAAqC;IACzC;;IAEA,uEAAuE;IACvE;;;;OAIG;AACP;;AAEA;IACI;QACI,wBAAwB;IAC5B;AACJ;;AAEA,wBAAwB;AACxB;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;IACR,0BAA0B;IAC1B,iBAAiB;IACjB,mBAAmB;IACnB,+FAA+F;IAC/F,0CAA0C;IAC1C,kDAAkD;AACtD;;AAEA;IACI;QACI,2CAA2C;IAC/C;IACA;QACI,gDAAgD;IACpD;AACJ;;AAEA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,cAAc;IACd,gBAAgB;IAChB,mCAAmC;IACnC,kBAAkB;AACtB;;AAEA;IACI,oBAAoB;IACpB,gBAAgB;IAChB,cAAc;IACd,gBAAgB;IAChB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;IACI,oBAAoB;IACpB,8BAA8B;IAC9B,gBAAgB;IAChB,oCAAoC;IACpC,kBAAkB;AACtB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,YAAY;IACZ,oCAAoC;IACpC,+BAA+B;IAC/B,eAAe;IACf,cAAc;IACd,eAAe;IACf,iDAAiD;AACrD;;AAEA;IACI,kCAAkC;IAClC,WAAW;AACf;;AAEA;IACI;QACI,gBAAgB;QAChB,gBAAgB;IACpB;;IAEA;QACI,eAAe;QACf,kBAAkB;IACtB;;IAEA;QACI,aAAa;IACjB;AACJ","sourcesContent":[".dashboard-header {\n    width: 100%;\n    max-height: 66px;\n    position: fixed;\n    top: 0;\n    left: 0;\n    z-index: 101;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 25px 0px 0px;\n    background-color: rgb(63, 63, 63);\n    color: rgb(197, 197, 197);\n    border-bottom: 1px solid rgb(95, 95, 95);\n}\n\n.dashboard-profile {\n    display: grid;\n    grid-template-columns: 1fr min-content;\n    align-items: center;\n    justify-content: space-between;\n    width: 100%;\n    font-size: 19px;\n    padding: 10px;\n}\n\n.flex {\n    display: flex;\n    align-items: center;\n}\n\n.profileImage {\n    width: 50px;\n}\n\n.clock {\n    color: rgb(197, 197, 197);\n    margin: 0;\n}\n\n.dashboard-name {\n    font-size: 14px;\n    cursor: pointer;\n    margin: 0;\n}\n\n.dashboard-header>.dashboard-profile .content-img {\n    margin: 0;\n    width: 50px;\n    height: 50px;\n    border-width: 2.5px;\n    border-radius: 50%;\n    object-fit: cover;\n    margin-left: auto;\n}\n\n.dashboard-logo {\n    height: 56px;\n    text-align: left;\n    margin-right: 30px;\n    object-fit: contain;\n    object-position: 0;\n    position: relative;\n}\n\n.sidebar {\n    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);\n    width: 65px;\n}\n\n.collapsed {\n    width: 65px;\n    height: calc(100vh - 88px);\n\n    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);\n    display: flex;\n    flex-direction: column;\n    position: fixed;\n\n    min-height: calc(100vh - 66px);\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);\n    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);\n}\n\n.divider {\n    padding: 0 0 0 20px;\n}\n\n.platform-view {\n    padding: 0 20px;\n    display: inline-block;\n    border-right: 1px solid;\n    padding-right: 10px;\n    margin-right: 10px;\n}\n\n.collapsed .hiddenCollapsed {\n    opacity: 0;\n    width: 0;\n    visibility: hidden;\n    transition: all .25s ease-in-out;\n}\n\n.sidebar:hover,\n.sidebar:hover>.collapsed,\n.sidebar.expand,\n.collapsed.expand {\n    min-width: 231px;\n    width: auto;\n}\n\n.navOverlay {\n    display: flex;\n    z-index: 103;\n    position: relative;\n}\n\n.navOverlay.expand {\n    display: flex;\n}\n\n.collapsed nav {\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    min-height: 0;\n}\n\n.sidebar__heading {\n    margin: 0;\n    padding: 18px 14px 12px;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.45);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.sidebar__list {\n    list-style: none;\n    margin: 0;\n    padding: 0px;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n}\n\n.sidebar__item {\n    margin: 0;\n    padding: 0;\n}\n\n.collapsed .navItems,\n.collapsed .sidebar__link {\n    color: rgba(255, 255, 255, 0.88);\n    display: flex;\n    gap: 10px;\n    width: 100%;\n    padding: 12px 10px;\n    overflow: hidden;\n    align-items: center;\n    justify-content: flex-start;\n    white-space: nowrap;\n    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;\n    text-decoration: none;\n    box-sizing: border-box;\n}\n\n.navItems.--active,\n.sidebar__link.--active {\n    background: rgba(255, 255, 255, 0.08);\n    color: rgb(255, 255, 255);\n    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);\n}\n\n.navItems:hover:not(.--active),\n.sidebar__link:hover:not(.--active) {\n    background-color: rgba(255, 255, 255, 0.06);\n    color: rgb(255, 255, 255);\n}\n\n.collapsed:hover .navItems,\n.collapsed:hover .sidebar__link,\n.collapsed.expand a.navItems,\n.collapsed.expand a.sidebar__link {\n    width: 100%;\n}\n\n.collapsed:hover nav,\n.collapsed.expand nav {\n    width: 150px;\n}\n\n.collapsed.expand .hiddenCollapsed,\n.collapsed:hover .hiddenCollapsed {\n    opacity: 1;\n    width: auto;\n    visibility: visible;\n}\n\n.dashboard-icons {\n    width: 25px;\n    height: 25px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.dashboard-icons:after{\n\n}\n\n.dashboard-icons::after {\n    content: \"\";\n    font-style: normal;\n    font-size: 20px;\n    display: block;\n    width: 20px;\n    height: 20px;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.secondary{\n    background-color: transparent;\n    border: 1px solid #fff;\n    color: #fff;\n    font-size: 14px;\n    width: 30px;\n    height: 30px;\n    border-radius: 5px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0;\n    margin-left: 10px;\n}\n\n/* .dashboard-icons[data-icon]::after {\n    content: \"\";\n    background: url();\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    width: 20px;\n    height: 20px;\n} */\n\n/* .reports::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.compare::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.home::after {\n    content: \"\";\n    background: url(\"icons/home.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.user-consents::after {\n    content: \"\";\n    background: url(\"icons/user-consents.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.domains::after {\n    content: \"\";\n    background: url(\"icons/domain.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.settings::after {\n    content: \"\";\n    background: url(\"icons/settings.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.cookies {\n    content: \"\";\n    background: url(\"icons/cookies.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.logout::after {\n    content: \"\";\n    background: url(\"icons/Logout.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n} */\n\n.expandBtn {\n    float: right;\n    padding: 10px;\n    margin: 10px 0px;\n    border: none;\n    background: transparent;\n    color: #fff;\n\n    display: flex;\n    align-items: center;\n    justify-content: end;\n    cursor: pointer;\n}\n\n.navItems--bottom {\n    margin-top: auto;\n}\n\n.navLogout {\n    margin-top: auto;\n    background: transparent;\n    border: none;\n    width: 100%;\n    color: #fff;\n    padding: 30px 15px;\n    font-size: 15px;\n    text-align: center;\n    border-top: 1px solid #636363;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n}\n\n.dashboard-organisationSelector {\n    border: none;\n    padding: 0px 17px;\n    background: transparent;\n    color: #fff;\n    font-size: 12px;\n    appearance: none;\n    -webkit-appearance: none;\n    position: relative;\n}\n\n.dashboard-organisationSelector:focus,\n.dashboard-organisationSelector:focus-within,\n.dashboard-organisationSelector:focus-visible {\n    outline: none;\n}\n\n.dashboard-organisationContainer {\n    position: relative;\n}\n\n.dashboard-profile__nameContainer {\n    width: 250px;\n    margin-right: 20px;\n    text-align: right;\n}\n\n.arrowRight {\n    width: 10px;\n    height: 10px;\n    display: inline-block;\n    margin-left: 10px;\n\n}\n\n.company_container {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n\n.company_container .selectorContianer,\n.company_container .selector-container {\n    margin-right: 16px;\n    min-width: 0;\n}\n\n.company_container .selectorContianer:last-child,\n.company_container .selector-container:last-child {\n    margin-right: 0;\n}\n\n.selector.selector--placeholder {\n    min-height: 36px;\n    min-width: 120px;\n    visibility: hidden;\n    pointer-events: none;\n}\n\n.logo_container {\n    display: flex;\n    align-items: center\n}\n\n.logo-selector-container {\n    display: flex;\n    align-items: center;\n}\n\n.menu {\n    display: none;\n}\n\n.dashboard-content h1{\n    display: flex;\n}\n\n.sticky-title {\n    font-size: 1.5em;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .dashboard-header {\n        width: 100%;\n        max-height: none;\n        padding: 0 8px 0 4px;\n    }\n\n    .main-grid {\n        padding-top: 158px;\n    }\n\n    .menu {\n        display: block;\n        padding: 8px 10px;\n        margin-right: 2px;\n        cursor: pointer;\n        background-color: transparent;\n        border: none;\n        color: #fff;\n        border-radius: 8px;\n        transition: background-color 0.2s ease;\n    }\n\n    .menu:focus-visible {\n        outline: 2px solid rgba(192, 159, 83, 0.6);\n        outline-offset: 2px;\n    }\n\n    .menu:active {\n        background-color: rgba(255, 255, 255, 0.06);\n    }\n\n    .menu-bar {\n        width: 22px;\n        height: 2px;\n        background-color: rgba(255, 255, 255, 0.92);\n        margin: 5px auto;\n        transition: all 0.3s ease-in-out;\n        border-radius: 2px;\n    }\n\n    .dashboard-profile {\n        display: grid;\n        grid-template-columns: 1fr auto;\n        grid-template-rows: auto auto;\n        align-items: start;\n        gap: 10px 10px;\n        padding: 8px 4px 10px 8px;\n        width: 100%;\n    }\n\n    .logo-selector-container {\n        display: contents;\n    }\n\n    .logo_container {\n        grid-column: 1;\n        grid-row: 1;\n        display: flex;\n        align-items: center;\n        gap: 2px;\n        min-width: 0;\n    }\n\n    .company_container {\n        grid-column: 1 / -1;\n        grid-row: 2;\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 8px;\n        width: 100%;\n        max-width: 100%;\n        padding-bottom: 0;\n        padding-right: 0;\n        align-items: stretch;\n        justify-content: stretch;\n    }\n\n    .company_container .selectorContianer,\n    .company_container .selector-container {\n        margin-right: 0;\n        width: 100%;\n        min-width: 0;\n    }\n\n    .dashboard-profile > .flex.profileImage {\n        grid-column: 2;\n        grid-row: 1;\n        justify-self: end;\n        align-self: start;\n    }\n\n    .dashboard-logo {\n        height: 44px;\n        margin-right: 0;\n        max-width: min(200px, calc(100vw - 120px));\n    }\n\n    .grid-3 {\n        grid-template-columns: 1fr;\n    }\n\n    .grid-container {\n        display: block;\n    }\n\n    .dashboard-profile__nameContainer {\n        width: auto;\n    }\n\n    .navOverlay {\n        display: none;\n    }\n\n    .sidebar .collapsed{\n        width: 300px;\n        min-height: calc(100vh - 200px);\n    }\n\n    .sidebar:hover,\n    .sidebar:hover>.collapsed,\n    .sidebar.expand,\n    .collapsed.expand{\n        width: 300px;\n    }\n\n    .collapsed .hiddenCollapsed{\n        opacity: 1;\n        width: auto;\n        visibility: visible;\n    }\n\n    .dashboard-header > .dashboard-profile .content-img {\n        margin: 0;\n    }\n\n    .platform-view {\n        border: none;\n        padding: 0;\n        margin: 0;\n    }\n\n    .infoHeader {\n        position: relative;\n    }\n\n    .infoHeader.sticky {\n        top: 158px;\n    }\n\n    .infoHeader .dashboard-content {\n        grid-template-columns: .5fr 1fr !important;\n    }\n\n    .infoHeader .crawl-cta {\n        width: max-content;\n    }\n\n    .sticky-title{\n        font-size: 1em;\n        display: block !important;\n    }\n}\n\n@media screen and (min-width: 320px) and (max-width: 480px) {\n    .company_container {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* SideNav (reports/settings): mobile drawer + toggle */\n.sidebar__top {\n    display: contents;\n}\n\n.sidebar-mobile-toggle {\n    display: none;\n}\n\n.sidebar-backdrop {\n    display: none;\n}\n\n@media (max-width: 768px) {\n    .sidebar-mobile-toggle {\n        display: inline-flex;\n        align-items: center;\n        gap: 10px;\n        position: fixed;\n        top: 120px;\n        left: 12px;\n        z-index: 102;\n        padding: 8px 12px;\n        margin: 0;\n        border: 1px solid rgba(255, 255, 255, 0.12);\n        border-radius: 8px;\n        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);\n        color: rgba(255, 255, 255, 0.92);\n        font: inherit;\n        font-size: 14px;\n        cursor: pointer;\n        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);\n    }\n\n    .sidebar-mobile-toggle__bars {\n        display: flex;\n        flex-direction: column;\n        gap: 4px;\n    }\n\n    .sidebar-mobile-toggle__bar {\n        display: block;\n        width: 18px;\n        height: 2px;\n        background: currentColor;\n        border-radius: 1px;\n    }\n\n    .sidebar-mobile-toggle__label {\n        position: absolute;\n        width: 1px;\n        height: 1px;\n        padding: 0;\n        margin: -1px;\n        overflow: hidden;\n        clip: rect(0, 0, 0, 0);\n        border: 0;\n    }\n\n    .sidebar-backdrop {\n        display: block;\n        position: fixed;\n        inset: 0;\n        z-index: 100;\n        background: rgba(0, 0, 0, 0.5);\n        opacity: 0;\n        visibility: hidden;\n        pointer-events: none;\n        transition: opacity 0.25s ease, visibility 0.25s ease;\n    }\n\n    .sidebar-backdrop.sidebar-backdrop--visible {\n        opacity: 1;\n        visibility: visible;\n        pointer-events: auto;\n    }\n\n    .sidebar.expand {\n        width: 0 !important;\n        min-width: 0 !important;\n        overflow: visible;\n    }\n\n    .sidebar.expand .collapsed {\n        transform: translateX(-100%);\n        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n        width: min(86vw, 300px) !important;\n        min-width: min(86vw, 300px) !important;\n        top: 66px;\n        height: calc(100vh - 66px) !important;\n        min-height: calc(100vh - 66px) !important;\n        z-index: 102;\n        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);\n    }\n\n    .sidebar.expand.sidebar--open .collapsed {\n        transform: translateX(0);\n    }\n\n    .sidebar.expand .collapsed:hover,\n    .sidebar.expand.sidebar--open .collapsed {\n        min-width: min(86vw, 300px) !important;\n        width: min(86vw, 300px) !important;\n    }\n\n    .sidebar.expand .collapsed:hover nav,\n    .sidebar.expand.sidebar--open .collapsed nav {\n        width: 100%;\n    }\n\n    .sidebar__top {\n        display: flex;\n        flex-direction: row;\n        align-items: flex-start;\n        justify-content: space-between;\n        gap: 8px;\n        padding-right: 4px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n        margin-bottom: 4px;\n    }\n\n    .sidebar__top .sidebar__heading {\n        border-bottom: none;\n        padding-bottom: 8px;\n        flex: 1;\n        min-width: 0;\n    }\n\n    .sidebar-mobile-close {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        flex-shrink: 0;\n        width: 40px;\n        height: 40px;\n        margin: 0;\n        padding: 0;\n        border: none;\n        border-radius: 8px;\n        background: transparent;\n        color: rgba(255, 255, 255, 0.88);\n        font-size: 28px;\n        line-height: 1;\n        cursor: pointer;\n    }\n\n    .sidebar-mobile-close:hover {\n        background: rgba(255, 255, 255, 0.08);\n    }\n\n    /* Offset main content next to the fixed menu control (SideNav pages) */\n    /* .sidebar-mobile-toggle ~ article,\n    .sidebar-mobile-toggle ~ main,\n    .sidebar-mobile-toggle ~ div.dashboard-content {\n        padding-left: 52px;\n    } */\n}\n\n@media (min-width: 769px) {\n    .sidebar-mobile-close {\n        display: none !important;\n    }\n}\n\n/* Workspace indicator */\n.workspace-indicator {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 10px 6px 12px;\n    margin-left: 12px;\n    border-radius: 10px;\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 70, 0.12) 100%);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    animation: workspace-pulse 2s ease-in-out infinite;\n}\n\n@keyframes workspace-pulse {\n    0%, 100% {\n        box-shadow: 0 0 0 0 rgba(192, 159, 83, 0.3);\n    }\n    50% {\n        box-shadow: 0 0 8px 2px rgba(192, 159, 83, 0.15);\n    }\n}\n\n.workspace-indicator__badge {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 3px 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border-radius: 4px;\n}\n\n.workspace-indicator__name {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #f5f0e6;\n    max-width: 150px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.workspace-indicator__domains {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.9);\n    padding: 2px 6px;\n    background: rgba(192, 159, 83, 0.15);\n    border-radius: 4px;\n}\n\n.workspace-indicator__exit {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 20px;\n    height: 20px;\n    border-radius: 4px;\n    border: none;\n    background: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, color 0.2s ease;\n}\n\n.workspace-indicator__exit:hover {\n    background: rgba(220, 80, 80, 0.3);\n    color: #fff;\n}\n\n@media screen and (max-width: 600px) {\n    .workspace-indicator {\n        margin-left: 8px;\n        padding: 4px 8px;\n    }\n\n    .workspace-indicator__name {\n        max-width: 80px;\n        font-size: 0.75rem;\n    }\n\n    .workspace-indicator__badge {\n        display: none;\n    }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -38973,9 +40693,19 @@ function SideNav(props) {
     // Check agency subscription requirement
     if (link.requiresAgency) {
       try {
+        var _org;
         // Allow access for Intastellar Solutions (org ID 1)
-        var org = JSON.parse(localStorage.getItem("organisation"));
-        if ((org === null || org === void 0 ? void 0 : org.id) === 1) {
+        var orgRaw = localStorage.getItem("organisation");
+        var org = null;
+        if (orgRaw) {
+          try {
+            org = JSON.parse(orgRaw);
+          } catch (_unused) {
+            /* not JSON */
+          }
+        }
+        // Compare as strings to handle both number and string id
+        if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") {
           // Org 1 has access, continue
         } else {
           var _JSON$parse;
@@ -38984,7 +40714,7 @@ function SideNav(props) {
             return null;
           }
         }
-      } catch (_unused) {
+      } catch (_unused2) {
         return null;
       }
     }
@@ -39256,7 +40986,8 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Header)
+/* harmony export */   "default": () => (/* binding */ Header),
+/* harmony export */   getWorkspaceFilter: () => (/* binding */ getWorkspaceFilter)
 /* harmony export */ });
 /* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../App */ "./src/App.js");
 /* harmony import */ var _header_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./header.css */ "./src/Components/Header/header.css");
@@ -39327,6 +41058,40 @@ function setCurrentWorkspace(workspace) {
     localStorage.removeItem("current_workspace");
   }
 }
+
+/**
+ * Set workspace filter domains for API calls
+ * When set, the dashboard will filter to only these domains
+ */
+function setWorkspaceFilter(domains) {
+  if (domains && domains.length > 0) {
+    localStorage.setItem("workspace_filter", JSON.stringify(domains));
+  } else {
+    localStorage.removeItem("workspace_filter");
+  }
+}
+
+/**
+ * Clear workspace filter
+ */
+function clearWorkspaceFilter() {
+  localStorage.removeItem("workspace_filter");
+}
+
+/**
+ * Get workspace filter domains (for use in API calls)
+ */
+function getWorkspaceFilter() {
+  try {
+    var stored = localStorage.getItem("workspace_filter");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (_unused2) {
+    /* ignore */
+  }
+  return null;
+}
 function domainLabelForHeader(pathname, globalDomain) {
   var pathHandle = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.parseHandleFromPath)(pathname);
   if (pathHandle != null) {
@@ -39372,7 +41137,7 @@ function readCachedDomains() {
         lastedVisited: null
       };
     })));
-  } catch (_unused2) {
+  } catch (_unused3) {
     return null;
   }
 }
@@ -39383,14 +41148,25 @@ function readCachedDomains() {
 function hasAgencySubscription() {
   try {
     // Allow access for Intastellar Solutions (org ID 1)
-    var org = JSON.parse(localStorage.getItem("organisation"));
-    if ((org === null || org === void 0 ? void 0 : org.id) === 1) return true;
+    var orgRaw = localStorage.getItem("organisation");
+    if (orgRaw) {
+      var _org;
+      // Handle both JSON string and plain value formats
+      var org = orgRaw;
+      try {
+        org = JSON.parse(orgRaw);
+      } catch (_unused4) {
+        /* not JSON, use raw value */
+      }
+      // Check for org ID 1 (compare as strings to handle both number and string)
+      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
+    }
     var sub = localStorage.getItem("subscription");
     if (sub) {
       var parsed = JSON.parse(sub);
       return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
     }
-  } catch (_unused3) {
+  } catch (_unused5) {
     /* ignore */
   }
   return false;
@@ -39417,7 +41193,7 @@ function readAgencyWorkspaces() {
         return ws;
       });
     }
-  } catch (_unused4) {
+  } catch (_unused6) {
     /* ignore */
   }
   return [];
@@ -39453,7 +41229,7 @@ function resolveDomainsPlatformKey(API) {
   return "gdpr";
 }
 function Header(props) {
-  var _JSON$parse, _activeWorkspace$doma, _JSON$parse2, _JSON$parse3;
+  var _JSON$parse, _activeWorkspace$doma2, _JSON$parse2, _JSON$parse3;
   var _useContext = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.OrganisationContext),
     _useContext2 = _slicedToArray(_useContext, 2),
     Organisation = _useContext2[0],
@@ -39558,11 +41334,24 @@ function Header(props) {
   // Build domain list based on whether a workspace is active
   domainList = [];
   if (activeWorkspace) {
+    var _activeWorkspace$doma;
     // When workspace is active, show only workspace domains
     domainList.push({
-      name: "".concat(activeWorkspace.name, " Domains"),
+      name: "".concat(activeWorkspace.name),
       disabled: true,
       type: "separator"
+    });
+
+    // Add combined view for workspace (aggregates all workspace domains)
+    domainList.push({
+      icon: null,
+      name: "combined view",
+      label: "All domains (combined)",
+      type: "workspace-combined",
+      workspaceId: activeWorkspace.id,
+      workspaceDomains: ((_activeWorkspace$doma = activeWorkspace.domains) === null || _activeWorkspace$doma === void 0 ? void 0 : _activeWorkspace$doma.map(function (d) {
+        return d.domain;
+      })) || []
     });
 
     // Add workspace domains
@@ -39689,9 +41478,30 @@ function Header(props) {
       if (parsed.type === "exit-workspace") {
         setActiveWorkspace(null);
         setCurrentWorkspace(null);
+        clearWorkspaceFilter();
         setCurrentDomain("combined view");
         setGlobalDomain("combined view");
         (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
+        return;
+      }
+
+      // Handle workspace combined view
+      if (parsed.type === "workspace-combined") {
+        // Store workspace domains for API filtering
+        setWorkspaceFilter(parsed.workspaceDomains);
+        setCurrentDomain("combined view");
+        setGlobalDomain("combined view");
+        (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
+        return;
+      }
+
+      // Handle workspace domain selection
+      if (parsed.type === "workspace-domain") {
+        // Clear workspace filter when selecting single domain
+        clearWorkspaceFilter();
+        setCurrentDomain(domain);
+        setGlobalDomain(domain);
+        (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, domain, location.pathname);
         return;
       }
       setCurrentDomain(domain);
@@ -39708,13 +41518,20 @@ function Header(props) {
           });
         }
         if (ws) {
+          var _ws$domains2;
           setActiveWorkspace(ws);
           setCurrentWorkspace(ws);
+          // Set workspace filter for combined view by default
+          var wsDomains = ((_ws$domains2 = ws.domains) === null || _ws$domains2 === void 0 ? void 0 : _ws$domains2.map(function (d) {
+            return d.domain;
+          })) || [];
+          setWorkspaceFilter(wsDomains);
         }
-      } else if (parsed.type !== "workspace-domain") {
-        // Only clear workspace if selecting a regular domain (not workspace domain)
+      } else {
+        // Selecting regular domain clears workspace
         setActiveWorkspace(null);
         setCurrentWorkspace(null);
+        clearWorkspaceFilter();
       }
       (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, domain, location.pathname);
     },
@@ -39726,7 +41543,7 @@ function Header(props) {
     className: "workspace-indicator__badge"
   }, "Workspace"), /*#__PURE__*/React.createElement("span", {
     className: "workspace-indicator__name"
-  }, activeWorkspace.name), ((_activeWorkspace$doma = activeWorkspace.domains) === null || _activeWorkspace$doma === void 0 ? void 0 : _activeWorkspace$doma.length) > 1 && /*#__PURE__*/React.createElement("span", {
+  }, activeWorkspace.name), ((_activeWorkspace$doma2 = activeWorkspace.domains) === null || _activeWorkspace$doma2 === void 0 ? void 0 : _activeWorkspace$doma2.length) > 1 && /*#__PURE__*/React.createElement("span", {
     className: "workspace-indicator__domains"
   }, activeWorkspace.domains.length, " domains"), /*#__PURE__*/React.createElement("button", {
     className: "workspace-indicator__exit",
@@ -40716,6 +42533,26 @@ function Select(props) {
           role: "separator",
           "aria-disabled": "true"
         }, item.name || item.label);
+      }
+      // Handle workspace combined view
+      if (item.type === "workspace-combined") {
+        return /*#__PURE__*/React.createElement("li", {
+          key: "workspace-combined",
+          "data-dropdown-item": true,
+          role: "option",
+          className: "dropdown-menu__item--workspace-combined",
+          onClick: function onClick() {
+            return props.onChange(JSON.stringify({
+              name: item.name,
+              type: "workspace-combined",
+              workspaceId: item.workspaceId,
+              workspaceDomains: item.workspaceDomains
+            }));
+          }
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__combined-icon",
+          "aria-hidden": "true"
+        }, "\u2295"), /*#__PURE__*/React.createElement("span", null, item.label || item.name));
       }
       // Handle exit workspace item
       if (item.type === "exit-workspace") {
@@ -43762,20 +45599,21 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Charts_WorldMap_WorldMap_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Components/Charts/WorldMap/WorldMap.js */ "./src/Components/Charts/WorldMap/WorldMap.js");
 /* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var _Functions_isJson_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Functions/isJson.js */ "./src/Functions/isJson.js");
-/* harmony import */ var _Components_Crawler__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Components/Crawler */ "./src/Components/Crawler/index.js");
-/* harmony import */ var _Components_Charts_Line__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Components/Charts/Line */ "./src/Components/Charts/Line/index.js");
-/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../Components/Filter/filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
-/* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
-/* harmony import */ var _components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../components/AuditSnapshotCard/AuditSnapshotCard.js */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.js");
-/* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
-/* harmony import */ var _Components_Charts_Pie_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../Components/Charts/Pie/index.js */ "./src/Components/Charts/Pie/index.js");
-/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
-/* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
-/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+/* harmony import */ var _components_header_header_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../components/header/header.js */ "./src/components/header/header.js");
+/* harmony import */ var _Functions_isJson_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/isJson.js */ "./src/Functions/isJson.js");
+/* harmony import */ var _Components_Crawler__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Components/Crawler */ "./src/Components/Crawler/index.js");
+/* harmony import */ var _Components_Charts_Line__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Components/Charts/Line */ "./src/Components/Charts/Line/index.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Components/Filter/filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
+/* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
+/* harmony import */ var _components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../components/AuditSnapshotCard/AuditSnapshotCard.js */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.js");
+/* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
+/* harmony import */ var _Components_Charts_Pie_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Components/Charts/Pie/index.js */ "./src/Components/Charts/Pie/index.js");
+/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
+/* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
+/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -43786,6 +45624,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -43829,7 +45668,7 @@ function Dashboard(props) {
     setOrganisation = _useContext4[1];
   var subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
   var userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
-  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_18__["default"].DemoMode),
+  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_19__["default"].DemoMode),
     _useState2 = _slicedToArray(_useState, 2),
     demoMode = _useState2[0],
     setDemoMode = _useState2[1];
@@ -43849,7 +45688,7 @@ function Dashboard(props) {
       setCurrentDomain("combined view");
     } else {
       var decoded = decodeURIComponent(String(handle).replace(/%2E/gi, "."));
-      setCurrentDomain(punycode__WEBPACK_IMPORTED_MODULE_20__["default"].toUnicode(decoded));
+      setCurrentDomain(punycode__WEBPACK_IMPORTED_MODULE_21__["default"].toUnicode(decoded));
     }
   }, [handle, id, setCurrentDomain]);
   var _useState5 = useState(null),
@@ -43879,13 +45718,13 @@ function Dashboard(props) {
     compareRange = _useState14[0],
     setCompareRange = _useState14[1];
   var _useState15 = useState(function () {
-      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_11__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
+      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_12__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
     }),
     _useState16 = _slicedToArray(_useState15, 2),
     previousPeriod = _useState16[0],
     setPreviousPeriod = _useState16[1];
   var _useState17 = useState(function () {
-      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_11__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_12__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
     }),
     _useState18 = _slicedToArray(_useState17, 2),
     previousPeriod2 = _useState18[0],
@@ -43906,8 +45745,16 @@ function Dashboard(props) {
   var url = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.url;
   var method = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.method;
   var header = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers;
-  _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers.Domains = handle ? handle : currentDomain;
-  _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers.Domains = handle ? handle : currentDomain;
+
+  // Determine which domains to pass to API
+  var workspaceFilter = (0,_components_header_header_js__WEBPACK_IMPORTED_MODULE_7__.getWorkspaceFilter)();
+  var routeDomain = handle ? handle : currentDomain;
+
+  // If workspace filter is active and we're in combined view, pass workspace domains
+  // Otherwise, use the normal route-based domain
+  var domainsForApi = workspaceFilter && (routeDomain === "combined view" || !routeDomain) ? workspaceFilter.join(",") : routeDomain;
+  _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers.Domains = domainsForApi;
+  _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers.Domains = domainsForApi;
   _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
   _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
   _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers.FromDate = fromDate.toISOString().split("T")[0];
@@ -43952,7 +45799,7 @@ function Dashboard(props) {
     setLiveViewData(data);
   }, []);
   useEffect(function () {
-    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_18__["default"].onDemoModeChange(setDemoMode);
+    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_19__["default"].onDemoModeChange(setDemoMode);
     return unsubscribe; // Clean up on unmount
   }, []);
   useEffect(function () {
@@ -43987,7 +45834,7 @@ function Dashboard(props) {
     })["finally"](function () {
       setLoading(false);
     });
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.Domains = currentDomain;
+    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.Domains = domainsForApi;
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.ToDate = toDate.toISOString().split("T")[0];
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.CompareRange = compareRange;
@@ -44039,11 +45886,11 @@ function Dashboard(props) {
     input.setAttribute("max", new Date().toISOString().split("T")[0]);
   });
   var compareOn = compareRange !== 0 && compareRange != null;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_11__["default"], {
     demoMode: demoMode,
     loadingUpdated: loading,
     finalLoaded: loadingCountry,
-    title: handle ? "Dashboard: ".concat(punycode__WEBPACK_IMPORTED_MODULE_20__["default"].toUnicode(handle)) : "Dashboard",
+    title: handle ? "Dashboard: ".concat(punycode__WEBPACK_IMPORTED_MODULE_21__["default"].toUnicode(handle)) : "Dashboard",
     url: url,
     method: method,
     header: header,
@@ -44069,19 +45916,19 @@ function Dashboard(props) {
       gap: "10px",
       marginBottom: "20px"
     }
-  }, jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_17__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }, jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: (_jsData$Total = jsData.Total) === null || _jsData$Total === void 0 ? void 0 : _jsData$Total.toLocaleString("de-DE"),
     type: "Websites"
-  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_17__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: (jsData === null || jsData === void 0 || (_jsData$JS = jsData.JS) === null || _jsData$JS === void 0 ? void 0 : _jsData$JS.toLocaleString("de-DE")) + "%",
     type: "JavaScript"
-  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_17__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: (jsData === null || jsData === void 0 || (_jsData$WP = jsData.WP) === null || _jsData$WP === void 0 ? void 0 : _jsData$WP.toLocaleString("de-DE")) + "%",
     type: "WordPress"
-  }))) : null, id ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_13__["default"], {
+  }))) : null, id ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_14__["default"], {
     platformId: id,
     handle: handle,
     currentDomain: currentDomain,
@@ -44102,7 +45949,7 @@ function Dashboard(props) {
       gap: "10px",
       marginBottom: "20px"
     }
-  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     kpi: true,
     styleType: "small",
     compareOn: compareOn,
@@ -44118,7 +45965,7 @@ function Dashboard(props) {
     type: "Consent acceptance",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     kpi: true,
     styleType: "small",
     compareOn: compareOn,
@@ -44139,7 +45986,7 @@ function Dashboard(props) {
     type: "Essential-only rate",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     explainer: {
       exist: true,
       title: "EU based users",
@@ -44151,7 +45998,7 @@ function Dashboard(props) {
     type: "EU-based users",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     explainer: {
       exist: true,
       title: "Non-EU based users",
@@ -44163,7 +46010,7 @@ function Dashboard(props) {
     type: "Non-EU-based users",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     explainer: {
       exist: true,
       title: "Detected (pre-consent) cookies",
@@ -44174,7 +46021,7 @@ function Dashboard(props) {
     type: "Detected (pre-consent)",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     explainer: {
       exist: true,
@@ -44185,7 +46032,7 @@ function Dashboard(props) {
     type: "Detected (post-consent)",
     fromDate: fromDate,
     toDate: toDate
-  })), hasTimeToDecision ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_19__["default"], {
+  })), hasTimeToDecision ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_20__["default"], {
     type: "timeToDecision",
     items: ["global", "eu", "noneEU"],
     labels: ["Global", "EU", "Non-EU"],
@@ -44198,7 +46045,7 @@ function Dashboard(props) {
     style: {
       marginTop: "20px"
     }
-  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
     explainer: {
@@ -44219,7 +46066,7 @@ function Dashboard(props) {
       "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
       "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
     }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
     explainer: {
@@ -44240,7 +46087,7 @@ function Dashboard(props) {
       "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
       "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
     }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
     explainer: {
@@ -44261,7 +46108,7 @@ function Dashboard(props) {
       "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
       "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
     }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
     explainer: {
@@ -44280,7 +46127,7 @@ function Dashboard(props) {
       "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
       "deviceType": timeToDecisionSlice.deviceType
     }
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_16__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
     explainer: {
@@ -44374,11 +46221,11 @@ function Dashboard(props) {
                } */
   }), /*#__PURE__*/React.createElement("div", {
     className: ["widget no-padding"]
-  }, /*#__PURE__*/React.createElement(_components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_12__.LiveView, {
+  }, /*#__PURE__*/React.createElement(_components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_13__.LiveView, {
     currentDomain: handle ? handle : currentDomain,
     demoMode: demoMode,
     onLiveDataChange: onLiveDataChange
-  })))), /*#__PURE__*/React.createElement(_Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_14__.PremiumTier, {
+  })))), /*#__PURE__*/React.createElement(_Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_15__.PremiumTier, {
     loading: loading,
     activeData: activeData,
     fromDate: fromDate,
@@ -55997,14 +57844,25 @@ var SETTINGS_HUB_COPY = {
 function hasAgencySubscription() {
   try {
     // Allow access for Intastellar Solutions (org ID 1)
-    var org = JSON.parse(localStorage.getItem("organisation"));
-    if ((org === null || org === void 0 ? void 0 : org.id) === 1) return true;
+    var orgRaw = localStorage.getItem("organisation");
+    if (orgRaw) {
+      var _org;
+      // Handle both JSON string and plain value formats
+      var org = orgRaw;
+      try {
+        org = JSON.parse(orgRaw);
+      } catch (_unused) {
+        /* not JSON, use raw value */
+      }
+      // Check for org ID 1 (compare as strings to handle both number and string)
+      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
+    }
     var sub = localStorage.getItem("subscription");
     if (sub) {
       var parsed = JSON.parse(sub);
       return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
     }
-  } catch (_unused) {
+  } catch (_unused2) {
     /* ignore */
   }
   return false;
@@ -56035,7 +57893,7 @@ function Settings() {
       var org = JSON.parse(localStorage.getItem("organisation"));
       var name = org === null || org === void 0 ? void 0 : org.name;
       if (name) return name;
-    } catch (_unused2) {
+    } catch (_unused3) {
       /* ignore */
     }
     return "Current organisation";
@@ -59219,6 +61077,175 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
+/***/ "./src/components/IntastellarAccounts/IntastellarAccounts.js":
+/*!*******************************************************************!*\
+  !*** ./src/components/IntastellarAccounts/IntastellarAccounts.js ***!
+  \*******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Account)
+/* harmony export */ });
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Style.css */ "./src/components/IntastellarAccounts/Style.css");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect;
+function Account(props) {
+  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].DemoMode),
+    _useState2 = _slicedToArray(_useState, 2),
+    demoMode = _useState2[0],
+    isDemoMode = _useState2[1];
+  useEffect(function () {
+    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].onDemoModeChange(isDemoMode);
+    return unsubscribe;
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu user_content"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__accent",
+    "aria-hidden": "true"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__body"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__brand"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg",
+    alt: "",
+    className: "ia-menu__brand-logo"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__avatar-wrap"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: props.profile.image,
+    alt: "",
+    className: "ia-menu__avatar"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__identity"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "ia-menu__greeting"
+  }, "Hi, ", props.profile.name, "!"), /*#__PURE__*/React.createElement("p", {
+    className: "ia-menu__email"
+  }, props.profile.email), /*#__PURE__*/React.createElement("a", {
+    href: "https://my.intastellaraccounts.com",
+    target: "_blank",
+    rel: "noopener noreferrer",
+    className: "ia-menu__manage"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: "https://www.intastellarsolutions.com/assets/icons/fav/favicon-96x96.png",
+    alt: "",
+    className: "ia-menu__manage-icon",
+    width: 32,
+    height: 32
+  }), /*#__PURE__*/React.createElement("span", null, "Manage your Intastellar account"))), _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation() == 1 ? /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__workspace-panel",
+    role: "group",
+    "aria-labelledby": "ia-workspace-section"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__workspace-row"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__workspace-copy"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ia-menu__workspace-kicker",
+    id: "ia-workspace-section"
+  }, "Workspace"), /*#__PURE__*/React.createElement("span", {
+    className: "ia-menu__demo-label",
+    id: "ia-demo-label"
+  }, "Demo mode")), /*#__PURE__*/React.createElement("label", {
+    className: "ia-menu__switch"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "checkbox",
+    checked: demoMode,
+    onChange: function onChange(e) {
+      return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].SetDemoMode(e.target.checked);
+    },
+    "aria-labelledby": "ia-workspace-section ia-demo-label"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "ia-menu__switch-slider"
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "ia-menu__demo-hint"
+  }, "Masks live data across dashboards.")) : null), /*#__PURE__*/React.createElement("div", {
+    className: "ia-menu__footer"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "ia-menu__sign-out",
+    onClick: function onClick() {
+      return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].Logout();
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    className: "ia-menu__sign-out-icon",
+    viewBox: "0 0 24 24",
+    width: "20",
+    height: "20",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("path", {
+    fill: "currentColor",
+    d: "M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
+  })), "Sign out")));
+}
+
+/***/ }),
+
+/***/ "./src/components/IntastellarAccounts/Style.css":
+/*!******************************************************!*\
+  !*** ./src/components/IntastellarAccounts/Style.css ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/components/IntastellarAccounts/Style.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
 /***/ "./src/components/LiveView/Style.css":
 /*!*******************************************!*\
   !*** ./src/components/LiveView/Style.css ***!
@@ -59814,6 +61841,354 @@ function getApproxLastInteractionIsoFromLiveData(liveData) {
 
 /***/ }),
 
+/***/ "./src/components/SelectInput/Selector.js":
+/*!************************************************!*\
+  !*** ./src/components/SelectInput/Selector.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Select)
+/* harmony export */ });
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/components/SelectInput/Style.css");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useRef = _React.useRef;
+
+function Select(props) {
+  var _props$items;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    isOpen = _useState2[0],
+    setIsOpen = _useState2[1];
+  var align = props.align || "left";
+  var containerRef = useRef(null);
+  var listRef = useRef(null);
+  var searchInput = useRef(null);
+  function searchItems(query) {
+    var root = listRef.current;
+    if (!root) return;
+    root.querySelectorAll("[data-dropdown-item]").forEach(function (item) {
+      var text = (item.textContent || "").toLowerCase();
+      item.hidden = query.trim() !== "" && !text.includes(query.toLowerCase());
+    });
+  }
+  function isJson(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+  function openMenu() {
+    setIsOpen(function (open) {
+      return !open;
+    });
+  }
+  function pick(fn) {
+    return function () {
+      setIsOpen(false);
+      fn();
+    };
+  }
+  function clickOutside(e) {
+    if (containerRef.current && !containerRef.current.contains(e.target)) {
+      setIsOpen(false);
+    }
+  }
+  useEffect(function () {
+    document.addEventListener("click", clickOutside, true);
+    return function () {
+      return document.removeEventListener("click", clickOutside, true);
+    };
+  }, []);
+  useEffect(function () {
+    if (isOpen && listRef.current) {
+      listRef.current.querySelectorAll("[data-dropdown-item]").forEach(function (item) {
+        item.hidden = false;
+      });
+      if (searchInput.current) {
+        searchInput.current.value = "";
+      }
+    }
+  }, [isOpen]);
+  var menuAlignClass = align === "right" ? "dropdown-menu--align-right" : "dropdown-menu--align-left";
+  return /*#__PURE__*/React.createElement("div", {
+    ref: containerRef,
+    className: "selectorContianer selector-container",
+    style: props.style
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "selector"
+  }, props.icon ? /*#__PURE__*/React.createElement("i", {
+    className: props.icon
+  }) : null, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "dropdown-menu-button",
+    style: props === null || props === void 0 ? void 0 : props.style2,
+    onClick: function onClick(e) {
+      e.stopPropagation();
+      openMenu();
+    },
+    "aria-expanded": isOpen,
+    "aria-haspopup": "listbox"
+  }, isJson(props.defaultValue) ? /*#__PURE__*/React.createElement(React.Fragment, null, JSON.parse(props.defaultValue).icon ? /*#__PURE__*/React.createElement("img", {
+    className: "company-logo",
+    src: JSON.parse(props.defaultValue).icon,
+    alt: ""
+  }) : null, /*#__PURE__*/React.createElement("span", {
+    className: "dropdown-menu-button__label"
+  }, JSON.parse(props.defaultValue).name)) : /*#__PURE__*/React.createElement("span", {
+    className: "dropdown-menu-button__label"
+  }, props.defaultValue)), isOpen ? /*#__PURE__*/React.createElement("div", {
+    className: "dropdown-menu ".concat(menuAlignClass)
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dropdown-menu__panel"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "search-box"
+  }, /*#__PURE__*/React.createElement("input", {
+    ref: searchInput,
+    className: "search-input",
+    type: "search",
+    name: "q",
+    placeholder: "Search\u2026",
+    autoComplete: "off",
+    onChange: function onChange(e) {
+      return searchItems(e.target.value);
+    },
+    onClick: function onClick(e) {
+      return e.stopPropagation();
+    }
+  })), /*#__PURE__*/React.createElement("ul", {
+    ref: listRef,
+    className: "dropdown-menu__content",
+    role: "listbox"
+  }, props === null || props === void 0 || (_props$items = props.items) === null || _props$items === void 0 ? void 0 : _props$items.map(function (item, key) {
+    if (isJson(item)) {
+      var _parsed$id;
+      var parsed = JSON.parse(item);
+      return /*#__PURE__*/React.createElement("li", {
+        key: (_parsed$id = parsed.id) !== null && _parsed$id !== void 0 ? _parsed$id : key,
+        "data-dropdown-item": true,
+        role: "option",
+        onClick: pick(function () {
+          return props.onChange(JSON.stringify({
+            id: parsed.id,
+            name: parsed.name
+          }));
+        })
+      }, parsed.icon ? /*#__PURE__*/React.createElement("img", {
+        src: parsed.icon,
+        alt: ""
+      }) : null, props !== null && props !== void 0 && props.labels ? props === null || props === void 0 ? void 0 : props.labels[key] : parsed.name);
+    }
+    if (_typeof(item) === "object" && item !== null && item !== void 0 && item.uri) {
+      return /*#__PURE__*/React.createElement("li", {
+        key: item.uri,
+        "data-dropdown-item": true,
+        role: "option",
+        onClick: pick(function () {
+          return props.onChange(JSON.stringify({
+            name: item.type,
+            uri: item.uri
+          }));
+        })
+      }, item.icon ? /*#__PURE__*/React.createElement("img", {
+        src: item.icon,
+        alt: ""
+      }) : null, props !== null && props !== void 0 && props.labels ? props === null || props === void 0 ? void 0 : props.labels[key] : item.type);
+    }
+    if (_typeof(item) === "object") {
+      var _item$id;
+      // Handle separator items
+      if (item.disabled || item.type === "separator") {
+        return /*#__PURE__*/React.createElement("li", {
+          key: key,
+          className: "dropdown-menu__separator",
+          role: "separator",
+          "aria-disabled": "true"
+        }, item.name || item.label);
+      }
+      // Handle workspace combined view
+      if (item.type === "workspace-combined") {
+        return /*#__PURE__*/React.createElement("li", {
+          key: "workspace-combined",
+          "data-dropdown-item": true,
+          role: "option",
+          className: "dropdown-menu__item--workspace-combined",
+          onClick: function onClick() {
+            return props.onChange(JSON.stringify({
+              name: item.name,
+              type: "workspace-combined",
+              workspaceId: item.workspaceId,
+              workspaceDomains: item.workspaceDomains
+            }));
+          }
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__combined-icon",
+          "aria-hidden": "true"
+        }, "\u2295"), /*#__PURE__*/React.createElement("span", null, item.label || item.name));
+      }
+      // Handle exit workspace item
+      if (item.type === "exit-workspace") {
+        return /*#__PURE__*/React.createElement("li", {
+          key: "exit-workspace",
+          "data-dropdown-item": true,
+          role: "option",
+          className: "dropdown-menu__item--exit-workspace",
+          onClick: function onClick() {
+            return props.onChange(JSON.stringify({
+              name: item.name,
+              type: "exit-workspace"
+            }));
+          }
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__exit-icon",
+          "aria-hidden": "true"
+        }, "\u2190"), /*#__PURE__*/React.createElement("span", null, item.label || item.name));
+      }
+      // Handle workspace domain items
+      if (item.type === "workspace-domain") {
+        return /*#__PURE__*/React.createElement("li", {
+          key: item.name,
+          "data-dropdown-item": true,
+          role: "option",
+          className: "dropdown-menu__item--workspace-domain ".concat(item.isPrimary ? 'dropdown-menu__item--primary' : ''),
+          onClick: function onClick() {
+            return props.onChange(JSON.stringify({
+              name: item.name,
+              type: "workspace-domain"
+            }));
+          }
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__domain-name"
+        }, item.name), item.isPrimary && /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__primary-tag"
+        }, "Primary"));
+      }
+      // Handle workspace items
+      if (item.type === "workspace") {
+        var _item$workspaceId;
+        return /*#__PURE__*/React.createElement("li", {
+          key: (_item$workspaceId = item.workspaceId) !== null && _item$workspaceId !== void 0 ? _item$workspaceId : key,
+          "data-dropdown-item": true,
+          role: "option",
+          className: "dropdown-menu__item--workspace",
+          onClick: function onClick() {
+            return props.onChange(JSON.stringify({
+              id: item.workspaceId,
+              name: item.name,
+              type: "workspace",
+              workspaceData: item.workspaceData
+            }));
+          }
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__workspace-icon",
+          "aria-hidden": "true"
+        }, "W"), /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__workspace-info"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__workspace-name"
+        }, item.label || item.name), /*#__PURE__*/React.createElement("span", {
+          className: "dropdown-menu__workspace-domain"
+        }, item.sublabel || item.name)));
+      }
+      return /*#__PURE__*/React.createElement("li", {
+        key: (_item$id = item.id) !== null && _item$id !== void 0 ? _item$id : key,
+        "data-dropdown-item": true,
+        role: "option",
+        className: "dropdown-menu__item--with-icon",
+        onClick: function onClick() {
+          return props.onChange(JSON.stringify({
+            id: item.id,
+            name: item.name,
+            access: item.access
+          }));
+        }
+      }, item.icon && item.icon !== "undefined" ? /*#__PURE__*/React.createElement("img", {
+        className: "company-logo",
+        src: item.icon,
+        alt: ""
+      }) : null, props !== null && props !== void 0 && props.labels ? props === null || props === void 0 ? void 0 : props.labels[key] : item.name);
+    }
+    return /*#__PURE__*/React.createElement("li", {
+      key: String(item),
+      "data-dropdown-item": true,
+      role: "option",
+      onClick: function onClick(e) {
+        setIsOpen(false);
+        props.onChange(props.labels ? item : e.currentTarget.textContent);
+      }
+    }, item !== null && item !== void 0 && item.icon ? /*#__PURE__*/React.createElement("img", {
+      src: item.icon,
+      alt: ""
+    }) : null, props !== null && props !== void 0 && props.labels ? props === null || props === void 0 ? void 0 : props.labels[key] : item);
+  })))) : null));
+}
+
+/***/ }),
+
+/***/ "./src/components/SelectInput/Style.css":
+/*!**********************************************!*\
+  !*** ./src/components/SelectInput/Style.css ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/components/SelectInput/Style.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
 /***/ "./src/components/World/worldTopoShared.js":
 /*!*************************************************!*\
   !*** ./src/components/World/worldTopoShared.js ***!
@@ -59967,6 +62342,658 @@ function topoToFeatures(topo, objName) {
 
 /***/ }),
 
+/***/ "./src/components/header/header.css":
+/*!******************************************!*\
+  !*** ./src/components/header/header.css ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./header.css */ "./node_modules/css-loader/dist/cjs.js!./src/components/header/header.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/header/header.js":
+/*!*****************************************!*\
+  !*** ./src/components/header/header.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Header),
+/* harmony export */   getWorkspaceFilter: () => (/* binding */ getWorkspaceFilter)
+/* harmony export */ });
+/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../App */ "./src/App.js");
+/* harmony import */ var _header_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./header.css */ "./src/components/header/header.css");
+/* harmony import */ var _logo_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./logo.svg */ "./src/components/header/logo.svg");
+/* harmony import */ var _Functions_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Functions/fetch */ "./src/Functions/fetch.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../API/api */ "./src/API/api.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../SelectInput/Selector */ "./src/components/SelectInput/Selector.js");
+/* harmony import */ var _IntastellarAccounts_IntastellarAccounts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../IntastellarAccounts/IntastellarAccounts */ "./src/components/IntastellarAccounts/IntastellarAccounts.js");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+
+
+
+
+
+
+
+
+
+
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useContext = _React.useContext,
+  useMemo = _React.useMemo;
+var useHistory = window.ReactRouterDOM.useHistory;
+var useLocation = window.ReactRouterDOM.useLocation;
+
+/**
+ * Get current workspace info from localStorage
+ */
+function getCurrentWorkspace() {
+  try {
+    var stored = localStorage.getItem("current_workspace");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (_unused) {
+    /* ignore */
+  }
+  return null;
+}
+
+/**
+ * Set current workspace in localStorage
+ */
+function setCurrentWorkspace(workspace) {
+  if (workspace) {
+    localStorage.setItem("current_workspace", JSON.stringify(workspace));
+  } else {
+    localStorage.removeItem("current_workspace");
+  }
+}
+
+/**
+ * Set workspace filter domains for API calls
+ * When set, the dashboard will filter to only these domains
+ */
+function setWorkspaceFilter(domains) {
+  if (domains && domains.length > 0) {
+    localStorage.setItem("workspace_filter", JSON.stringify(domains));
+  } else {
+    localStorage.removeItem("workspace_filter");
+  }
+}
+
+/**
+ * Clear workspace filter
+ */
+function clearWorkspaceFilter() {
+  localStorage.removeItem("workspace_filter");
+}
+
+/**
+ * Get workspace filter domains (for use in API calls)
+ */
+function getWorkspaceFilter() {
+  try {
+    var stored = localStorage.getItem("workspace_filter");
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (_unused2) {
+    /* ignore */
+  }
+  return null;
+}
+function domainLabelForHeader(pathname, globalDomain) {
+  var pathHandle = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.parseHandleFromPath)(pathname);
+  if (pathHandle != null) {
+    var decoded = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.decodeDomainPathSegment)(pathHandle);
+    return decoded != null ? decoded : "combined view";
+  }
+  if (/\/[^/]+\/(?:reports|dashboard)(?:\/|$)/.test(pathname)) {
+    return "combined view";
+  }
+  return globalDomain || "combined view";
+}
+
+/*
+ * Hydrate the dropdown from the existing `domains` localStorage key
+ * — a string array of allowed domain names persisted whenever this
+ * header (or any other surface) successfully fetches domains. Using
+ * the same cache the rest of the app already maintains avoids a
+ * second source of truth.
+ *
+ * The cache stores names only (no `installed`/`icon` metadata), so
+ * we synthesise minimal row objects shaped like the API response and
+ * re-prepend the "combined view" entry the cache strips out before
+ * persisting.
+ */
+function readCachedDomains() {
+  try {
+    var raw = localStorage.getItem("domains");
+    if (!raw) return null;
+    var parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.length === 0) return null;
+    var names = parsed.filter(function (n) {
+      return typeof n === "string" && n && n !== "combined view";
+    });
+    if (names.length === 0) return null;
+    return [{
+      domain: "combined view",
+      installed: null,
+      lastedVisited: null
+    }].concat(_toConsumableArray(names.map(function (domain) {
+      return {
+        domain: domain,
+        installed: null,
+        lastedVisited: null
+      };
+    })));
+  } catch (_unused3) {
+    return null;
+  }
+}
+
+/**
+ * Check if user has agency subscription or is Intastellar Solutions (org ID 1)
+ */
+function hasAgencySubscription() {
+  try {
+    // Allow access for Intastellar Solutions (org ID 1)
+    var orgRaw = localStorage.getItem("organisation");
+    if (orgRaw) {
+      var _org;
+      // Handle both JSON string and plain value formats
+      var org = orgRaw;
+      try {
+        org = JSON.parse(orgRaw);
+      } catch (_unused4) {
+        /* not JSON, use raw value */
+      }
+      // Check for org ID 1 (compare as strings to handle both number and string)
+      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
+    }
+    var sub = localStorage.getItem("subscription");
+    if (sub) {
+      var parsed = JSON.parse(sub);
+      return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
+    }
+  } catch (_unused5) {
+    /* ignore */
+  }
+  return false;
+}
+
+/**
+ * Read agency workspaces from localStorage
+ */
+function readAgencyWorkspaces() {
+  try {
+    var stored = localStorage.getItem("agency_workspaces");
+    if (stored) {
+      var workspaces = JSON.parse(stored);
+      // Migrate old single-domain workspaces to multi-domain format
+      return workspaces.map(function (ws) {
+        if (ws.domain && !ws.domains) {
+          return _objectSpread(_objectSpread({}, ws), {}, {
+            domains: [{
+              domain: ws.domain,
+              isPrimary: true
+            }]
+          });
+        }
+        return ws;
+      });
+    }
+  } catch (_unused6) {
+    /* ignore */
+  }
+  return [];
+}
+
+/**
+ * Get primary domain from a workspace
+ */
+function getPrimaryDomainFromWorkspace(ws) {
+  var _ws$domains$;
+  if (!ws.domains || ws.domains.length === 0) {
+    return ws.domain || null;
+  }
+  var primary = ws.domains.find(function (d) {
+    return d.isPrimary;
+  });
+  return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains$ = ws.domains[0]) === null || _ws$domains$ === void 0 ? void 0 : _ws$domains$.domain) || null;
+}
+
+/*
+ * Resolve the platform key whose `getDomains` we should call. Routes
+ * like /experiments or /settings aren't platform namespaces in the
+ * API map, so the literal first path segment can't be used blindly.
+ * We fall back to the platform stored at login time (or "gdpr" as a
+ * last resort) whenever the derived key doesn't expose getDomains.
+ */
+function resolveDomainsPlatformKey(API) {
+  var _API$fromPath, _API$fromStorage;
+  var fromPath = window.location.pathname.split("/")[1];
+  if (fromPath && (_API$fromPath = API[fromPath]) !== null && _API$fromPath !== void 0 && (_API$fromPath = _API$fromPath.getDomains) !== null && _API$fromPath !== void 0 && _API$fromPath.url) return fromPath;
+  var fromStorage = localStorage.getItem("platform");
+  if (fromStorage && (_API$fromStorage = API[fromStorage]) !== null && _API$fromStorage !== void 0 && (_API$fromStorage = _API$fromStorage.getDomains) !== null && _API$fromStorage !== void 0 && _API$fromStorage.url) return fromStorage;
+  return "gdpr";
+}
+function Header(props) {
+  var _JSON$parse, _activeWorkspace$doma2, _JSON$parse2, _JSON$parse3;
+  var _useContext = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.OrganisationContext),
+    _useContext2 = _slicedToArray(_useContext, 2),
+    Organisation = _useContext2[0],
+    setOrganisation = _useContext2[1];
+  var _useContext3 = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.DomainContext),
+    _useContext4 = _slicedToArray(_useContext3, 2),
+    globalDomain = _useContext4[0],
+    setGlobalDomain = _useContext4[1];
+  var location = useLocation();
+  var displayDomain = useMemo(function () {
+    return domainLabelForHeader(location.pathname, globalDomain);
+  }, [location.pathname, globalDomain]);
+  var _useState = useState(displayDomain),
+    _useState2 = _slicedToArray(_useState, 2),
+    currentDomain = _useState2[0],
+    setCurrentDomain = _useState2[1];
+  var profileImage = (_JSON$parse = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.user) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.avatar;
+  var domainList = null;
+  var history = useHistory();
+  var platformId = props.id || window.location.pathname.split("/").filter(Boolean)[0] || "gdpr";
+  var _useState3 = useState(null),
+    _useState4 = _slicedToArray(_useState3, 2),
+    allOrganisations = _useState4[0],
+    setallOrganisations = _useState4[1];
+  /*
+   * Bootstrap order on first render:
+   *   1. props.domains (passed by App.js once it has fetched)
+   *   2. cached domains from localStorage (so a hard reload on
+   *      /experiments still has a populated dropdown before any
+   *      network round-trip resolves)
+   *   3. null — the placeholder selector renders briefly until the
+   *      effect below repopulates from the API.
+   */
+  var _useState5 = useState(function () {
+      return props.domains || readCachedDomains();
+    }),
+    _useState6 = _slicedToArray(_useState5, 2),
+    domains = _useState6[0],
+    setDomains = _useState6[1];
+  var _useState7 = useState(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    viewUserProfile = _useState8[0],
+    setViewUserProfile = _useState8[1];
+  var _useState9 = useState(function () {
+      return getCurrentWorkspace();
+    }),
+    _useState0 = _slicedToArray(_useState9, 2),
+    activeWorkspace = _useState0[0],
+    setActiveWorkspace = _useState0[1];
+  var Platform = localStorage.getItem("platform") == "gdpr" ? "Intastellar Consents | CMP" : "Ferry Booking";
+  useEffect(function () {
+    setCurrentDomain(displayDomain);
+  }, [displayDomain]);
+  useEffect(function () {
+    var _API$platformKey;
+    (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.headers, JSON.stringify({
+      organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getUserId()
+    })).then(function (data) {
+      if (data === "Err_Login_Expired") {
+        localStorage.removeItem("globals");
+        window.location.href = "/login";
+        return;
+      }
+      if (JSON.parse(localStorage.getItem("globals")).organisation == null) {
+        JSON.parse(localStorage.getItem("globals")).organisation = data;
+      }
+      setallOrganisations(data);
+    });
+    var platformKey = resolveDomainsPlatformKey(_API_api__WEBPACK_IMPORTED_MODULE_4__["default"]);
+    var domainsApi = (_API$platformKey = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][platformKey]) === null || _API$platformKey === void 0 ? void 0 : _API$platformKey.getDomains;
+    if (!(domainsApi !== null && domainsApi !== void 0 && domainsApi.url)) {
+      return;
+    }
+    (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])(domainsApi.url, domainsApi.method, domainsApi.headers).then(function (data) {
+      if (data === "Err_Login_Expired") {
+        localStorage.removeItem("globals");
+        window.location.href = "/login";
+        return;
+      }
+      if ((data === null || data === void 0 ? void 0 : data.error) == "Err_No_Domains") {} else if (Array.isArray(data)) {
+        data.unshift({
+          domain: "combined view",
+          installed: null,
+          lastedVisited: null
+        });
+        data === null || data === void 0 || data.map(function (d) {
+          return punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain);
+        }).filter(function (d) {
+          return d !== undefined && d !== "" && d !== "undefined.";
+        });
+        setDomains(data);
+        var allowedDomains = data === null || data === void 0 ? void 0 : data.map(function (d) {
+          return punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain);
+        }).filter(function (d) {
+          return d !== undefined && d !== "" && d !== "undefined." && d !== "combined view";
+        });
+        localStorage.setItem("domains", JSON.stringify(allowedDomains));
+      }
+    });
+  }, []);
+
+  // Build domain list based on whether a workspace is active
+  domainList = [];
+  if (activeWorkspace) {
+    var _activeWorkspace$doma;
+    // When workspace is active, show only workspace domains
+    domainList.push({
+      name: "".concat(activeWorkspace.name),
+      disabled: true,
+      type: "separator"
+    });
+
+    // Add combined view for workspace (aggregates all workspace domains)
+    domainList.push({
+      icon: null,
+      name: "combined view",
+      label: "All domains (combined)",
+      type: "workspace-combined",
+      workspaceId: activeWorkspace.id,
+      workspaceDomains: ((_activeWorkspace$doma = activeWorkspace.domains) === null || _activeWorkspace$doma === void 0 ? void 0 : _activeWorkspace$doma.map(function (d) {
+        return d.domain;
+      })) || []
+    });
+
+    // Add workspace domains
+    if (activeWorkspace.domains && activeWorkspace.domains.length > 0) {
+      activeWorkspace.domains.forEach(function (d) {
+        domainList.push({
+          icon: null,
+          name: d.domain,
+          type: "workspace-domain",
+          isPrimary: d.isPrimary
+        });
+      });
+    }
+
+    // Add option to exit workspace
+    domainList.push({
+      name: "Exit Workspace",
+      disabled: true,
+      type: "separator"
+    });
+    domainList.push({
+      icon: null,
+      name: "combined view",
+      label: "← Back to all domains",
+      type: "exit-workspace"
+    });
+  } else {
+    // Normal mode: show workspaces first, then all domains
+
+    // For agency users, add client workspaces at the top
+    if (hasAgencySubscription()) {
+      var workspaces = readAgencyWorkspaces();
+      if (workspaces.length > 0) {
+        // Add workspaces header
+        domainList.push({
+          name: "Client Workspaces",
+          disabled: true,
+          type: "separator"
+        });
+        // Add workspaces to the list
+        workspaces.forEach(function (ws) {
+          var _ws$domains;
+          var primaryDomain = getPrimaryDomainFromWorkspace(ws);
+          var domainCount = ((_ws$domains = ws.domains) === null || _ws$domains === void 0 ? void 0 : _ws$domains.length) || 1;
+          domainList.push({
+            icon: null,
+            name: primaryDomain || ws.name,
+            label: ws.name,
+            sublabel: domainCount > 1 ? "".concat(domainCount, " domains") : primaryDomain,
+            type: "workspace",
+            workspaceId: ws.id,
+            workspaceData: ws
+          });
+        });
+      }
+    }
+
+    // Add domains from API
+    var apiDomains = (domains === null || domains === void 0 ? void 0 : domains.map(function (d) {
+      return {
+        icon: d.icon || null,
+        name: punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain),
+        type: "domain"
+      };
+    })) || [];
+    if (apiDomains.length > 0) {
+      var _domainList;
+      // Add separator if we have workspaces above
+      if (domainList.length > 0) {
+        domainList.push({
+          name: "Your Domains",
+          disabled: true,
+          type: "separator"
+        });
+      }
+      (_domainList = domainList).push.apply(_domainList, _toConsumableArray(apiDomains));
+    }
+  }
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("header", {
+    className: "dashboard-header"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-profile"
+  }, /*#__PURE__*/React.createElement("section", {
+    className: "logo-selector-container"
+  }, /*#__PURE__*/React.createElement("section", {
+    className: "logo_container"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "menu",
+    onClick: function onClick() {
+      document.querySelector(".navOverlay").classList.toggle("expand");
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "menu-bar"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "menu-bar"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "menu-bar"
+  })), /*#__PURE__*/React.createElement("img", {
+    className: "dashboard-logo",
+    src: _logo_svg__WEBPACK_IMPORTED_MODULE_2__["default"],
+    alt: "Intastellar Solutions Logo"
+  })), /*#__PURE__*/React.createElement("section", {
+    className: "company_container"
+  }, allOrganisations && Organisation ? /*#__PURE__*/React.createElement(_SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    defaultValue: Organisation,
+    onChange: function onChange(e) {
+      setOrganisation(e);
+      localStorage.setItem("organisation", e);
+      window.location.reload();
+    },
+    items: allOrganisations,
+    align: "right"
+  }) : /*#__PURE__*/React.createElement("div", {
+    className: "selector selector--placeholder",
+    "aria-hidden": "true"
+  }), domains && currentDomain ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    key: "domain-".concat(location.pathname),
+    defaultValue: currentDomain,
+    onChange: function onChange(e) {
+      var parsed = JSON.parse(e);
+      var domain = parsed.name;
+
+      // Handle exit workspace
+      if (parsed.type === "exit-workspace") {
+        setActiveWorkspace(null);
+        setCurrentWorkspace(null);
+        clearWorkspaceFilter();
+        setCurrentDomain("combined view");
+        setGlobalDomain("combined view");
+        (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
+        return;
+      }
+
+      // Handle workspace combined view
+      if (parsed.type === "workspace-combined") {
+        // Store workspace domains for API filtering
+        setWorkspaceFilter(parsed.workspaceDomains);
+        setCurrentDomain("combined view");
+        setGlobalDomain("combined view");
+        (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
+        return;
+      }
+
+      // Handle workspace domain selection
+      if (parsed.type === "workspace-domain") {
+        // Clear workspace filter when selecting single domain
+        clearWorkspaceFilter();
+        setCurrentDomain(domain);
+        setGlobalDomain(domain);
+        (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, domain, location.pathname);
+        return;
+      }
+      setCurrentDomain(domain);
+      setGlobalDomain(domain);
+
+      // Track workspace selection
+      if (parsed.type === "workspace") {
+        // Use workspaceData if available, otherwise fetch from storage
+        var ws = parsed.workspaceData;
+        if (!ws) {
+          var _workspaces = readAgencyWorkspaces();
+          ws = _workspaces.find(function (w) {
+            return w.id === parsed.id;
+          });
+        }
+        if (ws) {
+          var _ws$domains2;
+          setActiveWorkspace(ws);
+          setCurrentWorkspace(ws);
+          // Set workspace filter for combined view by default
+          var wsDomains = ((_ws$domains2 = ws.domains) === null || _ws$domains2 === void 0 ? void 0 : _ws$domains2.map(function (d) {
+            return d.domain;
+          })) || [];
+          setWorkspaceFilter(wsDomains);
+        }
+      } else {
+        // Selecting regular domain clears workspace
+        setActiveWorkspace(null);
+        setCurrentWorkspace(null);
+        clearWorkspaceFilter();
+      }
+      (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, domain, location.pathname);
+    },
+    items: domainList,
+    align: "left"
+  }), activeWorkspace && /*#__PURE__*/React.createElement("div", {
+    className: "workspace-indicator"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "workspace-indicator__badge"
+  }, "Workspace"), /*#__PURE__*/React.createElement("span", {
+    className: "workspace-indicator__name"
+  }, activeWorkspace.name), ((_activeWorkspace$doma2 = activeWorkspace.domains) === null || _activeWorkspace$doma2 === void 0 ? void 0 : _activeWorkspace$doma2.length) > 1 && /*#__PURE__*/React.createElement("span", {
+    className: "workspace-indicator__domains"
+  }, activeWorkspace.domains.length, " domains"), /*#__PURE__*/React.createElement("button", {
+    className: "workspace-indicator__exit",
+    onClick: function onClick() {
+      setActiveWorkspace(null);
+      setCurrentWorkspace(null);
+      setCurrentDomain("combined view");
+      setGlobalDomain("combined view");
+      (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
+    },
+    title: "Exit workspace"
+  }, "\xD7"))) : /*#__PURE__*/React.createElement("div", {
+    className: "selector selector--placeholder",
+    "aria-hidden": "true"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex profileImage"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: profileImage,
+    className: "content-img",
+    onClick: function onClick() {
+      return setViewUserProfile(!viewUserProfile);
+    }
+  }))), viewUserProfile ? /*#__PURE__*/React.createElement(_IntastellarAccounts_IntastellarAccounts__WEBPACK_IMPORTED_MODULE_7__["default"], {
+    profile: {
+      image: profileImage,
+      name: (_JSON$parse2 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.user) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.name) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.firstName,
+      email: (_JSON$parse3 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse3 === void 0 || (_JSON$parse3 = _JSON$parse3.user) === null || _JSON$parse3 === void 0 ? void 0 : _JSON$parse3.email
+    },
+    setIsOpen: setViewUserProfile
+  }) : null));
+}
+
+/***/ }),
+
 /***/ "./src/components/header/icons/experiment.svg":
 /*!****************************************************!*\
   !*** ./src/components/header/icons/experiment.svg ***!
@@ -59978,6 +63005,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "be42b8befc23276e905e9dd3f999ce40.svg");
+
+/***/ }),
+
+/***/ "./src/components/header/logo.svg":
+/*!****************************************!*\
+  !*** ./src/components/header/logo.svg ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "ff49a416cf4878ef3d9c0e42f101d99f.svg");
 
 /***/ }),
 

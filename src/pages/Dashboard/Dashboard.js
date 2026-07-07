@@ -10,6 +10,7 @@ import {
     consentsDomainFromRoute,
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
+import { getWorkspaceFilter } from "../../components/header/header.js";
 import { isJson } from "../../Functions/isJson.js";
 import Crawler from "../../Components/Crawler";
 import Line from "../../Components/Charts/Line"
@@ -85,8 +86,18 @@ export default function Dashboard(props) {
     let method = API[id].getInteractions.method;
     let header = API[id].getInteractions.headers;
 
-    API[id].getInteractions.headers.Domains = handle ? handle : currentDomain;
-    API[id].getInteractionsByCountry.headers.Domains = handle ? handle : currentDomain;
+    // Determine which domains to pass to API
+    const workspaceFilter = getWorkspaceFilter();
+    const routeDomain = handle ? handle : currentDomain;
+
+    // If workspace filter is active and we're in combined view, pass workspace domains
+    // Otherwise, use the normal route-based domain
+    const domainsForApi = (workspaceFilter && (routeDomain === "combined view" || !routeDomain))
+        ? workspaceFilter.join(",")
+        : routeDomain;
+
+    API[id].getInteractions.headers.Domains = domainsForApi;
+    API[id].getInteractionsByCountry.headers.Domains = domainsForApi;
     API[id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
     API[id].getInteractions.headers.ToDate = toDate.toISOString().split("T")[0];
 
@@ -172,7 +183,7 @@ export default function Dashboard(props) {
             setLoading(false);
         });
 
-        API[id].observedCookies.headers.Domains = currentDomain;
+        API[id].observedCookies.headers.Domains = domainsForApi;
         API[id].observedCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
         API[id].observedCookies.headers.ToDate = toDate.toISOString().split("T")[0];
         API[id].observedCookies.headers.CompareRange = compareRange;
