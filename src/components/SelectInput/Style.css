@@ -359,6 +359,64 @@
     color: #c0a053;
 }
 
+/* Domain item styles */
+.dropdown-menu__item--domain {
+    padding: 10px 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px !important;
+}
+
+.dropdown-menu__item--domain .dropdown-menu__domain-name {
+    flex: 1;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.8125rem;
+    color: #f0f0f0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Badges container */
+.dropdown-menu__badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* Verification tag styles */
+.dropdown-menu__verify-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 0.625rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.dropdown-menu__verify-tag--verified {
+    background: rgba(80, 180, 100, 0.2);
+    border: 1px solid rgba(80, 180, 100, 0.4);
+    color: #7dd590;
+}
+
+.dropdown-menu__verify-tag--unverified {
+    background: rgba(220, 160, 60, 0.2);
+    border: 1px solid rgba(220, 160, 60, 0.4);
+    color: #e8c76a;
+}
+
+.dropdown-menu__verify-tag--expired {
+    background: rgba(220, 100, 80, 0.2);
+    border: 1px solid rgba(220, 100, 80, 0.4);
+    color: #f0a8a0;
+}
+
 @media screen and (min-width: 320px) and (max-width: 900px) {
     .company_container .selector {
         max-width: none;

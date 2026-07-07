@@ -225,7 +225,41 @@ export default function Select(props) {
                                                     }
                                                 >
                                                     <span className="dropdown-menu__domain-name">{item.name}</span>
-                                                    {item.isPrimary && <span className="dropdown-menu__primary-tag">Primary</span>}
+                                                    <span className="dropdown-menu__badges">
+                                                        {item.isPrimary && <span className="dropdown-menu__primary-tag">Primary</span>}
+                                                        {item.verificationStatus && (
+                                                            <span className={`dropdown-menu__verify-tag dropdown-menu__verify-tag--${item.verificationStatus}`}>
+                                                                {item.verificationStatus === "verified" ? "✓" : item.verificationStatus === "expired" ? "!" : "?"}
+                                                            </span>
+                                                        )}
+                                                    </span>
+                                                </li>
+                                            );
+                                        }
+                                        // Handle regular domain items
+                                        if (item.type === "domain") {
+                                            return (
+                                                <li
+                                                    key={item.name}
+                                                    data-dropdown-item
+                                                    role="option"
+                                                    className="dropdown-menu__item--domain"
+                                                    onClick={() =>
+                                                        props.onChange(
+                                                            JSON.stringify({
+                                                                name: item.name,
+                                                                type: "domain",
+                                                            })
+                                                        )
+                                                    }
+                                                >
+                                                    {item.icon ? <img className="company-logo" src={item.icon} alt="" /> : null}
+                                                    <span className="dropdown-menu__domain-name">{item.name}</span>
+                                                    {item.verificationStatus && item.name !== "combined view" && (
+                                                        <span className={`dropdown-menu__verify-tag dropdown-menu__verify-tag--${item.verificationStatus}`}>
+                                                            {item.verificationStatus === "verified" ? "✓" : item.verificationStatus === "expired" ? "!" : "?"}
+                                                        </span>
+                                                    )}
                                                 </li>
                                             );
                                         }
