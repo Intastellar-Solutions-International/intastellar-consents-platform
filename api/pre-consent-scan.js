@@ -120,6 +120,63 @@ const BANNER_CATEGORY = {
     "third-party":  "functional",
 };
 
+// Well-known first-party cookie names written by third-party scripts.
+// Checked when no vendor domain match is found so e.g. _ga on example.com → analytics.
+const COOKIE_NAME_PATTERNS = [
+    // Google Analytics
+    { prefix: "_ga",              bannerCategory: "analytics"  }, // _ga, _ga_XXXXX, _gid, _gat
+    // Google Ads / Conversion
+    { prefix: "_gcl_",            bannerCategory: "marketing"  },
+    { prefix: "_gac_",            bannerCategory: "marketing"  },
+    // Meta / Facebook
+    { exact:  "_fbp",             bannerCategory: "marketing"  },
+    { exact:  "_fbc",             bannerCategory: "marketing"  },
+    // HubSpot
+    { exact:  "__hstc",           bannerCategory: "marketing"  },
+    { exact:  "__hssc",           bannerCategory: "marketing"  },
+    { exact:  "__hssrc",          bannerCategory: "marketing"  },
+    { exact:  "hubspotutk",       bannerCategory: "marketing"  },
+    // LinkedIn
+    { exact:  "li_sugr",          bannerCategory: "marketing"  },
+    { exact:  "UserMatchHistory", bannerCategory: "marketing"  },
+    { exact:  "lidc",             bannerCategory: "marketing"  },
+    { exact:  "bcookie",          bannerCategory: "marketing"  },
+    { exact:  "bscookie",         bannerCategory: "marketing"  },
+    // Hotjar
+    { prefix: "_hj",              bannerCategory: "analytics"  },
+    // Microsoft Clarity
+    { exact:  "_clck",            bannerCategory: "analytics"  },
+    { exact:  "_clsk",            bannerCategory: "analytics"  },
+    // TikTok
+    { exact:  "_ttp",             bannerCategory: "marketing"  },
+    // Twitter / X
+    { exact:  "muc_ads",          bannerCategory: "marketing"  },
+    { exact:  "personalization_id", bannerCategory: "marketing" },
+    // Amplitude
+    { prefix: "amplitude_",       bannerCategory: "analytics"  },
+    // Intercom
+    { prefix: "intercom-",        bannerCategory: "functional" },
+    // Cloudflare (bot / security — functional)
+    { prefix: "__cf",             bannerCategory: "functional" },
+    { exact:  "cf_clearance",     bannerCategory: "functional" },
+    // Consent management platforms (necessary)
+    { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
+    { prefix: "CookieConsent",    bannerCategory: "necessary"  },
+    { prefix: "cookieyes",        bannerCategory: "necessary"  },
+    { prefix: "cc_cookie",        bannerCategory: "necessary"  },
+    { prefix: "cmplz_",           bannerCategory: "necessary"  },
+    { prefix: "euconsent",        bannerCategory: "necessary"  },
+    { prefix: "GDPR",             bannerCategory: "necessary"  },
+];
+
+function categoryFromCookieName(name) {
+    for (const p of COOKIE_NAME_PATTERNS) {
+        if (p.exact   && name === p.exact)         return p.bannerCategory;
+        if (p.prefix  && name.startsWith(p.prefix)) return p.bannerCategory;
+    }
+    return null;
+}
+
 // Data processing country per service — primary legal entity / data centre country (ISO alpha-2).
 // Used to highlight destination countries on the compliance map.
 // Deliberately NOT based on CDN edge IP — the legal entity is what matters under GDPR Ch. V.
@@ -299,7 +356,8 @@ async function scanDomain(domain) {
             const matchedVendor = transfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);
             const bannerCategory = matchedVendor
                 ? matchedVendor.bannerCategory
-                : isFirstParty ? "necessary" : "functional";
+                : categoryFromCookieName(c.name)
+                ?? (isFirstParty ? "necessary" : "functional");
             return {
                 name:     c.name,
                 domain:   c.domain,

@@ -30,6 +30,48 @@ const BANNER_CATEGORY = {
     "third-party":  "functional",
 };
 
+const COOKIE_NAME_PATTERNS = [
+    { prefix: "_ga",              bannerCategory: "analytics"  },
+    { prefix: "_gcl_",            bannerCategory: "marketing"  },
+    { prefix: "_gac_",            bannerCategory: "marketing"  },
+    { exact:  "_fbp",             bannerCategory: "marketing"  },
+    { exact:  "_fbc",             bannerCategory: "marketing"  },
+    { exact:  "__hstc",           bannerCategory: "marketing"  },
+    { exact:  "__hssc",           bannerCategory: "marketing"  },
+    { exact:  "__hssrc",          bannerCategory: "marketing"  },
+    { exact:  "hubspotutk",       bannerCategory: "marketing"  },
+    { exact:  "li_sugr",          bannerCategory: "marketing"  },
+    { exact:  "UserMatchHistory", bannerCategory: "marketing"  },
+    { exact:  "lidc",             bannerCategory: "marketing"  },
+    { exact:  "bcookie",          bannerCategory: "marketing"  },
+    { exact:  "bscookie",         bannerCategory: "marketing"  },
+    { prefix: "_hj",              bannerCategory: "analytics"  },
+    { exact:  "_clck",            bannerCategory: "analytics"  },
+    { exact:  "_clsk",            bannerCategory: "analytics"  },
+    { exact:  "_ttp",             bannerCategory: "marketing"  },
+    { exact:  "muc_ads",          bannerCategory: "marketing"  },
+    { exact:  "personalization_id", bannerCategory: "marketing" },
+    { prefix: "amplitude_",       bannerCategory: "analytics"  },
+    { prefix: "intercom-",        bannerCategory: "functional" },
+    { prefix: "__cf",             bannerCategory: "functional" },
+    { exact:  "cf_clearance",     bannerCategory: "functional" },
+    { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
+    { prefix: "CookieConsent",    bannerCategory: "necessary"  },
+    { prefix: "cookieyes",        bannerCategory: "necessary"  },
+    { prefix: "cc_cookie",        bannerCategory: "necessary"  },
+    { prefix: "cmplz_",           bannerCategory: "necessary"  },
+    { prefix: "euconsent",        bannerCategory: "necessary"  },
+    { prefix: "GDPR",             bannerCategory: "necessary"  },
+];
+
+function categoryFromCookieName(name) {
+    for (const p of COOKIE_NAME_PATTERNS) {
+        if (p.exact  && name === p.exact)          return p.bannerCategory;
+        if (p.prefix && name.startsWith(p.prefix)) return p.bannerCategory;
+    }
+    return null;
+}
+
 function enrichWithBannerCategory(transfers, cookies, domain) {
     const domainRoot = domain.split(".").slice(-2).join(".");
     const enrichedTransfers = transfers.map(t => ({
@@ -45,7 +87,8 @@ function enrichWithBannerCategory(transfers, cookies, domain) {
             ...c,
             bannerCategory: matchedVendor
                 ? matchedVendor.bannerCategory
-                : isFirstParty ? "necessary" : "functional",
+                : categoryFromCookieName(c.name)
+                ?? (isFirstParty ? "necessary" : "functional"),
         };
     });
     return { enrichedTransfers, enrichedCookies };
