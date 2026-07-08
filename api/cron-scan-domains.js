@@ -12,11 +12,15 @@
  *
  * Required env vars (Vercel project settings):
  *   CRON_SECRET        — Set in Vercel; automatically sent in Authorization header
- *   DOMAINS_API_URL    — Your CMP endpoint returning [{ domain, companyName, … }]
+ *   DOMAINS_API_KEY    — Service JWT for the CMP getDomains API (see below)
  *   POSTGRES_URL       — Already set
  *
+ * The DOMAINS_API_KEY must be a service JWT with:
+ *   { "iss": "Intastellar Cron", "sub": "cron_scan_domains", "exp": 9999999999 }
+ * The getDomains API validates iss + sub and treats exp 9999999999 as non-expiring.
+ *
  * Optional env vars:
- *   DOMAINS_API_KEY    — Bearer token if your CMP API requires auth
+ *   DOMAINS_API_URL    — Override the CMP domains endpoint (default set below)
  *   SCAN_FRESHNESS_DAYS — Days before a domain is considered stale (default: 7)
  *   SCAN_CONCURRENCY   — Max parallel scan tasks per cron run (default: 10)
  *   BASE_URL           — Override base URL for internal task calls
@@ -56,10 +60,8 @@ export default async function handler(req, res) {
     }
 
     // ── 1. Fetch all domains from the CMP API ────────────────────────────────
-    const apiUrl = process.env.DOMAINS_API_URL;
-    if (!apiUrl) {
-        return res.status(500).json({ error: "DOMAINS_API_URL env var is not configured" });
-    }
+    const apiUrl = process.env.DOMAINS_API_URL
+        || "https://apis.intastellarsolutions.com/analytics/gdpr/getDomains";
 
     let rawList;
     try {
