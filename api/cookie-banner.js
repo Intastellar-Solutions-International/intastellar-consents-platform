@@ -60,13 +60,31 @@ const COOKIE_NAME_PATTERNS = [
     { prefix: "intercom-",        bannerCategory: "functional" },
     { prefix: "__cf",             bannerCategory: "functional" },
     { exact:  "cf_clearance",     bannerCategory: "functional" },
+    // Pinterest
+    { prefix: "_pin_",            bannerCategory: "marketing"  },
+    { prefix: "_pinterest_",      bannerCategory: "marketing"  },
+    // Reddit
+    { exact:  "reddaid",          bannerCategory: "marketing"  },
+    { exact:  "reddit_session",   bannerCategory: "marketing"  },
+    // Klaviyo
+    { exact:  "__kla_id",         bannerCategory: "marketing"  },
+    // Stripe (payment / functional)
+    { prefix: "__stripe_",        bannerCategory: "functional" },
+    // Wistia video analytics
+    { prefix: "_wijs",            bannerCategory: "analytics"  },
+    // Trustpilot
+    { prefix: "tp.",              bannerCategory: "marketing"  },
+    // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
+    { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
     { prefix: "CookieConsent",    bannerCategory: "necessary"  },
     { prefix: "cookieyes",        bannerCategory: "necessary"  },
     { prefix: "cc_cookie",        bannerCategory: "necessary"  },
     { prefix: "cmplz_",           bannerCategory: "necessary"  },
     { prefix: "euconsent",        bannerCategory: "necessary"  },
     { prefix: "GDPR",             bannerCategory: "necessary"  },
+    { prefix: "uc_",              bannerCategory: "necessary"  }, // Usercentrics
+    { prefix: "CI_",              bannerCategory: "necessary"  }, // Cookie Information
 ];
 
 function categoryFromCookieName(name) {

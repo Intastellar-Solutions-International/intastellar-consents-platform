@@ -35,24 +35,32 @@ function getPool() {
 // ── Tracker list ──────────────────────────────────────────────────────────────
 const TRACKERS = [
     // Analytics
-    { domains: ["google-analytics.com", "analytics.google.com"], service: "Google Analytics",      category: "analytics"      },
-    { domains: ["googletagmanager.com"],                          service: "Google Tag Manager",    category: "analytics"      },
-    { domains: ["hotjar.com"],                                    service: "Hotjar",                category: "analytics"      },
-    { domains: ["amplitude.com"],                                 service: "Amplitude",             category: "analytics"      },
-    { domains: ["mixpanel.com"],                                  service: "Mixpanel",              category: "analytics"      },
-    { domains: ["segment.io", "segment.com", "cdn.segment.com"], service: "Segment",               category: "analytics"      },
-    { domains: ["fullstory.com", "fullstory.io"],                 service: "FullStory",             category: "analytics"      },
-    { domains: ["clarity.ms"],                                    service: "Microsoft Clarity",     category: "analytics"      },
-    { domains: ["mouseflow.com"],                                 service: "Mouseflow",             category: "analytics"      },
-    { domains: ["heapanalytics.com"],                             service: "Heap",                  category: "analytics"      },
-    { domains: ["logrocket.com", "lr-ingest.io"],                 service: "LogRocket",             category: "analytics"      },
-    { domains: ["smartlook.com"],                                 service: "Smartlook",             category: "analytics"      },
-    { domains: ["crazyegg.com"],                                  service: "Crazy Egg",             category: "analytics"      },
-    { domains: ["kissmetrics.com"],                               service: "Kissmetrics",           category: "analytics"      },
-    { domains: ["clicky.com"],                                    service: "Clicky",                category: "analytics"      },
-    { domains: ["matomo.cloud", "matomo.org"],                    service: "Matomo",                category: "analytics"      },
-    { domains: ["plausible.io"],                                  service: "Plausible",             category: "analytics"      },
-    { domains: ["statcounter.com"],                               service: "StatCounter",           category: "analytics"      },
+    { domains: ["google-analytics.com", "analytics.google.com"], service: "Google Analytics",        category: "analytics"    },
+    { domains: ["googletagmanager.com"],                          service: "Google Tag Manager",      category: "analytics"    },
+    { domains: ["hotjar.com"],                                    service: "Hotjar",                  category: "analytics"    },
+    { domains: ["amplitude.com"],                                 service: "Amplitude",               category: "analytics"    },
+    { domains: ["mixpanel.com"],                                  service: "Mixpanel",                category: "analytics"    },
+    { domains: ["segment.io", "segment.com", "cdn.segment.com"], service: "Segment",                 category: "analytics"    },
+    { domains: ["fullstory.com", "fullstory.io"],                 service: "FullStory",               category: "analytics"    },
+    { domains: ["clarity.ms"],                                    service: "Microsoft Clarity",       category: "analytics"    },
+    { domains: ["mouseflow.com"],                                 service: "Mouseflow",               category: "analytics"    },
+    { domains: ["heapanalytics.com"],                             service: "Heap",                    category: "analytics"    },
+    { domains: ["logrocket.com", "lr-ingest.io"],                 service: "LogRocket",               category: "analytics"    },
+    { domains: ["smartlook.com"],                                 service: "Smartlook",               category: "analytics"    },
+    { domains: ["crazyegg.com"],                                  service: "Crazy Egg",               category: "analytics"    },
+    { domains: ["kissmetrics.com"],                               service: "Kissmetrics",             category: "analytics"    },
+    { domains: ["clicky.com"],                                    service: "Clicky",                  category: "analytics"    },
+    { domains: ["matomo.cloud", "matomo.org"],                    service: "Matomo",                  category: "analytics"    },
+    { domains: ["plausible.io"],                                  service: "Plausible",               category: "analytics"    },
+    { domains: ["statcounter.com"],                               service: "StatCounter",             category: "analytics"    },
+    { domains: ["sentry.io", "browser.sentry-cdn.com"],           service: "Sentry",                  category: "analytics"    },
+    { domains: ["cloudflareinsights.com"],                        service: "Cloudflare Web Analytics", category: "analytics"   },
+    { domains: ["nr-data.net", "js-agent.newrelic.com"],          service: "New Relic",               category: "analytics"    },
+    { domains: ["fast.wistia.com", "wistia.net", "wistia.com"],  service: "Wistia",                  category: "analytics"    },
+    { domains: ["optimizely.com"],                                service: "Optimizely",              category: "analytics"    },
+    { domains: ["abtasty.com"],                                   service: "AB Tasty",                category: "analytics"    },
+    { domains: ["kameleoon.com", "kameleoon.eu"],                 service: "Kameleoon",               category: "analytics"    },
+    { domains: ["vwo.com", "dev.visualwebsiteoptimizer.com"],     service: "VWO",                     category: "analytics"    },
 
     // Advertising
     { domains: ["connect.facebook.net", "graph.facebook.com"],   service: "Facebook / Meta Pixel", category: "advertising"    },
@@ -60,7 +68,7 @@ const TRACKERS = [
     { domains: ["ads.linkedin.com", "snap.licdn.com"],           service: "LinkedIn Insight Tag",  category: "advertising"    },
     { domains: ["analytics.twitter.com", "static.ads-twitter.com", "ads.twitter.com"], service: "Twitter / X Pixel", category: "advertising" },
     { domains: ["tr.snapchat.com", "sc-static.net"],             service: "Snapchat Pixel",        category: "advertising"    },
-    { domains: ["bat.bing.com"],                                  service: "Microsoft Advertising", category: "advertising"    },
+    { domains: ["bat.bing.com", "bing.net", "c.bing.com", "bingads.com", "ads.microsoft.com", "sjs.microsoft.com"], service: "Microsoft Advertising", category: "advertising" },
     { domains: ["analytics.tiktok.com", "vm.tiktok.com"],        service: "TikTok Pixel",          category: "advertising"    },
     { domains: ["criteo.com", "criteo.net"],                      service: "Criteo",                category: "advertising"    },
     { domains: ["outbrain.com"],                                  service: "Outbrain",              category: "advertising"    },
@@ -70,31 +78,51 @@ const TRACKERS = [
     { domains: ["rubiconproject.com"],                            service: "Magnite (Rubicon)",     category: "advertising"    },
     { domains: ["pubmatic.com"],                                  service: "PubMatic",              category: "advertising"    },
     { domains: ["openx.net", "openx.com"],                       service: "OpenX",                 category: "advertising"    },
-    { domains: ["hs-analytics.net", "hs-scripts.com", "hubspot.com", "hubspot.net"], service: "HubSpot", category: "advertising" },
+    { domains: ["hs-analytics.net", "hs-scripts.com", "hubspot.com", "hubspot.net", "hsadspixel.net", "hubspotlinks.com", "leadin.com", "hscta.net", "hsleadflows.net"], service: "HubSpot", category: "advertising" },
     { domains: ["pardot.com"],                                    service: "Salesforce Pardot",     category: "advertising"    },
     { domains: ["scorecardresearch.com"],                         service: "Comscore",              category: "advertising"    },
     { domains: ["adnxs.com", "xandr.com"],                       service: "Xandr / AppNexus",      category: "advertising"    },
     { domains: ["zemanta.com"],                                   service: "Zemanta",               category: "advertising"    },
     { domains: ["adform.net"],                                    service: "Adform",                category: "advertising"    },
+    { domains: ["capterra.com", "capterra.co.uk", "capterra.fr", "capterra.de", "capterra.es", "capterra.it", "capterra.com.au", "capterra.ca"], service: "Capterra", category: "advertising" },
+    { domains: ["ct.pinterest.com", "pinimg.com", "pinterest.com"], service: "Pinterest",          category: "advertising"    },
+    { domains: ["alb.reddit.com", "redd.it", "redditstatic.com"], service: "Reddit Ads",           category: "advertising"    },
+    { domains: ["list-manage.com", "chimpstatic.com", "mailchimp.com", "mailchimpapp.com"], service: "Mailchimp", category: "advertising" },
+    { domains: ["klaviyo.com", "static.klaviyo.com"],             service: "Klaviyo",              category: "advertising"    },
+    { domains: ["go.g2.com", "g2.com"],                          service: "G2",                    category: "advertising"    },
+    { domains: ["log.fc.yahoo.com", "analytics.yahoo.com", "sp.analytics.yahoo.com"], service: "Yahoo Advertising", category: "advertising" },
+    { domains: ["marketo.net", "mktoresp.com", "mktdns.net", "mktossl.com"], service: "Adobe Marketo", category: "advertising" },
 
-    // Social widgets
+    // Social widgets & review platforms
     { domains: ["platform.twitter.com", "syndication.twitter.com"], service: "Twitter / X Widgets", category: "social"       },
     { domains: ["platform.linkedin.com"],                         service: "LinkedIn Widgets",      category: "social"         },
     { domains: ["apis.google.com", "accounts.google.com"],       service: "Google Sign-In",        category: "social"         },
     { domains: ["disqus.com", "disquscdn.com"],                   service: "Disqus",                category: "social"         },
     { domains: ["addthis.com"],                                   service: "AddThis",               category: "social"         },
     { domains: ["sharethis.com"],                                 service: "ShareThis",             category: "social"         },
+    { domains: ["widget.trustpilot.com", "invitejs.trustpilot.com", "trustpilot.com"], service: "Trustpilot", category: "social" },
 
     // Fingerprinting
     { domains: ["fingerprintjs.com", "fpjs.io", "fingerprint.com"], service: "FingerprintJS",      category: "fingerprinting" },
     { domains: ["seon.io"],                                       service: "SEON",                  category: "fingerprinting" },
 
-    // Functional / chat
+    // Functional / chat / video / payments
     { domains: ["widget.intercom.io", "intercom.io"],            service: "Intercom",              category: "functional"     },
     { domains: ["zendesk.com", "zdassets.com"],                  service: "Zendesk",               category: "functional"     },
     { domains: ["js.driftt.com", "drift.com"],                   service: "Drift",                 category: "functional"     },
     { domains: ["tawk.to"],                                       service: "Tawk.to",               category: "functional"     },
     { domains: ["crisp.chat"],                                    service: "Crisp",                 category: "functional"     },
+    { domains: ["hscollectedforms.net", "hsforms.com", "hsforms.net", "usemessages.com", "hsappstatic.net", "hsstatic.net", "hubapi.com", "hs-sites.com"], service: "HubSpot", category: "functional" },
+    { domains: ["secure.livechatinc.com", "cdn.livechatinc.com", "livechat.com", "livechatinc.com"], service: "LiveChat", category: "functional" },
+    { domains: ["wchat.freshchat.com", "freshchat.com", "freshworks.com"], service: "Freshchat",   category: "functional"     },
+    { domains: ["widget.tidio.co", "code.tidio.co", "tidio.com"], service: "Tidio",               category: "functional"     },
+    { domains: ["embed.typeform.com", "form.typeform.com", "typeform.com"], service: "Typeform",    category: "functional"     },
+    { domains: ["assets.calendly.com", "calendly.com"],          service: "Calendly",              category: "functional"     },
+    { domains: ["youtube.com", "youtube-nocookie.com", "ytimg.com", "youtu.be"], service: "YouTube", category: "functional"  },
+    { domains: ["player.vimeo.com", "vimeo.com", "vimeocdn.com"], service: "Vimeo",               category: "functional"     },
+    { domains: ["js.stripe.com", "stripe.com", "stripe.network"], service: "Stripe",              category: "functional"     },
+    { domains: ["paypalobjects.com", "paypal.com"],               service: "PayPal",               category: "functional"     },
+    { domains: ["recaptcha.net", "www.google.com/recaptcha"],    service: "Google reCAPTCHA",      category: "functional"     },
 
     // CDN / fonts
     { domains: ["fonts.googleapis.com", "fonts.gstatic.com"],    service: "Google Fonts",          category: "cdn"            },
@@ -102,6 +130,13 @@ const TRACKERS = [
     { domains: ["cdn.jsdelivr.net"],                              service: "jsDelivr CDN",          category: "cdn"            },
     { domains: ["cdnjs.cloudflare.com"],                          service: "Cloudflare CDN",        category: "cdn"            },
 
+    // Third-party CMP platforms
+    { domains: ["cdn.cookielaw.org", "optanon.blob.core.windows.net", "onetrust.com", "cookielaw.org"], service: "OneTrust", category: "cmp" },
+    { domains: ["consent.cookiebot.com", "cookiebot.com"],        service: "Cookiebot",             category: "cmp"           },
+    { domains: ["app.usercentrics.eu", "privacy-proxy.usercentrics.eu", "usercentrics.eu"], service: "Usercentrics", category: "cmp" },
+    { domains: ["policy.app.cookieinformation.com", "cookieinformation.com"], service: "Cookie Information", category: "cmp" },
+    { domains: ["cdn.consentmanager.net", "consentmanager.net"],  service: "Consentmanager",        category: "cmp"           },
+    { domains: ["hs-banner.com"],                                 service: "HubSpot Cookie Banner", category: "cmp"           },
     // Own CMP infrastructure — not a third-party transfer
     { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com"], service: "Intastellar CMP", category: "cmp" },
 ];
@@ -159,14 +194,31 @@ const COOKIE_NAME_PATTERNS = [
     // Cloudflare (bot / security — functional)
     { prefix: "__cf",             bannerCategory: "functional" },
     { exact:  "cf_clearance",     bannerCategory: "functional" },
+    // Pinterest
+    { prefix: "_pin_",            bannerCategory: "marketing"  },
+    { prefix: "_pinterest_",      bannerCategory: "marketing"  },
+    // Reddit
+    { exact:  "reddaid",          bannerCategory: "marketing"  },
+    { exact:  "reddit_session",   bannerCategory: "marketing"  },
+    // Klaviyo
+    { exact:  "__kla_id",         bannerCategory: "marketing"  },
+    // Stripe (payment / functional)
+    { prefix: "__stripe_",        bannerCategory: "functional" },
+    // Wistia video analytics
+    { prefix: "_wijs",            bannerCategory: "analytics"  },
+    // Trustpilot
+    { prefix: "tp.",              bannerCategory: "marketing"  },
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
+    { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
     { prefix: "CookieConsent",    bannerCategory: "necessary"  },
     { prefix: "cookieyes",        bannerCategory: "necessary"  },
     { prefix: "cc_cookie",        bannerCategory: "necessary"  },
     { prefix: "cmplz_",           bannerCategory: "necessary"  },
     { prefix: "euconsent",        bannerCategory: "necessary"  },
     { prefix: "GDPR",             bannerCategory: "necessary"  },
+    { prefix: "uc_",              bannerCategory: "necessary"  }, // Usercentrics
+    { prefix: "CI_",              bannerCategory: "necessary"  }, // Cookie Information
 ];
 
 function categoryFromCookieName(name) {
@@ -181,12 +233,17 @@ function categoryFromCookieName(name) {
 // Used to highlight destination countries on the compliance map.
 // Deliberately NOT based on CDN edge IP — the legal entity is what matters under GDPR Ch. V.
 const DATA_COUNTRIES = {
+    // Analytics
     "Google Analytics": "US", "Google Tag Manager": "US",
     "Hotjar": "MT", "Amplitude": "US", "Mixpanel": "US",
     "Segment": "US", "FullStory": "US", "Microsoft Clarity": "US",
     "Mouseflow": "DK", "Heap": "US", "LogRocket": "US",
     "Smartlook": "CZ", "Crazy Egg": "US", "Kissmetrics": "US",
     "Clicky": "US", "Matomo": "LU", "Plausible": "EE", "StatCounter": "IE",
+    "Sentry": "US", "Cloudflare Web Analytics": "US", "New Relic": "US",
+    "Wistia": "US", "Optimizely": "US", "AB Tasty": "FR",
+    "Kameleoon": "FR", "VWO": "US",
+    // Advertising
     "Facebook / Meta Pixel": "US", "Google Ads": "US",
     "LinkedIn Insight Tag": "US", "Twitter / X Pixel": "US",
     "Snapchat Pixel": "US", "Microsoft Advertising": "US",
@@ -195,12 +252,26 @@ const DATA_COUNTRIES = {
     "The Trade Desk": "US", "Magnite (Rubicon)": "US", "PubMatic": "US",
     "OpenX": "US", "HubSpot": "US", "Salesforce Pardot": "US",
     "Comscore": "US", "Xandr / AppNexus": "US", "Zemanta": "US",
-    "Adform": "DK",
+    "Adform": "DK", "Capterra": "US", "Pinterest": "US",
+    "Reddit Ads": "US", "Mailchimp": "US", "Klaviyo": "US",
+    "G2": "US", "Yahoo Advertising": "US", "Adobe Marketo": "US",
+    // Social
     "Twitter / X Widgets": "US", "LinkedIn Widgets": "US",
     "Google Sign-In": "US", "Disqus": "US", "AddThis": "US", "ShareThis": "US",
+    "Trustpilot": "DK",
+    // Fingerprinting
     "FingerprintJS": "US", "SEON": "HU",
+    // Functional
     "Intercom": "US", "Zendesk": "US", "Drift": "US", "Tawk.to": "US", "Crisp": "FR",
+    "LiveChat": "PL", "Freshchat": "US", "Tidio": "US",
+    "Typeform": "ES", "Calendly": "US",
+    "YouTube": "US", "Vimeo": "US",
+    "Stripe": "US", "PayPal": "US", "Google reCAPTCHA": "US",
+    // CDN / fonts
     "Google Fonts": "US", "Google CDN": "US", "jsDelivr CDN": "BE", "Cloudflare CDN": "US",
+    // CMP
+    "OneTrust": "US", "Cookiebot": "DK", "Usercentrics": "DE",
+    "Cookie Information": "DK", "Consentmanager": "DE", "HubSpot Cookie Banner": "US",
     "Intastellar CMP": "DK",
 };
 
@@ -209,15 +280,19 @@ const DATA_COUNTRIES = {
 // "non-eu" = US or other non-EU legal entity (Chapter V GDPR transfer concern)
 const DATA_REGIONS = {
     // Analytics
-    "Google Analytics":   "non-eu", "Google Tag Manager": "non-eu",
-    "Hotjar":             "eu",     "Amplitude":          "non-eu",
-    "Mixpanel":           "non-eu", "Segment":            "non-eu",
-    "FullStory":          "non-eu", "Microsoft Clarity":  "non-eu",
-    "Mouseflow":          "eu",     "Heap":               "non-eu",
-    "LogRocket":          "non-eu", "Smartlook":          "eu",
-    "Crazy Egg":          "non-eu", "Kissmetrics":        "non-eu",
-    "Clicky":             "non-eu", "Matomo":             "eu",
-    "Plausible":          "eu",     "StatCounter":        "eu",
+    "Google Analytics":   "non-eu", "Google Tag Manager":        "non-eu",
+    "Hotjar":             "eu",     "Amplitude":                 "non-eu",
+    "Mixpanel":           "non-eu", "Segment":                   "non-eu",
+    "FullStory":          "non-eu", "Microsoft Clarity":         "non-eu",
+    "Mouseflow":          "eu",     "Heap":                      "non-eu",
+    "LogRocket":          "non-eu", "Smartlook":                 "eu",
+    "Crazy Egg":          "non-eu", "Kissmetrics":               "non-eu",
+    "Clicky":             "non-eu", "Matomo":                    "eu",
+    "Plausible":          "eu",     "StatCounter":               "eu",
+    "Sentry":             "non-eu", "Cloudflare Web Analytics":  "non-eu",
+    "New Relic":          "non-eu", "Wistia":                    "non-eu",
+    "Optimizely":         "non-eu", "AB Tasty":                  "eu",
+    "Kameleoon":          "eu",     "VWO":                       "non-eu",
     // Advertising
     "Facebook / Meta Pixel":  "non-eu", "Google Ads":            "non-eu",
     "LinkedIn Insight Tag":   "non-eu", "Twitter / X Pixel":     "non-eu",
@@ -229,21 +304,35 @@ const DATA_REGIONS = {
     "OpenX":                  "non-eu", "HubSpot":                "non-eu",
     "Salesforce Pardot":      "non-eu", "Comscore":               "non-eu",
     "Xandr / AppNexus":       "non-eu", "Zemanta":                "non-eu",
-    "Adform":                 "eu",
+    "Adform":                 "eu",     "Capterra":               "non-eu",
+    "Pinterest":              "non-eu", "Reddit Ads":             "non-eu",
+    "Mailchimp":              "non-eu", "Klaviyo":                "non-eu",
+    "G2":                     "non-eu", "Yahoo Advertising":      "non-eu",
+    "Adobe Marketo":          "non-eu",
     // Social
     "Twitter / X Widgets": "non-eu", "LinkedIn Widgets": "non-eu",
     "Google Sign-In":      "non-eu", "Disqus":           "non-eu",
     "AddThis":             "non-eu", "ShareThis":        "non-eu",
+    "Trustpilot":          "eu",
     // Fingerprinting
     "FingerprintJS": "non-eu", "SEON": "eu",
     // Functional
-    "Intercom": "non-eu", "Zendesk": "non-eu", "Drift":    "non-eu",
-    "Tawk.to":  "non-eu", "Crisp":   "eu",
+    "Intercom":        "non-eu", "Zendesk":        "non-eu",
+    "Drift":           "non-eu", "Tawk.to":        "non-eu",
+    "Crisp":           "eu",     "LiveChat":       "eu",
+    "Freshchat":       "non-eu", "Tidio":          "non-eu",
+    "Typeform":        "eu",     "Calendly":       "non-eu",
+    "YouTube":         "non-eu", "Vimeo":          "non-eu",
+    "Stripe":          "non-eu", "PayPal":         "non-eu",
+    "Google reCAPTCHA": "non-eu",
     // CDN / fonts
     "Google Fonts": "non-eu", "Google CDN": "non-eu",
     "jsDelivr CDN": "eu",     "Cloudflare CDN": "non-eu",
-    // Own CMP
-    "Intastellar CMP": "eu",
+    // CMP
+    "OneTrust":             "non-eu", "Cookiebot":         "eu",
+    "Usercentrics":         "eu",     "Cookie Information": "eu",
+    "Consentmanager":       "eu",     "HubSpot Cookie Banner": "non-eu",
+    "Intastellar CMP":      "eu",
 };
 
 function classifyHost(hostname) {
