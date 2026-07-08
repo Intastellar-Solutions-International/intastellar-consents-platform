@@ -108,11 +108,85 @@ const TRACKERS = [
 
 const CATEGORY_ORDER = { advertising: 0, fingerprinting: 1, analytics: 2, social: 3, functional: 4, cdn: 5, "third-party": 6 };
 
+// Data processing country per service — primary legal entity / data centre country (ISO alpha-2).
+// Used to highlight destination countries on the compliance map.
+// Deliberately NOT based on CDN edge IP — the legal entity is what matters under GDPR Ch. V.
+const DATA_COUNTRIES = {
+    "Google Analytics": "US", "Google Tag Manager": "US",
+    "Hotjar": "MT", "Amplitude": "US", "Mixpanel": "US",
+    "Segment": "US", "FullStory": "US", "Microsoft Clarity": "US",
+    "Mouseflow": "DK", "Heap": "US", "LogRocket": "US",
+    "Smartlook": "CZ", "Crazy Egg": "US", "Kissmetrics": "US",
+    "Clicky": "US", "Matomo": "LU", "Plausible": "EE", "StatCounter": "IE",
+    "Facebook / Meta Pixel": "US", "Google Ads": "US",
+    "LinkedIn Insight Tag": "US", "Twitter / X Pixel": "US",
+    "Snapchat Pixel": "US", "Microsoft Advertising": "US",
+    "TikTok Pixel": "US", "Criteo": "FR",
+    "Outbrain": "US", "Taboola": "US", "Amazon Advertising": "US",
+    "The Trade Desk": "US", "Magnite (Rubicon)": "US", "PubMatic": "US",
+    "OpenX": "US", "HubSpot": "US", "Salesforce Pardot": "US",
+    "Comscore": "US", "Xandr / AppNexus": "US", "Zemanta": "US",
+    "Adform": "DK",
+    "Twitter / X Widgets": "US", "LinkedIn Widgets": "US",
+    "Google Sign-In": "US", "Disqus": "US", "AddThis": "US", "ShareThis": "US",
+    "FingerprintJS": "US", "SEON": "HU",
+    "Intercom": "US", "Zendesk": "US", "Drift": "US", "Tawk.to": "US", "Crisp": "FR",
+    "Google Fonts": "US", "Google CDN": "US", "jsDelivr CDN": "BE", "Cloudflare CDN": "US",
+    "Intastellar CMP": "DK",
+};
+
+// Data processing region per service — based on company HQ / standard DPA, not CDN edge location.
+// "eu"     = EU-based company or explicit EU data residency by default
+// "non-eu" = US or other non-EU legal entity (Chapter V GDPR transfer concern)
+const DATA_REGIONS = {
+    // Analytics
+    "Google Analytics":   "non-eu", "Google Tag Manager": "non-eu",
+    "Hotjar":             "eu",     "Amplitude":          "non-eu",
+    "Mixpanel":           "non-eu", "Segment":            "non-eu",
+    "FullStory":          "non-eu", "Microsoft Clarity":  "non-eu",
+    "Mouseflow":          "eu",     "Heap":               "non-eu",
+    "LogRocket":          "non-eu", "Smartlook":          "eu",
+    "Crazy Egg":          "non-eu", "Kissmetrics":        "non-eu",
+    "Clicky":             "non-eu", "Matomo":             "eu",
+    "Plausible":          "eu",     "StatCounter":        "eu",
+    // Advertising
+    "Facebook / Meta Pixel":  "non-eu", "Google Ads":            "non-eu",
+    "LinkedIn Insight Tag":   "non-eu", "Twitter / X Pixel":     "non-eu",
+    "Snapchat Pixel":         "non-eu", "Microsoft Advertising":  "non-eu",
+    "TikTok Pixel":           "non-eu", "Criteo":                 "eu",
+    "Outbrain":               "non-eu", "Taboola":                "non-eu",
+    "Amazon Advertising":     "non-eu", "The Trade Desk":         "non-eu",
+    "Magnite (Rubicon)":      "non-eu", "PubMatic":               "non-eu",
+    "OpenX":                  "non-eu", "HubSpot":                "non-eu",
+    "Salesforce Pardot":      "non-eu", "Comscore":               "non-eu",
+    "Xandr / AppNexus":       "non-eu", "Zemanta":                "non-eu",
+    "Adform":                 "eu",
+    // Social
+    "Twitter / X Widgets": "non-eu", "LinkedIn Widgets": "non-eu",
+    "Google Sign-In":      "non-eu", "Disqus":           "non-eu",
+    "AddThis":             "non-eu", "ShareThis":        "non-eu",
+    // Fingerprinting
+    "FingerprintJS": "non-eu", "SEON": "eu",
+    // Functional
+    "Intercom": "non-eu", "Zendesk": "non-eu", "Drift":    "non-eu",
+    "Tawk.to":  "non-eu", "Crisp":   "eu",
+    // CDN / fonts
+    "Google Fonts": "non-eu", "Google CDN": "non-eu",
+    "jsDelivr CDN": "eu",     "Cloudflare CDN": "non-eu",
+    // Own CMP
+    "Intastellar CMP": "eu",
+};
+
 function classifyHost(hostname) {
     for (const entry of TRACKERS) {
         for (const pattern of entry.domains) {
             if (hostname === pattern || hostname.endsWith("." + pattern)) {
-                return { service: entry.service, category: entry.category };
+                return {
+                    service:     entry.service,
+                    category:    entry.category,
+                    dataRegion:  DATA_REGIONS[entry.service]  || "non-eu",
+                    dataCountry: DATA_COUNTRIES[entry.service] || null,
+                };
             }
         }
     }
@@ -195,8 +269,10 @@ async function scanDomain(domain) {
             const match = classifyHost(host);
             transfers.push({
                 host,
-                service:      match?.service   || host,
-                category:     match?.category  || "third-party",
+                service:      match?.service     || host,
+                category:     match?.category    || "third-party",
+                dataRegion:   match?.dataRegion  || "non-eu",
+                dataCountry:  match?.dataCountry || null,
                 resourceType: info.resourceType,
             });
         }

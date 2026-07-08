@@ -27,15 +27,17 @@ const CATEGORY_META = {
     "third-party":  { label: "Third-party",    risk: "medium", icon: "◇", color: "#909090" },
 };
 
-const RESOURCE_ICONS = {
-    script:     "{ }",
-    stylesheet: "≡",
-    image:      "⊡",
-    font:       "Aa",
-    xhr:        "↕",
-    fetch:      "↕",
-    media:      "▷",
-    document:   "☰",
+const RESOURCE_LABELS = {
+    script:     "Script",
+    stylesheet: "CSS",
+    image:      "Image",
+    font:       "Font",
+    xhr:        "XHR",
+    fetch:      "Fetch",
+    media:      "Media",
+    document:   "Doc",
+    websocket:  "WS",
+    other:      "Other",
 };
 
 const RISK_ORDER = { high: 0, medium: 1, low: 2, none: 3 };
@@ -91,6 +93,12 @@ export default function CompliancePage() {
         () => (handle ? handle : currentDomain) || "combined view",
         [handle, currentDomain]
     );
+
+    const dataFlowCountries = useMemo(() => {
+        const transfers = preConsentTransfers?.pre_consent_transfers;
+        if (!transfers?.length) return [];
+        return [...new Set(transfers.filter(t => t.dataCountry).map(t => t.dataCountry))];
+    }, [preConsentTransfers]);
 
 
     useEffect(() => {
@@ -238,6 +246,7 @@ export default function CompliancePage() {
                         Countries: activeDataCountry?.data?.Countries,
                         total: activeData?.Total,
                     }}
+                    dataFlowCountries={dataFlowCountries}
                 />
                 {/* Cookie scan strip overlaid at the bottom of the hero */}
                 {observedCookies && (
@@ -271,6 +280,7 @@ export default function CompliancePage() {
 
             {/* ── Content ── */}
             <div className="dashboard-content compliance-page">
+            <div className="compliance-bottom-grid">
 
                 {/* ── Pre-consent data transfers ── */}
                 {(handle || currentDomain) && (handle || currentDomain) !== "combined view" && (
@@ -381,8 +391,9 @@ export default function CompliancePage() {
                                         {/* ── Transfer rows ── */}
                                         <div className="compliance-transfers__list">
                                             {displayed.map((t) => {
-                                                const meta = CATEGORY_META[t.category] || { label: t.category, risk: "medium", icon: "◇", color: "#909090" };
-                                                const resIcon = RESOURCE_ICONS[t.resourceType] || "•";
+                                                const meta   = CATEGORY_META[t.category] || { label: t.category, risk: "medium", icon: "◇", color: "#909090" };
+                                                const resLabel = RESOURCE_LABELS[t.resourceType] || (t.resourceType || "Other");
+                                                const region   = t.dataRegion || "non-eu";
                                                 return (
                                                     <div key={t.host} className={"compliance-transfers__row compliance-transfers__row--" + (t.category || "other")}>
                                                         <span className="compliance-transfers__row-icon" style={{ color: meta.color }}>
@@ -392,17 +403,15 @@ export default function CompliancePage() {
                                                             <span className="compliance-transfers__row-service">{t.service || t.host}</span>
                                                             <span className="compliance-transfers__row-host">{t.host}</span>
                                                         </div>
-                                                        <span className="compliance-transfers__row-resource" title={t.resourceType}>
-                                                            {resIcon}
+                                                        <span className={"compliance-transfers__row-resource compliance-transfers__row-resource--" + (t.resourceType || "other")}>
+                                                            {resLabel}
+                                                        </span>
+                                                        <span className={"compliance-transfers__row-region --" + region}>
+                                                            {region === "eu" ? "EU" : "Non-EU"}
                                                         </span>
                                                         <span className={"compliance-transfers__row-cat compliance-transfers__row-cat--" + (t.category || "other")}>
                                                             {meta.label || t.category}
                                                         </span>
-                                                        {meta.risk !== "none" && (
-                                                            <span className={"compliance-transfers__row-risk --" + meta.risk}>
-                                                                {meta.risk === "high" ? "High risk" : meta.risk === "medium" ? "Medium" : "Low"}
-                                                            </span>
-                                                        )}
                                                     </div>
                                                 );
                                             })}
@@ -475,6 +484,8 @@ export default function CompliancePage() {
                         observedCookies={observedCookies}
                     />
                 </div>
+
+            </div>{/* end compliance-bottom-grid */}
             </div>
         </>
     );

@@ -319,8 +319,23 @@
     }
 }
 
-.compliance-page__audit {
-    margin-top: 32px;
+/* ── Side-by-side grid ───────────────────────────────────────────────────────── */
+.compliance-bottom-grid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* When the transfers card is absent (combined view), audit takes full width */
+.compliance-bottom-grid > .compliance-page__audit:first-child {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+    .compliance-bottom-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .compliance-page__audit .audit-snapshot-card:hover {
@@ -628,40 +643,48 @@
 
 .compliance-transfers__row-resource {
     flex-shrink: 0;
-    font-size: 0.65rem;
-    font-family: monospace;
-    color: rgba(255, 255, 255, 0.22);
-    min-width: 28px;
-    text-align: center;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
 }
 
-.compliance-transfers__row-risk {
+.compliance-transfers__row-resource--script   { background: rgba(120, 100, 220, 0.1); border-color: rgba(120, 100, 220, 0.2); color: rgba(170, 155, 240, 0.75); }
+.compliance-transfers__row-resource--xhr,
+.compliance-transfers__row-resource--fetch    { background: rgba(220, 160, 60, 0.08); border-color: rgba(220, 160, 60, 0.18); color: rgba(230, 185, 100, 0.7);  }
+.compliance-transfers__row-resource--image    { background: rgba(80, 168, 120, 0.07); border-color: rgba(80, 168, 120, 0.16); color: rgba(120, 200, 150, 0.65); }
+.compliance-transfers__row-resource--font     { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.09); color: rgba(255, 255, 255, 0.28); }
+.compliance-transfers__row-resource--stylesheet { background: rgba(80, 144, 220, 0.07); border-color: rgba(80, 144, 220, 0.16); color: rgba(140, 190, 240, 0.65); }
+
+/* ── EU / Non-EU region badge ────────────────────────────────────────────────── */
+.compliance-transfers__row-region {
     flex-shrink: 0;
-    padding: 3px 9px;
-    border-radius: 20px;
-    font-size: 0.62rem;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.6rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
+    white-space: nowrap;
     border: 1px solid transparent;
 }
 
-.compliance-transfers__row-risk.--high {
-    background: rgba(220, 80, 80, 0.12);
-    border-color: rgba(220, 80, 80, 0.28);
-    color: rgba(240, 130, 120, 0.9);
-}
-
-.compliance-transfers__row-risk.--medium {
-    background: rgba(220, 160, 60, 0.1);
-    border-color: rgba(220, 160, 60, 0.24);
-    color: rgba(230, 180, 100, 0.85);
-}
-
-.compliance-transfers__row-risk.--low {
+.compliance-transfers__row-region.--eu {
     background: rgba(80, 168, 120, 0.08);
     border-color: rgba(80, 168, 120, 0.2);
-    color: rgba(120, 200, 150, 0.75);
+    color: rgba(120, 200, 150, 0.7);
+}
+
+.compliance-transfers__row-region.--non-eu {
+    background: rgba(220, 140, 50, 0.1);
+    border-color: rgba(220, 140, 50, 0.22);
+    color: rgba(230, 175, 100, 0.8);
 }
 
 /* ── Extra category colours ──────────────────────────────────────────────────── */
@@ -710,7 +733,8 @@
         padding: 10px 12px 8px;
     }
 
-    .compliance-transfers__row-resource {
+    .compliance-transfers__row-resource,
+    .compliance-transfers__row-region {
         display: none;
     }
 }
