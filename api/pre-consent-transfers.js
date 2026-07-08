@@ -31,6 +31,23 @@ function getPool() {
     return pool;
 }
 
+const ALLOWED_ORIGINS = [
+    "https://www.intastellarconsents.com",
+    "https://consentsplatform.com",
+    "http://localhost:8080",
+    "http://localhost:3000",
+];
+
+function setCors(req, res) {
+    const origin = req.headers.origin || "";
+    if (ALLOWED_ORIGINS.includes(origin)) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization, Organisation, Content-Type");
+    res.setHeader("Access-Control-Max-Age", "86400");
+}
+
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;
@@ -47,8 +64,14 @@ function validateJwt(authHeader) {
 }
 
 export default async function handler(req, res) {
+    setCors(req, res);
+
+    if (req.method === "OPTIONS") {
+        return res.status(204).end();
+    }
+
     if (req.method !== "GET") {
-        res.setHeader("Allow", "GET");
+        res.setHeader("Allow", "GET, OPTIONS");
         return res.status(405).json({ error: "Method not allowed" });
     }
 

@@ -6,3 +6,4 @@
 .zshrc
 .vercel
 .env*.local
+.env*
