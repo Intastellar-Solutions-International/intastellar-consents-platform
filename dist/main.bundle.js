@@ -46758,8 +46758,9 @@ function CompliancePage() {
   var dataFlowCountries = useMemo(function () {
     var transfers = preConsentTransfers === null || preConsentTransfers === void 0 ? void 0 : preConsentTransfers.pre_consent_transfers;
     if (!(transfers !== null && transfers !== void 0 && transfers.length)) return [];
+    // Only highlight non-EU destinations — EU transfers are not a Chapter V GDPR concern
     return _toConsumableArray(new Set(transfers.filter(function (t) {
-      return t.dataCountry;
+      return t.dataCountry && t.dataRegion !== "eu";
     }).map(function (t) {
       return t.dataCountry;
     })));

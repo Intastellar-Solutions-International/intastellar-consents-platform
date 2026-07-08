@@ -97,7 +97,12 @@ export default function CompliancePage() {
     const dataFlowCountries = useMemo(() => {
         const transfers = preConsentTransfers?.pre_consent_transfers;
         if (!transfers?.length) return [];
-        return [...new Set(transfers.filter(t => t.dataCountry).map(t => t.dataCountry))];
+        // Only highlight non-EU destinations — EU transfers are not a Chapter V GDPR concern
+        return [...new Set(
+            transfers
+                .filter(t => t.dataCountry && t.dataRegion !== "eu")
+                .map(t => t.dataCountry)
+        )];
     }, [preConsentTransfers]);
 
 
