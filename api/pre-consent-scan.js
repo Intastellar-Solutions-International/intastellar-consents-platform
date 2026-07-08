@@ -132,9 +132,32 @@ async function scanDomain(domain) {
     try {
         const page = await browser.newPage();
         await page.setCacheEnabled(false);
+
+        // Use CDP directly so Network.getAllCookies is available after load
+        const cdpClient = await page.target().createCDPSession();
+        await cdpClient.send("Network.enable");
+
+        // Hide headless Chromium fingerprints that shared-hosting firewalls detect
+        await page.evaluateOnNewDocument(() => {
+            Object.defineProperty(navigator, "webdriver",  { get: () => undefined });
+            Object.defineProperty(navigator, "plugins",    { get: () => [1, 2, 3, 4, 5] });
+            Object.defineProperty(navigator, "languages",  { get: () => ["en-GB", "en-US", "en"] });
+        });
+
         await page.setUserAgent(
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
         );
+        await page.setExtraHTTPHeaders({
+            "Accept-Language":           "en-GB,en-US;q=0.9,en;q=0.8",
+            "Accept":                    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Encoding":           "gzip, deflate, br",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest":            "document",
+            "Sec-Fetch-Mode":            "navigate",
+            "Sec-Fetch-Site":            "none",
+            "Sec-Fetch-User":            "?1",
+        });
+
         await page.setRequestInterception(true);
 
         const targetRoot = domain.split(".").slice(-2).join(".");
@@ -162,6 +185,9 @@ async function scanDomain(domain) {
             if (!e.message.includes("timeout") && !e.message.includes("Navigation")) throw e;
         }
 
+        // getAllCookies returns every cookie in the jar — including third-party and subdomain cookies
+        // page.cookies() without args only returns cookies for the current URL, so misses most
+        const { cookies: rawCookies } = await cdpClient.send("Network.getAllCookies");
         await browser.close();
 
         const transfers = [];
@@ -176,10 +202,22 @@ async function scanDomain(domain) {
         }
         transfers.sort((a, b) => (CATEGORY_ORDER[a.category] ?? 6) - (CATEGORY_ORDER[b.category] ?? 6));
 
-        return { transfers, durationMs: Date.now() - startMs, error: null };
+        const cookies = rawCookies.map(c => ({
+            name:     c.name,
+            domain:   c.domain,
+            path:     c.path,
+            httpOnly: c.httpOnly,
+            secure:   c.secure,
+            sameSite: c.sameSite || "None",
+            session:  c.expires === -1,
+            expires:  c.expires !== -1 ? c.expires : null,
+            size:     c.size,
+        }));
+
+        return { transfers, cookies, durationMs: Date.now() - startMs, error: null };
     } catch (err) {
         await browser.close().catch(() => {});
-        return { transfers: [], durationMs: Date.now() - startMs, error: err.message };
+        return { transfers: [], cookies: [], durationMs: Date.now() - startMs, error: err.message };
     }
 }
 
@@ -248,7 +286,7 @@ export default async function handler(req, res) {
     }
 
     const cleanDomain = domain.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0];
-    const { transfers, durationMs, error } = await scanDomain(cleanDomain);
+    const { transfers, cookies, durationMs, error } = await scanDomain(cleanDomain);
 
     const status    = error ? "failed" : "completed";
     const scannedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -256,9 +294,9 @@ export default async function handler(req, res) {
     try {
         await getPool().query(
             `INSERT INTO pre_consent_scans
-                (domain, organisation_id, workspace_id, scanned_at, scan_duration_ms, status, transfers, error_message)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-            [cleanDomain, organisationId, workspaceId || null, scannedAt, durationMs, status, JSON.stringify(transfers), error || null]
+                (domain, organisation_id, workspace_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+            [cleanDomain, organisationId, workspaceId || null, scannedAt, durationMs, status, JSON.stringify(transfers), JSON.stringify(cookies), error || null]
         );
     } catch (dbErr) {
         console.error("[pre-consent-scan] DB write failed:", dbErr.message);
@@ -270,6 +308,7 @@ export default async function handler(req, res) {
         scan_duration_ms:      durationMs,
         status,
         pre_consent_transfers: transfers,
+        pre_consent_cookies:   cookies,
         ...(error ? { error } : {}),
     });
 }

@@ -92,7 +92,7 @@ export default async function handler(req, res) {
 
     try {
         const { rows } = await getPool().query(
-            `SELECT domain, scanned_at, scan_duration_ms, status, transfers, error_message
+            `SELECT domain, scanned_at, scan_duration_ms, status, transfers, cookies, error_message
                FROM pre_consent_scans
               WHERE domain = $1 AND organisation_id = $2
               ORDER BY scanned_at DESC
@@ -111,6 +111,7 @@ export default async function handler(req, res) {
             scan_duration_ms:      row.scan_duration_ms,
             status:                row.status,
             pre_consent_transfers: row.transfers || [],
+            pre_consent_cookies:   row.cookies   || [],
             ...(row.error_message ? { error: row.error_message } : {}),
         });
     } catch (err) {

@@ -84,6 +84,7 @@ export default function CompliancePage() {
     const [preConsentTransfers, setPreConsentTransfers] = useState(null);
     const [scanLoading, setScanLoading] = useState(false);
     const [activeFilter, setActiveFilter] = useState(null);
+    const [activeTab, setActiveTab] = useState("transfers");
     const [loading, setLoading] = useState(false);
 
     const domainsForApi = useMemo(
@@ -299,6 +300,26 @@ export default function CompliancePage() {
                                 </button>
                             </div>
 
+                            {/* ── Tabs (shown once a scan exists) ── */}
+                            {preConsentTransfers && !scanLoading && (
+                                <div className="compliance-transfers__tabs">
+                                    {[
+                                        { key: "transfers", label: "Transfers", count: preConsentTransfers.pre_consent_transfers?.length },
+                                        { key: "cookies",   label: "Cookies",   count: preConsentTransfers.pre_consent_cookies?.length   },
+                                    ].map(({ key, label, count }) => (
+                                        <button
+                                            key={key}
+                                            type="button"
+                                            className={"compliance-transfers__tab" + (activeTab === key ? " --active" : "")}
+                                            onClick={() => setActiveTab(key)}
+                                        >
+                                            {label}
+                                            {count > 0 && <span className="compliance-tab-pill">{count}</span>}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
                             {!preConsentTransfers && !scanLoading && (
                                 <div className="compliance-transfers__empty">
                                     <span className="compliance-transfers__empty-icon" aria-hidden>⟳</span>
@@ -312,7 +333,7 @@ export default function CompliancePage() {
                                 </div>
                             )}
 
-                            {preConsentTransfers?.pre_consent_transfers?.length > 0 && (() => {
+                            {activeTab === "transfers" && preConsentTransfers?.pre_consent_transfers?.length > 0 && (() => {
                                 const transfers = preConsentTransfers.pre_consent_transfers;
                                 const countsByCategory = transfers.reduce((acc, t) => {
                                     acc[t.category] = (acc[t.category] || 0) + 1;
@@ -390,12 +411,52 @@ export default function CompliancePage() {
                                 );
                             })()}
 
-                            {preConsentTransfers?.pre_consent_transfers?.length === 0 && !scanLoading && (
+                            {activeTab === "transfers" && preConsentTransfers?.pre_consent_transfers?.length === 0 && !scanLoading && (
                                 <div className="compliance-transfers__empty compliance-transfers__empty--clean">
                                     <span className="compliance-transfers__empty-icon" aria-hidden>✓</span>
                                     <span>No pre-consent transfers detected in the last scan.</span>
                                 </div>
                             )}
+
+                            {/* ── Cookies tab ── */}
+                            {activeTab === "cookies" && !scanLoading && (() => {
+                                const cookies = preConsentTransfers?.pre_consent_cookies || [];
+                                const domain  = (handle || currentDomain || "").replace(/^www\./, "");
+                                if (!cookies.length) return (
+                                    <div className="compliance-transfers__empty compliance-transfers__empty--clean">
+                                        <span className="compliance-transfers__empty-icon" aria-hidden>✓</span>
+                                        <span>No cookies set before consent in the last scan.</span>
+                                    </div>
+                                );
+                                return (
+                                    <div className="compliance-cookies__list">
+                                        {cookies.map((c, i) => {
+                                            const isThird = !c.domain.replace(/^\./, "").endsWith(domain);
+                                            return (
+                                                <div key={c.name + c.domain + i} className="compliance-cookies__row">
+                                                    <div className="compliance-cookies__row-main">
+                                                        <span className="compliance-cookies__row-name">{c.name}</span>
+                                                        <span className="compliance-cookies__row-domain">{c.domain}</span>
+                                                    </div>
+                                                    <span className={"compliance-cookies__row-party" + (isThird ? " --third" : " --first")}>
+                                                        {isThird ? "3rd party" : "1st party"}
+                                                    </span>
+                                                    <span className={"compliance-cookies__row-lifetime" + (c.session ? " --session" : " --persistent")}>
+                                                        {c.session ? "Session" : "Persistent"}
+                                                    </span>
+                                                    <div className="compliance-cookies__flags">
+                                                        {c.httpOnly && <span className="compliance-cookies__flag">HttpOnly</span>}
+                                                        {c.secure   && <span className="compliance-cookies__flag">Secure</span>}
+                                                        {c.sameSite && c.sameSite !== "None" && (
+                                                            <span className="compliance-cookies__flag">Same{c.sameSite}</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            })()}
                         </div>
                     </div>
                 )}

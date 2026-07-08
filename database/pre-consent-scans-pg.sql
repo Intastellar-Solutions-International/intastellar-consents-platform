@@ -18,6 +18,9 @@ CREATE TABLE IF NOT EXISTS pre_consent_scans (
     -- JSONB array of { host, service, category, resourceType }
     transfers         JSONB           DEFAULT NULL,
 
+    -- JSONB array of Puppeteer cookie objects set before consent
+    cookies           JSONB           DEFAULT NULL,
+
     error_message     TEXT            DEFAULT NULL,
     created_at        TIMESTAMP       NOT NULL DEFAULT NOW()
 );

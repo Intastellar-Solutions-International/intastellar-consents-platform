@@ -23060,6 +23060,170 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
     }
 }
 
+/* ── Tab switcher ────────────────────────────────────────────────────────────── */
+.compliance-transfers__tabs {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    padding-bottom: 0;
+}
+
+.compliance-transfers__tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px 10px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.compliance-transfers__tab:hover {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.compliance-transfers__tab.--active {
+    color: rgba(255, 255, 255, 0.88);
+    border-bottom-color: #c0a053;
+}
+
+.compliance-tab-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.compliance-transfers__tab.--active .compliance-tab-pill {
+    background: rgba(192, 159, 83, 0.18);
+    color: rgba(192, 159, 83, 0.9);
+}
+
+/* ── Cookies list ────────────────────────────────────────────────────────────── */
+.compliance-cookies__list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.compliance-cookies__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.compliance-cookies__row-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.compliance-cookies__row-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: monospace;
+    color: rgba(255, 255, 255, 0.78);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.compliance-cookies__row-domain {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.28);
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.compliance-cookies__row-party {
+    flex-shrink: 0;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+}
+
+.compliance-cookies__row-party.--third {
+    background: rgba(220, 80, 80, 0.1);
+    border-color: rgba(220, 80, 80, 0.25);
+    color: rgba(240, 130, 120, 0.85);
+}
+
+.compliance-cookies__row-party.--first {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.compliance-cookies__row-lifetime {
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.compliance-cookies__row-lifetime.--persistent {
+    color: rgba(220, 160, 60, 0.75);
+}
+
+.compliance-cookies__row-lifetime.--session {
+    color: rgba(255, 255, 255, 0.28);
+}
+
+.compliance-cookies__flags {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.compliance-cookies__flag {
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: rgba(80, 144, 220, 0.08);
+    border: 1px solid rgba(80, 144, 220, 0.18);
+    color: rgba(140, 190, 240, 0.7);
+}
+
+@media (max-width: 580px) {
+    .compliance-cookies__row {
+        flex-wrap: wrap;
+    }
+    .compliance-cookies__flags {
+        width: 100%;
+    }
+}
+
 /* ── Category summary cards ─────────────────────────────────────────────────── */
 .transfers-summary {
     display: flex;
@@ -23258,7 +23422,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
         display: none;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n.compliance-page__audit {\n    margin-top: 32px;\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n\n/* ── Category summary cards ─────────────────────────────────────────────────── */\n.transfers-summary {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n    margin-bottom: 18px;\n}\n\n.transfers-summary__card {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 4px;\n    padding: 12px 18px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    cursor: pointer;\n    font-family: inherit;\n    color: inherit;\n    transition: background 0.15s ease, border-color 0.15s ease;\n    min-width: 76px;\n    text-align: center;\n}\n\n.transfers-summary__card:hover {\n    background: rgba(255, 255, 255, 0.05);\n    border-color: rgba(255, 255, 255, 0.13);\n}\n\n.transfers-summary__card.--active {\n    background: color-mix(in srgb, var(--cat-color, #c0a053) 12%, transparent);\n    border-color: color-mix(in srgb, var(--cat-color, #c0a053) 40%, transparent);\n}\n\n.transfers-summary__card-icon {\n    font-size: 0.9rem;\n    line-height: 1;\n    color: var(--cat-color, rgba(255, 255, 255, 0.5));\n}\n\n.transfers-summary__card-count {\n    font-size: 1.6rem;\n    font-weight: 200;\n    color: rgba(255, 255, 255, 0.88);\n    line-height: 1;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n}\n\n.transfers-summary__card-label {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.transfers-summary__card-risk {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    padding: 2px 7px;\n    border-radius: 10px;\n    margin-top: 2px;\n}\n\n.transfers-summary__card-risk.--high {\n    background: rgba(220, 80, 80, 0.15);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.transfers-summary__card-risk.--medium {\n    background: rgba(220, 160, 60, 0.12);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.transfers-summary__card-risk.--low {\n    background: rgba(80, 168, 120, 0.1);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n.transfers-summary__clear {\n    align-self: center;\n    padding: 6px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.72rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: all 0.15s ease;\n}\n\n.transfers-summary__clear:hover {\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* ── Row additions ───────────────────────────────────────────────────────────── */\n.compliance-transfers__row-icon {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    width: 18px;\n    text-align: center;\n    line-height: 1;\n}\n\n.compliance-transfers__row-resource {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    font-family: monospace;\n    color: rgba(255, 255, 255, 0.22);\n    min-width: 28px;\n    text-align: center;\n}\n\n.compliance-transfers__row-risk {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-risk.--high {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.28);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.compliance-transfers__row-risk.--medium {\n    background: rgba(220, 160, 60, 0.1);\n    border-color: rgba(220, 160, 60, 0.24);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.compliance-transfers__row-risk.--low {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n/* ── Extra category colours ──────────────────────────────────────────────────── */\n.compliance-transfers__row--cmp {\n    border-color: rgba(80, 168, 120, 0.12);\n    background: rgba(80, 168, 120, 0.03);\n}\n\n.compliance-transfers__row-cat--cmp {\n    background: rgba(80, 168, 120, 0.1);\n    border-color: rgba(80, 168, 120, 0.25);\n    color: rgba(120, 200, 150, 0.85);\n}\n\n.compliance-transfers__row-cat--fingerprinting {\n    background: rgba(192, 54, 90, 0.12);\n    border-color: rgba(192, 54, 90, 0.3);\n    color: rgba(230, 120, 150, 0.9);\n}\n\n.compliance-transfers__row-cat--functional {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.8);\n}\n\n.compliance-transfers__row-cat--cdn {\n    background: rgba(150, 150, 150, 0.07);\n    border-color: rgba(150, 150, 150, 0.18);\n    color: rgba(180, 180, 180, 0.55);\n}\n\n.compliance-transfers__row-cat--third-party {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.32);\n}\n\n@media (max-width: 580px) {\n    .transfers-summary {\n        gap: 6px;\n    }\n\n    .transfers-summary__card {\n        min-width: 64px;\n        padding: 10px 12px 8px;\n    }\n\n    .compliance-transfers__row-resource {\n        display: none;\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n.compliance-page__audit {\n    margin-top: 32px;\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n\n/* ── Tab switcher ────────────────────────────────────────────────────────────── */\n.compliance-transfers__tabs {\n    display: flex;\n    gap: 2px;\n    margin-bottom: 20px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n    padding-bottom: 0;\n}\n\n.compliance-transfers__tab {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n    padding: 8px 14px 10px;\n    background: transparent;\n    border: none;\n    border-bottom: 2px solid transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.8rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    margin-bottom: -1px;\n    transition: color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-transfers__tab:hover {\n    color: rgba(255, 255, 255, 0.6);\n}\n\n.compliance-transfers__tab.--active {\n    color: rgba(255, 255, 255, 0.88);\n    border-bottom-color: #c0a053;\n}\n\n.compliance-tab-pill {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    min-width: 18px;\n    height: 18px;\n    padding: 0 5px;\n    border-radius: 9px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    background: rgba(255, 255, 255, 0.08);\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.compliance-transfers__tab.--active .compliance-tab-pill {\n    background: rgba(192, 159, 83, 0.18);\n    color: rgba(192, 159, 83, 0.9);\n}\n\n/* ── Cookies list ────────────────────────────────────────────────────────────── */\n.compliance-cookies__list {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n\n.compliance-cookies__row {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-cookies__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-cookies__row-name {\n    font-size: 0.82rem;\n    font-weight: 600;\n    font-family: monospace;\n    color: rgba(255, 255, 255, 0.78);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-domain {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.28);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-party {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-cookies__row-party.--third {\n    background: rgba(220, 80, 80, 0.1);\n    border-color: rgba(220, 80, 80, 0.25);\n    color: rgba(240, 130, 120, 0.85);\n}\n\n.compliance-cookies__row-party.--first {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-cookies__row-lifetime {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n}\n\n.compliance-cookies__row-lifetime.--persistent {\n    color: rgba(220, 160, 60, 0.75);\n}\n\n.compliance-cookies__row-lifetime.--session {\n    color: rgba(255, 255, 255, 0.28);\n}\n\n.compliance-cookies__flags {\n    display: flex;\n    gap: 4px;\n    flex-shrink: 0;\n    flex-wrap: wrap;\n}\n\n.compliance-cookies__flag {\n    padding: 2px 7px;\n    border-radius: 4px;\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    background: rgba(80, 144, 220, 0.08);\n    border: 1px solid rgba(80, 144, 220, 0.18);\n    color: rgba(140, 190, 240, 0.7);\n}\n\n@media (max-width: 580px) {\n    .compliance-cookies__row {\n        flex-wrap: wrap;\n    }\n    .compliance-cookies__flags {\n        width: 100%;\n    }\n}\n\n/* ── Category summary cards ─────────────────────────────────────────────────── */\n.transfers-summary {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n    margin-bottom: 18px;\n}\n\n.transfers-summary__card {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 4px;\n    padding: 12px 18px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    cursor: pointer;\n    font-family: inherit;\n    color: inherit;\n    transition: background 0.15s ease, border-color 0.15s ease;\n    min-width: 76px;\n    text-align: center;\n}\n\n.transfers-summary__card:hover {\n    background: rgba(255, 255, 255, 0.05);\n    border-color: rgba(255, 255, 255, 0.13);\n}\n\n.transfers-summary__card.--active {\n    background: color-mix(in srgb, var(--cat-color, #c0a053) 12%, transparent);\n    border-color: color-mix(in srgb, var(--cat-color, #c0a053) 40%, transparent);\n}\n\n.transfers-summary__card-icon {\n    font-size: 0.9rem;\n    line-height: 1;\n    color: var(--cat-color, rgba(255, 255, 255, 0.5));\n}\n\n.transfers-summary__card-count {\n    font-size: 1.6rem;\n    font-weight: 200;\n    color: rgba(255, 255, 255, 0.88);\n    line-height: 1;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n}\n\n.transfers-summary__card-label {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.transfers-summary__card-risk {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    padding: 2px 7px;\n    border-radius: 10px;\n    margin-top: 2px;\n}\n\n.transfers-summary__card-risk.--high {\n    background: rgba(220, 80, 80, 0.15);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.transfers-summary__card-risk.--medium {\n    background: rgba(220, 160, 60, 0.12);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.transfers-summary__card-risk.--low {\n    background: rgba(80, 168, 120, 0.1);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n.transfers-summary__clear {\n    align-self: center;\n    padding: 6px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.72rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: all 0.15s ease;\n}\n\n.transfers-summary__clear:hover {\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* ── Row additions ───────────────────────────────────────────────────────────── */\n.compliance-transfers__row-icon {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    width: 18px;\n    text-align: center;\n    line-height: 1;\n}\n\n.compliance-transfers__row-resource {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    font-family: monospace;\n    color: rgba(255, 255, 255, 0.22);\n    min-width: 28px;\n    text-align: center;\n}\n\n.compliance-transfers__row-risk {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-risk.--high {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.28);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.compliance-transfers__row-risk.--medium {\n    background: rgba(220, 160, 60, 0.1);\n    border-color: rgba(220, 160, 60, 0.24);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.compliance-transfers__row-risk.--low {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n/* ── Extra category colours ──────────────────────────────────────────────────── */\n.compliance-transfers__row--cmp {\n    border-color: rgba(80, 168, 120, 0.12);\n    background: rgba(80, 168, 120, 0.03);\n}\n\n.compliance-transfers__row-cat--cmp {\n    background: rgba(80, 168, 120, 0.1);\n    border-color: rgba(80, 168, 120, 0.25);\n    color: rgba(120, 200, 150, 0.85);\n}\n\n.compliance-transfers__row-cat--fingerprinting {\n    background: rgba(192, 54, 90, 0.12);\n    border-color: rgba(192, 54, 90, 0.3);\n    color: rgba(230, 120, 150, 0.9);\n}\n\n.compliance-transfers__row-cat--functional {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.8);\n}\n\n.compliance-transfers__row-cat--cdn {\n    background: rgba(150, 150, 150, 0.07);\n    border-color: rgba(150, 150, 150, 0.18);\n    color: rgba(180, 180, 180, 0.55);\n}\n\n.compliance-transfers__row-cat--third-party {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.32);\n}\n\n@media (max-width: 580px) {\n    .transfers-summary {\n        gap: 6px;\n    }\n\n    .transfers-summary__card {\n        min-width: 64px;\n        padding: 10px 12px 8px;\n    }\n\n    .compliance-transfers__row-resource {\n        display: none;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -46429,7 +46593,7 @@ var CAT_ORDER = {
   "third-party": 7
 };
 function CompliancePage() {
-  var _activeWorkspace$id, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da, _preConsentTransfers$, _preConsentTransfers$2;
+  var _activeWorkspace$id, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da, _preConsentTransfers$, _preConsentTransfers$2, _preConsentTransfers$3, _preConsentTransfers$4;
   var _useParams = useParams(),
     id = _useParams.id,
     handle = _useParams.handle;
@@ -46503,10 +46667,14 @@ function CompliancePage() {
     _useState26 = _slicedToArray(_useState25, 2),
     activeFilter = _useState26[0],
     setActiveFilter = _useState26[1];
-  var _useState27 = useState(false),
+  var _useState27 = useState("transfers"),
     _useState28 = _slicedToArray(_useState27, 2),
-    loading = _useState28[0],
-    setLoading = _useState28[1];
+    activeTab = _useState28[0],
+    setActiveTab = _useState28[1];
+  var _useState29 = useState(false),
+    _useState30 = _slicedToArray(_useState29, 2),
+    loading = _useState30[0],
+    setLoading = _useState30[1];
   var domainsForApi = useMemo(function () {
     return (handle ? handle : currentDomain) || "combined view";
   }, [handle, currentDomain]);
@@ -46705,25 +46873,49 @@ function CompliancePage() {
     className: "compliance-transfers__scan-btn" + (scanLoading ? " --loading" : ""),
     onClick: triggerScan,
     disabled: scanLoading
-  }, scanLoading ? "Scanning…" : "Scan now")), !preConsentTransfers && !scanLoading && /*#__PURE__*/React.createElement("div", {
+  }, scanLoading ? "Scanning…" : "Scan now")), preConsentTransfers && !scanLoading && /*#__PURE__*/React.createElement("div", {
+    className: "compliance-transfers__tabs"
+  }, [{
+    key: "transfers",
+    label: "Transfers",
+    count: (_preConsentTransfers$ = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$ === void 0 ? void 0 : _preConsentTransfers$.length
+  }, {
+    key: "cookies",
+    label: "Cookies",
+    count: (_preConsentTransfers$2 = preConsentTransfers.pre_consent_cookies) === null || _preConsentTransfers$2 === void 0 ? void 0 : _preConsentTransfers$2.length
+  }].map(function (_ref) {
+    var key = _ref.key,
+      label = _ref.label,
+      count = _ref.count;
+    return /*#__PURE__*/React.createElement("button", {
+      key: key,
+      type: "button",
+      className: "compliance-transfers__tab" + (activeTab === key ? " --active" : ""),
+      onClick: function onClick() {
+        return setActiveTab(key);
+      }
+    }, label, count > 0 && /*#__PURE__*/React.createElement("span", {
+      className: "compliance-tab-pill"
+    }, count));
+  })), !preConsentTransfers && !scanLoading && /*#__PURE__*/React.createElement("div", {
     className: "compliance-transfers__empty"
   }, /*#__PURE__*/React.createElement("span", {
     className: "compliance-transfers__empty-icon",
     "aria-hidden": true
   }, "\u27F3"), /*#__PURE__*/React.createElement("span", null, "No scan data yet \u2014 run a scan to detect pre-consent transfers for this domain.")), scanLoading && /*#__PURE__*/React.createElement("div", {
     className: "compliance-transfers__empty compliance-transfers__empty--loading"
-  }, /*#__PURE__*/React.createElement("span", null, "Scanning ", handle || currentDomain, "\u2026")), (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$ = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$ === void 0 ? void 0 : _preConsentTransfers$.length) > 0 && function () {
+  }, /*#__PURE__*/React.createElement("span", null, "Scanning ", handle || currentDomain, "\u2026")), activeTab === "transfers" && (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$3 = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$3 === void 0 ? void 0 : _preConsentTransfers$3.length) > 0 && function () {
     var transfers = preConsentTransfers.pre_consent_transfers;
     var countsByCategory = transfers.reduce(function (acc, t) {
       acc[t.category] = (acc[t.category] || 0) + 1;
       return acc;
     }, {});
-    var sortedCategories = Object.entries(countsByCategory).sort(function (_ref, _ref2) {
+    var sortedCategories = Object.entries(countsByCategory).sort(function (_ref2, _ref3) {
       var _CAT_ORDER$a, _CAT_ORDER$b;
-      var _ref3 = _slicedToArray(_ref, 1),
-        a = _ref3[0];
       var _ref4 = _slicedToArray(_ref2, 1),
-        b = _ref4[0];
+        a = _ref4[0];
+      var _ref5 = _slicedToArray(_ref3, 1),
+        b = _ref5[0];
       return ((_CAT_ORDER$a = CAT_ORDER[a]) !== null && _CAT_ORDER$a !== void 0 ? _CAT_ORDER$a : 99) - ((_CAT_ORDER$b = CAT_ORDER[b]) !== null && _CAT_ORDER$b !== void 0 ? _CAT_ORDER$b : 99);
     });
     var displayed = activeFilter ? transfers.filter(function (t) {
@@ -46731,10 +46923,10 @@ function CompliancePage() {
     }) : transfers;
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
       className: "transfers-summary"
-    }, sortedCategories.map(function (_ref5) {
-      var _ref6 = _slicedToArray(_ref5, 2),
-        cat = _ref6[0],
-        count = _ref6[1];
+    }, sortedCategories.map(function (_ref6) {
+      var _ref7 = _slicedToArray(_ref6, 2),
+        cat = _ref7[0],
+        count = _ref7[1];
       var meta = CATEGORY_META[cat] || {
         label: cat,
         risk: "medium",
@@ -46800,12 +46992,48 @@ function CompliancePage() {
         className: "compliance-transfers__row-risk --" + meta.risk
       }, meta.risk === "high" ? "High risk" : meta.risk === "medium" ? "Medium" : "Low"));
     })));
-  }(), (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$2 = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$2 === void 0 ? void 0 : _preConsentTransfers$2.length) === 0 && !scanLoading && /*#__PURE__*/React.createElement("div", {
+  }(), activeTab === "transfers" && (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$4 = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$4 === void 0 ? void 0 : _preConsentTransfers$4.length) === 0 && !scanLoading && /*#__PURE__*/React.createElement("div", {
     className: "compliance-transfers__empty compliance-transfers__empty--clean"
   }, /*#__PURE__*/React.createElement("span", {
     className: "compliance-transfers__empty-icon",
     "aria-hidden": true
-  }, "\u2713"), /*#__PURE__*/React.createElement("span", null, "No pre-consent transfers detected in the last scan.")))), /*#__PURE__*/React.createElement("div", {
+  }, "\u2713"), /*#__PURE__*/React.createElement("span", null, "No pre-consent transfers detected in the last scan.")), activeTab === "cookies" && !scanLoading && function () {
+    var cookies = (preConsentTransfers === null || preConsentTransfers === void 0 ? void 0 : preConsentTransfers.pre_consent_cookies) || [];
+    var domain = (handle || currentDomain || "").replace(/^www\./, "");
+    if (!cookies.length) return /*#__PURE__*/React.createElement("div", {
+      className: "compliance-transfers__empty compliance-transfers__empty--clean"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "compliance-transfers__empty-icon",
+      "aria-hidden": true
+    }, "\u2713"), /*#__PURE__*/React.createElement("span", null, "No cookies set before consent in the last scan."));
+    return /*#__PURE__*/React.createElement("div", {
+      className: "compliance-cookies__list"
+    }, cookies.map(function (c, i) {
+      var isThird = !c.domain.replace(/^\./, "").endsWith(domain);
+      return /*#__PURE__*/React.createElement("div", {
+        key: c.name + c.domain + i,
+        className: "compliance-cookies__row"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "compliance-cookies__row-main"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__row-name"
+      }, c.name), /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__row-domain"
+      }, c.domain)), /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__row-party" + (isThird ? " --third" : " --first")
+      }, isThird ? "3rd party" : "1st party"), /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__row-lifetime" + (c.session ? " --session" : " --persistent")
+      }, c.session ? "Session" : "Persistent"), /*#__PURE__*/React.createElement("div", {
+        className: "compliance-cookies__flags"
+      }, c.httpOnly && /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__flag"
+      }, "HttpOnly"), c.secure && /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__flag"
+      }, "Secure"), c.sameSite && c.sameSite !== "None" && /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__flag"
+      }, "Same", c.sameSite)));
+    }));
+  }())), /*#__PURE__*/React.createElement("div", {
     className: "compliance-page__audit"
   }, /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
     platformId: id,
