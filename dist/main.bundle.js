@@ -20464,64 +20464,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.selector {
     color: #c0a053;
 }
 
-/* Domain item styles */
-.dropdown-menu__item--domain {
-    padding: 10px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 10px !important;
-}
-
-.dropdown-menu__item--domain .dropdown-menu__domain-name {
-    flex: 1;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.8125rem;
-    color: #f0f0f0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Badges container */
-.dropdown-menu__badges {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-}
-
-/* Verification tag styles */
-.dropdown-menu__verify-tag {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    font-size: 0.625rem;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.dropdown-menu__verify-tag--verified {
-    background: rgba(80, 180, 100, 0.2);
-    border: 1px solid rgba(80, 180, 100, 0.4);
-    color: #7dd590;
-}
-
-.dropdown-menu__verify-tag--unverified {
-    background: rgba(220, 160, 60, 0.2);
-    border: 1px solid rgba(220, 160, 60, 0.4);
-    color: #e8c76a;
-}
-
-.dropdown-menu__verify-tag--expired {
-    background: rgba(220, 100, 80, 0.2);
-    border: 1px solid rgba(220, 100, 80, 0.4);
-    color: #f0a8a0;
-}
-
 @media screen and (min-width: 320px) and (max-width: 900px) {
     .company_container .selector {
         max-width: none;
@@ -20544,7 +20486,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.selector {
         min-width: 0;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Components/SelectInput/Style.css"],"names":[],"mappings":"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","sourcesContent":[".selector {\n    max-width: 350px;\n    min-width: 0;\n    height: auto;\n    min-height: 36px;\n    position: relative;\n    display: flex;\n    align-items: stretch;\n    flex: 1;\n}\n\n.selectTitle {\n    margin-bottom: 10px;\n    display: block;\n}\n\n.selector select {\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    background: transparent;\n    appearance: none;\n    -webkit-appearance: none;\n    color: #fff;\n    font-size: 12px;\n    margin: 0px;\n    padding: 8px 16px;\n    border-radius: 0;\n    display: block;\n    max-width: 100%;\n    min-width: 175px;\n    vertical-align: baseline;\n    white-space: nowrap;\n}\n\n.selector select:focus,\n.selector select:focus-within,\n.selector select:focus-visible {\n    outline: none;\n    border-bottom: 1px solid;\n}\n\n.dropdown-menu {\n    position: absolute;\n    top: calc(100% + 6px);\n    z-index: 200;\n    min-width: 100%;\n}\n\n.dropdown-menu--align-left {\n    left: 0;\n    right: auto;\n}\n\n.dropdown-menu--align-right {\n    right: 0;\n    left: auto;\n}\n\n.dropdown-menu__panel {\n    position: relative;\n    width: max-content;\n    min-width: 100%;\n    max-width: min(100vw - 24px, 360px);\n    max-height: min(70vh, 420px);\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow:\n        0 20px 48px rgba(0, 0, 0, 0.45),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.dropdown-menu__content {\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #e4e4e4;\n    text-align: left;\n}\n\n.dropdown-menu__content li {\n    padding: 10px 14px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    border-bottom: 1px solid transparent;\n    transition:\n        background 0.15s ease,\n        color 0.15s ease;\n}\n\n.dropdown-menu__content li:hover,\n.dropdown-menu__content li:focus-visible {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n    outline: none;\n}\n\n.dropdown-menu__content li[hidden] {\n    display: none !important;\n}\n\n.dropdown-menu__item--with-icon {\n    display: flex;\n    align-items: center;\n}\n\n.dropdown-menu-button {\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    appearance: none;\n    -webkit-appearance: none;\n    color: #f0f0f0;\n    margin: 0;\n    padding: 8px 12px 8px 14px;\n    border-radius: 10px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    line-height: 1.3;\n    display: inline-flex;\n    flex-direction: row;\n    align-items: center;\n    width: 100%;\n    max-width: 100%;\n    min-width: 0;\n    box-sizing: border-box;\n    vertical-align: baseline;\n    justify-content: space-between;\n    gap: 8px;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.dropdown-menu-button:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu-button:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.55);\n    outline-offset: 2px;\n}\n\n.dropdown-menu-button__label {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    text-align: left;\n}\n\n.dropdown-menu-button::after {\n    content: \"\";\n    width: 8px;\n    height: 8px;\n    flex-shrink: 0;\n    margin-left: 4px;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n    transition: transform 0.2s ease;\n}\n\n.dropdown-menu-button[aria-expanded=\"true\"]::after {\n    transform: rotate(225deg) translateY(0);\n}\n\n.search-box {\n    padding: 10px 10px 8px;\n    flex-shrink: 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.search-input {\n    width: 100%;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    box-sizing: border-box;\n}\n\n.search-input::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.search-input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.company-logo {\n    margin-right: 0;\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: block;\n    object-fit: contain;\n    border-radius: 6px;\n}\n\n/* Separator styles */\n.dropdown-menu__separator {\n    padding: 8px 14px !important;\n    cursor: default !important;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85) !important;\n    background: rgba(0, 0, 0, 0.15) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n    margin-top: 4px;\n}\n\n.dropdown-menu__separator:hover {\n    background: rgba(0, 0, 0, 0.15) !important;\n    cursor: default !important;\n}\n\n/* Workspace item styles */\n.dropdown-menu__item--workspace {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__workspace-icon {\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.75rem;\n    font-weight: 700;\n}\n\n.dropdown-menu__workspace-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.dropdown-menu__workspace-name {\n    font-weight: 600;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dropdown-menu__workspace-domain {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Workspace combined view item */\n.dropdown-menu__item--workspace-combined {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n    background: rgba(192, 159, 83, 0.08) !important;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.dropdown-menu__item--workspace-combined:hover {\n    background: rgba(192, 159, 83, 0.18) !important;\n}\n\n.dropdown-menu__combined-icon {\n    width: 20px;\n    height: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1rem;\n    color: #c0a053;\n}\n\n/* Exit workspace item */\n.dropdown-menu__item--exit-workspace {\n    padding: 12px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 8px !important;\n    color: rgba(255, 255, 255, 0.8) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.dropdown-menu__item--exit-workspace:hover {\n    background: rgba(255, 255, 255, 0.08) !important;\n}\n\n.dropdown-menu__exit-icon {\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* Workspace domain items (when inside a workspace) */\n.dropdown-menu__item--workspace-domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n}\n\n.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n}\n\n/* Domain item styles */\n.dropdown-menu__item--domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--domain .dropdown-menu__domain-name {\n    flex: 1;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Badges container */\n.dropdown-menu__badges {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n/* Verification tag styles */\n.dropdown-menu__verify-tag {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 18px;\n    height: 18px;\n    border-radius: 50%;\n    font-size: 0.625rem;\n    font-weight: 700;\n    flex-shrink: 0;\n}\n\n.dropdown-menu__verify-tag--verified {\n    background: rgba(80, 180, 100, 0.2);\n    border: 1px solid rgba(80, 180, 100, 0.4);\n    color: #7dd590;\n}\n\n.dropdown-menu__verify-tag--unverified {\n    background: rgba(220, 160, 60, 0.2);\n    border: 1px solid rgba(220, 160, 60, 0.4);\n    color: #e8c76a;\n}\n\n.dropdown-menu__verify-tag--expired {\n    background: rgba(220, 100, 80, 0.2);\n    border: 1px solid rgba(220, 100, 80, 0.4);\n    color: #f0a8a0;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .company_container .selector {\n        max-width: none;\n        width: 100%;\n    }\n\n    .dropdown-menu {\n        left: 0 !important;\n        right: 0 !important;\n        min-width: 0;\n        width: 100%;\n    }\n\n    .dropdown-menu__panel {\n        width: 100%;\n        max-width: none;\n    }\n\n    .dropdown-menu-button {\n        min-width: 0;\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Components/SelectInput/Style.css"],"names":[],"mappings":"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","sourcesContent":[".selector {\n    max-width: 350px;\n    min-width: 0;\n    height: auto;\n    min-height: 36px;\n    position: relative;\n    display: flex;\n    align-items: stretch;\n    flex: 1;\n}\n\n.selectTitle {\n    margin-bottom: 10px;\n    display: block;\n}\n\n.selector select {\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    background: transparent;\n    appearance: none;\n    -webkit-appearance: none;\n    color: #fff;\n    font-size: 12px;\n    margin: 0px;\n    padding: 8px 16px;\n    border-radius: 0;\n    display: block;\n    max-width: 100%;\n    min-width: 175px;\n    vertical-align: baseline;\n    white-space: nowrap;\n}\n\n.selector select:focus,\n.selector select:focus-within,\n.selector select:focus-visible {\n    outline: none;\n    border-bottom: 1px solid;\n}\n\n.dropdown-menu {\n    position: absolute;\n    top: calc(100% + 6px);\n    z-index: 200;\n    min-width: 100%;\n}\n\n.dropdown-menu--align-left {\n    left: 0;\n    right: auto;\n}\n\n.dropdown-menu--align-right {\n    right: 0;\n    left: auto;\n}\n\n.dropdown-menu__panel {\n    position: relative;\n    width: max-content;\n    min-width: 100%;\n    max-width: min(100vw - 24px, 360px);\n    max-height: min(70vh, 420px);\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow:\n        0 20px 48px rgba(0, 0, 0, 0.45),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.dropdown-menu__content {\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #e4e4e4;\n    text-align: left;\n}\n\n.dropdown-menu__content li {\n    padding: 10px 14px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    border-bottom: 1px solid transparent;\n    transition:\n        background 0.15s ease,\n        color 0.15s ease;\n}\n\n.dropdown-menu__content li:hover,\n.dropdown-menu__content li:focus-visible {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n    outline: none;\n}\n\n.dropdown-menu__content li[hidden] {\n    display: none !important;\n}\n\n.dropdown-menu__item--with-icon {\n    display: flex;\n    align-items: center;\n}\n\n.dropdown-menu-button {\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    appearance: none;\n    -webkit-appearance: none;\n    color: #f0f0f0;\n    margin: 0;\n    padding: 8px 12px 8px 14px;\n    border-radius: 10px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    line-height: 1.3;\n    display: inline-flex;\n    flex-direction: row;\n    align-items: center;\n    width: 100%;\n    max-width: 100%;\n    min-width: 0;\n    box-sizing: border-box;\n    vertical-align: baseline;\n    justify-content: space-between;\n    gap: 8px;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.dropdown-menu-button:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu-button:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.55);\n    outline-offset: 2px;\n}\n\n.dropdown-menu-button__label {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    text-align: left;\n}\n\n.dropdown-menu-button::after {\n    content: \"\";\n    width: 8px;\n    height: 8px;\n    flex-shrink: 0;\n    margin-left: 4px;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n    transition: transform 0.2s ease;\n}\n\n.dropdown-menu-button[aria-expanded=\"true\"]::after {\n    transform: rotate(225deg) translateY(0);\n}\n\n.search-box {\n    padding: 10px 10px 8px;\n    flex-shrink: 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.search-input {\n    width: 100%;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    box-sizing: border-box;\n}\n\n.search-input::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.search-input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.company-logo {\n    margin-right: 0;\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: block;\n    object-fit: contain;\n    border-radius: 6px;\n}\n\n/* Separator styles */\n.dropdown-menu__separator {\n    padding: 8px 14px !important;\n    cursor: default !important;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85) !important;\n    background: rgba(0, 0, 0, 0.15) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n    margin-top: 4px;\n}\n\n.dropdown-menu__separator:hover {\n    background: rgba(0, 0, 0, 0.15) !important;\n    cursor: default !important;\n}\n\n/* Workspace item styles */\n.dropdown-menu__item--workspace {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__workspace-icon {\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.75rem;\n    font-weight: 700;\n}\n\n.dropdown-menu__workspace-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.dropdown-menu__workspace-name {\n    font-weight: 600;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dropdown-menu__workspace-domain {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Workspace combined view item */\n.dropdown-menu__item--workspace-combined {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n    background: rgba(192, 159, 83, 0.08) !important;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.dropdown-menu__item--workspace-combined:hover {\n    background: rgba(192, 159, 83, 0.18) !important;\n}\n\n.dropdown-menu__combined-icon {\n    width: 20px;\n    height: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1rem;\n    color: #c0a053;\n}\n\n/* Exit workspace item */\n.dropdown-menu__item--exit-workspace {\n    padding: 12px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 8px !important;\n    color: rgba(255, 255, 255, 0.8) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.dropdown-menu__item--exit-workspace:hover {\n    background: rgba(255, 255, 255, 0.08) !important;\n}\n\n.dropdown-menu__exit-icon {\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* Workspace domain items (when inside a workspace) */\n.dropdown-menu__item--workspace-domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n}\n\n.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .company_container .selector {\n        max-width: none;\n        width: 100%;\n    }\n\n    .dropdown-menu {\n        left: 0 !important;\n        right: 0 !important;\n        min-width: 0;\n        width: 100%;\n    }\n\n    .dropdown-menu__panel {\n        width: 100%;\n        max-width: none;\n    }\n\n    .dropdown-menu-button {\n        min-width: 0;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -23531,238 +23473,6 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, ``, "",{"version":3,"sources":[],"names":[],"mappings":"","sourceRoot":""}]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./src/Pages/Dashboard/CookiesDashboard.css":
-/*!****************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./src/Pages/Dashboard/CookiesDashboard.css ***!
-  \****************************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `/* Cookies dashboard — structured layout (single column, clear sections) */
-.cookies-dashboard__loading,
-.cookies-dashboard__empty {
-    margin: 2rem auto;
-    max-width: 42rem;
-    padding: 1.25rem 1.5rem;
-    text-align: center;
-    color: rgba(197, 197, 197, 0.9);
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.cookies-dashboard__toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px 20px;
-    margin-bottom: 1.75rem;
-    padding: 14px 18px;
-    background: rgba(0, 0, 0, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
-}
-
-.cookies-dashboard__toolbar-label {
-    margin: 0;
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
-}
-
-.cookies-dashboard__toolbar .selectorContianer,
-.cookies-dashboard__toolbar .selector-container,
-.cookies-dashboard__toolbar > div {
-    flex: 1;
-    min-width: min(100%, 220px);
-    max-width: 360px;
-}
-
-.cookies-dashboard__domains {
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-}
-
-.cookies-domain-card {
-    background: linear-gradient(180deg, rgba(58, 58, 58, 0.55) 0%, rgba(42, 42, 42, 0.4) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-}
-
-.cookies-domain-card__head {
-    padding: 16px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.15);
-}
-
-.cookies-domain-card__title {
-    margin: 0;
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: rgb(239, 239, 239);
-    word-break: break-all;
-}
-
-.cookies-domain-card__body {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.cookies-section__title {
-    margin: 0 0 10px 0;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.4);
-}
-
-.cookies-findings {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.cookies-findings__item {
-    margin: 0;
-    padding: 8px 14px;
-    font-size: 0.875rem;
-    line-height: 1.4;
-    color: rgba(255, 255, 255, 0.88);
-    background: rgba(192, 159, 83, 0.12);
-    border: 1px solid rgba(192, 159, 83, 0.28);
-    border-radius: 999px;
-}
-
-.cookies-warnings {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.cookies-warnings__item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin: 0;
-    padding: 12px 14px;
-    font-size: 0.9rem;
-    line-height: 1.45;
-    color: rgba(230, 230, 230, 0.95);
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    border-left: 4px solid rgba(255, 255, 255, 0.2);
-}
-
-.cookies-warnings__item--critical {
-    border-left-color: #e74c3c;
-}
-
-.cookies-warnings__item--high {
-    border-left-color: #e67e22;
-}
-
-.cookies-warnings__item--medium {
-    border-left-color: #f1c40f;
-}
-
-.cookies-warnings__item--low {
-    border-left-color: #2ecc71;
-}
-
-.cookies-warnings__item--info {
-    border-left-color: #3498db;
-}
-
-.cookies-warnings__item--unknown {
-    border-left-color: rgba(255, 255, 255, 0.25);
-}
-
-.cookies-warnings__dot {
-    flex-shrink: 0;
-    width: 10px;
-    height: 10px;
-    margin-top: 4px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.35);
-}
-
-.cookies-warnings__item--critical .cookies-warnings__dot {
-    background: #e74c3c;
-}
-
-.cookies-warnings__item--high .cookies-warnings__dot {
-    background: #e67e22;
-}
-
-.cookies-warnings__item--medium .cookies-warnings__dot {
-    background: #f1c40f;
-}
-
-.cookies-warnings__item--low .cookies-warnings__dot {
-    background: #2ecc71;
-}
-
-.cookies-warnings__item--info .cookies-warnings__dot {
-    background: #3498db;
-}
-
-.cookies-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px;
-}
-
-.cookies-table-wrap {
-    overflow-x: auto;
-    margin: 0 -4px;
-    padding: 4px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(0, 0, 0, 0.15);
-}
-
-.cookies-table-wrap .table {
-    min-width: 720px;
-}
-
-@media screen and (max-width: 600px) {
-    .cookies-stats {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-`, "",{"version":3,"sources":["webpack://./src/Pages/Dashboard/CookiesDashboard.css"],"names":[],"mappings":"AAAA,0EAA0E;AAC1E;;IAEI,iBAAiB;IACjB,gBAAgB;IAChB,uBAAuB;IACvB,kBAAkB;IAClB,+BAA+B;IAC/B,8BAA8B;IAC9B,mBAAmB;IACnB,2CAA2C;AAC/C;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,cAAc;IACd,sBAAsB;IACtB,kBAAkB;IAClB,+BAA+B;IAC/B,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,SAAS;IACT,iBAAiB;IACjB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;;;IAGI,OAAO;IACP,2BAA2B;IAC3B,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,YAAY;AAChB;;AAEA;IACI,0FAA0F;IAC1F,2CAA2C;IAC3C,mBAAmB;IACnB,gBAAgB;IAChB,yCAAyC;AAC7C;;AAEA;IACI,kBAAkB;IAClB,kDAAkD;IAClD,+BAA+B;AACnC;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gBAAgB;IAChB,yBAAyB;IACzB,qBAAqB;AACzB;;AAEA;IACI,aAAa;IACb,aAAa;IACb,sBAAsB;IACtB,WAAW;AACf;;AAEA;IACI,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,UAAU;IACV,aAAa;IACb,eAAe;IACf,QAAQ;AACZ;;AAEA;IACI,SAAS;IACT,iBAAiB;IACjB,mBAAmB;IACnB,gBAAgB;IAChB,gCAAgC;IAChC,oCAAoC;IACpC,0CAA0C;IAC1C,oBAAoB;AACxB;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,UAAU;IACV,aAAa;IACb,sBAAsB;IACtB,SAAS;AACb;;AAEA;IACI,aAAa;IACb,uBAAuB;IACvB,SAAS;IACT,SAAS;IACT,kBAAkB;IAClB,iBAAiB;IACjB,iBAAiB;IACjB,gCAAgC;IAChC,8BAA8B;IAC9B,kBAAkB;IAClB,+CAA+C;AACnD;;AAEA;IACI,0BAA0B;AAC9B;;AAEA;IACI,0BAA0B;AAC9B;;AAEA;IACI,0BAA0B;AAC9B;;AAEA;IACI,0BAA0B;AAC9B;;AAEA;IACI,0BAA0B;AAC9B;;AAEA;IACI,4CAA4C;AAChD;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,eAAe;IACf,kBAAkB;IAClB,qCAAqC;AACzC;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,2DAA2D;IAC3D,SAAS;AACb;;AAEA;IACI,gBAAgB;IAChB,cAAc;IACd,YAAY;IACZ,kBAAkB;IAClB,2CAA2C;IAC3C,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI;QACI,8BAA8B;IAClC;AACJ","sourcesContent":["/* Cookies dashboard — structured layout (single column, clear sections) */\n.cookies-dashboard__loading,\n.cookies-dashboard__empty {\n    margin: 2rem auto;\n    max-width: 42rem;\n    padding: 1.25rem 1.5rem;\n    text-align: center;\n    color: rgba(197, 197, 197, 0.9);\n    background: rgba(0, 0, 0, 0.2);\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.cookies-dashboard__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n    margin-bottom: 1.75rem;\n    padding: 14px 18px;\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.cookies-dashboard__toolbar-label {\n    margin: 0;\n    font-size: 0.8rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.cookies-dashboard__toolbar .selectorContianer,\n.cookies-dashboard__toolbar .selector-container,\n.cookies-dashboard__toolbar > div {\n    flex: 1;\n    min-width: min(100%, 220px);\n    max-width: 360px;\n}\n\n.cookies-dashboard__domains {\n    display: flex;\n    flex-direction: column;\n    gap: 1.75rem;\n}\n\n.cookies-domain-card {\n    background: linear-gradient(180deg, rgba(58, 58, 58, 0.55) 0%, rgba(42, 42, 42, 0.4) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 12px;\n    overflow: hidden;\n    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);\n}\n\n.cookies-domain-card__head {\n    padding: 16px 20px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.15);\n}\n\n.cookies-domain-card__title {\n    margin: 0;\n    font-size: 1.15rem;\n    font-weight: 600;\n    color: rgb(239, 239, 239);\n    word-break: break-all;\n}\n\n.cookies-domain-card__body {\n    padding: 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 1.5rem;\n}\n\n.cookies-section__title {\n    margin: 0 0 10px 0;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.4);\n}\n\n.cookies-findings {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n}\n\n.cookies-findings__item {\n    margin: 0;\n    padding: 8px 14px;\n    font-size: 0.875rem;\n    line-height: 1.4;\n    color: rgba(255, 255, 255, 0.88);\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.28);\n    border-radius: 999px;\n}\n\n.cookies-warnings {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 10px;\n}\n\n.cookies-warnings__item {\n    display: flex;\n    align-items: flex-start;\n    gap: 12px;\n    margin: 0;\n    padding: 12px 14px;\n    font-size: 0.9rem;\n    line-height: 1.45;\n    color: rgba(230, 230, 230, 0.95);\n    background: rgba(0, 0, 0, 0.2);\n    border-radius: 8px;\n    border-left: 4px solid rgba(255, 255, 255, 0.2);\n}\n\n.cookies-warnings__item--critical {\n    border-left-color: #e74c3c;\n}\n\n.cookies-warnings__item--high {\n    border-left-color: #e67e22;\n}\n\n.cookies-warnings__item--medium {\n    border-left-color: #f1c40f;\n}\n\n.cookies-warnings__item--low {\n    border-left-color: #2ecc71;\n}\n\n.cookies-warnings__item--info {\n    border-left-color: #3498db;\n}\n\n.cookies-warnings__item--unknown {\n    border-left-color: rgba(255, 255, 255, 0.25);\n}\n\n.cookies-warnings__dot {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-top: 4px;\n    border-radius: 50%;\n    background: rgba(255, 255, 255, 0.35);\n}\n\n.cookies-warnings__item--critical .cookies-warnings__dot {\n    background: #e74c3c;\n}\n\n.cookies-warnings__item--high .cookies-warnings__dot {\n    background: #e67e22;\n}\n\n.cookies-warnings__item--medium .cookies-warnings__dot {\n    background: #f1c40f;\n}\n\n.cookies-warnings__item--low .cookies-warnings__dot {\n    background: #2ecc71;\n}\n\n.cookies-warnings__item--info .cookies-warnings__dot {\n    background: #3498db;\n}\n\n.cookies-stats {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));\n    gap: 14px;\n}\n\n.cookies-table-wrap {\n    overflow-x: auto;\n    margin: 0 -4px;\n    padding: 4px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(0, 0, 0, 0.15);\n}\n\n.cookies-table-wrap .table {\n    min-width: 720px;\n}\n\n@media screen and (max-width: 600px) {\n    .cookies-stats {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -35550,48 +35260,46 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Login_Login__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Login/Login */ "./src/Login/Login.js");
 /* harmony import */ var _Login_Signup__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Login/Signup */ "./src/Login/Signup.js");
 /* harmony import */ var _Components_Header_Nav__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Components/Header/Nav */ "./src/Components/Header/Nav.js");
-/* harmony import */ var _Pages_Dashboard_CookiesDashboard__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Pages/Dashboard/CookiesDashboard */ "./src/Pages/Dashboard/CookiesDashboard.js");
-/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./API/api */ "./src/API/api.js");
-/* harmony import */ var _Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Pages/Dashboard/Dashboard.js */ "./src/Pages/Dashboard/Dashboard.js");
-/* harmony import */ var _Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Pages/Dashboard/ferry/Dashboard.js */ "./src/Pages/Dashboard/ferry/Dashboard.js");
-/* harmony import */ var _Pages_Domains_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Pages/Domains/index.js */ "./src/Pages/Domains/index.js");
-/* harmony import */ var _Pages_Settings__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./Pages/Settings */ "./src/Pages/Settings/index.js");
-/* harmony import */ var _Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Pages/Settings/CreateOrganisation */ "./src/Pages/Settings/CreateOrganisation/index.js");
-/* harmony import */ var _Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./Pages/Settings/AddUser */ "./src/Pages/Settings/AddUser/index.js");
-/* harmony import */ var _Pages_Settings_ViewOrganisations__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./Pages/Settings/ViewOrganisations */ "./src/Pages/Settings/ViewOrganisations/index.js");
-/* harmony import */ var _Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./Pages/Settings/ViewUsers */ "./src/Pages/Settings/ViewUsers/index.js");
-/* harmony import */ var _Pages_Dashboard_DomainDashbord__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./Pages/Dashboard/DomainDashbord */ "./src/Pages/Dashboard/DomainDashbord.js");
-/* harmony import */ var _Functions_fetch__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./Functions/fetch */ "./src/Functions/fetch.js");
-/* harmony import */ var _Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./Components/AddDomain/AddDomain */ "./src/Components/AddDomain/AddDomain.js");
-/* harmony import */ var _Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./Pages/Settings/AddDomain */ "./src/Pages/Settings/AddDomain/index.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./Pages/UserConsents/UserConsents */ "./src/Pages/UserConsents/UserConsents.js");
-/* harmony import */ var _Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./Pages/Reports/Reports */ "./src/Pages/Reports/Reports.js");
-/* harmony import */ var _Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./Components/Error/ErrorBoundary */ "./src/Components/Error/ErrorBoundary.js");
-/* harmony import */ var _Pages_Countries_Countries__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./Pages/Countries/Countries */ "./src/Pages/Countries/Countries.js");
-/* harmony import */ var _Components_BugReport_BugReport__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./Components/BugReport/BugReport */ "./src/Components/BugReport/BugReport.js");
-/* harmony import */ var _Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./Components/PlatformSelector/PlatformSelector */ "./src/Components/PlatformSelector/PlatformSelector.js");
-/* harmony import */ var _Components_Crawler__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./Components/Crawler */ "./src/Components/Crawler/index.js");
-/* harmony import */ var _Pages_Reports_UserAgents__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./Pages/Reports/UserAgents */ "./src/Pages/Reports/UserAgents/index.js");
-/* harmony import */ var _Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./Pages/Settings/UserPreferences */ "./src/Pages/Settings/UserPreferences/index.js");
-/* harmony import */ var _Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./Components/SubscriptionPlans */ "./src/Components/SubscriptionPlans/index.js");
-/* harmony import */ var _Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./Pages/Reports/Compare */ "./src/Pages/Reports/Compare.js");
-/* harmony import */ var _Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./Pages/Settings/BlacklistIp */ "./src/Pages/Settings/BlacklistIp/index.js");
-/* harmony import */ var _Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./Pages/Settings/CreateUser */ "./src/Pages/Settings/CreateUser/index.js");
-/* harmony import */ var _Login_AuthLogin__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./Login/AuthLogin */ "./src/Login/AuthLogin.js");
-/* harmony import */ var _Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./Pages/Experiments/Experiments */ "./src/Pages/Experiments/Experiments.js");
-/* harmony import */ var _Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./Pages/Reports/AuditReport */ "./src/Pages/Reports/AuditReport/index.js");
-/* harmony import */ var _Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./Pages/Reports/MarketingReport */ "./src/Pages/Reports/MarketingReport/index.js");
-/* harmony import */ var _Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./Pages/Compliance */ "./src/Pages/Compliance/index.js");
-/* harmony import */ var _Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./Components/LoadingSpinner/LoadingSpinner */ "./src/Components/LoadingSpinner/LoadingSpinner.js");
-/* harmony import */ var _Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./Pages/Settings/Workspaces */ "./src/Pages/Settings/Workspaces/index.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./API/api */ "./src/API/api.js");
+/* harmony import */ var _Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Pages/Dashboard/Dashboard.js */ "./src/Pages/Dashboard/Dashboard.js");
+/* harmony import */ var _Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Pages/Dashboard/ferry/Dashboard.js */ "./src/Pages/Dashboard/ferry/Dashboard.js");
+/* harmony import */ var _Pages_Domains_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Pages/Domains/index.js */ "./src/Pages/Domains/index.js");
+/* harmony import */ var _Pages_Settings__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./Pages/Settings */ "./src/Pages/Settings/index.js");
+/* harmony import */ var _Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./Pages/Settings/CreateOrganisation */ "./src/Pages/Settings/CreateOrganisation/index.js");
+/* harmony import */ var _Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./Pages/Settings/AddUser */ "./src/Pages/Settings/AddUser/index.js");
+/* harmony import */ var _Pages_Settings_ViewOrganisations__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./Pages/Settings/ViewOrganisations */ "./src/Pages/Settings/ViewOrganisations/index.js");
+/* harmony import */ var _Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./Pages/Settings/ViewUsers */ "./src/Pages/Settings/ViewUsers/index.js");
+/* harmony import */ var _Pages_Dashboard_DomainDashbord__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./Pages/Dashboard/DomainDashbord */ "./src/Pages/Dashboard/DomainDashbord.js");
+/* harmony import */ var _Functions_fetch__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./Functions/fetch */ "./src/Functions/fetch.js");
+/* harmony import */ var _Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./Components/AddDomain/AddDomain */ "./src/Components/AddDomain/AddDomain.js");
+/* harmony import */ var _Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./Pages/Settings/AddDomain */ "./src/Pages/Settings/AddDomain/index.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./Pages/UserConsents/UserConsents */ "./src/Pages/UserConsents/UserConsents.js");
+/* harmony import */ var _Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./Pages/Reports/Reports */ "./src/Pages/Reports/Reports.js");
+/* harmony import */ var _Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./Components/Error/ErrorBoundary */ "./src/Components/Error/ErrorBoundary.js");
+/* harmony import */ var _Pages_Countries_Countries__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./Pages/Countries/Countries */ "./src/Pages/Countries/Countries.js");
+/* harmony import */ var _Components_BugReport_BugReport__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./Components/BugReport/BugReport */ "./src/Components/BugReport/BugReport.js");
+/* harmony import */ var _Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./Components/PlatformSelector/PlatformSelector */ "./src/Components/PlatformSelector/PlatformSelector.js");
+/* harmony import */ var _Components_Crawler__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./Components/Crawler */ "./src/Components/Crawler/index.js");
+/* harmony import */ var _Pages_Reports_UserAgents__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./Pages/Reports/UserAgents */ "./src/Pages/Reports/UserAgents/index.js");
+/* harmony import */ var _Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./Pages/Settings/UserPreferences */ "./src/Pages/Settings/UserPreferences/index.js");
+/* harmony import */ var _Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./Components/SubscriptionPlans */ "./src/Components/SubscriptionPlans/index.js");
+/* harmony import */ var _Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./Pages/Reports/Compare */ "./src/Pages/Reports/Compare.js");
+/* harmony import */ var _Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./Pages/Settings/BlacklistIp */ "./src/Pages/Settings/BlacklistIp/index.js");
+/* harmony import */ var _Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./Pages/Settings/CreateUser */ "./src/Pages/Settings/CreateUser/index.js");
+/* harmony import */ var _Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./Login/AuthLogin */ "./src/Login/AuthLogin.js");
+/* harmony import */ var _Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./Pages/Experiments/Experiments */ "./src/Pages/Experiments/Experiments.js");
+/* harmony import */ var _Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./Pages/Reports/AuditReport */ "./src/Pages/Reports/AuditReport/index.js");
+/* harmony import */ var _Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./Pages/Reports/MarketingReport */ "./src/Pages/Reports/MarketingReport/index.js");
+/* harmony import */ var _Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./Pages/Compliance */ "./src/Pages/Compliance/index.js");
+/* harmony import */ var _Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./Components/LoadingSpinner/LoadingSpinner */ "./src/Components/LoadingSpinner/LoadingSpinner.js");
+/* harmony import */ var _Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./Pages/Settings/Workspaces */ "./src/Pages/Settings/Workspaces/index.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-
 
 
 
@@ -35727,8 +35435,8 @@ function App() {
     /* const [domainLoadings, data, error, getUpdated] = useFetch(null, API[id].getDomains.url, API[id].getDomains.method, API[id].getDomains.headers); */
     useEffect(function () {
       var _API$id;
-      (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_18__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_8__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_8__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_8__["default"].settings.getOrganisation.headers, JSON.stringify({
-        organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId()
+      (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].settings.getOrganisation.headers, JSON.stringify({
+        organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
           localStorage.removeItem("globals");
@@ -35737,8 +35445,8 @@ function App() {
         }
         setOrganisations(data);
       });
-      (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_18__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_8__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_8__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_8__["default"].Subscription.headers, JSON.stringify({
-        organization: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisation()
+      (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.headers, JSON.stringify({
+        organization: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisation()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
           localStorage.removeItem("globals");
@@ -35748,8 +35456,8 @@ function App() {
         setSubscriptionStatus(data);
         localStorage.setItem("subscription", JSON.stringify(data));
       });
-      if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_8__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
-        (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_18__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_8__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_8__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_8__["default"][id].getDomains.headers).then(function (data) {
+      if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
+        (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.headers).then(function (data) {
           if (data.error === "Err_No_Domains" || data.length === 0) {
             setDomainError(true);
           } else {
@@ -35800,7 +35508,7 @@ function App() {
     }();
     var needsPayment = !subscriptionLoading && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" && Number(orgId) !== 1;
     if (id === null && organisations) {
-      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_27__["default"], {
+      return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
         platforms: organisations
       }));
@@ -35812,7 +35520,7 @@ function App() {
         value: [activeWorkspace, setActiveWorkspace]
       }, /*#__PURE__*/React.createElement(DomainContext.Provider, {
         value: [currentDomain, setCurrentDomain]
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, id && window.location.pathname != "/" || window.location.pathname != "/login" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_header__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, id && window.location.pathname != "/" || window.location.pathname != "/login" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_header__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: id
       })) : null), /*#__PURE__*/React.createElement("div", {
         className: "main-grid"
@@ -35823,104 +35531,101 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_8__["default"], {
         dashboardView: dashboardView,
         setDashboardView: setDashboardView
-      }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_10__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/view/:handle"
       }, /*#__PURE__*/React.createElement("div", {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_8__["default"], {
         dashboardView: dashboardView,
         setDashboardView: setDashboardView
-      }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_10__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
         path: "/signup",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Login_Signup__WEBPACK_IMPORTED_MODULE_5__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Signup__WEBPACK_IMPORTED_MODULE_5__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/domains",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Domains_index_js__WEBPACK_IMPORTED_MODULE_11__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Domains_index_js__WEBPACK_IMPORTED_MODULE_10__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings__WEBPACK_IMPORTED_MODULE_12__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings__WEBPACK_IMPORTED_MODULE_11__["default"], {
         organisations: organisations,
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_14__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_20__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_16__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewOrganisations__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewOrganisations__WEBPACK_IMPORTED_MODULE_14__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/preferences"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
-        path: "/:id/cookies",
-        exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Dashboard_CookiesDashboard__WEBPACK_IMPORTED_MODULE_7__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_36__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_38__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_23__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_22__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_23__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_22__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_36__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_38__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/dashboard"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_27__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
         platforms: (_JSON$parse2 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.access) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.type
       }))), /*#__PURE__*/React.createElement(Route, {
@@ -35928,13 +35633,13 @@ function App() {
         exact: true
       }, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/auth-login"
-      }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_35__["default"], null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/config-gdpr"
       }), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/blacklist-ip"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, function (_org, _org2, _JSON$parse3) {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org, _org2, _JSON$parse3) {
         var orgRaw = localStorage.getItem("organisation");
         var org = null;
         try {
@@ -35942,12 +35647,12 @@ function App() {
         } catch (_unused5) {
           /* not JSON */
         }
-        var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
+        var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
         var sub = localStorage.getItem("subscription");
         // Compare ID as string to handle both number and string formats
         var hasAgency = ((_org2 = org) === null || _org2 === void 0 ? void 0 : _org2.id) != null && String(org.id) === "1" || sub && ((_JSON$parse3 = JSON.parse(sub)) === null || _JSON$parse3 === void 0 ? void 0 : _JSON$parse3.subscription) === "agency";
-        return isAdminRole && hasAgency ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_41__["default"], null) : /*#__PURE__*/React.createElement("p", {
+        return isAdminRole && hasAgency ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_40__["default"], null) : /*#__PURE__*/React.createElement("p", {
           style: {
             padding: "40px",
             color: "#999"
@@ -35955,35 +35660,35 @@ function App() {
         }, "Agency subscription required to access client workspaces.");
       }())), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_34__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_32__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_31__["default"], {
         organisations: organisations,
         domains: domains
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/experiments",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_36__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/experiments/:experimentId"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_36__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/api",
         render: function render() {
           return null;
         }
       }), /*#__PURE__*/React.createElement(Redirect, {
         to: "/login"
-      }))), /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Components_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], null))))), /*#__PURE__*/React.createElement(Route, {
+      }))), /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], null))))), /*#__PURE__*/React.createElement(Route, {
         path: "/check"
       }, /*#__PURE__*/React.createElement("div", {
         className: "cookieCheckContainer"
       }, /*#__PURE__*/React.createElement("img", {
         src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
         className: "crawlerPage-logo"
-      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_28__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International"))))));
+      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International"))))));
     }
   } else {
     return /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
@@ -35992,14 +35697,14 @@ function App() {
     }, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null)), /*#__PURE__*/React.createElement(Route, {
       path: "/",
       exact: true
-    }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+    }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
       path: "/check"
     }, /*#__PURE__*/React.createElement("div", {
       className: "cookieCheckContainer"
     }, /*#__PURE__*/React.createElement("img", {
       src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
       className: "crawlerPage-logo"
-    }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_28__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(Route, {
+    }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(Route, {
       path: "/api",
       render: function render() {
         return null;
@@ -41778,8 +41483,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../SelectInput/Selector */ "./src/Components/SelectInput/Selector.js");
 /* harmony import */ var _IntastellarAccounts_IntastellarAccounts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../IntastellarAccounts/IntastellarAccounts */ "./src/Components/IntastellarAccounts/IntastellarAccounts.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var _Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Functions/domainVerification.js */ "./src/Functions/domainVerification.js");
-/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -41796,7 +41500,6 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-
 
 
 
@@ -41995,38 +41698,6 @@ function getPrimaryDomainFromWorkspace(ws) {
   return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains$ = ws.domains[0]) === null || _ws$domains$ === void 0 ? void 0 : _ws$domains$.domain) || null;
 }
 
-/**
- * Get verification status for dropdown display
- */
-function getDomainVerificationStatus(domain, orgId) {
-  if (!orgId || !domain || domain === "combined view") {
-    return null;
-  }
-  if ((0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__.isDomainVerified)(domain, orgId)) {
-    return "verified";
-  }
-  if ((0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__.isVerificationExpired)(domain, orgId)) {
-    return "expired";
-  }
-  return "unverified";
-}
-
-/**
- * Get current organisation ID for verification checks
- */
-function getCurrentOrgId() {
-  try {
-    var orgRaw = localStorage.getItem("organisation");
-    if (orgRaw) {
-      var org = JSON.parse(orgRaw);
-      return (org === null || org === void 0 ? void 0 : org.id) || null;
-    }
-  } catch (_unused7) {
-    /* ignore */
-  }
-  return null;
-}
-
 /*
  * Resolve the platform key whose `getDomains` we should call. Routes
  * like /experiments or /settings aren't platform namespaces in the
@@ -42130,13 +41801,13 @@ function Header(props) {
           lastedVisited: null
         });
         data === null || data === void 0 || data.map(function (d) {
-          return punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
+          return punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain);
         }).filter(function (d) {
           return d !== undefined && d !== "" && d !== "undefined.";
         });
         setDomains(data);
         var allowedDomains = data === null || data === void 0 ? void 0 : data.map(function (d) {
-          return punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
+          return punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain);
         }).filter(function (d) {
           return d !== undefined && d !== "" && d !== "undefined." && d !== "combined view";
         });
@@ -42147,7 +41818,6 @@ function Header(props) {
 
   // Build domain list based on whether a workspace is active
   domainList = [];
-  var orgId = getCurrentOrgId();
   if (activeWorkspace) {
     var _activeWorkspace$doma;
     // When workspace is active, show only workspace domains
@@ -42169,16 +41839,14 @@ function Header(props) {
       })) || []
     });
 
-    // Add workspace domains with verification status
+    // Add workspace domains
     if (activeWorkspace.domains && activeWorkspace.domains.length > 0) {
       activeWorkspace.domains.forEach(function (d) {
-        var verifyStatus = getDomainVerificationStatus(d.domain, orgId);
         domainList.push({
           icon: null,
           name: d.domain,
           type: "workspace-domain",
-          isPrimary: d.isPrimary,
-          verificationStatus: verifyStatus
+          isPrimary: d.isPrimary
         });
       });
     }
@@ -42226,15 +41894,12 @@ function Header(props) {
       }
     }
 
-    // Add domains from API with verification status
+    // Add domains from API
     var apiDomains = (domains === null || domains === void 0 ? void 0 : domains.map(function (d) {
-      var domainName = punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
-      var verifyStatus = getDomainVerificationStatus(domainName, orgId);
       return {
         icon: d.icon || null,
-        name: domainName,
-        type: "domain",
-        verificationStatus: verifyStatus
+        name: punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain),
+        type: "domain"
       };
     })) || [];
     if (apiDomains.length > 0) {
@@ -43407,36 +43072,9 @@ function Select(props) {
           }
         }, /*#__PURE__*/React.createElement("span", {
           className: "dropdown-menu__domain-name"
-        }, item.name), /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__badges"
-        }, item.isPrimary && /*#__PURE__*/React.createElement("span", {
+        }, item.name), item.isPrimary && /*#__PURE__*/React.createElement("span", {
           className: "dropdown-menu__primary-tag"
-        }, "Primary"), item.verificationStatus && /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__verify-tag dropdown-menu__verify-tag--".concat(item.verificationStatus)
-        }, item.verificationStatus === "verified" ? "✓" : item.verificationStatus === "expired" ? "!" : "?")));
-      }
-      // Handle regular domain items
-      if (item.type === "domain") {
-        return /*#__PURE__*/React.createElement("li", {
-          key: item.name,
-          "data-dropdown-item": true,
-          role: "option",
-          className: "dropdown-menu__item--domain",
-          onClick: function onClick() {
-            return props.onChange(JSON.stringify({
-              name: item.name,
-              type: "domain"
-            }));
-          }
-        }, item.icon ? /*#__PURE__*/React.createElement("img", {
-          className: "company-logo",
-          src: item.icon,
-          alt: ""
-        }) : null, /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__domain-name"
-        }, item.name), item.verificationStatus && item.name !== "combined view" && /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__verify-tag dropdown-menu__verify-tag--".concat(item.verificationStatus)
-        }, item.verificationStatus === "verified" ? "✓" : item.verificationStatus === "expired" ? "!" : "?"));
+        }, "Primary"));
       }
       // Handle workspace items
       if (item.type === "workspace") {
@@ -47542,317 +47180,6 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
-
-/***/ }),
-
-/***/ "./src/Pages/Dashboard/CookiesDashboard.css":
-/*!**************************************************!*\
-  !*** ./src/Pages/Dashboard/CookiesDashboard.css ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _node_modules_css_loader_dist_cjs_js_CookiesDashboard_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./CookiesDashboard.css */ "./node_modules/css-loader/dist/cjs.js!./src/Pages/Dashboard/CookiesDashboard.css");
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-var options = {};
-
-options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
-options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
-options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
-options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
-options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
-
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_CookiesDashboard_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
-
-
-
-
-       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_CookiesDashboard_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_CookiesDashboard_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_CookiesDashboard_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
-
-
-/***/ }),
-
-/***/ "./src/Pages/Dashboard/CookiesDashboard.js":
-/*!*************************************************!*\
-  !*** ./src/Pages/Dashboard/CookiesDashboard.js ***!
-  \*************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ CookiesDashboard)
-/* harmony export */ });
-/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../API/api */ "./src/API/api.js");
-/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Filter/filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
-/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
-/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
-/* harmony import */ var _Components_Tabel_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Components/Tabel/index.js */ "./src/Components/Tabel/index.js");
-/* harmony import */ var _CookiesDashboard_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./CookiesDashboard.css */ "./src/Pages/Dashboard/CookiesDashboard.css");
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
-function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-var _React = React,
-  useState = _React.useState,
-  useEffect = _React.useEffect;
-
-var useParams = window.ReactRouterDOM.useParams;
-
-
-
-
-
-
-var SEVERITY_ORDER = ["critical", "high", "medium", "low", "info"];
-function sortWarnings(warnings) {
-  if (!(warnings !== null && warnings !== void 0 && warnings.length)) return [];
-  return _toConsumableArray(warnings).sort(function (a, b) {
-    var aIndex = SEVERITY_ORDER.indexOf(String(a.severity || "").toLowerCase());
-    var bIndex = SEVERITY_ORDER.indexOf(String(b.severity || "").toLowerCase());
-    return (aIndex === -1 ? 99 : aIndex) - (bIndex === -1 ? 99 : bIndex);
-  });
-}
-function warningRowClass(severity) {
-  var s = String(severity || "").toLowerCase();
-  if (["critical", "high", "medium", "low", "info"].includes(s)) {
-    return "cookies-warnings__item cookies-warnings__item--".concat(s);
-  }
-  return "cookies-warnings__item cookies-warnings__item--unknown";
-}
-function CookiesDashboard() {
-  document.title = "Cookies | Intastellar Consents";
-  var _useParams = useParams(),
-    id = _useParams.id;
-  var _useState = useState(null),
-    _useState2 = _slicedToArray(_useState, 2),
-    activeData = _useState2[0],
-    setActiveData = _useState2[1];
-  var _useState3 = useState(true),
-    _useState4 = _slicedToArray(_useState3, 2),
-    loading = _useState4[0],
-    setLoading = _useState4[1];
-  var settings = JSON.parse(localStorage.getItem("settings")) || {
-    dateRange: 30
-  };
-  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
-  var _useState5 = useState(initialLastDays),
-    _useState6 = _slicedToArray(_useState5, 2),
-    getLastDays = _useState6[0],
-    setLastDays = _useState6[1];
-  var _useState7 = useState("combined view"),
-    _useState8 = _slicedToArray(_useState7, 2),
-    domainFilter = _useState8[0],
-    setDomainFilter = _useState8[1];
-  var today = new Date();
-  var _useState9 = useState(new Date(new Date().setDate(today.getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange)))),
-    _useState0 = _slicedToArray(_useState9, 2),
-    fromDate = _useState0[0],
-    setFromDate = _useState0[1];
-  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - 1))),
-    _useState10 = _slicedToArray(_useState1, 2),
-    toDate = _useState10[0],
-    setToDate = _useState10[1];
-  var _useState11 = useState(0),
-    _useState12 = _slicedToArray(_useState11, 2),
-    compareRange = _useState12[0],
-    setCompareRange = _useState12[1];
-  var _useState13 = useState(function () {
-      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange))), new Date(new Date().setDate(new Date().getDate() - 1))).start;
-    }),
-    _useState14 = _slicedToArray(_useState13, 2),
-    previousPeriod = _useState14[0],
-    setPreviousPeriod = _useState14[1];
-  var _useState15 = useState(function () {
-      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_2__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - (settings === null || settings === void 0 ? void 0 : settings.dateRange))), new Date(new Date().setDate(new Date().getDate() - 1))).end;
-    }),
-    _useState16 = _slicedToArray(_useState15, 2),
-    previousPeriod2 = _useState16[0],
-    setPreviousPeriod2 = _useState16[1];
-  useEffect(function () {
-    var cancelled = false;
-    var domainsHeader = domainFilter === "Select a Domain" || domainFilter == null ? "combined view" : domainFilter;
-    _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers.Domains = domainsHeader;
-    _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
-    _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers.ToDate = toDate.toISOString().split("T")[0];
-    var url = _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.url;
-    var method = _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.method;
-    var headers = _API_api__WEBPACK_IMPORTED_MODULE_0__["default"][id].getCookies.headers;
-    setLoading(true);
-    fetch(url, {
-      method: method,
-      headers: headers
-    }).then(function (response) {
-      return response.json();
-    }).then(function (data) {
-      if (!cancelled) setActiveData(data);
-    })["catch"](function () {
-      if (!cancelled) setActiveData(null);
-    })["finally"](function () {
-      if (!cancelled) setLoading(false);
-    });
-    return function () {
-      cancelled = true;
-    };
-  }, [fromDate, toDate, domainFilter, id]);
-  var domainItems = (activeData === null || activeData === void 0 ? void 0 : activeData.status) === "success" && activeData !== null && activeData !== void 0 && activeData.domains ? ["combined view"].concat(_toConsumableArray(Object.keys(activeData.domains))) : ["combined view"];
-  var showAllDomains = domainFilter === "combined view" || domainFilter === "Select a Domain" || domainFilter == null;
-  var visibleEntries = (activeData === null || activeData === void 0 ? void 0 : activeData.status) === "success" && activeData !== null && activeData !== void 0 && activeData.domains ? Object.entries(activeData.domains).filter(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 1),
-      domain = _ref2[0];
-    return showAllDomains || domain === domainFilter;
-  }) : [];
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    title: "Cookies Dashboard",
-    numberofDays: setLastDays,
-    getLastDays: getLastDays,
-    setActiveData: setActiveData,
-    fromDate: fromDate,
-    toDate: toDate,
-    setFromDate: setFromDate,
-    setToDate: setToDate,
-    previousPeriod: previousPeriod,
-    previousPeriod2: previousPeriod2,
-    compareRange: compareRange,
-    setCompareRange: setCompareRange,
-    setCompareWindowStart: setPreviousPeriod,
-    setCompareWindowEnd: setPreviousPeriod2
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "dashboard-content cookies-dashboard"
-  }, loading ? /*#__PURE__*/React.createElement("p", {
-    className: "cookies-dashboard__loading"
-  }, "Loading\u2026") : (activeData === null || activeData === void 0 ? void 0 : activeData.status) === "success" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "cookies-dashboard__toolbar"
-  }, /*#__PURE__*/React.createElement("p", {
-    className: "cookies-dashboard__toolbar-label"
-  }, "Domain scope"), /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
-    defaultValue: domainFilter === "Select a Domain" ? "combined view" : domainFilter,
-    items: domainItems,
-    onChange: function onChange(e) {
-      if (e === "Select a Domain" || e === "combined view") {
-        setDomainFilter("combined view");
-      } else {
-        setDomainFilter(e);
-      }
-    }
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "cookies-dashboard__domains"
-  }, visibleEntries.length === 0 ? /*#__PURE__*/React.createElement("p", {
-    className: "cookies-dashboard__empty"
-  }, "No domains match the current filter.") : null, visibleEntries.map(function (_ref3) {
-    var _ref4 = _slicedToArray(_ref3, 2),
-      domain = _ref4[0],
-      domainData = _ref4[1];
-    var findings = domainData.findings || [];
-    var sortedWarnings = sortWarnings(domainData.warnings);
-    var rows = (domainData.data || []).map(function (cookie) {
-      return {
-        name: cookie.name,
-        origin: cookie.origin,
-        domain: cookie.domain,
-        firstSeen: cookie.firstSeen,
-        lastSeen: cookie.lastSeen,
-        seenPostConsent: cookie.seenPostConsent == 1 ? "Yes" : "No",
-        seenPreConsent: cookie.seenPreConsent == 1 ? "Yes" : "No"
-      };
-    });
-    return /*#__PURE__*/React.createElement("section", {
-      className: "cookies-domain-card",
-      key: domain
-    }, /*#__PURE__*/React.createElement("header", {
-      className: "cookies-domain-card__head"
-    }, /*#__PURE__*/React.createElement("h2", {
-      className: "cookies-domain-card__title"
-    }, domain)), /*#__PURE__*/React.createElement("div", {
-      className: "cookies-domain-card__body"
-    }, findings.length > 0 ? /*#__PURE__*/React.createElement("div", {
-      className: "cookies-section"
-    }, /*#__PURE__*/React.createElement("h3", {
-      className: "cookies-section__title"
-    }, "Findings"), /*#__PURE__*/React.createElement("ul", {
-      className: "cookies-findings"
-    }, findings.map(function (finding, index) {
-      return /*#__PURE__*/React.createElement("li", {
-        key: index,
-        className: "cookies-findings__item"
-      }, finding);
-    }))) : null, sortedWarnings.length > 0 ? /*#__PURE__*/React.createElement("div", {
-      className: "cookies-section"
-    }, /*#__PURE__*/React.createElement("h3", {
-      className: "cookies-section__title"
-    }, "Warnings"), /*#__PURE__*/React.createElement("ul", {
-      className: "cookies-warnings"
-    }, sortedWarnings.map(function (warning, index) {
-      return /*#__PURE__*/React.createElement("li", {
-        key: index,
-        className: warningRowClass(warning.severity)
-      }, /*#__PURE__*/React.createElement("span", {
-        className: "cookies-warnings__dot",
-        "aria-hidden": true
-      }), /*#__PURE__*/React.createElement("span", null, warning.message));
-    }))) : null, /*#__PURE__*/React.createElement("div", {
-      className: "cookies-section"
-    }, /*#__PURE__*/React.createElement("h3", {
-      className: "cookies-section__title"
-    }, "Overview"), /*#__PURE__*/React.createElement("div", {
-      className: "cookies-stats"
-    }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      type: "First-party cookies",
-      totalNumber: domainData.firstPartyCookies
-    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      type: "Third-party cookies",
-      totalNumber: domainData.thirdPartyCookies
-    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      type: "Pre-consent cookies",
-      totalNumber: domainData.preConsent
-    }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      type: "Post-consent cookies",
-      totalNumber: domainData.postConsent
-    }))), /*#__PURE__*/React.createElement("div", {
-      className: "cookies-section"
-    }, /*#__PURE__*/React.createElement("h3", {
-      className: "cookies-section__title"
-    }, "Cookie inventory"), /*#__PURE__*/React.createElement("div", {
-      className: "cookies-table-wrap"
-    }, /*#__PURE__*/React.createElement(_Components_Tabel_index_js__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      data: rows,
-      headers: ["Cookie", "first- / third-party", "Domain", "First Seen", "Last Seen", "Seen Post Consent", "Seen Pre Consent"]
-    })))));
-  }))) : /*#__PURE__*/React.createElement("p", {
-    className: "cookies-dashboard__empty"
-  }, "No data found for the selected domain(s) and date range.")));
-}
 
 /***/ }),
 

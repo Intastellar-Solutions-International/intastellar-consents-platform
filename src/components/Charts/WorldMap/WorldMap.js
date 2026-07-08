@@ -452,7 +452,7 @@ export default function Map(props) {
 
     return (
         <>
-            <div className="world-map">
+            <div className={"world-map" + (dataFlowMode ? " world-map--flow" : "")}>
                 <div className="world-map__main">
                     <header className="world-map__header">
                         <h2 className="world-map__title">
@@ -484,7 +484,7 @@ export default function Map(props) {
                         <div id="svgMap" className="world-map__map-inner" />
                     </div>
                 </div>
-                <aside className="world-map__side" aria-label="Top countries by volume">
+                {!dataFlowMode && ranked.length > 0 && <aside className="world-map__side" aria-label="Top countries by volume">
                     <div className="world-map__side-head">
                         <h3 className="world-map__side-title">Top markets</h3>
                         <p className="world-map__side-hint">
@@ -534,7 +534,7 @@ export default function Map(props) {
                             );
                         })}
                     </div>
-                </aside>
+                </aside>}
             </div>
 
             <CountryDetailDrawer

@@ -5,7 +5,6 @@ import Footer from "./Components/Footer";
 import Login from "./Login/Login";
 import Signup from "./Login/Signup";
 import Nav from "./Components/Header/Nav";
-import CookiesDashboard from "./Pages/Dashboard/CookiesDashboard";
 import API from "./API/api";
 import Dashboard from "./Pages/Dashboard/Dashboard.js";
 import FerryDashboard from "./Pages/Dashboard/ferry/Dashboard.js";
@@ -270,13 +269,6 @@ export default function App() {
                                             <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <UserPreferences />}
                                             </ErrorBoundary>
-                                        </Route>
-                                        <Route path="/:id/cookies" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <CookiesDashboard />}
-                                                </ErrorBoundary>
-                                            }
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/user-consents" exact>
                                             {

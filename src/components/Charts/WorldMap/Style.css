@@ -619,6 +619,11 @@
     }
 }
 
+/* Suppress svgMap tooltip in data-flow mode */
+.world-map--flow .svgMap-tooltip {
+    display: none !important;
+}
+
 /* ── Data flow legend ────────────────────────────────────────────────────────── */
 .world-map__legend {
     display: flex;

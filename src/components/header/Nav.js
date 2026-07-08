@@ -11,7 +11,6 @@ import reports from "./icons/reports.svg";
 /* import compare from "./icons/compare.svg"; */
 import domains from "./icons/domain.svg";
 import expand from "./icons/expand.svg";
-import cookies from "./icons/cookies.svg";
 import settings from "./icons/settings.svg";
 import logout from "./icons/logout.svg";
 import dashboard from "./icons/dashboard.svg";
@@ -53,9 +52,6 @@ export default function Nav() {
                         <Link className={"navItems" + (path.indexOf("/compliance") > -1 ? " --active" : "")} to={compliancePath}><i className="dashboard-icons compliance" style={{
                             backgroundImage: `url(${compliance})`
                         }} data-icon={compliance}></i> <span className="hiddenCollapsed">Compliance</span></Link>
-                        <Link className={"navItems" + (path.indexOf("/cookies") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/cookies"}><i className="dashboard-icons cookies" style={{
-                            backgroundImage: `url(${cookies})`
-                        }} data-icon={cookies}></i> <span className="hiddenCollapsed">Cookies</span></Link>
                         <section className="navItems--bottom">
                             <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
                                 backgroundImage: `url(${settings})`
