@@ -1,14 +1,17 @@
 /**
  * POST /api/pre-consent-scan
  *
- * Internal endpoint called by the PHP scan proxy.
- * Requires X-Scanner-Token header matching SCANNER_INTERNAL_TOKEN env var.
+ * Triggers a pre-consent scan for a domain. Called directly by the frontend.
+ * Validates the Intastellar Bearer JWT (iss/nbf/exp checks, same as PHP).
  *
- * Body: { domain, organisationId, workspaceId? }
+ * Headers:
+ *   Authorization  Bearer <token>
+ *   Organisation   <organisation_id>
+ *
+ * Body: { domain, workspaceId? }
  *
  * Env vars (set in Vercel project settings):
- *   POSTGRES_URL            — Neon connection string (EU Frankfurt)
- *   SCANNER_INTERNAL_TOKEN  — shared secret with PHP proxy
+ *   POSTGRES_URL  — Neon connection string (EU Frankfurt)
  */
 
 import chromium from "chrome-aws-lambda";
@@ -177,6 +180,22 @@ async function scanDomain(domain) {
     }
 }
 
+// ── JWT validation (mirrors PHP — checks claims only, no signature) ────────────
+function validateJwt(authHeader) {
+    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
+    if (!match) return null;
+    try {
+        const parts = Buffer.from(match[1], "base64").toString("utf8").split(".");
+        if (parts.length !== 3) return null;
+        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
+        const now = Math.floor(Date.now() / 1000);
+        if (payload.iss !== "Intastellar Account" || (payload.nbf || 0) > now || (payload.exp || 0) < now) return null;
+        return payload;
+    } catch {
+        return null;
+    }
+}
+
 // ── Handler ───────────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
     if (req.method !== "POST") {
@@ -184,12 +203,16 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const expectedToken = process.env.SCANNER_INTERNAL_TOKEN || "";
-    if (!expectedToken || req.headers["x-scanner-token"] !== expectedToken) {
+    if (!validateJwt(req.headers["authorization"])) {
         return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const { domain, organisationId, workspaceId } = req.body || {};
+    const organisationId = parseInt(req.headers["organisation"] || "0", 10);
+    if (!organisationId) {
+        return res.status(400).json({ error: "Missing Organisation header" });
+    }
+
+    const { domain, workspaceId } = req.body || {};
     if (!domain || typeof domain !== "string") {
         return res.status(400).json({ error: "domain is required" });
     }

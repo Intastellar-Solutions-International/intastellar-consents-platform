@@ -2,18 +2,18 @@
  * GET /api/pre-consent-transfers?domain=example.com
  *
  * Returns the most recent pre-consent scan result for a domain.
- * Called by the PHP proxy (pre-consent-transfers.php) via X-Scanner-Token.
+ * Called directly by the frontend.
+ * Validates the Intastellar Bearer JWT (iss/nbf/exp checks, same as PHP).
  *
  * Headers:
- *   X-Scanner-Token  — must match SCANNER_INTERNAL_TOKEN env var
- *   Organisation     — organisation_id (integer)
+ *   Authorization  Bearer <token>
+ *   Organisation   <organisation_id>
  *
  * Query params:
  *   domain  string  required
  *
  * Env vars (set in Vercel project settings):
- *   POSTGRES_URL            — Neon connection string (EU Frankfurt)
- *   SCANNER_INTERNAL_TOKEN  — shared secret with PHP proxy
+ *   POSTGRES_URL  — Neon connection string (EU Frankfurt)
  */
 
 import pkg from "pg";
@@ -31,14 +31,28 @@ function getPool() {
     return pool;
 }
 
+function validateJwt(authHeader) {
+    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
+    if (!match) return null;
+    try {
+        const parts = Buffer.from(match[1], "base64").toString("utf8").split(".");
+        if (parts.length !== 3) return null;
+        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
+        const now = Math.floor(Date.now() / 1000);
+        if (payload.iss !== "Intastellar Account" || (payload.nbf || 0) > now || (payload.exp || 0) < now) return null;
+        return payload;
+    } catch {
+        return null;
+    }
+}
+
 export default async function handler(req, res) {
     if (req.method !== "GET") {
         res.setHeader("Allow", "GET");
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const expectedToken = process.env.SCANNER_INTERNAL_TOKEN || "";
-    if (!expectedToken || req.headers["x-scanner-token"] !== expectedToken) {
+    if (!validateJwt(req.headers["authorization"])) {
         return res.status(401).json({ error: "Unauthorized" });
     }
 

@@ -1,4 +1,4 @@
-import { PrimaryHost, LoginHost } from "./host";
+import { PrimaryHost, LoginHost, ScannerHost } from "./host";
 import Authentication from "../Authentication/Auth";
 
 const API = {
@@ -233,7 +233,7 @@ const API = {
             }
         },
         getPreConsentTransfers: {
-            url: `${PrimaryHost}/cmp/pre-consent-transfers`,
+            url: `${ScannerHost}/api/pre-consent-transfers`,
             method: "GET",
             headers: {
                 "Authorization": Authentication.getToken(),
@@ -242,7 +242,7 @@ const API = {
             }
         },
         triggerPreConsentScan: {
-            url: `${PrimaryHost}/cmp/pre-consent-transfers/scan`,
+            url: `${ScannerHost}/api/pre-consent-scan`,
             method: "POST",
             headers: {
                 "Authorization": Authentication.getToken(),

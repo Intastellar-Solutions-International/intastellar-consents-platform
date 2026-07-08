@@ -34600,7 +34600,7 @@ var API = {
       }
     },
     getPreConsentTransfers: {
-      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/pre-consent-transfers"),
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/pre-consent-transfers"),
       method: "GET",
       headers: {
         "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
@@ -34609,7 +34609,7 @@ var API = {
       }
     },
     triggerPreConsentScan: {
-      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/pre-consent-transfers/scan"),
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/pre-consent-scan"),
       method: "POST",
       headers: {
         "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
@@ -34850,10 +34850,12 @@ var API = {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   LoginHost: () => (/* binding */ LoginHost),
-/* harmony export */   PrimaryHost: () => (/* binding */ PrimaryHost)
+/* harmony export */   PrimaryHost: () => (/* binding */ PrimaryHost),
+/* harmony export */   ScannerHost: () => (/* binding */ ScannerHost)
 /* harmony export */ });
 var PrimaryHost = "https://apis.intastellarsolutions.com";
 var LoginHost = "https://apis.intastellaraccounts.com";
+var ScannerHost = "https://www.intastellarconsents.com";
 
 
 /***/ }),
@@ -40854,9 +40856,19 @@ function SideNav(props) {
     // Check agency subscription requirement
     if (link.requiresAgency) {
       try {
+        var _org;
         // Allow access for Intastellar Solutions (org ID 1)
-        var org = JSON.parse(localStorage.getItem("organisation"));
-        if ((org === null || org === void 0 ? void 0 : org.id) === 1) {
+        var orgRaw = localStorage.getItem("organisation");
+        var org = null;
+        if (orgRaw) {
+          try {
+            org = JSON.parse(orgRaw);
+          } catch (_unused) {
+            /* not JSON */
+          }
+        }
+        // Compare as strings to handle both number and string id
+        if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") {
           // Org 1 has access, continue
         } else {
           var _JSON$parse;
@@ -40865,7 +40877,7 @@ function SideNav(props) {
             return null;
           }
         }
-      } catch (_unused) {
+      } catch (_unused2) {
         return null;
       }
     }
@@ -41299,14 +41311,25 @@ function readCachedDomains() {
 function hasAgencySubscription() {
   try {
     // Allow access for Intastellar Solutions (org ID 1)
-    var org = JSON.parse(localStorage.getItem("organisation"));
-    if ((org === null || org === void 0 ? void 0 : org.id) === 1) return true;
+    var orgRaw = localStorage.getItem("organisation");
+    if (orgRaw) {
+      var _org;
+      // Handle both JSON string and plain value formats
+      var org = orgRaw;
+      try {
+        org = JSON.parse(orgRaw);
+      } catch (_unused4) {
+        /* not JSON, use raw value */
+      }
+      // Check for org ID 1 (compare as strings to handle both number and string)
+      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
+    }
     var sub = localStorage.getItem("subscription");
     if (sub) {
       var parsed = JSON.parse(sub);
       return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
     }
-  } catch (_unused4) {
+  } catch (_unused5) {
     /* ignore */
   }
   return false;
@@ -41333,7 +41356,7 @@ function readAgencyWorkspaces() {
         return ws;
       });
     }
-  } catch (_unused5) {
+  } catch (_unused6) {
     /* ignore */
   }
   return [];
@@ -63919,22 +63942,6 @@ module.exports = React;
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
-(() => {
-/*!******************!*\
-  !*** ./index.js ***!
-  \******************/
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _src_App_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/App.js */ "./src/App.js");
-
-var createRoot = window.ReactDOM.createRoot;
-var container = document.getElementById('app');
-var root = createRoot(container); // createRoot(container!) if you use TypeScript
-root.render(/*#__PURE__*/React.createElement(_src_App_js__WEBPACK_IMPORTED_MODULE_0__["default"], null));
-})();
-
-/******/ })()
-;
-//# sourceMappingURL=main.bundle.js.mapeds to be isolated against other modules in the chunk.
 (() => {
 /*!******************!*\
   !*** ./index.js ***!
