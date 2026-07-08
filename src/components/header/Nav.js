@@ -38,6 +38,9 @@ export default function Nav() {
                         <Link className={"navItems" + (homeActive ? " --active" : "")} to={homePath}><i className="dashboard-icons home" style={{
                             backgroundImage: `url(${home})`
                         }} data-icon={home}></i> <span className="hiddenCollapsed">Home</span></Link>
+                        <Link className={"navItems" + (path.indexOf("/compliance") > -1 ? " --active" : "")} to={compliancePath}><i className="dashboard-icons compliance" style={{
+                            backgroundImage: `url(${compliance})`
+                        }} data-icon={compliance}></i> <span className="hiddenCollapsed">Compliance</span></Link>
                         <Link className={"navItems" + (path.indexOf("/reports") > -1 && path.indexOf("/compliance") === -1 ? " --active" : "")} to={reportsPathResolved}><i className="dashboard-icons reports" style={{
                             backgroundImage: `url(${reports})`
                         }} data-icon={reports}></i> <span className="hiddenCollapsed">Reports</span></Link>
@@ -49,9 +52,6 @@ export default function Nav() {
                                 backgroundImage: `url(${experiments})`
                             }} data-icon={experiments}></i> <span className="hiddenCollapsed">A/B Testing</span>
                         </Link>
-                        <Link className={"navItems" + (path.indexOf("/compliance") > -1 ? " --active" : "")} to={compliancePath}><i className="dashboard-icons compliance" style={{
-                            backgroundImage: `url(${compliance})`
-                        }} data-icon={compliance}></i> <span className="hiddenCollapsed">Compliance</span></Link>
                         <section className="navItems--bottom">
                             <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
                                 backgroundImage: `url(${settings})`

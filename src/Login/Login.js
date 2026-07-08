@@ -1,5 +1,6 @@
 import "./Login.css";
 import logo from "../Components/Header/logo.svg";
+import logoBlack from "../Components/Header/logo-black.svg";
 import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
 import { useIntastellar } from "@intastellar/signin-sdk-react";
@@ -77,7 +78,7 @@ export default function Login() {
                         >
                             <div className="int-login__brand">
                                 <img
-                                    src={logo}
+                                    src={logoBlack}
                                     alt="Intastellar Solutions"
                                     className="int-login__logo"
                                     decoding="async"

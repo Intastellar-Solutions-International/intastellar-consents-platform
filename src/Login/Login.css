@@ -382,7 +382,7 @@ body {
 
 .int-login__features-logo {
     height: auto;
-    max-width: min(100%, 180px);
+    max-width: min(100%, 230px);
     display: block;
     opacity: 0.88;
     filter: brightness(0) invert(1);
@@ -511,7 +511,7 @@ body {
 .int-login__panel--form .int-login__logo {
     filter: none;
     opacity: 1;
-    max-width: min(100%, 200px);
+    max-width: min(100%, 300px);
 }
 
 .int-login__panel--form .int-login__headline {
