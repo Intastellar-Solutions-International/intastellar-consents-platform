@@ -1,7 +1,7 @@
 const { useState, useEffect, useContext, useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky";
 import AuditSnapshotCard from "../../components/AuditSnapshotCard/AuditSnapshotCard.js";
-import Map from "../../Components/Charts/WorldMap/WorldMap.js";
+import ComplianceFlowMap from "./ComplianceFlowMap.js";
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import { DomainContext, WorkspaceContext } from "../../App.js";
 import API from "../../API/api";
@@ -319,12 +319,9 @@ export default function CompliancePage() {
 
             {/* ── Hero map — full-width, outside dashboard-content padding ── */}
             <div className="compliance-hero">
-                <Map
-                    demoMode={demoMode}
-                    data={null}
-                    dataFlowMode={true}
-                    dataFlowOrigin="DE"
+                <ComplianceFlowMap
                     dataFlowCountries={dataFlowCountries}
+                    dataFlowOrigin="DE"
                 />
                 {/* Cookie scan strip overlaid at the bottom of the hero */}
                 {observedCookies && (

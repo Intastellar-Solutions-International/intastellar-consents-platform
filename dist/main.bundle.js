@@ -22950,6 +22950,99 @@ ___CSS_LOADER_EXPORT___.push([module.id, `body {
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/Pages/Compliance/ComplianceFlowMap.css":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/Pages/Compliance/ComplianceFlowMap.css ***!
+  \******************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.cfm {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ── Base map ── */
+.cfm-country {
+    fill: #343d4a;
+    stroke: rgba(8, 12, 18, 0.75);
+    stroke-width: 0.45;
+    pointer-events: none;
+}
+
+/* ── Flow arcs ── */
+@keyframes cfm-arc-draw {
+    from { stroke-dashoffset: var(--arc-len, 600); }
+    to   { stroke-dashoffset: 0; }
+}
+
+@keyframes cfm-origin-pulse {
+    0%, 100% { r: 6;  opacity: 0.5; }
+    50%       { r: 10; opacity: 0.1; }
+}
+
+.cfm-arc {
+    stroke: rgba(220, 80, 80, 0.5);
+    stroke-width: 1.3;
+    fill: none;
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: cfm-arc-draw 1.2s ease forwards;
+    pointer-events: none;
+}
+
+.cfm-dot {
+    fill: rgba(220, 80, 80, 0.9);
+    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.6));
+    pointer-events: none;
+}
+
+.cfm-origin-ring {
+    fill: rgba(80, 168, 120, 0.15);
+    stroke: rgba(80, 168, 120, 0.8);
+    stroke-width: 1.5;
+    animation: cfm-origin-pulse 2.4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.cfm-origin-dot {
+    fill: #50a878;
+    filter: drop-shadow(0 0 3px rgba(80, 168, 120, 0.7));
+    pointer-events: none;
+}
+
+.cfm-dest-ring {
+    fill: rgba(220, 80, 80, 0.12);
+    stroke: rgba(220, 80, 80, 0.6);
+    stroke-width: 1.2;
+    pointer-events: none;
+}
+
+.cfm-dest-dot {
+    fill: rgba(220, 80, 80, 0.85);
+    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.5));
+    pointer-events: none;
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/ComplianceFlowMap.css"],"names":[],"mappings":"AAAA;IACI,WAAW;IACX,YAAY;IACZ,cAAc;AAClB;;AAEA,mBAAmB;AACnB;IACI,aAAa;IACb,6BAA6B;IAC7B,kBAAkB;IAClB,oBAAoB;AACxB;;AAEA,oBAAoB;AACpB;IACI,OAAO,sCAAsC,EAAE;IAC/C,OAAO,oBAAoB,EAAE;AACjC;;AAEA;IACI,WAAW,IAAI,GAAG,YAAY,EAAE;IAChC,YAAY,KAAK,EAAE,YAAY,EAAE;AACrC;;AAEA;IACI,8BAA8B;IAC9B,iBAAiB;IACjB,UAAU;IACV,qBAAqB;IACrB,sBAAsB;IACtB,0CAA0C;IAC1C,oBAAoB;AACxB;;AAEA;IACI,4BAA4B;IAC5B,mDAAmD;IACnD,oBAAoB;AACxB;;AAEA;IACI,8BAA8B;IAC9B,+BAA+B;IAC/B,iBAAiB;IACjB,qDAAqD;IACrD,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb,oDAAoD;IACpD,oBAAoB;AACxB;;AAEA;IACI,6BAA6B;IAC7B,8BAA8B;IAC9B,iBAAiB;IACjB,oBAAoB;AACxB;;AAEA;IACI,6BAA6B;IAC7B,mDAAmD;IACnD,oBAAoB;AACxB","sourcesContent":[".cfm {\n    width: 100%;\n    height: 100%;\n    display: block;\n}\n\n/* ── Base map ── */\n.cfm-country {\n    fill: #343d4a;\n    stroke: rgba(8, 12, 18, 0.75);\n    stroke-width: 0.45;\n    pointer-events: none;\n}\n\n/* ── Flow arcs ── */\n@keyframes cfm-arc-draw {\n    from { stroke-dashoffset: var(--arc-len, 600); }\n    to   { stroke-dashoffset: 0; }\n}\n\n@keyframes cfm-origin-pulse {\n    0%, 100% { r: 6;  opacity: 0.5; }\n    50%       { r: 10; opacity: 0.1; }\n}\n\n.cfm-arc {\n    stroke: rgba(220, 80, 80, 0.5);\n    stroke-width: 1.3;\n    fill: none;\n    stroke-dasharray: 600;\n    stroke-dashoffset: 600;\n    animation: cfm-arc-draw 1.2s ease forwards;\n    pointer-events: none;\n}\n\n.cfm-dot {\n    fill: rgba(220, 80, 80, 0.9);\n    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.6));\n    pointer-events: none;\n}\n\n.cfm-origin-ring {\n    fill: rgba(80, 168, 120, 0.15);\n    stroke: rgba(80, 168, 120, 0.8);\n    stroke-width: 1.5;\n    animation: cfm-origin-pulse 2.4s ease-in-out infinite;\n    pointer-events: none;\n}\n\n.cfm-origin-dot {\n    fill: #50a878;\n    filter: drop-shadow(0 0 3px rgba(80, 168, 120, 0.7));\n    pointer-events: none;\n}\n\n.cfm-dest-ring {\n    fill: rgba(220, 80, 80, 0.12);\n    stroke: rgba(220, 80, 80, 0.6);\n    stroke-width: 1.2;\n    pointer-events: none;\n}\n\n.cfm-dest-dot {\n    fill: rgba(220, 80, 80, 0.85);\n    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.5));\n    pointer-events: none;\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./src/Pages/Compliance/Style.css":
 /*!******************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./src/Pages/Compliance/Style.css ***!
@@ -23019,6 +23112,15 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
 
 .compliance-hero .svgMap-map-wrapper {
     min-height: 0;
+    height: 100%;
+}
+
+/* ComplianceFlowMap SVG fills the hero */
+.compliance-hero .cfm {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
 }
 
@@ -24004,7 +24106,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
     min-width: 52px;
     text-align: center;
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.88);\n    letter-spacing: 0.01em;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n/* ── Side-by-side grid ───────────────────────────────────────────────────────── */\n.compliance-bottom-grid {\n    display: grid;\n    grid-template-columns: 3fr 2fr;\n    gap: 24px;\n    align-items: start;\n}\n\n/* When the transfers card is absent (combined view), audit takes full width */\n.compliance-bottom-grid > .compliance-page__audit:first-child {\n    grid-column: 1 / -1;\n}\n\n@media (max-width: 900px) {\n    .compliance-bottom-grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n\n/* ── Tab switcher ────────────────────────────────────────────────────────────── */\n.compliance-transfers__tabs {\n    display: flex;\n    gap: 2px;\n    margin-bottom: 20px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n    padding-bottom: 0;\n}\n\n.compliance-transfers__tab {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n    padding: 8px 14px 10px;\n    background: transparent;\n    border: none;\n    border-bottom: 2px solid transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.8rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    margin-bottom: -1px;\n    transition: color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-transfers__tab:hover {\n    color: rgba(255, 255, 255, 0.6);\n}\n\n.compliance-transfers__tab.--active {\n    color: rgba(255, 255, 255, 0.88);\n    border-bottom-color: #c0a053;\n}\n\n.compliance-tab-pill {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    min-width: 18px;\n    height: 18px;\n    padding: 0 5px;\n    border-radius: 9px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    background: rgba(255, 255, 255, 0.08);\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.compliance-transfers__tab.--active .compliance-tab-pill {\n    background: rgba(192, 159, 83, 0.18);\n    color: rgba(192, 159, 83, 0.9);\n}\n\n/* ── Cookies list ────────────────────────────────────────────────────────────── */\n.compliance-cookies__list {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n\n.compliance-cookies__row {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-cookies__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-cookies__row-name {\n    font-size: 0.82rem;\n    font-weight: 600;\n    font-family: monospace;\n    color: rgba(255, 255, 255, 0.78);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-domain {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.28);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-party {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-cookies__row-party.--third {\n    background: rgba(220, 80, 80, 0.1);\n    border-color: rgba(220, 80, 80, 0.25);\n    color: rgba(240, 130, 120, 0.85);\n}\n\n.compliance-cookies__row-party.--first {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-cookies__row-lifetime {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n}\n\n.compliance-cookies__row-lifetime.--persistent {\n    color: rgba(220, 160, 60, 0.75);\n}\n\n.compliance-cookies__row-lifetime.--session {\n    color: rgba(255, 255, 255, 0.28);\n}\n\n.compliance-cookies__flags {\n    display: flex;\n    gap: 4px;\n    flex-shrink: 0;\n    flex-wrap: wrap;\n}\n\n.compliance-cookies__flag {\n    padding: 2px 7px;\n    border-radius: 4px;\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    background: rgba(80, 144, 220, 0.08);\n    border: 1px solid rgba(80, 144, 220, 0.18);\n    color: rgba(140, 190, 240, 0.7);\n}\n\n@media (max-width: 580px) {\n    .compliance-cookies__row {\n        flex-wrap: wrap;\n    }\n    .compliance-cookies__flags {\n        width: 100%;\n    }\n}\n\n/* ── Category summary cards ─────────────────────────────────────────────────── */\n.transfers-summary {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n    margin-bottom: 18px;\n}\n\n.transfers-summary__card {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 4px;\n    padding: 12px 18px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    cursor: pointer;\n    font-family: inherit;\n    color: inherit;\n    transition: background 0.15s ease, border-color 0.15s ease;\n    min-width: 76px;\n    text-align: center;\n}\n\n.transfers-summary__card:hover {\n    background: rgba(255, 255, 255, 0.05);\n    border-color: rgba(255, 255, 255, 0.13);\n}\n\n.transfers-summary__card.--active {\n    background: color-mix(in srgb, var(--cat-color, #c0a053) 12%, transparent);\n    border-color: color-mix(in srgb, var(--cat-color, #c0a053) 40%, transparent);\n}\n\n.transfers-summary__card-icon {\n    font-size: 0.9rem;\n    line-height: 1;\n    color: var(--cat-color, rgba(255, 255, 255, 0.5));\n}\n\n.transfers-summary__card-count {\n    font-size: 1.6rem;\n    font-weight: 200;\n    color: rgba(255, 255, 255, 0.88);\n    line-height: 1;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n}\n\n.transfers-summary__card-label {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.transfers-summary__card-risk {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    padding: 2px 7px;\n    border-radius: 10px;\n    margin-top: 2px;\n}\n\n.transfers-summary__card-risk.--high {\n    background: rgba(220, 80, 80, 0.15);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.transfers-summary__card-risk.--medium {\n    background: rgba(220, 160, 60, 0.12);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.transfers-summary__card-risk.--low {\n    background: rgba(80, 168, 120, 0.1);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n.transfers-summary__clear {\n    align-self: center;\n    padding: 6px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.72rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: all 0.15s ease;\n}\n\n.transfers-summary__clear:hover {\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* ── Row additions ───────────────────────────────────────────────────────────── */\n.compliance-transfers__row-icon {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    width: 18px;\n    text-align: center;\n    line-height: 1;\n}\n\n.compliance-transfers__row-resource {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.3);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.compliance-transfers__row-resource--script   { background: rgba(120, 100, 220, 0.1); border-color: rgba(120, 100, 220, 0.2); color: rgba(170, 155, 240, 0.75); }\n.compliance-transfers__row-resource--xhr,\n.compliance-transfers__row-resource--fetch    { background: rgba(220, 160, 60, 0.08); border-color: rgba(220, 160, 60, 0.18); color: rgba(230, 185, 100, 0.7);  }\n.compliance-transfers__row-resource--image    { background: rgba(80, 168, 120, 0.07); border-color: rgba(80, 168, 120, 0.16); color: rgba(120, 200, 150, 0.65); }\n.compliance-transfers__row-resource--font     { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.09); color: rgba(255, 255, 255, 0.28); }\n.compliance-transfers__row-resource--stylesheet { background: rgba(80, 144, 220, 0.07); border-color: rgba(80, 144, 220, 0.16); color: rgba(140, 190, 240, 0.65); }\n\n/* ── EU / Non-EU region badge ────────────────────────────────────────────────── */\n.compliance-transfers__row-region {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    white-space: nowrap;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-region.--eu {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.7);\n}\n\n.compliance-transfers__row-region.--non-eu {\n    background: rgba(220, 140, 50, 0.1);\n    border-color: rgba(220, 140, 50, 0.22);\n    color: rgba(230, 175, 100, 0.8);\n}\n\n/* ── Extra category colours ──────────────────────────────────────────────────── */\n.compliance-transfers__row--cmp {\n    border-color: rgba(80, 168, 120, 0.12);\n    background: rgba(80, 168, 120, 0.03);\n}\n\n.compliance-transfers__row-cat--cmp {\n    background: rgba(80, 168, 120, 0.1);\n    border-color: rgba(80, 168, 120, 0.25);\n    color: rgba(120, 200, 150, 0.85);\n}\n\n.compliance-transfers__row-cat--fingerprinting {\n    background: rgba(192, 54, 90, 0.12);\n    border-color: rgba(192, 54, 90, 0.3);\n    color: rgba(230, 120, 150, 0.9);\n}\n\n.compliance-transfers__row-cat--functional {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.8);\n}\n\n.compliance-transfers__row-cat--cdn {\n    background: rgba(150, 150, 150, 0.07);\n    border-color: rgba(150, 150, 150, 0.18);\n    color: rgba(180, 180, 180, 0.55);\n}\n\n.compliance-transfers__row-cat--third-party {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.32);\n}\n\n@media (max-width: 580px) {\n    .transfers-summary {\n        gap: 6px;\n    }\n\n    .transfers-summary__card {\n        min-width: 64px;\n        padding: 10px 12px 8px;\n    }\n\n    .compliance-transfers__row-resource,\n    .compliance-transfers__row-region {\n        display: none;\n    }\n}\n\n/* ── Combined-view placeholder ──────────────────────────────────────────────── */\n.compliance-transfers__combined-placeholder {\n    display: flex;\n    align-items: center;\n    gap: 14px;\n    padding: 28px 22px;\n    color: rgba(255, 255, 255, 0.3);\n    font-size: 0.82rem;\n    line-height: 1.5;\n}\n\n.compliance-transfers__combined-placeholder p {\n    margin: 0;\n    max-width: 440px;\n}\n\n.compliance-transfers__combined-placeholder-icon {\n    font-size: 1.4rem;\n    flex-shrink: 0;\n    opacity: 0.35;\n}\n\n/* ── Header actions (export + scan) ─────────────────────────────────────────── */\n.compliance-transfers__header-actions {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__export-btn {\n    padding: 8px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 255, 255, 0.45);\n    font-size: 0.75rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;\n    white-space: nowrap;\n}\n\n.compliance-transfers__export-btn:hover {\n    background: rgba(255, 255, 255, 0.08);\n    border-color: rgba(255, 255, 255, 0.18);\n    color: rgba(255, 255, 255, 0.75);\n}\n\n/* ── Scan history ────────────────────────────────────────────────────────────── */\n.compliance-transfers__history {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: 6px;\n    padding: 10px 0 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    margin-bottom: 4px;\n}\n\n.compliance-transfers__history-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n    margin-right: 4px;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__history-chip {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-transfers__history-chip-detail {\n    color: rgba(255, 255, 255, 0.2);\n}\n\n/* ── Search input ────────────────────────────────────────────────────────────── */\n.compliance-search {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 10px;\n}\n\n.compliance-search__input {\n    flex: 1;\n    padding: 8px 12px;\n    border-radius: 7px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.03);\n    color: rgba(255, 255, 255, 0.75);\n    font-size: 0.8rem;\n    font-family: inherit;\n    outline: none;\n    transition: border-color 0.15s ease, background 0.15s ease;\n    min-width: 0;\n}\n\n.compliance-search__input::placeholder {\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-search__input:focus {\n    border-color: rgba(192, 159, 83, 0.4);\n    background: rgba(255, 255, 255, 0.05);\n}\n\n.compliance-search__input::-webkit-search-cancel-button {\n    filter: invert(0.5);\n    cursor: pointer;\n}\n\n.compliance-search__count {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.3);\n    white-space: nowrap;\n    flex-shrink: 0;\n}\n\n/* ── List column headers ─────────────────────────────────────────────────────── */\n.compliance-transfers__list-header {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 4px 14px 6px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-transfers__list-header > span:first-child { width: 18px; flex-shrink: 0; }\n.compliance-transfers__list-header > span:nth-child(2) { flex: 1; min-width: 0; }\n.compliance-transfers__list-header > span:last-child   { width: 18px; flex-shrink: 0; }\n\n.compliance-cookies__list-header {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 4px 14px 6px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-cookies__list-header > span:first-child { flex: 1; min-width: 0; }\n\n/* ── Expandable transfer rows ────────────────────────────────────────────────── */\n.compliance-transfers__row-wrap {\n    display: flex;\n    flex-direction: column;\n}\n\n.compliance-transfers__row {\n    cursor: pointer;\n    transition: background 0.12s ease, border-color 0.12s ease;\n}\n\n.compliance-transfers__row:hover,\n.compliance-transfers__row.--expanded {\n    background: rgba(255, 80, 80, 0.08);\n    border-color: rgba(255, 80, 80, 0.22);\n}\n\n.compliance-transfers__row-toggle {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    color: rgba(255, 255, 255, 0.25);\n    width: 14px;\n    text-align: center;\n    transition: color 0.12s ease;\n}\n\n.compliance-transfers__row:hover .compliance-transfers__row-toggle,\n.compliance-transfers__row.--expanded .compliance-transfers__row-toggle {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.compliance-transfers__row-detail {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px 20px;\n    padding: 10px 14px 12px 44px;\n    border: 1px solid rgba(255, 80, 80, 0.12);\n    border-top: none;\n    border-radius: 0 0 8px 8px;\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-transfers__row-detail-item {\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.55);\n}\n\n.compliance-transfers__row-detail-item--full {\n    width: 100%;\n}\n\n.compliance-transfers__row-detail-label {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-transfers__row-detail-code {\n    font-family: monospace;\n    font-size: 0.72rem;\n    color: rgba(192, 159, 83, 0.75);\n    word-break: break-all;\n    white-space: pre-wrap;\n}\n\n/* ── Consent / banner category badge ────────────────────────────────────────── */\n.compliance-banner-cat {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    white-space: nowrap;\n    border: 1px solid color-mix(in srgb, var(--bc-color, #909090) 35%, transparent);\n    background: color-mix(in srgb, var(--bc-color, #909090) 10%, transparent);\n    color: color-mix(in srgb, var(--bc-color, #909090) 90%, #fff);\n}\n\n/* ── Pagination controls ─────────────────────────────────────────────────────── */\n.compliance-pagination {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 14px 0 2px;\n}\n\n.compliance-pagination__btn {\n    padding: 5px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.45);\n    font-size: 0.75rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-pagination__btn:hover:not(:disabled) {\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(255, 255, 255, 0.75);\n    border-color: rgba(255, 255, 255, 0.16);\n}\n\n.compliance-pagination__btn:disabled {\n    opacity: 0.25;\n    cursor: not-allowed;\n}\n\n.compliance-pagination__info {\n    font-size: 0.72rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-variant-numeric: tabular-nums;\n    min-width: 52px;\n    text-align: center;\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* ComplianceFlowMap SVG fills the hero */\n.compliance-hero .cfm {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.88);\n    letter-spacing: 0.01em;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n/* ── Side-by-side grid ───────────────────────────────────────────────────────── */\n.compliance-bottom-grid {\n    display: grid;\n    grid-template-columns: 3fr 2fr;\n    gap: 24px;\n    align-items: start;\n}\n\n/* When the transfers card is absent (combined view), audit takes full width */\n.compliance-bottom-grid > .compliance-page__audit:first-child {\n    grid-column: 1 / -1;\n}\n\n@media (max-width: 900px) {\n    .compliance-bottom-grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n\n/* ── Tab switcher ────────────────────────────────────────────────────────────── */\n.compliance-transfers__tabs {\n    display: flex;\n    gap: 2px;\n    margin-bottom: 20px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n    padding-bottom: 0;\n}\n\n.compliance-transfers__tab {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n    padding: 8px 14px 10px;\n    background: transparent;\n    border: none;\n    border-bottom: 2px solid transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.8rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    margin-bottom: -1px;\n    transition: color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-transfers__tab:hover {\n    color: rgba(255, 255, 255, 0.6);\n}\n\n.compliance-transfers__tab.--active {\n    color: rgba(255, 255, 255, 0.88);\n    border-bottom-color: #c0a053;\n}\n\n.compliance-tab-pill {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    min-width: 18px;\n    height: 18px;\n    padding: 0 5px;\n    border-radius: 9px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    background: rgba(255, 255, 255, 0.08);\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.compliance-transfers__tab.--active .compliance-tab-pill {\n    background: rgba(192, 159, 83, 0.18);\n    color: rgba(192, 159, 83, 0.9);\n}\n\n/* ── Cookies list ────────────────────────────────────────────────────────────── */\n.compliance-cookies__list {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n\n.compliance-cookies__row {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-cookies__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-cookies__row-name {\n    font-size: 0.82rem;\n    font-weight: 600;\n    font-family: monospace;\n    color: rgba(255, 255, 255, 0.78);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-domain {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.28);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-party {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-cookies__row-party.--third {\n    background: rgba(220, 80, 80, 0.1);\n    border-color: rgba(220, 80, 80, 0.25);\n    color: rgba(240, 130, 120, 0.85);\n}\n\n.compliance-cookies__row-party.--first {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-cookies__row-lifetime {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n}\n\n.compliance-cookies__row-lifetime.--persistent {\n    color: rgba(220, 160, 60, 0.75);\n}\n\n.compliance-cookies__row-lifetime.--session {\n    color: rgba(255, 255, 255, 0.28);\n}\n\n.compliance-cookies__flags {\n    display: flex;\n    gap: 4px;\n    flex-shrink: 0;\n    flex-wrap: wrap;\n}\n\n.compliance-cookies__flag {\n    padding: 2px 7px;\n    border-radius: 4px;\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    background: rgba(80, 144, 220, 0.08);\n    border: 1px solid rgba(80, 144, 220, 0.18);\n    color: rgba(140, 190, 240, 0.7);\n}\n\n@media (max-width: 580px) {\n    .compliance-cookies__row {\n        flex-wrap: wrap;\n    }\n    .compliance-cookies__flags {\n        width: 100%;\n    }\n}\n\n/* ── Category summary cards ─────────────────────────────────────────────────── */\n.transfers-summary {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n    margin-bottom: 18px;\n}\n\n.transfers-summary__card {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 4px;\n    padding: 12px 18px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    cursor: pointer;\n    font-family: inherit;\n    color: inherit;\n    transition: background 0.15s ease, border-color 0.15s ease;\n    min-width: 76px;\n    text-align: center;\n}\n\n.transfers-summary__card:hover {\n    background: rgba(255, 255, 255, 0.05);\n    border-color: rgba(255, 255, 255, 0.13);\n}\n\n.transfers-summary__card.--active {\n    background: color-mix(in srgb, var(--cat-color, #c0a053) 12%, transparent);\n    border-color: color-mix(in srgb, var(--cat-color, #c0a053) 40%, transparent);\n}\n\n.transfers-summary__card-icon {\n    font-size: 0.9rem;\n    line-height: 1;\n    color: var(--cat-color, rgba(255, 255, 255, 0.5));\n}\n\n.transfers-summary__card-count {\n    font-size: 1.6rem;\n    font-weight: 200;\n    color: rgba(255, 255, 255, 0.88);\n    line-height: 1;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n}\n\n.transfers-summary__card-label {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.transfers-summary__card-risk {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    padding: 2px 7px;\n    border-radius: 10px;\n    margin-top: 2px;\n}\n\n.transfers-summary__card-risk.--high {\n    background: rgba(220, 80, 80, 0.15);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.transfers-summary__card-risk.--medium {\n    background: rgba(220, 160, 60, 0.12);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.transfers-summary__card-risk.--low {\n    background: rgba(80, 168, 120, 0.1);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n.transfers-summary__clear {\n    align-self: center;\n    padding: 6px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.72rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: all 0.15s ease;\n}\n\n.transfers-summary__clear:hover {\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* ── Row additions ───────────────────────────────────────────────────────────── */\n.compliance-transfers__row-icon {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    width: 18px;\n    text-align: center;\n    line-height: 1;\n}\n\n.compliance-transfers__row-resource {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.3);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.compliance-transfers__row-resource--script   { background: rgba(120, 100, 220, 0.1); border-color: rgba(120, 100, 220, 0.2); color: rgba(170, 155, 240, 0.75); }\n.compliance-transfers__row-resource--xhr,\n.compliance-transfers__row-resource--fetch    { background: rgba(220, 160, 60, 0.08); border-color: rgba(220, 160, 60, 0.18); color: rgba(230, 185, 100, 0.7);  }\n.compliance-transfers__row-resource--image    { background: rgba(80, 168, 120, 0.07); border-color: rgba(80, 168, 120, 0.16); color: rgba(120, 200, 150, 0.65); }\n.compliance-transfers__row-resource--font     { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.09); color: rgba(255, 255, 255, 0.28); }\n.compliance-transfers__row-resource--stylesheet { background: rgba(80, 144, 220, 0.07); border-color: rgba(80, 144, 220, 0.16); color: rgba(140, 190, 240, 0.65); }\n\n/* ── EU / Non-EU region badge ────────────────────────────────────────────────── */\n.compliance-transfers__row-region {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    white-space: nowrap;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-region.--eu {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.7);\n}\n\n.compliance-transfers__row-region.--non-eu {\n    background: rgba(220, 140, 50, 0.1);\n    border-color: rgba(220, 140, 50, 0.22);\n    color: rgba(230, 175, 100, 0.8);\n}\n\n/* ── Extra category colours ──────────────────────────────────────────────────── */\n.compliance-transfers__row--cmp {\n    border-color: rgba(80, 168, 120, 0.12);\n    background: rgba(80, 168, 120, 0.03);\n}\n\n.compliance-transfers__row-cat--cmp {\n    background: rgba(80, 168, 120, 0.1);\n    border-color: rgba(80, 168, 120, 0.25);\n    color: rgba(120, 200, 150, 0.85);\n}\n\n.compliance-transfers__row-cat--fingerprinting {\n    background: rgba(192, 54, 90, 0.12);\n    border-color: rgba(192, 54, 90, 0.3);\n    color: rgba(230, 120, 150, 0.9);\n}\n\n.compliance-transfers__row-cat--functional {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.8);\n}\n\n.compliance-transfers__row-cat--cdn {\n    background: rgba(150, 150, 150, 0.07);\n    border-color: rgba(150, 150, 150, 0.18);\n    color: rgba(180, 180, 180, 0.55);\n}\n\n.compliance-transfers__row-cat--third-party {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.32);\n}\n\n@media (max-width: 580px) {\n    .transfers-summary {\n        gap: 6px;\n    }\n\n    .transfers-summary__card {\n        min-width: 64px;\n        padding: 10px 12px 8px;\n    }\n\n    .compliance-transfers__row-resource,\n    .compliance-transfers__row-region {\n        display: none;\n    }\n}\n\n/* ── Combined-view placeholder ──────────────────────────────────────────────── */\n.compliance-transfers__combined-placeholder {\n    display: flex;\n    align-items: center;\n    gap: 14px;\n    padding: 28px 22px;\n    color: rgba(255, 255, 255, 0.3);\n    font-size: 0.82rem;\n    line-height: 1.5;\n}\n\n.compliance-transfers__combined-placeholder p {\n    margin: 0;\n    max-width: 440px;\n}\n\n.compliance-transfers__combined-placeholder-icon {\n    font-size: 1.4rem;\n    flex-shrink: 0;\n    opacity: 0.35;\n}\n\n/* ── Header actions (export + scan) ─────────────────────────────────────────── */\n.compliance-transfers__header-actions {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__export-btn {\n    padding: 8px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 255, 255, 0.45);\n    font-size: 0.75rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;\n    white-space: nowrap;\n}\n\n.compliance-transfers__export-btn:hover {\n    background: rgba(255, 255, 255, 0.08);\n    border-color: rgba(255, 255, 255, 0.18);\n    color: rgba(255, 255, 255, 0.75);\n}\n\n/* ── Scan history ────────────────────────────────────────────────────────────── */\n.compliance-transfers__history {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: 6px;\n    padding: 10px 0 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    margin-bottom: 4px;\n}\n\n.compliance-transfers__history-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n    margin-right: 4px;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__history-chip {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-transfers__history-chip-detail {\n    color: rgba(255, 255, 255, 0.2);\n}\n\n/* ── Search input ────────────────────────────────────────────────────────────── */\n.compliance-search {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 10px;\n}\n\n.compliance-search__input {\n    flex: 1;\n    padding: 8px 12px;\n    border-radius: 7px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.03);\n    color: rgba(255, 255, 255, 0.75);\n    font-size: 0.8rem;\n    font-family: inherit;\n    outline: none;\n    transition: border-color 0.15s ease, background 0.15s ease;\n    min-width: 0;\n}\n\n.compliance-search__input::placeholder {\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-search__input:focus {\n    border-color: rgba(192, 159, 83, 0.4);\n    background: rgba(255, 255, 255, 0.05);\n}\n\n.compliance-search__input::-webkit-search-cancel-button {\n    filter: invert(0.5);\n    cursor: pointer;\n}\n\n.compliance-search__count {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.3);\n    white-space: nowrap;\n    flex-shrink: 0;\n}\n\n/* ── List column headers ─────────────────────────────────────────────────────── */\n.compliance-transfers__list-header {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 4px 14px 6px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-transfers__list-header > span:first-child { width: 18px; flex-shrink: 0; }\n.compliance-transfers__list-header > span:nth-child(2) { flex: 1; min-width: 0; }\n.compliance-transfers__list-header > span:last-child   { width: 18px; flex-shrink: 0; }\n\n.compliance-cookies__list-header {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 4px 14px 6px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-cookies__list-header > span:first-child { flex: 1; min-width: 0; }\n\n/* ── Expandable transfer rows ────────────────────────────────────────────────── */\n.compliance-transfers__row-wrap {\n    display: flex;\n    flex-direction: column;\n}\n\n.compliance-transfers__row {\n    cursor: pointer;\n    transition: background 0.12s ease, border-color 0.12s ease;\n}\n\n.compliance-transfers__row:hover,\n.compliance-transfers__row.--expanded {\n    background: rgba(255, 80, 80, 0.08);\n    border-color: rgba(255, 80, 80, 0.22);\n}\n\n.compliance-transfers__row-toggle {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    color: rgba(255, 255, 255, 0.25);\n    width: 14px;\n    text-align: center;\n    transition: color 0.12s ease;\n}\n\n.compliance-transfers__row:hover .compliance-transfers__row-toggle,\n.compliance-transfers__row.--expanded .compliance-transfers__row-toggle {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.compliance-transfers__row-detail {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px 20px;\n    padding: 10px 14px 12px 44px;\n    border: 1px solid rgba(255, 80, 80, 0.12);\n    border-top: none;\n    border-radius: 0 0 8px 8px;\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-transfers__row-detail-item {\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.55);\n}\n\n.compliance-transfers__row-detail-item--full {\n    width: 100%;\n}\n\n.compliance-transfers__row-detail-label {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-transfers__row-detail-code {\n    font-family: monospace;\n    font-size: 0.72rem;\n    color: rgba(192, 159, 83, 0.75);\n    word-break: break-all;\n    white-space: pre-wrap;\n}\n\n/* ── Consent / banner category badge ────────────────────────────────────────── */\n.compliance-banner-cat {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    white-space: nowrap;\n    border: 1px solid color-mix(in srgb, var(--bc-color, #909090) 35%, transparent);\n    background: color-mix(in srgb, var(--bc-color, #909090) 10%, transparent);\n    color: color-mix(in srgb, var(--bc-color, #909090) 90%, #fff);\n}\n\n/* ── Pagination controls ─────────────────────────────────────────────────────── */\n.compliance-pagination {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 14px 0 2px;\n}\n\n.compliance-pagination__btn {\n    padding: 5px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.45);\n    font-size: 0.75rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-pagination__btn:hover:not(:disabled) {\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(255, 255, 255, 0.75);\n    border-color: rgba(255, 255, 255, 0.16);\n}\n\n.compliance-pagination__btn:disabled {\n    opacity: 0.25;\n    cursor: not-allowed;\n}\n\n.compliance-pagination__info {\n    font-size: 0.72rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-variant-numeric: tabular-nums;\n    min-width: 52px;\n    text-align: center;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -47306,6 +47408,302 @@ function Login() {
 
 /***/ }),
 
+/***/ "./src/Pages/Compliance/ComplianceFlowMap.css":
+/*!****************************************************!*\
+  !*** ./src/Pages/Compliance/ComplianceFlowMap.css ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_ComplianceFlowMap_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./ComplianceFlowMap.css */ "./node_modules/css-loader/dist/cjs.js!./src/Pages/Compliance/ComplianceFlowMap.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_ComplianceFlowMap_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_ComplianceFlowMap_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_ComplianceFlowMap_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_ComplianceFlowMap_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/Pages/Compliance/ComplianceFlowMap.js":
+/*!***************************************************!*\
+  !*** ./src/Pages/Compliance/ComplianceFlowMap.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ComplianceFlowMap)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _components_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/World/worldTopoShared.js */ "./src/components/World/worldTopoShared.js");
+/* harmony import */ var _components_Charts_WorldMap_countryCodes_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../components/Charts/WorldMap/countryCodes.js */ "./src/components/Charts/WorldMap/countryCodes.js");
+/* harmony import */ var _ComplianceFlowMap_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ComplianceFlowMap.css */ "./src/Pages/Compliance/ComplianceFlowMap.css");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+var NS = "http://www.w3.org/2000/svg";
+var XNS = "http://www.w3.org/1999/xlink";
+
+// Crops Mercator-inflated Antarctica from the bottom; trims top slightly
+var VIEW = {
+  x: 0,
+  y: 38,
+  w: 1000,
+  h: 465
+};
+var topoCache = null;
+function svgEl(tag) {
+  var attrs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var el = document.createElementNS(NS, tag);
+  for (var _i = 0, _Object$entries = Object.entries(attrs); _i < _Object$entries.length; _i++) {
+    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+      k = _Object$entries$_i[0],
+      v = _Object$entries$_i[1];
+    if (k === "xlink:href") el.setAttributeNS(XNS, k, v);else el.setAttribute(k, v);
+  }
+  return el;
+}
+function centerOf(alpha2) {
+  var c = _components_Charts_WorldMap_countryCodes_js__WEBPACK_IMPORTED_MODULE_2__.countryCoordinates === null || _components_Charts_WorldMap_countryCodes_js__WEBPACK_IMPORTED_MODULE_2__.countryCoordinates === void 0 ? void 0 : _components_Charts_WorldMap_countryCodes_js__WEBPACK_IMPORTED_MODULE_2__.countryCoordinates[alpha2];
+  if (!c) return null;
+  var _projectMercator = (0,_components_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_1__.projectMercator)(c.lng, c.lat),
+    _projectMercator2 = _slicedToArray(_projectMercator, 2),
+    x = _projectMercator2[0],
+    y = _projectMercator2[1];
+  return {
+    x: x,
+    y: y
+  };
+}
+function paintLand(landG, topo) {
+  while (landG.firstChild) landG.removeChild(landG.firstChild);
+  var features = (0,_components_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_1__.topoToFeatures)(topo, "countries");
+  var _iterator = _createForOfIteratorHelper(features),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var f = _step.value;
+      var d = f.rings.map(_components_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_1__.ringToPathD).join(" ");
+      if (!d.trim()) continue;
+      var path = document.createElementNS(NS, "path");
+      path.setAttribute("d", d);
+      path.setAttribute("class", "cfm-country");
+      landG.appendChild(path);
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+}
+function paintFlows(flowG, flowCountries, originCode) {
+  while (flowG.firstChild) flowG.removeChild(flowG.firstChild);
+  var origin = centerOf(originCode);
+  if (!origin) return;
+  flowG.appendChild(svgEl("circle", {
+    cx: origin.x,
+    cy: origin.y,
+    r: "6",
+    "class": "cfm-origin-ring"
+  }));
+  flowG.appendChild(svgEl("circle", {
+    cx: origin.x,
+    cy: origin.y,
+    r: "3.5",
+    "class": "cfm-origin-dot"
+  }));
+  var seen = new Set();
+  flowCountries.forEach(function (code, i) {
+    if (seen.has(code) || code === originCode) return;
+    seen.add(code);
+    var dest = centerOf(code);
+    if (!dest) return;
+    var dx = dest.x - origin.x;
+    var dy = dest.y - origin.y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var cpx = origin.x + dx * 0.5;
+    var cpy = origin.y + dy * 0.5 - dist * 0.35;
+    var pathId = "cfm-arc-".concat(code);
+    var d = "M ".concat(origin.x, " ").concat(origin.y, " Q ").concat(cpx, " ").concat(cpy, " ").concat(dest.x, " ").concat(dest.y);
+    flowG.appendChild(svgEl("path", {
+      id: pathId,
+      d: d,
+      fill: "none",
+      "class": "cfm-arc",
+      style: "animation-delay:".concat(i * 0.18, "s")
+    }));
+    var dot = svgEl("circle", {
+      r: "2.5",
+      "class": "cfm-dot"
+    });
+    var anim = svgEl("animateMotion", {
+      dur: "".concat(2.8 + i % 4 * 0.6, "s"),
+      repeatCount: "indefinite",
+      begin: "".concat(i * 0.45, "s"),
+      keyPoints: "0;1",
+      keyTimes: "0;1",
+      calcMode: "spline",
+      keySplines: "0.3 0 0.7 1"
+    });
+    anim.appendChild(svgEl("mpath", {
+      "xlink:href": "#".concat(pathId)
+    }));
+    dot.appendChild(anim);
+    flowG.appendChild(dot);
+    flowG.appendChild(svgEl("circle", {
+      cx: dest.x,
+      cy: dest.y,
+      r: "5",
+      "class": "cfm-dest-ring"
+    }));
+    flowG.appendChild(svgEl("circle", {
+      cx: dest.x,
+      cy: dest.y,
+      r: "2.8",
+      "class": "cfm-dest-dot"
+    }));
+  });
+}
+function ComplianceFlowMap(_ref) {
+  var _ref$dataFlowCountrie = _ref.dataFlowCountries,
+    dataFlowCountries = _ref$dataFlowCountrie === void 0 ? [] : _ref$dataFlowCountrie,
+    _ref$dataFlowOrigin = _ref.dataFlowOrigin,
+    dataFlowOrigin = _ref$dataFlowOrigin === void 0 ? "DE" : _ref$dataFlowOrigin;
+  var svgRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var landReady = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(false);
+
+  // Load TopoJSON and paint the base map once
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var cancelled = false;
+    function load() {
+      return _load.apply(this, arguments);
+    }
+    function _load() {
+      _load = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+        var _svgRef$current, _svgRef$current2, res, landG, flowG, _t;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.p = _context.n) {
+            case 0:
+              _context.p = 0;
+              if (topoCache) {
+                _context.n = 3;
+                break;
+              }
+              _context.n = 1;
+              return fetch(_components_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_1__.WORLD_TOPO_URL);
+            case 1:
+              res = _context.v;
+              _context.n = 2;
+              return res.json();
+            case 2:
+              topoCache = _context.v;
+            case 3:
+              if (!cancelled) {
+                _context.n = 4;
+                break;
+              }
+              return _context.a(2);
+            case 4:
+              landG = (_svgRef$current = svgRef.current) === null || _svgRef$current === void 0 ? void 0 : _svgRef$current.querySelector("#cfm-land");
+              if (landG) {
+                paintLand(landG, topoCache);
+                landReady.current = true;
+              }
+              // Paint flows after land is ready
+              flowG = (_svgRef$current2 = svgRef.current) === null || _svgRef$current2 === void 0 ? void 0 : _svgRef$current2.querySelector("#cfm-flows");
+              if (flowG) paintFlows(flowG, dataFlowCountries, dataFlowOrigin);
+              _context.n = 6;
+              break;
+            case 5:
+              _context.p = 5;
+              _t = _context.v;
+              console.error("ComplianceFlowMap: failed to load map data", _t);
+            case 6:
+              return _context.a(2);
+          }
+        }, _callee, null, [[0, 5]]);
+      }));
+      return _load.apply(this, arguments);
+    }
+    load();
+    return function () {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Repaint flows whenever countries change (land stays cached)
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var _svgRef$current3;
+    if (!landReady.current) return;
+    var flowG = (_svgRef$current3 = svgRef.current) === null || _svgRef$current3 === void 0 ? void 0 : _svgRef$current3.querySelector("#cfm-flows");
+    if (flowG) paintFlows(flowG, dataFlowCountries, dataFlowOrigin);
+  }, [dataFlowCountries, dataFlowOrigin]);
+  return /*#__PURE__*/React.createElement("svg", {
+    ref: svgRef,
+    className: "cfm",
+    viewBox: "".concat(VIEW.x, " ").concat(VIEW.y, " ").concat(VIEW.w, " ").concat(VIEW.h),
+    xmlns: "http://www.w3.org/2000/svg",
+    preserveAspectRatio: "xMidYMid meet",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("g", {
+    id: "cfm-land"
+  }), /*#__PURE__*/React.createElement("g", {
+    id: "cfm-flows"
+  }));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Compliance/Style.css":
 /*!****************************************!*\
   !*** ./src/Pages/Compliance/Style.css ***!
@@ -47370,7 +47768,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var _components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/AuditSnapshotCard/AuditSnapshotCard.js */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.js");
-/* harmony import */ var _Components_Charts_WorldMap_WorldMap_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Charts/WorldMap/WorldMap.js */ "./src/Components/Charts/WorldMap/WorldMap.js");
+/* harmony import */ var _ComplianceFlowMap_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ComplianceFlowMap.js */ "./src/Pages/Compliance/ComplianceFlowMap.js");
 /* harmony import */ var _Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/Filter/filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
 /* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
 /* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../API/api */ "./src/API/api.js");
@@ -47823,12 +48221,9 @@ function CompliancePage() {
     demoMode: demoMode
   }), /*#__PURE__*/React.createElement("div", {
     className: "compliance-hero"
-  }, /*#__PURE__*/React.createElement(_Components_Charts_WorldMap_WorldMap_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    demoMode: demoMode,
-    data: null,
-    dataFlowMode: true,
-    dataFlowOrigin: "DE",
-    dataFlowCountries: dataFlowCountries
+  }, /*#__PURE__*/React.createElement(_ComplianceFlowMap_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    dataFlowCountries: dataFlowCountries,
+    dataFlowOrigin: "DE"
   }), observedCookies && /*#__PURE__*/React.createElement("div", {
     className: "compliance-hero__stats"
   }, /*#__PURE__*/React.createElement("div", {
@@ -64346,6 +64741,1255 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/Charts/WorldMap/countryCodes.js":
+/*!********************************************************!*\
+  !*** ./src/components/Charts/WorldMap/countryCodes.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   countryCodes: () => (/* binding */ countryCodes),
+/* harmony export */   countryCoordinates: () => (/* binding */ countryCoordinates)
+/* harmony export */ });
+var countryCodes = {
+  "Afghanistan": "AF",
+  "Aland Islands": "AX",
+  "Albania": "AL",
+  "Algeria": "DZ",
+  "American Samoa": "AS",
+  "Andorra": "AD",
+  "Angola": "AO",
+  "Anguilla": "AI",
+  "Antarctica": "AQ",
+  "Antigua And Barbuda": "AG",
+  "Argentina": "AR",
+  "Armenia": "AM",
+  "Aruba": "AW",
+  "Australia": "AU",
+  "Austria": "AT",
+  "Azerbaijan": "AZ",
+  "Bahamas": "BS",
+  "Bahrain": "BH",
+  "Bangladesh": "BD",
+  "Barbados": "BB",
+  "Belarus": "BY",
+  "Belgium": "BE",
+  "Belize": "BZ",
+  "Benin": "BJ",
+  "Bermuda": "BM",
+  "Bhutan": "BT",
+  "Bolivia": "BO",
+  "Bosnia And Herzegovina": "BA",
+  "Botswana": "BW",
+  "Bouvet Island": "BV",
+  "Brazil": "BR",
+  "British Indian Ocean Territory": "IO",
+  "Brunei Darussalam": "BN",
+  "Bulgaria": "BG",
+  "Burkina Faso": "BF",
+  "Burundi": "BI",
+  "Cambodia": "KH",
+  "Cameroon": "CM",
+  "Canada": "CA",
+  "Cape Verde": "CV",
+  "Cayman Islands": "KY",
+  "Central African Republic": "CF",
+  "Chad": "TD",
+  "Chile": "CL",
+  "China": "CN",
+  "Christmas Island": "CX",
+  "Cocos (Keeling) Islands": "CC",
+  "Colombia": "CO",
+  "Comoros": "KM",
+  "Congo": "CG",
+  "Congo, Democratic Republic": "CD",
+  "Cook Islands": "CK",
+  "Costa Rica": "CR",
+  "Cote D'Ivoire": "CI",
+  "Croatia": "HR",
+  "Cuba": "CU",
+  "Cyprus": "CY",
+  "Czech Republic": "CZ",
+  "Denmark": "DK",
+  "Djibouti": "DJ",
+  "Dominica": "DM",
+  "Dominican Republic": "DO",
+  "Ecuador": "EC",
+  "Egypt": "EG",
+  "El Salvador": "SV",
+  "Equatorial Guinea": "GQ",
+  "Eritrea": "ER",
+  "Estonia": "EE",
+  "Ethiopia": "ET",
+  "Falkland Islands (Malvinas)": "FK",
+  "Faroe Islands": "FO",
+  "Fiji": "FJ",
+  "Finland": "FI",
+  "France": "FR",
+  "French Guiana": "GF",
+  "French Polynesia": "PF",
+  "French Southern Territories": "TF",
+  "Gabon": "GA",
+  "Gambia": "GM",
+  "Georgia": "GE",
+  "Germany": "DE",
+  "Ghana": "GH",
+  "Gibraltar": "GI",
+  "Greece": "GR",
+  "Greenland": "GL",
+  "Grenada": "GD",
+  "Guadeloupe": "GP",
+  "Guam": "GU",
+  "Guatemala": "GT",
+  "Guernsey": "GG",
+  "Guinea": "GN",
+  "Guinea-Bissau": "GW",
+  "Guyana": "GY",
+  "Haiti": "HT",
+  "Heard Island & Mcdonald Islands": "HM",
+  "Holy See (Vatican City State)": "VA",
+  "Honduras": "HN",
+  "Hong Kong": "HK",
+  "Hungary": "HU",
+  "Iceland": "IS",
+  "India": "IN",
+  "Indonesia": "ID",
+  "Iran, Islamic Republic Of": "IR",
+  "Iraq": "IQ",
+  "Ireland": "IE",
+  "Isle Of Man": "IM",
+  "Israel": "IL",
+  "Italy": "IT",
+  "Jamaica": "JM",
+  "Japan": "JP",
+  "Jersey": "JE",
+  "Jordan": "JO",
+  "Kazakhstan": "KZ",
+  "Kenya": "KE",
+  "Kiribati": "KI",
+  "Korea": "KR",
+  "North Korea": "KP",
+  "Kuwait": "KW",
+  "Kyrgyzstan": "KG",
+  "Lao People's Democratic Republic": "LA",
+  "Latvia": "LV",
+  "Lebanon": "LB",
+  "Lesotho": "LS",
+  "Liberia": "LR",
+  "Libyan Arab Jamahiriya": "LY",
+  "Liechtenstein": "LI",
+  "Lithuania": "LT",
+  "Luxembourg": "LU",
+  "Macao": "MO",
+  "Macedonia": "MK",
+  "Madagascar": "MG",
+  "Malawi": "MW",
+  "Malaysia": "MY",
+  "Maldives": "MV",
+  "Mali": "ML",
+  "Malta": "MT",
+  "Marshall Islands": "MH",
+  "Martinique": "MQ",
+  "Mauritania": "MR",
+  "Mauritius": "MU",
+  "Mayotte": "YT",
+  "Mexico": "MX",
+  "Micronesia, Federated States Of": "FM",
+  "Moldova": "MD",
+  "Monaco": "MC",
+  "Mongolia": "MN",
+  "Montenegro": "ME",
+  "Montserrat": "MS",
+  "Morocco": "MA",
+  "Mozambique": "MZ",
+  "Myanmar": "MM",
+  "Namibia": "NA",
+  "Nauru": "NR",
+  "Nepal": "NP",
+  "Netherlands": "NL",
+  "Netherlands Antilles": "AN",
+  "New Caledonia": "NC",
+  "New Zealand": "NZ",
+  "Nicaragua": "NI",
+  "Niger": "NE",
+  "Nigeria": "NG",
+  "Niue": "NU",
+  "Norfolk Island": "NF",
+  "Northern Mariana Islands": "MP",
+  "Norway": "NO",
+  "Oman": "OM",
+  "Pakistan": "PK",
+  "Palau": "PW",
+  "Palestinian Territory, Occupied": "PS",
+  "Panama": "PA",
+  "Papua New Guinea": "PG",
+  "Paraguay": "PY",
+  "Peru": "PE",
+  "Philippines": "PH",
+  "Pitcairn": "PN",
+  "Poland": "PL",
+  "Portugal": "PT",
+  "Puerto Rico": "PR",
+  "Qatar": "QA",
+  "Reunion": "RE",
+  "Romania": "RO",
+  "Russia": "RU",
+  "Rwanda": "RW",
+  "Saint Barthelemy": "BL",
+  "Saint Helena": "SH",
+  "Saint Kitts And Nevis": "KN",
+  "Saint Lucia": "LC",
+  "Saint Martin": "MF",
+  "Saint Pierre And Miquelon": "PM",
+  "Saint Vincent And Grenadines": "VC",
+  "Samoa": "WS",
+  "San Marino": "SM",
+  "Sao Tome And Principe": "ST",
+  "Saudi Arabia": "SA",
+  "Senegal": "SN",
+  "Serbia": "RS",
+  "Seychelles": "SC",
+  "Sierra Leone": "SL",
+  "Singapore": "SG",
+  "Slovakia": "SK",
+  "Slovenia": "SI",
+  "Solomon Islands": "SB",
+  "Somalia": "SO",
+  "South Africa": "ZA",
+  "South Georgia And Sandwich Islands": "GS",
+  "Spain": "ES",
+  "Sri Lanka": "LK",
+  "Sudan": "SD",
+  "Suriname": "SR",
+  "Svalbard And Jan Mayen": "SJ",
+  "Swaziland": "SZ",
+  "Sweden": "SE",
+  "Switzerland": "CH",
+  "Syrian Arab Republic": "SY",
+  "Taiwan": "TW",
+  "Tajikistan": "TJ",
+  "Tanzania": "TZ",
+  "Thailand": "TH",
+  "Timor-Leste": "TL",
+  "Togo": "TG",
+  "Tokelau": "TK",
+  "Tonga": "TO",
+  "Trinidad And Tobago": "TT",
+  "Tunisia": "TN",
+  "Turkey": "TR",
+  "Turkmenistan": "TM",
+  "Turks And Caicos Islands": "TC",
+  "Tuvalu": "TV",
+  "Uganda": "UG",
+  "Ukraine": "UA",
+  "United Arab Emirates": "AE",
+  "United Kingdom": "GB",
+  "United States": "US",
+  "United States Outlying Islands": "UM",
+  "Uruguay": "UY",
+  "Uzbekistan": "UZ",
+  "Vanuatu": "VU",
+  "Venezuela": "VE",
+  "Vietnam": "VN",
+  "Virgin Islands, British": "VG",
+  "Virgin Islands, U.S.": "VI",
+  "Wallis And Futuna": "WF",
+  "Western Sahara": "EH",
+  "Yemen": "YE",
+  "Zambia": "ZM",
+  "Zimbabwe": "ZW"
+};
+var countryCoordinates = {
+  "AF": {
+    lat: 33.93911,
+    lng: 67.709953
+  },
+  "AX": {
+    lat: 60.1785,
+    lng: 19.9156
+  },
+  "AL": {
+    lat: 41.1533,
+    lng: 20.1683
+  },
+  "DZ": {
+    lat: 28.0339,
+    lng: 1.6596
+  },
+  "AS": {
+    lat: -14.271,
+    lng: -170.132
+  },
+  "AD": {
+    lat: 42.5063,
+    lng: 1.5218
+  },
+  "AO": {
+    lat: -11.2027,
+    lng: 17.8739
+  },
+  "AI": {
+    lat: 18.2206,
+    lng: -63.0686
+  },
+  "AQ": {
+    lat: -75.250973,
+    lng: -0.071389
+  },
+  "AG": {
+    lat: 17.0608,
+    lng: -61.7964
+  },
+  "AR": {
+    lat: -38.4161,
+    lng: -63.6167
+  },
+  "AM": {
+    lat: 40.0691,
+    lng: 45.0382
+  },
+  "AW": {
+    lat: 12.5211,
+    lng: -69.9683
+  },
+  "AU": {
+    lat: -25.2744,
+    lng: 133.7751
+  },
+  "AT": {
+    lat: 47.5162,
+    lng: 14.5501
+  },
+  "AZ": {
+    lat: 40.1431,
+    lng: 47.5769
+  },
+  "BS": {
+    lat: 25.0343,
+    lng: -77.3963
+  },
+  "BH": {
+    lat: 25.9304,
+    lng: 50.6378
+  },
+  "BD": {
+    lat: 23.685,
+    lng: 90.3563
+  },
+  "BB": {
+    lat: 13.1939,
+    lng: -59.5432
+  },
+  "BY": {
+    lat: 53.7098,
+    lng: 27.9534
+  },
+  "BE": {
+    lat: 50.8503,
+    lng: 4.3517
+  },
+  "BZ": {
+    lat: 17.1899,
+    lng: -88.4976
+  },
+  "BJ": {
+    lat: 9.3077,
+    lng: 2.3158
+  },
+  "BM": {
+    lat: 32.3078,
+    lng: -64.7505
+  },
+  "BT": {
+    lat: 27.5142,
+    lng: 90.4336
+  },
+  "BO": {
+    lat: -16.2902,
+    lng: -63.5887
+  },
+  "BA": {
+    lat: 43.9159,
+    lng: 17.6791
+  },
+  "BW": {
+    lat: -22.3285,
+    lng: 24.6849
+  },
+  "BV": {
+    lat: -54.4232,
+    lng: 3.4132
+  },
+  "BR": {
+    lat: -14.235,
+    lng: -51.9253
+  },
+  "IO": {
+    lat: -6.3432,
+    lng: 71.8765
+  },
+  "BN": {
+    lat: 4.5353,
+    lng: 114.7277
+  },
+  "BG": {
+    lat: 42.7339,
+    lng: 25.4858
+  },
+  "BF": {
+    lat: 12.2383,
+    lng: -1.5616
+  },
+  "BI": {
+    lat: -3.3731,
+    lng: 29.9189
+  },
+  "KH": {
+    lat: 12.5657,
+    lng: 104.991
+  },
+  "CM": {
+    lat: 7.3697,
+    lng: 12.3547
+  },
+  "CA": {
+    lat: 56.1304,
+    lng: -106.3468
+  },
+  "CV": {
+    lat: 16.5388,
+    lng: -23.0418
+  },
+  "KY": {
+    lat: 19.3133,
+    lng: -81.2546
+  },
+  "CF": {
+    lat: 6.6111,
+    lng: 20.9394
+  },
+  "TD": {
+    lat: 15.4542,
+    lng: 18.7322
+  },
+  "CL": {
+    lat: -35.6751,
+    lng: -71.543
+  },
+  "CN": {
+    lat: 35.8617,
+    lng: 104.1954
+  },
+  "CX": {
+    lat: -10.4475,
+    lng: 105.6904
+  },
+  "CC": {
+    lat: -12.1642,
+    lng: 96.8709
+  },
+  "CO": {
+    lat: 4.5709,
+    lng: -74.2973
+  },
+  "KM": {
+    lat: -11.875,
+    lng: 43.8722
+  },
+  "CG": {
+    lat: -0.228,
+    lng: 15.8277
+  },
+  "CD": {
+    lat: -4.0383,
+    lng: 21.7587
+  },
+  "CK": {
+    lat: -21.2367,
+    lng: -159.7777
+  },
+  "CR": {
+    lat: 9.7489,
+    lng: -83.7534
+  },
+  "CI": {
+    lat: 7.5399,
+    lng: -5.5471
+  },
+  "HR": {
+    lat: 45.1,
+    lng: 15.2
+  },
+  "CU": {
+    lat: 21.5218,
+    lng: -77.7812
+  },
+  "CY": {
+    lat: 35.1264,
+    lng: 33.4299
+  },
+  "CZ": {
+    lat: 49.8175,
+    lng: 15.473
+  },
+  "DK": {
+    lat: 56.2639,
+    lng: 9.5018
+  },
+  "DJ": {
+    lat: 11.8251,
+    lng: 42.5903
+  },
+  "DM": {
+    lat: 15.415,
+    lng: -61.371
+  },
+  "DO": {
+    lat: 18.7357,
+    lng: -70.1627
+  },
+  "EC": {
+    lat: -1.8312,
+    lng: -78.1834
+  },
+  "EG": {
+    lat: 26.8206,
+    lng: 30.8025
+  },
+  "SV": {
+    lat: 13.7942,
+    lng: -88.8965
+  },
+  "GQ": {
+    lat: 1.6508,
+    lng: 10.2679
+  },
+  "ER": {
+    lat: 15.1794,
+    lng: 39.7823
+  },
+  "EE": {
+    lat: 58.5953,
+    lng: 25.0136
+  },
+  "ET": {
+    lat: 9.145,
+    lng: 40.4897
+  },
+  "FK": {
+    lat: -51.7963,
+    lng: -59.5236
+  },
+  "FO": {
+    lat: 61.8926,
+    lng: -6.9118
+  },
+  "FJ": {
+    lat: -17.7134,
+    lng: 178.065
+  },
+  "FI": {
+    lat: 61.9241,
+    lng: 25.7482
+  },
+  "FR": {
+    lat: 46.6034,
+    lng: 1.8883
+  },
+  "GF": {
+    lat: 3.9339,
+    lng: -53.1258
+  },
+  "PF": {
+    lat: -17.6797,
+    lng: -149.4068
+  },
+  "TF": {
+    lat: -49.2804,
+    lng: 69.3486
+  },
+  "GA": {
+    lat: -0.8037,
+    lng: 11.6094
+  },
+  "GM": {
+    lat: 13.4432,
+    lng: -15.3101
+  },
+  "GE": {
+    lat: 42.3154,
+    lng: 43.3569
+  },
+  "DE": {
+    lat: 51.1657,
+    lng: 10.4515
+  },
+  "GH": {
+    lat: 7.9465,
+    lng: -1.0232
+  },
+  "GI": {
+    lat: 36.1408,
+    lng: -5.3536
+  },
+  "GR": {
+    lat: 39.0742,
+    lng: 21.8243
+  },
+  "GL": {
+    lat: 71.7069,
+    lng: -42.6043
+  },
+  "GD": {
+    lat: 12.1165,
+    lng: -61.679
+  },
+  "GP": {
+    lat: 16.265,
+    lng: -61.551
+  },
+  "GU": {
+    lat: 13.4443,
+    lng: 144.7937
+  },
+  "GT": {
+    lat: 15.7835,
+    lng: -90.2308
+  },
+  "GG": {
+    lat: 49.4657,
+    lng: -2.5853
+  },
+  "GN": {
+    lat: 9.9456,
+    lng: -9.6966
+  },
+  "GW": {
+    lat: 11.8037,
+    lng: -15.1804
+  },
+  "GY": {
+    lat: 4.8604,
+    lng: -58.9302
+  },
+  "HT": {
+    lat: 18.9712,
+    lng: -72.2852
+  },
+  "HM": {
+    lat: -53.0818,
+    lng: 73.5042
+  },
+  "VA": {
+    lat: 41.9029,
+    lng: 12.4534
+  },
+  "HN": {
+    lat: 15.2,
+    lng: -86.2419
+  },
+  "HK": {
+    lat: 22.3193,
+    lng: 114.1694
+  },
+  "HU": {
+    lat: 47.1625,
+    lng: 19.5033
+  },
+  "IS": {
+    lat: 64.9631,
+    lng: -19.0208
+  },
+  "IN": {
+    lat: 20.5937,
+    lng: 78.9629
+  },
+  "ID": {
+    lat: -0.7893,
+    lng: 113.9213
+  },
+  "IR": {
+    lat: 32.4279,
+    lng: 53.688
+  },
+  "IQ": {
+    lat: 33.2232,
+    lng: 43.6793
+  },
+  "IE": {
+    lat: 53.4129,
+    lng: -8.2439
+  },
+  "IM": {
+    lat: 54.2361,
+    lng: -4.5481
+  },
+  "IL": {
+    lat: 31.0461,
+    lng: 34.8516
+  },
+  "IT": {
+    lat: 41.8719,
+    lng: 12.5674
+  },
+  "JM": {
+    lat: 18.1096,
+    lng: -77.2975
+  },
+  "JP": {
+    lat: 36.2048,
+    lng: 138.2529
+  },
+  "JE": {
+    lat: 49.2144,
+    lng: -2.1313
+  },
+  "JO": {
+    lat: 30.5852,
+    lng: 36.2384
+  },
+  "KZ": {
+    lat: 48.0196,
+    lng: 66.9237
+  },
+  "KE": {
+    lat: -0.0236,
+    lng: 37.9062
+  },
+  "KI": {
+    lat: -3.3704,
+    lng: -168.734
+  },
+  "KR": {
+    lat: 35.9078,
+    lng: 127.7669
+  },
+  "KP": {
+    lat: 40.3399,
+    lng: 127.5101
+  },
+  "KW": {
+    lat: 29.3117,
+    lng: 47.4818
+  },
+  "KG": {
+    lat: 41.2044,
+    lng: 74.7661
+  },
+  "LA": {
+    lat: 19.8563,
+    lng: 102.4955
+  },
+  "LV": {
+    lat: 56.8796,
+    lng: 24.6032
+  },
+  "LB": {
+    lat: 33.8547,
+    lng: 35.8623
+  },
+  "LS": {
+    lat: -29.6099,
+    lng: 28.2336
+  },
+  "LR": {
+    lat: 6.4281,
+    lng: -9.4295
+  },
+  "LY": {
+    lat: 26.3351,
+    lng: 17.2283
+  },
+  "LI": {
+    lat: 47.166,
+    lng: 9.5554
+  },
+  "LT": {
+    lat: 55.1694,
+    lng: 23.8813
+  },
+  "LU": {
+    lat: 49.8153,
+    lng: 6.1296
+  },
+  "MO": {
+    lat: 22.1987,
+    lng: 113.5439
+  },
+  "MK": {
+    lat: 41.6086,
+    lng: 21.7453
+  },
+  "MG": {
+    lat: -18.7669,
+    lng: 46.8691
+  },
+  "MW": {
+    lat: -13.2543,
+    lng: 34.3015
+  },
+  "MY": {
+    lat: 4.2105,
+    lng: 101.9758
+  },
+  "MV": {
+    lat: 3.2028,
+    lng: 73.2207
+  },
+  "ML": {
+    lat: 17.5707,
+    lng: -3.9962
+  },
+  "MT": {
+    lat: 35.9375,
+    lng: 14.3754
+  },
+  "MH": {
+    lat: 7.1315,
+    lng: 171.1845
+  },
+  "MQ": {
+    lat: 14.6415,
+    lng: -61.0242
+  },
+  "MR": {
+    lat: 21.0079,
+    lng: -10.9408
+  },
+  "MU": {
+    lat: -20.3484,
+    lng: 57.5522
+  },
+  "YT": {
+    lat: -12.8275,
+    lng: 45.1662
+  },
+  "MX": {
+    lat: 23.6345,
+    lng: -102.5528
+  },
+  "FM": {
+    lat: 7.4256,
+    lng: 150.5508
+  },
+  "MD": {
+    lat: 47.4116,
+    lng: 28.3699
+  },
+  "MC": {
+    lat: 43.7503,
+    lng: 7.4128
+  },
+  "MN": {
+    lat: 46.8625,
+    lng: 103.8467
+  },
+  "ME": {
+    lat: 42.7087,
+    lng: 19.3744
+  },
+  "MS": {
+    lat: 16.7425,
+    lng: -62.1874
+  },
+  "MA": {
+    lat: 31.7917,
+    lng: -7.0926
+  },
+  "MZ": {
+    lat: -18.6657,
+    lng: 35.5296
+  },
+  "MM": {
+    lat: 21.9162,
+    lng: 95.956
+  },
+  "NA": {
+    lat: -22.9576,
+    lng: 18.4904
+  },
+  "NR": {
+    lat: -0.5228,
+    lng: 166.9315
+  },
+  "NP": {
+    lat: 28.3949,
+    lng: 84.124
+  },
+  "NL": {
+    lat: 52.1326,
+    lng: 5.2913
+  },
+  "AN": {
+    lat: 12.2261,
+    lng: -69.0601
+  },
+  "NC": {
+    lat: -20.9043,
+    lng: 165.618
+  },
+  "NZ": {
+    lat: -40.9006,
+    lng: 174.886
+  },
+  "NI": {
+    lat: 12.8654,
+    lng: -85.2072
+  },
+  "NE": {
+    lat: 17.6078,
+    lng: 8.0817
+  },
+  "NG": {
+    lat: 9.082,
+    lng: 8.6753
+  },
+  "NU": {
+    lat: -19.0544,
+    lng: -169.8672
+  },
+  "NF": {
+    lat: -29.0408,
+    lng: 167.9547
+  },
+  "MP": {
+    lat: 15.0979,
+    lng: 145.6739
+  },
+  "NO": {
+    lat: 60.472,
+    lng: 8.4689
+  },
+  "OM": {
+    lat: 21.4735,
+    lng: 55.9754
+  },
+  "PK": {
+    lat: 30.3753,
+    lng: 69.3451
+  },
+  "PW": {
+    lat: 7.5149,
+    lng: 134.5825
+  },
+  "PS": {
+    lat: 31.9522,
+    lng: 35.2332
+  },
+  "PA": {
+    lat: 8.5379,
+    lng: -80.7821
+  },
+  "PG": {
+    lat: -6.314993,
+    lng: 143.95555
+  },
+  "PY": {
+    lat: -23.4425,
+    lng: -58.4438
+  },
+  "PE": {
+    lat: -9.19,
+    lng: -75.0152
+  },
+  "PH": {
+    lat: 12.8797,
+    lng: 121.774
+  },
+  "PN": {
+    lat: -24.7036,
+    lng: -127.4393
+  },
+  "PL": {
+    lat: 51.9194,
+    lng: 19.1451
+  },
+  "PT": {
+    lat: 39.3999,
+    lng: -8.2245
+  },
+  "PR": {
+    lat: 18.2208,
+    lng: -66.5901
+  },
+  "QA": {
+    lat: 25.3548,
+    lng: 51.1839
+  },
+  "RE": {
+    lat: -21.1151,
+    lng: 55.5364
+  },
+  "RO": {
+    lat: 45.9432,
+    lng: 24.9668
+  },
+  "RU": {
+    lat: 61.524,
+    lng: 105.3188
+  },
+  "RW": {
+    lat: -1.9403,
+    lng: 29.8739
+  },
+  "BL": {
+    lat: 17.9,
+    lng: -62.8333
+  },
+  "SH": {
+    lat: -24.1435,
+    lng: -10.0307
+  },
+  "KN": {
+    lat: 17.3578,
+    lng: -62.783
+  },
+  "LC": {
+    lat: 13.9094,
+    lng: -60.9789
+  },
+  "MF": {
+    lat: 18.0708,
+    lng: -63.0501
+  },
+  "PM": {
+    lat: 46.9419,
+    lng: -56.2711
+  },
+  "VC": {
+    lat: 13.2528,
+    lng: -61.1971
+  },
+  "WS": {
+    lat: -13.759,
+    lng: -172.1046
+  },
+  "SM": {
+    lat: 43.9424,
+    lng: 12.4578
+  },
+  "ST": {
+    lat: 0.1864,
+    lng: 6.6131
+  },
+  "SA": {
+    lat: 23.8859,
+    lng: 45.0792
+  },
+  "SN": {
+    lat: 14.4974,
+    lng: -14.4524
+  },
+  "RS": {
+    lat: 44.0165,
+    lng: 21.0059
+  },
+  "SC": {
+    lat: -4.6796,
+    lng: 55.492
+  },
+  "SL": {
+    lat: 8.4606,
+    lng: -11.7799
+  },
+  "SG": {
+    lat: 1.3521,
+    lng: 103.8198
+  },
+  "SK": {
+    lat: 48.669,
+    lng: 19.699
+  },
+  "SI": {
+    lat: 46.1512,
+    lng: 14.9955
+  },
+  "SB": {
+    lat: -9.6457,
+    lng: 160.1562
+  },
+  "SO": {
+    lat: 5.1521,
+    lng: 46.1996
+  },
+  "ZA": {
+    lat: -30.5595,
+    lng: 22.9375
+  },
+  "GS": {
+    lat: -54.4296,
+    lng: -36.5879
+  },
+  "ES": {
+    lat: 40.4637,
+    lng: -3.7492
+  },
+  "LK": {
+    lat: 7.8731,
+    lng: 80.7718
+  },
+  "SD": {
+    lat: 12.8628,
+    lng: 30.2176
+  },
+  "SR": {
+    lat: 3.9193,
+    lng: -56.0278
+  },
+  "SJ": {
+    lat: 77.5536,
+    lng: 23.6703
+  },
+  "SZ": {
+    lat: -26.5225,
+    lng: 31.4659
+  },
+  "SE": {
+    lat: 60.1282,
+    lng: 18.6435
+  },
+  "CH": {
+    lat: 46.8182,
+    lng: 8.2275
+  },
+  "SY": {
+    lat: 34.8021,
+    lng: 38.9968
+  },
+  "TW": {
+    lat: 23.6978,
+    lng: 120.9605
+  },
+  "TJ": {
+    lat: 38.861,
+    lng: 71.2761
+  },
+  "TZ": {
+    lat: -6.369,
+    lng: 34.8888
+  },
+  "TH": {
+    lat: 15.870,
+    lng: 100.9925
+  },
+  "TL": {
+    lat: -8.8742,
+    lng: 125.7275
+  },
+  "TG": {
+    lat: 8.6195,
+    lng: 0.8248
+  },
+  "TK": {
+    lat: -9.2005,
+    lng: -171.848
+  },
+  "TO": {
+    lat: -21.1789,
+    lng: -175.1982
+  },
+  "TT": {
+    lat: 10.6918,
+    lng: -61.2225
+  },
+  "TN": {
+    lat: 33.8869,
+    lng: 9.5375
+  },
+  "TR": {
+    lat: 38.9637,
+    lng: 35.2433
+  },
+  "TM": {
+    lat: 38.9697,
+    lng: 59.5563
+  },
+  "TC": {
+    lat: 21.694,
+    lng: -71.7979
+  },
+  "TV": {
+    lat: -7.1095,
+    lng: 179.194
+  },
+  "UG": {
+    lat: 1.3733,
+    lng: 32.2903
+  },
+  "UA": {
+    lat: 48.3794,
+    lng: 31.1656
+  },
+  "AE": {
+    lat: 23.4241,
+    lng: 53.8478
+  },
+  "GB": {
+    lat: 55.3781,
+    lng: -3.436
+  },
+  "US": {
+    lat: 37.0902,
+    lng: -95.7129
+  },
+  "UM": {
+    lat: 19.2823,
+    lng: 166.647
+  },
+  "UY": {
+    lat: -32.5228,
+    lng: -55.7658
+  },
+  "UZ": {
+    lat: 41.3775,
+    lng: 64.5853
+  },
+  "VU": {
+    lat: -15.3767,
+    lng: 166.9592
+  },
+  "VE": {
+    lat: 6.4238,
+    lng: -66.5897
+  },
+  "VN": {
+    lat: 14.0583,
+    lng: 108.2772
+  },
+  "VG": {
+    lat: 18.4207,
+    lng: -64.6399
+  },
+  "VI": {
+    lat: 18.3358,
+    lng: -64.8963
+  },
+  "WF": {
+    lat: -13.7688,
+    lng: -177.1561
+  },
+  "EH": {
+    lat: 24.2155,
+    lng: -12.8858
+  },
+  "YE": {
+    lat: 15.5527,
+    lng: 48.5164
+  },
+  "ZM": {
+    lat: -13.1339,
+    lng: 27.8493
+  },
+  "ZW": {
+    lat: -19.0154,
+    lng: 29.1549
+  }
+};
 
 
 /***/ }),

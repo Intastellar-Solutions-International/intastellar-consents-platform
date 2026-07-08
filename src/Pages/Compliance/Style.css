@@ -51,6 +51,15 @@
     height: 100%;
 }
 
+/* ComplianceFlowMap SVG fills the hero */
+.compliance-hero .cfm {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 /* Stats strip overlaid at the bottom of the hero, above the gradient */
 .compliance-hero__stats {
     position: absolute;
