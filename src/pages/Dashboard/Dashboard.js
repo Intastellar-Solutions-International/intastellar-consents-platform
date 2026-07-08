@@ -83,6 +83,7 @@ export default function Dashboard(props) {
     );
     const [loading, setLoading] = useState(false);
     const [loadingCountry, setLoadingCountry] = useState(false);
+    const [scanSummary, setScanSummary] = useState(null);
 
     const dashboardView = props.dashboardView;
     let url = API[id].getInteractions.url;
@@ -181,8 +182,21 @@ export default function Dashboard(props) {
 
     useEffect(() => {
         const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
-        return unsubscribe; // Clean up on unmount
+        return unsubscribe;
     }, []);
+
+    useEffect(() => {
+        const domain = handle || currentDomain;
+        if (!domain || domain === "combined view" || !id || !API[id]?.getPreConsentTransfers) return;
+        setScanSummary(null);
+        fetch(`${API[id].getPreConsentTransfers.url}?domain=${encodeURIComponent(domain)}`, {
+            method: API[id].getPreConsentTransfers.method,
+            headers: { ...API[id].getPreConsentTransfers.headers },
+        })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { if (data && !data.error) setScanSummary(data); })
+            .catch(() => {});
+    }, [handle, currentDomain, id]);
 
     useEffect(() => {
 
@@ -435,6 +449,57 @@ export default function Dashboard(props) {
                 {id && (
                     <div className="dashboard-section">
                         <h2 className="dashboard-section-label">Compliance</h2>
+
+                        {/* Pre-consent scan summary cards — only when a specific domain is selected */}
+                        {(handle || currentDomain) && (handle || currentDomain) !== "combined view" && (
+                            <div className="dash-scan-cards">
+                                {(() => {
+                                    const compliancePath = reportsPath(id, handle || currentDomain, "/compliance");
+                                    const transfers = scanSummary?.pre_consent_transfers || [];
+                                    const cookies   = scanSummary?.pre_consent_cookies   || [];
+                                    const nonEU     = transfers.filter(t => t.dataRegion !== "eu").length;
+                                    const thirdParty = cookies.filter(c => {
+                                        const domain = (handle || currentDomain || "").replace(/^www\./, "");
+                                        return !c.domain?.replace(/^\./, "").endsWith(domain);
+                                    }).length;
+
+                                    return (
+                                        <>
+                                            <Link to={compliancePath} className={"dash-scan-card" + (!scanSummary ? " --empty" : nonEU > 0 ? " --warn" : "")}>
+                                                <div className="dash-scan-card__top">
+                                                    <span className="dash-scan-card__count">
+                                                        {scanSummary ? transfers.length : "—"}
+                                                    </span>
+                                                    <span className="dash-scan-card__icon">↗</span>
+                                                </div>
+                                                <span className="dash-scan-card__label">Pre-consent transfers</span>
+                                                <span className="dash-scan-card__sub">
+                                                    {scanSummary
+                                                        ? nonEU > 0 ? `${nonEU} non-EU · ${transfers.length - nonEU} EU` : "All within EU"
+                                                        : "No scan yet"}
+                                                </span>
+                                            </Link>
+
+                                            <Link to={compliancePath} className={"dash-scan-card" + (!scanSummary ? " --empty" : thirdParty > 0 ? " --warn" : "")}>
+                                                <div className="dash-scan-card__top">
+                                                    <span className="dash-scan-card__count">
+                                                        {scanSummary ? cookies.length : "—"}
+                                                    </span>
+                                                    <span className="dash-scan-card__icon">🍪</span>
+                                                </div>
+                                                <span className="dash-scan-card__label">Pre-consent cookies</span>
+                                                <span className="dash-scan-card__sub">
+                                                    {scanSummary
+                                                        ? thirdParty > 0 ? `${thirdParty} third-party · ${cookies.length - thirdParty} first-party` : "All first-party"
+                                                        : "No scan yet"}
+                                                </span>
+                                            </Link>
+                                        </>
+                                    );
+                                })()}
+                            </div>
+                        )}
+
                         <div className="dashboard-compliance-links">
                             <Link
                                 to={reportsPath(id, currentDomain, "/compliance")}
