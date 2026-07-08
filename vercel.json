@@ -10,6 +10,10 @@
     "api/cookie-audit.js": {
       "memory": 1536,
       "maxDuration": 20
+    },
+    "api/pre-consent-scan.js": {
+      "memory": 1536,
+      "maxDuration": 60
     }
   }
 }

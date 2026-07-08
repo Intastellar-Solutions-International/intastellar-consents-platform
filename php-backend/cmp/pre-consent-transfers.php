@@ -3,6 +3,8 @@
  * GET /cmp/pre-consent-transfers
  *
  * Returns the most recent pre-consent scan result for a domain.
+ * Proxies to the Vercel GET endpoint (api/pre-consent-transfers.js)
+ * which reads from the Neon PostgreSQL database (EU Frankfurt).
  *
  * Headers:
  *   Authorization:  Bearer <token>
@@ -10,6 +12,10 @@
  *
  * Query params:
  *   domain   string   required
+ *
+ * Env vars required on the PHP host:
+ *   SCANNER_URL            — Vercel deployment base URL, e.g. https://your-app.vercel.app
+ *   SCANNER_INTERNAL_TOKEN — shared secret; must match Vercel SCANNER_INTERNAL_TOKEN
  *
  * Response 200:
  *   {
@@ -49,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 define('ROOT_PATH', dirname(__DIR__, 1));
 
-if (!getenv('DB_NAME') && !($_ENV['DB_NAME'] ?? null)) {
+if (!getenv('SCANNER_URL') && !($_ENV['SCANNER_URL'] ?? null)) {
     $envFile = ROOT_PATH . '/.env';
     if (file_exists($envFile)) {
         foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
@@ -61,8 +67,6 @@ if (!getenv('DB_NAME') && !($_ENV['DB_NAME'] ?? null)) {
         }
     }
 }
-
-require_once ROOT_PATH . '/shared/db.php';
 
 // ── Method guard ──────────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -119,38 +123,41 @@ if (!$domain) {
     exit;
 }
 
-// ── Query ─────────────────────────────────────────────────────────────────────
-try {
-    $db   = getDb();
-    $stmt = $db->prepare(
-        'SELECT domain, scanned_at, scan_duration_ms, status, transfers, error_message
-           FROM pre_consent_scans
-          WHERE domain = ? AND organisation_id = ?
-          ORDER BY scanned_at DESC
-          LIMIT 1'
-    );
-    $stmt->execute([$domain, $organisationId]);
-    $row = $stmt->fetch();
+// ── Proxy to Vercel ───────────────────────────────────────────────────────────
+$scannerUrl   = rtrim(getenv('SCANNER_URL') ?: '', '/');
+$scannerToken = getenv('SCANNER_INTERNAL_TOKEN') ?: '';
 
-    if (!$row) {
-        http_response_code(404);
-        echo json_encode(['error' => 'No scan found for this domain.']);
-        exit;
-    }
-
-    $transfers = json_decode($row['transfers'] ?? '[]', true) ?: [];
-
-    echo json_encode([
-        'domain'                => $row['domain'],
-        'scanned_at'            => $row['scanned_at'],
-        'scan_duration_ms'      => (int)$row['scan_duration_ms'],
-        'status'                => $row['status'],
-        'pre_consent_transfers' => $transfers,
-        ...($row['error_message'] ? ['error' => $row['error_message']] : []),
-    ]);
-
-} catch (\Throwable $e) {
-    error_log('[pre-consent-transfers/get] ' . $e->getMessage());
+if (!$scannerUrl || !$scannerToken) {
+    error_log('[pre-consent-transfers/get] SCANNER_URL or SCANNER_INTERNAL_TOKEN not set');
     http_response_code(500);
-    echo json_encode(['error' => 'Internal server error']);
+    echo json_encode(['error' => 'Scanner not configured']);
+    exit;
 }
+
+$url = $scannerUrl . '/api/pre-consent-transfers?' . http_build_query(['domain' => $domain]);
+
+$ch = curl_init($url);
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT        => 10,
+    CURLOPT_CONNECTTIMEOUT => 5,
+    CURLOPT_HTTPHEADER     => [
+        'X-Scanner-Token: ' . $scannerToken,
+        'Organisation: '    . $organisationId,
+    ],
+]);
+
+$raw  = curl_exec($ch);
+$code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$err  = curl_error($ch);
+curl_close($ch);
+
+if ($raw === false || $code === 0) {
+    error_log('[pre-consent-transfers/get] Could not reach Vercel: ' . $err);
+    http_response_code(502);
+    echo json_encode(['error' => 'Data service unavailable']);
+    exit;
+}
+
+http_response_code($code);
+echo $raw;
