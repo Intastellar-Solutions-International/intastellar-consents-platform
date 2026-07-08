@@ -36,7 +36,7 @@ exports.IntastellarButton = void 0;
 var jsx_runtime_1 = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 var useIntastellar_1 = __webpack_require__(/*! ./useIntastellar */ "./node_modules/@intastellar/signin-sdk-react/dist/useIntastellar.js");
 var IntastellarButton = function (_a) {
-    var _b = _a.theme, theme = _b === void 0 ? { theme: 'light', picker: 'button' } : _b, _c = _a.className, className = _c === void 0 ? '' : _c, children = _a.children, style = _a.style, config = __rest(_a, ["theme", "className", "children", "style"]);
+    var _b = _a.theme, theme = _b === void 0 ? { theme: 'light', picker: 'button' } : _b, _c = _a.className, className = _c === void 0 ? '' : _c, children = _a.children, style = _a.style, type = _a.type, config = __rest(_a, ["theme", "className", "children", "style", "type"]);
     var _d = (0, useIntastellar_1.useIntastellar)(config), users = _d.users, isLoading = _d.isLoading, signin = _d.signin, isSignedIn = _d.isSignedIn;
     var handleClick = function () {
         if (users.length === 1) {
@@ -46,12 +46,13 @@ var IntastellarButton = function (_a) {
             signin();
         }
     };
+    var buttonType = type === 'signup' ? 'Sign up' : 'Sign in';
     var getButtonText = function () {
         if (isLoading)
             return 'Loading...';
         if (users.length === 1)
             return "Continue as ".concat(users[0].name.first);
-        return 'Sign in with Intastellar';
+        return "".concat(buttonType, " with Intastellar");
     };
     var buttonClasses = "\n    intastellar-signin-button\n    ".concat(theme.theme === 'dark' ? 'dark' : 'light', "\n    ").concat(className, "\n  ").trim();
     var defaultStyle = __assign({ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 16px', border: '1px solid #dadce0', borderRadius: '4px', backgroundColor: theme.theme === 'dark' ? '#2d2d2d' : '#fff', color: theme.theme === 'dark' ? '#fff' : '#3c4043', fontSize: '14px', fontWeight: '500', cursor: isLoading ? 'not-allowed' : 'pointer', transition: 'all 0.2s ease' }, style);
@@ -184,7 +185,7 @@ var IntastellarAPI = /** @class */ (function () {
         });
     };
     IntastellarAPI.buildLoginUrl = function (config) {
-        var appName = config.appName, clientId = config.clientId, loginUri = config.loginUri, scopes = config.scopes, email = config.email;
+        var appName = config.appName, clientId = config.clientId, loginUri = config.loginUri, scopes = config.scopes, email = config.email, type = config.type;
         var domain = '';
         if (typeof window !== 'undefined') {
             domain = window.location.hostname || window.location.host;
@@ -199,9 +200,11 @@ var IntastellarAPI = /** @class */ (function () {
                 domain += ':' + window.location.port;
             }
         }
-        var baseUrl = email
+        var baseUrl = email && type === 'signin'
             ? 'https://www.intastellaraccounts.com/signin/v2/ws/oauth/pwd'
-            : 'https://www.intastellaraccounts.com/signin/v2/ws/oauth/oauthchooser';
+            : type === 'signup'
+                ? 'https://www.intastellaraccounts.com/Signup/'
+                : 'https://www.intastellaraccounts.com/signin/v2/ws/oauth/oauthchooser';
         var params = new URLSearchParams({
             service: appName,
             continue: loginUri,
@@ -427,6 +430,7 @@ function useIntastellar(config) {
                     loginUri: loginUri,
                     scopes: config.scopes || 'profile',
                     email: email,
+                    type: config.type || 'signin',
                 });
                 loginWindow_1 = window.open(loginUrl, 'intastellarLogin', 'height=719,width=500,left=100,top=100,resizable=no');
                 if (!loginWindow_1) {
@@ -20460,64 +20464,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.selector {
     color: #c0a053;
 }
 
-/* Domain item styles */
-.dropdown-menu__item--domain {
-    padding: 10px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 10px !important;
-}
-
-.dropdown-menu__item--domain .dropdown-menu__domain-name {
-    flex: 1;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.8125rem;
-    color: #f0f0f0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Badges container */
-.dropdown-menu__badges {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-}
-
-/* Verification tag styles */
-.dropdown-menu__verify-tag {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    font-size: 0.625rem;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.dropdown-menu__verify-tag--verified {
-    background: rgba(80, 180, 100, 0.2);
-    border: 1px solid rgba(80, 180, 100, 0.4);
-    color: #7dd590;
-}
-
-.dropdown-menu__verify-tag--unverified {
-    background: rgba(220, 160, 60, 0.2);
-    border: 1px solid rgba(220, 160, 60, 0.4);
-    color: #e8c76a;
-}
-
-.dropdown-menu__verify-tag--expired {
-    background: rgba(220, 100, 80, 0.2);
-    border: 1px solid rgba(220, 100, 80, 0.4);
-    color: #f0a8a0;
-}
-
 @media screen and (min-width: 320px) and (max-width: 900px) {
     .company_container .selector {
         max-width: none;
@@ -20540,7 +20486,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.selector {
         min-width: 0;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Components/SelectInput/Style.css"],"names":[],"mappings":"AAAA;IACI,gBAAgB;IAChB,YAAY;IACZ,YAAY;IACZ,gBAAgB;IAChB,kBAAkB;IAClB,aAAa;IACb,oBAAoB;IACpB,OAAO;AACX;;AAEA;IACI,mBAAmB;IACnB,cAAc;AAClB;;AAEA;IACI,0CAA0C;IAC1C,uBAAuB;IACvB,gBAAgB;IAChB,wBAAwB;IACxB,WAAW;IACX,eAAe;IACf,WAAW;IACX,iBAAiB;IACjB,gBAAgB;IAChB,cAAc;IACd,eAAe;IACf,gBAAgB;IAChB,wBAAwB;IACxB,mBAAmB;AACvB;;AAEA;;;IAGI,aAAa;IACb,wBAAwB;AAC5B;;AAEA;IACI,kBAAkB;IAClB,qBAAqB;IACrB,YAAY;IACZ,eAAe;AACnB;;AAEA;IACI,OAAO;IACP,WAAW;AACf;;AAEA;IACI,QAAQ;IACR,UAAU;AACd;;AAEA;IACI,kBAAkB;IAClB,kBAAkB;IAClB,eAAe;IACf,mCAAmC;IACnC,4BAA4B;IAC5B,aAAa;IACb,sBAAsB;IACtB,gBAAgB;IAChB,2FAA2F;IAC3F,2CAA2C;IAC3C,mBAAmB;IACnB;;+CAE2C;AAC/C;;AAEA;IACI,SAAS;IACT,cAAc;IACd,gBAAgB;IAChB,gBAAgB;IAChB,OAAO;IACP,mBAAmB;IACnB,gBAAgB;IAChB,cAAc;IACd,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;IAClB,eAAe;IACf,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,oCAAoC;IACpC;;wBAEoB;AACxB;;AAEA;;IAEI,oCAAoC;IACpC,WAAW;IACX,aAAa;AACjB;;AAEA;IACI,wBAAwB;AAC5B;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,2CAA2C;IAC3C,8BAA8B;IAC9B,gBAAgB;IAChB,wBAAwB;IACxB,cAAc;IACd,SAAS;IACT,0BAA0B;IAC1B,mBAAmB;IACnB,oBAAoB;IACpB,gBAAgB;IAChB,gGAAgG;IAChG,gBAAgB;IAChB,oBAAoB;IACpB,mBAAmB;IACnB,mBAAmB;IACnB,WAAW;IACX,eAAe;IACf,YAAY;IACZ,sBAAsB;IACtB,wBAAwB;IACxB,8BAA8B;IAC9B,QAAQ;IACR,eAAe;IACf;;;4BAGwB;AAC5B;;AAEA;IACI,sCAAsC;IACtC,oCAAoC;AACxC;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,OAAO;IACP,YAAY;IACZ,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,gBAAgB;AACpB;;AAEA;IACI,WAAW;IACX,UAAU;IACV,WAAW;IACX,cAAc;IACd,gBAAgB;IAChB,iDAAiD;IACjD,kDAAkD;IAClD,yCAAyC;IACzC,+BAA+B;AACnC;;AAEA;IACI,uCAAuC;AAC3C;;AAEA;IACI,sBAAsB;IACtB,cAAc;IACd,kDAAkD;IAClD,8BAA8B;AAClC;;AAEA;IACI,WAAW;IACX,iBAAiB;IACjB,2CAA2C;IAC3C,kBAAkB;IAClB,+BAA+B;IAC/B,cAAc;IACd,oBAAoB;IACpB,oBAAoB;IACpB,sBAAsB;AAC1B;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,sCAAsC;IACtC,8CAA8C;AAClD;;AAEA;IACI,eAAe;IACf,WAAW;IACX,YAAY;IACZ,cAAc;IACd,cAAc;IACd,mBAAmB;IACnB,kBAAkB;AACtB;;AAEA,qBAAqB;AACrB;IACI,4BAA4B;IAC5B,0BAA0B;IAC1B,oBAAoB;IACpB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,0CAA0C;IAC1C,0CAA0C;IAC1C,+CAA+C;IAC/C,6DAA6D;IAC7D,eAAe;AACnB;;AAEA;IACI,0CAA0C;IAC1C,0BAA0B;AAC9B;;AAEA,0BAA0B;AAC1B;IACI,6BAA6B;IAC7B,wBAAwB;IACxB,8BAA8B;IAC9B,oBAAoB;AACxB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,cAAc;IACd,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,kBAAkB;IAClB,mCAAmC;IACnC,0CAA0C;IAC1C,cAAc;IACd,kBAAkB;IAClB,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;IACR,YAAY;IACZ,OAAO;AACX;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,cAAc;IACd,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;IACI,oBAAoB;IACpB,+BAA+B;IAC/B,gFAAgF;IAChF,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA,iCAAiC;AACjC;IACI,6BAA6B;IAC7B,wBAAwB;IACxB,8BAA8B;IAC9B,oBAAoB;IACpB,+CAA+C;IAC/C,6DAA6D;AACjE;;AAEA;IACI,+CAA+C;AACnD;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,eAAe;IACf,cAAc;AAClB;;AAEA,wBAAwB;AACxB;IACI,6BAA6B;IAC7B,wBAAwB;IACxB,8BAA8B;IAC9B,mBAAmB;IACnB,0CAA0C;IAC1C,+CAA+C;AACnD;;AAEA;IACI,gDAAgD;AACpD;;AAEA;IACI,mBAAmB;IACnB,+BAA+B;AACnC;;AAEA,qDAAqD;AACrD;IACI,6BAA6B;IAC7B,wBAAwB;IACxB,8BAA8B;IAC9B,yCAAyC;IACzC,oBAAoB;AACxB;;AAEA;IACI,gFAAgF;IAChF,oBAAoB;IACpB,cAAc;AAClB;;AAEA;IACI,oCAAoC;AACxC;;AAEA;IACI,oBAAoB;IACpB,gBAAgB;IAChB,yBAAyB;IACzB,sBAAsB;IACtB,gBAAgB;IAChB,kBAAkB;IAClB,mCAAmC;IACnC,0CAA0C;IAC1C,cAAc;AAClB;;AAEA,uBAAuB;AACvB;IACI,6BAA6B;IAC7B,wBAAwB;IACxB,8BAA8B;IAC9B,yCAAyC;IACzC,oBAAoB;AACxB;;AAEA;IACI,OAAO;IACP,gFAAgF;IAChF,oBAAoB;IACpB,cAAc;IACd,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA,qBAAqB;AACrB;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;IACR,cAAc;AAClB;;AAEA,4BAA4B;AAC5B;IACI,oBAAoB;IACpB,mBAAmB;IACnB,uBAAuB;IACvB,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,mCAAmC;IACnC,yCAAyC;IACzC,cAAc;AAClB;;AAEA;IACI,mCAAmC;IACnC,yCAAyC;IACzC,cAAc;AAClB;;AAEA;IACI,mCAAmC;IACnC,yCAAyC;IACzC,cAAc;AAClB;;AAEA;IACI;QACI,eAAe;QACf,WAAW;IACf;;IAEA;QACI,kBAAkB;QAClB,mBAAmB;QACnB,YAAY;QACZ,WAAW;IACf;;IAEA;QACI,WAAW;QACX,eAAe;IACnB;;IAEA;QACI,YAAY;IAChB;AACJ","sourcesContent":[".selector {\n    max-width: 350px;\n    min-width: 0;\n    height: auto;\n    min-height: 36px;\n    position: relative;\n    display: flex;\n    align-items: stretch;\n    flex: 1;\n}\n\n.selectTitle {\n    margin-bottom: 10px;\n    display: block;\n}\n\n.selector select {\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    background: transparent;\n    appearance: none;\n    -webkit-appearance: none;\n    color: #fff;\n    font-size: 12px;\n    margin: 0px;\n    padding: 8px 16px;\n    border-radius: 0;\n    display: block;\n    max-width: 100%;\n    min-width: 175px;\n    vertical-align: baseline;\n    white-space: nowrap;\n}\n\n.selector select:focus,\n.selector select:focus-within,\n.selector select:focus-visible {\n    outline: none;\n    border-bottom: 1px solid;\n}\n\n.dropdown-menu {\n    position: absolute;\n    top: calc(100% + 6px);\n    z-index: 200;\n    min-width: 100%;\n}\n\n.dropdown-menu--align-left {\n    left: 0;\n    right: auto;\n}\n\n.dropdown-menu--align-right {\n    right: 0;\n    left: auto;\n}\n\n.dropdown-menu__panel {\n    position: relative;\n    width: max-content;\n    min-width: 100%;\n    max-width: min(100vw - 24px, 360px);\n    max-height: min(70vh, 420px);\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow:\n        0 20px 48px rgba(0, 0, 0, 0.45),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.dropdown-menu__content {\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #e4e4e4;\n    text-align: left;\n}\n\n.dropdown-menu__content li {\n    padding: 10px 14px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    border-bottom: 1px solid transparent;\n    transition:\n        background 0.15s ease,\n        color 0.15s ease;\n}\n\n.dropdown-menu__content li:hover,\n.dropdown-menu__content li:focus-visible {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n    outline: none;\n}\n\n.dropdown-menu__content li[hidden] {\n    display: none !important;\n}\n\n.dropdown-menu__item--with-icon {\n    display: flex;\n    align-items: center;\n}\n\n.dropdown-menu-button {\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    appearance: none;\n    -webkit-appearance: none;\n    color: #f0f0f0;\n    margin: 0;\n    padding: 8px 12px 8px 14px;\n    border-radius: 10px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    line-height: 1.3;\n    display: inline-flex;\n    flex-direction: row;\n    align-items: center;\n    width: 100%;\n    max-width: 100%;\n    min-width: 0;\n    box-sizing: border-box;\n    vertical-align: baseline;\n    justify-content: space-between;\n    gap: 8px;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.dropdown-menu-button:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu-button:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.55);\n    outline-offset: 2px;\n}\n\n.dropdown-menu-button__label {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    text-align: left;\n}\n\n.dropdown-menu-button::after {\n    content: \"\";\n    width: 8px;\n    height: 8px;\n    flex-shrink: 0;\n    margin-left: 4px;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n    transition: transform 0.2s ease;\n}\n\n.dropdown-menu-button[aria-expanded=\"true\"]::after {\n    transform: rotate(225deg) translateY(0);\n}\n\n.search-box {\n    padding: 10px 10px 8px;\n    flex-shrink: 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.search-input {\n    width: 100%;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    box-sizing: border-box;\n}\n\n.search-input::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.search-input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.company-logo {\n    margin-right: 0;\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: block;\n    object-fit: contain;\n    border-radius: 6px;\n}\n\n/* Separator styles */\n.dropdown-menu__separator {\n    padding: 8px 14px !important;\n    cursor: default !important;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85) !important;\n    background: rgba(0, 0, 0, 0.15) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n    margin-top: 4px;\n}\n\n.dropdown-menu__separator:hover {\n    background: rgba(0, 0, 0, 0.15) !important;\n    cursor: default !important;\n}\n\n/* Workspace item styles */\n.dropdown-menu__item--workspace {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__workspace-icon {\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.75rem;\n    font-weight: 700;\n}\n\n.dropdown-menu__workspace-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.dropdown-menu__workspace-name {\n    font-weight: 600;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dropdown-menu__workspace-domain {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Workspace combined view item */\n.dropdown-menu__item--workspace-combined {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n    background: rgba(192, 159, 83, 0.08) !important;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.dropdown-menu__item--workspace-combined:hover {\n    background: rgba(192, 159, 83, 0.18) !important;\n}\n\n.dropdown-menu__combined-icon {\n    width: 20px;\n    height: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1rem;\n    color: #c0a053;\n}\n\n/* Exit workspace item */\n.dropdown-menu__item--exit-workspace {\n    padding: 12px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 8px !important;\n    color: rgba(255, 255, 255, 0.8) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.dropdown-menu__item--exit-workspace:hover {\n    background: rgba(255, 255, 255, 0.08) !important;\n}\n\n.dropdown-menu__exit-icon {\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* Workspace domain items (when inside a workspace) */\n.dropdown-menu__item--workspace-domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n}\n\n.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n}\n\n/* Domain item styles */\n.dropdown-menu__item--domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--domain .dropdown-menu__domain-name {\n    flex: 1;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Badges container */\n.dropdown-menu__badges {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n/* Verification tag styles */\n.dropdown-menu__verify-tag {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 18px;\n    height: 18px;\n    border-radius: 50%;\n    font-size: 0.625rem;\n    font-weight: 700;\n    flex-shrink: 0;\n}\n\n.dropdown-menu__verify-tag--verified {\n    background: rgba(80, 180, 100, 0.2);\n    border: 1px solid rgba(80, 180, 100, 0.4);\n    color: #7dd590;\n}\n\n.dropdown-menu__verify-tag--unverified {\n    background: rgba(220, 160, 60, 0.2);\n    border: 1px solid rgba(220, 160, 60, 0.4);\n    color: #e8c76a;\n}\n\n.dropdown-menu__verify-tag--expired {\n    background: rgba(220, 100, 80, 0.2);\n    border: 1px solid rgba(220, 100, 80, 0.4);\n    color: #f0a8a0;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .company_container .selector {\n        max-width: none;\n        width: 100%;\n    }\n\n    .dropdown-menu {\n        left: 0 !important;\n        right: 0 !important;\n        min-width: 0;\n        width: 100%;\n    }\n\n    .dropdown-menu__panel {\n        width: 100%;\n        max-width: none;\n    }\n\n    .dropdown-menu-button {\n        min-width: 0;\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Components/SelectInput/Style.css"],"names":[],"mappings":"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","sourcesContent":[".selector {\n    max-width: 350px;\n    min-width: 0;\n    height: auto;\n    min-height: 36px;\n    position: relative;\n    display: flex;\n    align-items: stretch;\n    flex: 1;\n}\n\n.selectTitle {\n    margin-bottom: 10px;\n    display: block;\n}\n\n.selector select {\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    background: transparent;\n    appearance: none;\n    -webkit-appearance: none;\n    color: #fff;\n    font-size: 12px;\n    margin: 0px;\n    padding: 8px 16px;\n    border-radius: 0;\n    display: block;\n    max-width: 100%;\n    min-width: 175px;\n    vertical-align: baseline;\n    white-space: nowrap;\n}\n\n.selector select:focus,\n.selector select:focus-within,\n.selector select:focus-visible {\n    outline: none;\n    border-bottom: 1px solid;\n}\n\n.dropdown-menu {\n    position: absolute;\n    top: calc(100% + 6px);\n    z-index: 200;\n    min-width: 100%;\n}\n\n.dropdown-menu--align-left {\n    left: 0;\n    right: auto;\n}\n\n.dropdown-menu--align-right {\n    right: 0;\n    left: auto;\n}\n\n.dropdown-menu__panel {\n    position: relative;\n    width: max-content;\n    min-width: 100%;\n    max-width: min(100vw - 24px, 360px);\n    max-height: min(70vh, 420px);\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow:\n        0 20px 48px rgba(0, 0, 0, 0.45),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.dropdown-menu__content {\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #e4e4e4;\n    text-align: left;\n}\n\n.dropdown-menu__content li {\n    padding: 10px 14px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    border-bottom: 1px solid transparent;\n    transition:\n        background 0.15s ease,\n        color 0.15s ease;\n}\n\n.dropdown-menu__content li:hover,\n.dropdown-menu__content li:focus-visible {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n    outline: none;\n}\n\n.dropdown-menu__content li[hidden] {\n    display: none !important;\n}\n\n.dropdown-menu__item--with-icon {\n    display: flex;\n    align-items: center;\n}\n\n.dropdown-menu-button {\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    appearance: none;\n    -webkit-appearance: none;\n    color: #f0f0f0;\n    margin: 0;\n    padding: 8px 12px 8px 14px;\n    border-radius: 10px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    line-height: 1.3;\n    display: inline-flex;\n    flex-direction: row;\n    align-items: center;\n    width: 100%;\n    max-width: 100%;\n    min-width: 0;\n    box-sizing: border-box;\n    vertical-align: baseline;\n    justify-content: space-between;\n    gap: 8px;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.dropdown-menu-button:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu-button:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.55);\n    outline-offset: 2px;\n}\n\n.dropdown-menu-button__label {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    text-align: left;\n}\n\n.dropdown-menu-button::after {\n    content: \"\";\n    width: 8px;\n    height: 8px;\n    flex-shrink: 0;\n    margin-left: 4px;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n    transition: transform 0.2s ease;\n}\n\n.dropdown-menu-button[aria-expanded=\"true\"]::after {\n    transform: rotate(225deg) translateY(0);\n}\n\n.search-box {\n    padding: 10px 10px 8px;\n    flex-shrink: 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.search-input {\n    width: 100%;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    box-sizing: border-box;\n}\n\n.search-input::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.search-input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.company-logo {\n    margin-right: 0;\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: block;\n    object-fit: contain;\n    border-radius: 6px;\n}\n\n/* Separator styles */\n.dropdown-menu__separator {\n    padding: 8px 14px !important;\n    cursor: default !important;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85) !important;\n    background: rgba(0, 0, 0, 0.15) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n    margin-top: 4px;\n}\n\n.dropdown-menu__separator:hover {\n    background: rgba(0, 0, 0, 0.15) !important;\n    cursor: default !important;\n}\n\n/* Workspace item styles */\n.dropdown-menu__item--workspace {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__workspace-icon {\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.75rem;\n    font-weight: 700;\n}\n\n.dropdown-menu__workspace-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.dropdown-menu__workspace-name {\n    font-weight: 600;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dropdown-menu__workspace-domain {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Workspace combined view item */\n.dropdown-menu__item--workspace-combined {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n    background: rgba(192, 159, 83, 0.08) !important;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.dropdown-menu__item--workspace-combined:hover {\n    background: rgba(192, 159, 83, 0.18) !important;\n}\n\n.dropdown-menu__combined-icon {\n    width: 20px;\n    height: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1rem;\n    color: #c0a053;\n}\n\n/* Exit workspace item */\n.dropdown-menu__item--exit-workspace {\n    padding: 12px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 8px !important;\n    color: rgba(255, 255, 255, 0.8) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.dropdown-menu__item--exit-workspace:hover {\n    background: rgba(255, 255, 255, 0.08) !important;\n}\n\n.dropdown-menu__exit-icon {\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* Workspace domain items (when inside a workspace) */\n.dropdown-menu__item--workspace-domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n}\n\n.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .company_container .selector {\n        max-width: none;\n        width: 100%;\n    }\n\n    .dropdown-menu {\n        left: 0 !important;\n        right: 0 !important;\n        min-width: 0;\n        width: 100%;\n    }\n\n    .dropdown-menu__panel {\n        width: 100%;\n        max-width: none;\n    }\n\n    .dropdown-menu-button {\n        min-width: 0;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -20600,10 +20546,10 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.sideCart{
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./src/Components/StripePayment/Style/Stripe.css":
-/*!*********************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./src/Components/StripePayment/Style/Stripe.css ***!
-  \*********************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/Components/SubscriptionPlans/Style/Plans.css":
+/*!************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/Components/SubscriptionPlans/Style/Plans.css ***!
+  \************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -20619,57 +20565,370 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.content{
+___CSS_LOADER_EXPORT___.push([module.id, `/* ── Plans page ────────────────────────────────────────── */
+.plans-page {
     width: 100%;
-    height: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: clamp(32px, 5vw, 64px) clamp(16px, 4vw, 40px);
+    box-sizing: border-box;
+}
+
+.plans-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.plans-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 300;
+    color: #f4f4f4;
+    margin: 0 0 12px;
+    letter-spacing: 0.01em;
+}
+
+.plans-subtitle {
+    font-size: 0.9375rem;
+    color: #a0a0a0;
+    margin: 0;
+    line-height: 1.6;
+}
+
+.plans-error {
+    text-align: center;
+    color: #ff8080;
+    background: rgba(255, 80, 80, 0.1);
+    border: 1px solid rgba(255, 80, 80, 0.25);
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin-bottom: 32px;
+    font-size: 0.9rem;
+}
+
+/* ── Plan grid ─────────────────────────────────────────── */
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+/* ── Plan card ─────────────────────────────────────────── */
+.plan-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: linear-gradient(
+        168deg,
+        rgba(54, 54, 58, 0.92) 0%,
+        rgba(28, 28, 32, 0.97) 100%
+    );
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    padding: 28px 24px 24px;
     box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 24px;
-    text-align: center;
-    margin-top: 50px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
 }
 
-.stripe-price-table{
-    width: 100%;
+.plan-card:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 20px 56px rgba(0, 0, 0, 0.5);
 }
 
-.payment-header{
+.plan-card--highlighted {
+    border-color: rgba(192, 159, 83, 0.55);
+    background: linear-gradient(
+        168deg,
+        rgba(64, 58, 42, 0.95) 0%,
+        rgba(32, 28, 18, 0.98) 100%
+    );
+    box-shadow:
+        0 20px 56px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(192, 159, 83, 0.2);
+}
+
+.plan-card--highlighted::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48%;
+    height: 3px;
+    border-radius: 0 0 8px 8px;
+    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);
+}
+
+.plan-card--highlighted:hover {
+    border-color: rgba(192, 159, 83, 0.75);
+}
+
+/* Labels row (popular / badge) */
+.plan-card__labels {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    max-width: 1400px;
-    width: 100%;
-    margin: auto;
-    padding: 15px;
-}
-.logo{
-    width: 250px;
-    float: left;
+    gap: 8px;
+    min-height: 24px;
+    margin-bottom: 12px;
 }
 
-.footer a{
-    color: #fff;
-    text-decoration: none;
+.plan-card__popular {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #c0a053;
+    background: rgba(192, 159, 83, 0.12);
+    border: 1px solid rgba(192, 159, 83, 0.3);
+    border-radius: 20px;
+    padding: 3px 10px;
     display: inline-block;
-    padding: 0 10px;
 }
 
-.footer a:hover{
+.plan-card__badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7dd69e;
+    background: rgba(80, 200, 120, 0.1);
+    border: 1px solid rgba(80, 200, 120, 0.25);
+    border-radius: 20px;
+    padding: 3px 10px;
+    display: inline-block;
+}
+
+.plan-card__name {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #f0f0f0;
+    margin: 0 0 14px;
+    letter-spacing: 0.01em;
+}
+
+.plan-card__pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.plan-card__price {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.plan-card__period {
+    font-size: 0.875rem;
+    color: #888;
+    font-weight: 400;
+}
+
+.plan-card__subtext {
+    font-size: 0.8125rem;
+    color: #c0a053;
+    margin: 4px 0 12px;
+    font-weight: 500;
+}
+
+.plan-card__description {
+    font-size: 0.85rem;
+    color: #909090;
+    margin: 8px 0 20px;
+    line-height: 1.55;
+}
+
+/* Features list */
+.plan-card__features {
+    list-style: none;
+    margin: 0 0 24px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.plan-card__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 0.875rem;
+    color: #c8c8c8;
+    line-height: 1.45;
+}
+
+.plan-card__check {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
     color: #c0a053;
 }
 
-@media screen and (max-width: 600px){
-    .logo{
-        width: 12%;
+/* CTA button */
+.plan-card__cta {
+    width: 100%;
+    padding: 13px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+    color: #e8e8e8;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    box-sizing: border-box;
+    margin-top: auto;
+}
+
+.plan-card__cta:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.plan-card__cta:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.plan-card__cta:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.plan-card__cta--primary {
+    border-color: rgba(192, 159, 83, 0.55);
+    background: linear-gradient(
+        180deg,
+        rgba(192, 159, 83, 0.28) 0%,
+        rgba(160, 130, 65, 0.18) 100%
+    );
+    color: #faf6ee;
+    font-weight: 600;
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.plan-card__cta--primary:hover:not(:disabled) {
+    border-color: rgba(192, 159, 83, 0.8);
+    background: linear-gradient(
+        180deg,
+        rgba(192, 159, 83, 0.38) 0%,
+        rgba(160, 130, 65, 0.26) 100%
+    );
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* ── Footer ────────────────────────────────────────────── */
+.plans-footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.8125rem;
+    color: #686868;
+    line-height: 1.6;
+}
+
+/* ── Checkout page ─────────────────────────────────────── */
+.checkout-page {
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: clamp(32px, 5vw, 56px) clamp(16px, 4vw, 40px);
+    box-sizing: border-box;
+}
+
+.checkout-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.checkout-back {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: #a0a0a0;
+    font-size: 0.875rem;
+    font-family: inherit;
+    padding: 8px 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.checkout-back:hover {
+    color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
+.checkout-summary {
+    flex: 1;
+}
+
+.checkout-title {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #f0f0f0;
+    margin: 0 0 4px;
+}
+
+.checkout-price {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.checkout-period {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #888;
+}
+
+.checkout-subtext {
+    font-size: 0.8125rem;
+    color: #c0a053;
+    font-weight: 400;
+    margin-left: 6px;
+}
+
+.checkout-form-container {
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 300px;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+@media (max-width: 1080px) {
+    .plans-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
-}`, "",{"version":3,"sources":["webpack://./src/Components/StripePayment/Style/Stripe.css"],"names":[],"mappings":"AAAA;IACI,WAAW;IACX,YAAY;IACZ,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,aAAa;IACb,sBAAsB;IACtB,iCAAiC;IACjC,gBAAgB;IAChB,eAAe;IACf,iBAAiB;IACjB,kBAAkB;IAClB,gBAAgB;AACpB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,mBAAmB;IACnB,uBAAuB;IACvB,iBAAiB;IACjB,WAAW;IACX,YAAY;IACZ,aAAa;AACjB;AACA;IACI,YAAY;IACZ,WAAW;AACf;;AAEA;IACI,WAAW;IACX,qBAAqB;IACrB,qBAAqB;IACrB,eAAe;AACnB;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI;QACI,UAAU;IACd;AACJ","sourcesContent":[".content{\n    width: 100%;\n    height: 100%;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    padding: 20px;\n    box-sizing: border-box;\n    font-family: 'Roboto', sans-serif;\n    font-weight: 300;\n    font-size: 16px;\n    line-height: 24px;\n    text-align: center;\n    margin-top: 50px;\n}\n\n.stripe-price-table{\n    width: 100%;\n}\n\n.payment-header{\n    display: flex;\n    flex-direction: row;\n    align-items: center;\n    justify-content: center;\n    max-width: 1400px;\n    width: 100%;\n    margin: auto;\n    padding: 15px;\n}\n.logo{\n    width: 250px;\n    float: left;\n}\n\n.footer a{\n    color: #fff;\n    text-decoration: none;\n    display: inline-block;\n    padding: 0 10px;\n}\n\n.footer a:hover{\n    color: #c0a053;\n}\n\n@media screen and (max-width: 600px){\n    .logo{\n        width: 12%;\n    }\n}"],"sourceRoot":""}]);
+}
+
+@media (max-width: 600px) {
+    .plans-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+`, "",{"version":3,"sources":["webpack://./src/Components/SubscriptionPlans/Style/Plans.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Plans page ────────────────────────────────────────── */\n.plans-page {\n    width: 100%;\n    max-width: 1280px;\n    margin: 0 auto;\n    padding: clamp(32px, 5vw, 64px) clamp(16px, 4vw, 40px);\n    box-sizing: border-box;\n}\n\n.plans-header {\n    text-align: center;\n    margin-bottom: 48px;\n}\n\n.plans-title {\n    font-size: clamp(1.6rem, 3vw, 2.2rem);\n    font-weight: 300;\n    color: #f4f4f4;\n    margin: 0 0 12px;\n    letter-spacing: 0.01em;\n}\n\n.plans-subtitle {\n    font-size: 0.9375rem;\n    color: #a0a0a0;\n    margin: 0;\n    line-height: 1.6;\n}\n\n.plans-error {\n    text-align: center;\n    color: #ff8080;\n    background: rgba(255, 80, 80, 0.1);\n    border: 1px solid rgba(255, 80, 80, 0.25);\n    border-radius: 10px;\n    padding: 12px 20px;\n    margin-bottom: 32px;\n    font-size: 0.9rem;\n}\n\n/* ── Plan grid ─────────────────────────────────────────── */\n.plans-grid {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 20px;\n    align-items: start;\n}\n\n/* ── Plan card ─────────────────────────────────────────── */\n.plan-card {\n    display: flex;\n    flex-direction: column;\n    border-radius: 16px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: linear-gradient(\n        168deg,\n        rgba(54, 54, 58, 0.92) 0%,\n        rgba(28, 28, 32, 0.97) 100%\n    );\n    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);\n    padding: 28px 24px 24px;\n    box-sizing: border-box;\n    transition: border-color 0.2s ease, box-shadow 0.2s ease;\n    position: relative;\n}\n\n.plan-card:hover {\n    border-color: rgba(255, 255, 255, 0.16);\n    box-shadow: 0 20px 56px rgba(0, 0, 0, 0.5);\n}\n\n.plan-card--highlighted {\n    border-color: rgba(192, 159, 83, 0.55);\n    background: linear-gradient(\n        168deg,\n        rgba(64, 58, 42, 0.95) 0%,\n        rgba(32, 28, 18, 0.98) 100%\n    );\n    box-shadow:\n        0 20px 56px rgba(0, 0, 0, 0.5),\n        0 0 0 1px rgba(192, 159, 83, 0.2);\n}\n\n.plan-card--highlighted::before {\n    content: \"\";\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 48%;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n}\n\n.plan-card--highlighted:hover {\n    border-color: rgba(192, 159, 83, 0.75);\n}\n\n/* Labels row (popular / badge) */\n.plan-card__labels {\n    display: flex;\n    gap: 8px;\n    min-height: 24px;\n    margin-bottom: 12px;\n}\n\n.plan-card__popular {\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    border-radius: 20px;\n    padding: 3px 10px;\n    display: inline-block;\n}\n\n.plan-card__badge {\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #7dd69e;\n    background: rgba(80, 200, 120, 0.1);\n    border: 1px solid rgba(80, 200, 120, 0.25);\n    border-radius: 20px;\n    padding: 3px 10px;\n    display: inline-block;\n}\n\n.plan-card__name {\n    font-size: 1.25rem;\n    font-weight: 400;\n    color: #f0f0f0;\n    margin: 0 0 14px;\n    letter-spacing: 0.01em;\n}\n\n.plan-card__pricing {\n    display: flex;\n    align-items: baseline;\n    gap: 4px;\n    margin-bottom: 4px;\n}\n\n.plan-card__price {\n    font-size: 2rem;\n    font-weight: 600;\n    color: #ffffff;\n    letter-spacing: -0.02em;\n    line-height: 1;\n}\n\n.plan-card__period {\n    font-size: 0.875rem;\n    color: #888;\n    font-weight: 400;\n}\n\n.plan-card__subtext {\n    font-size: 0.8125rem;\n    color: #c0a053;\n    margin: 4px 0 12px;\n    font-weight: 500;\n}\n\n.plan-card__description {\n    font-size: 0.85rem;\n    color: #909090;\n    margin: 8px 0 20px;\n    line-height: 1.55;\n}\n\n/* Features list */\n.plan-card__features {\n    list-style: none;\n    margin: 0 0 24px;\n    padding: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 10px;\n    flex: 1;\n}\n\n.plan-card__feature {\n    display: flex;\n    align-items: flex-start;\n    gap: 9px;\n    font-size: 0.875rem;\n    color: #c8c8c8;\n    line-height: 1.45;\n}\n\n.plan-card__check {\n    width: 16px;\n    height: 16px;\n    flex-shrink: 0;\n    margin-top: 1px;\n    color: #c0a053;\n}\n\n/* CTA button */\n.plan-card__cta {\n    width: 100%;\n    padding: 13px 20px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e8e8e8;\n    font-size: 0.9375rem;\n    font-weight: 500;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;\n    box-sizing: border-box;\n    margin-top: auto;\n}\n\n.plan-card__cta:hover:not(:disabled) {\n    background: rgba(255, 255, 255, 0.1);\n    border-color: rgba(255, 255, 255, 0.25);\n}\n\n.plan-card__cta:active:not(:disabled) {\n    transform: translateY(1px);\n}\n\n.plan-card__cta:disabled {\n    opacity: 0.55;\n    cursor: not-allowed;\n}\n\n.plan-card__cta--primary {\n    border-color: rgba(192, 159, 83, 0.55);\n    background: linear-gradient(\n        180deg,\n        rgba(192, 159, 83, 0.28) 0%,\n        rgba(160, 130, 65, 0.18) 100%\n    );\n    color: #faf6ee;\n    font-weight: 600;\n    box-shadow:\n        0 8px 24px rgba(0, 0, 0, 0.3),\n        inset 0 1px 0 rgba(255, 255, 255, 0.08);\n}\n\n.plan-card__cta--primary:hover:not(:disabled) {\n    border-color: rgba(192, 159, 83, 0.8);\n    background: linear-gradient(\n        180deg,\n        rgba(192, 159, 83, 0.38) 0%,\n        rgba(160, 130, 65, 0.26) 100%\n    );\n    box-shadow:\n        0 10px 28px rgba(0, 0, 0, 0.35),\n        inset 0 1px 0 rgba(255, 255, 255, 0.1);\n}\n\n/* ── Footer ────────────────────────────────────────────── */\n.plans-footer {\n    text-align: center;\n    margin-top: 40px;\n    font-size: 0.8125rem;\n    color: #686868;\n    line-height: 1.6;\n}\n\n/* ── Checkout page ─────────────────────────────────────── */\n.checkout-page {\n    width: 100%;\n    max-width: 780px;\n    margin: 0 auto;\n    padding: clamp(32px, 5vw, 56px) clamp(16px, 4vw, 40px);\n    box-sizing: border-box;\n}\n\n.checkout-header {\n    display: flex;\n    align-items: center;\n    gap: 24px;\n    margin-bottom: 32px;\n    flex-wrap: wrap;\n}\n\n.checkout-back {\n    background: none;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    color: #a0a0a0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    padding: 8px 14px;\n    cursor: pointer;\n    white-space: nowrap;\n    transition: color 0.15s ease, border-color 0.15s ease;\n}\n\n.checkout-back:hover {\n    color: #e0e0e0;\n    border-color: rgba(255, 255, 255, 0.22);\n}\n\n.checkout-summary {\n    flex: 1;\n}\n\n.checkout-title {\n    font-size: 1.25rem;\n    font-weight: 400;\n    color: #f0f0f0;\n    margin: 0 0 4px;\n}\n\n.checkout-price {\n    font-size: 1.5rem;\n    font-weight: 600;\n    color: #ffffff;\n    margin: 0;\n    display: flex;\n    align-items: baseline;\n    gap: 4px;\n    flex-wrap: wrap;\n}\n\n.checkout-period {\n    font-size: 0.875rem;\n    font-weight: 400;\n    color: #888;\n}\n\n.checkout-subtext {\n    font-size: 0.8125rem;\n    color: #c0a053;\n    font-weight: 400;\n    margin-left: 6px;\n}\n\n.checkout-form-container {\n    border-radius: 16px;\n    overflow: hidden;\n    min-height: 300px;\n}\n\n/* ── Responsive ────────────────────────────────────────── */\n@media (max-width: 1080px) {\n    .plans-grid {\n        grid-template-columns: repeat(2, 1fr);\n    }\n}\n\n@media (max-width: 600px) {\n    .plans-grid {\n        grid-template-columns: 1fr;\n    }\n\n    .checkout-header {\n        flex-direction: column;\n        align-items: flex-start;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -21758,20 +22017,265 @@ ___CSS_LOADER_EXPORT___.push([module.id, `body {
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    background:
-        radial-gradient(ellipse 120% 70% at 50% -15%, rgba(192, 159, 83, 0.16), transparent 52%),
-        linear-gradient(168deg, #1c1c1f 0%, #101012 48%, #0a0a0c 100%);
+    background: #f7f4f0;
     color: #e8e8e8;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-.int-login__main {
+/* ── Split layout ── */
+.int-login__split {
     flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100dvh;
+}
+
+.int-login__panel {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(24px, 5vw, 48px);
+    padding: clamp(32px, 5vw, 72px) clamp(24px, 4vw, 64px);
     box-sizing: border-box;
+}
+
+.int-login__panel--form {
+    background: #f7f4f0;
+}
+
+.int-login__panel--features {
+    position: relative;
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    background:
+        radial-gradient(ellipse 110% 60% at 60% 10%, rgba(192, 159, 83, 0.12), transparent 55%),
+        linear-gradient(168deg, #141418 0%, #0c0c10 100%);
+    overflow: hidden;
+}
+
+.int-login__panel--features::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 110% 110%, rgba(192, 159, 83, 0.07), transparent 60%);
+    pointer-events: none;
+}
+
+/* ── Features inner content ── */
+.int-login__features-inner {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+}
+
+.int-login__features-brand {
+    margin-bottom: 32px;
+}
+
+.int-login__features-logo {
+    height: auto;
+    max-width: min(100%, 180px);
+    display: block;
+    opacity: 0.88;
+    filter: brightness(0) invert(1);
+}
+
+.int-login__features-headline {
+    margin: 0 0 14px;
+    font-size: clamp(1.5rem, 2.8vw, 2rem);
+    font-weight: 700;
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    color: #f4f0ea;
+}
+
+.int-login__features-lede {
+    margin: 0 0 32px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #848a92;
+}
+
+.int-login__features-list {
+    list-style: none;
+    margin: 0 0 32px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.int-login__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.int-login__feature-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    border: 1px solid rgba(192, 159, 83, 0.25);
+    background: rgba(192, 159, 83, 0.09);
+    color: #c0a053;
+    margin-top: 1px;
+}
+
+.int-login__feature-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.int-login__feature-title {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e8e4de;
+}
+
+.int-login__feature-desc {
+    display: block;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: #6a7280;
+}
+
+/* ── Stats row ── */
+.int-login__features-stats {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 18px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(0, 0, 0, 0.28);
+}
+
+.int-login__features-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+}
+
+.int-login__features-stat-value {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #c0a053;
+}
+
+.int-login__features-stat-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.32);
+}
+
+.int-login__features-stat-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.07);
+    flex-shrink: 0;
+}
+
+/* ── Light form panel overrides ── */
+.int-login__panel--form .int-login__card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    max-width: 360px;
+}
+
+.int-login__panel--form .int-login__card::before {
+    display: none;
+}
+
+.int-login__panel--form .int-login__logo {
+    filter: none;
+    opacity: 1;
+    max-width: min(100%, 200px);
+}
+
+.int-login__panel--form .int-login__headline {
+    color: #1a1714;
+    font-size: clamp(1.6rem, 3vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-align: left;
+    margin-top: 36px;
+}
+
+.int-login__panel--form .int-login__lede {
+    color: #7a7068;
+    text-align: left;
+    margin-bottom: 28px;
+}
+
+.int-login__panel--form .int-login__signin-btn {
+    border-color: rgba(160, 128, 60, 0.5);
+    background: linear-gradient(180deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 60, 0.12) 100%);
+    color: #3d2f0e;
+    box-shadow: 0 2px 8px rgba(160, 128, 60, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.int-login__panel--form .int-login__signin-btn:hover:not(:disabled) {
+    border-color: rgba(160, 128, 60, 0.7);
+    background: linear-gradient(180deg, rgba(192, 159, 83, 0.26) 0%, rgba(160, 130, 60, 0.2) 100%);
+    box-shadow: 0 4px 14px rgba(160, 128, 60, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.int-login__panel--form .int-login__signin-btn-inner-text {
+    color: #3d2f0e;
+}
+
+.int-login__panel--form .int-login__signin-btn-inner-text-email {
+    color: #7a6840;
+}
+
+.int-login__panel--form .int-login__signin-spinner {
+    border-color: rgba(61, 47, 14, 0.2);
+    border-top-color: #3d2f0e;
+}
+
+.int-login__panel--form .int-login__not-you {
+    text-align: left;
+}
+
+.int-login__panel--form .int-login__not-you-link {
+    color: #9a8a78;
+}
+
+.int-login__panel--form .int-login__not-you-link:hover {
+    color: #a38540;
+    border-bottom-color: rgba(163, 133, 64, 0.45);
+}
+
+/* ── Responsive: collapse to single column on small screens ── */
+@media (max-width: 860px) {
+    .int-login__split {
+        grid-template-columns: 1fr;
+    }
+
+    .int-login__panel--features {
+        display: none;
+    }
+
+    .int-login__panel--form {
+        min-height: 100dvh;
+        padding: clamp(40px, 8vw, 80px) clamp(24px, 6vw, 48px);
+    }
+
+    .int-login__panel--form .int-login__card {
+        max-width: 100%;
+    }
 }
 
 .int-login__card {
@@ -22176,7 +22680,382 @@ ___CSS_LOADER_EXPORT___.push([module.id, `body {
     .int-login__lede {
         font-size: 0.875rem;
     }
-}`, "",{"version":3,"sources":["webpack://./src/Login/Login.css"],"names":[],"mappings":"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","sourcesContent":["body {\n    margin: 0;\n    padding: 0;\n    font-family: \"Arial\", sans-serif;\n}\n.ppad{\n    padding-block: 60px;\n}\n\n.loginForm-body{\n    margin: 0;\n    padding: 0;\n    font-family: 'Arial', sans-serif;\n    background-color: #f0f0f0;\n    color:#636363;\n}\n.signin-container{\n    display: flex;\n    flex-direction: column;\n    place-content: center;\n    background-color: #ffffff;\n    color: #636363;\n}\n\n.loginForm-container {\n    display: grid;\n    place-items: center;\n    min-height: 100dvh;\n    height: auto;\n    width: 100%;\n}\n\n.loginForm-logo-section{\n    padding: 40px;\n    text-align: left;\n    border-radius: 7px;\n    border: 1px solid #505050;\n    align-items: center;\n    display: flex;\n    flex-direction: column;\n}\n\n.loginForm-button-container{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-direction: column;\n    margin-top: 20px;\n}\n\n.loginForm-description{\n    margin-bottom: 30px;\n    margin-top: 0;\n}\n\n.loginForm-header{\n    background-image: radial-gradient(circle, #c09f53, #856a2b);\n    color: #ffffff;\n    display: grid;\n    place-content: center;\n    line-height: 1.4;\n    grid-template-rows: 1fr;\n    overflow: hidden;\n}\n\n.loginForm-header-content{\n    margin: auto;\n    width: 550px;\n    padding-block: 40px;\n}\n\n.loginForm-header-content h1{\n    font-size: 2em;\n    font-weight: 600;\n    margin: 0;\n}\n\n.loginForm-signup{\n    padding: 10px 20px;\n    background-color: #ffffff;\n    color: #636363;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    border: 1px solid #c09f53;\n    border-radius: 30px;\n    margin: 10px;\n    text-decoration: none;\n    font-size: 16px;\n}\n\n.loginForm-signup-2{\n    text-decoration: none;\n    color: #636363;\n    margin-top: 20px;\n    border-radius: 30px;\n    padding: 10px 20px;\n}\n\n.loginForm-signup-2:hover, .loginForm-signup:hover{\n    background-color: #c09f53;\n    color: #ffffff;\n    transition: all 0.3s ease;\n    border: 1px solid #c09f53;\n    cursor: pointer;\n}\n\n.loginForm-overlay {\n    position: fixed;\n    top: 0;\n    z-index: 100;\n    width: 100%;\n    height: 100%;\n    margin: auto;\n    display: grid;\n    place-content: center;\n    background: rgba(0, 0, 0, .7);\n}\n\n.loginForm {\n    width: 100%;\n    height: 100%;\n    margin: auto;\n    background: radial-gradient(circle at top, rgba(188, 188, 188, .8) -10%, rgba(48, 48, 48, .6));\n    padding: 80px;\n    box-sizing: border-box;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    color: rgb(234, 234, 234);\n    backdrop-filter: saturate(180%) blur(20px);\n    -webkit-backdrop-filter: saturate(180%) blur(20px);\n    grid-column: 2/3;\n}\n\n.loginForm-overlay .loginForm {\n    width: 500px;\n}\n\n.loginForm label {\n    text-align: left;\n    display: block;\n    padding: 5px 0px;\n}\n\n.loginForm-inputField {\n    padding: 15px;\n    border: none;\n    width: 100%;\n    box-sizing: border-box;\n    font-size: 16px;\n    margin: 2px 0px;\n}\n\n.loginForm-forget {\n    padding: 15px;\n    color: rgb(234, 234, 234);\n    text-decoration: none;\n    display: block;\n    text-align: right;\n}\n\n.loginForm-logo {\n    width: 400px;\n}\n\n.loginForm-logo.--hideMobile {\n    display: none;\n}\n\n.intastellar-accounts-logo-container {\n    margin-top: 90px;\n    text-align: center;\n}\n\n.intastellar-accounts-logo{\n    width: 110px;\n}\n\n.poweredBy {\n    font-size: 12px;\n    margin-bottom: 5px;\n}\n\n.loginForm-inputField.--btn {\n    background-color: #c09f53;\n    font-size: 16px;\n    color: #fff;\n    font-weight: bold;\n    letter-spacing: 5px;\n    text-transform: uppercase;\n}\n\n.loginForm-title {\n    font-size: 1.70em;\n    text-align: center;\n}\n\n.loginForm-service {\n    margin: 0 0 10px;\n}\n\n.loginForm-inputField.--link {\n    color: #fff;\n    text-decoration: none;\n    font-size: 14px;\n    text-align: center;\n    display: block;\n    margin: 10px 0px;\n}\n\n.graphic-container{\n    height: 100%;\n}\n\n.main-content-section{\n    padding: 50px;\n    color: #636363;\n}\n\n.used_by {\n    display: inline-block;\n    width: 50%;\n    height: 100px;\n    object-fit: contain;\n    object-position: center;\n    margin-inline: 50px;\n}\n\n.feature-list{\n    width: 1100px;\n    margin-inline: auto;\n}\n\n.testimonials{\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n}\n\n.key-numbers-section{\n    padding-block: 150px;\n    background-color: #fff;\n}\n\n@media screen and (min-width: 375px) and (max-width: 900px) {\n    .loginForm-container {\n        grid-template-columns: 1fr;\n    }\n\n    .loginForm-logo-section{\n        border: none;\n    }\n\n    .loginForm-logo {\n        padding: 0;\n        margin: 20px auto;\n    }\n\n    .loginForm-title{\n        font-size: 1.1em;\n        width: 100%;\n        margin: 0 auto;\n    }\n\n        .loginForm-header{\n        grid-template-columns: 1fr;\n        }\n\n    .loginForm-header-content{\n        width: 100%;\n        padding: 20px;\n    }\n\n    .loginForm {\n        padding: 40px;\n        background: radial-gradient(circle at top, rgba(188, 188, 188, .6) -10%, rgba(48, 48, 48, .4));\n    }\n\n    .loginForm-container {\n        background-position: -250px;\n        height: auto;\n    }\n\n    .signup {\n        overflow: scroll;\n    }\n\n    .loginForm-header, .signin-container{\n        height: auto !important;\n    }\n\n    .signin-container{\n        padding: 60px;\n    }\n\n    .intastellar-accounts-logo-container{\n        text-align: center;\n    }\n\n    .poweredBy{\n        font-size: 12px;\n        margin-bottom: 10px;\n    }\n\n    .intastellar-accounts-logo{\n        margin-bottom: 70px;\n    }\n\n    .graphic-container{\n        display: none;\n    }\n\n    .key-numbers-section{\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n    }\n\n    .used_by{\n        width: 150px;\n        margin: auto;\n        display: flex;\n    }\n}\n\n/* ——— Intastellar Consents login (Login.js only) ——— */\n.int-login {\n    min-height: 100dvh;\n    display: flex;\n    flex-direction: column;\n    background:\n        radial-gradient(ellipse 120% 70% at 50% -15%, rgba(192, 159, 83, 0.16), transparent 52%),\n        linear-gradient(168deg, #1c1c1f 0%, #101012 48%, #0a0a0c 100%);\n    color: #e8e8e8;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.int-login__main {\n    flex: 1;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: clamp(24px, 5vw, 48px);\n    box-sizing: border-box;\n}\n\n.int-login__card {\n    width: 100%;\n    max-width: 440px;\n    padding: clamp(28px, 4vw, 42px);\n    border-radius: 16px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: linear-gradient(\n        168deg,\n        rgba(54, 54, 58, 0.95) 0%,\n        rgba(28, 28, 32, 0.98) 100%\n    );\n    box-shadow:\n        0 28px 72px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    position: relative;\n}\n\n.int-login__card::before {\n    content: \"\";\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 42%;\n    max-width: 200px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.int-login__brand {\n    display: flex;\n    justify-content: center;\n    margin-bottom: 22px;\n}\n\n.int-login__logo {\n    max-width: min(100%, 300px);\n    height: auto;\n    display: block;\n}\n\n/* First-visit clarity: product ↔ parent company (Login + Signup) */\n.icc-product-parent-ribbon {\n    margin: 0 0 20px;\n    padding: 12px 14px;\n    text-align: center;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: #c4c4c4;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.12) 0%,\n        rgba(0, 0, 0, 0.2) 100%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.icc-product-parent-ribbon__product {\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    color: #f0e6d4;\n}\n\n.icc-product-parent-ribbon__sep {\n    margin: 0 0.35em;\n    color: rgba(192, 159, 83, 0.75);\n    font-weight: 600;\n}\n\n.icc-product-parent-ribbon__rest {\n    color: #a8a8a8;\n}\n\n.icc-product-parent-ribbon__link {\n    color: #d4b87a;\n    font-weight: 600;\n    text-decoration: underline;\n    text-decoration-color: rgba(192, 159, 83, 0.45);\n    text-underline-offset: 2px;\n}\n\n.icc-product-parent-ribbon__link:hover {\n    color: #e8d4a8;\n    text-decoration-color: rgba(192, 159, 83, 0.85);\n}\n\n.loginForm-header-content .icc-product-parent-ribbon--signup {\n    max-width: 520px;\n    margin-left: auto;\n    margin-right: auto;\n}\n\n.int-login__headline {\n    margin: 0 0 12px;\n    font-size: clamp(1.32rem, 3.6vw, 1.68rem);\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-align: center;\n    line-height: 1.28;\n    color: #f4f4f4;\n}\n\n.int-login__lede {\n    margin: 0 0 18px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    text-align: center;\n    color: #a3a3a3;\n}\n\n.int-login__trust {\n    list-style: none;\n    margin: 0 0 22px;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(0, 0, 0, 0.22);\n    display: flex;\n    flex-direction: column;\n    gap: 10px;\n}\n\n.int-login__trust-item {\n    position: relative;\n    margin: 0;\n    padding-left: 20px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #c6c6c6;\n    line-height: 1.4;\n    text-align: left;\n}\n\n.int-login__trust-item::before {\n    content: \"\";\n    position: absolute;\n    left: 2px;\n    top: 0.52em;\n    width: 7px;\n    height: 7px;\n    border-radius: 50%;\n    background: linear-gradient(145deg, rgba(192, 159, 83, 0.95), rgba(192, 159, 83, 0.4));\n    box-shadow: 0 0 10px rgba(192, 159, 83, 0.3);\n}\n\n.int-login__sso {\n    display: flex;\n    flex-direction: column;\n    align-items: stretch;\n    width: 100%;\n}\n\n/* Primary action — matches dashboard / settings gold CTA */\n.int-login__signin-btn {\n    width: 100%;\n    margin: 0;\n    padding: 14px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.48);\n    background: linear-gradient(\n        180deg,\n        rgba(192, 159, 83, 0.28) 0%,\n        rgba(160, 130, 70, 0.2) 100%\n    );\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    color: #faf6ee;\n    font-size: 0.9375rem;\n    font-weight: 600;\n    font-family: inherit;\n    letter-spacing: 0.02em;\n    line-height: 1.3;\n    cursor: pointer;\n    box-shadow:\n        0 10px 28px rgba(0, 0, 0, 0.35),\n        inset 0 1px 0 rgba(255, 255, 255, 0.1);\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease,\n        box-shadow 0.2s ease;\n}\n\n.int-login__signin-btn:hover:not(:disabled) {\n    border-color: rgba(192, 159, 83, 0.72);\n    background: linear-gradient(\n        180deg,\n        rgba(192, 159, 83, 0.38) 0%,\n        rgba(160, 130, 70, 0.28) 100%\n    );\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.4),\n        inset 0 1px 0 rgba(255, 255, 255, 0.12);\n}\n\n.int-login__signin-btn:active:not(:disabled) {\n    transform: translateY(1px);\n}\n\n.int-login__signin-btn:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 3px;\n}\n\n.int-login__signin-btn:disabled {\n    opacity: 0.65;\n    cursor: not-allowed;\n    transform: none;\n}\n\n.int-login__signin-btn-inner {\n    display: inline-flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 10px;\n}\n\n.int-login__signin-btn-inner-image {\n    width: 34px;\n    height: 34px;\n    border-radius: 50%;\n}\n\n.int-login__signin-btn-inner-text {\n    font-size: 0.9375rem;\n    font-weight: 600;\n    color: #faf6ee;\n}\n\n.int-login__signin-spinner {\n    width: 1.1em;\n    height: 1.1em;\n    border: 2px solid rgba(250, 246, 238, 0.25);\n    border-top-color: #faf6ee;\n    border-radius: 50%;\n    animation: int-login-spin 0.65s linear infinite;\n    flex-shrink: 0;\n}\n\n.int-login__signin-btn-inner-text-email {\n    font-size: 0.8125rem;\n    font-weight: 400;\n    color: #c6c6c6;\n    display: block;\n}\n\n@keyframes int-login-spin {\n    to {\n        transform: rotate(360deg);\n    }\n}\n\n.int-login__not-you {\n    margin: 14px 0 0;\n    text-align: center;\n}\n\n.int-login__not-you-link {\n    font-size: 0.8125rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition: color 0.2s ease, border-color 0.2s ease;\n}\n\n.int-login__not-you-link:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n/* SSO / identity trust (Login.js footer) */\n.int-login__identity {\n    margin-top: 26px;\n    padding: 18px 16px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.18);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.07) 0%,\n        rgba(0, 0, 0, 0.28) 55%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.int-login__identity-strip {\n    display: flex;\n    align-items: flex-start;\n    gap: 14px;\n    margin-bottom: 16px;\n}\n\n.int-login__identity-icon {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 10px;\n    background: rgba(192, 159, 83, 0.1);\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    color: #d4b76a;\n}\n\n.int-login__identity-svg {\n    width: 26px;\n    height: 26px;\n    display: block;\n}\n\n.int-login__identity-copy {\n    min-width: 0;\n    flex: 1;\n}\n\n.int-login__identity-kicker {\n    margin: 0 0 6px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.16em;\n    text-transform: uppercase;\n    color: #c0a053;\n}\n\n.int-login__identity-lede {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: #b0b0b0;\n    text-align: left;\n}\n\n.int-login__identity-product {\n    color: #e2e2e2;\n    font-weight: 600;\n}\n\n.int-login__identity-brand {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 8px;\n    padding-top: 14px;\n    margin-top: 4px;\n    border-top: 1px solid rgba(255, 255, 255, 0.07);\n    text-decoration: none;\n    transition: opacity 0.2s ease;\n}\n\n.int-login__identity-brand:hover {\n    opacity: 0.92;\n}\n\n.int-login__identity-brand:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 4px;\n    border-radius: 8px;\n}\n\n.int-login__identity-brand-label {\n    font-size: 0.62rem;\n    font-weight: 600;\n    letter-spacing: 0.2em;\n    text-transform: uppercase;\n    color: #6a6a6a;\n}\n\n.int-login__identity-logo {\n    height: auto;\n    max-width: 128px;\n    width: 100%;\n    opacity: 0.95;\n}\n\n.int-login__identity-trustline {\n    margin: 14px 0 0;\n    padding-top: 12px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n    font-size: 0.65rem;\n    font-weight: 500;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    text-align: center;\n    color: #5c6570;\n    line-height: 1.45;\n}\n\n@media (max-width: 480px) {\n    .int-login__card {\n        padding: 24px 18px 28px;\n        border-radius: 14px;\n    }\n\n    .int-login__lede {\n        font-size: 0.875rem;\n    }\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Login/Login.css"],"names":[],"mappings":"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","sourcesContent":["body {\n    margin: 0;\n    padding: 0;\n    font-family: \"Arial\", sans-serif;\n}\n.ppad{\n    padding-block: 60px;\n}\n\n.loginForm-body{\n    margin: 0;\n    padding: 0;\n    font-family: 'Arial', sans-serif;\n    background-color: #f0f0f0;\n    color:#636363;\n}\n.signin-container{\n    display: flex;\n    flex-direction: column;\n    place-content: center;\n    background-color: #ffffff;\n    color: #636363;\n}\n\n.loginForm-container {\n    display: grid;\n    place-items: center;\n    min-height: 100dvh;\n    height: auto;\n    width: 100%;\n}\n\n.loginForm-logo-section{\n    padding: 40px;\n    text-align: left;\n    border-radius: 7px;\n    border: 1px solid #505050;\n    align-items: center;\n    display: flex;\n    flex-direction: column;\n}\n\n.loginForm-button-container{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-direction: column;\n    margin-top: 20px;\n}\n\n.loginForm-description{\n    margin-bottom: 30px;\n    margin-top: 0;\n}\n\n.loginForm-header{\n    background-image: radial-gradient(circle, #c09f53, #856a2b);\n    color: #ffffff;\n    display: grid;\n    place-content: center;\n    line-height: 1.4;\n    grid-template-rows: 1fr;\n    overflow: hidden;\n}\n\n.loginForm-header-content{\n    margin: auto;\n    width: 550px;\n    padding-block: 40px;\n}\n\n.loginForm-header-content h1{\n    font-size: 2em;\n    font-weight: 600;\n    margin: 0;\n}\n\n.loginForm-signup{\n    padding: 10px 20px;\n    background-color: #ffffff;\n    color: #636363;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    border: 1px solid #c09f53;\n    border-radius: 30px;\n    margin: 10px;\n    text-decoration: none;\n    font-size: 16px;\n}\n\n.loginForm-signup-2{\n    text-decoration: none;\n    color: #636363;\n    margin-top: 20px;\n    border-radius: 30px;\n    padding: 10px 20px;\n}\n\n.loginForm-signup-2:hover, .loginForm-signup:hover{\n    background-color: #c09f53;\n    color: #ffffff;\n    transition: all 0.3s ease;\n    border: 1px solid #c09f53;\n    cursor: pointer;\n}\n\n.loginForm-overlay {\n    position: fixed;\n    top: 0;\n    z-index: 100;\n    width: 100%;\n    height: 100%;\n    margin: auto;\n    display: grid;\n    place-content: center;\n    background: rgba(0, 0, 0, .7);\n}\n\n.loginForm {\n    width: 100%;\n    height: 100%;\n    margin: auto;\n    background: radial-gradient(circle at top, rgba(188, 188, 188, .8) -10%, rgba(48, 48, 48, .6));\n    padding: 80px;\n    box-sizing: border-box;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    color: rgb(234, 234, 234);\n    backdrop-filter: saturate(180%) blur(20px);\n    -webkit-backdrop-filter: saturate(180%) blur(20px);\n    grid-column: 2/3;\n}\n\n.loginForm-overlay .loginForm {\n    width: 500px;\n}\n\n.loginForm label {\n    text-align: left;\n    display: block;\n    padding: 5px 0px;\n}\n\n.loginForm-inputField {\n    padding: 15px;\n    border: none;\n    width: 100%;\n    box-sizing: border-box;\n    font-size: 16px;\n    margin: 2px 0px;\n}\n\n.loginForm-forget {\n    padding: 15px;\n    color: rgb(234, 234, 234);\n    text-decoration: none;\n    display: block;\n    text-align: right;\n}\n\n.loginForm-logo {\n    width: 400px;\n}\n\n.loginForm-logo.--hideMobile {\n    display: none;\n}\n\n.intastellar-accounts-logo-container {\n    margin-top: 90px;\n    text-align: center;\n}\n\n.intastellar-accounts-logo{\n    width: 110px;\n}\n\n.poweredBy {\n    font-size: 12px;\n    margin-bottom: 5px;\n}\n\n.loginForm-inputField.--btn {\n    background-color: #c09f53;\n    font-size: 16px;\n    color: #fff;\n    font-weight: bold;\n    letter-spacing: 5px;\n    text-transform: uppercase;\n}\n\n.loginForm-title {\n    font-size: 1.70em;\n    text-align: center;\n}\n\n.loginForm-service {\n    margin: 0 0 10px;\n}\n\n.loginForm-inputField.--link {\n    color: #fff;\n    text-decoration: none;\n    font-size: 14px;\n    text-align: center;\n    display: block;\n    margin: 10px 0px;\n}\n\n.graphic-container{\n    height: 100%;\n}\n\n.main-content-section{\n    padding: 50px;\n    color: #636363;\n}\n\n.used_by {\n    display: inline-block;\n    width: 50%;\n    height: 100px;\n    object-fit: contain;\n    object-position: center;\n    margin-inline: 50px;\n}\n\n.feature-list{\n    width: 1100px;\n    margin-inline: auto;\n}\n\n.testimonials{\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n}\n\n.key-numbers-section{\n    padding-block: 150px;\n    background-color: #fff;\n}\n\n@media screen and (min-width: 375px) and (max-width: 900px) {\n    .loginForm-container {\n        grid-template-columns: 1fr;\n    }\n\n    .loginForm-logo-section{\n        border: none;\n    }\n\n    .loginForm-logo {\n        padding: 0;\n        margin: 20px auto;\n    }\n\n    .loginForm-title{\n        font-size: 1.1em;\n        width: 100%;\n        margin: 0 auto;\n    }\n\n        .loginForm-header{\n        grid-template-columns: 1fr;\n        }\n\n    .loginForm-header-content{\n        width: 100%;\n        padding: 20px;\n    }\n\n    .loginForm {\n        padding: 40px;\n        background: radial-gradient(circle at top, rgba(188, 188, 188, .6) -10%, rgba(48, 48, 48, .4));\n    }\n\n    .loginForm-container {\n        background-position: -250px;\n        height: auto;\n    }\n\n    .signup {\n        overflow: scroll;\n    }\n\n    .loginForm-header, .signin-container{\n        height: auto !important;\n    }\n\n    .signin-container{\n        padding: 60px;\n    }\n\n    .intastellar-accounts-logo-container{\n        text-align: center;\n    }\n\n    .poweredBy{\n        font-size: 12px;\n        margin-bottom: 10px;\n    }\n\n    .intastellar-accounts-logo{\n        margin-bottom: 70px;\n    }\n\n    .graphic-container{\n        display: none;\n    }\n\n    .key-numbers-section{\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n    }\n\n    .used_by{\n        width: 150px;\n        margin: auto;\n        display: flex;\n    }\n}\n\n/* ——— Intastellar Consents login (Login.js only) ——— */\n.int-login {\n    min-height: 100dvh;\n    display: flex;\n    flex-direction: column;\n    background: #f7f4f0;\n    color: #e8e8e8;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n/* ── Split layout ── */\n.int-login__split {\n    flex: 1;\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    min-height: 100dvh;\n}\n\n.int-login__panel {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: clamp(32px, 5vw, 72px) clamp(24px, 4vw, 64px);\n    box-sizing: border-box;\n}\n\n.int-login__panel--form {\n    background: #f7f4f0;\n}\n\n.int-login__panel--features {\n    position: relative;\n    border-left: 1px solid rgba(255, 255, 255, 0.06);\n    background:\n        radial-gradient(ellipse 110% 60% at 60% 10%, rgba(192, 159, 83, 0.12), transparent 55%),\n        linear-gradient(168deg, #141418 0%, #0c0c10 100%);\n    overflow: hidden;\n}\n\n.int-login__panel--features::before {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background: radial-gradient(ellipse 80% 80% at 110% 110%, rgba(192, 159, 83, 0.07), transparent 60%);\n    pointer-events: none;\n}\n\n/* ── Features inner content ── */\n.int-login__features-inner {\n    position: relative;\n    width: 100%;\n    max-width: 420px;\n}\n\n.int-login__features-brand {\n    margin-bottom: 32px;\n}\n\n.int-login__features-logo {\n    height: auto;\n    max-width: min(100%, 180px);\n    display: block;\n    opacity: 0.88;\n    filter: brightness(0) invert(1);\n}\n\n.int-login__features-headline {\n    margin: 0 0 14px;\n    font-size: clamp(1.5rem, 2.8vw, 2rem);\n    font-weight: 700;\n    line-height: 1.22;\n    letter-spacing: -0.01em;\n    color: #f4f0ea;\n}\n\n.int-login__features-lede {\n    margin: 0 0 32px;\n    font-size: 0.9375rem;\n    line-height: 1.6;\n    color: #848a92;\n}\n\n.int-login__features-list {\n    list-style: none;\n    margin: 0 0 32px;\n    padding: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 20px;\n}\n\n.int-login__feature {\n    display: flex;\n    align-items: flex-start;\n    gap: 14px;\n}\n\n.int-login__feature-icon {\n    flex-shrink: 0;\n    width: 36px;\n    height: 36px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 9px;\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    background: rgba(192, 159, 83, 0.09);\n    color: #c0a053;\n    margin-top: 1px;\n}\n\n.int-login__feature-copy {\n    display: flex;\n    flex-direction: column;\n    gap: 4px;\n    min-width: 0;\n}\n\n.int-login__feature-title {\n    display: block;\n    font-size: 0.9rem;\n    font-weight: 600;\n    color: #e8e4de;\n}\n\n.int-login__feature-desc {\n    display: block;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: #6a7280;\n}\n\n/* ── Stats row ── */\n.int-login__features-stats {\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 18px 20px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(0, 0, 0, 0.28);\n}\n\n.int-login__features-stat {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 3px;\n    text-align: center;\n}\n\n.int-login__features-stat-value {\n    font-size: 1rem;\n    font-weight: 700;\n    letter-spacing: 0.02em;\n    color: #c0a053;\n}\n\n.int-login__features-stat-label {\n    font-size: 0.68rem;\n    font-weight: 500;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.32);\n}\n\n.int-login__features-stat-divider {\n    width: 1px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.07);\n    flex-shrink: 0;\n}\n\n/* ── Light form panel overrides ── */\n.int-login__panel--form .int-login__card {\n    background: transparent;\n    border: none;\n    box-shadow: none;\n    max-width: 360px;\n}\n\n.int-login__panel--form .int-login__card::before {\n    display: none;\n}\n\n.int-login__panel--form .int-login__logo {\n    filter: none;\n    opacity: 1;\n    max-width: min(100%, 200px);\n}\n\n.int-login__panel--form .int-login__headline {\n    color: #1a1714;\n    font-size: clamp(1.6rem, 3vw, 2rem);\n    font-weight: 700;\n    letter-spacing: -0.02em;\n    text-align: left;\n    margin-top: 36px;\n}\n\n.int-login__panel--form .int-login__lede {\n    color: #7a7068;\n    text-align: left;\n    margin-bottom: 28px;\n}\n\n.int-login__panel--form .int-login__signin-btn {\n    border-color: rgba(160, 128, 60, 0.5);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 60, 0.12) 100%);\n    color: #3d2f0e;\n    box-shadow: 0 2px 8px rgba(160, 128, 60, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);\n}\n\n.int-login__panel--form .int-login__signin-btn:hover:not(:disabled) {\n    border-color: rgba(160, 128, 60, 0.7);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.26) 0%, rgba(160, 130, 60, 0.2) 100%);\n    box-shadow: 0 4px 14px rgba(160, 128, 60, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5);\n}\n\n.int-login__panel--form .int-login__signin-btn-inner-text {\n    color: #3d2f0e;\n}\n\n.int-login__panel--form .int-login__signin-btn-inner-text-email {\n    color: #7a6840;\n}\n\n.int-login__panel--form .int-login__signin-spinner {\n    border-color: rgba(61, 47, 14, 0.2);\n    border-top-color: #3d2f0e;\n}\n\n.int-login__panel--form .int-login__not-you {\n    text-align: left;\n}\n\n.int-login__panel--form .int-login__not-you-link {\n    color: #9a8a78;\n}\n\n.int-login__panel--form .int-login__not-you-link:hover {\n    color: #a38540;\n    border-bottom-color: rgba(163, 133, 64, 0.45);\n}\n\n/* ── Responsive: collapse to single column on small screens ── */\n@media (max-width: 860px) {\n    .int-login__split {\n        grid-template-columns: 1fr;\n    }\n\n    .int-login__panel--features {\n        display: none;\n    }\n\n    .int-login__panel--form {\n        min-height: 100dvh;\n        padding: clamp(40px, 8vw, 80px) clamp(24px, 6vw, 48px);\n    }\n\n    .int-login__panel--form .int-login__card {\n        max-width: 100%;\n    }\n}\n\n.int-login__card {\n    width: 100%;\n    max-width: 440px;\n    padding: clamp(28px, 4vw, 42px);\n    border-radius: 16px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: linear-gradient(\n        168deg,\n        rgba(54, 54, 58, 0.95) 0%,\n        rgba(28, 28, 32, 0.98) 100%\n    );\n    box-shadow:\n        0 28px 72px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    position: relative;\n}\n\n.int-login__card::before {\n    content: \"\";\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 42%;\n    max-width: 200px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.int-login__brand {\n    display: flex;\n    justify-content: center;\n    margin-bottom: 22px;\n}\n\n.int-login__logo {\n    max-width: min(100%, 300px);\n    height: auto;\n    display: block;\n}\n\n/* First-visit clarity: product ↔ parent company (Login + Signup) */\n.icc-product-parent-ribbon {\n    margin: 0 0 20px;\n    padding: 12px 14px;\n    text-align: center;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: #c4c4c4;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.12) 0%,\n        rgba(0, 0, 0, 0.2) 100%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.icc-product-parent-ribbon__product {\n    font-weight: 700;\n    letter-spacing: 0.04em;\n    color: #f0e6d4;\n}\n\n.icc-product-parent-ribbon__sep {\n    margin: 0 0.35em;\n    color: rgba(192, 159, 83, 0.75);\n    font-weight: 600;\n}\n\n.icc-product-parent-ribbon__rest {\n    color: #a8a8a8;\n}\n\n.icc-product-parent-ribbon__link {\n    color: #d4b87a;\n    font-weight: 600;\n    text-decoration: underline;\n    text-decoration-color: rgba(192, 159, 83, 0.45);\n    text-underline-offset: 2px;\n}\n\n.icc-product-parent-ribbon__link:hover {\n    color: #e8d4a8;\n    text-decoration-color: rgba(192, 159, 83, 0.85);\n}\n\n.loginForm-header-content .icc-product-parent-ribbon--signup {\n    max-width: 520px;\n    margin-left: auto;\n    margin-right: auto;\n}\n\n.int-login__headline {\n    margin: 0 0 12px;\n    font-size: clamp(1.32rem, 3.6vw, 1.68rem);\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-align: center;\n    line-height: 1.28;\n    color: #f4f4f4;\n}\n\n.int-login__lede {\n    margin: 0 0 18px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    text-align: center;\n    color: #a3a3a3;\n}\n\n.int-login__trust {\n    list-style: none;\n    margin: 0 0 22px;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(0, 0, 0, 0.22);\n    display: flex;\n    flex-direction: column;\n    gap: 10px;\n}\n\n.int-login__trust-item {\n    position: relative;\n    margin: 0;\n    padding-left: 20px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #c6c6c6;\n    line-height: 1.4;\n    text-align: left;\n}\n\n.int-login__trust-item::before {\n    content: \"\";\n    position: absolute;\n    left: 2px;\n    top: 0.52em;\n    width: 7px;\n    height: 7px;\n    border-radius: 50%;\n    background: linear-gradient(145deg, rgba(192, 159, 83, 0.95), rgba(192, 159, 83, 0.4));\n    box-shadow: 0 0 10px rgba(192, 159, 83, 0.3);\n}\n\n.int-login__sso {\n    display: flex;\n    flex-direction: column;\n    align-items: stretch;\n    width: 100%;\n}\n\n/* Primary action — matches dashboard / settings gold CTA */\n.int-login__signin-btn {\n    width: 100%;\n    margin: 0;\n    padding: 14px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.48);\n    background: linear-gradient(\n        180deg,\n        rgba(192, 159, 83, 0.28) 0%,\n        rgba(160, 130, 70, 0.2) 100%\n    );\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    color: #faf6ee;\n    font-size: 0.9375rem;\n    font-weight: 600;\n    font-family: inherit;\n    letter-spacing: 0.02em;\n    line-height: 1.3;\n    cursor: pointer;\n    box-shadow:\n        0 10px 28px rgba(0, 0, 0, 0.35),\n        inset 0 1px 0 rgba(255, 255, 255, 0.1);\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease,\n        box-shadow 0.2s ease;\n}\n\n.int-login__signin-btn:hover:not(:disabled) {\n    border-color: rgba(192, 159, 83, 0.72);\n    background: linear-gradient(\n        180deg,\n        rgba(192, 159, 83, 0.38) 0%,\n        rgba(160, 130, 70, 0.28) 100%\n    );\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.4),\n        inset 0 1px 0 rgba(255, 255, 255, 0.12);\n}\n\n.int-login__signin-btn:active:not(:disabled) {\n    transform: translateY(1px);\n}\n\n.int-login__signin-btn:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 3px;\n}\n\n.int-login__signin-btn:disabled {\n    opacity: 0.65;\n    cursor: not-allowed;\n    transform: none;\n}\n\n.int-login__signin-btn-inner {\n    display: inline-flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 10px;\n}\n\n.int-login__signin-btn-inner-image {\n    width: 34px;\n    height: 34px;\n    border-radius: 50%;\n}\n\n.int-login__signin-btn-inner-text {\n    font-size: 0.9375rem;\n    font-weight: 600;\n    color: #faf6ee;\n}\n\n.int-login__signin-spinner {\n    width: 1.1em;\n    height: 1.1em;\n    border: 2px solid rgba(250, 246, 238, 0.25);\n    border-top-color: #faf6ee;\n    border-radius: 50%;\n    animation: int-login-spin 0.65s linear infinite;\n    flex-shrink: 0;\n}\n\n.int-login__signin-btn-inner-text-email {\n    font-size: 0.8125rem;\n    font-weight: 400;\n    color: #c6c6c6;\n    display: block;\n}\n\n@keyframes int-login-spin {\n    to {\n        transform: rotate(360deg);\n    }\n}\n\n.int-login__not-you {\n    margin: 14px 0 0;\n    text-align: center;\n}\n\n.int-login__not-you-link {\n    font-size: 0.8125rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition: color 0.2s ease, border-color 0.2s ease;\n}\n\n.int-login__not-you-link:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n/* SSO / identity trust (Login.js footer) */\n.int-login__identity {\n    margin-top: 26px;\n    padding: 18px 16px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.18);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.07) 0%,\n        rgba(0, 0, 0, 0.28) 55%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.int-login__identity-strip {\n    display: flex;\n    align-items: flex-start;\n    gap: 14px;\n    margin-bottom: 16px;\n}\n\n.int-login__identity-icon {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 10px;\n    background: rgba(192, 159, 83, 0.1);\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    color: #d4b76a;\n}\n\n.int-login__identity-svg {\n    width: 26px;\n    height: 26px;\n    display: block;\n}\n\n.int-login__identity-copy {\n    min-width: 0;\n    flex: 1;\n}\n\n.int-login__identity-kicker {\n    margin: 0 0 6px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.16em;\n    text-transform: uppercase;\n    color: #c0a053;\n}\n\n.int-login__identity-lede {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: #b0b0b0;\n    text-align: left;\n}\n\n.int-login__identity-product {\n    color: #e2e2e2;\n    font-weight: 600;\n}\n\n.int-login__identity-brand {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 8px;\n    padding-top: 14px;\n    margin-top: 4px;\n    border-top: 1px solid rgba(255, 255, 255, 0.07);\n    text-decoration: none;\n    transition: opacity 0.2s ease;\n}\n\n.int-login__identity-brand:hover {\n    opacity: 0.92;\n}\n\n.int-login__identity-brand:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 4px;\n    border-radius: 8px;\n}\n\n.int-login__identity-brand-label {\n    font-size: 0.62rem;\n    font-weight: 600;\n    letter-spacing: 0.2em;\n    text-transform: uppercase;\n    color: #6a6a6a;\n}\n\n.int-login__identity-logo {\n    height: auto;\n    max-width: 128px;\n    width: 100%;\n    opacity: 0.95;\n}\n\n.int-login__identity-trustline {\n    margin: 14px 0 0;\n    padding-top: 12px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n    font-size: 0.65rem;\n    font-weight: 500;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    text-align: center;\n    color: #5c6570;\n    line-height: 1.45;\n}\n\n@media (max-width: 480px) {\n    .int-login__card {\n        padding: 24px 18px 28px;\n        border-radius: 14px;\n    }\n\n    .int-login__lede {\n        font-size: 0.875rem;\n    }\n}"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/Pages/Compliance/Style.css":
+/*!******************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/Pages/Compliance/Style.css ***!
+  \******************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ── */
+.compliance-hero {
+    position: relative;
+    width: 100%;
+    min-height: 380px;
+    max-height: 520px;
+    height: 46vh;
+    overflow: hidden;
+    background: #0e0c09;
+}
+
+/* Bottom fade to page background */
+.compliance-hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Suppress the right-side country list — map fills full width in the hero */
+.compliance-hero .world-map {
+    grid-template-columns: 1fr;
+    height: 100%;
+    min-height: 0;
+}
+
+.compliance-hero .world-map__side {
+    display: none;
+}
+
+.compliance-hero .world-map__main {
+    height: 100%;
+}
+
+.compliance-hero .world-map__header {
+    display: none;
+}
+
+.compliance-hero .world-map__map-shell {
+    height: 100%;
+    flex: 1;
+}
+
+.compliance-hero .svgMap-map-wrapper {
+    min-height: 0;
+    height: 100%;
+}
+
+/* Stats strip overlaid at the bottom of the hero, above the gradient */
+.compliance-hero__stats {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 16px 24px 20px;
+}
+
+.compliance-hero__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 0 0 auto;
+}
+
+.compliance-hero__stat-value {
+    font-size: 1.4rem;
+    font-weight: 300;
+    color: #e8e8e8;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.compliance-hero__stat-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.compliance-hero__stat-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    margin: 0 22px;
+}
+
+.compliance-hero__audit-btn {
+    margin-left: auto;
+    flex-shrink: 0;
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(192, 159, 83, 0.4);
+    background: rgba(192, 159, 83, 0.1);
+    color: #c0a053;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(8px);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.compliance-hero__audit-btn:hover {
+    background: rgba(192, 159, 83, 0.2);
+    border-color: rgba(192, 159, 83, 0.6);
+    text-decoration: none;
+}
+
+/* ── Content area below hero ── */
+.compliance-page {
+    padding-top: 20px;
+}
+
+/* ── Pre-consent data transfer section ── */
+.compliance-transfers__card {
+    padding: 20px 22px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(24, 22, 18, 0.75);
+}
+
+.compliance-transfers__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.compliance-transfers__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.compliance-transfers__desc {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.38);
+    max-width: 520px;
+}
+
+.compliance-transfers__scan-time {
+    font-size: 0.67rem;
+    color: rgba(255, 255, 255, 0.22);
+    font-weight: 500;
+}
+
+.compliance-transfers__scan-btn {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    background: rgba(192, 159, 83, 0.08);
+    color: #c0a053;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.compliance-transfers__scan-btn:hover:not(:disabled) {
+    background: rgba(192, 159, 83, 0.16);
+    border-color: rgba(192, 159, 83, 0.55);
+}
+
+.compliance-transfers__scan-btn.--loading,
+.compliance-transfers__scan-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Empty / status states */
+.compliance-transfers__empty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 0 4px;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.compliance-transfers__empty-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.compliance-transfers__empty--loading {
+    color: rgba(192, 159, 83, 0.55);
+}
+
+.compliance-transfers__empty--clean {
+    color: rgba(120, 200, 140, 0.7);
+}
+
+/* Transfer rows */
+.compliance-transfers__list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.compliance-transfers__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 80, 80, 0.15);
+    background: rgba(255, 60, 60, 0.05);
+}
+
+.compliance-transfers__row-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.compliance-transfers__row-service {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.82);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.compliance-transfers__row-host {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.3);
+    font-family: monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Category badge */
+.compliance-transfers__row-cat {
+    flex-shrink: 0;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+}
+
+.compliance-transfers__row-cat--advertising {
+    background: rgba(220, 80, 80, 0.12);
+    border-color: rgba(220, 80, 80, 0.3);
+    color: rgba(240, 140, 130, 0.9);
+}
+
+.compliance-transfers__row-cat--analytics {
+    background: rgba(100, 160, 220, 0.1);
+    border-color: rgba(100, 160, 220, 0.25);
+    color: rgba(140, 190, 240, 0.85);
+}
+
+.compliance-transfers__row-cat--social {
+    background: rgba(130, 100, 200, 0.1);
+    border-color: rgba(130, 100, 200, 0.25);
+    color: rgba(175, 150, 230, 0.85);
+}
+
+.compliance-transfers__row-cat--other,
+.compliance-transfers__row-cat--unknown {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.35);
+}
+
+/* Pre-consent flag */
+.compliance-transfers__row-flag {
+    flex-shrink: 0;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(220, 100, 60, 0.12);
+    border: 1px solid rgba(220, 100, 60, 0.3);
+    color: rgba(240, 160, 120, 0.9);
+}
+
+@media (max-width: 580px) {
+    .compliance-transfers__header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .compliance-transfers__scan-btn {
+        align-self: flex-start;
+    }
+
+    .compliance-transfers__row {
+        flex-wrap: wrap;
+    }
+}
+
+.compliance-page__audit .audit-snapshot-card:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);
+}
+
+@media (max-width: 680px) {
+    .compliance-hero {
+        max-height: 60vw;
+        min-height: 240px;
+    }
+
+    .compliance-hero__stats {
+        flex-wrap: wrap;
+        gap: 10px 0;
+        padding: 12px 16px 16px;
+    }
+
+    .compliance-hero__stat-divider {
+        display: none;
+    }
+
+    .compliance-hero__audit-btn {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+    }
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"AAAA,gCAAgC;AAChC;IACI,kBAAkB;IAClB,WAAW;IACX,iBAAiB;IACjB,iBAAiB;IACjB,YAAY;IACZ,gBAAgB;IAChB,mBAAmB;AACvB;;AAEA,mCAAmC;AACnC;IACI,WAAW;IACX,kBAAkB;IAClB,SAAS;IACT,OAAO;IACP,QAAQ;IACR,aAAa;IACb,+FAA+F;IAC/F,oBAAoB;IACpB,UAAU;AACd;;AAEA,4EAA4E;AAC5E;IACI,0BAA0B;IAC1B,YAAY;IACZ,aAAa;AACjB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,YAAY;AAChB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,YAAY;IACZ,OAAO;AACX;;AAEA;IACI,aAAa;IACb,YAAY;AAChB;;AAEA,uEAAuE;AACvE;IACI,kBAAkB;IAClB,SAAS;IACT,OAAO;IACP,QAAQ;IACR,UAAU;IACV,aAAa;IACb,mBAAmB;IACnB,MAAM;IACN,uBAAuB;AAC3B;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;IACR,cAAc;AAClB;;AAEA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,cAAc;IACd,kCAAkC;IAClC,uBAAuB;IACvB,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,+BAA+B;AACnC;;AAEA;IACI,UAAU;IACV,YAAY;IACZ,qCAAqC;IACrC,cAAc;IACd,cAAc;AAClB;;AAEA;IACI,iBAAiB;IACjB,cAAc;IACd,iBAAiB;IACjB,kBAAkB;IAClB,yCAAyC;IACzC,mCAAmC;IACnC,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,qBAAqB;IACrB,sBAAsB;IACtB,0BAA0B;IAC1B,0DAA0D;AAC9D;;AAEA;IACI,mCAAmC;IACnC,qCAAqC;IACrC,qBAAqB;AACzB;;AAEA,kCAAkC;AAClC;IACI,iBAAiB;AACrB;;AAEA,4CAA4C;AAC5C;IACI,kBAAkB;IAClB,mBAAmB;IACnB,2CAA2C;IAC3C,kCAAkC;AACtC;;AAEA;IACI,aAAa;IACb,uBAAuB;IACvB,8BAA8B;IAC9B,SAAS;IACT,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;IACR,YAAY;AAChB;;AAEA;IACI,SAAS;IACT,iBAAiB;IACjB,gBAAgB;IAChB,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;IAClB,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,cAAc;IACd,iBAAiB;IACjB,kBAAkB;IAClB,0CAA0C;IAC1C,oCAAoC;IACpC,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,oBAAoB;IACpB,eAAe;IACf,sBAAsB;IACtB,8EAA8E;AAClF;;AAEA;IACI,oCAAoC;IACpC,sCAAsC;AAC1C;;AAEA;;IAEI,YAAY;IACZ,mBAAmB;AACvB;;AAEA,0BAA0B;AAC1B;IACI,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,mBAAmB;IACnB,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,iBAAiB;IACjB,cAAc;IACd,cAAc;AAClB;;AAEA;IACI,+BAA+B;AACnC;;AAEA;IACI,+BAA+B;AACnC;;AAEA,kBAAkB;AAClB;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,kBAAkB;IAClB,kBAAkB;IAClB,yCAAyC;IACzC,mCAAmC;AACvC;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;IACR,OAAO;IACP,YAAY;AAChB;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,mBAAmB;IACnB,gBAAgB;IAChB,uBAAuB;AAC3B;;AAEA;IACI,iBAAiB;IACjB,+BAA+B;IAC/B,sBAAsB;IACtB,mBAAmB;IACnB,gBAAgB;IAChB,uBAAuB;AAC3B;;AAEA,mBAAmB;AACnB;IACI,cAAc;IACd,gBAAgB;IAChB,mBAAmB;IACnB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,6BAA6B;AACjC;;AAEA;IACI,mCAAmC;IACnC,oCAAoC;IACpC,+BAA+B;AACnC;;AAEA;IACI,oCAAoC;IACpC,uCAAuC;IACvC,gCAAgC;AACpC;;AAEA;IACI,oCAAoC;IACpC,uCAAuC;IACvC,gCAAgC;AACpC;;AAEA;;IAEI,qCAAqC;IACrC,sCAAsC;IACtC,gCAAgC;AACpC;;AAEA,qBAAqB;AACrB;IACI,cAAc;IACd,gBAAgB;IAChB,mBAAmB;IACnB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,oCAAoC;IACpC,yCAAyC;IACzC,+BAA+B;AACnC;;AAEA;IACI;QACI,sBAAsB;QACtB,oBAAoB;IACxB;;IAEA;QACI,sBAAsB;IAC1B;;IAEA;QACI,eAAe;IACnB;AACJ;;AAEA;IACI,eAAe;IACf,sCAAsC;IACtC,0CAA0C;AAC9C;;AAEA;IACI;QACI,gBAAgB;QAChB,iBAAiB;IACrB;;IAEA;QACI,eAAe;QACf,WAAW;QACX,uBAAuB;IAC3B;;IAEA;QACI,aAAa;IACjB;;IAEA;QACI,cAAc;QACd,WAAW;QACX,kBAAkB;IACtB;AACJ","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -22613,6 +23492,281 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.grid-3 {
     text-decoration: underline;
 }
 
+/* ── Dashboard section wrapper ── */
+.dashboard-section {
+    padding-top: 36px;
+}
+
+.dashboard-section-label {
+    margin: 0 0 16px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+}
+
+/* ── Hero KPI row (acceptance + essential-only) ── */
+.dashboard-hero-kpis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.dashboard-hero-kpis .small-widget-number {
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+}
+
+.dashboard-hero-kpis .key-highlight-widget {
+    padding: 20px 22px 18px;
+}
+
+.dashboard-hero-kpis--loading {
+    min-height: 110px;
+}
+
+/* ── EU / Non-EU geo stats strip (below map) ── */
+.dashboard-geo-stats {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-top: 12px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.dashboard-geo-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.dashboard-geo-stat__value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e8e8e8;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.dashboard-geo-stat__label {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.35);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.dashboard-geo-stat__rate {
+    font-size: 0.75rem;
+    color: #c0a053;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.dashboard-geo-stat__divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    margin: 0 20px;
+}
+
+
+/* ── Decision behaviour inline KPI tile ── */
+.dashboard-behaviour-kpi {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.dashboard-behaviour-kpi__content {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.dashboard-behaviour-kpi__label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.32);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.dashboard-behaviour-kpi__value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e8e8e8;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.dashboard-behaviour-kpi__sub {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.22);
+    flex-shrink: 0;
+}
+
+.dashboard-behaviour-kpi__btn {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: 1px solid rgba(192, 159, 83, 0.3);
+    background: rgba(192, 159, 83, 0.07);
+    color: #c0a053;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    letter-spacing: 0.01em;
+}
+
+.dashboard-behaviour-kpi__btn:hover {
+    background: rgba(192, 159, 83, 0.14);
+    border-color: rgba(192, 159, 83, 0.5);
+}
+
+/* ── Compliance / quick-link rows ── */
+.dashboard-compliance-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dashboard-compliance-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 9px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.dashboard-compliance-link:hover {
+    border-color: rgba(192, 159, 83, 0.3);
+    background: rgba(192, 159, 83, 0.05);
+    text-decoration: none;
+}
+
+.dashboard-compliance-link__label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.dashboard-compliance-link:hover .dashboard-compliance-link__label {
+    color: #e8e8e8;
+}
+
+.dashboard-compliance-link__arrow {
+    font-size: 0.85rem;
+    color: rgba(192, 159, 83, 0.6);
+    flex-shrink: 0;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.dashboard-compliance-link:hover .dashboard-compliance-link__arrow {
+    transform: translateX(3px);
+    color: #c0a053;
+}
+
+/* ── Marketing link (replaces teaser section) ── */
+.dashboard-marketing-link {
+    margin: 16px 0 0;
+    font-size: 0.8125rem;
+    color: #666;
+}
+
+.dashboard-marketing-link a {
+    color: #a38540;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.dashboard-marketing-link a:hover {
+    text-decoration: underline;
+}
+
+/* Workspace active banner */
+.dashboard-workspace-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    background: linear-gradient(105deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dashboard-workspace-banner__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.dashboard-workspace-banner__kicker {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #c0a053;
+    flex-shrink: 0;
+}
+
+.dashboard-workspace-banner__name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f0e6d4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dashboard-workspace-banner__domains {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.dashboard-workspace-banner__domain-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 20px;
+    border: 1px solid rgba(192, 159, 83, 0.25);
+    background: rgba(192, 159, 83, 0.08);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #c0a053;
+    white-space: nowrap;
+}
+
+.dashboard-workspace-banner__domain-tag--more {
+    color: rgba(192, 159, 83, 0.6);
+    border-style: dashed;
+}
+
 /* Domain Verification Warning Banner */
 .dashboard-verification-warning {
     display: flex;
@@ -22724,7 +23878,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.grid-3 {
         flex: 0 0 auto;
     }
 
-}`, "",{"version":3,"sources":["webpack://./src/Pages/Dashboard/Style.css"],"names":[],"mappings":"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","sourcesContent":[".grid-3 {\n    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-4 {\n    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-5 {\n    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-7{\n    grid-template-columns: repeat(auto-fit, minmax(12%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 10px;\n}\n\n.grid-8 {\n    grid-template-columns: repeat(auto-fit, minmax(10%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-2 {\n    grid-template-columns: 1fr 1fr;\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-3-4{\n    display: grid;\n    grid-template-columns: 1fr .4fr;\n}\n\n.dashboard-content {\n    width: 100%;\n    max-width: 1480px;\n    margin: 0 auto;\n    flex: 1;\n    padding: 0 20px;\n}\n\n.activeDomain {\n    color: aliceblue;\n    text-decoration: none;\n    text-transform: uppercase;\n}\n\n.user {\n    padding: 20px;\n    background-color: #fff;\n    color: #3d3d3d;\n    border-radius: 10px;\n}\n\n.profile-user {\n    font-size: 30px;\n}\n\n.profilePicture-container {\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    align-items: center;\n    margin-bottom: 30px;\n    background-color: #464646;\n    padding: 30px;\n    border-radius: 10px;\n}\n\n.profilePicture {\n    width: 190px;\n    height: 190px;\n    border-radius: 50%;\n    object-fit: cover;\n}\n\n.warning{\n    margin-right: 10px;\n    font-weight: bold;\n}\n\n.warning.critical{\n    color: red;\n}\n\n.warning.high{\n    color: orange;\n}\n\n.warning.high::before{\n    content: \"!!\";\n    margin-right: 5px;\n    font-weight: bold;\n}\n\n.warning.critical::before {\n    content: \"!!!\";\n    margin-right: 5px;\n    font-weight: bold;\n}\n\n.warning.medium{\n    color: yellow;\n}\n.warning.low{\n    color: green;\n}\n\n.grid-7 .span-2 {\n    grid-column: span 2;\n    min-width: 0;\n}\n\n.dashboard-marketing-teaser {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    font-size: 0.9rem;\n    line-height: 1.45;\n    color: #2a2a2a;\n    background: linear-gradient(105deg, #f6f1e8 0%, #f0ebe3 100%);\n    border: 1px solid rgba(163, 133, 64, 0.35);\n    border-radius: 8px;\n}\n\n.dashboard-marketing-teaser p {\n    margin: 0;\n}\n\n.dashboard-marketing-teaser a {\n    font-weight: 600;\n    color: #a38540;\n    text-decoration: none;\n    white-space: nowrap;\n}\n\n.dashboard-marketing-teaser a:hover {\n    text-decoration: underline;\n}\n\n/* Domain Verification Warning Banner */\n.dashboard-verification-warning {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 14px 18px;\n    border-radius: 12px;\n    background: rgba(220, 160, 60, 0.1);\n    border: 1px solid rgba(220, 160, 60, 0.3);\n}\n\n.dashboard-verification-warning--expired {\n    background: rgba(220, 100, 80, 0.1);\n    border-color: rgba(220, 100, 80, 0.3);\n}\n\n.dashboard-verification-warning__icon {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 36px;\n    height: 36px;\n    flex-shrink: 0;\n    border-radius: 50%;\n    background: rgba(220, 160, 60, 0.2);\n    border: 1px solid rgba(220, 160, 60, 0.4);\n    color: #e8c76a;\n    font-size: 1.25rem;\n    font-weight: 700;\n}\n\n.dashboard-verification-warning--expired .dashboard-verification-warning__icon {\n    background: rgba(220, 100, 80, 0.2);\n    border-color: rgba(220, 100, 80, 0.4);\n    color: #f0a8a0;\n}\n\n.dashboard-verification-warning__content {\n    flex: 1;\n    min-width: 0;\n}\n\n.dashboard-verification-warning__content strong {\n    display: block;\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #e8c76a;\n    margin-bottom: 4px;\n}\n\n.dashboard-verification-warning--expired .dashboard-verification-warning__content strong {\n    color: #f0a8a0;\n}\n\n.dashboard-verification-warning__content p {\n    margin: 0;\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.85);\n    line-height: 1.45;\n}\n\n.dashboard-verification-warning__action {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    background: rgba(220, 160, 60, 0.15);\n    border: 1px solid rgba(220, 160, 60, 0.35);\n    color: #e8c76a;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    text-decoration: none;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.dashboard-verification-warning__action:hover {\n    background: rgba(220, 160, 60, 0.25);\n    border-color: rgba(220, 160, 60, 0.5);\n    text-decoration: none;\n}\n\n.dashboard-verification-warning--expired .dashboard-verification-warning__action {\n    background: rgba(220, 100, 80, 0.15);\n    border-color: rgba(220, 100, 80, 0.35);\n    color: #f0a8a0;\n}\n\n.dashboard-verification-warning--expired .dashboard-verification-warning__action:hover {\n    background: rgba(220, 100, 80, 0.25);\n    border-color: rgba(220, 100, 80, 0.5);\n}\n\n@media screen and (max-width: 900px) {\n    .dashboard-content {\n        padding: 0 20px;\n    }\n\n    .grid-3-4 {\n        grid-template-columns: 1fr;\n    }\n\n    .topWidget{\n        display: flex;\n        overflow-x: auto;\n        justify-content: flex-start;\n    }\n\n    .topWidget > * {\n        flex: 0 0 auto;\n    }\n\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Pages/Dashboard/Style.css"],"names":[],"mappings":"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","sourcesContent":[".grid-3 {\n    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-4 {\n    grid-template-columns: repeat(auto-fit, minmax(25%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-5 {\n    grid-template-columns: repeat(auto-fit, minmax(15%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-7{\n    grid-template-columns: repeat(auto-fit, minmax(12%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 10px;\n}\n\n.grid-8 {\n    grid-template-columns: repeat(auto-fit, minmax(10%, 1fr));\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-2 {\n    grid-template-columns: 1fr 1fr;\n    justify-content: center;\n    align-items: center;\n    gap: 20px;\n}\n\n.grid-3-4{\n    display: grid;\n    grid-template-columns: 1fr .4fr;\n}\n\n.dashboard-content {\n    width: 100%;\n    max-width: 1480px;\n    margin: 0 auto;\n    flex: 1;\n    padding: 0 20px;\n}\n\n.activeDomain {\n    color: aliceblue;\n    text-decoration: none;\n    text-transform: uppercase;\n}\n\n.user {\n    padding: 20px;\n    background-color: #fff;\n    color: #3d3d3d;\n    border-radius: 10px;\n}\n\n.profile-user {\n    font-size: 30px;\n}\n\n.profilePicture-container {\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    align-items: center;\n    margin-bottom: 30px;\n    background-color: #464646;\n    padding: 30px;\n    border-radius: 10px;\n}\n\n.profilePicture {\n    width: 190px;\n    height: 190px;\n    border-radius: 50%;\n    object-fit: cover;\n}\n\n.warning{\n    margin-right: 10px;\n    font-weight: bold;\n}\n\n.warning.critical{\n    color: red;\n}\n\n.warning.high{\n    color: orange;\n}\n\n.warning.high::before{\n    content: \"!!\";\n    margin-right: 5px;\n    font-weight: bold;\n}\n\n.warning.critical::before {\n    content: \"!!!\";\n    margin-right: 5px;\n    font-weight: bold;\n}\n\n.warning.medium{\n    color: yellow;\n}\n.warning.low{\n    color: green;\n}\n\n.grid-7 .span-2 {\n    grid-column: span 2;\n    min-width: 0;\n}\n\n.dashboard-marketing-teaser {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    font-size: 0.9rem;\n    line-height: 1.45;\n    color: #2a2a2a;\n    background: linear-gradient(105deg, #f6f1e8 0%, #f0ebe3 100%);\n    border: 1px solid rgba(163, 133, 64, 0.35);\n    border-radius: 8px;\n}\n\n.dashboard-marketing-teaser p {\n    margin: 0;\n}\n\n.dashboard-marketing-teaser a {\n    font-weight: 600;\n    color: #a38540;\n    text-decoration: none;\n    white-space: nowrap;\n}\n\n.dashboard-marketing-teaser a:hover {\n    text-decoration: underline;\n}\n\n/* ── Dashboard section wrapper ── */\n.dashboard-section {\n    padding-top: 36px;\n}\n\n.dashboard-section-label {\n    margin: 0 0 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.16em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.28);\n}\n\n/* ── Hero KPI row (acceptance + essential-only) ── */\n.dashboard-hero-kpis {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px;\n    margin-bottom: 12px;\n}\n\n.dashboard-hero-kpis .small-widget-number {\n    font-size: clamp(2rem, 3.5vw, 2.8rem);\n    font-weight: 300;\n    letter-spacing: -0.02em;\n}\n\n.dashboard-hero-kpis .key-highlight-widget {\n    padding: 20px 22px 18px;\n}\n\n.dashboard-hero-kpis--loading {\n    min-height: 110px;\n}\n\n/* ── EU / Non-EU geo stats strip (below map) ── */\n.dashboard-geo-stats {\n    display: flex;\n    align-items: center;\n    gap: 0;\n    margin-top: 12px;\n    padding: 14px 18px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(0, 0, 0, 0.18);\n}\n\n.dashboard-geo-stat {\n    display: flex;\n    align-items: baseline;\n    gap: 8px;\n    flex: 1;\n    min-width: 0;\n}\n\n.dashboard-geo-stat__value {\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    flex-shrink: 0;\n}\n\n.dashboard-geo-stat__label {\n    font-size: 0.78rem;\n    color: rgba(255, 255, 255, 0.35);\n    font-weight: 500;\n    flex-shrink: 0;\n}\n\n.dashboard-geo-stat__rate {\n    font-size: 0.75rem;\n    color: #c0a053;\n    font-weight: 500;\n    flex-shrink: 0;\n}\n\n.dashboard-geo-stat__divider {\n    width: 1px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 20px;\n}\n\n\n/* ── Decision behaviour inline KPI tile ── */\n.dashboard-behaviour-kpi {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    padding: 14px 18px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(0, 0, 0, 0.18);\n}\n\n.dashboard-behaviour-kpi__content {\n    display: flex;\n    align-items: baseline;\n    gap: 10px;\n    min-width: 0;\n    flex-wrap: wrap;\n}\n\n.dashboard-behaviour-kpi__label {\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.32);\n    font-weight: 500;\n    flex-shrink: 0;\n}\n\n.dashboard-behaviour-kpi__value {\n    font-size: 1.25rem;\n    font-weight: 600;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    flex-shrink: 0;\n}\n\n.dashboard-behaviour-kpi__sub {\n    font-size: 0.72rem;\n    color: rgba(255, 255, 255, 0.22);\n    flex-shrink: 0;\n}\n\n.dashboard-behaviour-kpi__btn {\n    flex-shrink: 0;\n    padding: 7px 14px;\n    border-radius: 7px;\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    background: rgba(192, 159, 83, 0.07);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s ease, border-color 0.15s ease;\n    letter-spacing: 0.01em;\n}\n\n.dashboard-behaviour-kpi__btn:hover {\n    background: rgba(192, 159, 83, 0.14);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n/* ── Compliance / quick-link rows ── */\n.dashboard-compliance-links {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.dashboard-compliance-link {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 12px 16px;\n    border-radius: 9px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(0, 0, 0, 0.15);\n    text-decoration: none;\n    transition: border-color 0.15s ease, background 0.15s ease;\n}\n\n.dashboard-compliance-link:hover {\n    border-color: rgba(192, 159, 83, 0.3);\n    background: rgba(192, 159, 83, 0.05);\n    text-decoration: none;\n}\n\n.dashboard-compliance-link__label {\n    font-size: 0.85rem;\n    font-weight: 500;\n    color: rgba(255, 255, 255, 0.65);\n}\n\n.dashboard-compliance-link:hover .dashboard-compliance-link__label {\n    color: #e8e8e8;\n}\n\n.dashboard-compliance-link__arrow {\n    font-size: 0.85rem;\n    color: rgba(192, 159, 83, 0.6);\n    flex-shrink: 0;\n    transition: transform 0.15s ease, color 0.15s ease;\n}\n\n.dashboard-compliance-link:hover .dashboard-compliance-link__arrow {\n    transform: translateX(3px);\n    color: #c0a053;\n}\n\n/* ── Marketing link (replaces teaser section) ── */\n.dashboard-marketing-link {\n    margin: 16px 0 0;\n    font-size: 0.8125rem;\n    color: #666;\n}\n\n.dashboard-marketing-link a {\n    color: #a38540;\n    font-weight: 600;\n    text-decoration: none;\n}\n\n.dashboard-marketing-link a:hover {\n    text-decoration: underline;\n}\n\n/* Workspace active banner */\n.dashboard-workspace-banner {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    flex-wrap: wrap;\n    margin-bottom: 16px;\n    padding: 12px 18px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: linear-gradient(105deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 100%);\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.dashboard-workspace-banner__left {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    min-width: 0;\n}\n\n.dashboard-workspace-banner__kicker {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.18em;\n    text-transform: uppercase;\n    color: #c0a053;\n    flex-shrink: 0;\n}\n\n.dashboard-workspace-banner__name {\n    font-size: 0.9rem;\n    font-weight: 600;\n    color: #f0e6d4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dashboard-workspace-banner__domains {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-wrap: wrap;\n}\n\n.dashboard-workspace-banner__domain-tag {\n    display: inline-block;\n    padding: 3px 9px;\n    border-radius: 20px;\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    background: rgba(192, 159, 83, 0.08);\n    font-size: 0.72rem;\n    font-weight: 500;\n    color: #c0a053;\n    white-space: nowrap;\n}\n\n.dashboard-workspace-banner__domain-tag--more {\n    color: rgba(192, 159, 83, 0.6);\n    border-style: dashed;\n}\n\n/* Domain Verification Warning Banner */\n.dashboard-verification-warning {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 14px 18px;\n    border-radius: 12px;\n    background: rgba(220, 160, 60, 0.1);\n    border: 1px solid rgba(220, 160, 60, 0.3);\n}\n\n.dashboard-verification-warning--expired {\n    background: rgba(220, 100, 80, 0.1);\n    border-color: rgba(220, 100, 80, 0.3);\n}\n\n.dashboard-verification-warning__icon {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 36px;\n    height: 36px;\n    flex-shrink: 0;\n    border-radius: 50%;\n    background: rgba(220, 160, 60, 0.2);\n    border: 1px solid rgba(220, 160, 60, 0.4);\n    color: #e8c76a;\n    font-size: 1.25rem;\n    font-weight: 700;\n}\n\n.dashboard-verification-warning--expired .dashboard-verification-warning__icon {\n    background: rgba(220, 100, 80, 0.2);\n    border-color: rgba(220, 100, 80, 0.4);\n    color: #f0a8a0;\n}\n\n.dashboard-verification-warning__content {\n    flex: 1;\n    min-width: 0;\n}\n\n.dashboard-verification-warning__content strong {\n    display: block;\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #e8c76a;\n    margin-bottom: 4px;\n}\n\n.dashboard-verification-warning--expired .dashboard-verification-warning__content strong {\n    color: #f0a8a0;\n}\n\n.dashboard-verification-warning__content p {\n    margin: 0;\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.85);\n    line-height: 1.45;\n}\n\n.dashboard-verification-warning__action {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    background: rgba(220, 160, 60, 0.15);\n    border: 1px solid rgba(220, 160, 60, 0.35);\n    color: #e8c76a;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    text-decoration: none;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.dashboard-verification-warning__action:hover {\n    background: rgba(220, 160, 60, 0.25);\n    border-color: rgba(220, 160, 60, 0.5);\n    text-decoration: none;\n}\n\n.dashboard-verification-warning--expired .dashboard-verification-warning__action {\n    background: rgba(220, 100, 80, 0.15);\n    border-color: rgba(220, 100, 80, 0.35);\n    color: #f0a8a0;\n}\n\n.dashboard-verification-warning--expired .dashboard-verification-warning__action:hover {\n    background: rgba(220, 100, 80, 0.25);\n    border-color: rgba(220, 100, 80, 0.5);\n}\n\n@media screen and (max-width: 900px) {\n    .dashboard-content {\n        padding: 0 20px;\n    }\n\n    .grid-3-4 {\n        grid-template-columns: 1fr;\n    }\n\n    .topWidget{\n        display: flex;\n        overflow-x: auto;\n        justify-content: flex-start;\n    }\n\n    .topWidget > * {\n        flex: 0 0 auto;\n    }\n\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -29216,31 +30370,22 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `/* Audit snapshot — link to UserConsents (audit log) from dashboard */
+___CSS_LOADER_EXPORT___.push([module.id, `/* Audit log — link to UserConsents from dashboard */
 .audit-snapshot-card {
     display: block;
     margin-bottom: 20px;
     text-decoration: none;
     color: inherit;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: linear-gradient(
-        165deg,
-        rgba(58, 58, 58, 0.92) 0%,
-        rgba(38, 38, 38, 0.97) 55%,
-        rgba(30, 30, 30, 1) 100%
-    );
-    box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.24),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(24, 22, 18, 0.75);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);
     transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
 .audit-snapshot-card:hover {
-    border-color: rgba(192, 159, 83, 0.45);
-    box-shadow:
-        0 10px 36px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    border-color: rgba(192, 159, 83, 0.4);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
     transform: translateY(-1px);
 }
 
@@ -29294,7 +30439,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Audit snapshot — link to UserCons
 }
 
 .audit-snapshot-card__health-sub {
-    margin: 0 0 10px;
+    margin: 0 0 16px;
     font-size: 0.78rem;
     line-height: 1.4;
     color: #949494;
@@ -29382,14 +30527,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Audit snapshot — link to UserCons
     }
 }
 
-.audit-snapshot-card__desc {
-    margin: 0 0 12px;
-    font-size: 0.875rem;
-    line-height: 1.45;
-    color: #a8a8a8;
-    max-width: 52rem;
-}
-
 .audit-snapshot-card__hint {
     margin: 0;
     font-size: 0.8rem;
@@ -29399,28 +30536,42 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Audit snapshot — link to UserCons
 .audit-snapshot-card__stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px 28px;
-    margin: 0;
+    gap: 0;
+    margin: 16px 0 0;
+    padding: 14px 18px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .audit-snapshot-card__stat {
     margin: 0;
+    padding: 0 20px 0 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    margin-right: 20px;
+}
+
+.audit-snapshot-card__stat:last-child {
+    border-right: none;
+    padding-right: 0;
+    margin-right: 0;
 }
 
 .audit-snapshot-card__stat dt {
-    margin: 0 0 4px;
-    font-size: 0.68rem;
+    margin: 0 0 3px;
+    font-size: 0.67rem;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: #888;
+    color: rgba(255, 255, 255, 0.3);
 }
 
 .audit-snapshot-card__stat dd {
     margin: 0;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: #c0a053;
+    font-variant-numeric: tabular-nums;
 }
 
 .audit-snapshot-card__cta-wrap {
@@ -29614,7 +30765,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Audit snapshot — link to UserCons
     background: rgba(0, 0, 0, 0.18);
     border: 1px solid rgba(255, 255, 255, 0.06);
 }
-`, "",{"version":3,"sources":["webpack://./src/components/AuditSnapshotCard/AuditSnapshotCard.css"],"names":[],"mappings":"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","sourcesContent":["/* Audit snapshot — link to UserConsents (audit log) from dashboard */\n.audit-snapshot-card {\n    display: block;\n    margin-bottom: 20px;\n    text-decoration: none;\n    color: inherit;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(\n        165deg,\n        rgba(58, 58, 58, 0.92) 0%,\n        rgba(38, 38, 38, 0.97) 55%,\n        rgba(30, 30, 30, 1) 100%\n    );\n    box-shadow:\n        0 8px 32px rgba(0, 0, 0, 0.24),\n        inset 0 1px 0 rgba(255, 255, 255, 0.04);\n    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;\n}\n\n.audit-snapshot-card:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow:\n        0 10px 36px rgba(0, 0, 0, 0.3),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.audit-snapshot-card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.85);\n    outline-offset: 3px;\n}\n\n/* System health — glanceable top accent */\n.audit-snapshot-card--health-healthy {\n    border-top: 3px solid rgba(100, 190, 125, 0.95);\n}\n\n.audit-snapshot-card--health-degraded {\n    border-top: 3px solid rgba(220, 165, 75, 0.95);\n}\n\n.audit-snapshot-card--health-error {\n    border-top: 3px solid rgba(230, 95, 95, 0.95);\n}\n\n.audit-snapshot-card--health-loading {\n    border-top: 3px solid rgba(130, 165, 210, 0.9);\n}\n\n.audit-snapshot-card__body {\n    padding: 18px 22px 20px;\n}\n\n.audit-snapshot-card__text {\n    min-width: 0;\n}\n\n.audit-snapshot-card__title-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px 16px;\n    margin-bottom: 6px;\n}\n\n.audit-snapshot-card__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #e8e8e8;\n    flex: 1;\n    min-width: 9rem;\n}\n\n.audit-snapshot-card__health-sub {\n    margin: 0 0 10px;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: #949494;\n    max-width: 48rem;\n}\n\n.audit-snapshot-card__health-pill {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 12px;\n    border-radius: 999px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    flex-shrink: 0;\n    max-width: min(100%, 17rem);\n    border: 1px solid transparent;\n}\n\n.audit-snapshot-card__health-label {\n    line-height: 1.25;\n    text-align: left;\n}\n\n.audit-snapshot-card__health-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.audit-snapshot-card__health-pill--healthy {\n    background: rgba(80, 150, 100, 0.25);\n    border-color: rgba(120, 200, 145, 0.5);\n    color: #b5e8c8;\n}\n\n.audit-snapshot-card__health-pill--healthy .audit-snapshot-card__health-dot {\n    background: #6fd88a;\n    box-shadow: 0 0 10px rgba(111, 216, 138, 0.55);\n}\n\n.audit-snapshot-card__health-pill--degraded {\n    background: rgba(200, 140, 60, 0.22);\n    border-color: rgba(230, 175, 80, 0.45);\n    color: #f0d9a8;\n}\n\n.audit-snapshot-card__health-pill--degraded .audit-snapshot-card__health-dot {\n    background: #e8b04a;\n    box-shadow: 0 0 8px rgba(232, 176, 74, 0.45);\n}\n\n.audit-snapshot-card__health-pill--error {\n    background: rgba(200, 70, 70, 0.22);\n    border-color: rgba(235, 110, 110, 0.5);\n    color: #f0b0b0;\n}\n\n.audit-snapshot-card__health-pill--error .audit-snapshot-card__health-dot {\n    background: #e85c5c;\n    box-shadow: 0 0 8px rgba(232, 92, 92, 0.55);\n}\n\n.audit-snapshot-card__health-pill--loading {\n    background: rgba(90, 120, 170, 0.22);\n    border-color: rgba(140, 170, 220, 0.45);\n    color: #c5d8f0;\n}\n\n.audit-snapshot-card__health-pill--loading .audit-snapshot-card__health-dot {\n    background: #8cb4e8;\n    animation: audit-snapshot-health-pulse 1.1s ease-in-out infinite;\n}\n\n@keyframes audit-snapshot-health-pulse {\n    0%,\n    100% {\n        opacity: 1;\n    }\n    50% {\n        opacity: 0.35;\n    }\n}\n\n.audit-snapshot-card__desc {\n    margin: 0 0 12px;\n    font-size: 0.875rem;\n    line-height: 1.45;\n    color: #a8a8a8;\n    max-width: 52rem;\n}\n\n.audit-snapshot-card__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    color: #888;\n}\n\n.audit-snapshot-card__stats {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 20px 28px;\n    margin: 0;\n}\n\n.audit-snapshot-card__stat {\n    margin: 0;\n}\n\n.audit-snapshot-card__stat dt {\n    margin: 0 0 4px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: #888;\n}\n\n.audit-snapshot-card__stat dd {\n    margin: 0;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.audit-snapshot-card__cta-wrap {\n    margin-top: 18px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.audit-snapshot-card__cta {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.85rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 10px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.audit-snapshot-card:hover .audit-snapshot-card__cta {\n    background: rgba(192, 159, 83, 0.14);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.audit-snapshot-card__meta-lines {\n    margin: 0 0 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.audit-snapshot-card__meta-line {\n    margin: 0;\n    display: flex;\n    flex-wrap: wrap;\n    align-items: baseline;\n    gap: 8px 12px;\n    font-size: 0.85rem;\n    line-height: 1.4;\n}\n\n.audit-snapshot-card__meta-label {\n    font-weight: 600;\n    color: #b8b8b8;\n    min-width: 10rem;\n}\n\n.audit-snapshot-card__meta-value {\n    color: #e4e4e4;\n}\n\n.audit-snapshot-card__meta-suffix {\n    font-size: 0.72rem;\n    font-weight: 500;\n    letter-spacing: 0.04em;\n    color: #777;\n    text-transform: uppercase;\n}\n\n.audit-snapshot-card__feed {\n    list-style: none;\n    margin: 0 0 16px;\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.audit-snapshot-card__feed--demo {\n    border-style: dashed;\n    border-color: rgba(192, 159, 83, 0.25);\n}\n\n.audit-snapshot-card__feed-note {\n    margin: 0 0 10px;\n    padding-bottom: 8px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #888;\n}\n\n.audit-snapshot-card__feed-row {\n    margin: 0;\n    padding: 6px 0;\n    font-size: 0.8125rem;\n    color: #c8c8c8;\n    display: flex;\n    flex-wrap: wrap;\n    align-items: baseline;\n    gap: 4px 6px;\n}\n\n.audit-snapshot-card__feed-row + .audit-snapshot-card__feed-row {\n    border-top: 1px solid rgba(255, 255, 255, 0.05);\n}\n\n.audit-snapshot-card__feed-row--interactive {\n    cursor: pointer;\n    border-radius: 6px;\n    margin: 0 -6px;\n    padding: 6px;\n    transition:\n        background 0.15s ease,\n        box-shadow 0.15s ease;\n}\n\n.audit-snapshot-card__feed-row--interactive:hover {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.audit-snapshot-card__feed-row--interactive:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 2px;\n}\n\n.audit-snapshot-card__feed-row--map-selected {\n    background: rgba(192, 159, 83, 0.12);\n    box-shadow: inset 3px 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.audit-snapshot-card__feed-country {\n    font-weight: 700;\n    color: #c0a053;\n    min-width: 1.75rem;\n}\n\n.audit-snapshot-card__feed-fw {\n    color: #9ec5e8;\n}\n\n.audit-snapshot-card__feed-summary {\n    color: #dcdcdc;\n}\n\n.audit-snapshot-card__feed-time {\n    margin-left: auto;\n    font-variant-numeric: tabular-nums;\n    color: #999;\n}\n\n.audit-snapshot-card__feed-sep {\n    color: #555;\n    user-select: none;\n}\n\n.audit-snapshot-card__feed-map-row {\n    display: grid;\n    grid-template-columns: minmax(0, 1fr) minmax(200px, 42%);\n    align-items: stretch;\n    gap: 16px 20px;\n    margin: 14px 0 16px;\n}\n\n@media (max-width: 720px) {\n    .audit-snapshot-card__feed-map-row {\n        grid-template-columns: 1fr;\n    }\n}\n\n.audit-snapshot-card__feed-col {\n    min-width: 0;\n}\n\n.audit-snapshot-card__map-col {\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n}\n\n.audit-snapshot-card__map-col > .audit-compliance-map {\n    flex: 1 1 auto;\n    min-height: 0;\n}\n\n.audit-snapshot-card__feed-col .audit-snapshot-card__feed {\n    margin-bottom: 0;\n}\n\n.audit-snapshot-card__feed-col .audit-snapshot-card__hint {\n    margin: 0;\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/components/AuditSnapshotCard/AuditSnapshotCard.css"],"names":[],"mappings":"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","sourcesContent":["/* Audit log — link to UserConsents from dashboard */\n.audit-snapshot-card {\n    display: block;\n    margin-bottom: 20px;\n    text-decoration: none;\n    color: inherit;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(24, 22, 18, 0.75);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;\n}\n\n.audit-snapshot-card:hover {\n    border-color: rgba(192, 159, 83, 0.4);\n    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);\n    transform: translateY(-1px);\n}\n\n.audit-snapshot-card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.85);\n    outline-offset: 3px;\n}\n\n/* System health — glanceable top accent */\n.audit-snapshot-card--health-healthy {\n    border-top: 3px solid rgba(100, 190, 125, 0.95);\n}\n\n.audit-snapshot-card--health-degraded {\n    border-top: 3px solid rgba(220, 165, 75, 0.95);\n}\n\n.audit-snapshot-card--health-error {\n    border-top: 3px solid rgba(230, 95, 95, 0.95);\n}\n\n.audit-snapshot-card--health-loading {\n    border-top: 3px solid rgba(130, 165, 210, 0.9);\n}\n\n.audit-snapshot-card__body {\n    padding: 18px 22px 20px;\n}\n\n.audit-snapshot-card__text {\n    min-width: 0;\n}\n\n.audit-snapshot-card__title-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px 16px;\n    margin-bottom: 6px;\n}\n\n.audit-snapshot-card__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #e8e8e8;\n    flex: 1;\n    min-width: 9rem;\n}\n\n.audit-snapshot-card__health-sub {\n    margin: 0 0 16px;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: #949494;\n    max-width: 48rem;\n}\n\n.audit-snapshot-card__health-pill {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 12px;\n    border-radius: 999px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    flex-shrink: 0;\n    max-width: min(100%, 17rem);\n    border: 1px solid transparent;\n}\n\n.audit-snapshot-card__health-label {\n    line-height: 1.25;\n    text-align: left;\n}\n\n.audit-snapshot-card__health-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.audit-snapshot-card__health-pill--healthy {\n    background: rgba(80, 150, 100, 0.25);\n    border-color: rgba(120, 200, 145, 0.5);\n    color: #b5e8c8;\n}\n\n.audit-snapshot-card__health-pill--healthy .audit-snapshot-card__health-dot {\n    background: #6fd88a;\n    box-shadow: 0 0 10px rgba(111, 216, 138, 0.55);\n}\n\n.audit-snapshot-card__health-pill--degraded {\n    background: rgba(200, 140, 60, 0.22);\n    border-color: rgba(230, 175, 80, 0.45);\n    color: #f0d9a8;\n}\n\n.audit-snapshot-card__health-pill--degraded .audit-snapshot-card__health-dot {\n    background: #e8b04a;\n    box-shadow: 0 0 8px rgba(232, 176, 74, 0.45);\n}\n\n.audit-snapshot-card__health-pill--error {\n    background: rgba(200, 70, 70, 0.22);\n    border-color: rgba(235, 110, 110, 0.5);\n    color: #f0b0b0;\n}\n\n.audit-snapshot-card__health-pill--error .audit-snapshot-card__health-dot {\n    background: #e85c5c;\n    box-shadow: 0 0 8px rgba(232, 92, 92, 0.55);\n}\n\n.audit-snapshot-card__health-pill--loading {\n    background: rgba(90, 120, 170, 0.22);\n    border-color: rgba(140, 170, 220, 0.45);\n    color: #c5d8f0;\n}\n\n.audit-snapshot-card__health-pill--loading .audit-snapshot-card__health-dot {\n    background: #8cb4e8;\n    animation: audit-snapshot-health-pulse 1.1s ease-in-out infinite;\n}\n\n@keyframes audit-snapshot-health-pulse {\n    0%,\n    100% {\n        opacity: 1;\n    }\n    50% {\n        opacity: 0.35;\n    }\n}\n\n.audit-snapshot-card__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    color: #888;\n}\n\n.audit-snapshot-card__stats {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 0;\n    margin: 16px 0 0;\n    padding: 14px 18px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.2);\n    border: 1px solid rgba(255, 255, 255, 0.05);\n}\n\n.audit-snapshot-card__stat {\n    margin: 0;\n    padding: 0 20px 0 0;\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    margin-right: 20px;\n}\n\n.audit-snapshot-card__stat:last-child {\n    border-right: none;\n    padding-right: 0;\n    margin-right: 0;\n}\n\n.audit-snapshot-card__stat dt {\n    margin: 0 0 3px;\n    font-size: 0.67rem;\n    font-weight: 600;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.audit-snapshot-card__stat dd {\n    margin: 0;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: #c0a053;\n    font-variant-numeric: tabular-nums;\n}\n\n.audit-snapshot-card__cta-wrap {\n    margin-top: 18px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.audit-snapshot-card__cta {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.85rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 10px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.audit-snapshot-card:hover .audit-snapshot-card__cta {\n    background: rgba(192, 159, 83, 0.14);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.audit-snapshot-card__meta-lines {\n    margin: 0 0 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.audit-snapshot-card__meta-line {\n    margin: 0;\n    display: flex;\n    flex-wrap: wrap;\n    align-items: baseline;\n    gap: 8px 12px;\n    font-size: 0.85rem;\n    line-height: 1.4;\n}\n\n.audit-snapshot-card__meta-label {\n    font-weight: 600;\n    color: #b8b8b8;\n    min-width: 10rem;\n}\n\n.audit-snapshot-card__meta-value {\n    color: #e4e4e4;\n}\n\n.audit-snapshot-card__meta-suffix {\n    font-size: 0.72rem;\n    font-weight: 500;\n    letter-spacing: 0.04em;\n    color: #777;\n    text-transform: uppercase;\n}\n\n.audit-snapshot-card__feed {\n    list-style: none;\n    margin: 0 0 16px;\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.audit-snapshot-card__feed--demo {\n    border-style: dashed;\n    border-color: rgba(192, 159, 83, 0.25);\n}\n\n.audit-snapshot-card__feed-note {\n    margin: 0 0 10px;\n    padding-bottom: 8px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #888;\n}\n\n.audit-snapshot-card__feed-row {\n    margin: 0;\n    padding: 6px 0;\n    font-size: 0.8125rem;\n    color: #c8c8c8;\n    display: flex;\n    flex-wrap: wrap;\n    align-items: baseline;\n    gap: 4px 6px;\n}\n\n.audit-snapshot-card__feed-row + .audit-snapshot-card__feed-row {\n    border-top: 1px solid rgba(255, 255, 255, 0.05);\n}\n\n.audit-snapshot-card__feed-row--interactive {\n    cursor: pointer;\n    border-radius: 6px;\n    margin: 0 -6px;\n    padding: 6px;\n    transition:\n        background 0.15s ease,\n        box-shadow 0.15s ease;\n}\n\n.audit-snapshot-card__feed-row--interactive:hover {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.audit-snapshot-card__feed-row--interactive:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 2px;\n}\n\n.audit-snapshot-card__feed-row--map-selected {\n    background: rgba(192, 159, 83, 0.12);\n    box-shadow: inset 3px 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.audit-snapshot-card__feed-country {\n    font-weight: 700;\n    color: #c0a053;\n    min-width: 1.75rem;\n}\n\n.audit-snapshot-card__feed-fw {\n    color: #9ec5e8;\n}\n\n.audit-snapshot-card__feed-summary {\n    color: #dcdcdc;\n}\n\n.audit-snapshot-card__feed-time {\n    margin-left: auto;\n    font-variant-numeric: tabular-nums;\n    color: #999;\n}\n\n.audit-snapshot-card__feed-sep {\n    color: #555;\n    user-select: none;\n}\n\n.audit-snapshot-card__feed-map-row {\n    display: grid;\n    grid-template-columns: minmax(0, 1fr) minmax(200px, 42%);\n    align-items: stretch;\n    gap: 16px 20px;\n    margin: 14px 0 16px;\n}\n\n@media (max-width: 720px) {\n    .audit-snapshot-card__feed-map-row {\n        grid-template-columns: 1fr;\n    }\n}\n\n.audit-snapshot-card__feed-col {\n    min-width: 0;\n}\n\n.audit-snapshot-card__map-col {\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n}\n\n.audit-snapshot-card__map-col > .audit-compliance-map {\n    flex: 1 1 auto;\n    min-height: 0;\n}\n\n.audit-snapshot-card__feed-col .audit-snapshot-card__feed {\n    margin-bottom: 0;\n}\n\n.audit-snapshot-card__feed-col .audit-snapshot-card__hint {\n    margin: 0;\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -30266,10 +31417,10 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.top-countries{
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./src/components/IntastellarAccounts/Style.css":
-/*!********************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./src/components/IntastellarAccounts/Style.css ***!
-  \********************************************************************************************/
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/components/DecisionBehaviourDrawer/Style.css":
+/*!************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/components/DecisionBehaviourDrawer/Style.css ***!
+  \************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -30285,339 +31436,143 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `/* Legacy panel (unused in app; kept for compatibility) */
-.services-overview-container {
-    width: 345px;
-    height: auto;
-    max-height: 600px;
-    overflow: hidden;
-    border-radius: 10px;
-    float: right;
-    position: absolute;
-    top: 60px;
-    right: 20px;
-    box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+___CSS_LOADER_EXPORT___.push([module.id, `.behaviour-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(0, 0, 0, 0.55);
+    animation: behaviour-drawer-fade-in 0.2s ease;
 }
 
-/* Account dropdown — aligned with dashboard dark UI + login gold accents */
-.ia-menu.user_content {
-    width: min(calc(100vw - 32px), 320px);
-    max-height: min(90vh, 640px);
-    overflow: hidden;
-    border-radius: 14px;
-    float: right;
-    position: absolute;
-    top: 60px;
-    right: 20px;
-    box-sizing: border-box;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow:
-        0 24px 56px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    -webkit-backdrop-filter: blur(18px);
-    backdrop-filter: blur(18px);
-}
-
-.ia-menu__accent {
-    position: absolute;
+.behaviour-drawer {
+    position: fixed;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 38%;
-    max-width: 120px;
-    height: 3px;
-    border-radius: 0 0 8px 8px;
-    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);
-    pointer-events: none;
+    right: 0;
+    z-index: 201;
+    width: min(480px, 100vw - 16px);
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px 0 0 12px;
+    background: linear-gradient(180deg, rgba(30, 26, 20, 0.99) 0%, rgba(20, 18, 14, 1) 100%);
+    box-shadow: -12px 0 48px rgba(0, 0, 0, 0.5);
+    animation: behaviour-drawer-slide-in 0.26s cubic-bezier(0.32, 0.72, 0, 1);
+    overflow: hidden;
 }
 
-.ia-menu__body {
-    padding: 22px 18px 12px;
-    max-height: calc(min(90vh, 640px) - 76px);
-    overflow-y: auto;
-    text-align: center;
+@keyframes behaviour-drawer-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
-.ia-menu__brand {
-    margin-bottom: 14px;
+@keyframes behaviour-drawer-slide-in {
+    from { transform: translateX(100%); opacity: 0.8; }
+    to   { transform: translateX(0);    opacity: 1;   }
 }
 
-.ia-menu__brand-logo {
-    display: block;
-    width: min(160px, 72%);
-    height: auto;
-    margin: 0 auto;
-    opacity: 0.92;
-    filter: brightness(0) invert(1);
+/* Header */
+.behaviour-drawer__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 24px 24px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    flex-shrink: 0;
 }
 
-.ia-menu__avatar-wrap {
-    position: relative;
-    width: max-content;
-    margin: 0 auto 16px;
+.behaviour-drawer__header-text {
+    min-width: 0;
 }
 
-.ia-menu__avatar {
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    border: 3px solid rgba(192, 159, 83, 0.35);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-}
-
-.ia-menu__identity {
-    color: #e8e8e8;
-}
-
-.ia-menu__greeting {
+.behaviour-drawer__title {
     margin: 0 0 4px;
-    font-size: 1rem;
+    font-size: 1.05rem;
     font-weight: 600;
-    letter-spacing: 0.02em;
-    color: #f0f0f0;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    color: #e8e8e8;
+    letter-spacing: 0.01em;
 }
 
-.ia-menu__email {
-    margin: 0 0 14px;
-    font-size: 0.8125rem;
-    line-height: 1.4;
-    color: #9aa0a6;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.ia-menu__manage {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    max-width: 100%;
+.behaviour-drawer__sub {
     margin: 0;
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.25);
-    color: #d8d8d8 !important;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    text-decoration: none;
-    text-align: left;
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease,
-        color 0.2s ease;
-    box-sizing: border-box;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.32);
+    line-height: 1.4;
 }
 
-.ia-menu__manage:hover {
-    border-color: rgba(192, 159, 83, 0.45);
-    background: rgba(192, 159, 83, 0.1);
-    color: #f4f4f4 !important;
-}
-
-.ia-menu__manage-icon {
+.behaviour-drawer__close {
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    border-radius: 8px;
-    object-fit: contain;
-}
-
-.ia-menu__workspace-panel {
-    margin-top: 16px;
-    padding: 12px 14px 12px;
-    text-align: left;
-    border-radius: 10px;
-    border: 1px solid rgba(192, 159, 83, 0.22);
-    background: linear-gradient(
-        165deg,
-        rgba(192, 159, 83, 0.08) 0%,
-        rgba(0, 0, 0, 0.32) 58%
-    );
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.ia-menu__workspace-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-}
-
-.ia-menu__workspace-copy {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    min-width: 0;
-    flex: 1;
-}
-
-.ia-menu__workspace-kicker {
-    display: block;
-    margin: 0;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #c0a053;
-    line-height: 1.25;
-}
-
-.ia-menu__demo-label {
-    display: block;
-    margin: 0;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    color: #ececec;
-    line-height: 1.3;
-}
-
-.ia-menu__demo-hint {
-    margin: 0;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    font-size: 0.6875rem;
-    line-height: 1.45;
-    color: #8b9199;
-}
-
-.ia-menu__switch {
-    position: relative;
-    display: inline-block;
-    width: 44px;
-    height: 24px;
-    flex-shrink: 0;
-}
-
-.ia-menu__switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.ia-menu__switch-slider {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.12);
-    transition: background 0.25s ease;
-    border-radius: 34px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.ia-menu__switch-slider::before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 2px;
-    background: #f0f0f0;
-    transition: transform 0.25s ease;
-    border-radius: 50%;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-}
-
-.ia-menu__switch input:checked + .ia-menu__switch-slider {
-    background: rgba(192, 159, 83, 0.35);
-    border-color: rgba(192, 159, 83, 0.5);
-}
-
-.ia-menu__switch input:checked + .ia-menu__switch-slider::before {
-    transform: translateX(20px);
-    background: #e8d5a8;
-}
-
-.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {
-    outline: 2px solid rgba(192, 159, 83, 0.7);
-    outline-offset: 2px;
-}
-
-.ia-menu__footer {
-    padding: 14px 16px 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.ia-menu__sign-out {
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin: 0;
-    padding: 11px 16px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.04);
-    color: #c9cdd3;
-    font-size: 0.875rem;
-    font-weight: 600;
-    font-family: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.45);
     cursor: pointer;
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease,
-        color 0.2s ease;
+    font-size: 1.25rem;
+    line-height: 1;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
-.ia-menu__sign-out:hover {
-    border-color: rgba(220, 100, 100, 0.45);
-    background: rgba(220, 80, 80, 0.12);
-    color: #f0c4c4;
+.behaviour-drawer__close:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #e8e8e8;
 }
 
-.ia-menu__sign-out-icon {
-    flex-shrink: 0;
-    opacity: 0.9;
+/* Body */
+.behaviour-drawer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
-.dropdown-links {
-    max-height: 140px;
-    height: auto;
-    overflow: scroll;
+.behaviour-drawer__count {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.28);
 }
 
-.dropdown-links a {
-    color: #000;
-    font-size: 15px;
-    padding: 15px;
-    display: block;
-    text-decoration: none;
+.behaviour-drawer__widgets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
 }
 
-.dropdown-links a:hover {
-    background: #b7b7b7;
-    text-decoration: none;
-    color: #000;
+/* Last widget spans full width when count is odd */
+.behaviour-drawer__widgets > *:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
 }
 
-@media screen and (min-width: 320px) and (max-width: 900px) {
-    .ia-menu.user_content,
-    .services-overview-container {
-        top: 60px;
-        right: 10px;
+.behaviour-drawer__empty {
+    margin: 0;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.28);
+}
+
+@media (max-width: 600px) {
+    .behaviour-drawer {
+        width: 100vw;
+        border-radius: 0;
+    }
+
+    .behaviour-drawer__widgets {
+        grid-template-columns: 1fr;
+    }
+
+    .behaviour-drawer__widgets > *:last-child:nth-child(odd) {
+        grid-column: auto;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/components/IntastellarAccounts/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* Legacy panel (unused in app; kept for compatibility) */\n.services-overview-container {\n    width: 345px;\n    height: auto;\n    max-height: 600px;\n    overflow: hidden;\n    border-radius: 10px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    background: rgba(255, 255, 255, 0.8);\n    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);\n    -webkit-backdrop-filter: blur(10px);\n    backdrop-filter: blur(10px);\n}\n\n/* Account dropdown — aligned with dashboard dark UI + login gold accents */\n.ia-menu.user_content {\n    width: min(calc(100vw - 32px), 320px);\n    max-height: min(90vh, 640px);\n    overflow: hidden;\n    border-radius: 14px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 56px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    -webkit-backdrop-filter: blur(18px);\n    backdrop-filter: blur(18px);\n}\n\n.ia-menu__accent {\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 38%;\n    max-width: 120px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.ia-menu__body {\n    padding: 22px 18px 12px;\n    max-height: calc(min(90vh, 640px) - 76px);\n    overflow-y: auto;\n    text-align: center;\n}\n\n.ia-menu__brand {\n    margin-bottom: 14px;\n}\n\n.ia-menu__brand-logo {\n    display: block;\n    width: min(160px, 72%);\n    height: auto;\n    margin: 0 auto;\n    opacity: 0.92;\n    filter: brightness(0) invert(1);\n}\n\n.ia-menu__avatar-wrap {\n    position: relative;\n    width: max-content;\n    margin: 0 auto 16px;\n}\n\n.ia-menu__avatar {\n    width: 88px;\n    height: 88px;\n    border-radius: 50%;\n    object-fit: cover;\n    display: block;\n    border: 3px solid rgba(192, 159, 83, 0.35);\n    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);\n}\n\n.ia-menu__identity {\n    color: #e8e8e8;\n}\n\n.ia-menu__greeting {\n    margin: 0 0 4px;\n    font-size: 1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f0f0f0;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__email {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.4;\n    color: #9aa0a6;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__manage {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.25);\n    color: #d8d8d8 !important;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    text-decoration: none;\n    text-align: left;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n    box-sizing: border-box;\n}\n\n.ia-menu__manage:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.1);\n    color: #f4f4f4 !important;\n}\n\n.ia-menu__manage-icon {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: 8px;\n    object-fit: contain;\n}\n\n.ia-menu__workspace-panel {\n    margin-top: 16px;\n    padding: 12px 14px 12px;\n    text-align: left;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.32) 58%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.ia-menu__workspace-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 14px;\n}\n\n.ia-menu__workspace-copy {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.ia-menu__workspace-kicker {\n    display: block;\n    margin: 0;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: #c0a053;\n    line-height: 1.25;\n}\n\n.ia-menu__demo-label {\n    display: block;\n    margin: 0;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    letter-spacing: 0.01em;\n    color: #ececec;\n    line-height: 1.3;\n}\n\n.ia-menu__demo-hint {\n    margin: 0;\n    margin-top: 10px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    font-size: 0.6875rem;\n    line-height: 1.45;\n    color: #8b9199;\n}\n\n.ia-menu__switch {\n    position: relative;\n    display: inline-block;\n    width: 44px;\n    height: 24px;\n    flex-shrink: 0;\n}\n\n.ia-menu__switch input {\n    opacity: 0;\n    width: 0;\n    height: 0;\n}\n\n.ia-menu__switch-slider {\n    position: absolute;\n    cursor: pointer;\n    inset: 0;\n    background: rgba(255, 255, 255, 0.12);\n    transition: background 0.25s ease;\n    border-radius: 34px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.ia-menu__switch-slider::before {\n    position: absolute;\n    content: \"\";\n    height: 18px;\n    width: 18px;\n    left: 3px;\n    bottom: 2px;\n    background: #f0f0f0;\n    transition: transform 0.25s ease;\n    border-radius: 50%;\n    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider {\n    background: rgba(192, 159, 83, 0.35);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider::before {\n    transform: translateX(20px);\n    background: #e8d5a8;\n}\n\n.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n.ia-menu__footer {\n    padding: 14px 16px 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.ia-menu__sign-out {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    margin: 0;\n    padding: 11px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(255, 255, 255, 0.04);\n    color: #c9cdd3;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n}\n\n.ia-menu__sign-out:hover {\n    border-color: rgba(220, 100, 100, 0.45);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n}\n\n.ia-menu__sign-out-icon {\n    flex-shrink: 0;\n    opacity: 0.9;\n}\n\n.dropdown-links {\n    max-height: 140px;\n    height: auto;\n    overflow: scroll;\n}\n\n.dropdown-links a {\n    color: #000;\n    font-size: 15px;\n    padding: 15px;\n    display: block;\n    text-decoration: none;\n}\n\n.dropdown-links a:hover {\n    background: #b7b7b7;\n    text-decoration: none;\n    color: #000;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .ia-menu.user_content,\n    .services-overview-container {\n        top: 60px;\n        right: 10px;\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/components/DecisionBehaviourDrawer/Style.css"],"names":[],"mappings":"AAAA;IACI,eAAe;IACf,QAAQ;IACR,YAAY;IACZ,+BAA+B;IAC/B,6CAA6C;AACjD;;AAEA;IACI,eAAe;IACf,MAAM;IACN,QAAQ;IACR,YAAY;IACZ,+BAA+B;IAC/B,aAAa;IACb,cAAc;IACd,aAAa;IACb,sBAAsB;IACtB,YAAY;IACZ,gDAAgD;IAChD,4BAA4B;IAC5B,wFAAwF;IACxF,2CAA2C;IAC3C,yEAAyE;IACzE,gBAAgB;AACpB;;AAEA;IACI,OAAO,UAAU,EAAE;IACnB,OAAO,UAAU,EAAE;AACvB;;AAEA;IACI,OAAO,2BAA2B,EAAE,YAAY,EAAE;IAClD,OAAO,wBAAwB,KAAK,UAAU,IAAI;AACtD;;AAEA,WAAW;AACX;IACI,aAAa;IACb,uBAAuB;IACvB,8BAA8B;IAC9B,SAAS;IACT,uBAAuB;IACvB,kDAAkD;IAClD,cAAc;AAClB;;AAEA;IACI,YAAY;AAChB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,cAAc;IACd,sBAAsB;AAC1B;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,0CAA0C;IAC1C,kBAAkB;IAClB,uBAAuB;IACvB,gCAAgC;IAChC,eAAe;IACf,kBAAkB;IAClB,cAAc;IACd,mDAAmD;AACvD;;AAEA;IACI,qCAAqC;IACrC,cAAc;AAClB;;AAEA,SAAS;AACT;IACI,OAAO;IACP,gBAAgB;IAChB,uBAAuB;IACvB,aAAa;IACb,sBAAsB;IACtB,SAAS;AACb;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,8BAA8B;IAC9B,SAAS;AACb;;AAEA,mDAAmD;AACnD;IACI,mBAAmB;AACvB;;AAEA;IACI,SAAS;IACT,mBAAmB;IACnB,gCAAgC;AACpC;;AAEA;IACI;QACI,YAAY;QACZ,gBAAgB;IACpB;;IAEA;QACI,0BAA0B;IAC9B;;IAEA;QACI,iBAAiB;IACrB;AACJ","sourcesContent":[".behaviour-drawer-backdrop {\n    position: fixed;\n    inset: 0;\n    z-index: 200;\n    background: rgba(0, 0, 0, 0.55);\n    animation: behaviour-drawer-fade-in 0.2s ease;\n}\n\n.behaviour-drawer {\n    position: fixed;\n    top: 0;\n    right: 0;\n    z-index: 201;\n    width: min(480px, 100vw - 16px);\n    height: 100vh;\n    height: 100dvh;\n    display: flex;\n    flex-direction: column;\n    border: none;\n    border-left: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 12px 0 0 12px;\n    background: linear-gradient(180deg, rgba(30, 26, 20, 0.99) 0%, rgba(20, 18, 14, 1) 100%);\n    box-shadow: -12px 0 48px rgba(0, 0, 0, 0.5);\n    animation: behaviour-drawer-slide-in 0.26s cubic-bezier(0.32, 0.72, 0, 1);\n    overflow: hidden;\n}\n\n@keyframes behaviour-drawer-fade-in {\n    from { opacity: 0; }\n    to   { opacity: 1; }\n}\n\n@keyframes behaviour-drawer-slide-in {\n    from { transform: translateX(100%); opacity: 0.8; }\n    to   { transform: translateX(0);    opacity: 1;   }\n}\n\n/* Header */\n.behaviour-drawer__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 16px;\n    padding: 24px 24px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n    flex-shrink: 0;\n}\n\n.behaviour-drawer__header-text {\n    min-width: 0;\n}\n\n.behaviour-drawer__title {\n    margin: 0 0 4px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: #e8e8e8;\n    letter-spacing: 0.01em;\n}\n\n.behaviour-drawer__sub {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(255, 255, 255, 0.32);\n    line-height: 1.4;\n}\n\n.behaviour-drawer__close {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 6px;\n    background: transparent;\n    color: rgba(255, 255, 255, 0.45);\n    cursor: pointer;\n    font-size: 1.25rem;\n    line-height: 1;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.behaviour-drawer__close:hover {\n    background: rgba(255, 255, 255, 0.06);\n    color: #e8e8e8;\n}\n\n/* Body */\n.behaviour-drawer__body {\n    flex: 1;\n    overflow-y: auto;\n    padding: 20px 24px 32px;\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n.behaviour-drawer__count {\n    margin: 0;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.28);\n}\n\n.behaviour-drawer__widgets {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 10px;\n}\n\n/* Last widget spans full width when count is odd */\n.behaviour-drawer__widgets > *:last-child:nth-child(odd) {\n    grid-column: 1 / -1;\n}\n\n.behaviour-drawer__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.28);\n}\n\n@media (max-width: 600px) {\n    .behaviour-drawer {\n        width: 100vw;\n        border-radius: 0;\n    }\n\n    .behaviour-drawer__widgets {\n        grid-template-columns: 1fr;\n    }\n\n    .behaviour-drawer__widgets > *:last-child:nth-child(odd) {\n        grid-column: auto;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -30643,8 +31598,16 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.liveView-content-data {
-    margin: 0 20px;
+___CSS_LOADER_EXPORT___.push([module.id, `.liveView-content-title {
+    margin: 10px 10px 0;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.liveView-content-data {
+    margin: 0 10px;
     padding: 10px 0;
 }
 
@@ -30887,1403 +31850,80 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.liveView-content-data {
     min-width: 0;
     background: rgba(170, 70, 65, 0.8);
     transition: width 0.35s ease;
-}`, "",{"version":3,"sources":["webpack://./src/components/LiveView/Style.css"],"names":[],"mappings":"AAAA;IACI,cAAc;IACd,eAAe;AACnB;;AAEA;IACI,aAAa;IACb,8BAA8B;AAClC;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,eAAe;IACf,gBAAgB;IAChB,aAAa;AACjB;;AAEA,kEAAkE;AAClE;IACI,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,8BAA8B;IAC9B,mBAAmB;IACnB,WAAW;IACX,SAAS;IACT,iBAAiB;IACjB,2CAA2C;IAC3C,kBAAkB;IAClB,8BAA8B;IAC9B,eAAe;IACf,gBAAgB;IAChB,aAAa;IACb,cAAc;IACd,wDAAwD;AAC5D;;AAEA;IACI,oCAAoC;IACpC,sCAAsC;AAC1C;;AAEA;IACI,0CAA0C;IAC1C,mBAAmB;AACvB;;AAEA;IACI,qBAAqB;IACrB,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,kCAAkC;AACtC;;AAEA;IACI,WAAW;IACX,WAAW;IACX,eAAe;IACf,oBAAoB;IACpB,qCAAqC;IACrC,gBAAgB;AACpB;;AAEA;IACI,YAAY;IACZ,oBAAoB;IACpB,+EAA+E;IAC/E,4BAA4B;AAChC;;AAEA,qEAAqE;AACrE;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;IAChC,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,kDAAkD;AACtD;;AAEA;IACI,aAAa;IACb,uBAAuB;IACvB,8BAA8B;IAC9B,SAAS;IACT,eAAe;IACf,+CAA+C;AACnD;;AAEA;IACI,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,YAAY;IACZ,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,yBAAyB;AAC7B;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,+BAA+B;AACnC;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,kCAAkC;IAClC,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,WAAW;IACX,WAAW;IACX,gBAAgB;IAChB,oBAAoB;IACpB,gBAAgB;IAChB,qCAAqC;AACzC;;AAEA;IACI,YAAY;IACZ,YAAY;IACZ,4BAA4B;AAChC;;AAEA;IACI,sFAAsF;AAC1F;;AAEA;IACI,uFAAuF;AAC3F;;AAEA;IACI,uFAAuF;AAC3F;;AAEA;IACI,cAAc;IACd,sBAAsB;IACtB,kDAAkD;AACtD;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gBAAgB;IAChB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,oBAAoB;IACpB,sBAAsB;IACtB,iBAAiB;IACjB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,WAAW;IACX,WAAW;IACX,iBAAiB;IACjB,oBAAoB;IACpB,gBAAgB;IAChB,qCAAqC;AACzC;;AAEA;IACI,YAAY;IACZ,YAAY;IACZ,qCAAqC;IACrC,4BAA4B;AAChC;;AAEA;IACI,YAAY;IACZ,YAAY;IACZ,kCAAkC;IAClC,4BAA4B;AAChC","sourcesContent":[".liveView-content-data {\n    margin: 0 20px;\n    padding: 10px 0;\n}\n\n.liveView-content-flex {\n    display: flex;\n    justify-content: space-between;\n}\n\n.liveView-content-data-1-text {\n    margin: 3px 0;\n}\n\n.liveView-content-country {\n    margin-bottom: 5px;\n}\n\n.liveView-content-data-2 {\n    width: 100%;\n}\n\n.liveView-content-data-1-number {\n    font-size: 30px;\n    font-weight: 200;\n    margin-top: 0;\n}\n\n/* Domain rows: clear click target, matches dashboard affordance */\n.liveView-domain-block {\n    margin-bottom: 12px;\n}\n\n.liveView-domain-row {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    width: 100%;\n    margin: 0;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.2);\n    cursor: pointer;\n    text-align: left;\n    font: inherit;\n    color: inherit;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.liveView-domain-row:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.liveView-domain-row:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.8);\n    outline-offset: 2px;\n}\n\n.liveView-domain-row__name {\n    word-break: break-all;\n    padding-right: 12px;\n}\n\n.liveView-domain-row__count {\n    flex-shrink: 0;\n    font-variant-numeric: tabular-nums;\n}\n\n.liveView-domain-bar-track {\n    width: 100%;\n    height: 3px;\n    margin-top: 6px;\n    border-radius: 999px;\n    background: rgba(196, 196, 196, 0.35);\n    overflow: hidden;\n}\n\n.liveView-domain-bar-fill {\n    height: 100%;\n    border-radius: 999px;\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.5), rgb(222, 189, 113));\n    transition: width 0.35s ease;\n}\n\n/* Drawer extras (reuses .world-map-drawer from WorldMap/Style.css) */\n.live-view-drawer__subtitle {\n    margin: 8px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: rgba(255, 255, 255, 0.45);\n    font-weight: 400;\n}\n\n.live-view-drawer__summary-label {\n    display: block;\n    font-size: 0.62rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.38);\n    margin-bottom: 12px;\n}\n\n.live-view-drawer__visit-patterns {\n    flex-shrink: 0;\n    padding: 14px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-row {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px;\n    padding: 10px 0;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-patterns .live-view-drawer__visit-row:first-of-type {\n    border-top: none;\n    padding-top: 0;\n}\n\n.live-view-drawer__visit-row-main {\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 4px;\n}\n\n.live-view-drawer__visit-label {\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.live-view-drawer__visit-label--accept {\n    color: rgba(170, 220, 155, 0.98);\n}\n\n.live-view-drawer__visit-label--essential {\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.live-view-drawer__visit-label--granular {\n    color: rgba(150, 195, 215, 0.95);\n}\n\n.live-view-drawer__visit-meta {\n    font-size: 0.75rem;\n    line-height: 1.35;\n    color: rgba(255, 255, 255, 0.42);\n}\n\n.live-view-drawer__visit-count {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    color: rgba(255, 255, 255, 0.72);\n    padding-top: 2px;\n}\n\n.live-view-drawer__visit-mix-bar {\n    display: flex;\n    width: 100%;\n    height: 8px;\n    margin-top: 14px;\n    border-radius: 999px;\n    overflow: hidden;\n    background: rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-mix-segment {\n    height: 100%;\n    min-width: 0;\n    transition: width 0.35s ease;\n}\n\n.live-view-drawer__visit-mix-segment--accept {\n    background: linear-gradient(90deg, rgba(100, 160, 90, 0.9), rgba(140, 200, 120, 0.75));\n}\n\n.live-view-drawer__visit-mix-segment--essential {\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.55), rgba(218, 190, 120, 0.85));\n}\n\n.live-view-drawer__visit-mix-segment--granular {\n    background: linear-gradient(90deg, rgba(90, 140, 165, 0.75), rgba(120, 175, 200, 0.65));\n}\n\n.live-view-drawer__granular-head {\n    flex-shrink: 0;\n    padding: 14px 18px 6px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.04);\n}\n\n.live-view-drawer__granular-head .live-view-drawer__summary-label {\n    margin-bottom: 6px;\n}\n\n.live-view-drawer__granular-sub {\n    margin: 0;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: rgba(255, 255, 255, 0.4);\n}\n\n.live-view-drawer__type-list {\n    padding-top: 8px;\n}\n\n.live-view-drawer__type-name {\n    text-transform: none;\n    letter-spacing: 0.02em;\n    font-size: 0.8rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n}\n\n.live-view-drawer__mini-split {\n    display: flex;\n    width: 100%;\n    height: 5px;\n    margin: 8px 0 4px;\n    border-radius: 999px;\n    overflow: hidden;\n    background: rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__mini-split-accept {\n    height: 100%;\n    min-width: 0;\n    background: rgba(120, 170, 100, 0.85);\n    transition: width 0.35s ease;\n}\n\n.live-view-drawer__mini-split-decline {\n    height: 100%;\n    min-width: 0;\n    background: rgba(170, 70, 65, 0.8);\n    transition: width 0.35s ease;\n}"],"sourceRoot":""}]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./src/components/SelectInput/Style.css":
-/*!************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./src/components/SelectInput/Style.css ***!
-  \************************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.selector {
-    max-width: 350px;
-    min-width: 0;
-    height: auto;
-    min-height: 36px;
-    position: relative;
-    display: flex;
-    align-items: stretch;
-    flex: 1;
 }
 
-.selectTitle {
-    margin-bottom: 10px;
-    display: block;
-}
-
-.selector select {
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: transparent;
-    appearance: none;
-    -webkit-appearance: none;
-    color: #fff;
-    font-size: 12px;
-    margin: 0px;
-    padding: 8px 16px;
-    border-radius: 0;
-    display: block;
-    max-width: 100%;
-    min-width: 175px;
-    vertical-align: baseline;
-    white-space: nowrap;
-}
-
-.selector select:focus,
-.selector select:focus-within,
-.selector select:focus-visible {
-    outline: none;
-    border-bottom: 1px solid;
-}
-
-.dropdown-menu {
-    position: absolute;
-    top: calc(100% + 6px);
-    z-index: 200;
-    min-width: 100%;
-}
-
-.dropdown-menu--align-left {
-    left: 0;
-    right: auto;
-}
-
-.dropdown-menu--align-right {
-    right: 0;
-    left: auto;
-}
-
-.dropdown-menu__panel {
-    position: relative;
-    width: max-content;
-    min-width: 100%;
-    max-width: min(100vw - 24px, 360px);
-    max-height: min(70vh, 420px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 12px;
-    box-shadow:
-        0 20px 48px rgba(0, 0, 0, 0.45),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-.dropdown-menu__content {
-    margin: 0;
-    padding: 4px 0;
-    list-style: none;
-    overflow-y: auto;
-    flex: 1;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #e4e4e4;
-    text-align: left;
-}
-
-.dropdown-menu__content li {
-    padding: 10px 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid transparent;
-    transition:
-        background 0.15s ease,
-        color 0.15s ease;
-}
-
-.dropdown-menu__content li:hover,
-.dropdown-menu__content li:focus-visible {
-    background: rgba(192, 159, 83, 0.14);
-    color: #fff;
-    outline: none;
-}
-
-.dropdown-menu__content li[hidden] {
-    display: none !important;
-}
-
-.dropdown-menu__item--with-icon {
-    display: flex;
-    align-items: center;
-}
-
-.dropdown-menu-button {
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    background: rgba(0, 0, 0, 0.2);
-    appearance: none;
-    -webkit-appearance: none;
-    color: #f0f0f0;
-    margin: 0;
-    padding: 8px 12px 8px 14px;
-    border-radius: 10px;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-    line-height: 1.3;
-    display: inline-flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-    vertical-align: baseline;
-    justify-content: space-between;
-    gap: 8px;
-    cursor: pointer;
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.dropdown-menu-button:hover {
-    border-color: rgba(192, 159, 83, 0.35);
-    background: rgba(192, 159, 83, 0.08);
-}
-
-.dropdown-menu-button:focus-visible {
-    outline: 2px solid rgba(192, 159, 83, 0.55);
-    outline-offset: 2px;
-}
-
-.dropdown-menu-button__label {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: left;
-}
-
-.dropdown-menu-button::after {
-    content: "";
-    width: 8px;
-    height: 8px;
-    flex-shrink: 0;
-    margin-left: 4px;
-    border-right: 2px solid rgba(255, 255, 255, 0.45);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.45);
-    transform: rotate(45deg) translateY(-2px);
-    transition: transform 0.2s ease;
-}
-
-.dropdown-menu-button[aria-expanded="true"]::after {
-    transform: rotate(225deg) translateY(0);
-}
-
-.search-box {
-    padding: 10px 10px 8px;
-    flex-shrink: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.search-input {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    background: rgba(0, 0, 0, 0.25);
-    color: #f0f0f0;
-    font-size: 0.8125rem;
-    font-family: inherit;
-    box-sizing: border-box;
-}
-
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.35);
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: rgba(192, 159, 83, 0.45);
-    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);
-}
-
-.company-logo {
-    margin-right: 0;
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0;
-    display: block;
-    object-fit: contain;
-    border-radius: 6px;
-}
-
-/* Separator styles */
-.dropdown-menu__separator {
-    padding: 8px 14px !important;
-    cursor: default !important;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(192, 159, 83, 0.85) !important;
-    background: rgba(0, 0, 0, 0.15) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-    margin-top: 4px;
-}
-
-.dropdown-menu__separator:hover {
-    background: rgba(0, 0, 0, 0.15) !important;
-    cursor: default !important;
-}
-
-/* Workspace item styles */
-.dropdown-menu__item--workspace {
-    padding: 10px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-}
-
-.dropdown-menu__workspace-icon {
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0;
+/* Pagination controls */
+.liveView-pagination {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
-    background: rgba(192, 159, 83, 0.2);
-    border: 1px solid rgba(192, 159, 83, 0.35);
-    color: #c0a053;
-    font-size: 0.75rem;
-    font-weight: 700;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.dropdown-menu__workspace-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    min-width: 0;
-    flex: 1;
-}
-
-.dropdown-menu__workspace-name {
-    font-weight: 600;
-    font-size: 0.8125rem;
-    color: #f0f0f0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.dropdown-menu__workspace-domain {
-    font-size: 0.6875rem;
-    color: rgba(192, 159, 83, 0.85);
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Workspace combined view item */
-.dropdown-menu__item--workspace-combined {
-    padding: 10px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 10px !important;
-    background: rgba(192, 159, 83, 0.08) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
-}
-
-.dropdown-menu__item--workspace-combined:hover {
-    background: rgba(192, 159, 83, 0.18) !important;
-}
-
-.dropdown-menu__combined-icon {
-    width: 20px;
-    height: 20px;
+.liveView-pagination-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
-    color: #c0a053;
-}
-
-/* Exit workspace item */
-.dropdown-menu__item--exit-workspace {
-    padding: 12px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    color: rgba(255, 255, 255, 0.8) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.dropdown-menu__item--exit-workspace:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-}
-
-.dropdown-menu__exit-icon {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-/* Workspace domain items (when inside a workspace) */
-.dropdown-menu__item--workspace-domain {
-    padding: 10px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 10px !important;
-}
-
-.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.8125rem;
-    color: #f0f0f0;
-}
-
-.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {
-    background: rgba(192, 159, 83, 0.08);
-}
-
-.dropdown-menu__primary-tag {
-    font-size: 0.5625rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 2px 5px;
-    border-radius: 3px;
-    background: rgba(192, 159, 83, 0.2);
-    border: 1px solid rgba(192, 159, 83, 0.35);
-    color: #c0a053;
-}
-
-/* Domain item styles */
-.dropdown-menu__item--domain {
-    padding: 10px 14px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    gap: 10px !important;
-}
-
-.dropdown-menu__item--domain .dropdown-menu__domain-name {
-    flex: 1;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.8125rem;
-    color: #f0f0f0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Badges container */
-.dropdown-menu__badges {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-}
-
-/* Verification tag styles */
-.dropdown-menu__verify-tag {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    font-size: 0.625rem;
-    font-weight: 700;
-    flex-shrink: 0;
-}
-
-.dropdown-menu__verify-tag--verified {
-    background: rgba(80, 180, 100, 0.2);
-    border: 1px solid rgba(80, 180, 100, 0.4);
-    color: #7dd590;
-}
-
-.dropdown-menu__verify-tag--unverified {
-    background: rgba(220, 160, 60, 0.2);
-    border: 1px solid rgba(220, 160, 60, 0.4);
-    color: #e8c76a;
-}
-
-.dropdown-menu__verify-tag--expired {
-    background: rgba(220, 100, 80, 0.2);
-    border: 1px solid rgba(220, 100, 80, 0.4);
-    color: #f0a8a0;
-}
-
-@media screen and (min-width: 320px) and (max-width: 900px) {
-    .company_container .selector {
-        max-width: none;
-        width: 100%;
-    }
-
-    .dropdown-menu {
-        left: 0 !important;
-        right: 0 !important;
-        min-width: 0;
-        width: 100%;
-    }
-
-    .dropdown-menu__panel {
-        width: 100%;
-        max-width: none;
-    }
-
-    .dropdown-menu-button {
-        min-width: 0;
-    }
-}
-`, "",{"version":3,"sources":["webpack://./src/components/SelectInput/Style.css"],"names":[],"mappings":"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","sourcesContent":[".selector {\n    max-width: 350px;\n    min-width: 0;\n    height: auto;\n    min-height: 36px;\n    position: relative;\n    display: flex;\n    align-items: stretch;\n    flex: 1;\n}\n\n.selectTitle {\n    margin-bottom: 10px;\n    display: block;\n}\n\n.selector select {\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    background: transparent;\n    appearance: none;\n    -webkit-appearance: none;\n    color: #fff;\n    font-size: 12px;\n    margin: 0px;\n    padding: 8px 16px;\n    border-radius: 0;\n    display: block;\n    max-width: 100%;\n    min-width: 175px;\n    vertical-align: baseline;\n    white-space: nowrap;\n}\n\n.selector select:focus,\n.selector select:focus-within,\n.selector select:focus-visible {\n    outline: none;\n    border-bottom: 1px solid;\n}\n\n.dropdown-menu {\n    position: absolute;\n    top: calc(100% + 6px);\n    z-index: 200;\n    min-width: 100%;\n}\n\n.dropdown-menu--align-left {\n    left: 0;\n    right: auto;\n}\n\n.dropdown-menu--align-right {\n    right: 0;\n    left: auto;\n}\n\n.dropdown-menu__panel {\n    position: relative;\n    width: max-content;\n    min-width: 100%;\n    max-width: min(100vw - 24px, 360px);\n    max-height: min(70vh, 420px);\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow:\n        0 20px 48px rgba(0, 0, 0, 0.45),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.dropdown-menu__content {\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #e4e4e4;\n    text-align: left;\n}\n\n.dropdown-menu__content li {\n    padding: 10px 14px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    border-bottom: 1px solid transparent;\n    transition:\n        background 0.15s ease,\n        color 0.15s ease;\n}\n\n.dropdown-menu__content li:hover,\n.dropdown-menu__content li:focus-visible {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n    outline: none;\n}\n\n.dropdown-menu__content li[hidden] {\n    display: none !important;\n}\n\n.dropdown-menu__item--with-icon {\n    display: flex;\n    align-items: center;\n}\n\n.dropdown-menu-button {\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    appearance: none;\n    -webkit-appearance: none;\n    color: #f0f0f0;\n    margin: 0;\n    padding: 8px 12px 8px 14px;\n    border-radius: 10px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    line-height: 1.3;\n    display: inline-flex;\n    flex-direction: row;\n    align-items: center;\n    width: 100%;\n    max-width: 100%;\n    min-width: 0;\n    box-sizing: border-box;\n    vertical-align: baseline;\n    justify-content: space-between;\n    gap: 8px;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.dropdown-menu-button:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu-button:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.55);\n    outline-offset: 2px;\n}\n\n.dropdown-menu-button__label {\n    flex: 1;\n    min-width: 0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    text-align: left;\n}\n\n.dropdown-menu-button::after {\n    content: \"\";\n    width: 8px;\n    height: 8px;\n    flex-shrink: 0;\n    margin-left: 4px;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n    transition: transform 0.2s ease;\n}\n\n.dropdown-menu-button[aria-expanded=\"true\"]::after {\n    transform: rotate(225deg) translateY(0);\n}\n\n.search-box {\n    padding: 10px 10px 8px;\n    flex-shrink: 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.search-input {\n    width: 100%;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    box-sizing: border-box;\n}\n\n.search-input::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.search-input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.company-logo {\n    margin-right: 0;\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: block;\n    object-fit: contain;\n    border-radius: 6px;\n}\n\n/* Separator styles */\n.dropdown-menu__separator {\n    padding: 8px 14px !important;\n    cursor: default !important;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85) !important;\n    background: rgba(0, 0, 0, 0.15) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n    margin-top: 4px;\n}\n\n.dropdown-menu__separator:hover {\n    background: rgba(0, 0, 0, 0.15) !important;\n    cursor: default !important;\n}\n\n/* Workspace item styles */\n.dropdown-menu__item--workspace {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__workspace-icon {\n    width: 28px;\n    height: 28px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.75rem;\n    font-weight: 700;\n}\n\n.dropdown-menu__workspace-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.dropdown-menu__workspace-name {\n    font-weight: 600;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.dropdown-menu__workspace-domain {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Workspace combined view item */\n.dropdown-menu__item--workspace-combined {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 10px !important;\n    background: rgba(192, 159, 83, 0.08) !important;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.dropdown-menu__item--workspace-combined:hover {\n    background: rgba(192, 159, 83, 0.18) !important;\n}\n\n.dropdown-menu__combined-icon {\n    width: 20px;\n    height: 20px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 1rem;\n    color: #c0a053;\n}\n\n/* Exit workspace item */\n.dropdown-menu__item--exit-workspace {\n    padding: 12px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    gap: 8px !important;\n    color: rgba(255, 255, 255, 0.8) !important;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.dropdown-menu__item--exit-workspace:hover {\n    background: rgba(255, 255, 255, 0.08) !important;\n}\n\n.dropdown-menu__exit-icon {\n    font-size: 0.875rem;\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* Workspace domain items (when inside a workspace) */\n.dropdown-menu__item--workspace-domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--workspace-domain .dropdown-menu__domain-name {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n}\n\n.dropdown-menu__item--workspace-domain.dropdown-menu__item--primary {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.dropdown-menu__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n}\n\n/* Domain item styles */\n.dropdown-menu__item--domain {\n    padding: 10px 14px !important;\n    display: flex !important;\n    align-items: center !important;\n    justify-content: space-between !important;\n    gap: 10px !important;\n}\n\n.dropdown-menu__item--domain .dropdown-menu__domain-name {\n    flex: 1;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n/* Badges container */\n.dropdown-menu__badges {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n/* Verification tag styles */\n.dropdown-menu__verify-tag {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 18px;\n    height: 18px;\n    border-radius: 50%;\n    font-size: 0.625rem;\n    font-weight: 700;\n    flex-shrink: 0;\n}\n\n.dropdown-menu__verify-tag--verified {\n    background: rgba(80, 180, 100, 0.2);\n    border: 1px solid rgba(80, 180, 100, 0.4);\n    color: #7dd590;\n}\n\n.dropdown-menu__verify-tag--unverified {\n    background: rgba(220, 160, 60, 0.2);\n    border: 1px solid rgba(220, 160, 60, 0.4);\n    color: #e8c76a;\n}\n\n.dropdown-menu__verify-tag--expired {\n    background: rgba(220, 100, 80, 0.2);\n    border: 1px solid rgba(220, 100, 80, 0.4);\n    color: #f0a8a0;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .company_container .selector {\n        max-width: none;\n        width: 100%;\n    }\n\n    .dropdown-menu {\n        left: 0 !important;\n        right: 0 !important;\n        min-width: 0;\n        width: 100%;\n    }\n\n    .dropdown-menu__panel {\n        width: 100%;\n        max-width: none;\n    }\n\n    .dropdown-menu-button {\n        min-width: 0;\n    }\n}\n"],"sourceRoot":""}]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./src/components/header/header.css":
-/*!********************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./src/components/header/header.css ***!
-  \********************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-// Imports
-
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.dashboard-header {
-    width: 100%;
-    max-height: 66px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 101;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0px 25px 0px 0px;
-    background-color: rgb(63, 63, 63);
-    color: rgb(197, 197, 197);
-    border-bottom: 1px solid rgb(95, 95, 95);
-}
-
-.dashboard-profile {
-    display: grid;
-    grid-template-columns: 1fr min-content;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    font-size: 19px;
-    padding: 10px;
-}
-
-.flex {
-    display: flex;
-    align-items: center;
-}
-
-.profileImage {
-    width: 50px;
-}
-
-.clock {
-    color: rgb(197, 197, 197);
-    margin: 0;
-}
-
-.dashboard-name {
-    font-size: 14px;
-    cursor: pointer;
-    margin: 0;
-}
-
-.dashboard-header>.dashboard-profile .content-img {
-    margin: 0;
-    width: 50px;
-    height: 50px;
-    border-width: 2.5px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-left: auto;
-}
-
-.dashboard-logo {
-    height: 56px;
-    text-align: left;
-    margin-right: 30px;
-    object-fit: contain;
-    object-position: 0;
-    position: relative;
-}
-
-.sidebar {
-    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 65px;
-}
-
-.collapsed {
-    width: 65px;
-    height: calc(100vh - 88px);
-
-    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-
-    min-height: calc(100vh - 66px);
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
-    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
-}
-
-.divider {
-    padding: 0 0 0 20px;
-}
-
-.platform-view {
-    padding: 0 20px;
-    display: inline-block;
-    border-right: 1px solid;
-    padding-right: 10px;
-    margin-right: 10px;
-}
-
-.collapsed .hiddenCollapsed {
-    opacity: 0;
-    width: 0;
-    visibility: hidden;
-    transition: all .25s ease-in-out;
-}
-
-.sidebar:hover,
-.sidebar:hover>.collapsed,
-.sidebar.expand,
-.collapsed.expand {
-    min-width: 231px;
-    width: auto;
-}
-
-.navOverlay {
-    display: flex;
-    z-index: 103;
-    position: relative;
-}
-
-.navOverlay.expand {
-    display: flex;
-}
-
-.collapsed nav {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-}
-
-.sidebar__heading {
-    margin: 0;
-    padding: 18px 14px 12px;
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sidebar__list {
-    list-style: none;
-    margin: 0;
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    flex: 1;
-}
-
-.sidebar__item {
-    margin: 0;
-    padding: 0;
-}
-
-.collapsed .navItems,
-.collapsed .sidebar__link {
-    color: rgba(255, 255, 255, 0.88);
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    padding: 12px 10px;
-    overflow: hidden;
-    align-items: center;
-    justify-content: flex-start;
-    white-space: nowrap;
-    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
-    text-decoration: none;
-    box-sizing: border-box;
-}
-
-.navItems.--active,
-.sidebar__link.--active {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgb(255, 255, 255);
-    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);
-}
-
-.navItems:hover:not(.--active),
-.sidebar__link:hover:not(.--active) {
-    background-color: rgba(255, 255, 255, 0.06);
-    color: rgb(255, 255, 255);
-}
-
-.collapsed:hover .navItems,
-.collapsed:hover .sidebar__link,
-.collapsed.expand a.navItems,
-.collapsed.expand a.sidebar__link {
-    width: 100%;
-}
-
-.collapsed:hover nav,
-.collapsed.expand nav {
-    width: 150px;
-}
-
-.collapsed.expand .hiddenCollapsed,
-.collapsed:hover .hiddenCollapsed {
-    opacity: 1;
-    width: auto;
-    visibility: visible;
-}
-
-.dashboard-icons {
-    width: 25px;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    background-position: center;
-}
-
-.dashboard-icons:after{
-
-}
-
-.dashboard-icons::after {
-    content: "";
-    font-style: normal;
-    font-size: 20px;
-    display: block;
-    width: 20px;
-    height: 20px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    background-position: center;
-}
-
-.secondary{
-    background-color: transparent;
-    border: 1px solid #fff;
-    color: #fff;
-    font-size: 14px;
     width: 30px;
     height: 30px;
-    border-radius: 5px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: #c6c6c6;
+    font-size: 0.9rem;
+    font-family: inherit;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    margin-left: 10px;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-/* .dashboard-icons[data-icon]::after {
-    content: "";
-    background: url();
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    width: 20px;
-    height: 20px;
-} */
-
-/* .reports::after {
-    content: "";
-    background: url("icons/reports.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    font-style: normal;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+.liveView-pagination-btn:hover:not(:disabled) {
+    background: rgba(192, 159, 83, 0.14);
+    border-color: rgba(192, 159, 83, 0.4);
+    color: #e8d5a8;
 }
 
-.compare::after {
-    content: "";
-    background: url("icons/reports.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    font-style: normal;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+.liveView-pagination-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 
-.home::after {
-    content: "";
-    background: url("icons/home.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    font-style: normal;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-}
-
-.user-consents::after {
-    content: "";
-    background: url("icons/user-consents.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    font-style: normal;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-}
-
-.domains::after {
-    content: "";
-    background: url("icons/domain.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    font-style: normal;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-}
-
-.settings::after {
-    content: "";
-    background: url("icons/settings.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    font-style: normal;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-}
-
-.cookies {
-    content: "";
-    background: url("icons/cookies.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    font-style: normal;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-}
-
-.logout::after {
-    content: "";
-    background: url("icons/Logout.svg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-blend-mode: lighten;
-    display: block;
-    font-style: normal;
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-} */
-
-.expandBtn {
-    float: right;
-    padding: 10px;
-    margin: 10px 0px;
-    border: none;
-    background: transparent;
-    color: #fff;
-
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    cursor: pointer;
-}
-
-.navItems--bottom {
-    margin-top: auto;
-}
-
-.navLogout {
-    margin-top: auto;
-    background: transparent;
-    border: none;
-    width: 100%;
-    color: #fff;
-    padding: 30px 15px;
-    font-size: 15px;
-    text-align: center;
-    border-top: 1px solid #636363;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-}
-
-.dashboard-organisationSelector {
-    border: none;
-    padding: 0px 17px;
-    background: transparent;
-    color: #fff;
-    font-size: 12px;
-    appearance: none;
-    -webkit-appearance: none;
-    position: relative;
-}
-
-.dashboard-organisationSelector:focus,
-.dashboard-organisationSelector:focus-within,
-.dashboard-organisationSelector:focus-visible {
-    outline: none;
-}
-
-.dashboard-organisationContainer {
-    position: relative;
-}
-
-.dashboard-profile__nameContainer {
-    width: 250px;
-    margin-right: 20px;
-    text-align: right;
-}
-
-.arrowRight {
-    width: 10px;
-    height: 10px;
-    display: inline-block;
-    margin-left: 10px;
-
-}
-
-.company_container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.company_container .selectorContianer,
-.company_container .selector-container {
-    margin-right: 16px;
-    min-width: 0;
-}
-
-.company_container .selectorContianer:last-child,
-.company_container .selector-container:last-child {
-    margin-right: 0;
-}
-
-.selector.selector--placeholder {
-    min-height: 36px;
-    min-width: 120px;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-.logo_container {
-    display: flex;
-    align-items: center
-}
-
-.logo-selector-container {
-    display: flex;
-    align-items: center;
-}
-
-.menu {
-    display: none;
-}
-
-.dashboard-content h1{
-    display: flex;
-}
-
-.sticky-title {
-    font-size: 1.5em;
-}
-
-@media screen and (min-width: 320px) and (max-width: 900px) {
-    .dashboard-header {
-        width: 100%;
-        max-height: none;
-        padding: 0 8px 0 4px;
-    }
-
-    .main-grid {
-        padding-top: 158px;
-    }
-
-    .menu {
-        display: block;
-        padding: 8px 10px;
-        margin-right: 2px;
-        cursor: pointer;
-        background-color: transparent;
-        border: none;
-        color: #fff;
-        border-radius: 8px;
-        transition: background-color 0.2s ease;
-    }
-
-    .menu:focus-visible {
-        outline: 2px solid rgba(192, 159, 83, 0.6);
-        outline-offset: 2px;
-    }
-
-    .menu:active {
-        background-color: rgba(255, 255, 255, 0.06);
-    }
-
-    .menu-bar {
-        width: 22px;
-        height: 2px;
-        background-color: rgba(255, 255, 255, 0.92);
-        margin: 5px auto;
-        transition: all 0.3s ease-in-out;
-        border-radius: 2px;
-    }
-
-    .dashboard-profile {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        grid-template-rows: auto auto;
-        align-items: start;
-        gap: 10px 10px;
-        padding: 8px 4px 10px 8px;
-        width: 100%;
-    }
-
-    .logo-selector-container {
-        display: contents;
-    }
-
-    .logo_container {
-        grid-column: 1;
-        grid-row: 1;
-        display: flex;
-        align-items: center;
-        gap: 2px;
-        min-width: 0;
-    }
-
-    .company_container {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        width: 100%;
-        max-width: 100%;
-        padding-bottom: 0;
-        padding-right: 0;
-        align-items: stretch;
-        justify-content: stretch;
-    }
-
-    .company_container .selectorContianer,
-    .company_container .selector-container {
-        margin-right: 0;
-        width: 100%;
-        min-width: 0;
-    }
-
-    .dashboard-profile > .flex.profileImage {
-        grid-column: 2;
-        grid-row: 1;
-        justify-self: end;
-        align-self: start;
-    }
-
-    .dashboard-logo {
-        height: 44px;
-        margin-right: 0;
-        max-width: min(200px, calc(100vw - 120px));
-    }
-
-    .grid-3 {
-        grid-template-columns: 1fr;
-    }
-
-    .grid-container {
-        display: block;
-    }
-
-    .dashboard-profile__nameContainer {
-        width: auto;
-    }
-
-    .navOverlay {
-        display: none;
-    }
-
-    .sidebar .collapsed{
-        width: 300px;
-        min-height: calc(100vh - 200px);
-    }
-
-    .sidebar:hover,
-    .sidebar:hover>.collapsed,
-    .sidebar.expand,
-    .collapsed.expand{
-        width: 300px;
-    }
-
-    .collapsed .hiddenCollapsed{
-        opacity: 1;
-        width: auto;
-        visibility: visible;
-    }
-
-    .dashboard-header > .dashboard-profile .content-img {
-        margin: 0;
-    }
-
-    .platform-view {
-        border: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .infoHeader {
-        position: relative;
-    }
-
-    .infoHeader.sticky {
-        top: 158px;
-    }
-
-    .infoHeader .dashboard-content {
-        grid-template-columns: .5fr 1fr !important;
-    }
-
-    .infoHeader .crawl-cta {
-        width: max-content;
-    }
-
-    .sticky-title{
-        font-size: 1em;
-        display: block !important;
-    }
-}
-
-@media screen and (min-width: 320px) and (max-width: 480px) {
-    .company_container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* SideNav (reports/settings): mobile drawer + toggle */
-.sidebar__top {
-    display: contents;
-}
-
-.sidebar-mobile-toggle {
-    display: none;
-}
-
-.sidebar-backdrop {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .sidebar-mobile-toggle {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        position: fixed;
-        top: 120px;
-        left: 12px;
-        z-index: 102;
-        padding: 8px 12px;
-        margin: 0;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 8px;
-        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);
-        color: rgba(255, 255, 255, 0.92);
-        font: inherit;
-        font-size: 14px;
-        cursor: pointer;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-    }
-
-    .sidebar-mobile-toggle__bars {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-
-    .sidebar-mobile-toggle__bar {
-        display: block;
-        width: 18px;
-        height: 2px;
-        background: currentColor;
-        border-radius: 1px;
-    }
-
-    .sidebar-mobile-toggle__label {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        border: 0;
-    }
-
-    .sidebar-backdrop {
-        display: block;
-        position: fixed;
-        inset: 0;
-        z-index: 100;
-        background: rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-        transition: opacity 0.25s ease, visibility 0.25s ease;
-    }
-
-    .sidebar-backdrop.sidebar-backdrop--visible {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-    }
-
-    .sidebar.expand {
-        width: 0 !important;
-        min-width: 0 !important;
-        overflow: visible;
-    }
-
-    .sidebar.expand .collapsed {
-        transform: translateX(-100%);
-        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        width: min(86vw, 300px) !important;
-        min-width: min(86vw, 300px) !important;
-        top: 66px;
-        height: calc(100vh - 66px) !important;
-        min-height: calc(100vh - 66px) !important;
-        z-index: 102;
-        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);
-    }
-
-    .sidebar.expand.sidebar--open .collapsed {
-        transform: translateX(0);
-    }
-
-    .sidebar.expand .collapsed:hover,
-    .sidebar.expand.sidebar--open .collapsed {
-        min-width: min(86vw, 300px) !important;
-        width: min(86vw, 300px) !important;
-    }
-
-    .sidebar.expand .collapsed:hover nav,
-    .sidebar.expand.sidebar--open .collapsed nav {
-        width: 100%;
-    }
-
-    .sidebar__top {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 8px;
-        padding-right: 4px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        margin-bottom: 4px;
-    }
-
-    .sidebar__top .sidebar__heading {
-        border-bottom: none;
-        padding-bottom: 8px;
-        flex: 1;
-        min-width: 0;
-    }
-
-    .sidebar-mobile-close {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        width: 40px;
-        height: 40px;
-        margin: 0;
-        padding: 0;
-        border: none;
-        border-radius: 8px;
-        background: transparent;
-        color: rgba(255, 255, 255, 0.88);
-        font-size: 28px;
-        line-height: 1;
-        cursor: pointer;
-    }
-
-    .sidebar-mobile-close:hover {
-        background: rgba(255, 255, 255, 0.08);
-    }
-
-    /* Offset main content next to the fixed menu control (SideNav pages) */
-    /* .sidebar-mobile-toggle ~ article,
-    .sidebar-mobile-toggle ~ main,
-    .sidebar-mobile-toggle ~ div.dashboard-content {
-        padding-left: 52px;
-    } */
-}
-
-@media (min-width: 769px) {
-    .sidebar-mobile-close {
-        display: none !important;
-    }
-}
-
-/* Workspace indicator */
-.workspace-indicator {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px 6px 12px;
-    margin-left: 12px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 70, 0.12) 100%);
-    border: 1px solid rgba(192, 159, 83, 0.35);
-    animation: workspace-pulse 2s ease-in-out infinite;
-}
-
-@keyframes workspace-pulse {
-    0%, 100% {
-        box-shadow: 0 0 0 0 rgba(192, 159, 83, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 8px 2px rgba(192, 159, 83, 0.15);
-    }
-}
-
-.workspace-indicator__badge {
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #c0a053;
-    padding: 3px 6px;
-    background: rgba(192, 159, 83, 0.2);
-    border-radius: 4px;
-}
-
-.workspace-indicator__name {
-    font-size: 0.8125rem;
+.liveView-pagination-info {
+    font-size: 0.75rem;
     font-weight: 600;
-    color: #f5f0e6;
-    max-width: 150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.38);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    min-width: 36px;
+    text-align: center;
 }
 
-.workspace-indicator__domains {
-    font-size: 0.6875rem;
-    color: rgba(192, 159, 83, 0.9);
-    padding: 2px 6px;
-    background: rgba(192, 159, 83, 0.15);
-    border-radius: 4px;
-}
-
-.workspace-indicator__exit {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1rem;
-    line-height: 1;
+/* Show more / fewer domains */
+.liveView-show-more-btn {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: transparent;
+    color: rgba(192, 159, 83, 0.75);
+    font-size: 0.72rem;
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: 0.04em;
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
+    text-align: center;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
-.workspace-indicator__exit:hover {
-    background: rgba(220, 80, 80, 0.3);
-    color: #fff;
-}
-
-@media screen and (max-width: 600px) {
-    .workspace-indicator {
-        margin-left: 8px;
-        padding: 4px 8px;
-    }
-
-    .workspace-indicator__name {
-        max-width: 80px;
-        font-size: 0.75rem;
-    }
-
-    .workspace-indicator__badge {
-        display: none;
-    }
-}`, "",{"version":3,"sources":["webpack://./src/components/header/header.css"],"names":[],"mappings":"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","sourcesContent":[".dashboard-header {\n    width: 100%;\n    max-height: 66px;\n    position: fixed;\n    top: 0;\n    left: 0;\n    z-index: 101;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 25px 0px 0px;\n    background-color: rgb(63, 63, 63);\n    color: rgb(197, 197, 197);\n    border-bottom: 1px solid rgb(95, 95, 95);\n}\n\n.dashboard-profile {\n    display: grid;\n    grid-template-columns: 1fr min-content;\n    align-items: center;\n    justify-content: space-between;\n    width: 100%;\n    font-size: 19px;\n    padding: 10px;\n}\n\n.flex {\n    display: flex;\n    align-items: center;\n}\n\n.profileImage {\n    width: 50px;\n}\n\n.clock {\n    color: rgb(197, 197, 197);\n    margin: 0;\n}\n\n.dashboard-name {\n    font-size: 14px;\n    cursor: pointer;\n    margin: 0;\n}\n\n.dashboard-header>.dashboard-profile .content-img {\n    margin: 0;\n    width: 50px;\n    height: 50px;\n    border-width: 2.5px;\n    border-radius: 50%;\n    object-fit: cover;\n    margin-left: auto;\n}\n\n.dashboard-logo {\n    height: 56px;\n    text-align: left;\n    margin-right: 30px;\n    object-fit: contain;\n    object-position: 0;\n    position: relative;\n}\n\n.sidebar {\n    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);\n    width: 65px;\n}\n\n.collapsed {\n    width: 65px;\n    height: calc(100vh - 88px);\n\n    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);\n    display: flex;\n    flex-direction: column;\n    position: fixed;\n\n    min-height: calc(100vh - 66px);\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);\n    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);\n}\n\n.divider {\n    padding: 0 0 0 20px;\n}\n\n.platform-view {\n    padding: 0 20px;\n    display: inline-block;\n    border-right: 1px solid;\n    padding-right: 10px;\n    margin-right: 10px;\n}\n\n.collapsed .hiddenCollapsed {\n    opacity: 0;\n    width: 0;\n    visibility: hidden;\n    transition: all .25s ease-in-out;\n}\n\n.sidebar:hover,\n.sidebar:hover>.collapsed,\n.sidebar.expand,\n.collapsed.expand {\n    min-width: 231px;\n    width: auto;\n}\n\n.navOverlay {\n    display: flex;\n    z-index: 103;\n    position: relative;\n}\n\n.navOverlay.expand {\n    display: flex;\n}\n\n.collapsed nav {\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    min-height: 0;\n}\n\n.sidebar__heading {\n    margin: 0;\n    padding: 18px 14px 12px;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.45);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.sidebar__list {\n    list-style: none;\n    margin: 0;\n    padding: 0px;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n}\n\n.sidebar__item {\n    margin: 0;\n    padding: 0;\n}\n\n.collapsed .navItems,\n.collapsed .sidebar__link {\n    color: rgba(255, 255, 255, 0.88);\n    display: flex;\n    gap: 10px;\n    width: 100%;\n    padding: 12px 10px;\n    overflow: hidden;\n    align-items: center;\n    justify-content: flex-start;\n    white-space: nowrap;\n    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;\n    text-decoration: none;\n    box-sizing: border-box;\n}\n\n.navItems.--active,\n.sidebar__link.--active {\n    background: rgba(255, 255, 255, 0.08);\n    color: rgb(255, 255, 255);\n    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);\n}\n\n.navItems:hover:not(.--active),\n.sidebar__link:hover:not(.--active) {\n    background-color: rgba(255, 255, 255, 0.06);\n    color: rgb(255, 255, 255);\n}\n\n.collapsed:hover .navItems,\n.collapsed:hover .sidebar__link,\n.collapsed.expand a.navItems,\n.collapsed.expand a.sidebar__link {\n    width: 100%;\n}\n\n.collapsed:hover nav,\n.collapsed.expand nav {\n    width: 150px;\n}\n\n.collapsed.expand .hiddenCollapsed,\n.collapsed:hover .hiddenCollapsed {\n    opacity: 1;\n    width: auto;\n    visibility: visible;\n}\n\n.dashboard-icons {\n    width: 25px;\n    height: 25px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.dashboard-icons:after{\n\n}\n\n.dashboard-icons::after {\n    content: \"\";\n    font-style: normal;\n    font-size: 20px;\n    display: block;\n    width: 20px;\n    height: 20px;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.secondary{\n    background-color: transparent;\n    border: 1px solid #fff;\n    color: #fff;\n    font-size: 14px;\n    width: 30px;\n    height: 30px;\n    border-radius: 5px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0;\n    margin-left: 10px;\n}\n\n/* .dashboard-icons[data-icon]::after {\n    content: \"\";\n    background: url();\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    width: 20px;\n    height: 20px;\n} */\n\n/* .reports::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.compare::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.home::after {\n    content: \"\";\n    background: url(\"icons/home.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.user-consents::after {\n    content: \"\";\n    background: url(\"icons/user-consents.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.domains::after {\n    content: \"\";\n    background: url(\"icons/domain.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.settings::after {\n    content: \"\";\n    background: url(\"icons/settings.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.cookies {\n    content: \"\";\n    background: url(\"icons/cookies.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.logout::after {\n    content: \"\";\n    background: url(\"icons/Logout.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n} */\n\n.expandBtn {\n    float: right;\n    padding: 10px;\n    margin: 10px 0px;\n    border: none;\n    background: transparent;\n    color: #fff;\n\n    display: flex;\n    align-items: center;\n    justify-content: end;\n    cursor: pointer;\n}\n\n.navItems--bottom {\n    margin-top: auto;\n}\n\n.navLogout {\n    margin-top: auto;\n    background: transparent;\n    border: none;\n    width: 100%;\n    color: #fff;\n    padding: 30px 15px;\n    font-size: 15px;\n    text-align: center;\n    border-top: 1px solid #636363;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n}\n\n.dashboard-organisationSelector {\n    border: none;\n    padding: 0px 17px;\n    background: transparent;\n    color: #fff;\n    font-size: 12px;\n    appearance: none;\n    -webkit-appearance: none;\n    position: relative;\n}\n\n.dashboard-organisationSelector:focus,\n.dashboard-organisationSelector:focus-within,\n.dashboard-organisationSelector:focus-visible {\n    outline: none;\n}\n\n.dashboard-organisationContainer {\n    position: relative;\n}\n\n.dashboard-profile__nameContainer {\n    width: 250px;\n    margin-right: 20px;\n    text-align: right;\n}\n\n.arrowRight {\n    width: 10px;\n    height: 10px;\n    display: inline-block;\n    margin-left: 10px;\n\n}\n\n.company_container {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n\n.company_container .selectorContianer,\n.company_container .selector-container {\n    margin-right: 16px;\n    min-width: 0;\n}\n\n.company_container .selectorContianer:last-child,\n.company_container .selector-container:last-child {\n    margin-right: 0;\n}\n\n.selector.selector--placeholder {\n    min-height: 36px;\n    min-width: 120px;\n    visibility: hidden;\n    pointer-events: none;\n}\n\n.logo_container {\n    display: flex;\n    align-items: center\n}\n\n.logo-selector-container {\n    display: flex;\n    align-items: center;\n}\n\n.menu {\n    display: none;\n}\n\n.dashboard-content h1{\n    display: flex;\n}\n\n.sticky-title {\n    font-size: 1.5em;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .dashboard-header {\n        width: 100%;\n        max-height: none;\n        padding: 0 8px 0 4px;\n    }\n\n    .main-grid {\n        padding-top: 158px;\n    }\n\n    .menu {\n        display: block;\n        padding: 8px 10px;\n        margin-right: 2px;\n        cursor: pointer;\n        background-color: transparent;\n        border: none;\n        color: #fff;\n        border-radius: 8px;\n        transition: background-color 0.2s ease;\n    }\n\n    .menu:focus-visible {\n        outline: 2px solid rgba(192, 159, 83, 0.6);\n        outline-offset: 2px;\n    }\n\n    .menu:active {\n        background-color: rgba(255, 255, 255, 0.06);\n    }\n\n    .menu-bar {\n        width: 22px;\n        height: 2px;\n        background-color: rgba(255, 255, 255, 0.92);\n        margin: 5px auto;\n        transition: all 0.3s ease-in-out;\n        border-radius: 2px;\n    }\n\n    .dashboard-profile {\n        display: grid;\n        grid-template-columns: 1fr auto;\n        grid-template-rows: auto auto;\n        align-items: start;\n        gap: 10px 10px;\n        padding: 8px 4px 10px 8px;\n        width: 100%;\n    }\n\n    .logo-selector-container {\n        display: contents;\n    }\n\n    .logo_container {\n        grid-column: 1;\n        grid-row: 1;\n        display: flex;\n        align-items: center;\n        gap: 2px;\n        min-width: 0;\n    }\n\n    .company_container {\n        grid-column: 1 / -1;\n        grid-row: 2;\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 8px;\n        width: 100%;\n        max-width: 100%;\n        padding-bottom: 0;\n        padding-right: 0;\n        align-items: stretch;\n        justify-content: stretch;\n    }\n\n    .company_container .selectorContianer,\n    .company_container .selector-container {\n        margin-right: 0;\n        width: 100%;\n        min-width: 0;\n    }\n\n    .dashboard-profile > .flex.profileImage {\n        grid-column: 2;\n        grid-row: 1;\n        justify-self: end;\n        align-self: start;\n    }\n\n    .dashboard-logo {\n        height: 44px;\n        margin-right: 0;\n        max-width: min(200px, calc(100vw - 120px));\n    }\n\n    .grid-3 {\n        grid-template-columns: 1fr;\n    }\n\n    .grid-container {\n        display: block;\n    }\n\n    .dashboard-profile__nameContainer {\n        width: auto;\n    }\n\n    .navOverlay {\n        display: none;\n    }\n\n    .sidebar .collapsed{\n        width: 300px;\n        min-height: calc(100vh - 200px);\n    }\n\n    .sidebar:hover,\n    .sidebar:hover>.collapsed,\n    .sidebar.expand,\n    .collapsed.expand{\n        width: 300px;\n    }\n\n    .collapsed .hiddenCollapsed{\n        opacity: 1;\n        width: auto;\n        visibility: visible;\n    }\n\n    .dashboard-header > .dashboard-profile .content-img {\n        margin: 0;\n    }\n\n    .platform-view {\n        border: none;\n        padding: 0;\n        margin: 0;\n    }\n\n    .infoHeader {\n        position: relative;\n    }\n\n    .infoHeader.sticky {\n        top: 158px;\n    }\n\n    .infoHeader .dashboard-content {\n        grid-template-columns: .5fr 1fr !important;\n    }\n\n    .infoHeader .crawl-cta {\n        width: max-content;\n    }\n\n    .sticky-title{\n        font-size: 1em;\n        display: block !important;\n    }\n}\n\n@media screen and (min-width: 320px) and (max-width: 480px) {\n    .company_container {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* SideNav (reports/settings): mobile drawer + toggle */\n.sidebar__top {\n    display: contents;\n}\n\n.sidebar-mobile-toggle {\n    display: none;\n}\n\n.sidebar-backdrop {\n    display: none;\n}\n\n@media (max-width: 768px) {\n    .sidebar-mobile-toggle {\n        display: inline-flex;\n        align-items: center;\n        gap: 10px;\n        position: fixed;\n        top: 120px;\n        left: 12px;\n        z-index: 102;\n        padding: 8px 12px;\n        margin: 0;\n        border: 1px solid rgba(255, 255, 255, 0.12);\n        border-radius: 8px;\n        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);\n        color: rgba(255, 255, 255, 0.92);\n        font: inherit;\n        font-size: 14px;\n        cursor: pointer;\n        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);\n    }\n\n    .sidebar-mobile-toggle__bars {\n        display: flex;\n        flex-direction: column;\n        gap: 4px;\n    }\n\n    .sidebar-mobile-toggle__bar {\n        display: block;\n        width: 18px;\n        height: 2px;\n        background: currentColor;\n        border-radius: 1px;\n    }\n\n    .sidebar-mobile-toggle__label {\n        position: absolute;\n        width: 1px;\n        height: 1px;\n        padding: 0;\n        margin: -1px;\n        overflow: hidden;\n        clip: rect(0, 0, 0, 0);\n        border: 0;\n    }\n\n    .sidebar-backdrop {\n        display: block;\n        position: fixed;\n        inset: 0;\n        z-index: 100;\n        background: rgba(0, 0, 0, 0.5);\n        opacity: 0;\n        visibility: hidden;\n        pointer-events: none;\n        transition: opacity 0.25s ease, visibility 0.25s ease;\n    }\n\n    .sidebar-backdrop.sidebar-backdrop--visible {\n        opacity: 1;\n        visibility: visible;\n        pointer-events: auto;\n    }\n\n    .sidebar.expand {\n        width: 0 !important;\n        min-width: 0 !important;\n        overflow: visible;\n    }\n\n    .sidebar.expand .collapsed {\n        transform: translateX(-100%);\n        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n        width: min(86vw, 300px) !important;\n        min-width: min(86vw, 300px) !important;\n        top: 66px;\n        height: calc(100vh - 66px) !important;\n        min-height: calc(100vh - 66px) !important;\n        z-index: 102;\n        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);\n    }\n\n    .sidebar.expand.sidebar--open .collapsed {\n        transform: translateX(0);\n    }\n\n    .sidebar.expand .collapsed:hover,\n    .sidebar.expand.sidebar--open .collapsed {\n        min-width: min(86vw, 300px) !important;\n        width: min(86vw, 300px) !important;\n    }\n\n    .sidebar.expand .collapsed:hover nav,\n    .sidebar.expand.sidebar--open .collapsed nav {\n        width: 100%;\n    }\n\n    .sidebar__top {\n        display: flex;\n        flex-direction: row;\n        align-items: flex-start;\n        justify-content: space-between;\n        gap: 8px;\n        padding-right: 4px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n        margin-bottom: 4px;\n    }\n\n    .sidebar__top .sidebar__heading {\n        border-bottom: none;\n        padding-bottom: 8px;\n        flex: 1;\n        min-width: 0;\n    }\n\n    .sidebar-mobile-close {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        flex-shrink: 0;\n        width: 40px;\n        height: 40px;\n        margin: 0;\n        padding: 0;\n        border: none;\n        border-radius: 8px;\n        background: transparent;\n        color: rgba(255, 255, 255, 0.88);\n        font-size: 28px;\n        line-height: 1;\n        cursor: pointer;\n    }\n\n    .sidebar-mobile-close:hover {\n        background: rgba(255, 255, 255, 0.08);\n    }\n\n    /* Offset main content next to the fixed menu control (SideNav pages) */\n    /* .sidebar-mobile-toggle ~ article,\n    .sidebar-mobile-toggle ~ main,\n    .sidebar-mobile-toggle ~ div.dashboard-content {\n        padding-left: 52px;\n    } */\n}\n\n@media (min-width: 769px) {\n    .sidebar-mobile-close {\n        display: none !important;\n    }\n}\n\n/* Workspace indicator */\n.workspace-indicator {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 10px 6px 12px;\n    margin-left: 12px;\n    border-radius: 10px;\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 70, 0.12) 100%);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    animation: workspace-pulse 2s ease-in-out infinite;\n}\n\n@keyframes workspace-pulse {\n    0%, 100% {\n        box-shadow: 0 0 0 0 rgba(192, 159, 83, 0.3);\n    }\n    50% {\n        box-shadow: 0 0 8px 2px rgba(192, 159, 83, 0.15);\n    }\n}\n\n.workspace-indicator__badge {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 3px 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border-radius: 4px;\n}\n\n.workspace-indicator__name {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #f5f0e6;\n    max-width: 150px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.workspace-indicator__domains {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.9);\n    padding: 2px 6px;\n    background: rgba(192, 159, 83, 0.15);\n    border-radius: 4px;\n}\n\n.workspace-indicator__exit {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 20px;\n    height: 20px;\n    border-radius: 4px;\n    border: none;\n    background: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, color 0.2s ease;\n}\n\n.workspace-indicator__exit:hover {\n    background: rgba(220, 80, 80, 0.3);\n    color: #fff;\n}\n\n@media screen and (max-width: 600px) {\n    .workspace-indicator {\n        margin-left: 8px;\n        padding: 4px 8px;\n    }\n\n    .workspace-indicator__name {\n        max-width: 80px;\n        font-size: 0.75rem;\n    }\n\n    .workspace-indicator__badge {\n        display: none;\n    }\n}"],"sourceRoot":""}]);
+.liveView-show-more-btn:hover {
+    color: #e8d5a8;
+    border-color: rgba(192, 159, 83, 0.35);
+    background: rgba(192, 159, 83, 0.07);
+}`, "",{"version":3,"sources":["webpack://./src/components/LiveView/Style.css"],"names":[],"mappings":"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","sourcesContent":[".liveView-content-title {\n    margin: 10px 10px 0;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.12em;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.liveView-content-data {\n    margin: 0 10px;\n    padding: 10px 0;\n}\n\n.liveView-content-flex {\n    display: flex;\n    justify-content: space-between;\n}\n\n.liveView-content-data-1-text {\n    margin: 3px 0;\n}\n\n.liveView-content-country {\n    margin-bottom: 5px;\n}\n\n.liveView-content-data-2 {\n    width: 100%;\n}\n\n.liveView-content-data-1-number {\n    font-size: 30px;\n    font-weight: 200;\n    margin-top: 0;\n}\n\n/* Domain rows: clear click target, matches dashboard affordance */\n.liveView-domain-block {\n    margin-bottom: 12px;\n}\n\n.liveView-domain-row {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    width: 100%;\n    margin: 0;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.2);\n    cursor: pointer;\n    text-align: left;\n    font: inherit;\n    color: inherit;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.liveView-domain-row:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.liveView-domain-row:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.8);\n    outline-offset: 2px;\n}\n\n.liveView-domain-row__name {\n    word-break: break-all;\n    padding-right: 12px;\n}\n\n.liveView-domain-row__count {\n    flex-shrink: 0;\n    font-variant-numeric: tabular-nums;\n}\n\n.liveView-domain-bar-track {\n    width: 100%;\n    height: 3px;\n    margin-top: 6px;\n    border-radius: 999px;\n    background: rgba(196, 196, 196, 0.35);\n    overflow: hidden;\n}\n\n.liveView-domain-bar-fill {\n    height: 100%;\n    border-radius: 999px;\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.5), rgb(222, 189, 113));\n    transition: width 0.35s ease;\n}\n\n/* Drawer extras (reuses .world-map-drawer from WorldMap/Style.css) */\n.live-view-drawer__subtitle {\n    margin: 8px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: rgba(255, 255, 255, 0.45);\n    font-weight: 400;\n}\n\n.live-view-drawer__summary-label {\n    display: block;\n    font-size: 0.62rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.38);\n    margin-bottom: 12px;\n}\n\n.live-view-drawer__visit-patterns {\n    flex-shrink: 0;\n    padding: 14px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-row {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px;\n    padding: 10px 0;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-patterns .live-view-drawer__visit-row:first-of-type {\n    border-top: none;\n    padding-top: 0;\n}\n\n.live-view-drawer__visit-row-main {\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 4px;\n}\n\n.live-view-drawer__visit-label {\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.live-view-drawer__visit-label--accept {\n    color: rgba(170, 220, 155, 0.98);\n}\n\n.live-view-drawer__visit-label--essential {\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.live-view-drawer__visit-label--granular {\n    color: rgba(150, 195, 215, 0.95);\n}\n\n.live-view-drawer__visit-meta {\n    font-size: 0.75rem;\n    line-height: 1.35;\n    color: rgba(255, 255, 255, 0.42);\n}\n\n.live-view-drawer__visit-count {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    color: rgba(255, 255, 255, 0.72);\n    padding-top: 2px;\n}\n\n.live-view-drawer__visit-mix-bar {\n    display: flex;\n    width: 100%;\n    height: 8px;\n    margin-top: 14px;\n    border-radius: 999px;\n    overflow: hidden;\n    background: rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__visit-mix-segment {\n    height: 100%;\n    min-width: 0;\n    transition: width 0.35s ease;\n}\n\n.live-view-drawer__visit-mix-segment--accept {\n    background: linear-gradient(90deg, rgba(100, 160, 90, 0.9), rgba(140, 200, 120, 0.75));\n}\n\n.live-view-drawer__visit-mix-segment--essential {\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.55), rgba(218, 190, 120, 0.85));\n}\n\n.live-view-drawer__visit-mix-segment--granular {\n    background: linear-gradient(90deg, rgba(90, 140, 165, 0.75), rgba(120, 175, 200, 0.65));\n}\n\n.live-view-drawer__granular-head {\n    flex-shrink: 0;\n    padding: 14px 18px 6px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.04);\n}\n\n.live-view-drawer__granular-head .live-view-drawer__summary-label {\n    margin-bottom: 6px;\n}\n\n.live-view-drawer__granular-sub {\n    margin: 0;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: rgba(255, 255, 255, 0.4);\n}\n\n.live-view-drawer__type-list {\n    padding-top: 8px;\n}\n\n.live-view-drawer__type-name {\n    text-transform: none;\n    letter-spacing: 0.02em;\n    font-size: 0.8rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n}\n\n.live-view-drawer__mini-split {\n    display: flex;\n    width: 100%;\n    height: 5px;\n    margin: 8px 0 4px;\n    border-radius: 999px;\n    overflow: hidden;\n    background: rgba(255, 255, 255, 0.06);\n}\n\n.live-view-drawer__mini-split-accept {\n    height: 100%;\n    min-width: 0;\n    background: rgba(120, 170, 100, 0.85);\n    transition: width 0.35s ease;\n}\n\n.live-view-drawer__mini-split-decline {\n    height: 100%;\n    min-width: 0;\n    background: rgba(170, 70, 65, 0.8);\n    transition: width 0.35s ease;\n}\n\n/* Pagination controls */\n.liveView-pagination {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    margin-top: 20px;\n    padding-top: 14px;\n    border-top: 1px solid rgba(255, 255, 255, 0.07);\n}\n\n.liveView-pagination-btn {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 30px;\n    height: 30px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(255, 255, 255, 0.04);\n    color: #c6c6c6;\n    font-size: 0.9rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;\n}\n\n.liveView-pagination-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.14);\n    border-color: rgba(192, 159, 83, 0.4);\n    color: #e8d5a8;\n}\n\n.liveView-pagination-btn:disabled {\n    opacity: 0.3;\n    cursor: not-allowed;\n}\n\n.liveView-pagination-info {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.38);\n    letter-spacing: 0.06em;\n    font-variant-numeric: tabular-nums;\n    min-width: 36px;\n    text-align: center;\n}\n\n/* Show more / fewer domains */\n.liveView-show-more-btn {\n    display: block;\n    width: 100%;\n    margin-top: 6px;\n    padding: 6px 10px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: transparent;\n    color: rgba(192, 159, 83, 0.75);\n    font-size: 0.72rem;\n    font-weight: 600;\n    font-family: inherit;\n    letter-spacing: 0.04em;\n    cursor: pointer;\n    text-align: center;\n    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;\n}\n\n.liveView-show-more-btn:hover {\n    color: #e8d5a8;\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.07);\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -34718,13 +34358,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _host__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./host */ "./src/API/host.js");
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Authentication/Auth */ "./src/Authentication/Auth.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
 
-var API = _defineProperty(_defineProperty({
+var API = {
   Login: {
     url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.LoginHost, "/signin/v2/signin")
   },
@@ -34739,6 +34375,16 @@ var API = _defineProperty(_defineProperty({
     method: "POST",
     headers: {
       "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+      "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+      "Content-Type": "application/json"
+    }
+  },
+  CreateCheckoutSession: {
+    url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/payment/subscription/v1/create-checkout-session"),
+    method: "POST",
+    headers: {
+      "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+      "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
       "Content-Type": "application/json"
     }
   },
@@ -34793,7 +34439,7 @@ var API = _defineProperty(_defineProperty({
     },
     getInteractions: {
       url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/gdpr/getInteractions"),
-      method: "GET",
+      method: "POST",
       headers: {
         "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
         "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
@@ -34802,7 +34448,7 @@ var API = _defineProperty(_defineProperty({
     },
     getInteractionsByCountry: {
       url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/gdpr/interactionsByCountry"),
-      method: "GET",
+      method: "POST",
       headers: {
         "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
         "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
@@ -34946,20 +34592,28 @@ var API = _defineProperty(_defineProperty({
     },
     observedCookies: {
       url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/observed-cookies"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    getPreConsentTransfers: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/pre-consent-transfers"),
       method: "GET",
       headers: {
         "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
         "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
         "Content-Type": "application/json"
       }
-    }
-  },
-  ferry: {
-    getTotalSales: {
-      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/ferry/getTotalSales"),
-      method: "GET",
+    },
+    triggerPreConsentScan: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/pre-consent-transfers/scan"),
+      method: "POST",
       headers: {
         "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
         "Content-Type": "application/json"
       }
     }
@@ -35107,27 +34761,82 @@ var API = _defineProperty(_defineProperty({
         method: "POST"
       }
     }
-  }
-}, "ferry", {
-  getTotalSales: {
-    url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/ferry/getTotalSales"),
-    method: "GET",
-    headers: {
-      "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
-      "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
-      "Content-Type": "application/json"
+  },
+  workspaces: {
+    list: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/workspaces/v1/list-workspaces"),
+      method: "GET",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    create: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/workspaces/v1/create-workspace"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    },
+    update: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/workspaces/v1/update-workspace"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    },
+    "delete": {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/workspaces/v1/delete-workspace"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  domainVerification: {
+    init: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/domain-verification/v1/init"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    },
+    check: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/settings/domain-verification/v1/check"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  ferry: {
+    getTotalSales: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/analytics/ferry/getTotalSales"),
+      method: "GET",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  github: {
+    createIssue: {
+      url: "https://api.github.com/repositories/Intastellar-Solutions-International/intastellar-analytics/issues",
+      method: "POST",
+      headers: {
+        "Authorization": "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",
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
     }
   }
-}), "github", {
-  createIssue: {
-    url: "https://api.github.com/repositories/Intastellar-Solutions-International/intastellar-analytics/issues",
-    method: "POST",
-    headers: {
-      "Authorization": "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",
-      'X-GitHub-Api-Version': '2022-11-28'
-    }
-  }
-});
+};
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (API);
 
 /***/ }),
@@ -35212,6 +34921,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   AllOrg: () => (/* binding */ AllOrg),
 /* harmony export */   DomainContext: () => (/* binding */ DomainContext),
 /* harmony export */   OrganisationContext: () => (/* binding */ OrganisationContext),
+/* harmony export */   WorkspaceContext: () => (/* binding */ WorkspaceContext),
 /* harmony export */   "default": () => (/* binding */ App)
 /* harmony export */ });
 /* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
@@ -35245,7 +34955,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Crawler__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./Components/Crawler */ "./src/Components/Crawler/index.js");
 /* harmony import */ var _Pages_Reports_UserAgents__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./Pages/Reports/UserAgents */ "./src/Pages/Reports/UserAgents/index.js");
 /* harmony import */ var _Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./Pages/Settings/UserPreferences */ "./src/Pages/Settings/UserPreferences/index.js");
-/* harmony import */ var _Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./Components/StripePayment */ "./src/Components/StripePayment/index.js");
+/* harmony import */ var _Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./Components/SubscriptionPlans */ "./src/Components/SubscriptionPlans/index.js");
 /* harmony import */ var _Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./Pages/Reports/Compare */ "./src/Pages/Reports/Compare.js");
 /* harmony import */ var _Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./Pages/Settings/BlacklistIp */ "./src/Pages/Settings/BlacklistIp/index.js");
 /* harmony import */ var _Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ./Pages/Settings/CreateUser */ "./src/Pages/Settings/CreateUser/index.js");
@@ -35253,13 +34963,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./Pages/Experiments/Experiments */ "./src/Pages/Experiments/Experiments.js");
 /* harmony import */ var _Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./Pages/Reports/AuditReport */ "./src/Pages/Reports/AuditReport/index.js");
 /* harmony import */ var _Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./Pages/Reports/MarketingReport */ "./src/Pages/Reports/MarketingReport/index.js");
-/* harmony import */ var _Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./Pages/Settings/Workspaces */ "./src/Pages/Settings/Workspaces/index.js");
+/* harmony import */ var _Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./Pages/Compliance */ "./src/Pages/Compliance/index.js");
+/* harmony import */ var _Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./Components/LoadingSpinner/LoadingSpinner */ "./src/Components/LoadingSpinner/LoadingSpinner.js");
+/* harmony import */ var _Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./Pages/Settings/Workspaces */ "./src/Pages/Settings/Workspaces/index.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
 
 
 
@@ -35315,6 +35029,7 @@ var Redirect = window.ReactRouterDOM.Redirect;
 var OrganisationContext = createContext(localStorage.getItem("organisation"));
 var AllOrg = createContext(null);
 var DomainContext = createContext(null);
+var WorkspaceContext = createContext([null, function () {}]);
 function App() {
   var _useState = useState(localStorage.getItem("platform") ? localStorage.getItem("platform") : null),
     _useState2 = _slicedToArray(_useState, 2),
@@ -35324,34 +35039,53 @@ function App() {
     _useState4 = _slicedToArray(_useState3, 2),
     organisation = _useState4[0],
     setOrganisation = _useState4[1];
-  var _useState5 = useState("combined view"),
+  var _useState5 = useState(function () {
+      try {
+        var s = localStorage.getItem("current_workspace");
+        return s ? JSON.parse(s) : null;
+      } catch (_unused) {
+        return null;
+      }
+    }),
     _useState6 = _slicedToArray(_useState5, 2),
-    currentDomain = _useState6[0],
-    setCurrentDomain = _useState6[1];
-  var _useState7 = useState(null),
+    activeWorkspace = _useState6[0],
+    setActiveWorkspace = _useState6[1];
+  var _useState7 = useState("combined view"),
     _useState8 = _slicedToArray(_useState7, 2),
-    organisations = _useState8[0],
-    setOrganisations = _useState8[1];
+    currentDomain = _useState8[0],
+    setCurrentDomain = _useState8[1];
   var _useState9 = useState(null),
     _useState0 = _slicedToArray(_useState9, 2),
-    domains = _useState0[0],
-    setDomains = _useState0[1];
-  var _useState1 = useState(false),
+    organisations = _useState0[0],
+    setOrganisations = _useState0[1];
+  var _useState1 = useState(null),
     _useState10 = _slicedToArray(_useState1, 2),
-    domainError = _useState10[0],
-    setDomainError = _useState10[1];
-  var _useState11 = useState({
-      status: "loading",
-      loading: false,
-      subscription: null
-    }),
+    domains = _useState10[0],
+    setDomains = _useState10[1];
+  var _useState11 = useState(false),
     _useState12 = _slicedToArray(_useState11, 2),
-    subscriptionStatus = _useState12[0],
-    setSubscriptionStatus = _useState12[1];
-  var _useState13 = useState(localStorage.getItem("platform") ? localStorage.getItem("platform") : null),
+    domainError = _useState12[0],
+    setDomainError = _useState12[1];
+  var _useState13 = useState(function () {
+      var cached = localStorage.getItem("subscription");
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch (_unused2) {/* ignore */}
+      }
+      return {
+        status: "loading",
+        loading: true,
+        subscription: null
+      };
+    }),
     _useState14 = _slicedToArray(_useState13, 2),
-    id = _useState14[0],
-    setId = _useState14[1];
+    subscriptionStatus = _useState14[0],
+    setSubscriptionStatus = _useState14[1];
+  var _useState15 = useState(localStorage.getItem("platform") ? localStorage.getItem("platform") : null),
+    _useState16 = _slicedToArray(_useState15, 2),
+    id = _useState16[0],
+    setId = _useState16[1];
   var navigate = window.ReactRouterDOM.useHistory();
   useEffect(function () {
     var globals = localStorage.getItem("globals");
@@ -35429,22 +35163,34 @@ function App() {
                 return d && d !== "undefined." && d !== "combined view";
               });
               localStorage.setItem("domains", JSON.stringify(allowedDomains));
-            } catch (_unused) {
+            } catch (_unused3) {
               /* quota / privacy mode — ignore */
             }
           }
         });
       }
     }, []);
+    var subscriptionLoading = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
+    var orgId = function () {
+      try {
+        var _JSON$parse;
+        return (_JSON$parse = JSON.parse(localStorage.getItem("organisation"))) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.id;
+      } catch (_unused4) {
+        return null;
+      }
+    }();
+    var needsPayment = !subscriptionLoading && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" && Number(orgId) !== 1;
     if (id === null && organisations) {
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_27__["default"], {
         setId: setId,
         platforms: organisations
       }));
     } else {
-      var _JSON$parse;
+      var _JSON$parse2;
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(OrganisationContext.Provider, {
         value: [organisation, setOrganisation]
+      }, /*#__PURE__*/React.createElement(WorkspaceContext.Provider, {
+        value: [activeWorkspace, setActiveWorkspace]
       }, /*#__PURE__*/React.createElement(DomainContext.Provider, {
         value: [currentDomain, setCurrentDomain]
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, id && window.location.pathname != "/" || window.location.pathname != "/login" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_header__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -35458,9 +35204,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
         dashboardView: dashboardView,
         setDashboardView: setDashboardView
       }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_10__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
@@ -35469,9 +35213,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
         dashboardView: dashboardView,
         setDashboardView: setDashboardView
       }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_10__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
@@ -35480,9 +35222,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Login_Signup__WEBPACK_IMPORTED_MODULE_5__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/domains",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Domains_index_js__WEBPACK_IMPORTED_MODULE_11__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Domains_index_js__WEBPACK_IMPORTED_MODULE_11__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings__WEBPACK_IMPORTED_MODULE_12__["default"], {
@@ -35490,15 +35230,11 @@ function App() {
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_14__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_20__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_20__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_16__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
@@ -35507,84 +35243,68 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/cookies",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Dashboard_CookiesDashboard__WEBPACK_IMPORTED_MODULE_7__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Dashboard_CookiesDashboard__WEBPACK_IMPORTED_MODULE_7__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/marketing",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_38__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_38__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
+        path: "/:id/reports/view/:handle/compliance",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/:id/reports/compliance",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_23__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_23__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_23__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_23__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_22__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/marketing",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_38__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_38__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/dashboard"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_27__["default"], {
         setId: setId,
-        platforms: (_JSON$parse = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
-      }))), /*#__PURE__*/React.createElement(Router, {
+        platforms: (_JSON$parse2 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.access) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.type
+      }))), /*#__PURE__*/React.createElement(Route, {
         path: "/login",
         exact: true
       }, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null)), /*#__PURE__*/React.createElement(Route, {
@@ -35595,20 +35315,20 @@ function App() {
         path: "/settings/blacklist-ip"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, function (_org, _org2, _JSON$parse2) {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, function (_org, _org2, _JSON$parse3) {
         var orgRaw = localStorage.getItem("organisation");
         var org = null;
         try {
           org = JSON.parse(orgRaw);
-        } catch (_unused2) {
+        } catch (_unused5) {
           /* not JSON */
         }
         var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
         var sub = localStorage.getItem("subscription");
         // Compare ID as string to handle both number and string formats
-        var hasAgency = ((_org2 = org) === null || _org2 === void 0 ? void 0 : _org2.id) != null && String(org.id) === "1" || sub && ((_JSON$parse2 = JSON.parse(sub)) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.subscription) === "agency";
-        return isAdminRole && hasAgency ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_39__["default"], null) : /*#__PURE__*/React.createElement("p", {
+        var hasAgency = ((_org2 = org) === null || _org2 === void 0 ? void 0 : _org2.id) != null && String(org.id) === "1" || sub && ((_JSON$parse3 = JSON.parse(sub)) === null || _JSON$parse3 === void 0 ? void 0 : _JSON$parse3.subscription) === "agency";
+        return isAdminRole && hasAgency ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_41__["default"], null) : /*#__PURE__*/React.createElement("p", {
           style: {
             padding: "40px",
             color: "#999"
@@ -35622,9 +35342,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, localStorage.getItem("subscription") == null || JSON.parse(localStorage.getItem("subscription")).subscription == "none" && JSON.parse(localStorage.getItem("organisation")).id != 1 ? /*#__PURE__*/React.createElement(_Components_StripePayment__WEBPACK_IMPORTED_MODULE_31__["default"], {
-        userId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_21__["default"].getUserId
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_32__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_31__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_32__["default"], {
         organisations: organisations,
         domains: domains
       }))), /*#__PURE__*/React.createElement(Route, {
@@ -35639,7 +35357,7 @@ function App() {
         }
       }), /*#__PURE__*/React.createElement(Redirect, {
         to: "/login"
-      }))), /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Components_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
+      }))), /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_24__["default"], null, /*#__PURE__*/React.createElement(_Components_Footer__WEBPACK_IMPORTED_MODULE_3__["default"], null))))), /*#__PURE__*/React.createElement(Route, {
         path: "/check"
       }, /*#__PURE__*/React.createElement("div", {
         className: "cookieCheckContainer"
@@ -41136,19 +40854,9 @@ function SideNav(props) {
     // Check agency subscription requirement
     if (link.requiresAgency) {
       try {
-        var _org;
         // Allow access for Intastellar Solutions (org ID 1)
-        var orgRaw = localStorage.getItem("organisation");
-        var org = null;
-        if (orgRaw) {
-          try {
-            org = JSON.parse(orgRaw);
-          } catch (_unused) {
-            /* not JSON */
-          }
-        }
-        // Compare as strings to handle both number and string id
-        if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") {
+        var org = JSON.parse(localStorage.getItem("organisation"));
+        if ((org === null || org === void 0 ? void 0 : org.id) === 1) {
           // Org 1 has access, continue
         } else {
           var _JSON$parse;
@@ -41157,7 +40865,7 @@ function SideNav(props) {
             return null;
           }
         }
-      } catch (_unused2) {
+      } catch (_unused) {
         return null;
       }
     }
@@ -41441,8 +41149,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../SelectInput/Selector */ "./src/Components/SelectInput/Selector.js");
 /* harmony import */ var _IntastellarAccounts_IntastellarAccounts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../IntastellarAccounts/IntastellarAccounts */ "./src/Components/IntastellarAccounts/IntastellarAccounts.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var _Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Functions/domainVerification.js */ "./src/Functions/domainVerification.js");
-/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -41459,7 +41166,6 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-
 
 
 
@@ -41593,25 +41299,14 @@ function readCachedDomains() {
 function hasAgencySubscription() {
   try {
     // Allow access for Intastellar Solutions (org ID 1)
-    var orgRaw = localStorage.getItem("organisation");
-    if (orgRaw) {
-      var _org;
-      // Handle both JSON string and plain value formats
-      var org = orgRaw;
-      try {
-        org = JSON.parse(orgRaw);
-      } catch (_unused4) {
-        /* not JSON, use raw value */
-      }
-      // Check for org ID 1 (compare as strings to handle both number and string)
-      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
-    }
+    var org = JSON.parse(localStorage.getItem("organisation"));
+    if ((org === null || org === void 0 ? void 0 : org.id) === 1) return true;
     var sub = localStorage.getItem("subscription");
     if (sub) {
       var parsed = JSON.parse(sub);
       return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
     }
-  } catch (_unused5) {
+  } catch (_unused4) {
     /* ignore */
   }
   return false;
@@ -41638,7 +41333,7 @@ function readAgencyWorkspaces() {
         return ws;
       });
     }
-  } catch (_unused6) {
+  } catch (_unused5) {
     /* ignore */
   }
   return [];
@@ -41656,38 +41351,6 @@ function getPrimaryDomainFromWorkspace(ws) {
     return d.isPrimary;
   });
   return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains$ = ws.domains[0]) === null || _ws$domains$ === void 0 ? void 0 : _ws$domains$.domain) || null;
-}
-
-/**
- * Get verification status for dropdown display
- */
-function getDomainVerificationStatus(domain, orgId) {
-  if (!orgId || !domain || domain === "combined view") {
-    return null;
-  }
-  if ((0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__.isDomainVerified)(domain, orgId)) {
-    return "verified";
-  }
-  if ((0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__.isVerificationExpired)(domain, orgId)) {
-    return "expired";
-  }
-  return "unverified";
-}
-
-/**
- * Get current organisation ID for verification checks
- */
-function getCurrentOrgId() {
-  try {
-    var orgRaw = localStorage.getItem("organisation");
-    if (orgRaw) {
-      var org = JSON.parse(orgRaw);
-      return (org === null || org === void 0 ? void 0 : org.id) || null;
-    }
-  } catch (_unused7) {
-    /* ignore */
-  }
-  return null;
 }
 
 /*
@@ -41793,13 +41456,13 @@ function Header(props) {
           lastedVisited: null
         });
         data === null || data === void 0 || data.map(function (d) {
-          return punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
+          return punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain);
         }).filter(function (d) {
           return d !== undefined && d !== "" && d !== "undefined.";
         });
         setDomains(data);
         var allowedDomains = data === null || data === void 0 ? void 0 : data.map(function (d) {
-          return punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
+          return punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain);
         }).filter(function (d) {
           return d !== undefined && d !== "" && d !== "undefined." && d !== "combined view";
         });
@@ -41810,7 +41473,6 @@ function Header(props) {
 
   // Build domain list based on whether a workspace is active
   domainList = [];
-  var orgId = getCurrentOrgId();
   if (activeWorkspace) {
     var _activeWorkspace$doma;
     // When workspace is active, show only workspace domains
@@ -41832,16 +41494,14 @@ function Header(props) {
       })) || []
     });
 
-    // Add workspace domains with verification status
+    // Add workspace domains
     if (activeWorkspace.domains && activeWorkspace.domains.length > 0) {
       activeWorkspace.domains.forEach(function (d) {
-        var verifyStatus = getDomainVerificationStatus(d.domain, orgId);
         domainList.push({
           icon: null,
           name: d.domain,
           type: "workspace-domain",
-          isPrimary: d.isPrimary,
-          verificationStatus: verifyStatus
+          isPrimary: d.isPrimary
         });
       });
     }
@@ -41889,15 +41549,12 @@ function Header(props) {
       }
     }
 
-    // Add domains from API with verification status
+    // Add domains from API
     var apiDomains = (domains === null || domains === void 0 ? void 0 : domains.map(function (d) {
-      var domainName = punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
-      var verifyStatus = getDomainVerificationStatus(domainName, orgId);
       return {
         icon: d.icon || null,
-        name: domainName,
-        type: "domain",
-        verificationStatus: verifyStatus
+        name: punycode__WEBPACK_IMPORTED_MODULE_9__["default"].toUnicode(d.domain),
+        type: "domain"
       };
     })) || [];
     if (apiDomains.length > 0) {
@@ -43070,36 +42727,9 @@ function Select(props) {
           }
         }, /*#__PURE__*/React.createElement("span", {
           className: "dropdown-menu__domain-name"
-        }, item.name), /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__badges"
-        }, item.isPrimary && /*#__PURE__*/React.createElement("span", {
+        }, item.name), item.isPrimary && /*#__PURE__*/React.createElement("span", {
           className: "dropdown-menu__primary-tag"
-        }, "Primary"), item.verificationStatus && /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__verify-tag dropdown-menu__verify-tag--".concat(item.verificationStatus)
-        }, item.verificationStatus === "verified" ? "✓" : item.verificationStatus === "expired" ? "!" : "?")));
-      }
-      // Handle regular domain items
-      if (item.type === "domain") {
-        return /*#__PURE__*/React.createElement("li", {
-          key: item.name,
-          "data-dropdown-item": true,
-          role: "option",
-          className: "dropdown-menu__item--domain",
-          onClick: function onClick() {
-            return props.onChange(JSON.stringify({
-              name: item.name,
-              type: "domain"
-            }));
-          }
-        }, item.icon ? /*#__PURE__*/React.createElement("img", {
-          className: "company-logo",
-          src: item.icon,
-          alt: ""
-        }) : null, /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__domain-name"
-        }, item.name), item.verificationStatus && item.name !== "combined view" && /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__verify-tag dropdown-menu__verify-tag--".concat(item.verificationStatus)
-        }, item.verificationStatus === "verified" ? "✓" : item.verificationStatus === "expired" ? "!" : "?"));
+        }, "Primary"));
       }
       // Handle workspace items
       if (item.type === "workspace") {
@@ -43307,10 +42937,93 @@ function SideCart(_ref) {
 
 /***/ }),
 
-/***/ "./src/Components/StripePayment/Style/Stripe.css":
-/*!*******************************************************!*\
-  !*** ./src/Components/StripePayment/Style/Stripe.css ***!
-  \*******************************************************/
+/***/ "./src/Components/SubscriptionPlans/CheckoutForm.js":
+/*!**********************************************************!*\
+  !*** ./src/Components/SubscriptionPlans/CheckoutForm.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ CheckoutForm)
+/* harmony export */ });
+/* harmony import */ var _Style_Plans_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style/Plans.css */ "./src/Components/SubscriptionPlans/Style/Plans.css");
+
+var _React = React,
+  useEffect = _React.useEffect,
+  useRef = _React.useRef;
+var PUBLISHABLE_KEY =  false ? 0 : "MISSING_ENV_VAR".STRIPE_PUBLISHABLE_KEY_TEST;
+function getStripe() {
+  if (window.Stripe) return Promise.resolve(window.Stripe(PUBLISHABLE_KEY));
+  return new Promise(function (resolve) {
+    var script = document.createElement("script");
+    script.src = "https://js.stripe.com/v3/";
+    script.onload = function () {
+      return resolve(window.Stripe(PUBLISHABLE_KEY));
+    };
+    document.head.appendChild(script);
+  });
+}
+function CheckoutForm(_ref) {
+  var clientSecret = _ref.clientSecret,
+    plan = _ref.plan,
+    onBack = _ref.onBack;
+  var containerRef = useRef(null);
+  var checkoutRef = useRef(null);
+  useEffect(function () {
+    if (!clientSecret) return;
+    var destroyed = false;
+    getStripe().then(function (stripe) {
+      if (destroyed) return;
+      stripe.initEmbeddedCheckout({
+        clientSecret: clientSecret
+      }).then(function (checkout) {
+        if (destroyed) {
+          checkout.destroy();
+          return;
+        }
+        checkoutRef.current = checkout;
+        if (containerRef.current) checkout.mount(containerRef.current);
+      });
+    });
+    return function () {
+      destroyed = true;
+      if (checkoutRef.current) {
+        checkoutRef.current.destroy();
+        checkoutRef.current = null;
+      }
+    };
+  }, [clientSecret]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "checkout-page"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "checkout-header"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "checkout-back",
+    onClick: onBack,
+    type: "button"
+  }, "\u2190 Back to plans"), /*#__PURE__*/React.createElement("div", {
+    className: "checkout-summary"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "checkout-title"
+  }, plan.name), /*#__PURE__*/React.createElement("p", {
+    className: "checkout-price"
+  }, plan.price, /*#__PURE__*/React.createElement("span", {
+    className: "checkout-period"
+  }, plan.period), plan.subtext && /*#__PURE__*/React.createElement("span", {
+    className: "checkout-subtext"
+  }, plan.subtext)))), /*#__PURE__*/React.createElement("div", {
+    ref: containerRef,
+    className: "checkout-form-container"
+  }));
+}
+
+/***/ }),
+
+/***/ "./src/Components/SubscriptionPlans/Style/Plans.css":
+/*!**********************************************************!*\
+  !*** ./src/Components/SubscriptionPlans/Style/Plans.css ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -43329,7 +43042,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
 /* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Stripe_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../../node_modules/css-loader/dist/cjs.js!./Stripe.css */ "./node_modules/css-loader/dist/cjs.js!./src/Components/StripePayment/Style/Stripe.css");
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Plans_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../../node_modules/css-loader/dist/cjs.js!./Plans.css */ "./node_modules/css-loader/dist/cjs.js!./src/Components/SubscriptionPlans/Style/Plans.css");
 
       
       
@@ -43349,57 +43062,251 @@ options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WE
 options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
 options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
 
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Stripe_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Plans_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
 
 
 
 
-       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Stripe_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Stripe_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Stripe_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Plans_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Plans_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Plans_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),
 
-/***/ "./src/Components/StripePayment/index.js":
-/*!***********************************************!*\
-  !*** ./src/Components/StripePayment/index.js ***!
-  \***********************************************/
+/***/ "./src/Components/SubscriptionPlans/index.js":
+/*!***************************************************!*\
+  !*** ./src/Components/SubscriptionPlans/index.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ StripePayment)
+/* harmony export */   "default": () => (/* binding */ SubscriptionPlans)
 /* harmony export */ });
-/* harmony import */ var _Header_logo_svg__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Header/logo.svg */ "./src/Components/Header/logo.svg");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Style_Stripe_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Style/Stripe.css */ "./src/Components/StripePayment/Style/Stripe.css");
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../App */ "./src/App.js");
-/* harmony import */ var _SelectInput_Selector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../SelectInput/Selector */ "./src/Components/SelectInput/Selector.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _CheckoutForm__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CheckoutForm */ "./src/Components/SubscriptionPlans/CheckoutForm.js");
+/* harmony import */ var _Style_Plans_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Style/Plans.css */ "./src/Components/SubscriptionPlans/Style/Plans.css");
+/* harmony import */ var _API_host__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../API/host */ "./src/API/host.js");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
 
 var _React = React,
-  useState = _React.useState,
-  useEffect = _React.useEffect,
-  useRef = _React.useRef,
-  useContext = _React.useContext;
-
-
-
-
-function StripePayment(props) {
-  var _JSON$parse;
+  useState = _React.useState;
+var PLANS = [{
+  id: "starter",
+  name: "Starter",
+  price: "€15",
+  period: "/month",
+  description: "For small businesses getting started with consent management.",
+  features: ["1 domain", "GDPR, CCPA & DMA compliance", "Cookie consent banner", "Google Consent Mode", "Consent dashboard", "Email support"]
+}, {
+  id: "growth",
+  name: "Growth",
+  price: "€30",
+  period: "/month",
+  description: "For growing businesses needing deeper analytics insights.",
+  features: ["Up to 5 domains", "Everything in Starter", "Marketing reconciliation dashboard", "Analytics-invisible traffic insights", "Audit reports", "Priority support"],
+  highlighted: true
+}, {
+  id: "agency-pro",
+  name: "Agency Pro",
+  price: "€39",
+  period: "/month",
+  description: "For agencies managing consent across many client sites.",
+  features: ["Unlimited domains", "Everything in Growth", "Multi-site management", "Audit report exports", "White-label PDF reports", "Dedicated support"]
+}, {
+  id: "agency-pro-6m",
+  name: "Agency Pro",
+  badge: "Save 23%",
+  price: "€180",
+  period: "/6 months",
+  subtext: "€30 / month equivalent",
+  description: "Agency Pro billed semi-annually at a discounted rate.",
+  features: ["Unlimited domains", "Everything in Growth", "Multi-site management", "Audit report exports", "White-label PDF reports", "Dedicated support", "23% savings vs monthly"]
+}];
+function SubscriptionPlans() {
   document.title = "Choose your Plan | Intastellar Consents";
-  var companyName = (_JSON$parse = JSON.parse(localStorage.getItem("organisation"))) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.name;
-  var isProduction = "development" === "production";
-  var pricingTableId = isProduction ? "MISSING_ENV_VAR".STRIPE_PRICING_TABLE_ID_LIVE : "MISSING_ENV_VAR".STRIPE_PRICING_TABLE_ID_TEST;
-  var publishableKey = isProduction ? "MISSING_ENV_VAR".STRIPE_PUBLISHABLE_KEY_LIVE : "MISSING_ENV_VAR".STRIPE_PUBLISHABLE_KEY_TEST;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "content"
-  }, /*#__PURE__*/React.createElement("h1", null, "Choose a plan for ", companyName), /*#__PURE__*/React.createElement("stripe-pricing-table", {
-    "class": "stripe-price-table",
-    "pricing-table-id": pricingTableId,
-    "publishable-key": publishableKey,
-    "customer-email": props.userId() || null,
-    "client-reference-id": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation() || null
-  }), /*#__PURE__*/React.createElement("p", null, "Subscriptions and invoices will be issued to ", companyName, /*#__PURE__*/React.createElement("br", null), "Billing contact: ", props.userId() || "your email address", ".")));
+  var _useState = useState(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    selectedPlan = _useState2[0],
+    setSelectedPlan = _useState2[1];
+  var _useState3 = useState(null),
+    _useState4 = _slicedToArray(_useState3, 2),
+    clientSecret = _useState4[0],
+    setClientSecret = _useState4[1];
+  var _useState5 = useState(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    error = _useState6[0],
+    setError = _useState6[1];
+  var _useState7 = useState(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    initiating = _useState8[0],
+    setInitiating = _useState8[1];
+  var companyName = function () {
+    try {
+      var _JSON$parse;
+      return (_JSON$parse = JSON.parse(localStorage.getItem("organisation"))) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.name;
+    } catch (_unused) {
+      return null;
+    }
+  }();
+  var email = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getUserId();
+  var handleSelectPlan = /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(plan) {
+      var res, data, _t;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            setError(null);
+            setInitiating(plan.id);
+            _context.p = 1;
+            _context.n = 2;
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_3__.PrimaryHost, "/payment/subscription/v1/create-checkout-session"), {
+              method: "POST",
+              headers: {
+                "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getToken(),
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                planId: plan.id,
+                organisationId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation(),
+                email: email
+              })
+            });
+          case 2:
+            res = _context.v;
+            if (res.ok) {
+              _context.n = 3;
+              break;
+            }
+            throw new Error("Server error");
+          case 3:
+            _context.n = 4;
+            return res.json();
+          case 4:
+            data = _context.v;
+            if (data.clientSecret) {
+              _context.n = 5;
+              break;
+            }
+            throw new Error("Invalid response");
+          case 5:
+            setSelectedPlan(plan);
+            setClientSecret(data.clientSecret);
+            _context.n = 7;
+            break;
+          case 6:
+            _context.p = 6;
+            _t = _context.v;
+            setError("Unable to start checkout. Please try again or contact support.");
+          case 7:
+            _context.p = 7;
+            setInitiating(null);
+            return _context.f(7);
+          case 8:
+            return _context.a(2);
+        }
+      }, _callee, null, [[1, 6, 7, 8]]);
+    }));
+    return function handleSelectPlan(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+  var handleBack = function handleBack() {
+    setSelectedPlan(null);
+    setClientSecret(null);
+    setError(null);
+  };
+  if (selectedPlan && clientSecret) {
+    return /*#__PURE__*/React.createElement(_CheckoutForm__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      clientSecret: clientSecret,
+      plan: selectedPlan,
+      onBack: handleBack
+    });
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "plans-page"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "plans-header"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "plans-title"
+  }, "Choose a plan", companyName ? " for ".concat(companyName) : ""), /*#__PURE__*/React.createElement("p", {
+    className: "plans-subtitle"
+  }, "All plans include a free cookie consent banner. Upgrade to unlock the full analytics platform.")), error && /*#__PURE__*/React.createElement("p", {
+    className: "plans-error",
+    role: "alert"
+  }, error), /*#__PURE__*/React.createElement("div", {
+    className: "plans-grid"
+  }, PLANS.map(function (plan) {
+    return /*#__PURE__*/React.createElement("article", {
+      key: plan.id,
+      className: "plan-card".concat(plan.highlighted ? " plan-card--highlighted" : "")
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "plan-card__top"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "plan-card__labels"
+    }, plan.highlighted && /*#__PURE__*/React.createElement("span", {
+      className: "plan-card__popular"
+    }, "Most popular"), plan.badge && /*#__PURE__*/React.createElement("span", {
+      className: "plan-card__badge"
+    }, plan.badge)), /*#__PURE__*/React.createElement("h2", {
+      className: "plan-card__name"
+    }, plan.name), /*#__PURE__*/React.createElement("div", {
+      className: "plan-card__pricing"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "plan-card__price"
+    }, plan.price), /*#__PURE__*/React.createElement("span", {
+      className: "plan-card__period"
+    }, plan.period)), plan.subtext && /*#__PURE__*/React.createElement("p", {
+      className: "plan-card__subtext"
+    }, plan.subtext), /*#__PURE__*/React.createElement("p", {
+      className: "plan-card__description"
+    }, plan.description)), /*#__PURE__*/React.createElement("ul", {
+      className: "plan-card__features"
+    }, plan.features.map(function (f, i) {
+      return /*#__PURE__*/React.createElement("li", {
+        key: i,
+        className: "plan-card__feature"
+      }, /*#__PURE__*/React.createElement("svg", {
+        className: "plan-card__check",
+        viewBox: "0 0 16 16",
+        fill: "none",
+        "aria-hidden": "true"
+      }, /*#__PURE__*/React.createElement("circle", {
+        cx: "8",
+        cy: "8",
+        r: "7.25",
+        stroke: "currentColor",
+        strokeWidth: "1.5",
+        opacity: ".35"
+      }), /*#__PURE__*/React.createElement("path", {
+        d: "M4.5 8.5l2.5 2.5 4.5-5",
+        stroke: "currentColor",
+        strokeWidth: "1.75",
+        strokeLinecap: "round",
+        strokeLinejoin: "round"
+      })), f);
+    })), /*#__PURE__*/React.createElement("button", {
+      className: "plan-card__cta".concat(plan.highlighted ? " plan-card__cta--primary" : ""),
+      onClick: function onClick() {
+        return handleSelectPlan(plan);
+      },
+      disabled: initiating !== null,
+      "aria-busy": initiating === plan.id
+    }, initiating === plan.id ? "Loading…" : "Get started"));
+  })), /*#__PURE__*/React.createElement("footer", {
+    className: "plans-footer"
+  }, "Subscriptions and invoices issued to ", /*#__PURE__*/React.createElement("strong", null, companyName || "your company"), ".", email ? /*#__PURE__*/React.createElement(React.Fragment, null, " Billing contact: ", email, ".") : null));
 }
 
 /***/ }),
@@ -45745,8 +45652,10 @@ function Login() {
     users = _useIntastellar.users;
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
     className: "int-login"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "int-login__split"
   }, /*#__PURE__*/React.createElement("main", {
-    className: "int-login__main"
+    className: "int-login__panel int-login__panel--form"
   }, /*#__PURE__*/React.createElement("div", {
     className: "int-login__card",
     role: "region",
@@ -45758,36 +45667,12 @@ function Login() {
     alt: "Intastellar Solutions",
     className: "int-login__logo",
     decoding: "async"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "icc-product-parent-ribbon",
-    role: "note"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "icc-product-parent-ribbon__product"
-  }, "Intastellar Consents"), /*#__PURE__*/React.createElement("span", {
-    className: "icc-product-parent-ribbon__sep",
-    "aria-hidden": "true"
-  }, "\xB7"), /*#__PURE__*/React.createElement("span", {
-    className: "icc-product-parent-ribbon__rest"
-  }, "a consent product from", " ", /*#__PURE__*/React.createElement("a", {
-    href: "https://www.intastellarsolutions.com",
-    target: "_blank",
-    rel: "noopener noreferrer",
-    className: "icc-product-parent-ribbon__link"
-  }, "Intastellar Solutions International"))), /*#__PURE__*/React.createElement("h1", {
+  })), /*#__PURE__*/React.createElement("h1", {
     id: "int-login-heading",
     className: "int-login__headline"
-  }, "Sign in to Intastellar Consents"), /*#__PURE__*/React.createElement("p", {
+  }, "Welcome back"), /*#__PURE__*/React.createElement("p", {
     className: "int-login__lede"
-  }, "Access consent activity, audit logs, and reporting. Sign in with your Intastellar account."), /*#__PURE__*/React.createElement("ul", {
-    className: "int-login__trust",
-    "aria-label": "Security and privacy"
-  }, /*#__PURE__*/React.createElement("li", {
-    className: "int-login__trust-item"
-  }, "Secure authentication"), /*#__PURE__*/React.createElement("li", {
-    className: "int-login__trust-item"
-  }, "Your data is protected"), /*#__PURE__*/React.createElement("li", {
-    className: "int-login__trust-item"
-  }, "Audit logs are private")), /*#__PURE__*/React.createElement("div", {
+  }, "Sign in to continue to Intastellar Consents."), /*#__PURE__*/React.createElement("div", {
     className: "int-login__sso"
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
@@ -45821,55 +45706,219 @@ function Login() {
     target: "_blank",
     rel: "noopener noreferrer",
     className: "int-login__not-you-link"
-  }, "Not you? Switch account")), /*#__PURE__*/React.createElement("footer", {
-    className: "int-login__identity",
-    "aria-label": "Single sign-on and identity provider"
+  }, "Not you? Switch account")))), /*#__PURE__*/React.createElement("aside", {
+    className: "int-login__panel int-login__panel--features",
+    "aria-label": "Product features"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "int-login__identity-strip"
+    className: "int-login__features-inner"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "int-login__identity-icon",
+    className: "int-login__features-brand"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: _Components_Header_logo_svg__WEBPACK_IMPORTED_MODULE_1__["default"],
+    alt: "Intastellar Solutions",
+    className: "int-login__features-logo",
+    decoding: "async"
+  })), /*#__PURE__*/React.createElement("h2", {
+    className: "int-login__features-headline"
+  }, "Consent intelligence", /*#__PURE__*/React.createElement("br", null), "for the modern web"), /*#__PURE__*/React.createElement("p", {
+    className: "int-login__features-lede"
+  }, "GDPR-grade consent management with real-time analytics, domain verification, and multi-client workspace management."), /*#__PURE__*/React.createElement("ul", {
+    className: "int-login__features-list",
+    "aria-label": "Key features"
+  }, /*#__PURE__*/React.createElement("li", {
+    className: "int-login__feature"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "int-login__feature-icon",
     "aria-hidden": "true"
   }, /*#__PURE__*/React.createElement("svg", {
-    className: "int-login__identity-svg",
-    viewBox: "0 0 24 24",
+    viewBox: "0 0 20 20",
     fill: "none",
     xmlns: "http://www.w3.org/2000/svg",
-    focusable: "false"
+    width: "18",
+    height: "18"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "10",
+    cy: "10",
+    r: "3",
+    fill: "currentColor",
+    opacity: "0.9"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "10",
+    cy: "10",
+    r: "7.5",
+    stroke: "currentColor",
+    strokeWidth: "1.25",
+    opacity: "0.35"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "10",
+    cy: "10",
+    r: "5",
+    stroke: "currentColor",
+    strokeWidth: "1",
+    opacity: "0.55",
+    strokeDasharray: "2 2"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "int-login__feature-copy"
+  }, /*#__PURE__*/React.createElement("strong", {
+    className: "int-login__feature-title"
+  }, "Real-time consent monitoring"), /*#__PURE__*/React.createElement("span", {
+    className: "int-login__feature-desc"
+  }, "Live interaction feed with a 30-minute rolling window and country-level breakdown."))), /*#__PURE__*/React.createElement("li", {
+    className: "int-login__feature"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "int-login__feature-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "18",
+    height: "18"
   }, /*#__PURE__*/React.createElement("path", {
-    d: "M12 2.5 4.5 5.25v5.5c0 4.85 3.35 9.4 7.5 10.75 4.15-1.35 7.5-5.9 7.5-10.75v-5.5L12 2.5z",
+    d: "M10 2L3.5 4.5v5c0 4.2 2.9 8.1 6.5 9.5C13.6 17.6 16.5 13.7 16.5 9.5v-5L10 2z",
     stroke: "currentColor",
-    strokeWidth: "1.35",
+    strokeWidth: "1.3",
     strokeLinejoin: "round",
-    fill: "rgba(192, 159, 83, 0.14)"
+    fill: "rgba(192,159,83,0.12)"
   }), /*#__PURE__*/React.createElement("path", {
-    d: "m9 12 2.25 2.25L15.5 10",
+    d: "m7 10 2 2 4-4",
     stroke: "currentColor",
-    strokeWidth: "1.35",
+    strokeWidth: "1.3",
     strokeLinecap: "round",
     strokeLinejoin: "round"
   }))), /*#__PURE__*/React.createElement("div", {
-    className: "int-login__identity-copy"
-  }, /*#__PURE__*/React.createElement("p", {
-    className: "int-login__identity-kicker"
-  }, "Single sign-on (SSO)"), /*#__PURE__*/React.createElement("p", {
-    className: "int-login__identity-lede"
+    className: "int-login__feature-copy"
   }, /*#__PURE__*/React.createElement("strong", {
-    className: "int-login__identity-product"
-  }, "Intastellar Accounts"), " is your identity provider. One verified login for Intastellar products \u2014 this app never receives your password."))), /*#__PURE__*/React.createElement("a", {
-    href: "https://my.intastellaraccounts.com",
-    target: "_blank",
-    rel: "noopener noreferrer",
-    className: "int-login__identity-brand"
+    className: "int-login__feature-title"
+  }, "GDPR & ePrivacy compliance"), /*#__PURE__*/React.createElement("span", {
+    className: "int-login__feature-desc"
+  }, "Acceptance rates, essential-only breakdown, and EU vs non-EU visitor analysis."))), /*#__PURE__*/React.createElement("li", {
+    className: "int-login__feature"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "int-login__identity-brand-label"
-  }, "Secured by"), /*#__PURE__*/React.createElement("img", {
-    src: "https://www.intastellarsolutions.com/assets/logos/intastellar-accounts-white.svg",
-    alt: "Intastellar Accounts",
-    className: "int-login__identity-logo",
-    decoding: "async"
-  })), /*#__PURE__*/React.createElement("p", {
-    className: "int-login__identity-trustline"
-  }, "Identity trust \xB7 Encrypted session \xB7 Centralised access control"))))), /*#__PURE__*/React.createElement(_Components_Footer__WEBPACK_IMPORTED_MODULE_2__.LPFooter, null));
+    className: "int-login__feature-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "18",
+    height: "18"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "2",
+    y: "13",
+    width: "3",
+    height: "5",
+    rx: "1",
+    fill: "currentColor",
+    opacity: "0.9"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "7",
+    y: "9",
+    width: "3",
+    height: "9",
+    rx: "1",
+    fill: "currentColor",
+    opacity: "0.65"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "12",
+    y: "5",
+    width: "3",
+    height: "13",
+    rx: "1",
+    fill: "currentColor",
+    opacity: "0.4"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M3.5 12 8.5 8l5 3 3.5-5",
+    stroke: "currentColor",
+    strokeWidth: "1.3",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "int-login__feature-copy"
+  }, /*#__PURE__*/React.createElement("strong", {
+    className: "int-login__feature-title"
+  }, "Marketing recoil analysis"), /*#__PURE__*/React.createElement("span", {
+    className: "int-login__feature-desc"
+  }, "Reconcile Google Ads, Meta, and GA4 click counts against consent-visible traffic \u2014 see exactly how opt-in rates hit your analytics."))), /*#__PURE__*/React.createElement("li", {
+    className: "int-login__feature"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "int-login__feature-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 20 20",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg",
+    width: "18",
+    height: "18"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "2",
+    y: "2",
+    width: "7",
+    height: "7",
+    rx: "1.5",
+    stroke: "currentColor",
+    strokeWidth: "1.25",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "11",
+    y: "2",
+    width: "7",
+    height: "7",
+    rx: "1.5",
+    stroke: "currentColor",
+    strokeWidth: "1.25",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "2",
+    y: "11",
+    width: "7",
+    height: "7",
+    rx: "1.5",
+    stroke: "currentColor",
+    strokeWidth: "1.25",
+    opacity: "0.6"
+  }), /*#__PURE__*/React.createElement("rect", {
+    x: "11",
+    y: "11",
+    width: "7",
+    height: "7",
+    rx: "1.5",
+    fill: "rgba(192,159,83,0.18)",
+    stroke: "currentColor",
+    strokeWidth: "1.25"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "int-login__feature-copy"
+  }, /*#__PURE__*/React.createElement("strong", {
+    className: "int-login__feature-title"
+  }, "Agency workspaces"), /*#__PURE__*/React.createElement("span", {
+    className: "int-login__feature-desc"
+  }, "Manage multiple clients with isolated reporting environments and workspace-level domain filtering.")))), /*#__PURE__*/React.createElement("div", {
+    className: "int-login__features-stats"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "int-login__features-stat"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "int-login__features-stat-value"
+  }, "30 min"), /*#__PURE__*/React.createElement("span", {
+    className: "int-login__features-stat-label"
+  }, "live window")), /*#__PURE__*/React.createElement("div", {
+    className: "int-login__features-stat-divider",
+    "aria-hidden": true
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "int-login__features-stat"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "int-login__features-stat-value"
+  }, "Multi"), /*#__PURE__*/React.createElement("span", {
+    className: "int-login__features-stat-label"
+  }, "domain support")), /*#__PURE__*/React.createElement("div", {
+    className: "int-login__features-stat-divider",
+    "aria-hidden": true
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "int-login__features-stat"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "int-login__features-stat-value"
+  }, "GDPR"), /*#__PURE__*/React.createElement("span", {
+    className: "int-login__features-stat-label"
+  }, "compliant"))))))), /*#__PURE__*/React.createElement(_Components_Footer__WEBPACK_IMPORTED_MODULE_2__.LPFooter, null));
 }
 
 /***/ }),
@@ -45993,6 +46042,427 @@ function Login() {
     className: "intastellar-accounts-logo",
     src: "https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg"
   }))), /*#__PURE__*/React.createElement(_Components_Footer__WEBPACK_IMPORTED_MODULE_4__.LPFooter, null));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/Compliance/Style.css":
+/*!****************************************!*\
+  !*** ./src/Pages/Compliance/Style.css ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/Pages/Compliance/Style.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/Pages/Compliance/index.js":
+/*!***************************************!*\
+  !*** ./src/Pages/Compliance/index.js ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ CompliancePage)
+/* harmony export */ });
+/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/AuditSnapshotCard/AuditSnapshotCard.js */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.js");
+/* harmony import */ var _Components_Charts_WorldMap_WorldMap_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Charts/WorldMap/WorldMap.js */ "./src/Components/Charts/WorldMap/WorldMap.js");
+/* harmony import */ var _Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/Filter/filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../API/api */ "./src/API/api.js");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/Compliance/Style.css");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useContext = _React.useContext,
+  useMemo = _React.useMemo;
+
+
+
+
+
+
+
+
+
+
+var Link = window.ReactRouterDOM.Link;
+var useParams = window.ReactRouterDOM.useParams;
+function CompliancePage() {
+  var _activeWorkspace$id, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da, _preConsentTransfers$, _preConsentTransfers$2;
+  var _useParams = useParams(),
+    id = _useParams.id,
+    handle = _useParams.handle;
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_4__.DomainContext),
+    _useContext2 = _slicedToArray(_useContext, 2),
+    currentDomain = _useContext2[0],
+    setCurrentDomain = _useContext2[1];
+  var _useContext3 = useContext(_App_js__WEBPACK_IMPORTED_MODULE_4__.WorkspaceContext),
+    _useContext4 = _slicedToArray(_useContext3, 1),
+    activeWorkspace = _useContext4[0];
+  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_7__["default"].DemoMode),
+    _useState2 = _slicedToArray(_useState, 2),
+    demoMode = _useState2[0],
+    setDemoMode = _useState2[1];
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__.useSyncDomainFromRoute)(handle, setCurrentDomain);
+  var workspaceId = (_activeWorkspace$id = activeWorkspace === null || activeWorkspace === void 0 ? void 0 : activeWorkspace.id) !== null && _activeWorkspace$id !== void 0 ? _activeWorkspace$id : null;
+  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+  var _useState3 = useState(initialLastDays),
+    _useState4 = _slicedToArray(_useState3, 2),
+    getLastDays = _useState4[0],
+    setLastDays = _useState4[1];
+  var today = new Date();
+  var _useState5 = useState(new Date(new Date().setDate(today.getDate() - initialLastDays))),
+    _useState6 = _slicedToArray(_useState5, 2),
+    fromDate = _useState6[0],
+    setFromDate = _useState6[1];
+  var _useState7 = useState(new Date(new Date().setDate(today.getDate() - 1))),
+    _useState8 = _slicedToArray(_useState7, 2),
+    toDate = _useState8[0],
+    setToDate = _useState8[1];
+  var _useState9 = useState(0),
+    _useState0 = _slicedToArray(_useState9, 2),
+    compareRange = _useState0[0],
+    setCompareRange = _useState0[1];
+  var _useState1 = useState(function () {
+      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
+    }),
+    _useState10 = _slicedToArray(_useState1, 2),
+    previousPeriod = _useState10[0],
+    setPreviousPeriod = _useState10[1];
+  var _useState11 = useState(function () {
+      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_3__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+    }),
+    _useState12 = _slicedToArray(_useState11, 2),
+    previousPeriod2 = _useState12[0],
+    setPreviousPeriod2 = _useState12[1];
+  var _useState13 = useState(null),
+    _useState14 = _slicedToArray(_useState13, 2),
+    setActiveDataDummy = _useState14[1];
+  var _useState15 = useState(null),
+    _useState16 = _slicedToArray(_useState15, 2),
+    activeData = _useState16[0],
+    setActiveData = _useState16[1];
+  var _useState17 = useState(null),
+    _useState18 = _slicedToArray(_useState17, 2),
+    activeDataCountry = _useState18[0],
+    setActiveDataCountry = _useState18[1];
+  var _useState19 = useState(null),
+    _useState20 = _slicedToArray(_useState19, 2),
+    observedCookies = _useState20[0],
+    setObservedCookies = _useState20[1];
+  var _useState21 = useState(null),
+    _useState22 = _slicedToArray(_useState21, 2),
+    preConsentTransfers = _useState22[0],
+    setPreConsentTransfers = _useState22[1];
+  var _useState23 = useState(false),
+    _useState24 = _slicedToArray(_useState23, 2),
+    scanLoading = _useState24[0],
+    setScanLoading = _useState24[1];
+  var _useState25 = useState(false),
+    _useState26 = _slicedToArray(_useState25, 2),
+    loading = _useState26[0],
+    setLoading = _useState26[1];
+  var domainsForApi = useMemo(function () {
+    return (handle ? handle : currentDomain) || "combined view";
+  }, [handle, currentDomain]);
+  useEffect(function () {
+    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_7__["default"].onDemoModeChange(setDemoMode);
+    return unsubscribe;
+  }, []);
+  useEffect(function () {
+    if (!id || !_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) return;
+    setLoading(true);
+    var fd = fromDate.toISOString().split("T")[0];
+    var td = toDate.toISOString().split("T")[0];
+    var pp = previousPeriod.toISOString().split("T")[0];
+    var pp2 = previousPeriod2.toISOString().split("T")[0];
+    var cr = compareRange === 0 || compareRange == null ? "" : String(compareRange);
+    var sharedHeaders = {
+      Domains: domainsForApi,
+      FromDate: fd,
+      ToDate: td,
+      CompareRange: compareRange,
+      PreviousPeriod: pp,
+      PreviousPeriod2: pp2,
+      "X-Compare-Start": pp,
+      "X-Compare-End": pp2,
+      "X-Compare-Range": cr
+    };
+    fetch(_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getInteractions.url, {
+      method: _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getInteractions.method,
+      headers: _objectSpread(_objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getInteractions.headers), sharedHeaders),
+      body: JSON.stringify({
+        workspaceId: workspaceId
+      })
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      if (data === "Err_Login_Expired") {
+        localStorage.removeItem("globals");
+        window.location.href = "/login";
+        return;
+      }
+      setActiveData(data);
+    })["catch"](console.error)["finally"](function () {
+      return setLoading(false);
+    });
+    fetch(_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getInteractionsByCountry.url, {
+      method: _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getInteractionsByCountry.method,
+      headers: _objectSpread(_objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getInteractionsByCountry.headers), sharedHeaders),
+      body: JSON.stringify({
+        workspaceId: workspaceId
+      })
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      if (data === "Err_Login_Expired") {
+        localStorage.removeItem("globals");
+        window.location.href = "/login";
+        return;
+      }
+      setActiveDataCountry(data);
+    })["catch"](console.error);
+    fetch(_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].observedCookies.url, {
+      method: _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].observedCookies.method,
+      headers: _objectSpread(_objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].observedCookies.headers), sharedHeaders),
+      body: JSON.stringify({
+        workspaceId: workspaceId
+      })
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      if (data === "Err_Login_Expired") {
+        localStorage.removeItem("globals");
+        window.location.href = "/login";
+        return;
+      }
+      setObservedCookies(data);
+    })["catch"](console.error);
+    var domain = handle || currentDomain;
+    if (domain && domain !== "combined view") {
+      fetch("".concat(_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getPreConsentTransfers.url, "?domain=").concat(encodeURIComponent(domain)), {
+        method: _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getPreConsentTransfers.method,
+        headers: _objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].getPreConsentTransfers.headers)
+      }).then(function (r) {
+        return r.json();
+      }).then(function (data) {
+        if (data === "Err_Login_Expired") {
+          localStorage.removeItem("globals");
+          window.location.href = "/login";
+          return;
+        }
+        setPreConsentTransfers(data);
+      })["catch"](function () {
+        return setPreConsentTransfers(null);
+      });
+    }
+  }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId]);
+  var triggerScan = function triggerScan() {
+    var domain = handle || currentDomain;
+    if (!domain || domain === "combined view" || !_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) return;
+    setScanLoading(true);
+    fetch(_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].triggerPreConsentScan.url, {
+      method: _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].triggerPreConsentScan.method,
+      headers: _objectSpread({}, _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].triggerPreConsentScan.headers),
+      body: JSON.stringify({
+        domain: domain,
+        workspaceId: workspaceId
+      })
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      return setPreConsentTransfers(data);
+    })["catch"](console.error)["finally"](function () {
+      return setScanLoading(false);
+    });
+  };
+  if (!id || !_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) return null;
+  var preCount = observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count;
+  var postCount = observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count;
+  var auditLogPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__.reportsPath)(id, currentDomain, "/user-consents");
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    loadingUpdated: loading,
+    finalLoaded: loading,
+    title: handle ? "Compliance: ".concat(handle) : "Compliance overview",
+    numberofDays: setLastDays,
+    getLastDays: getLastDays,
+    setActiveData: setActiveDataDummy,
+    fromDate: fromDate,
+    toDate: toDate,
+    setFromDate: setFromDate,
+    setToDate: setToDate,
+    previousPeriod: previousPeriod,
+    previousPeriod2: previousPeriod2,
+    compareRange: compareRange,
+    setCompareRange: setCompareRange,
+    setCompareWindowStart: setPreviousPeriod,
+    setCompareWindowEnd: setPreviousPeriod2,
+    demoMode: demoMode
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "compliance-hero"
+  }, /*#__PURE__*/React.createElement(_Components_Charts_WorldMap_WorldMap_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    demoMode: demoMode,
+    data: {
+      Countries: activeDataCountry === null || activeDataCountry === void 0 || (_activeDataCountry$da = activeDataCountry.data) === null || _activeDataCountry$da === void 0 ? void 0 : _activeDataCountry$da.Countries,
+      total: activeData === null || activeData === void 0 ? void 0 : activeData.Total
+    }
+  }), observedCookies && /*#__PURE__*/React.createElement("div", {
+    className: "compliance-hero__stats"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "compliance-hero__stat"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "compliance-hero__stat-value"
+  }, preCount > 0 ? preCount.toLocaleString("de-DE") : "—"), /*#__PURE__*/React.createElement("span", {
+    className: "compliance-hero__stat-label"
+  }, "Pre-consent cookies")), /*#__PURE__*/React.createElement("div", {
+    className: "compliance-hero__stat-divider",
+    "aria-hidden": true
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "compliance-hero__stat"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "compliance-hero__stat-value"
+  }, postCount > 0 ? postCount.toLocaleString("de-DE") : "—"), /*#__PURE__*/React.createElement("span", {
+    className: "compliance-hero__stat-label"
+  }, "Post-consent cookies")), /*#__PURE__*/React.createElement("div", {
+    className: "compliance-hero__stat-divider",
+    "aria-hidden": true
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "compliance-hero__stat"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "compliance-hero__stat-value"
+  }, (activeData === null || activeData === void 0 ? void 0 : activeData.Total) != null ? Number(activeData.Total).toLocaleString("de-DE") : "—"), /*#__PURE__*/React.createElement("span", {
+    className: "compliance-hero__stat-label"
+  }, "Consent interactions")), /*#__PURE__*/React.createElement(Link, {
+    to: auditLogPath,
+    className: "compliance-hero__audit-btn"
+  }, "Open audit log"))), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-content compliance-page"
+  }, (handle || currentDomain) && (handle || currentDomain) !== "combined view" && /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-section compliance-transfers"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "dashboard-section-label"
+  }, "Pre-consent data transfers"), /*#__PURE__*/React.createElement("div", {
+    className: "compliance-transfers__card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "compliance-transfers__header"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "compliance-transfers__header-text"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "compliance-transfers__desc"
+  }, "Third-party services that receive visitor data before consent is given \u2014 e.g. analytics scripts, social pixels, advertising trackers. Each represents a potential Chapter V transfer under GDPR."), (preConsentTransfers === null || preConsentTransfers === void 0 ? void 0 : preConsentTransfers.scanned_at) && /*#__PURE__*/React.createElement("span", {
+    className: "compliance-transfers__scan-time"
+  }, "Last scanned ", new Date(preConsentTransfers.scanned_at).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  }))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "compliance-transfers__scan-btn" + (scanLoading ? " --loading" : ""),
+    onClick: triggerScan,
+    disabled: scanLoading
+  }, scanLoading ? "Scanning…" : "Scan now")), !preConsentTransfers && !scanLoading && /*#__PURE__*/React.createElement("div", {
+    className: "compliance-transfers__empty"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "compliance-transfers__empty-icon",
+    "aria-hidden": true
+  }, "\u27F3"), /*#__PURE__*/React.createElement("span", null, "No scan data yet \u2014 run a scan to detect pre-consent transfers for this domain.")), scanLoading && /*#__PURE__*/React.createElement("div", {
+    className: "compliance-transfers__empty compliance-transfers__empty--loading"
+  }, /*#__PURE__*/React.createElement("span", null, "Scanning ", handle || currentDomain, "\u2026")), (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$ = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$ === void 0 ? void 0 : _preConsentTransfers$.length) > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "compliance-transfers__list"
+  }, preConsentTransfers.pre_consent_transfers.map(function (t) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: t.host,
+      className: "compliance-transfers__row compliance-transfers__row--" + (t.category || "other")
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "compliance-transfers__row-main"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "compliance-transfers__row-service"
+    }, t.service || t.host), /*#__PURE__*/React.createElement("span", {
+      className: "compliance-transfers__row-host"
+    }, t.host)), /*#__PURE__*/React.createElement("span", {
+      className: "compliance-transfers__row-cat compliance-transfers__row-cat--" + (t.category || "other")
+    }, t.category || "unknown"), /*#__PURE__*/React.createElement("span", {
+      className: "compliance-transfers__row-flag",
+      title: "Fires before consent"
+    }, "Pre-consent"));
+  })), (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$2 = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$2 === void 0 ? void 0 : _preConsentTransfers$2.length) === 0 && !scanLoading && /*#__PURE__*/React.createElement("div", {
+    className: "compliance-transfers__empty compliance-transfers__empty--clean"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "compliance-transfers__empty-icon",
+    "aria-hidden": true
+  }, "\u2713"), /*#__PURE__*/React.createElement("span", null, "No pre-consent transfers detected in the last scan.")))), /*#__PURE__*/React.createElement("div", {
+    className: "compliance-page__audit"
+  }, /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    platformId: id,
+    handle: handle,
+    currentDomain: currentDomain,
+    fromDate: fromDate,
+    toDate: toDate,
+    activeData: activeData,
+    demoMode: demoMode,
+    interactionsLoading: loading,
+    observedCookies: observedCookies
+  }))));
 }
 
 /***/ }),
@@ -46464,25 +46934,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Charts_WorldMap_WorldMap_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Components/Charts/WorldMap/WorldMap.js */ "./src/Components/Charts/WorldMap/WorldMap.js");
 /* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var _components_header_header_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../components/header/header.js */ "./src/components/header/header.js");
-/* harmony import */ var _Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/domainVerification.js */ "./src/Functions/domainVerification.js");
-/* harmony import */ var _Functions_isJson_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Functions/isJson.js */ "./src/Functions/isJson.js");
-/* harmony import */ var _Components_Crawler__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Components/Crawler */ "./src/Components/Crawler/index.js");
-/* harmony import */ var _Components_Charts_Line__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../Components/Charts/Line */ "./src/Components/Charts/Line/index.js");
-/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../Components/Filter/filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
-/* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
-/* harmony import */ var _components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../components/AuditSnapshotCard/AuditSnapshotCard.js */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.js");
-/* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
-/* harmony import */ var _Components_Charts_Pie_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../Components/Charts/Pie/index.js */ "./src/Components/Charts/Pie/index.js");
-/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
-/* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
-/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+/* harmony import */ var _Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Functions/domainVerification.js */ "./src/Functions/domainVerification.js");
+/* harmony import */ var _Functions_isJson_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/isJson.js */ "./src/Functions/isJson.js");
+/* harmony import */ var _Components_Crawler__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Components/Crawler */ "./src/Components/Crawler/index.js");
+/* harmony import */ var _Components_Charts_Line__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Components/Charts/Line */ "./src/Components/Charts/Line/index.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Components/Filter/filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
+/* harmony import */ var _components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../components/LiveView/index.js */ "./src/components/LiveView/index.js");
+/* harmony import */ var _components_DecisionBehaviourDrawer_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../components/DecisionBehaviourDrawer/index.js */ "./src/components/DecisionBehaviourDrawer/index.js");
+/* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
+/* harmony import */ var _Components_Charts_Pie_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Components/Charts/Pie/index.js */ "./src/Components/Charts/Pie/index.js");
+/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
+/* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -46511,19 +46976,16 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
-
-
 var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
   useRef = _React.useRef,
   useContext = _React.useContext,
-  useMemo = _React.useMemo,
-  useCallback = _React.useCallback;
+  useMemo = _React.useMemo;
 var useParams = window.ReactRouterDOM.useParams;
 var Link = window.ReactRouterDOM.Link;
 function Dashboard(props) {
-  var _jsData$Total, _jsData$JS, _jsData$WP, _activeData$comapriso, _activeData$comapriso2, _activeData$compariso, _activeData$comapriso3, _activeData$comapriso4, _activeData$compariso2, _activeData$changeRat, _activeData$relativeD, _activeData$comapriso5, _activeData$comapriso6, _activeData$compariso3, _activeData$comapriso7, _activeData$comapriso8, _activeData$compariso4, _activeData$changeRat2, _activeData$relativeD2, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da;
+  var _activeWorkspace$id, _activeWorkspace$doma, _jsData$Total, _jsData$JS, _jsData$WP, _activeData$comapriso, _activeData$comapriso2, _activeData$compariso, _activeData$comapriso3, _activeData$comapriso4, _activeData$compariso2, _activeData$changeRat, _activeData$relativeD, _activeData$comapriso5, _activeData$comapriso6, _activeData$compariso3, _activeData$comapriso7, _activeData$comapriso8, _activeData$compariso4, _activeData$changeRat2, _activeData$relativeD2, _activeDataCountry$da;
   document.title = "Home | Intastellar Consents | CMP";
   var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_5__.DomainContext),
     _useContext2 = _slicedToArray(_useContext, 2),
@@ -46533,9 +46995,12 @@ function Dashboard(props) {
     _useContext4 = _slicedToArray(_useContext3, 2),
     organisation = _useContext4[0],
     setOrganisation = _useContext4[1];
+  var _useContext5 = useContext(_App_js__WEBPACK_IMPORTED_MODULE_5__.WorkspaceContext),
+    _useContext6 = _slicedToArray(_useContext5, 1),
+    activeWorkspace = _useContext6[0];
   var subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
   var userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
-  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].DemoMode),
+  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_19__["default"].DemoMode),
     _useState2 = _slicedToArray(_useState, 2),
     demoMode = _useState2[0],
     setDemoMode = _useState2[1];
@@ -46543,6 +47008,10 @@ function Dashboard(props) {
     _useState4 = _slicedToArray(_useState3, 2),
     timeToDecision = _useState4[0],
     setTimeToDecision = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    behaviourDrawerOpen = _useState6[0],
+    setBehaviourDrawerOpen = _useState6[1];
   var _useParams = useParams(),
     handle = _useParams.handle,
     id = _useParams.id;
@@ -46555,51 +47024,47 @@ function Dashboard(props) {
       setCurrentDomain("combined view");
     } else {
       var decoded = decodeURIComponent(String(handle).replace(/%2E/gi, "."));
-      setCurrentDomain(punycode__WEBPACK_IMPORTED_MODULE_22__["default"].toUnicode(decoded));
+      setCurrentDomain(punycode__WEBPACK_IMPORTED_MODULE_20__["default"].toUnicode(decoded));
     }
   }, [handle, id, setCurrentDomain]);
-  var _useState5 = useState(null),
-    _useState6 = _slicedToArray(_useState5, 2),
-    activeData = _useState6[0],
-    setActiveData = _useState6[1];
   var _useState7 = useState(null),
     _useState8 = _slicedToArray(_useState7, 2),
-    activeDataCountry = _useState8[0],
-    setactiveDataCountry = _useState8[1];
-  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
-  var _useState9 = useState(initialLastDays),
+    activeData = _useState8[0],
+    setActiveData = _useState8[1];
+  var _useState9 = useState(null),
     _useState0 = _slicedToArray(_useState9, 2),
-    getLastDays = _useState0[0],
-    setLastDays = _useState0[1];
-  var today = new Date();
-  var _useState1 = useState(new Date(new Date().setDate(today.getDate() - initialLastDays))),
+    activeDataCountry = _useState0[0],
+    setactiveDataCountry = _useState0[1];
+  var initialLastDays = localStorage.getItem("settings") != null ? JSON.parse(localStorage.getItem("settings")).dateRange : 30;
+  var _useState1 = useState(initialLastDays),
     _useState10 = _slicedToArray(_useState1, 2),
-    fromDate = _useState10[0],
-    setFromDate = _useState10[1];
-  var _useState11 = useState(new Date(new Date().setDate(today.getDate() - 1))),
+    getLastDays = _useState10[0],
+    setLastDays = _useState10[1];
+  var today = new Date();
+  var _useState11 = useState(new Date(new Date().setDate(today.getDate() - initialLastDays))),
     _useState12 = _slicedToArray(_useState11, 2),
-    toDate = _useState12[0],
-    setToDate = _useState12[1];
-  var _useState13 = useState(0),
+    fromDate = _useState12[0],
+    setFromDate = _useState12[1];
+  var _useState13 = useState(new Date(new Date().setDate(today.getDate() - 1))),
     _useState14 = _slicedToArray(_useState13, 2),
-    compareRange = _useState14[0],
-    setCompareRange = _useState14[1];
-  var _useState15 = useState(function () {
-      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_13__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
-    }),
+    toDate = _useState14[0],
+    setToDate = _useState14[1];
+  var _useState15 = useState(0),
     _useState16 = _slicedToArray(_useState15, 2),
-    previousPeriod = _useState16[0],
-    setPreviousPeriod = _useState16[1];
+    compareRange = _useState16[0],
+    setCompareRange = _useState16[1];
   var _useState17 = useState(function () {
-      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_13__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_12__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).start;
     }),
     _useState18 = _slicedToArray(_useState17, 2),
-    previousPeriod2 = _useState18[0],
-    setPreviousPeriod2 = _useState18[1];
-  var _useState19 = useState(null),
+    previousPeriod = _useState18[0],
+    setPreviousPeriod = _useState18[1];
+  var _useState19 = useState(function () {
+      return (0,_Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_12__.defaultCompareWindowForPrimary)(new Date(new Date().setDate(new Date().getDate() - initialLastDays)), new Date(new Date().setDate(new Date().getDate() - 1))).end;
+    }),
     _useState20 = _slicedToArray(_useState19, 2),
-    observedCookies = _useState20[0],
-    setObservedCookies = _useState20[1];
+    previousPeriod2 = _useState20[0],
+    setPreviousPeriod2 = _useState20[1];
   var _useState21 = useState(false),
     _useState22 = _slicedToArray(_useState21, 2),
     loading = _useState22[0],
@@ -46612,14 +47077,14 @@ function Dashboard(props) {
   var url = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.url;
   var method = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.method;
   var header = _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers;
+  var workspaceId = (_activeWorkspace$id = activeWorkspace === null || activeWorkspace === void 0 ? void 0 : activeWorkspace.id) !== null && _activeWorkspace$id !== void 0 ? _activeWorkspace$id : null;
 
-  // Determine which domains to pass to API
-  var workspaceFilter = (0,_components_header_header_js__WEBPACK_IMPORTED_MODULE_7__.getWorkspaceFilter)();
-  var routeDomain = handle ? handle : currentDomain;
-
-  // If workspace filter is active and we're in combined view, pass workspace domains
-  // Otherwise, use the normal route-based domain
-  var domainsForApi = workspaceFilter && (routeDomain === "combined view" || !routeDomain) ? workspaceFilter.join(",") : routeDomain;
+  // Always pass the user-selected domain (or "combined view") as-is.
+  // When a workspace is active, workspaceId is sent in the request body and
+  // the backend resolves which domains belong to that workspace itself.
+  var domainsForApi = useMemo(function () {
+    return (handle ? handle : currentDomain) || "combined view";
+  }, [handle, currentDomain]);
   _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers.Domains = domainsForApi;
   _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers.Domains = domainsForApi;
   _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers.FromDate = fromDate.toISOString().split("T")[0];
@@ -46658,13 +47123,12 @@ function Dashboard(props) {
     if (slice == null || _typeof(slice) !== "object") return null;
     return slice;
   }, [activeData, timeToDecision]);
-  var _useState25 = useState(null),
-    _useState26 = _slicedToArray(_useState25, 2),
-    liveViewData = _useState26[0],
-    setLiveViewData = _useState26[1];
-  var onLiveDataChange = useCallback(function (data) {
-    setLiveViewData(data);
-  }, []);
+  var globalTimeToDecision = useMemo(function () {
+    var _root$global;
+    var root = activeData === null || activeData === void 0 ? void 0 : activeData.timeToDecision;
+    if (root == null || _typeof(root) !== "object") return null;
+    return (_root$global = root.global) !== null && _root$global !== void 0 ? _root$global : null;
+  }, [activeData]);
 
   // Domain verification status check
   var verificationStatus = useMemo(function () {
@@ -46689,8 +47153,8 @@ function Dashboard(props) {
         show: false
       };
     }
-    var verified = (0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_8__.isDomainVerified)(domainToCheck, orgId);
-    var expired = (0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_8__.isVerificationExpired)(domainToCheck, orgId);
+    var verified = (0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_7__.isDomainVerified)(domainToCheck, orgId);
+    var expired = (0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_7__.isVerificationExpired)(domainToCheck, orgId);
     if (verified) {
       return {
         show: false
@@ -46704,7 +47168,7 @@ function Dashboard(props) {
     };
   }, [handle, currentDomain]);
   useEffect(function () {
-    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].onDemoModeChange(setDemoMode);
+    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_19__["default"].onDemoModeChange(setDemoMode);
     return unsubscribe; // Clean up on unmount
   }, []);
   useEffect(function () {
@@ -46724,7 +47188,10 @@ function Dashboard(props) {
     setLoadingCountry(true);
     fetch(_API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.url, {
       method: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.method,
-      headers: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers
+      headers: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractions.headers,
+      body: JSON.stringify({
+        workspaceId: workspaceId
+      })
     }).then(function (res) {
       return res.json();
     }).then(function (data) {
@@ -46739,39 +47206,18 @@ function Dashboard(props) {
     })["finally"](function () {
       setLoading(false);
     });
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.Domains = domainsForApi;
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.FromDate = fromDate.toISOString().split("T")[0];
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.ToDate = toDate.toISOString().split("T")[0];
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.CompareRange = compareRange;
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.PreviousPeriod = previousPeriod.toISOString().split("T")[0];
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers.PreviousPeriod2 = previousPeriod2.toISOString().split("T")[0];
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers["X-Compare-Start"] = previousPeriod.toISOString().split("T")[0];
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers["X-Compare-End"] = previousPeriod2.toISOString().split("T")[0];
-    _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers["X-Compare-Range"] = compareRange === 0 || compareRange == null ? "" : String(compareRange);
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers.CompareRange = compareRange;
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers.PreviousPeriod = previousPeriod.toISOString().split("T")[0];
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers.PreviousPeriod2 = previousPeriod2.toISOString().split("T")[0];
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers["X-Compare-Start"] = previousPeriod.toISOString().split("T")[0];
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers["X-Compare-End"] = previousPeriod2.toISOString().split("T")[0];
     _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers["X-Compare-Range"] = compareRange === 0 || compareRange == null ? "" : String(compareRange);
-    fetch(_API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.url, {
-      method: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.method,
-      headers: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].observedCookies.headers
-    }).then(function (res) {
-      return res.json();
-    }).then(function (cookiesData) {
-      if (cookiesData === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
-        window.location.href = "/login";
-        return;
-      }
-      setObservedCookies(cookiesData);
-    })["catch"](function (err) {
-      console.error(err);
-    });
     fetch(_API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.url, {
       method: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.method,
-      headers: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers
+      headers: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].getInteractionsByCountry.headers,
+      body: JSON.stringify({
+        workspaceId: workspaceId
+      })
     }).then(function (res) {
       return res.json();
     }).then(function (country) {
@@ -46786,16 +47232,16 @@ function Dashboard(props) {
     })["finally"](function () {
       setLoadingCountry(false);
     });
-  }, [fromDate, toDate, handle, compareRange, previousPeriod, previousPeriod2]);
+  }, [fromDate, toDate, handle, currentDomain, compareRange, previousPeriod, previousPeriod2, workspaceId]);
   document.querySelectorAll(".intInput").forEach(function (input) {
     input.setAttribute("max", new Date().toISOString().split("T")[0]);
   });
   var compareOn = compareRange !== 0 && compareRange != null;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_12__["default"], {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_11__["default"], {
     demoMode: demoMode,
     loadingUpdated: loading,
     finalLoaded: loadingCountry,
-    title: handle ? "Dashboard: ".concat(punycode__WEBPACK_IMPORTED_MODULE_22__["default"].toUnicode(handle)) : "Dashboard",
+    title: handle ? "Dashboard: ".concat(punycode__WEBPACK_IMPORTED_MODULE_20__["default"].toUnicode(handle)) : "Dashboard",
     url: url,
     method: method,
     header: header,
@@ -46814,7 +47260,24 @@ function Dashboard(props) {
     setCompareWindowEnd: setPreviousPeriod2
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content"
-  }, verificationStatus.show && /*#__PURE__*/React.createElement("div", {
+  }, activeWorkspace && /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-workspace-banner"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-workspace-banner__left"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-workspace-banner__kicker"
+  }, "Workspace"), /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-workspace-banner__name"
+  }, activeWorkspace.name)), ((_activeWorkspace$doma = activeWorkspace.domains) === null || _activeWorkspace$doma === void 0 ? void 0 : _activeWorkspace$doma.length) > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-workspace-banner__domains"
+  }, activeWorkspace.domains.slice(0, 3).map(function (d) {
+    return /*#__PURE__*/React.createElement("span", {
+      key: d.domain,
+      className: "dashboard-workspace-banner__domain-tag"
+    }, d.domain);
+  }), activeWorkspace.domains.length > 3 && /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-workspace-banner__domain-tag dashboard-workspace-banner__domain-tag--more"
+  }, "+", activeWorkspace.domains.length - 3))), verificationStatus.show && /*#__PURE__*/React.createElement("div", {
     className: "dashboard-verification-warning ".concat(verificationStatus.isExpired ? 'dashboard-verification-warning--expired' : '')
   }, /*#__PURE__*/React.createElement("span", {
     className: "dashboard-verification-warning__icon"
@@ -46823,47 +47286,28 @@ function Dashboard(props) {
   }, /*#__PURE__*/React.createElement("strong", null, verificationStatus.isExpired ? "Domain verification expired" : "Domain not verified"), /*#__PURE__*/React.createElement("p", null, verificationStatus.isExpired ? "The verification for ".concat(verificationStatus.domain, " has expired. Please re-verify to continue accessing consent data.") : "".concat(verificationStatus.domain, " has not been verified. Verify domain ownership to ensure data accuracy."))), /*#__PURE__*/React.createElement(Link, {
     to: "/settings/workspaces",
     className: "dashboard-verification-warning__action"
-  }, verificationStatus.isExpired ? "Re-verify" : "Verify Domain")), organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle ? /*#__PURE__*/React.createElement("div", {
+  }, verificationStatus.isExpired ? "Re-verify" : "Verify Domain")), organisation != null && JSON.parse(organisation).id == 1 && !demoMode && !handle && !workspaceId ? /*#__PURE__*/React.createElement("div", {
     className: "grid-container topWidget",
     style: {
       gridTemplateColumns: "1fr 1fr 1fr",
       gap: "10px",
-      marginBottom: "20px"
+      marginBottom: "24px"
     }
-  }, jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_19__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
+  }, jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: (_jsData$Total = jsData.Total) === null || _jsData$Total === void 0 ? void 0 : _jsData$Total.toLocaleString("de-DE"),
     type: "Websites"
-  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_19__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
+  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: (jsData === null || jsData === void 0 || (_jsData$JS = jsData.JS) === null || _jsData$JS === void 0 ? void 0 : _jsData$JS.toLocaleString("de-DE")) + "%",
     type: "JavaScript"
-  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_19__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
+  })), jsLoading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__["default"], null, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     styleType: "small",
     totalNumber: (jsData === null || jsData === void 0 || (_jsData$WP = jsData.WP) === null || _jsData$WP === void 0 ? void 0 : _jsData$WP.toLocaleString("de-DE")) + "%",
     type: "WordPress"
-  }))) : null, id ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_components_AuditSnapshotCard_AuditSnapshotCard_js__WEBPACK_IMPORTED_MODULE_15__["default"], {
-    platformId: id,
-    handle: handle,
-    currentDomain: currentDomain,
-    fromDate: fromDate,
-    toDate: toDate,
-    activeData: activeData,
-    demoMode: demoMode,
-    liveData: liveViewData,
-    interactionsLoading: loading
-  }), /*#__PURE__*/React.createElement("section", {
-    className: "dashboard-marketing-teaser",
-    "aria-label": "Marketing dashboard"
-  }, /*#__PURE__*/React.createElement("p", null, "See consent through a marketing lens \u2014 campaigns, trends, and usable traffic after opt-in.", " ", /*#__PURE__*/React.createElement(Link, {
-    to: (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__.reportsPath)(id, currentDomain, "/marketing")
-  }, "Open marketing dashboard")))) : null, activeData != null ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "grid-container grid-7 topWidget",
-    style: {
-      gap: "10px",
-      marginBottom: "20px"
-    }
-  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
+  }))) : null, activeData != null ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-hero-kpis"
+  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     kpi: true,
     styleType: "small",
     compareOn: compareOn,
@@ -46879,7 +47323,7 @@ function Dashboard(props) {
     type: "Consent acceptance",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_17__["default"], {
     kpi: true,
     styleType: "small",
     compareOn: compareOn,
@@ -46894,252 +47338,109 @@ function Dashboard(props) {
     explainer: {
       exist: true,
       title: "Essential-only rate",
-      content: "Share of users who declined analytics and marketing cookies, allowing only required cookies.."
+      content: "Share of users who declined analytics and marketing cookies, allowing only required cookies."
     },
     totalNumber: ((activeData === null || activeData === void 0 ? void 0 : activeData.Declined) != null ? activeData.Declined.toLocaleString("de-DE") : "—") + "%",
     type: "Essential-only rate",
     fromDate: fromDate,
     toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    explainer: {
-      exist: true,
-      title: "EU based users",
-      content: "Visitors detected from EU-based IP locations."
-    },
-    styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.euUsers) != null ? activeData.euUsers.toLocaleString("de-DE") : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.euAcceptedRate) != null ? activeData.euAcceptedRate.toLocaleString("de-DE") : null,
-    type: "EU-based users",
-    fromDate: fromDate,
-    toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    explainer: {
-      exist: true,
-      title: "Non-EU based users",
-      content: "Visitors detected from non-EU-based IP locations."
-    },
-    styleType: "small",
-    totalNumber: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUUsers) != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—",
-    percentage: (activeData === null || activeData === void 0 ? void 0 : activeData.noneEUAcceptedRate) != null ? activeData.noneEUAcceptedRate.toLocaleString("de-DE") : null,
-    type: "Non-EU-based users",
-    fromDate: fromDate,
-    toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    explainer: {
-      exist: true,
-      title: "Detected (pre-consent) cookies",
-      content: "Number of cookies detected before user consent was given. Useful for identifying compliance risks."
-    },
-    styleType: "small",
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) == null ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.preConsent.count.toLocaleString("de-DE"),
-    type: "Detected (pre-consent)",
-    fromDate: fromDate,
-    toDate: toDate
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    styleType: "small",
-    explainer: {
-      exist: true,
-      title: "Detected (post-consent) cookies",
-      content: "Number of cookies detected after user consent was given. Used to verify correct consent enforcement."
-    },
-    totalNumber: (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) == null ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE") == 0 ? "N/A" : observedCookies.consent.count.toLocaleString("de-DE"),
-    type: "Detected (post-consent)",
-    fromDate: fromDate,
-    toDate: toDate
-  })), hasTimeToDecision ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_21__["default"], {
-    type: "timeToDecision",
-    items: ["global", "eu", "noneEU"],
-    labels: ["Global", "EU", "Non-EU"],
-    defaultValue: timeToDecision,
-    onChange: function onChange(e) {
-      setTimeToDecision(e);
-    }
-  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", null, "n= ", timeToDecisionSlice.count.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("div", {
-    className: "grid-container topWidget grid-7",
-    style: {
-      marginTop: "20px"
-    }
-  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    styleType: "small",
-    totalNumber: timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-    explainer: {
-      exist: true,
-      title: "Median time to decision",
-      content: "Median time taken by users to decide on consent."
-    },
-    type: "Median time to decision",
-    fromDate: fromDate,
-    toDate: toDate,
-    details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    styleType: "small",
-    totalNumber: timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-    explainer: {
-      exist: true,
-      title: "90th percentile time to decision",
-      content: "Time taken by 90% of users to decide on consent."
-    },
-    type: "P90 decision time",
-    fromDate: fromDate,
-    toDate: toDate,
-    details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    styleType: "small",
-    totalNumber: timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-    explainer: {
-      exist: true,
-      title: "Average time to decision",
-      content: "Average time taken by users to decide on consent."
-    },
-    type: "Average time to decision",
-    fromDate: fromDate,
-    toDate: toDate,
-    details: _defineProperty(_defineProperty(_defineProperty({
-      "avg": timeToDecisionSlice.avg.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
-      "median": timeToDecisionSlice.median.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
-      "p90": timeToDecisionSlice.p90.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE")
-    }, "percentageOver10s", timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%"), "percentageUnder1s", timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%"), "deviceType", timeToDecisionSlice.deviceType)
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-    explainer: {
-      exist: true,
-      title: "Percentage of users who took more than 10 seconds to decide",
-      content: "Percentage of users who took more than 10 seconds to decide on consent."
-    },
-    type: ">10s time to decision",
-    fromDate: fromDate,
-    toDate: toDate,
-    details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
-      "deviceType": timeToDecisionSlice.deviceType
-    }
-  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_18__["default"], {
-    styleType: "small",
-    totalNumber: timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-    explainer: {
-      exist: true,
-      title: "Percentage of users who took less than 1 second to decide",
-      content: "Percentage of users who took less than 1 second to decide on consent."
-    },
-    type: "<1s time to decision",
-    fromDate: fromDate,
-    toDate: toDate,
-    details: {
-      "percentageOver10s": timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
-      "percentageUnder1s": timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") == 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
-      "count": timeToDecisionSlice.count.toLocaleString("de-DE"),
-      "countOver10s": timeToDecisionSlice.countOver10s.toLocaleString("de-DE"),
-      "countUnder1s": timeToDecisionSlice.countUnder1s.toLocaleString("de-DE"),
-      "deviceType": timeToDecisionSlice.deviceType
-    }
-  }))) : /*#__PURE__*/React.createElement("p", {
-    style: {
-      marginTop: "12px",
-      color: "#666"
-    }
-  }, "No time-to-decision data for the selected region filter.")) : /*#__PURE__*/React.createElement("p", {
-    style: {
-      marginTop: "12px",
-      color: "#666"
-    }
-  }, "Time-to-decision metrics are not available for this domain or date range.")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "grid-container grid-5 topWidget",
-    style: {
-      gap: "20px",
-      marginBottom: "20px"
-    }
+  }))) : /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-hero-kpis dashboard-hero-kpis--loading"
   }, /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
     small: true
   }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
     small: true
   })), /*#__PURE__*/React.createElement("div", {
-    className: "grid-container grid-5 topWidget",
-    style: {
-      gap: "20px",
-      marginBottom: "20px"
-    }
-  }, /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }), /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, {
-    small: true
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "",
-    style: {
-      paddingTop: "40px"
-    }
+    className: "dashboard-section"
   }, /*#__PURE__*/React.createElement("div", {
     className: "grid-container grid-2",
     style: {
       gridTemplateColumns: "1fr .5fr",
       gap: "20px"
     }
-  }, loadingCountry ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null)) : /*#__PURE__*/React.createElement(_Components_Charts_WorldMap_WorldMap_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, loadingCountry ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.Loading, null) : /*#__PURE__*/React.createElement(_Components_Charts_WorldMap_WorldMap_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
     demoMode: demoMode,
     data: {
       Countries: activeDataCountry === null || activeDataCountry === void 0 || (_activeDataCountry$da = activeDataCountry.data) === null || _activeDataCountry$da === void 0 ? void 0 : _activeDataCountry$da.Countries,
       total: activeData === null || activeData === void 0 ? void 0 : activeData.Total
-    } /* renderCountryPanelExtras={(c) =>
-                   c.device_type ? (
-                       <DeviceTypeInteractions
-                           title="Device mix in this country"
-                           activeData={{ device_type: c.device_type, Total: c.num?.total }}
-                           fromDate={fromDate}
-                           toDate={toDate}
-                           demoMode={demoMode}
-                       />
-                   ) : null
-               } */
+    }
   }), /*#__PURE__*/React.createElement("div", {
-    className: ["widget no-padding"]
-  }, /*#__PURE__*/React.createElement(_components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_14__.LiveView, {
+    className: "widget no-padding"
+  }, /*#__PURE__*/React.createElement(_components_LiveView_index_js__WEBPACK_IMPORTED_MODULE_13__.LiveView, {
     currentDomain: handle ? handle : currentDomain,
-    demoMode: demoMode,
-    onLiveDataChange: onLiveDataChange
-  })))), /*#__PURE__*/React.createElement(_Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_16__.PremiumTier, {
+    demoMode: demoMode
+  }))), activeData && /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-geo-stats"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-geo-stat"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-geo-stat__value"
+  }, activeData.euUsers != null ? activeData.euUsers.toLocaleString("de-DE") : "—"), /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-geo-stat__label"
+  }, "EU visitors"), activeData.euAcceptedRate != null && /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-geo-stat__rate"
+  }, activeData.euAcceptedRate.toLocaleString("de-DE"), "% accepted")), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-geo-stat__divider",
+    "aria-hidden": true
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-geo-stat"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-geo-stat__value"
+  }, activeData.noneEUUsers != null ? activeData.noneEUUsers.toLocaleString("de-DE") : "—"), /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-geo-stat__label"
+  }, "Non-EU visitors"), activeData.noneEUAcceptedRate != null && /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-geo-stat__rate"
+  }, activeData.noneEUAcceptedRate.toLocaleString("de-DE"), "% accepted")))), hasTimeToDecision && /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-section"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "dashboard-section-label"
+  }, "Decision behaviour"), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-behaviour-kpi"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-behaviour-kpi__content"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-behaviour-kpi__label"
+  }, "Median decision time"), /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-behaviour-kpi__value"
+  }, (globalTimeToDecision === null || globalTimeToDecision === void 0 ? void 0 : globalTimeToDecision.median) > 0 ? "".concat(globalTimeToDecision.median.toLocaleString("de-DE"), "s") : "—"), (globalTimeToDecision === null || globalTimeToDecision === void 0 ? void 0 : globalTimeToDecision.count) > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-behaviour-kpi__sub"
+  }, globalTimeToDecision.count.toLocaleString("de-DE"), " interactions \xB7 global")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "dashboard-behaviour-kpi__btn",
+    onClick: function onClick() {
+      return setBehaviourDrawerOpen(true);
+    }
+  }, "See breakdown"))), hasTimeToDecision && /*#__PURE__*/React.createElement(_components_DecisionBehaviourDrawer_index_js__WEBPACK_IMPORTED_MODULE_14__.DecisionBehaviourDrawer, {
+    isOpen: behaviourDrawerOpen,
+    onClose: function onClose() {
+      return setBehaviourDrawerOpen(false);
+    },
+    timeToDecision: timeToDecision,
+    onChangeRegion: setTimeToDecision,
+    timeToDecisionSlice: timeToDecisionSlice,
+    fromDate: fromDate,
+    toDate: toDate
+  }), id && /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-section"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "dashboard-section-label"
+  }, "Compliance"), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-compliance-links"
+  }, /*#__PURE__*/React.createElement(Link, {
+    to: (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__.reportsPath)(id, currentDomain, "/compliance"),
+    className: "dashboard-compliance-link"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-compliance-link__label"
+  }, "Audit log & compliance overview"), /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-compliance-link__arrow"
+  }, "\u2192")), /*#__PURE__*/React.createElement(Link, {
+    to: (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__.reportsPath)(id, currentDomain, "/marketing"),
+    className: "dashboard-compliance-link"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-compliance-link__label"
+  }, "Marketing recoil analysis"), /*#__PURE__*/React.createElement("span", {
+    className: "dashboard-compliance-link__arrow"
+  }, "\u2192")))), /*#__PURE__*/React.createElement(_Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_15__.PremiumTier, {
     loading: loading,
     activeData: activeData,
     fromDate: fromDate,
@@ -55989,6 +56290,9 @@ var reportsLinks = [{
 }, {
   name: "Channel Analytics",
   path: "/reports/marketing"
+}, {
+  name: "Compliance overview",
+  path: "/reports/compliance"
 }];
 var HUB_CARDS = [{
   key: "audit-log",
@@ -57982,19 +58286,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ Workspaces)
 /* harmony export */ });
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Components_widget_Loading__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Components/widget/Loading */ "./src/Components/widget/Loading.js");
-/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
-/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
-/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Functions/domainVerification */ "./src/Functions/domainVerification.js");
-/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../API/api.js */ "./src/API/api.js");
+/* harmony import */ var _Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/widget/Loading */ "./src/Components/widget/Loading.js");
+/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Functions_domainVerification__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Functions/domainVerification */ "./src/Functions/domainVerification.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
@@ -58003,15 +58313,11 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
   useCallback = _React.useCallback;
+
 
 
 
@@ -58038,51 +58344,6 @@ function getCurrentOrgId() {
 }
 
 /**
- * Generate a simple unique ID for workspaces (temporary until backend)
- */
-function generateId() {
-  return "ws_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
-}
-
-/**
- * Get workspaces from localStorage (temporary storage until backend)
- */
-function getStoredWorkspaces() {
-  try {
-    var stored = localStorage.getItem("agency_workspaces");
-    if (stored) {
-      var workspaces = JSON.parse(stored);
-      // Migrate old single-domain workspaces to multi-domain format
-      return workspaces.map(function (ws) {
-        if (ws.domain && !ws.domains) {
-          return _objectSpread(_objectSpread({}, ws), {}, {
-            domains: [{
-              domain: ws.domain,
-              isPrimary: true
-            }]
-          });
-        }
-        return ws;
-      });
-    }
-  } catch (_unused2) {
-    /* ignore */
-  }
-  return [];
-}
-
-/**
- * Save workspaces to localStorage (temporary storage until backend)
- */
-function saveWorkspaces(workspaces) {
-  try {
-    localStorage.setItem("agency_workspaces", JSON.stringify(workspaces));
-  } catch (_unused3) {
-    /* ignore */
-  }
-}
-
-/**
  * Validate email format
  */
 function isValidEmail(email) {
@@ -58102,90 +58363,142 @@ function Workspaces() {
     _useState2 = _slicedToArray(_useState, 2),
     loading = _useState2[0],
     setLoading = _useState2[1];
-  var _useState3 = useState([]),
+  var _useState3 = useState(null),
     _useState4 = _slicedToArray(_useState3, 2),
-    workspaces = _useState4[0],
-    setWorkspaces = _useState4[1];
-  var _useState5 = useState(false),
+    loadError = _useState4[0],
+    setLoadError = _useState4[1];
+  var _useState5 = useState([]),
     _useState6 = _slicedToArray(_useState5, 2),
-    showCreateModal = _useState6[0],
-    setShowCreateModal = _useState6[1];
-  var _useState7 = useState(null),
+    workspaces = _useState6[0],
+    setWorkspaces = _useState6[1];
+  var _useState7 = useState(false),
     _useState8 = _slicedToArray(_useState7, 2),
-    modalWorkspace = _useState8[0],
-    setModalWorkspace = _useState8[1];
+    showCreateModal = _useState8[0],
+    setShowCreateModal = _useState8[1];
+  var _useState9 = useState(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    modalWorkspace = _useState0[0],
+    setModalWorkspace = _useState0[1];
 
   // Form fields
-  var _useState9 = useState(""),
-    _useState0 = _slicedToArray(_useState9, 2),
-    editName = _useState0[0],
-    setEditName = _useState0[1];
   var _useState1 = useState(""),
     _useState10 = _slicedToArray(_useState1, 2),
-    editDescription = _useState10[0],
-    setEditDescription = _useState10[1];
-  var _useState11 = useState([]),
+    editName = _useState10[0],
+    setEditName = _useState10[1];
+  var _useState11 = useState(""),
     _useState12 = _slicedToArray(_useState11, 2),
-    editDomains = _useState12[0],
-    setEditDomains = _useState12[1];
-  var _useState13 = useState(""),
+    editDescription = _useState12[0],
+    setEditDescription = _useState12[1];
+  var _useState13 = useState([]),
     _useState14 = _slicedToArray(_useState13, 2),
-    newDomain = _useState14[0],
-    setNewDomain = _useState14[1];
-  var _useState15 = useState([]),
+    editDomains = _useState14[0],
+    setEditDomains = _useState14[1];
+  var _useState15 = useState(""),
     _useState16 = _slicedToArray(_useState15, 2),
-    editUsers = _useState16[0],
-    setEditUsers = _useState16[1];
-  var _useState17 = useState(""),
+    newDomain = _useState16[0],
+    setNewDomain = _useState16[1];
+  var _useState17 = useState([]),
     _useState18 = _slicedToArray(_useState17, 2),
-    newUserEmail = _useState18[0],
-    setNewUserEmail = _useState18[1];
-  var _useState19 = useState(null),
+    editUsers = _useState18[0],
+    setEditUsers = _useState18[1];
+  var _useState19 = useState(""),
     _useState20 = _slicedToArray(_useState19, 2),
-    modalError = _useState20[0],
-    setModalError = _useState20[1];
+    newUserEmail = _useState20[0],
+    setNewUserEmail = _useState20[1];
   var _useState21 = useState(null),
     _useState22 = _slicedToArray(_useState21, 2),
-    pending = _useState22[0],
-    setPending = _useState22[1];
-  var _useState23 = useState(false),
+    modalError = _useState22[0],
+    setModalError = _useState22[1];
+  var _useState23 = useState(null),
     _useState24 = _slicedToArray(_useState23, 2),
-    deleteConfirm = _useState24[0],
-    setDeleteConfirm = _useState24[1];
-  var _useState25 = useState(null),
+    pending = _useState24[0],
+    setPending = _useState24[1];
+  var _useState25 = useState(false),
     _useState26 = _slicedToArray(_useState25, 2),
-    successMessage = _useState26[0],
-    setSuccessMessage = _useState26[1];
-
-  // Verification modal state
+    deleteConfirm = _useState26[0],
+    setDeleteConfirm = _useState26[1];
   var _useState27 = useState(null),
     _useState28 = _slicedToArray(_useState27, 2),
-    verifyModalDomain = _useState28[0],
-    setVerifyModalDomain = _useState28[1];
-  var _useState29 = useState(false),
+    successMessage = _useState28[0],
+    setSuccessMessage = _useState28[1];
+
+  // Verification modal state
+  var _useState29 = useState(null),
     _useState30 = _slicedToArray(_useState29, 2),
-    verifyPending = _useState30[0],
-    setVerifyPending = _useState30[1];
-  var _useState31 = useState(null),
+    verifyModalDomain = _useState30[0],
+    setVerifyModalDomain = _useState30[1];
+  var _useState31 = useState(false),
     _useState32 = _slicedToArray(_useState31, 2),
-    verifyResult = _useState32[0],
-    setVerifyResult = _useState32[1];
-  var _useState33 = useState(0),
+    verifyPending = _useState32[0],
+    setVerifyPending = _useState32[1];
+  var _useState33 = useState(null),
     _useState34 = _slicedToArray(_useState33, 2),
-    verificationRefreshKey = _useState34[0],
-    setVerificationRefreshKey = _useState34[1];
+    verifyResult = _useState34[0],
+    setVerifyResult = _useState34[1];
+  var _useState35 = useState(0),
+    _useState36 = _slicedToArray(_useState35, 2),
+    verificationRefreshKey = _useState36[0],
+    setVerificationRefreshKey = _useState36[1];
   var orgId = getCurrentOrgId();
 
-  // Load workspaces on mount
+  // Load workspaces from backend on mount
   useEffect(function () {
-    // Simulate loading delay for consistency with other pages
-    var timer = setTimeout(function () {
-      setWorkspaces(getStoredWorkspaces());
+    var id = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation();
+    if (!id) {
       setLoading(false);
-    }, 300);
-    return function () {
-      return clearTimeout(timer);
-    };
+      setLoadError("No organisation found. Please log in again.");
+      return;
+    }
+    setLoadError(null);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_1__["default"].workspaces.list.url, {
+      method: "GET",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getToken(),
+        "Organisation": String(id),
+        "Content-Type": "application/json"
+      }
+    }).then(/*#__PURE__*/function () {
+      var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(res) {
+        var data;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.n) {
+            case 0:
+              _context.n = 1;
+              return res.json();
+            case 1:
+              data = _context.v;
+              if (res.ok) {
+                _context.n = 2;
+                break;
+              }
+              throw new Error((data === null || data === void 0 ? void 0 : data.error) || "Server error (".concat(res.status, ")"));
+            case 2:
+              return _context.a(2, data);
+          }
+        }, _callee);
+      }));
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }()).then(function (data) {
+      var loaded = data.workspaces || [];
+      setWorkspaces(loaded);
+      // Pre-populate verification cache so domain badges render
+      // correctly without waiting for the verify modal to open first.
+      loaded.forEach(function (ws) {
+        (ws.domains || []).forEach(function (d) {
+          if (d.verification) {
+            (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_6__.populateVerificationCache)(d.domain, id, d.verification);
+          }
+        });
+      });
+    })["catch"](function (err) {
+      console.error("[Workspaces] load failed:", err);
+      setLoadError(err.message || "Failed to load workspaces.");
+      setWorkspaces([]);
+    })["finally"](function () {
+      return setLoading(false);
+    });
   }, []);
   var closeModal = useCallback(function () {
     setShowCreateModal(false);
@@ -58202,15 +58515,47 @@ function Workspaces() {
   }, []);
 
   // Verification modal handlers
-  function openVerifyModal(domain) {
-    if (!orgId) return;
-    var record = (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__.getOrCreateVerificationRecord)(domain, orgId);
-    setVerifyModalDomain({
-      domain: domain,
-      record: record
-    });
-    setVerifyResult(null);
-    setVerifyPending(false);
+  function openVerifyModal(_x2) {
+    return _openVerifyModal.apply(this, arguments);
+  }
+  function _openVerifyModal() {
+    _openVerifyModal = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(domain) {
+      var record, _t;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            if (orgId) {
+              _context2.n = 1;
+              break;
+            }
+            return _context2.a(2);
+          case 1:
+            setVerifyModalDomain({
+              domain: domain,
+              record: null
+            });
+            setVerifyResult(null);
+            setVerifyPending(false);
+            _context2.p = 2;
+            _context2.n = 3;
+            return (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_6__.getOrCreateVerificationRecord)(domain, orgId);
+          case 3:
+            record = _context2.v;
+            setVerifyModalDomain({
+              domain: domain,
+              record: record
+            });
+            _context2.n = 5;
+            break;
+          case 4:
+            _context2.p = 4;
+            _t = _context2.v;
+          case 5:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[2, 4]]);
+    }));
+    return _openVerifyModal.apply(this, arguments);
   }
   function closeVerifyModal() {
     setVerifyModalDomain(null);
@@ -58221,24 +58566,24 @@ function Workspaces() {
     return _handleVerifyCheck.apply(this, arguments);
   }
   function _handleVerifyCheck() {
-    _handleVerifyCheck = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-      var result, _t;
-      return _regenerator().w(function (_context) {
-        while (1) switch (_context.p = _context.n) {
+    _handleVerifyCheck = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+      var result, _t2;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
           case 0:
             if (!(!verifyModalDomain || !orgId)) {
-              _context.n = 1;
+              _context3.n = 1;
               break;
             }
-            return _context.a(2);
+            return _context3.a(2);
           case 1:
             setVerifyPending(true);
             setVerifyResult(null);
-            _context.p = 2;
-            _context.n = 3;
-            return (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__.checkDomainVerification)(verifyModalDomain.domain, orgId);
+            _context3.p = 2;
+            _context3.n = 3;
+            return (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_6__.checkDomainVerification)(verifyModalDomain.domain, orgId);
           case 3:
-            result = _context.v;
+            result = _context3.v;
             setVerifyResult(result);
             if (result.success) {
               // Refresh the verification status display
@@ -58246,23 +58591,23 @@ function Workspaces() {
                 return k + 1;
               });
             }
-            _context.n = 5;
+            _context3.n = 5;
             break;
           case 4:
-            _context.p = 4;
-            _t = _context.v;
+            _context3.p = 4;
+            _t2 = _context3.v;
             setVerifyResult({
               success: false,
               message: "An error occurred while checking verification."
             });
           case 5:
-            _context.p = 5;
+            _context3.p = 5;
             setVerifyPending(false);
-            return _context.f(5);
+            return _context3.f(5);
           case 6:
-            return _context.a(2);
+            return _context3.a(2);
         }
-      }, _callee, null, [[2, 4, 5, 6]]);
+      }, _callee3, null, [[2, 4, 5, 6]]);
     }));
     return _handleVerifyCheck.apply(this, arguments);
   }
@@ -58405,101 +58750,245 @@ function Workspaces() {
       return u.email.toLowerCase() !== email.toLowerCase();
     }));
   }
-  function handleCreate(e) {
-    e.preventDefault();
-    var name = editName.trim();
-    if (!name) {
-      setModalError("Enter a workspace name.");
-      return;
-    }
-    if (editDomains.length === 0) {
-      setModalError("Add at least one domain to the workspace.");
-      return;
-    }
-    setModalError(null);
-    setPending("create");
-
-    // Simulate API call delay
-    setTimeout(function () {
-      var newWorkspace = {
-        id: generateId(),
-        name: name,
-        description: editDescription.trim(),
-        domains: editDomains,
-        users: editUsers,
-        createdAt: new Date().toISOString(),
-        createdBy: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getUserId()
-      };
-      var updated = [].concat(_toConsumableArray(workspaces), [newWorkspace]);
-      setWorkspaces(updated);
-      saveWorkspaces(updated);
-      setPending(null);
-      closeModal();
-      setSuccessMessage("Workspace created successfully.");
-      setTimeout(function () {
-        return setSuccessMessage(null);
-      }, 3000);
-    }, 500);
+  function handleCreate(_x3) {
+    return _handleCreate.apply(this, arguments);
   }
-  function handleSave(e) {
-    e.preventDefault();
-    if (!modalWorkspace) return;
-    var name = editName.trim();
-    if (!name) {
-      setModalError("Enter a workspace name.");
-      return;
-    }
-    if (editDomains.length === 0) {
-      setModalError("Add at least one domain to the workspace.");
-      return;
-    }
-    setModalError(null);
-    setDeleteConfirm(false);
-    setPending("save");
-
-    // Simulate API call delay
-    setTimeout(function () {
-      var updated = workspaces.map(function (ws) {
-        return ws.id === modalWorkspace.id ? _objectSpread(_objectSpread({}, ws), {}, {
-          name: name,
-          description: editDescription.trim(),
-          domains: editDomains,
-          users: editUsers,
-          updatedAt: new Date().toISOString()
-        }) : ws;
-      });
-      setWorkspaces(updated);
-      saveWorkspaces(updated);
-      setPending(null);
-      closeModal();
-      setSuccessMessage("Workspace updated successfully.");
-      setTimeout(function () {
-        return setSuccessMessage(null);
-      }, 3000);
-    }, 500);
+  function _handleCreate() {
+    _handleCreate = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(e) {
+      var name, res, data, _t3;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            e.preventDefault();
+            name = editName.trim();
+            if (name) {
+              _context4.n = 1;
+              break;
+            }
+            setModalError("Enter a workspace name.");
+            return _context4.a(2);
+          case 1:
+            if (!(editDomains.length === 0)) {
+              _context4.n = 2;
+              break;
+            }
+            setModalError("Add at least one domain to the workspace.");
+            return _context4.a(2);
+          case 2:
+            setModalError(null);
+            setPending("create");
+            _context4.p = 3;
+            _context4.n = 4;
+            return fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_1__["default"].workspaces.create.url, {
+              method: "POST",
+              headers: {
+                "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getToken(),
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                name: name,
+                description: editDescription.trim(),
+                organisationId: orgId,
+                domains: editDomains,
+                users: editUsers
+              })
+            });
+          case 4:
+            res = _context4.v;
+            _context4.n = 5;
+            return res.json();
+          case 5:
+            data = _context4.v;
+            if (res.ok) {
+              _context4.n = 6;
+              break;
+            }
+            setModalError(data.error || "Failed to create workspace.");
+            setPending(null);
+            return _context4.a(2);
+          case 6:
+            setWorkspaces(function (prev) {
+              return [].concat(_toConsumableArray(prev), [data.workspace]);
+            });
+            setPending(null);
+            closeModal();
+            setSuccessMessage("Workspace created successfully.");
+            setTimeout(function () {
+              return setSuccessMessage(null);
+            }, 3000);
+            _context4.n = 8;
+            break;
+          case 7:
+            _context4.p = 7;
+            _t3 = _context4.v;
+            setModalError("Network error. Please try again.");
+            setPending(null);
+          case 8:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[3, 7]]);
+    }));
+    return _handleCreate.apply(this, arguments);
+  }
+  function handleSave(_x4) {
+    return _handleSave.apply(this, arguments);
+  }
+  function _handleSave() {
+    _handleSave = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(e) {
+      var name, res, data, _t4;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
+          case 0:
+            e.preventDefault();
+            if (modalWorkspace) {
+              _context5.n = 1;
+              break;
+            }
+            return _context5.a(2);
+          case 1:
+            name = editName.trim();
+            if (name) {
+              _context5.n = 2;
+              break;
+            }
+            setModalError("Enter a workspace name.");
+            return _context5.a(2);
+          case 2:
+            if (!(editDomains.length === 0)) {
+              _context5.n = 3;
+              break;
+            }
+            setModalError("Add at least one domain to the workspace.");
+            return _context5.a(2);
+          case 3:
+            setModalError(null);
+            setDeleteConfirm(false);
+            setPending("save");
+            _context5.p = 4;
+            _context5.n = 5;
+            return fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_1__["default"].workspaces.update.url, {
+              method: "POST",
+              headers: {
+                "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getToken(),
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                workspaceId: modalWorkspace.id,
+                name: name,
+                description: editDescription.trim(),
+                organisationId: orgId,
+                domains: editDomains,
+                users: editUsers
+              })
+            });
+          case 5:
+            res = _context5.v;
+            _context5.n = 6;
+            return res.json();
+          case 6:
+            data = _context5.v;
+            if (res.ok) {
+              _context5.n = 7;
+              break;
+            }
+            setModalError(data.error || "Failed to update workspace.");
+            setPending(null);
+            return _context5.a(2);
+          case 7:
+            setWorkspaces(function (prev) {
+              return prev.map(function (ws) {
+                return ws.id === modalWorkspace.id ? data.workspace : ws;
+              });
+            });
+            setPending(null);
+            closeModal();
+            setSuccessMessage("Workspace updated successfully.");
+            setTimeout(function () {
+              return setSuccessMessage(null);
+            }, 3000);
+            _context5.n = 9;
+            break;
+          case 8:
+            _context5.p = 8;
+            _t4 = _context5.v;
+            setModalError("Network error. Please try again.");
+            setPending(null);
+          case 9:
+            return _context5.a(2);
+        }
+      }, _callee5, null, [[4, 8]]);
+    }));
+    return _handleSave.apply(this, arguments);
   }
   function handleDelete() {
-    if (!modalWorkspace) return;
-    setModalError(null);
-    setPending("delete");
-
-    // Simulate API call delay
-    setTimeout(function () {
-      var updated = workspaces.filter(function (ws) {
-        return ws.id !== modalWorkspace.id;
-      });
-      setWorkspaces(updated);
-      saveWorkspaces(updated);
-      setPending(null);
-      closeModal();
-      setSuccessMessage("Workspace deleted.");
-      setTimeout(function () {
-        return setSuccessMessage(null);
-      }, 3000);
-    }, 500);
+    return _handleDelete.apply(this, arguments);
+  } // Get primary domain for display
+  function _handleDelete() {
+    _handleDelete = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+      var res, data, _t5;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.p = _context6.n) {
+          case 0:
+            if (modalWorkspace) {
+              _context6.n = 1;
+              break;
+            }
+            return _context6.a(2);
+          case 1:
+            setModalError(null);
+            setPending("delete");
+            _context6.p = 2;
+            _context6.n = 3;
+            return fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_1__["default"].workspaces["delete"].url, {
+              method: "POST",
+              headers: {
+                "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getToken(),
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                workspaceId: modalWorkspace.id,
+                organisationId: orgId
+              })
+            });
+          case 3:
+            res = _context6.v;
+            _context6.n = 4;
+            return res.json();
+          case 4:
+            data = _context6.v;
+            if (res.ok) {
+              _context6.n = 5;
+              break;
+            }
+            setModalError(data.error || "Failed to delete workspace.");
+            setPending(null);
+            return _context6.a(2);
+          case 5:
+            setWorkspaces(function (prev) {
+              return prev.filter(function (ws) {
+                return ws.id !== modalWorkspace.id;
+              });
+            });
+            setPending(null);
+            closeModal();
+            setSuccessMessage("Workspace deleted.");
+            setTimeout(function () {
+              return setSuccessMessage(null);
+            }, 3000);
+            _context6.n = 7;
+            break;
+          case 6:
+            _context6.p = 6;
+            _t5 = _context6.v;
+            setModalError("Network error. Please try again.");
+            setPending(null);
+          case 7:
+            return _context6.a(2);
+        }
+      }, _callee6, null, [[2, 6]]);
+    }));
+    return _handleDelete.apply(this, arguments);
   }
-
-  // Get primary domain for display
   function getPrimaryDomain(ws) {
     var _ws$domains, _ws$domains2;
     var primary = (_ws$domains = ws.domains) === null || _ws$domains === void 0 ? void 0 : _ws$domains.find(function (d) {
@@ -58508,150 +58997,21 @@ function Workspaces() {
     return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains2 = ws.domains) === null || _ws$domains2 === void 0 || (_ws$domains2 = _ws$domains2[0]) === null || _ws$domains2 === void 0 ? void 0 : _ws$domains2.domain) || ws.domain || "—";
   }
 
-  // Domain list component with verification status
-  var DomainManagementSection = function DomainManagementSection() {
-    // Get verification status for each domain
-    var getVerificationInfo = function getVerificationInfo(domain) {
-      if (!orgId) return {
-        label: "—",
-        type: "unknown",
-        icon: "?"
-      };
-      return (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__.getVerificationStatusLabel)(domain, orgId);
+  // Helper — sync read from cache, safe to call during render
+  function getVerificationInfo(domain) {
+    if (!orgId) return {
+      label: "—",
+      type: "unknown",
+      icon: "?"
     };
-    return /*#__PURE__*/React.createElement("div", {
-      className: "settings-workspace__domains-section"
-    }, /*#__PURE__*/React.createElement("label", {
-      className: "settings-org-modal__label"
-    }, "Domains"), /*#__PURE__*/React.createElement("div", {
-      className: "settings-workspace__domains-add"
-    }, /*#__PURE__*/React.createElement("input", {
-      type: "text",
-      className: "settings-org-modal__text-input settings-workspace__domain-input",
-      placeholder: "e.g., client-site.com",
-      value: newDomain,
-      onChange: function onChange(e) {
-        return setNewDomain(e.target.value);
-      },
-      onKeyDown: function onKeyDown(e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          addDomain();
-        }
-      },
-      disabled: !!pending
-    }), /*#__PURE__*/React.createElement("button", {
-      type: "button",
-      className: "settings-workspace__add-domain-btn",
-      onClick: addDomain,
-      disabled: !!pending
-    }, "Add")), editDomains.length > 0 ? /*#__PURE__*/React.createElement("ul", {
-      className: "settings-workspace__domains-list",
-      key: verificationRefreshKey
-    }, editDomains.map(function (d) {
-      var verifyInfo = getVerificationInfo(d.domain);
-      var daysUntil = orgId ? (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_5__.getDaysUntilReverification)(d.domain, orgId) : null;
-      return /*#__PURE__*/React.createElement("li", {
-        key: d.domain,
-        className: "settings-workspace__domain-item"
-      }, /*#__PURE__*/React.createElement("div", {
-        className: "settings-workspace__domain-info"
-      }, /*#__PURE__*/React.createElement("span", {
-        className: "settings-workspace__domain-name"
-      }, d.domain), d.isPrimary && /*#__PURE__*/React.createElement("span", {
-        className: "settings-workspace__primary-badge"
-      }, "Primary"), /*#__PURE__*/React.createElement("span", {
-        className: "settings-workspace__verify-badge settings-workspace__verify-badge--".concat(verifyInfo.type),
-        title: verifyInfo.type === "verified" && daysUntil != null ? "Re-verification in ".concat(daysUntil, " days") : verifyInfo.label
-      }, /*#__PURE__*/React.createElement("span", {
-        className: "settings-workspace__verify-icon"
-      }, verifyInfo.icon), verifyInfo.label)), /*#__PURE__*/React.createElement("div", {
-        className: "settings-workspace__domain-actions"
-      }, /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "settings-workspace__verify-btn",
-        onClick: function onClick() {
-          return openVerifyModal(d.domain);
-        },
-        disabled: !!pending,
-        title: "Verify domain ownership"
-      }, "Verify"), !d.isPrimary && /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "settings-workspace__set-primary-btn",
-        onClick: function onClick() {
-          return setPrimaryDomain(d.domain);
-        },
-        disabled: !!pending,
-        title: "Set as primary"
-      }, "Set primary"), /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "settings-workspace__remove-domain-btn",
-        onClick: function onClick() {
-          return removeDomain(d.domain);
-        },
-        disabled: !!pending,
-        title: "Remove domain"
-      }, "\xD7")));
-    })) : /*#__PURE__*/React.createElement("p", {
-      className: "settings-workspace__no-domains"
-    }, "No domains added yet. Add at least one domain above."));
-  };
-
-  // User list component
-  var UserManagementSection = function UserManagementSection() {
-    return /*#__PURE__*/React.createElement("div", {
-      className: "settings-workspace__users-section"
-    }, /*#__PURE__*/React.createElement("label", {
-      className: "settings-org-modal__label"
-    }, "Users"), /*#__PURE__*/React.createElement("div", {
-      className: "settings-workspace__users-add"
-    }, /*#__PURE__*/React.createElement("input", {
-      type: "email",
-      className: "settings-org-modal__text-input settings-workspace__user-input",
-      placeholder: "user@example.com",
-      value: newUserEmail,
-      onChange: function onChange(e) {
-        return setNewUserEmail(e.target.value);
-      },
-      onKeyDown: function onKeyDown(e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          addUser();
-        }
-      },
-      disabled: !!pending
-    }), /*#__PURE__*/React.createElement("button", {
-      type: "button",
-      className: "settings-workspace__add-user-btn",
-      onClick: addUser,
-      disabled: !!pending
-    }, "Add")), editUsers.length > 0 ? /*#__PURE__*/React.createElement("ul", {
-      className: "settings-workspace__users-list"
-    }, editUsers.map(function (user) {
-      return /*#__PURE__*/React.createElement("li", {
-        key: user.email,
-        className: "settings-workspace__user-item"
-      }, /*#__PURE__*/React.createElement("span", {
-        className: "settings-workspace__user-email"
-      }, user.email), /*#__PURE__*/React.createElement("button", {
-        type: "button",
-        className: "settings-workspace__remove-user-btn",
-        onClick: function onClick() {
-          return removeUser(user.email);
-        },
-        disabled: !!pending,
-        title: "Remove user"
-      }, "\xD7"));
-    })) : /*#__PURE__*/React.createElement("p", {
-      className: "settings-workspace__no-users"
-    }, "No users added yet. Add users by email above."));
-  };
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_3__.reportsLinks,
+    return (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_6__.getVerificationStatusLabel)(domain, orgId);
+  }
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_4__.reportsLinks,
     title: "Settings"
   }), /*#__PURE__*/React.createElement("main", {
     className: "dashboard-content settings-subpage settings-subpage--wide"
-  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_5__["default"], {
     title: "Client Workspaces"
   }), /*#__PURE__*/React.createElement(Link, {
     className: "settings-subpage__back",
@@ -58673,7 +59033,11 @@ function Workspaces() {
     className: "settings-subpage__intro"
   }, "Client workspaces managed by your agency. Contact an admin to add or modify workspaces."), /*#__PURE__*/React.createElement("div", {
     className: "settings-table-wrap"
-  }, loading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_1__.CurrentPageLoading, null) : workspaces.length > 0 ? /*#__PURE__*/React.createElement("table", {
+  }, loading ? /*#__PURE__*/React.createElement(_Components_widget_Loading__WEBPACK_IMPORTED_MODULE_2__.CurrentPageLoading, null) : loadError ? /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status settings-subpage__status--error"
+  }, loadError) : workspaces.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__empty"
+  }, "No workspaces yet. Create one to get started.") : /*#__PURE__*/React.createElement("table", {
     className: "settings-table"
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Domains"), /*#__PURE__*/React.createElement("th", null, "Users"), /*#__PURE__*/React.createElement("th", null, "Description"), /*#__PURE__*/React.createElement("th", {
     style: {
@@ -58704,9 +59068,7 @@ function Workspaces() {
         color: "rgba(180,180,180,0.6)"
       }
     }, "\u2014")));
-  }))) : /*#__PURE__*/React.createElement("p", {
-    className: "settings-subpage__empty"
-  }, "No client workspaces yet. Create one to start managing client domains."))), showCreateModal && /*#__PURE__*/React.createElement("div", {
+  }))))), showCreateModal && /*#__PURE__*/React.createElement("div", {
     className: "settings-blacklist-modal",
     role: "dialog",
     "aria-modal": "true",
@@ -58752,7 +59114,127 @@ function Workspaces() {
     },
     autoComplete: "off",
     disabled: !!pending
-  })), /*#__PURE__*/React.createElement(DomainManagementSection, null), /*#__PURE__*/React.createElement(UserManagementSection, null), modalError && /*#__PURE__*/React.createElement("p", {
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "settings-workspace__domains-section"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, "Domains"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-workspace__domains-add"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "settings-org-modal__text-input settings-workspace__domain-input",
+    placeholder: "e.g., client-site.com",
+    value: newDomain,
+    onChange: function onChange(e) {
+      return setNewDomain(e.target.value);
+    },
+    onKeyDown: function onKeyDown(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addDomain();
+      }
+    },
+    disabled: !!pending
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-workspace__add-domain-btn",
+    onClick: addDomain,
+    disabled: !!pending
+  }, "Add")), editDomains.length > 0 ? /*#__PURE__*/React.createElement("ul", {
+    className: "settings-workspace__domains-list",
+    key: verificationRefreshKey
+  }, editDomains.map(function (d) {
+    var verifyInfo = getVerificationInfo(d.domain);
+    var daysUntil = orgId ? (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_6__.getDaysUntilReverification)(d.domain, orgId) : null;
+    return /*#__PURE__*/React.createElement("li", {
+      key: d.domain,
+      className: "settings-workspace__domain-item"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "settings-workspace__domain-info"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__domain-name"
+    }, d.domain), d.isPrimary && /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__primary-badge"
+    }, "Primary"), verifyInfo.type !== "none" && /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__verify-badge settings-workspace__verify-badge--".concat(verifyInfo.type),
+      title: verifyInfo.type === "verified" && daysUntil != null ? "Re-verification in ".concat(daysUntil, " days") : verifyInfo.label
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__verify-icon"
+    }, verifyInfo.icon), verifyInfo.label)), /*#__PURE__*/React.createElement("div", {
+      className: "settings-workspace__domain-actions"
+    }, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__verify-btn",
+      onClick: function onClick() {
+        return openVerifyModal(d.domain);
+      },
+      disabled: !!pending,
+      title: "Verify domain ownership"
+    }, "Verify"), !d.isPrimary && /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__set-primary-btn",
+      onClick: function onClick() {
+        return setPrimaryDomain(d.domain);
+      },
+      disabled: !!pending,
+      title: "Set as primary"
+    }, "Set primary"), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__remove-domain-btn",
+      onClick: function onClick() {
+        return removeDomain(d.domain);
+      },
+      disabled: !!pending,
+      title: "Remove domain"
+    }, "\xD7")));
+  })) : /*#__PURE__*/React.createElement("p", {
+    className: "settings-workspace__no-domains"
+  }, "No domains added yet. Add at least one domain above.")), /*#__PURE__*/React.createElement("div", {
+    className: "settings-workspace__users-section"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, "Users"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-workspace__users-add"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "email",
+    className: "settings-org-modal__text-input settings-workspace__user-input",
+    placeholder: "user@example.com",
+    value: newUserEmail,
+    onChange: function onChange(e) {
+      return setNewUserEmail(e.target.value);
+    },
+    onKeyDown: function onKeyDown(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addUser();
+      }
+    },
+    disabled: !!pending
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-workspace__add-user-btn",
+    onClick: addUser,
+    disabled: !!pending
+  }, "Add")), editUsers.length > 0 ? /*#__PURE__*/React.createElement("ul", {
+    className: "settings-workspace__users-list"
+  }, editUsers.map(function (user) {
+    return /*#__PURE__*/React.createElement("li", {
+      key: user.email,
+      className: "settings-workspace__user-item"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__user-email"
+    }, user.email), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__remove-user-btn",
+      onClick: function onClick() {
+        return removeUser(user.email);
+      },
+      disabled: !!pending,
+      title: "Remove user"
+    }, "\xD7"));
+  })) : /*#__PURE__*/React.createElement("p", {
+    className: "settings-workspace__no-users"
+  }, "No users added yet. Add users by email above.")), modalError && /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__status settings-subpage__status--error",
     style: {
       marginBottom: 14,
@@ -58813,7 +59295,127 @@ function Workspaces() {
     },
     autoComplete: "off",
     disabled: !!pending
-  })), /*#__PURE__*/React.createElement(DomainManagementSection, null), /*#__PURE__*/React.createElement(UserManagementSection, null), modalError && /*#__PURE__*/React.createElement("p", {
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "settings-workspace__domains-section"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, "Domains"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-workspace__domains-add"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "settings-org-modal__text-input settings-workspace__domain-input",
+    placeholder: "e.g., client-site.com",
+    value: newDomain,
+    onChange: function onChange(e) {
+      return setNewDomain(e.target.value);
+    },
+    onKeyDown: function onKeyDown(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addDomain();
+      }
+    },
+    disabled: !!pending
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-workspace__add-domain-btn",
+    onClick: addDomain,
+    disabled: !!pending
+  }, "Add")), editDomains.length > 0 ? /*#__PURE__*/React.createElement("ul", {
+    className: "settings-workspace__domains-list",
+    key: verificationRefreshKey
+  }, editDomains.map(function (d) {
+    var verifyInfo = getVerificationInfo(d.domain);
+    var daysUntil = orgId ? (0,_Functions_domainVerification__WEBPACK_IMPORTED_MODULE_6__.getDaysUntilReverification)(d.domain, orgId) : null;
+    return /*#__PURE__*/React.createElement("li", {
+      key: d.domain,
+      className: "settings-workspace__domain-item"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "settings-workspace__domain-info"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__domain-name"
+    }, d.domain), d.isPrimary && /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__primary-badge"
+    }, "Primary"), verifyInfo.type !== "none" && /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__verify-badge settings-workspace__verify-badge--".concat(verifyInfo.type),
+      title: verifyInfo.type === "verified" && daysUntil != null ? "Re-verification in ".concat(daysUntil, " days") : verifyInfo.label
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__verify-icon"
+    }, verifyInfo.icon), verifyInfo.label)), /*#__PURE__*/React.createElement("div", {
+      className: "settings-workspace__domain-actions"
+    }, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__verify-btn",
+      onClick: function onClick() {
+        return openVerifyModal(d.domain);
+      },
+      disabled: !!pending,
+      title: "Verify domain ownership"
+    }, "Verify"), !d.isPrimary && /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__set-primary-btn",
+      onClick: function onClick() {
+        return setPrimaryDomain(d.domain);
+      },
+      disabled: !!pending,
+      title: "Set as primary"
+    }, "Set primary"), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__remove-domain-btn",
+      onClick: function onClick() {
+        return removeDomain(d.domain);
+      },
+      disabled: !!pending,
+      title: "Remove domain"
+    }, "\xD7")));
+  })) : /*#__PURE__*/React.createElement("p", {
+    className: "settings-workspace__no-domains"
+  }, "No domains added yet. Add at least one domain above.")), /*#__PURE__*/React.createElement("div", {
+    className: "settings-workspace__users-section"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, "Users"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-workspace__users-add"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "email",
+    className: "settings-org-modal__text-input settings-workspace__user-input",
+    placeholder: "user@example.com",
+    value: newUserEmail,
+    onChange: function onChange(e) {
+      return setNewUserEmail(e.target.value);
+    },
+    onKeyDown: function onKeyDown(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addUser();
+      }
+    },
+    disabled: !!pending
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-workspace__add-user-btn",
+    onClick: addUser,
+    disabled: !!pending
+  }, "Add")), editUsers.length > 0 ? /*#__PURE__*/React.createElement("ul", {
+    className: "settings-workspace__users-list"
+  }, editUsers.map(function (user) {
+    return /*#__PURE__*/React.createElement("li", {
+      key: user.email,
+      className: "settings-workspace__user-item"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "settings-workspace__user-email"
+    }, user.email), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-workspace__remove-user-btn",
+      onClick: function onClick() {
+        return removeUser(user.email);
+      },
+      disabled: !!pending,
+      title: "Remove user"
+    }, "\xD7"));
+  })) : /*#__PURE__*/React.createElement("p", {
+    className: "settings-workspace__no-users"
+  }, "No users added yet. Add users by email above.")), modalError && /*#__PURE__*/React.createElement("p", {
     className: "settings-subpage__status settings-subpage__status--error",
     style: {
       marginBottom: 14,
@@ -61278,7 +61880,7 @@ function deriveSystemHealth(_ref) {
  * @param {Record<string, 'ok'|'watch'|'risk'>} [props.complianceRegionRisk] — optional API hints per framework (GDPR, LGPD, CCPA, POPIA)
  */
 function AuditSnapshotCard(props) {
-  var _auditSnapshotMeta$la;
+  var _auditSnapshotMeta$la, _observedCookies$preC, _observedCookies$cons;
   var locale = (0,_Functions_userLocale_js__WEBPACK_IMPORTED_MODULE_4__.useUserLocale)();
   var platformId = props.platformId,
     handle = props.handle,
@@ -61290,7 +61892,9 @@ function AuditSnapshotCard(props) {
     liveData = props.liveData,
     _props$interactionsLo = props.interactionsLoading,
     interactionsLoading = _props$interactionsLo === void 0 ? false : _props$interactionsLo,
-    complianceRegionRisk = props.complianceRegionRisk;
+    complianceRegionRisk = props.complianceRegionRisk,
+    _props$observedCookie = props.observedCookies,
+    observedCookies = _props$observedCookie === void 0 ? null : _props$observedCookie;
   var auditLogPath = useMemo(function () {
     if (!platformId) return "/";
     return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_2__.reportsPath)(platformId, currentDomain, "/user-consents");
@@ -61673,7 +62277,7 @@ function AuditSnapshotCard(props) {
     className: "audit-snapshot-card__title-row"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "audit-snapshot-card__title"
-  }, "Audit Snapshot"), /*#__PURE__*/React.createElement("div", {
+  }, "Audit log"), /*#__PURE__*/React.createElement("div", {
     className: "audit-snapshot-card__health-pill audit-snapshot-card__health-pill--".concat(systemHealth.level),
     title: systemHealth.sub
   }, /*#__PURE__*/React.createElement("span", {
@@ -61684,9 +62288,7 @@ function AuditSnapshotCard(props) {
   }, systemHealth.label))), /*#__PURE__*/React.createElement("p", {
     className: "audit-snapshot-card__health-sub",
     role: "status"
-  }, systemHealth.sub), /*#__PURE__*/React.createElement("p", {
-    className: "audit-snapshot-card__desc"
-  }, "Jump to the audit log for per-user consent records, timestamps, and choices for the same domain and filters you use here."), /*#__PURE__*/React.createElement("div", {
+  }, systemHealth.sub), /*#__PURE__*/React.createElement("div", {
     className: "audit-snapshot-card__meta-lines"
   }, /*#__PURE__*/React.createElement("p", {
     className: "audit-snapshot-card__meta-line"
@@ -61800,15 +62402,17 @@ function AuditSnapshotCard(props) {
         };
       });
     }
-  }))), activeData != null ? /*#__PURE__*/React.createElement("dl", {
+  }))), activeData != null || observedCookies != null ? /*#__PURE__*/React.createElement("dl", {
     className: "audit-snapshot-card__stats"
-  }, activeData.Total != null ? /*#__PURE__*/React.createElement("div", {
+  }, (activeData === null || activeData === void 0 ? void 0 : activeData.Total) != null ? /*#__PURE__*/React.createElement("div", {
     className: "audit-snapshot-card__stat"
-  }, /*#__PURE__*/React.createElement("dt", null, "Interactions (this period)"), /*#__PURE__*/React.createElement("dd", null, Number(activeData.Total).toLocaleString(locale))) : null, activeData.Accepted != null ? /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("dt", null, "Interactions"), /*#__PURE__*/React.createElement("dd", null, Number(activeData.Total).toLocaleString(locale))) : null, (activeData === null || activeData === void 0 ? void 0 : activeData.Accepted) != null ? /*#__PURE__*/React.createElement("div", {
     className: "audit-snapshot-card__stat"
-  }, /*#__PURE__*/React.createElement("dt", null, "Acceptance rate"), /*#__PURE__*/React.createElement("dd", null, Number(activeData.Accepted).toLocaleString(locale), "%")) : null) : /*#__PURE__*/React.createElement("p", {
-    className: "audit-snapshot-card__hint"
-  }, "Metrics load as soon as the dashboard finishes loading."), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("dt", null, "Acceptance rate"), /*#__PURE__*/React.createElement("dd", null, Number(activeData.Accepted).toLocaleString(locale), "%")) : null, (observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count) != null ? /*#__PURE__*/React.createElement("div", {
+    className: "audit-snapshot-card__stat"
+  }, /*#__PURE__*/React.createElement("dt", null, "Pre-consent cookies"), /*#__PURE__*/React.createElement("dd", null, observedCookies.preConsent.count > 0 ? observedCookies.preConsent.count.toLocaleString(locale) : "—")) : null, (observedCookies === null || observedCookies === void 0 || (_observedCookies$cons = observedCookies.consent) === null || _observedCookies$cons === void 0 ? void 0 : _observedCookies$cons.count) != null ? /*#__PURE__*/React.createElement("div", {
+    className: "audit-snapshot-card__stat"
+  }, /*#__PURE__*/React.createElement("dt", null, "Post-consent cookies"), /*#__PURE__*/React.createElement("dd", null, observedCookies.consent.count > 0 ? observedCookies.consent.count.toLocaleString(locale) : "—")) : null) : null, /*#__PURE__*/React.createElement("div", {
     className: "audit-snapshot-card__cta-wrap"
   }, /*#__PURE__*/React.createElement("span", {
     className: "audit-snapshot-card__cta"
@@ -62199,127 +62803,10 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
-/***/ "./src/components/IntastellarAccounts/IntastellarAccounts.js":
-/*!*******************************************************************!*\
-  !*** ./src/components/IntastellarAccounts/IntastellarAccounts.js ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Account)
-/* harmony export */ });
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Style.css */ "./src/components/IntastellarAccounts/Style.css");
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-
-
-var _window$React = window.React,
-  useState = _window$React.useState,
-  useEffect = _window$React.useEffect;
-function Account(props) {
-  var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].DemoMode),
-    _useState2 = _slicedToArray(_useState, 2),
-    demoMode = _useState2[0],
-    isDemoMode = _useState2[1];
-  useEffect(function () {
-    var unsubscribe = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].onDemoModeChange(isDemoMode);
-    return unsubscribe;
-  }, []);
-  return /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu user_content"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__accent",
-    "aria-hidden": "true"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__body"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__brand"
-  }, /*#__PURE__*/React.createElement("img", {
-    src: "https://www.intastellarsolutions.com/assets/logos/intastellar-accounts.svg",
-    alt: "",
-    className: "ia-menu__brand-logo"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__avatar-wrap"
-  }, /*#__PURE__*/React.createElement("img", {
-    src: props.profile.image,
-    alt: "",
-    className: "ia-menu__avatar"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__identity"
-  }, /*#__PURE__*/React.createElement("p", {
-    className: "ia-menu__greeting"
-  }, "Hi, ", props.profile.name, "!"), /*#__PURE__*/React.createElement("p", {
-    className: "ia-menu__email"
-  }, props.profile.email), /*#__PURE__*/React.createElement("a", {
-    href: "https://my.intastellaraccounts.com",
-    target: "_blank",
-    rel: "noopener noreferrer",
-    className: "ia-menu__manage"
-  }, /*#__PURE__*/React.createElement("img", {
-    src: "https://www.intastellarsolutions.com/assets/icons/fav/favicon-96x96.png",
-    alt: "",
-    className: "ia-menu__manage-icon",
-    width: 32,
-    height: 32
-  }), /*#__PURE__*/React.createElement("span", null, "Manage your Intastellar account"))), _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation() == 1 ? /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__workspace-panel",
-    role: "group",
-    "aria-labelledby": "ia-workspace-section"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__workspace-row"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__workspace-copy"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "ia-menu__workspace-kicker",
-    id: "ia-workspace-section"
-  }, "Workspace"), /*#__PURE__*/React.createElement("span", {
-    className: "ia-menu__demo-label",
-    id: "ia-demo-label"
-  }, "Demo mode")), /*#__PURE__*/React.createElement("label", {
-    className: "ia-menu__switch"
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "checkbox",
-    checked: demoMode,
-    onChange: function onChange(e) {
-      return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].SetDemoMode(e.target.checked);
-    },
-    "aria-labelledby": "ia-workspace-section ia-demo-label"
-  }), /*#__PURE__*/React.createElement("span", {
-    className: "ia-menu__switch-slider"
-  }))), /*#__PURE__*/React.createElement("p", {
-    className: "ia-menu__demo-hint"
-  }, "Masks live data across dashboards.")) : null), /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__footer"
-  }, /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "ia-menu__sign-out",
-    onClick: function onClick() {
-      return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].Logout();
-    }
-  }, /*#__PURE__*/React.createElement("svg", {
-    className: "ia-menu__sign-out-icon",
-    viewBox: "0 0 24 24",
-    width: "20",
-    height: "20",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/React.createElement("path", {
-    fill: "currentColor",
-    d: "M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-  })), "Sign out")));
-}
-
-/***/ }),
-
-/***/ "./src/components/IntastellarAccounts/Style.css":
-/*!******************************************************!*\
-  !*** ./src/components/IntastellarAccounts/Style.css ***!
-  \******************************************************/
+/***/ "./src/components/DecisionBehaviourDrawer/Style.css":
+/*!**********************************************************!*\
+  !*** ./src/components/DecisionBehaviourDrawer/Style.css ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -62338,7 +62825,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
 /* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/components/IntastellarAccounts/Style.css");
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/components/DecisionBehaviourDrawer/Style.css");
 
       
       
@@ -62365,6 +62852,165 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
+
+/***/ }),
+
+/***/ "./src/components/DecisionBehaviourDrawer/index.js":
+/*!*********************************************************!*\
+  !*** ./src/components/DecisionBehaviourDrawer/index.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DecisionBehaviourDrawer: () => (/* binding */ DecisionBehaviourDrawer)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Style.css */ "./src/components/DecisionBehaviourDrawer/Style.css");
+/* harmony import */ var _Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/widget/widget.js */ "./src/Components/widget/widget.js");
+/* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
+/* harmony import */ var _Functions_bodyScrollLock_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Functions/bodyScrollLock.js */ "./src/Functions/bodyScrollLock.js");
+
+
+
+
+
+function DecisionBehaviourDrawer(_ref) {
+  var _timeToDecisionSlice$, _timeToDecisionSlice$2, _timeToDecisionSlice$3, _timeToDecisionSlice$4;
+  var isOpen = _ref.isOpen,
+    onClose = _ref.onClose,
+    timeToDecision = _ref.timeToDecision,
+    onChangeRegion = _ref.onChangeRegion,
+    timeToDecisionSlice = _ref.timeToDecisionSlice,
+    fromDate = _ref.fromDate,
+    toDate = _ref.toDate;
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!isOpen) return undefined;
+    var onKey = function onKey(e) {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    (0,_Functions_bodyScrollLock_js__WEBPACK_IMPORTED_MODULE_4__.lockBodyScroll)();
+    return function () {
+      window.removeEventListener("keydown", onKey);
+      (0,_Functions_bodyScrollLock_js__WEBPACK_IMPORTED_MODULE_4__.unlockBodyScroll)();
+    };
+  }, [isOpen, onClose]);
+  if (!isOpen) return null;
+  var fmt = function fmt(v) {
+    return v == null || v === 0 ? "N/A" : v.toLocaleString("de-DE");
+  };
+  var details = timeToDecisionSlice ? {
+    avg: fmt(timeToDecisionSlice.avg) + (timeToDecisionSlice.avg ? "s" : ""),
+    median: fmt(timeToDecisionSlice.median) + (timeToDecisionSlice.median ? "s" : ""),
+    p90: fmt(timeToDecisionSlice.p90) + (timeToDecisionSlice.p90 ? "s" : ""),
+    percentageOver10s: fmt(timeToDecisionSlice.percentageOver10s) + (timeToDecisionSlice.percentageOver10s ? "%" : ""),
+    percentageUnder1s: fmt(timeToDecisionSlice.percentageUnder1s) + (timeToDecisionSlice.percentageUnder1s ? "%" : ""),
+    count: (_timeToDecisionSlice$ = timeToDecisionSlice.count) === null || _timeToDecisionSlice$ === void 0 ? void 0 : _timeToDecisionSlice$.toLocaleString("de-DE"),
+    countOver10s: (_timeToDecisionSlice$2 = timeToDecisionSlice.countOver10s) === null || _timeToDecisionSlice$2 === void 0 ? void 0 : _timeToDecisionSlice$2.toLocaleString("de-DE"),
+    countUnder1s: (_timeToDecisionSlice$3 = timeToDecisionSlice.countUnder1s) === null || _timeToDecisionSlice$3 === void 0 ? void 0 : _timeToDecisionSlice$3.toLocaleString("de-DE"),
+    deviceType: timeToDecisionSlice.deviceType
+  } : null;
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "behaviour-drawer-backdrop",
+    onClick: onClose,
+    "aria-hidden": true
+  }), /*#__PURE__*/React.createElement("aside", {
+    className: "behaviour-drawer",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-labelledby": "behaviour-drawer-title"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "behaviour-drawer__header"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "behaviour-drawer__header-text"
+  }, /*#__PURE__*/React.createElement("h2", {
+    id: "behaviour-drawer-title",
+    className: "behaviour-drawer__title"
+  }, "Decision behaviour"), /*#__PURE__*/React.createElement("p", {
+    className: "behaviour-drawer__sub"
+  }, "How long visitors take to interact with the consent banner")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "behaviour-drawer__close",
+    onClick: onClose,
+    "aria-label": "Close decision behaviour breakdown"
+  }, "\xD7")), /*#__PURE__*/React.createElement("div", {
+    className: "behaviour-drawer__body"
+  }, /*#__PURE__*/React.createElement(_Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    type: "timeToDecision",
+    items: ["global", "eu", "noneEU"],
+    labels: ["Global", "EU", "Non-EU"],
+    defaultValue: timeToDecision,
+    onChange: onChangeRegion
+  }), timeToDecisionSlice ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+    className: "behaviour-drawer__count"
+  }, (_timeToDecisionSlice$4 = timeToDecisionSlice.count) === null || _timeToDecisionSlice$4 === void 0 ? void 0 : _timeToDecisionSlice$4.toLocaleString("de-DE"), " interactions in this period"), /*#__PURE__*/React.createElement("div", {
+    className: "behaviour-drawer__widgets"
+  }, /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    styleType: "small",
+    totalNumber: timeToDecisionSlice.median === 0 ? "N/A" : timeToDecisionSlice.median.toLocaleString("de-DE") + "s",
+    explainer: {
+      exist: true,
+      title: "Median time to decision",
+      content: "Median time taken by users to decide on consent."
+    },
+    type: "Median time to decision",
+    fromDate: fromDate,
+    toDate: toDate,
+    details: details
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    styleType: "small",
+    totalNumber: timeToDecisionSlice.p90 === 0 ? "N/A" : timeToDecisionSlice.p90.toLocaleString("de-DE") + "s",
+    explainer: {
+      exist: true,
+      title: "90th percentile time to decision",
+      content: "Time taken by 90% of users to decide on consent."
+    },
+    type: "P90 decision time",
+    fromDate: fromDate,
+    toDate: toDate,
+    details: details
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    styleType: "small",
+    totalNumber: timeToDecisionSlice.avg === 0 ? "N/A" : timeToDecisionSlice.avg.toLocaleString("de-DE") + "s",
+    explainer: {
+      exist: true,
+      title: "Average time to decision",
+      content: "Average time taken by users to decide on consent."
+    },
+    type: "Average time to decision",
+    fromDate: fromDate,
+    toDate: toDate,
+    details: details
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    styleType: "small",
+    totalNumber: timeToDecisionSlice.percentageOver10s === 0 ? "N/A" : timeToDecisionSlice.percentageOver10s.toLocaleString("de-DE") + "%",
+    explainer: {
+      exist: true,
+      title: "Decided in more than 10 seconds",
+      content: "Percentage of users who took more than 10 seconds to decide on consent."
+    },
+    type: ">10s time to decision",
+    fromDate: fromDate,
+    toDate: toDate,
+    details: details
+  }), /*#__PURE__*/React.createElement(_Components_widget_widget_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    styleType: "small",
+    totalNumber: timeToDecisionSlice.percentageUnder1s === 0 ? "N/A" : timeToDecisionSlice.percentageUnder1s.toLocaleString("de-DE") + "%",
+    explainer: {
+      exist: true,
+      title: "Decided in less than 1 second",
+      content: "Percentage of users who took less than 1 second to decide on consent."
+    },
+    type: "<1s time to decision",
+    fromDate: fromDate,
+    toDate: toDate,
+    details: details
+  }))) : /*#__PURE__*/React.createElement("p", {
+    className: "behaviour-drawer__empty"
+  }, "No time-to-decision data for the selected region."))));
+}
 
 /***/ }),
 
@@ -62756,14 +63402,26 @@ function LiveView(props) {
     _useState2 = _slicedToArray(_useState, 2),
     domainLiveView = _useState2[0],
     setDomainLiveView = _useState2[1];
+  var COUNTRY_PAGE_SIZE = 5;
+  var DOMAIN_SHOW_LIMIT = 4;
   var _useState3 = useState(0),
     _useState4 = _slicedToArray(_useState3, 2),
-    barRenderKey = _useState4[0],
-    setBarRenderKey = _useState4[1];
+    countryPage = _useState4[0],
+    setCountryPage = _useState4[1];
+  var _useState5 = useState(new Set()),
+    _useState6 = _slicedToArray(_useState5, 2),
+    expandedCountries = _useState6[0],
+    setExpandedCountries = _useState6[1];
+  var _useState7 = useState(0),
+    _useState8 = _slicedToArray(_useState7, 2),
+    barRenderKey = _useState8[0],
+    setBarRenderKey = _useState8[1];
   useEffect(function () {
     setBarRenderKey(function (prev) {
       return prev + 1;
     });
+    setCountryPage(0);
+    setExpandedCountries(new Set());
   }, [liveData]);
   useEffect(function () {
     if (typeof props.onLiveDataChange === "function") {
@@ -62826,76 +63484,117 @@ function LiveView(props) {
     });
   }()), /*#__PURE__*/React.createElement("div", {
     className: "liveView-content-data-2"
-  }, Object.keys((liveData === null || liveData === void 0 ? void 0 : liveData.country) || {}).map(function (key, countryIndex) {
-    var _liveData$country$key, _liveData$country$key2;
-    var countryCount = (_liveData$country$key = liveData === null || liveData === void 0 || (_liveData$country$key2 = liveData.country[key]) === null || _liveData$country$key2 === void 0 ? void 0 : _liveData$country$key2.count) !== null && _liveData$country$key !== void 0 ? _liveData$country$key : 0;
+  }, function () {
+    var allCountryKeys = Object.keys((liveData === null || liveData === void 0 ? void 0 : liveData.country) || {});
+    var totalPages = Math.ceil(allCountryKeys.length / COUNTRY_PAGE_SIZE);
+    var visibleKeys = allCountryKeys.slice(countryPage * COUNTRY_PAGE_SIZE, (countryPage + 1) * COUNTRY_PAGE_SIZE);
     var totalCount = (liveData === null || liveData === void 0 ? void 0 : liveData.count) || 1;
-    var countryKeys = Object.keys((liveData === null || liveData === void 0 ? void 0 : liveData.country) || {});
-    var isLastCountry = countryIndex === countryKeys.length - 1;
-    return /*#__PURE__*/React.createElement("div", {
-      key: key,
-      className: "liveView-content-country",
-      style: {
-        marginBottom: isLastCountry ? "0" : "40px"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "liveView-content-flex"
-    }, /*#__PURE__*/React.createElement("p", {
-      className: "liveView-content-data-1-text"
-    }, key), /*#__PURE__*/React.createElement("p", {
-      className: "liveView-content-data-1-text"
-    }, countryCount)), /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: "100%",
-        height: "2px",
-        backgroundColor: "#c4c4c4",
-        marginBottom: "10px"
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        width: "".concat(countryCount / totalCount * 100, "%"),
-        height: "2px",
-        backgroundColor: "rgb(222, 189, 113)",
-        marginBottom: "10px"
-      }
-    })), !demoMode && Object.keys((liveData === null || liveData === void 0 ? void 0 : liveData.domains) || {}).filter(function (domain) {
-      var _liveData$domains$dom;
-      var domainCountries = liveData === null || liveData === void 0 || (_liveData$domains$dom = liveData.domains[domain]) === null || _liveData$domains$dom === void 0 ? void 0 : _liveData$domains$dom.country;
-      return Array.isArray(domainCountries) && domainCountries.includes(key);
-    }).map(function (domain) {
-      var _liveData$domains$dom2;
-      var domainCountryCount = ((liveData === null || liveData === void 0 || (_liveData$domains$dom2 = liveData.domains[domain]) === null || _liveData$domains$dom2 === void 0 ? void 0 : _liveData$domains$dom2.country) || []).filter(function (c) {
-        return c === key;
-      }).length;
-      var barWidthPercent = totalCount > 0 ? domainCountryCount / totalCount * 100 : 0;
+    return /*#__PURE__*/React.createElement(React.Fragment, null, visibleKeys.map(function (key, idx) {
+      var _liveData$country$key, _liveData$country$key2;
+      var countryCount = (_liveData$country$key = liveData === null || liveData === void 0 || (_liveData$country$key2 = liveData.country[key]) === null || _liveData$country$key2 === void 0 ? void 0 : _liveData$country$key2.count) !== null && _liveData$country$key !== void 0 ? _liveData$country$key : 0;
+      var isLast = idx === visibleKeys.length - 1;
+      var allDomains = Object.keys((liveData === null || liveData === void 0 ? void 0 : liveData.domains) || {}).filter(function (d) {
+        var _liveData$domains$d;
+        var dc = (_liveData$domains$d = liveData.domains[d]) === null || _liveData$domains$d === void 0 ? void 0 : _liveData$domains$d.country;
+        return Array.isArray(dc) && dc.includes(key);
+      });
+      var isExpanded = expandedCountries.has(key);
+      var visibleDomains = isExpanded ? allDomains : allDomains.slice(0, DOMAIN_SHOW_LIMIT);
+      var hiddenCount = allDomains.length - DOMAIN_SHOW_LIMIT;
       return /*#__PURE__*/React.createElement("div", {
-        key: "".concat(key, "-").concat(domain),
-        className: "liveView-domain-block"
-      }, /*#__PURE__*/React.createElement("button", {
+        key: key,
+        className: "liveView-content-country",
+        style: {
+          marginBottom: isLast ? "0" : "28px"
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "liveView-content-flex"
+      }, /*#__PURE__*/React.createElement("p", {
+        className: "liveView-content-data-1-text"
+      }, key), /*#__PURE__*/React.createElement("p", {
+        className: "liveView-content-data-1-text"
+      }, countryCount)), /*#__PURE__*/React.createElement("div", {
+        style: {
+          width: "100%",
+          height: "2px",
+          backgroundColor: "#c4c4c4",
+          marginBottom: "10px"
+        }
+      }, /*#__PURE__*/React.createElement("div", {
+        style: {
+          width: "".concat(countryCount / totalCount * 100, "%"),
+          height: "2px",
+          backgroundColor: "rgb(222, 189, 113)"
+        }
+      })), !demoMode && /*#__PURE__*/React.createElement(React.Fragment, null, visibleDomains.map(function (domain) {
+        var _liveData$domains$dom;
+        var domainCountryCount = (((_liveData$domains$dom = liveData.domains[domain]) === null || _liveData$domains$dom === void 0 ? void 0 : _liveData$domains$dom.country) || []).filter(function (c) {
+          return c === key;
+        }).length;
+        var barWidthPercent = totalCount > 0 ? domainCountryCount / totalCount * 100 : 0;
+        return /*#__PURE__*/React.createElement("div", {
+          key: "".concat(key, "-").concat(domain),
+          className: "liveView-domain-block"
+        }, /*#__PURE__*/React.createElement("button", {
+          type: "button",
+          className: "liveView-domain-row",
+          onClick: function onClick() {
+            return setDomainLiveView({
+              domain: domain,
+              country: key,
+              open: true
+            });
+          }
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "liveView-content-data-1-text liveView-domain-row__name"
+        }, domain), /*#__PURE__*/React.createElement("span", {
+          className: "liveView-content-data-1-text liveView-domain-row__count"
+        }, domainCountryCount)), /*#__PURE__*/React.createElement("div", {
+          className: "liveView-domain-bar-track",
+          "aria-hidden": true
+        }, /*#__PURE__*/React.createElement("div", {
+          className: "liveView-domain-bar-fill",
+          style: {
+            width: "".concat(barWidthPercent, "%")
+          }
+        })));
+      }), allDomains.length > DOMAIN_SHOW_LIMIT && /*#__PURE__*/React.createElement("button", {
         type: "button",
-        className: "liveView-domain-row",
+        className: "liveView-show-more-btn",
         onClick: function onClick() {
-          return setDomainLiveView({
-            domain: domain,
-            country: key,
-            open: true
+          return setExpandedCountries(function (prev) {
+            var next = new Set(prev);
+            if (next.has(key)) next["delete"](key);else next.add(key);
+            return next;
           });
         }
-      }, /*#__PURE__*/React.createElement("span", {
-        className: "liveView-content-data-1-text liveView-domain-row__name"
-      }, domain), /*#__PURE__*/React.createElement("span", {
-        className: "liveView-content-data-1-text liveView-domain-row__count"
-      }, domainCountryCount)), /*#__PURE__*/React.createElement("div", {
-        className: "liveView-domain-bar-track",
-        "aria-hidden": true
-      }, /*#__PURE__*/React.createElement("div", {
-        className: "liveView-domain-bar-fill",
-        style: {
-          width: "".concat(barWidthPercent, "%")
-        }
-      })));
-    }));
-  }))))) : null, domainLiveView.open && liveData ? /*#__PURE__*/React.createElement(DomainConsentDrawer, {
+      }, isExpanded ? "Show less" : "+".concat(hiddenCount, " more domain").concat(hiddenCount !== 1 ? "s" : ""))));
+    }), totalPages > 1 && /*#__PURE__*/React.createElement("div", {
+      className: "liveView-pagination"
+    }, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "liveView-pagination-btn",
+      onClick: function onClick() {
+        return setCountryPage(function (p) {
+          return p - 1;
+        });
+      },
+      disabled: countryPage === 0,
+      "aria-label": "Previous countries"
+    }, "\u2190"), /*#__PURE__*/React.createElement("span", {
+      className: "liveView-pagination-info"
+    }, countryPage + 1, " / ", totalPages), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "liveView-pagination-btn",
+      onClick: function onClick() {
+        return setCountryPage(function (p) {
+          return p + 1;
+        });
+      },
+      disabled: countryPage >= totalPages - 1,
+      "aria-label": "Next countries"
+    }, "\u2192")));
+  }())))) : null, domainLiveView.open && liveData ? /*#__PURE__*/React.createElement(DomainConsentDrawer, {
     domain: domainLiveView.domain,
     country: domainLiveView.country,
     liveData: liveData,
@@ -62960,381 +63659,6 @@ function getApproxLastInteractionIsoFromLiveData(liveData) {
   if (!Number.isFinite(bestMinutes) || bestMinutes === Infinity) return null;
   return new Date(Date.now() - bestMinutes * 60 * 1000).toISOString();
 }
-
-/***/ }),
-
-/***/ "./src/components/SelectInput/Selector.js":
-/*!************************************************!*\
-  !*** ./src/components/SelectInput/Selector.js ***!
-  \************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Select)
-/* harmony export */ });
-/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Style.css */ "./src/components/SelectInput/Style.css");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-var _React = React,
-  useState = _React.useState,
-  useEffect = _React.useEffect,
-  useRef = _React.useRef;
-
-function Select(props) {
-  var _props$items;
-  var _useState = useState(false),
-    _useState2 = _slicedToArray(_useState, 2),
-    isOpen = _useState2[0],
-    setIsOpen = _useState2[1];
-  var align = props.align || "left";
-  var containerRef = useRef(null);
-  var listRef = useRef(null);
-  var searchInput = useRef(null);
-  function searchItems(query) {
-    var root = listRef.current;
-    if (!root) return;
-    root.querySelectorAll("[data-dropdown-item]").forEach(function (item) {
-      var text = (item.textContent || "").toLowerCase();
-      item.hidden = query.trim() !== "" && !text.includes(query.toLowerCase());
-    });
-  }
-  function isJson(str) {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-  function openMenu() {
-    setIsOpen(function (open) {
-      return !open;
-    });
-  }
-  function pick(fn) {
-    return function () {
-      setIsOpen(false);
-      fn();
-    };
-  }
-  function clickOutside(e) {
-    if (containerRef.current && !containerRef.current.contains(e.target)) {
-      setIsOpen(false);
-    }
-  }
-  useEffect(function () {
-    document.addEventListener("click", clickOutside, true);
-    return function () {
-      return document.removeEventListener("click", clickOutside, true);
-    };
-  }, []);
-  useEffect(function () {
-    if (isOpen && listRef.current) {
-      listRef.current.querySelectorAll("[data-dropdown-item]").forEach(function (item) {
-        item.hidden = false;
-      });
-      if (searchInput.current) {
-        searchInput.current.value = "";
-      }
-    }
-  }, [isOpen]);
-  var menuAlignClass = align === "right" ? "dropdown-menu--align-right" : "dropdown-menu--align-left";
-  return /*#__PURE__*/React.createElement("div", {
-    ref: containerRef,
-    className: "selectorContianer selector-container",
-    style: props.style
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "selector"
-  }, props.icon ? /*#__PURE__*/React.createElement("i", {
-    className: props.icon
-  }) : null, /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "dropdown-menu-button",
-    style: props === null || props === void 0 ? void 0 : props.style2,
-    onClick: function onClick(e) {
-      e.stopPropagation();
-      openMenu();
-    },
-    "aria-expanded": isOpen,
-    "aria-haspopup": "listbox"
-  }, isJson(props.defaultValue) ? /*#__PURE__*/React.createElement(React.Fragment, null, JSON.parse(props.defaultValue).icon ? /*#__PURE__*/React.createElement("img", {
-    className: "company-logo",
-    src: JSON.parse(props.defaultValue).icon,
-    alt: ""
-  }) : null, /*#__PURE__*/React.createElement("span", {
-    className: "dropdown-menu-button__label"
-  }, JSON.parse(props.defaultValue).name)) : /*#__PURE__*/React.createElement("span", {
-    className: "dropdown-menu-button__label"
-  }, props.defaultValue)), isOpen ? /*#__PURE__*/React.createElement("div", {
-    className: "dropdown-menu ".concat(menuAlignClass)
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "dropdown-menu__panel"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "search-box"
-  }, /*#__PURE__*/React.createElement("input", {
-    ref: searchInput,
-    className: "search-input",
-    type: "search",
-    name: "q",
-    placeholder: "Search\u2026",
-    autoComplete: "off",
-    onChange: function onChange(e) {
-      return searchItems(e.target.value);
-    },
-    onClick: function onClick(e) {
-      return e.stopPropagation();
-    }
-  })), /*#__PURE__*/React.createElement("ul", {
-    ref: listRef,
-    className: "dropdown-menu__content",
-    role: "listbox"
-  }, props === null || props === void 0 || (_props$items = props.items) === null || _props$items === void 0 ? void 0 : _props$items.map(function (item, key) {
-    if (isJson(item)) {
-      var _parsed$id;
-      var parsed = JSON.parse(item);
-      return /*#__PURE__*/React.createElement("li", {
-        key: (_parsed$id = parsed.id) !== null && _parsed$id !== void 0 ? _parsed$id : key,
-        "data-dropdown-item": true,
-        role: "option",
-        onClick: pick(function () {
-          return props.onChange(JSON.stringify({
-            id: parsed.id,
-            name: parsed.name
-          }));
-        })
-      }, parsed.icon ? /*#__PURE__*/React.createElement("img", {
-        src: parsed.icon,
-        alt: ""
-      }) : null, props !== null && props !== void 0 && props.labels ? props === null || props === void 0 ? void 0 : props.labels[key] : parsed.name);
-    }
-    if (_typeof(item) === "object" && item !== null && item !== void 0 && item.uri) {
-      return /*#__PURE__*/React.createElement("li", {
-        key: item.uri,
-        "data-dropdown-item": true,
-        role: "option",
-        onClick: pick(function () {
-          return props.onChange(JSON.stringify({
-            name: item.type,
-            uri: item.uri
-          }));
-        })
-      }, item.icon ? /*#__PURE__*/React.createElement("img", {
-        src: item.icon,
-        alt: ""
-      }) : null, props !== null && props !== void 0 && props.labels ? props === null || props === void 0 ? void 0 : props.labels[key] : item.type);
-    }
-    if (_typeof(item) === "object") {
-      var _item$id;
-      // Handle separator items
-      if (item.disabled || item.type === "separator") {
-        return /*#__PURE__*/React.createElement("li", {
-          key: key,
-          className: "dropdown-menu__separator",
-          role: "separator",
-          "aria-disabled": "true"
-        }, item.name || item.label);
-      }
-      // Handle workspace combined view
-      if (item.type === "workspace-combined") {
-        return /*#__PURE__*/React.createElement("li", {
-          key: "workspace-combined",
-          "data-dropdown-item": true,
-          role: "option",
-          className: "dropdown-menu__item--workspace-combined",
-          onClick: function onClick() {
-            return props.onChange(JSON.stringify({
-              name: item.name,
-              type: "workspace-combined",
-              workspaceId: item.workspaceId,
-              workspaceDomains: item.workspaceDomains
-            }));
-          }
-        }, /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__combined-icon",
-          "aria-hidden": "true"
-        }, "\u2295"), /*#__PURE__*/React.createElement("span", null, item.label || item.name));
-      }
-      // Handle exit workspace item
-      if (item.type === "exit-workspace") {
-        return /*#__PURE__*/React.createElement("li", {
-          key: "exit-workspace",
-          "data-dropdown-item": true,
-          role: "option",
-          className: "dropdown-menu__item--exit-workspace",
-          onClick: function onClick() {
-            return props.onChange(JSON.stringify({
-              name: item.name,
-              type: "exit-workspace"
-            }));
-          }
-        }, /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__exit-icon",
-          "aria-hidden": "true"
-        }, "\u2190"), /*#__PURE__*/React.createElement("span", null, item.label || item.name));
-      }
-      // Handle workspace domain items
-      if (item.type === "workspace-domain") {
-        return /*#__PURE__*/React.createElement("li", {
-          key: item.name,
-          "data-dropdown-item": true,
-          role: "option",
-          className: "dropdown-menu__item--workspace-domain ".concat(item.isPrimary ? 'dropdown-menu__item--primary' : ''),
-          onClick: function onClick() {
-            return props.onChange(JSON.stringify({
-              name: item.name,
-              type: "workspace-domain"
-            }));
-          }
-        }, /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__domain-name"
-        }, item.name), /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__badges"
-        }, item.isPrimary && /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__primary-tag"
-        }, "Primary"), item.verificationStatus && /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__verify-tag dropdown-menu__verify-tag--".concat(item.verificationStatus)
-        }, item.verificationStatus === "verified" ? "✓" : item.verificationStatus === "expired" ? "!" : "?")));
-      }
-      // Handle regular domain items
-      if (item.type === "domain") {
-        return /*#__PURE__*/React.createElement("li", {
-          key: item.name,
-          "data-dropdown-item": true,
-          role: "option",
-          className: "dropdown-menu__item--domain",
-          onClick: function onClick() {
-            return props.onChange(JSON.stringify({
-              name: item.name,
-              type: "domain"
-            }));
-          }
-        }, item.icon ? /*#__PURE__*/React.createElement("img", {
-          className: "company-logo",
-          src: item.icon,
-          alt: ""
-        }) : null, /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__domain-name"
-        }, item.name), item.verificationStatus && item.name !== "combined view" && /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__verify-tag dropdown-menu__verify-tag--".concat(item.verificationStatus)
-        }, item.verificationStatus === "verified" ? "✓" : item.verificationStatus === "expired" ? "!" : "?"));
-      }
-      // Handle workspace items
-      if (item.type === "workspace") {
-        var _item$workspaceId;
-        return /*#__PURE__*/React.createElement("li", {
-          key: (_item$workspaceId = item.workspaceId) !== null && _item$workspaceId !== void 0 ? _item$workspaceId : key,
-          "data-dropdown-item": true,
-          role: "option",
-          className: "dropdown-menu__item--workspace",
-          onClick: function onClick() {
-            return props.onChange(JSON.stringify({
-              id: item.workspaceId,
-              name: item.name,
-              type: "workspace",
-              workspaceData: item.workspaceData
-            }));
-          }
-        }, /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__workspace-icon",
-          "aria-hidden": "true"
-        }, "W"), /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__workspace-info"
-        }, /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__workspace-name"
-        }, item.label || item.name), /*#__PURE__*/React.createElement("span", {
-          className: "dropdown-menu__workspace-domain"
-        }, item.sublabel || item.name)));
-      }
-      return /*#__PURE__*/React.createElement("li", {
-        key: (_item$id = item.id) !== null && _item$id !== void 0 ? _item$id : key,
-        "data-dropdown-item": true,
-        role: "option",
-        className: "dropdown-menu__item--with-icon",
-        onClick: function onClick() {
-          return props.onChange(JSON.stringify({
-            id: item.id,
-            name: item.name,
-            access: item.access
-          }));
-        }
-      }, item.icon && item.icon !== "undefined" ? /*#__PURE__*/React.createElement("img", {
-        className: "company-logo",
-        src: item.icon,
-        alt: ""
-      }) : null, props !== null && props !== void 0 && props.labels ? props === null || props === void 0 ? void 0 : props.labels[key] : item.name);
-    }
-    return /*#__PURE__*/React.createElement("li", {
-      key: String(item),
-      "data-dropdown-item": true,
-      role: "option",
-      onClick: function onClick(e) {
-        setIsOpen(false);
-        props.onChange(props.labels ? item : e.currentTarget.textContent);
-      }
-    }, item !== null && item !== void 0 && item.icon ? /*#__PURE__*/React.createElement("img", {
-      src: item.icon,
-      alt: ""
-    }) : null, props !== null && props !== void 0 && props.labels ? props === null || props === void 0 ? void 0 : props.labels[key] : item);
-  })))) : null));
-}
-
-/***/ }),
-
-/***/ "./src/components/SelectInput/Style.css":
-/*!**********************************************!*\
-  !*** ./src/components/SelectInput/Style.css ***!
-  \**********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/components/SelectInput/Style.css");
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-var options = {};
-
-options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
-options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
-options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
-options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
-options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
-
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
-
-
-
-
-       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
-
 
 /***/ }),
 
@@ -63491,698 +63815,6 @@ function topoToFeatures(topo, objName) {
 
 /***/ }),
 
-/***/ "./src/components/header/header.css":
-/*!******************************************!*\
-  !*** ./src/components/header/header.css ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./header.css */ "./node_modules/css-loader/dist/cjs.js!./src/components/header/header.css");
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-var options = {};
-
-options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
-options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
-options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
-options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
-options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
-
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
-
-
-
-
-       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_header_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
-
-
-/***/ }),
-
-/***/ "./src/components/header/header.js":
-/*!*****************************************!*\
-  !*** ./src/components/header/header.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Header),
-/* harmony export */   getWorkspaceFilter: () => (/* binding */ getWorkspaceFilter)
-/* harmony export */ });
-/* harmony import */ var _App__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../App */ "./src/App.js");
-/* harmony import */ var _header_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./header.css */ "./src/components/header/header.css");
-/* harmony import */ var _logo_svg__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./logo.svg */ "./src/components/header/logo.svg");
-/* harmony import */ var _Functions_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Functions/fetch */ "./src/Functions/fetch.js");
-/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../API/api */ "./src/API/api.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../SelectInput/Selector */ "./src/components/SelectInput/Selector.js");
-/* harmony import */ var _IntastellarAccounts_IntastellarAccounts__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../IntastellarAccounts/IntastellarAccounts */ "./src/components/IntastellarAccounts/IntastellarAccounts.js");
-/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var _Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../Functions/domainVerification.js */ "./src/Functions/domainVerification.js");
-/* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
-function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
-function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
-function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-
-
-
-
-
-
-
-
-
-
-
-var _React = React,
-  useState = _React.useState,
-  useEffect = _React.useEffect,
-  useContext = _React.useContext,
-  useMemo = _React.useMemo;
-var useHistory = window.ReactRouterDOM.useHistory;
-var useLocation = window.ReactRouterDOM.useLocation;
-
-/**
- * Get current workspace info from localStorage
- */
-function getCurrentWorkspace() {
-  try {
-    var stored = localStorage.getItem("current_workspace");
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch (_unused) {
-    /* ignore */
-  }
-  return null;
-}
-
-/**
- * Set current workspace in localStorage
- */
-function setCurrentWorkspace(workspace) {
-  if (workspace) {
-    localStorage.setItem("current_workspace", JSON.stringify(workspace));
-  } else {
-    localStorage.removeItem("current_workspace");
-  }
-}
-
-/**
- * Set workspace filter domains for API calls
- * When set, the dashboard will filter to only these domains
- */
-function setWorkspaceFilter(domains) {
-  if (domains && domains.length > 0) {
-    localStorage.setItem("workspace_filter", JSON.stringify(domains));
-  } else {
-    localStorage.removeItem("workspace_filter");
-  }
-}
-
-/**
- * Clear workspace filter
- */
-function clearWorkspaceFilter() {
-  localStorage.removeItem("workspace_filter");
-}
-
-/**
- * Get workspace filter domains (for use in API calls)
- */
-function getWorkspaceFilter() {
-  try {
-    var stored = localStorage.getItem("workspace_filter");
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch (_unused2) {
-    /* ignore */
-  }
-  return null;
-}
-function domainLabelForHeader(pathname, globalDomain) {
-  var pathHandle = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.parseHandleFromPath)(pathname);
-  if (pathHandle != null) {
-    var decoded = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.decodeDomainPathSegment)(pathHandle);
-    return decoded != null ? decoded : "combined view";
-  }
-  if (/\/[^/]+\/(?:reports|dashboard)(?:\/|$)/.test(pathname)) {
-    return "combined view";
-  }
-  return globalDomain || "combined view";
-}
-
-/*
- * Hydrate the dropdown from the existing `domains` localStorage key
- * — a string array of allowed domain names persisted whenever this
- * header (or any other surface) successfully fetches domains. Using
- * the same cache the rest of the app already maintains avoids a
- * second source of truth.
- *
- * The cache stores names only (no `installed`/`icon` metadata), so
- * we synthesise minimal row objects shaped like the API response and
- * re-prepend the "combined view" entry the cache strips out before
- * persisting.
- */
-function readCachedDomains() {
-  try {
-    var raw = localStorage.getItem("domains");
-    if (!raw) return null;
-    var parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) return null;
-    var names = parsed.filter(function (n) {
-      return typeof n === "string" && n && n !== "combined view";
-    });
-    if (names.length === 0) return null;
-    return [{
-      domain: "combined view",
-      installed: null,
-      lastedVisited: null
-    }].concat(_toConsumableArray(names.map(function (domain) {
-      return {
-        domain: domain,
-        installed: null,
-        lastedVisited: null
-      };
-    })));
-  } catch (_unused3) {
-    return null;
-  }
-}
-
-/**
- * Check if user has agency subscription or is Intastellar Solutions (org ID 1)
- */
-function hasAgencySubscription() {
-  try {
-    // Allow access for Intastellar Solutions (org ID 1)
-    var orgRaw = localStorage.getItem("organisation");
-    if (orgRaw) {
-      var _org;
-      // Handle both JSON string and plain value formats
-      var org = orgRaw;
-      try {
-        org = JSON.parse(orgRaw);
-      } catch (_unused4) {
-        /* not JSON, use raw value */
-      }
-      // Check for org ID 1 (compare as strings to handle both number and string)
-      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
-    }
-    var sub = localStorage.getItem("subscription");
-    if (sub) {
-      var parsed = JSON.parse(sub);
-      return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
-    }
-  } catch (_unused5) {
-    /* ignore */
-  }
-  return false;
-}
-
-/**
- * Read agency workspaces from localStorage
- */
-function readAgencyWorkspaces() {
-  try {
-    var stored = localStorage.getItem("agency_workspaces");
-    if (stored) {
-      var workspaces = JSON.parse(stored);
-      // Migrate old single-domain workspaces to multi-domain format
-      return workspaces.map(function (ws) {
-        if (ws.domain && !ws.domains) {
-          return _objectSpread(_objectSpread({}, ws), {}, {
-            domains: [{
-              domain: ws.domain,
-              isPrimary: true
-            }]
-          });
-        }
-        return ws;
-      });
-    }
-  } catch (_unused6) {
-    /* ignore */
-  }
-  return [];
-}
-
-/**
- * Get primary domain from a workspace
- */
-function getPrimaryDomainFromWorkspace(ws) {
-  var _ws$domains$;
-  if (!ws.domains || ws.domains.length === 0) {
-    return ws.domain || null;
-  }
-  var primary = ws.domains.find(function (d) {
-    return d.isPrimary;
-  });
-  return (primary === null || primary === void 0 ? void 0 : primary.domain) || ((_ws$domains$ = ws.domains[0]) === null || _ws$domains$ === void 0 ? void 0 : _ws$domains$.domain) || null;
-}
-
-/**
- * Get verification status for dropdown display
- */
-function getDomainVerificationStatus(domain, orgId) {
-  if (!orgId || !domain || domain === "combined view") {
-    return null;
-  }
-  if ((0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__.isDomainVerified)(domain, orgId)) {
-    return "verified";
-  }
-  if ((0,_Functions_domainVerification_js__WEBPACK_IMPORTED_MODULE_9__.isVerificationExpired)(domain, orgId)) {
-    return "expired";
-  }
-  return "unverified";
-}
-
-/**
- * Get current organisation ID for verification checks
- */
-function getCurrentOrgId() {
-  try {
-    var orgRaw = localStorage.getItem("organisation");
-    if (orgRaw) {
-      var org = JSON.parse(orgRaw);
-      return (org === null || org === void 0 ? void 0 : org.id) || null;
-    }
-  } catch (_unused7) {
-    /* ignore */
-  }
-  return null;
-}
-
-/*
- * Resolve the platform key whose `getDomains` we should call. Routes
- * like /experiments or /settings aren't platform namespaces in the
- * API map, so the literal first path segment can't be used blindly.
- * We fall back to the platform stored at login time (or "gdpr" as a
- * last resort) whenever the derived key doesn't expose getDomains.
- */
-function resolveDomainsPlatformKey(API) {
-  var _API$fromPath, _API$fromStorage;
-  var fromPath = window.location.pathname.split("/")[1];
-  if (fromPath && (_API$fromPath = API[fromPath]) !== null && _API$fromPath !== void 0 && (_API$fromPath = _API$fromPath.getDomains) !== null && _API$fromPath !== void 0 && _API$fromPath.url) return fromPath;
-  var fromStorage = localStorage.getItem("platform");
-  if (fromStorage && (_API$fromStorage = API[fromStorage]) !== null && _API$fromStorage !== void 0 && (_API$fromStorage = _API$fromStorage.getDomains) !== null && _API$fromStorage !== void 0 && _API$fromStorage.url) return fromStorage;
-  return "gdpr";
-}
-function Header(props) {
-  var _JSON$parse, _activeWorkspace$doma2, _JSON$parse2, _JSON$parse3;
-  var _useContext = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.OrganisationContext),
-    _useContext2 = _slicedToArray(_useContext, 2),
-    Organisation = _useContext2[0],
-    setOrganisation = _useContext2[1];
-  var _useContext3 = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.DomainContext),
-    _useContext4 = _slicedToArray(_useContext3, 2),
-    globalDomain = _useContext4[0],
-    setGlobalDomain = _useContext4[1];
-  var location = useLocation();
-  var displayDomain = useMemo(function () {
-    return domainLabelForHeader(location.pathname, globalDomain);
-  }, [location.pathname, globalDomain]);
-  var _useState = useState(displayDomain),
-    _useState2 = _slicedToArray(_useState, 2),
-    currentDomain = _useState2[0],
-    setCurrentDomain = _useState2[1];
-  var profileImage = (_JSON$parse = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.user) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.avatar;
-  var domainList = null;
-  var history = useHistory();
-  var platformId = props.id || window.location.pathname.split("/").filter(Boolean)[0] || "gdpr";
-  var _useState3 = useState(null),
-    _useState4 = _slicedToArray(_useState3, 2),
-    allOrganisations = _useState4[0],
-    setallOrganisations = _useState4[1];
-  /*
-   * Bootstrap order on first render:
-   *   1. props.domains (passed by App.js once it has fetched)
-   *   2. cached domains from localStorage (so a hard reload on
-   *      /experiments still has a populated dropdown before any
-   *      network round-trip resolves)
-   *   3. null — the placeholder selector renders briefly until the
-   *      effect below repopulates from the API.
-   */
-  var _useState5 = useState(function () {
-      return props.domains || readCachedDomains();
-    }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    domains = _useState6[0],
-    setDomains = _useState6[1];
-  var _useState7 = useState(false),
-    _useState8 = _slicedToArray(_useState7, 2),
-    viewUserProfile = _useState8[0],
-    setViewUserProfile = _useState8[1];
-  var _useState9 = useState(function () {
-      return getCurrentWorkspace();
-    }),
-    _useState0 = _slicedToArray(_useState9, 2),
-    activeWorkspace = _useState0[0],
-    setActiveWorkspace = _useState0[1];
-  var Platform = localStorage.getItem("platform") == "gdpr" ? "Intastellar Consents | CMP" : "Ferry Booking";
-  useEffect(function () {
-    setCurrentDomain(displayDomain);
-  }, [displayDomain]);
-  useEffect(function () {
-    var _API$platformKey;
-    (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.headers, JSON.stringify({
-      organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getUserId()
-    })).then(function (data) {
-      if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
-        window.location.href = "/login";
-        return;
-      }
-      if (JSON.parse(localStorage.getItem("globals")).organisation == null) {
-        JSON.parse(localStorage.getItem("globals")).organisation = data;
-      }
-      setallOrganisations(data);
-    });
-    var platformKey = resolveDomainsPlatformKey(_API_api__WEBPACK_IMPORTED_MODULE_4__["default"]);
-    var domainsApi = (_API$platformKey = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][platformKey]) === null || _API$platformKey === void 0 ? void 0 : _API$platformKey.getDomains;
-    if (!(domainsApi !== null && domainsApi !== void 0 && domainsApi.url)) {
-      return;
-    }
-    (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])(domainsApi.url, domainsApi.method, domainsApi.headers).then(function (data) {
-      if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
-        window.location.href = "/login";
-        return;
-      }
-      if ((data === null || data === void 0 ? void 0 : data.error) == "Err_No_Domains") {} else if (Array.isArray(data)) {
-        data.unshift({
-          domain: "combined view",
-          installed: null,
-          lastedVisited: null
-        });
-        data === null || data === void 0 || data.map(function (d) {
-          return punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
-        }).filter(function (d) {
-          return d !== undefined && d !== "" && d !== "undefined.";
-        });
-        setDomains(data);
-        var allowedDomains = data === null || data === void 0 ? void 0 : data.map(function (d) {
-          return punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
-        }).filter(function (d) {
-          return d !== undefined && d !== "" && d !== "undefined." && d !== "combined view";
-        });
-        localStorage.setItem("domains", JSON.stringify(allowedDomains));
-      }
-    });
-  }, []);
-
-  // Build domain list based on whether a workspace is active
-  domainList = [];
-  var orgId = getCurrentOrgId();
-  if (activeWorkspace) {
-    var _activeWorkspace$doma;
-    // When workspace is active, show only workspace domains
-    domainList.push({
-      name: "".concat(activeWorkspace.name),
-      disabled: true,
-      type: "separator"
-    });
-
-    // Add combined view for workspace (aggregates all workspace domains)
-    domainList.push({
-      icon: null,
-      name: "combined view",
-      label: "All domains (combined)",
-      type: "workspace-combined",
-      workspaceId: activeWorkspace.id,
-      workspaceDomains: ((_activeWorkspace$doma = activeWorkspace.domains) === null || _activeWorkspace$doma === void 0 ? void 0 : _activeWorkspace$doma.map(function (d) {
-        return d.domain;
-      })) || []
-    });
-
-    // Add workspace domains with verification status
-    if (activeWorkspace.domains && activeWorkspace.domains.length > 0) {
-      activeWorkspace.domains.forEach(function (d) {
-        var verifyStatus = getDomainVerificationStatus(d.domain, orgId);
-        domainList.push({
-          icon: null,
-          name: d.domain,
-          type: "workspace-domain",
-          isPrimary: d.isPrimary,
-          verificationStatus: verifyStatus
-        });
-      });
-    }
-
-    // Add option to exit workspace
-    domainList.push({
-      name: "Exit Workspace",
-      disabled: true,
-      type: "separator"
-    });
-    domainList.push({
-      icon: null,
-      name: "combined view",
-      label: "← Back to all domains",
-      type: "exit-workspace"
-    });
-  } else {
-    // Normal mode: show workspaces first, then all domains
-
-    // For agency users, add client workspaces at the top
-    if (hasAgencySubscription()) {
-      var workspaces = readAgencyWorkspaces();
-      if (workspaces.length > 0) {
-        // Add workspaces header
-        domainList.push({
-          name: "Client Workspaces",
-          disabled: true,
-          type: "separator"
-        });
-        // Add workspaces to the list
-        workspaces.forEach(function (ws) {
-          var _ws$domains;
-          var primaryDomain = getPrimaryDomainFromWorkspace(ws);
-          var domainCount = ((_ws$domains = ws.domains) === null || _ws$domains === void 0 ? void 0 : _ws$domains.length) || 1;
-          domainList.push({
-            icon: null,
-            name: primaryDomain || ws.name,
-            label: ws.name,
-            sublabel: domainCount > 1 ? "".concat(domainCount, " domains") : primaryDomain,
-            type: "workspace",
-            workspaceId: ws.id,
-            workspaceData: ws
-          });
-        });
-      }
-    }
-
-    // Add domains from API with verification status
-    var apiDomains = (domains === null || domains === void 0 ? void 0 : domains.map(function (d) {
-      var domainName = punycode__WEBPACK_IMPORTED_MODULE_10__["default"].toUnicode(d.domain);
-      var verifyStatus = getDomainVerificationStatus(domainName, orgId);
-      return {
-        icon: d.icon || null,
-        name: domainName,
-        type: "domain",
-        verificationStatus: verifyStatus
-      };
-    })) || [];
-    if (apiDomains.length > 0) {
-      var _domainList;
-      // Add separator if we have workspaces above
-      if (domainList.length > 0) {
-        domainList.push({
-          name: "Your Domains",
-          disabled: true,
-          type: "separator"
-        });
-      }
-      (_domainList = domainList).push.apply(_domainList, _toConsumableArray(apiDomains));
-    }
-  }
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("header", {
-    className: "dashboard-header"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "dashboard-profile"
-  }, /*#__PURE__*/React.createElement("section", {
-    className: "logo-selector-container"
-  }, /*#__PURE__*/React.createElement("section", {
-    className: "logo_container"
-  }, /*#__PURE__*/React.createElement("button", {
-    className: "menu",
-    onClick: function onClick() {
-      document.querySelector(".navOverlay").classList.toggle("expand");
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "menu-bar"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "menu-bar"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "menu-bar"
-  })), /*#__PURE__*/React.createElement("img", {
-    className: "dashboard-logo",
-    src: _logo_svg__WEBPACK_IMPORTED_MODULE_2__["default"],
-    alt: "Intastellar Solutions Logo"
-  })), /*#__PURE__*/React.createElement("section", {
-    className: "company_container"
-  }, allOrganisations && Organisation ? /*#__PURE__*/React.createElement(_SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__["default"], {
-    defaultValue: Organisation,
-    onChange: function onChange(e) {
-      setOrganisation(e);
-      localStorage.setItem("organisation", e);
-      window.location.reload();
-    },
-    items: allOrganisations,
-    align: "right"
-  }) : /*#__PURE__*/React.createElement("div", {
-    className: "selector selector--placeholder",
-    "aria-hidden": "true"
-  }), domains && currentDomain ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_SelectInput_Selector__WEBPACK_IMPORTED_MODULE_6__["default"], {
-    key: "domain-".concat(location.pathname),
-    defaultValue: currentDomain,
-    onChange: function onChange(e) {
-      var parsed = JSON.parse(e);
-      var domain = parsed.name;
-
-      // Handle exit workspace
-      if (parsed.type === "exit-workspace") {
-        setActiveWorkspace(null);
-        setCurrentWorkspace(null);
-        clearWorkspaceFilter();
-        setCurrentDomain("combined view");
-        setGlobalDomain("combined view");
-        (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
-        return;
-      }
-
-      // Handle workspace combined view
-      if (parsed.type === "workspace-combined") {
-        // Store workspace domains for API filtering
-        setWorkspaceFilter(parsed.workspaceDomains);
-        setCurrentDomain("combined view");
-        setGlobalDomain("combined view");
-        (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
-        return;
-      }
-
-      // Handle workspace domain selection
-      if (parsed.type === "workspace-domain") {
-        // Clear workspace filter when selecting single domain
-        clearWorkspaceFilter();
-        setCurrentDomain(domain);
-        setGlobalDomain(domain);
-        (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, domain, location.pathname);
-        return;
-      }
-      setCurrentDomain(domain);
-      setGlobalDomain(domain);
-
-      // Track workspace selection
-      if (parsed.type === "workspace") {
-        // Use workspaceData if available, otherwise fetch from storage
-        var ws = parsed.workspaceData;
-        if (!ws) {
-          var _workspaces = readAgencyWorkspaces();
-          ws = _workspaces.find(function (w) {
-            return w.id === parsed.id;
-          });
-        }
-        if (ws) {
-          var _ws$domains2;
-          setActiveWorkspace(ws);
-          setCurrentWorkspace(ws);
-          // Set workspace filter for combined view by default
-          var wsDomains = ((_ws$domains2 = ws.domains) === null || _ws$domains2 === void 0 ? void 0 : _ws$domains2.map(function (d) {
-            return d.domain;
-          })) || [];
-          setWorkspaceFilter(wsDomains);
-        }
-      } else {
-        // Selecting regular domain clears workspace
-        setActiveWorkspace(null);
-        setCurrentWorkspace(null);
-        clearWorkspaceFilter();
-      }
-      (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, domain, location.pathname);
-    },
-    items: domainList,
-    align: "left"
-  }), activeWorkspace && /*#__PURE__*/React.createElement("div", {
-    className: "workspace-indicator"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "workspace-indicator__badge"
-  }, "Workspace"), /*#__PURE__*/React.createElement("span", {
-    className: "workspace-indicator__name"
-  }, activeWorkspace.name), ((_activeWorkspace$doma2 = activeWorkspace.domains) === null || _activeWorkspace$doma2 === void 0 ? void 0 : _activeWorkspace$doma2.length) > 1 && /*#__PURE__*/React.createElement("span", {
-    className: "workspace-indicator__domains"
-  }, activeWorkspace.domains.length, " domains"), /*#__PURE__*/React.createElement("button", {
-    className: "workspace-indicator__exit",
-    onClick: function onClick() {
-      setActiveWorkspace(null);
-      setCurrentWorkspace(null);
-      setCurrentDomain("combined view");
-      setGlobalDomain("combined view");
-      (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
-    },
-    title: "Exit workspace"
-  }, "\xD7"))) : /*#__PURE__*/React.createElement("div", {
-    className: "selector selector--placeholder",
-    "aria-hidden": "true"
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "flex profileImage"
-  }, /*#__PURE__*/React.createElement("img", {
-    src: profileImage,
-    className: "content-img",
-    onClick: function onClick() {
-      return setViewUserProfile(!viewUserProfile);
-    }
-  }))), viewUserProfile ? /*#__PURE__*/React.createElement(_IntastellarAccounts_IntastellarAccounts__WEBPACK_IMPORTED_MODULE_7__["default"], {
-    profile: {
-      image: profileImage,
-      name: (_JSON$parse2 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.user) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.name) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.firstName,
-      email: (_JSON$parse3 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse3 === void 0 || (_JSON$parse3 = _JSON$parse3.user) === null || _JSON$parse3 === void 0 ? void 0 : _JSON$parse3.email
-    },
-    setIsOpen: setViewUserProfile
-  }) : null));
-}
-
-/***/ }),
-
 /***/ "./src/components/header/icons/experiment.svg":
 /*!****************************************************!*\
   !*** ./src/components/header/icons/experiment.svg ***!
@@ -64194,20 +63826,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "be42b8befc23276e905e9dd3f999ce40.svg");
-
-/***/ }),
-
-/***/ "./src/components/header/logo.svg":
-/*!****************************************!*\
-  !*** ./src/components/header/logo.svg ***!
-  \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "ff49a416cf4878ef3d9c0e42f101d99f.svg");
 
 /***/ }),
 
@@ -64301,6 +63919,22 @@ module.exports = React;
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _src_App_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/App.js */ "./src/App.js");
+
+var createRoot = window.ReactDOM.createRoot;
+var container = document.getElementById('app');
+var root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(/*#__PURE__*/React.createElement(_src_App_js__WEBPACK_IMPORTED_MODULE_0__["default"], null));
+})();
+
+/******/ })()
+;
+//# sourceMappingURL=main.bundle.js.mapeds to be isolated against other modules in the chunk.
 (() => {
 /*!******************!*\
   !*** ./index.js ***!
