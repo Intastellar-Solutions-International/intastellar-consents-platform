@@ -618,3 +618,29 @@
         border-radius: 0;
     }
 }
+
+/* ── Data flow legend ────────────────────────────────────────────────────────── */
+.world-map__legend {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 8px;
+}
+
+.world-map__legend-swatch {
+    flex-shrink: 0;
+    width: 20px;
+    height: 10px;
+    border-radius: 2px;
+    border: 1.5px solid rgba(220, 80, 80, 0.75);
+}
+
+.world-map__legend-swatch--flow {
+    background: rgba(220, 80, 80, 0.15);
+}
+
+.world-map__legend-label {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.02em;
+}

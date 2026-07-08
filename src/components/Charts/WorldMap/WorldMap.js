@@ -78,6 +78,7 @@ export default function Map(props) {
     const countries = data?.Countries;
     const demoMode = props.demoMode;
     const renderCountryPanelExtras = props.renderCountryPanelExtras;
+    const dataFlowCountries = props.dataFlowCountries || [];
 
     const compareOn = Boolean(data?.date?.previousStart && data?.date?.previousEnd);
 
@@ -164,6 +165,7 @@ export default function Map(props) {
         if (!countries?.length) return undefined;
         const el = document.getElementById("svgMap");
         if (!el) return undefined;
+        const flowCountries = dataFlowCountries;
 
         el.innerHTML = "";
         let zoomLevel = 1.2;
@@ -303,6 +305,22 @@ export default function Map(props) {
             initialLocation: center,
         });
 
+        // Highlight countries data is flowing to — runs after svgMap paint
+        if (flowCountries.length) {
+            requestAnimationFrame(() => {
+                flowCountries.forEach(code => {
+                    el.querySelectorAll(`[data-id="${code}"]`).forEach(path => {
+                        if (!mapCountries[code]) {
+                            path.style.fill = "rgba(220, 80, 80, 0.18)";
+                        }
+                        path.style.stroke = "rgba(220, 80, 80, 0.75)";
+                        path.style.strokeWidth = "1.5";
+                        path.style.strokeLinejoin = "round";
+                    });
+                });
+            });
+        }
+
         const onMapClick = (e) => {
             const node = e.target.closest?.("[data-id]");
             if (!node || !el.contains(node)) return;
@@ -311,7 +329,7 @@ export default function Map(props) {
         };
         el.addEventListener("click", onMapClick);
         return () => el.removeEventListener("click", onMapClick);
-    }, [countries, mapCountries, demoMode, resolveSelection]);
+    }, [countries, mapCountries, demoMode, resolveSelection, dataFlowCountries]);
 
     useEffect(() => {
         const updateVisibleCount = () => {
@@ -355,6 +373,12 @@ export default function Map(props) {
                                 ? " Tooltips and the drawer include comparison-period totals, counts, and percentage-point deltas where baseline data exists."
                                 : ""}
                         </p>
+                        {dataFlowCountries.length > 0 && (
+                            <div className="world-map__legend">
+                                <span className="world-map__legend-swatch world-map__legend-swatch--flow" />
+                                <span className="world-map__legend-label">Pre-consent data flows to these countries</span>
+                            </div>
+                        )}
                     </header>
                     <div className="world-map__map-shell">
                         <div id="svgMap" className="world-map__map-inner" />
