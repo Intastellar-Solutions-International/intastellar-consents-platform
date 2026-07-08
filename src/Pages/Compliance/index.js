@@ -360,22 +360,21 @@ export default function CompliancePage() {
             <div className="dashboard-content compliance-page">
             <div className="compliance-bottom-grid">
 
-                {/* ── Pre-consent data transfers ── */}
+                {/* ── Data transfers ── */}
                 {(handle || currentDomain) === "combined view" && (
                     <div className="dashboard-section compliance-transfers">
-                        <h2 className="dashboard-section-label">Pre-consent data transfers</h2>
                         <div className="compliance-transfers__card compliance-transfers__combined-placeholder">
                             <span className="compliance-transfers__combined-placeholder-icon" aria-hidden>⊙</span>
-                            <p>Select a specific domain from the domain picker to view pre-consent data transfers and cookie scans for that domain.</p>
+                            <p>Select a specific domain from the domain picker to view data transfers and cookie scans for that domain.</p>
                         </div>
                     </div>
                 )}
                 {(handle || currentDomain) && (handle || currentDomain) !== "combined view" && (
                     <div className="dashboard-section compliance-transfers">
-                        <h2 className="dashboard-section-label">Pre-consent data transfers</h2>
                         <div className="compliance-transfers__card">
                             <div className="compliance-transfers__header">
                                 <div className="compliance-transfers__header-text">
+                                    <h2 className="compliance-transfers__title">Data transfers</h2>
                                     <p className="compliance-transfers__desc">
                                         Third-party services that receive visitor data before consent is given —
                                         e.g. analytics scripts, social pixels, advertising trackers.
@@ -438,7 +437,7 @@ export default function CompliancePage() {
                             {!preConsentTransfers && !scanLoading && (
                                 <div className="compliance-transfers__empty">
                                     <span className="compliance-transfers__empty-icon" aria-hidden>⟳</span>
-                                    <span>No scan data yet — run a scan to detect pre-consent transfers for this domain.</span>
+                                    <span>No scan data yet — run a scan to detect data transfers for this domain.</span>
                                 </div>
                             )}
 
@@ -644,7 +643,7 @@ export default function CompliancePage() {
                             {activeTab === "transfers" && preConsentTransfers?.pre_consent_transfers?.length === 0 && !scanLoading && (
                                 <div className="compliance-transfers__empty compliance-transfers__empty--clean">
                                     <span className="compliance-transfers__empty-icon" aria-hidden>✓</span>
-                                    <span>No pre-consent transfers detected in the last scan.</span>
+                                    <span>No data transfers detected in the last scan.</span>
                                 </div>
                             )}
 
