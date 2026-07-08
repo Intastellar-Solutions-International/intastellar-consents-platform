@@ -247,10 +247,9 @@ export default function CompliancePage() {
             <div className="compliance-hero">
                 <Map
                     demoMode={demoMode}
-                    data={{
-                        Countries: activeDataCountry?.data?.Countries,
-                        total: activeData?.Total,
-                    }}
+                    data={null}
+                    dataFlowMode={true}
+                    dataFlowOrigin="DE"
                     dataFlowCountries={dataFlowCountries}
                 />
                 {/* Cookie scan strip overlaid at the bottom of the hero */}

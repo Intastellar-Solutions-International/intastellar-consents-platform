@@ -625,22 +625,86 @@
     align-items: center;
     gap: 7px;
     margin-top: 8px;
+    flex-wrap: wrap;
 }
 
 .world-map__legend-swatch {
     flex-shrink: 0;
-    width: 20px;
+    width: 18px;
     height: 10px;
     border-radius: 2px;
-    border: 1.5px solid rgba(220, 80, 80, 0.75);
 }
 
 .world-map__legend-swatch--flow {
     background: rgba(220, 80, 80, 0.15);
+    border: 1.5px solid rgba(220, 80, 80, 0.7);
+}
+
+.world-map__legend-swatch--origin {
+    background: rgba(80, 168, 120, 0.2);
+    border: 1.5px solid rgba(80, 168, 120, 0.8);
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+}
+
+.world-map__legend-sep {
+    width: 1px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    margin: 0 2px;
 }
 
 .world-map__legend-label {
     font-size: 0.68rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.38);
     letter-spacing: 0.02em;
+}
+
+/* ── Data flow SVG overlay ────────────────────────────────────────────────────── */
+@keyframes flow-arc-draw {
+    from { stroke-dashoffset: var(--arc-len, 600); }
+    to   { stroke-dashoffset: 0; }
+}
+
+@keyframes flow-origin-pulse {
+    0%, 100% { r: 6; opacity: 0.5; }
+    50%       { r: 10; opacity: 0.1; }
+}
+
+.flow-arc {
+    stroke: rgba(220, 80, 80, 0.5);
+    stroke-width: 1.3;
+    fill: none;
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: flow-arc-draw 1.2s ease forwards;
+}
+
+.flow-dot {
+    fill: rgba(220, 80, 80, 0.9);
+    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.6));
+}
+
+.flow-origin-ring {
+    fill: rgba(80, 168, 120, 0.15);
+    stroke: rgba(80, 168, 120, 0.8);
+    stroke-width: 1.5;
+    animation: flow-origin-pulse 2.4s ease-in-out infinite;
+}
+
+.flow-origin-dot {
+    fill: #50a878;
+    filter: drop-shadow(0 0 3px rgba(80, 168, 120, 0.7));
+}
+
+.flow-dest-ring {
+    fill: rgba(220, 80, 80, 0.12);
+    stroke: rgba(220, 80, 80, 0.6);
+    stroke-width: 1.2;
+}
+
+.flow-dest-dot {
+    fill: rgba(220, 80, 80, 0.85);
+    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.5));
 }

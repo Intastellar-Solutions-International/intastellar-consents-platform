@@ -72,6 +72,94 @@ function buildCodeToName() {
 
 const CODE_TO_NAME = buildCodeToName();
 
+// ── SVG namespace helper ──────────────────────────────────────────────────────
+const NS  = "http://www.w3.org/2000/svg";
+const XNS = "http://www.w3.org/1999/xlink";
+
+function svgEl(tag, attrs = {}) {
+    const el = document.createElementNS(NS, tag);
+    Object.entries(attrs).forEach(([k, v]) => {
+        if (k === "xlink:href") el.setAttributeNS(XNS, k, v);
+        else el.setAttribute(k, v);
+    });
+    return el;
+}
+
+function getCountryCenter(svgRoot, code) {
+    const paths = svgRoot.querySelectorAll(`[data-id="${code}"]`);
+    if (!paths.length) return null;
+    let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+    paths.forEach(p => {
+        try {
+            const b = p.getBBox();
+            if (b.width === 0 && b.height === 0) return;
+            x1 = Math.min(x1, b.x);
+            y1 = Math.min(y1, b.y);
+            x2 = Math.max(x2, b.x + b.width);
+            y2 = Math.max(y2, b.y + b.height);
+        } catch {}
+    });
+    return x1 === Infinity ? null : { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
+}
+
+function drawDataFlows(containerEl, flowCountries, originCode) {
+    const svgRoot = containerEl.querySelector("svg");
+    if (!svgRoot) return;
+
+    svgRoot.querySelectorAll(".data-flow-overlay").forEach(g => g.remove());
+    const overlay = svgEl("g", { class: "data-flow-overlay" });
+    svgRoot.appendChild(overlay);
+
+    const origin = getCountryCenter(svgRoot, originCode);
+    if (!origin) return;
+
+    // EU origin marker
+    overlay.appendChild(svgEl("circle", { cx: origin.x, cy: origin.y, r: "6", class: "flow-origin-ring" }));
+    overlay.appendChild(svgEl("circle", { cx: origin.x, cy: origin.y, r: "3.5", class: "flow-origin-dot" }));
+
+    const seen = new Set();
+    flowCountries.forEach((code, i) => {
+        if (seen.has(code)) return;
+        seen.add(code);
+
+        const dest = getCountryCenter(svgRoot, code);
+        if (!dest) return;
+
+        const dx = dest.x - origin.x;
+        const dy = dest.y - origin.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const cx = origin.x + dx * 0.5;
+        const cy = origin.y + dy * 0.5 - dist * 0.35;
+
+        const pathId = `fp-${code}`;
+        const d = `M ${origin.x} ${origin.y} Q ${cx} ${cy} ${dest.x} ${dest.y}`;
+
+        // Arc
+        const arc = svgEl("path", { id: pathId, d, fill: "none", class: "flow-arc", style: `animation-delay:${i * 0.18}s` });
+        overlay.appendChild(arc);
+
+        // Travelling dot
+        const dot = svgEl("circle", { r: "2.5", class: "flow-dot" });
+        const anim = svgEl("animateMotion", {
+            dur: `${2.8 + (i % 4) * 0.6}s`,
+            repeatCount: "indefinite",
+            begin: `${i * 0.45}s`,
+            keyPoints: "0;1",
+            keyTimes: "0;1",
+            calcMode: "spline",
+            keySplines: "0.3 0 0.7 1",
+        });
+        const mpath = svgEl("mpath", { "xlink:href": `#${pathId}` });
+        anim.appendChild(mpath);
+        dot.appendChild(anim);
+        overlay.appendChild(dot);
+
+        // Destination marker
+        overlay.appendChild(svgEl("circle", { cx: dest.x, cy: dest.y, r: "5", class: "flow-dest-ring" }));
+        overlay.appendChild(svgEl("circle", { cx: dest.x, cy: dest.y, r: "2.8", class: "flow-dest-dot" }));
+    });
+}
+
 export default function Map(props) {
     const data = props.data;
     const total = data?.total;
@@ -79,6 +167,8 @@ export default function Map(props) {
     const demoMode = props.demoMode;
     const renderCountryPanelExtras = props.renderCountryPanelExtras;
     const dataFlowCountries = props.dataFlowCountries || [];
+    const dataFlowMode = props.dataFlowMode || false;
+    const dataFlowOrigin = props.dataFlowOrigin || "DE";
 
     const compareOn = Boolean(data?.date?.previousStart && data?.date?.previousEnd);
 
@@ -162,16 +252,15 @@ export default function Map(props) {
     );
 
     useEffect(() => {
-        if (!countries?.length) return undefined;
+        if (!countries?.length && !dataFlowMode) return undefined;
         const el = document.getElementById("svgMap");
         if (!el) return undefined;
-        const flowCountries = dataFlowCountries;
 
         el.innerHTML = "";
         let zoomLevel = 1.2;
         let center = [0, 0];
 
-        if (countries.length > 0) {
+        if (countries?.length > 0 && !dataFlowMode) {
             const min = Math.min(...countries.map((country) => country.num.total));
             const max = Math.max(...countries.map((country) => country.num.total));
 
@@ -305,21 +394,21 @@ export default function Map(props) {
             initialLocation: center,
         });
 
-        // Highlight countries data is flowing to — runs after svgMap paint
-        if (flowCountries.length) {
-            requestAnimationFrame(() => {
-                flowCountries.forEach(code => {
+        // Post-paint: flow lines (data-flow mode) or simple country stroke highlights
+        requestAnimationFrame(() => {
+            if (dataFlowMode) {
+                drawDataFlows(el, dataFlowCountries, dataFlowOrigin);
+            } else if (dataFlowCountries.length) {
+                dataFlowCountries.forEach(code => {
                     el.querySelectorAll(`[data-id="${code}"]`).forEach(path => {
-                        if (!mapCountries[code]) {
-                            path.style.fill = "rgba(220, 80, 80, 0.18)";
-                        }
+                        if (!mapCountries[code]) path.style.fill = "rgba(220, 80, 80, 0.18)";
                         path.style.stroke = "rgba(220, 80, 80, 0.75)";
                         path.style.strokeWidth = "1.5";
                         path.style.strokeLinejoin = "round";
                     });
                 });
-            });
-        }
+            }
+        });
 
         const onMapClick = (e) => {
             const node = e.target.closest?.("[data-id]");
@@ -329,7 +418,7 @@ export default function Map(props) {
         };
         el.addEventListener("click", onMapClick);
         return () => el.removeEventListener("click", onMapClick);
-    }, [countries, mapCountries, demoMode, resolveSelection, dataFlowCountries]);
+    }, [countries, mapCountries, demoMode, resolveSelection, dataFlowCountries, dataFlowMode, dataFlowOrigin]);
 
     useEffect(() => {
         const updateVisibleCount = () => {
@@ -349,7 +438,7 @@ export default function Map(props) {
         };
     }, [countries]);
 
-    if (!countries?.length) {
+    if (!countries?.length && !dataFlowMode) {
         return (
             <div className="world-map world-map--empty">
                 <p className="world-map__empty-msg">No geographic data for this period.</p>
@@ -357,23 +446,34 @@ export default function Map(props) {
         );
     }
 
-    const ranked = [...countries]
-        .filter((c) => c.country !== "Unknown")
-        .sort((a, b) => b.num.total - a.num.total);
+    const ranked = countries?.length
+        ? [...countries].filter((c) => c.country !== "Unknown").sort((a, b) => b.num.total - a.num.total)
+        : [];
 
     return (
         <>
             <div className="world-map">
                 <div className="world-map__main">
                     <header className="world-map__header">
-                        <h2 className="world-map__title">Global consent activity</h2>
+                        <h2 className="world-map__title">
+                            {dataFlowMode ? "Pre-consent data transfers" : "Global consent activity"}
+                        </h2>
                         <p className="world-map__subtitle">
-                            Darker regions indicate more interactions. Click any country to open a detailed breakdown.
-                            {compareOn
-                                ? " Tooltips and the drawer include comparison-period totals, counts, and percentage-point deltas where baseline data exists."
-                                : ""}
+                            {dataFlowMode
+                                ? "Arcs show where visitor data is sent before consent is given. Lines from EU to each third-party data processor."
+                                : `Darker regions indicate more interactions. Click any country to open a detailed breakdown.${compareOn ? " Tooltips include comparison-period deltas." : ""}`
+                            }
                         </p>
-                        {dataFlowCountries.length > 0 && (
+                        {dataFlowMode && dataFlowCountries.length > 0 && (
+                            <div className="world-map__legend">
+                                <span className="world-map__legend-swatch world-map__legend-swatch--origin" />
+                                <span className="world-map__legend-label">EU origin</span>
+                                <span className="world-map__legend-sep" />
+                                <span className="world-map__legend-swatch world-map__legend-swatch--flow" />
+                                <span className="world-map__legend-label">Non-EU destination</span>
+                            </div>
+                        )}
+                        {!dataFlowMode && dataFlowCountries.length > 0 && (
                             <div className="world-map__legend">
                                 <span className="world-map__legend-swatch world-map__legend-swatch--flow" />
                                 <span className="world-map__legend-label">Pre-consent data flows to these countries</span>
