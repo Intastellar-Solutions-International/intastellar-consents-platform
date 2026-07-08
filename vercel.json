@@ -3,6 +3,12 @@
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
+  "crons": [
+    {
+      "path": "/api/cron-scan-domains",
+      "schedule": "0 3 * * *"
+    }
+  ],
   "functions": {
     "api/cookie-audit.js": {
       "memory": 1536,
@@ -15,6 +21,14 @@
     "api/cookie-banner-scan.js": {
       "memory": 1536,
       "maxDuration": 60
+    },
+    "api/scan-domain-task.js": {
+      "memory": 1536,
+      "maxDuration": 60
+    },
+    "api/cron-scan-domains.js": {
+      "memory": 256,
+      "maxDuration": 90
     }
   }
 }
