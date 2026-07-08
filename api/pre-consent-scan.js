@@ -101,6 +101,9 @@ const TRACKERS = [
     { domains: ["ajax.googleapis.com"],                           service: "Google CDN",            category: "cdn"            },
     { domains: ["cdn.jsdelivr.net"],                              service: "jsDelivr CDN",          category: "cdn"            },
     { domains: ["cdnjs.cloudflare.com"],                          service: "Cloudflare CDN",        category: "cdn"            },
+
+    // Own CMP infrastructure — not a third-party transfer
+    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com"], service: "Intastellar CMP", category: "cmp" },
 ];
 
 const CATEGORY_ORDER = { advertising: 0, fingerprinting: 1, analytics: 2, social: 3, functional: 4, cdn: 5, "third-party": 6 };

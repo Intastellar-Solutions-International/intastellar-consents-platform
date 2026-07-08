@@ -23027,6 +23027,10 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
     }
 }
 
+.compliance-page__audit {
+    margin-top: 32px;
+}
+
 .compliance-page__audit .audit-snapshot-card:hover {
     transform: none;
     border-color: rgba(255, 255, 255, 0.1);
@@ -23055,7 +23059,206 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
         text-align: center;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n"],"sourceRoot":""}]);
+
+/* ── Category summary cards ─────────────────────────────────────────────────── */
+.transfers-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.transfers-summary__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 18px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.02);
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    min-width: 76px;
+    text-align: center;
+}
+
+.transfers-summary__card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.13);
+}
+
+.transfers-summary__card.--active {
+    background: color-mix(in srgb, var(--cat-color, #c0a053) 12%, transparent);
+    border-color: color-mix(in srgb, var(--cat-color, #c0a053) 40%, transparent);
+}
+
+.transfers-summary__card-icon {
+    font-size: 0.9rem;
+    line-height: 1;
+    color: var(--cat-color, rgba(255, 255, 255, 0.5));
+}
+
+.transfers-summary__card-count {
+    font-size: 1.6rem;
+    font-weight: 200;
+    color: rgba(255, 255, 255, 0.88);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.transfers-summary__card-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.transfers-summary__card-risk {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-top: 2px;
+}
+
+.transfers-summary__card-risk.--high {
+    background: rgba(220, 80, 80, 0.15);
+    color: rgba(240, 130, 120, 0.9);
+}
+
+.transfers-summary__card-risk.--medium {
+    background: rgba(220, 160, 60, 0.12);
+    color: rgba(230, 180, 100, 0.85);
+}
+
+.transfers-summary__card-risk.--low {
+    background: rgba(80, 168, 120, 0.1);
+    color: rgba(120, 200, 150, 0.75);
+}
+
+.transfers-summary__clear {
+    align-self: center;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.72rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.transfers-summary__clear:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ── Row additions ───────────────────────────────────────────────────────────── */
+.compliance-transfers__row-icon {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    width: 18px;
+    text-align: center;
+    line-height: 1;
+}
+
+.compliance-transfers__row-resource {
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    font-family: monospace;
+    color: rgba(255, 255, 255, 0.22);
+    min-width: 28px;
+    text-align: center;
+}
+
+.compliance-transfers__row-risk {
+    flex-shrink: 0;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+}
+
+.compliance-transfers__row-risk.--high {
+    background: rgba(220, 80, 80, 0.12);
+    border-color: rgba(220, 80, 80, 0.28);
+    color: rgba(240, 130, 120, 0.9);
+}
+
+.compliance-transfers__row-risk.--medium {
+    background: rgba(220, 160, 60, 0.1);
+    border-color: rgba(220, 160, 60, 0.24);
+    color: rgba(230, 180, 100, 0.85);
+}
+
+.compliance-transfers__row-risk.--low {
+    background: rgba(80, 168, 120, 0.08);
+    border-color: rgba(80, 168, 120, 0.2);
+    color: rgba(120, 200, 150, 0.75);
+}
+
+/* ── Extra category colours ──────────────────────────────────────────────────── */
+.compliance-transfers__row--cmp {
+    border-color: rgba(80, 168, 120, 0.12);
+    background: rgba(80, 168, 120, 0.03);
+}
+
+.compliance-transfers__row-cat--cmp {
+    background: rgba(80, 168, 120, 0.1);
+    border-color: rgba(80, 168, 120, 0.25);
+    color: rgba(120, 200, 150, 0.85);
+}
+
+.compliance-transfers__row-cat--fingerprinting {
+    background: rgba(192, 54, 90, 0.12);
+    border-color: rgba(192, 54, 90, 0.3);
+    color: rgba(230, 120, 150, 0.9);
+}
+
+.compliance-transfers__row-cat--functional {
+    background: rgba(80, 168, 120, 0.08);
+    border-color: rgba(80, 168, 120, 0.2);
+    color: rgba(120, 200, 150, 0.8);
+}
+
+.compliance-transfers__row-cat--cdn {
+    background: rgba(150, 150, 150, 0.07);
+    border-color: rgba(150, 150, 150, 0.18);
+    color: rgba(180, 180, 180, 0.55);
+}
+
+.compliance-transfers__row-cat--third-party {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.32);
+}
+
+@media (max-width: 580px) {
+    .transfers-summary {
+        gap: 6px;
+    }
+
+    .transfers-summary__card {
+        min-width: 64px;
+        padding: 10px 12px 8px;
+    }
+
+    .compliance-transfers__row-resource {
+        display: none;
+    }
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n.compliance-page__audit {\n    margin-top: 32px;\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n\n/* ── Category summary cards ─────────────────────────────────────────────────── */\n.transfers-summary {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n    margin-bottom: 18px;\n}\n\n.transfers-summary__card {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 4px;\n    padding: 12px 18px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    cursor: pointer;\n    font-family: inherit;\n    color: inherit;\n    transition: background 0.15s ease, border-color 0.15s ease;\n    min-width: 76px;\n    text-align: center;\n}\n\n.transfers-summary__card:hover {\n    background: rgba(255, 255, 255, 0.05);\n    border-color: rgba(255, 255, 255, 0.13);\n}\n\n.transfers-summary__card.--active {\n    background: color-mix(in srgb, var(--cat-color, #c0a053) 12%, transparent);\n    border-color: color-mix(in srgb, var(--cat-color, #c0a053) 40%, transparent);\n}\n\n.transfers-summary__card-icon {\n    font-size: 0.9rem;\n    line-height: 1;\n    color: var(--cat-color, rgba(255, 255, 255, 0.5));\n}\n\n.transfers-summary__card-count {\n    font-size: 1.6rem;\n    font-weight: 200;\n    color: rgba(255, 255, 255, 0.88);\n    line-height: 1;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n}\n\n.transfers-summary__card-label {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.transfers-summary__card-risk {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    padding: 2px 7px;\n    border-radius: 10px;\n    margin-top: 2px;\n}\n\n.transfers-summary__card-risk.--high {\n    background: rgba(220, 80, 80, 0.15);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.transfers-summary__card-risk.--medium {\n    background: rgba(220, 160, 60, 0.12);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.transfers-summary__card-risk.--low {\n    background: rgba(80, 168, 120, 0.1);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n.transfers-summary__clear {\n    align-self: center;\n    padding: 6px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.72rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: all 0.15s ease;\n}\n\n.transfers-summary__clear:hover {\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* ── Row additions ───────────────────────────────────────────────────────────── */\n.compliance-transfers__row-icon {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    width: 18px;\n    text-align: center;\n    line-height: 1;\n}\n\n.compliance-transfers__row-resource {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    font-family: monospace;\n    color: rgba(255, 255, 255, 0.22);\n    min-width: 28px;\n    text-align: center;\n}\n\n.compliance-transfers__row-risk {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-risk.--high {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.28);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.compliance-transfers__row-risk.--medium {\n    background: rgba(220, 160, 60, 0.1);\n    border-color: rgba(220, 160, 60, 0.24);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.compliance-transfers__row-risk.--low {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n/* ── Extra category colours ──────────────────────────────────────────────────── */\n.compliance-transfers__row--cmp {\n    border-color: rgba(80, 168, 120, 0.12);\n    background: rgba(80, 168, 120, 0.03);\n}\n\n.compliance-transfers__row-cat--cmp {\n    background: rgba(80, 168, 120, 0.1);\n    border-color: rgba(80, 168, 120, 0.25);\n    color: rgba(120, 200, 150, 0.85);\n}\n\n.compliance-transfers__row-cat--fingerprinting {\n    background: rgba(192, 54, 90, 0.12);\n    border-color: rgba(192, 54, 90, 0.3);\n    color: rgba(230, 120, 150, 0.9);\n}\n\n.compliance-transfers__row-cat--functional {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.8);\n}\n\n.compliance-transfers__row-cat--cdn {\n    background: rgba(150, 150, 150, 0.07);\n    border-color: rgba(150, 150, 150, 0.18);\n    color: rgba(180, 180, 180, 0.55);\n}\n\n.compliance-transfers__row-cat--third-party {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.32);\n}\n\n@media (max-width: 580px) {\n    .transfers-summary {\n        gap: 6px;\n    }\n\n    .transfers-summary__card {\n        min-width: 64px;\n        padding: 10px 12px 8px;\n    }\n\n    .compliance-transfers__row-resource {\n        display: none;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -40856,19 +41059,9 @@ function SideNav(props) {
     // Check agency subscription requirement
     if (link.requiresAgency) {
       try {
-        var _org;
         // Allow access for Intastellar Solutions (org ID 1)
-        var orgRaw = localStorage.getItem("organisation");
-        var org = null;
-        if (orgRaw) {
-          try {
-            org = JSON.parse(orgRaw);
-          } catch (_unused) {
-            /* not JSON */
-          }
-        }
-        // Compare as strings to handle both number and string id
-        if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") {
+        var org = JSON.parse(localStorage.getItem("organisation"));
+        if ((org === null || org === void 0 ? void 0 : org.id) === 1) {
           // Org 1 has access, continue
         } else {
           var _JSON$parse;
@@ -40877,7 +41070,7 @@ function SideNav(props) {
             return null;
           }
         }
-      } catch (_unused2) {
+      } catch (_unused) {
         return null;
       }
     }
@@ -41311,25 +41504,14 @@ function readCachedDomains() {
 function hasAgencySubscription() {
   try {
     // Allow access for Intastellar Solutions (org ID 1)
-    var orgRaw = localStorage.getItem("organisation");
-    if (orgRaw) {
-      var _org;
-      // Handle both JSON string and plain value formats
-      var org = orgRaw;
-      try {
-        org = JSON.parse(orgRaw);
-      } catch (_unused4) {
-        /* not JSON, use raw value */
-      }
-      // Check for org ID 1 (compare as strings to handle both number and string)
-      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
-    }
+    var org = JSON.parse(localStorage.getItem("organisation"));
+    if ((org === null || org === void 0 ? void 0 : org.id) === 1) return true;
     var sub = localStorage.getItem("subscription");
     if (sub) {
       var parsed = JSON.parse(sub);
       return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
     }
-  } catch (_unused5) {
+  } catch (_unused4) {
     /* ignore */
   }
   return false;
@@ -41356,7 +41538,7 @@ function readAgencyWorkspaces() {
         return ws;
       });
     }
-  } catch (_unused6) {
+  } catch (_unused5) {
     /* ignore */
   }
   return [];
@@ -46170,6 +46352,82 @@ var _React = React,
 
 var Link = window.ReactRouterDOM.Link;
 var useParams = window.ReactRouterDOM.useParams;
+var CATEGORY_META = {
+  fingerprinting: {
+    label: "Fingerprinting",
+    risk: "high",
+    icon: "◆",
+    color: "#c0365a"
+  },
+  advertising: {
+    label: "Advertising",
+    risk: "high",
+    icon: "◈",
+    color: "#dc5050"
+  },
+  analytics: {
+    label: "Analytics",
+    risk: "medium",
+    icon: "◉",
+    color: "#5090dc"
+  },
+  social: {
+    label: "Social",
+    risk: "medium",
+    icon: "◎",
+    color: "#8264c8"
+  },
+  functional: {
+    label: "Functional",
+    risk: "low",
+    icon: "◌",
+    color: "#50a878"
+  },
+  cdn: {
+    label: "CDN / Fonts",
+    risk: "low",
+    icon: "○",
+    color: "#787878"
+  },
+  cmp: {
+    label: "CMP",
+    risk: "none",
+    icon: "✓",
+    color: "#50a878"
+  },
+  "third-party": {
+    label: "Third-party",
+    risk: "medium",
+    icon: "◇",
+    color: "#909090"
+  }
+};
+var RESOURCE_ICONS = {
+  script: "{ }",
+  stylesheet: "≡",
+  image: "⊡",
+  font: "Aa",
+  xhr: "↕",
+  fetch: "↕",
+  media: "▷",
+  document: "☰"
+};
+var RISK_ORDER = {
+  high: 0,
+  medium: 1,
+  low: 2,
+  none: 3
+};
+var CAT_ORDER = {
+  fingerprinting: 0,
+  advertising: 1,
+  analytics: 2,
+  social: 3,
+  functional: 4,
+  cdn: 5,
+  cmp: 6,
+  "third-party": 7
+};
 function CompliancePage() {
   var _activeWorkspace$id, _observedCookies$preC, _observedCookies$cons, _activeDataCountry$da, _preConsentTransfers$, _preConsentTransfers$2;
   var _useParams = useParams(),
@@ -46241,10 +46499,14 @@ function CompliancePage() {
     _useState24 = _slicedToArray(_useState23, 2),
     scanLoading = _useState24[0],
     setScanLoading = _useState24[1];
-  var _useState25 = useState(false),
+  var _useState25 = useState(null),
     _useState26 = _slicedToArray(_useState25, 2),
-    loading = _useState26[0],
-    setLoading = _useState26[1];
+    activeFilter = _useState26[0],
+    setActiveFilter = _useState26[1];
+  var _useState27 = useState(false),
+    _useState28 = _slicedToArray(_useState27, 2),
+    loading = _useState28[0],
+    setLoading = _useState28[1];
   var domainsForApi = useMemo(function () {
     return (handle ? handle : currentDomain) || "combined view";
   }, [handle, currentDomain]);
@@ -46450,25 +46712,95 @@ function CompliancePage() {
     "aria-hidden": true
   }, "\u27F3"), /*#__PURE__*/React.createElement("span", null, "No scan data yet \u2014 run a scan to detect pre-consent transfers for this domain.")), scanLoading && /*#__PURE__*/React.createElement("div", {
     className: "compliance-transfers__empty compliance-transfers__empty--loading"
-  }, /*#__PURE__*/React.createElement("span", null, "Scanning ", handle || currentDomain, "\u2026")), (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$ = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$ === void 0 ? void 0 : _preConsentTransfers$.length) > 0 && /*#__PURE__*/React.createElement("div", {
-    className: "compliance-transfers__list"
-  }, preConsentTransfers.pre_consent_transfers.map(function (t) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: t.host,
-      className: "compliance-transfers__row compliance-transfers__row--" + (t.category || "other")
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "compliance-transfers__row-main"
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "compliance-transfers__row-service"
-    }, t.service || t.host), /*#__PURE__*/React.createElement("span", {
-      className: "compliance-transfers__row-host"
-    }, t.host)), /*#__PURE__*/React.createElement("span", {
-      className: "compliance-transfers__row-cat compliance-transfers__row-cat--" + (t.category || "other")
-    }, t.category || "unknown"), /*#__PURE__*/React.createElement("span", {
-      className: "compliance-transfers__row-flag",
-      title: "Fires before consent"
-    }, "Pre-consent"));
-  })), (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$2 = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$2 === void 0 ? void 0 : _preConsentTransfers$2.length) === 0 && !scanLoading && /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("span", null, "Scanning ", handle || currentDomain, "\u2026")), (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$ = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$ === void 0 ? void 0 : _preConsentTransfers$.length) > 0 && function () {
+    var transfers = preConsentTransfers.pre_consent_transfers;
+    var countsByCategory = transfers.reduce(function (acc, t) {
+      acc[t.category] = (acc[t.category] || 0) + 1;
+      return acc;
+    }, {});
+    var sortedCategories = Object.entries(countsByCategory).sort(function (_ref, _ref2) {
+      var _CAT_ORDER$a, _CAT_ORDER$b;
+      var _ref3 = _slicedToArray(_ref, 1),
+        a = _ref3[0];
+      var _ref4 = _slicedToArray(_ref2, 1),
+        b = _ref4[0];
+      return ((_CAT_ORDER$a = CAT_ORDER[a]) !== null && _CAT_ORDER$a !== void 0 ? _CAT_ORDER$a : 99) - ((_CAT_ORDER$b = CAT_ORDER[b]) !== null && _CAT_ORDER$b !== void 0 ? _CAT_ORDER$b : 99);
+    });
+    var displayed = activeFilter ? transfers.filter(function (t) {
+      return t.category === activeFilter;
+    }) : transfers;
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "transfers-summary"
+    }, sortedCategories.map(function (_ref5) {
+      var _ref6 = _slicedToArray(_ref5, 2),
+        cat = _ref6[0],
+        count = _ref6[1];
+      var meta = CATEGORY_META[cat] || {
+        label: cat,
+        risk: "medium",
+        icon: "◇",
+        color: "#909090"
+      };
+      var isActive = activeFilter === cat;
+      return /*#__PURE__*/React.createElement("button", {
+        key: cat,
+        type: "button",
+        className: "transfers-summary__card" + (isActive ? " --active" : ""),
+        onClick: function onClick() {
+          return setActiveFilter(isActive ? null : cat);
+        },
+        style: {
+          "--cat-color": meta.color
+        }
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "transfers-summary__card-icon"
+      }, meta.icon), /*#__PURE__*/React.createElement("span", {
+        className: "transfers-summary__card-count"
+      }, count), /*#__PURE__*/React.createElement("span", {
+        className: "transfers-summary__card-label"
+      }, meta.label), meta.risk !== "none" && /*#__PURE__*/React.createElement("span", {
+        className: "transfers-summary__card-risk --" + meta.risk
+      }, meta.risk === "high" ? "High" : meta.risk === "medium" ? "Med" : "Low"));
+    }), activeFilter && /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "transfers-summary__clear",
+      onClick: function onClick() {
+        return setActiveFilter(null);
+      }
+    }, "Show all")), /*#__PURE__*/React.createElement("div", {
+      className: "compliance-transfers__list"
+    }, displayed.map(function (t) {
+      var meta = CATEGORY_META[t.category] || {
+        label: t.category,
+        risk: "medium",
+        icon: "◇",
+        color: "#909090"
+      };
+      var resIcon = RESOURCE_ICONS[t.resourceType] || "•";
+      return /*#__PURE__*/React.createElement("div", {
+        key: t.host,
+        className: "compliance-transfers__row compliance-transfers__row--" + (t.category || "other")
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "compliance-transfers__row-icon",
+        style: {
+          color: meta.color
+        }
+      }, meta.icon), /*#__PURE__*/React.createElement("div", {
+        className: "compliance-transfers__row-main"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "compliance-transfers__row-service"
+      }, t.service || t.host), /*#__PURE__*/React.createElement("span", {
+        className: "compliance-transfers__row-host"
+      }, t.host)), /*#__PURE__*/React.createElement("span", {
+        className: "compliance-transfers__row-resource",
+        title: t.resourceType
+      }, resIcon), /*#__PURE__*/React.createElement("span", {
+        className: "compliance-transfers__row-cat compliance-transfers__row-cat--" + (t.category || "other")
+      }, meta.label || t.category), meta.risk !== "none" && /*#__PURE__*/React.createElement("span", {
+        className: "compliance-transfers__row-risk --" + meta.risk
+      }, meta.risk === "high" ? "High risk" : meta.risk === "medium" ? "Medium" : "Low"));
+    })));
+  }(), (preConsentTransfers === null || preConsentTransfers === void 0 || (_preConsentTransfers$2 = preConsentTransfers.pre_consent_transfers) === null || _preConsentTransfers$2 === void 0 ? void 0 : _preConsentTransfers$2.length) === 0 && !scanLoading && /*#__PURE__*/React.createElement("div", {
     className: "compliance-transfers__empty compliance-transfers__empty--clean"
   }, /*#__PURE__*/React.createElement("span", {
     className: "compliance-transfers__empty-icon",

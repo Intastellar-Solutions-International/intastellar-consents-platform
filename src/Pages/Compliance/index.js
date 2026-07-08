@@ -16,6 +16,31 @@ import "./Style.css";
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 
+const CATEGORY_META = {
+    fingerprinting: { label: "Fingerprinting", risk: "high",   icon: "◆", color: "#c0365a" },
+    advertising:    { label: "Advertising",    risk: "high",   icon: "◈", color: "#dc5050" },
+    analytics:      { label: "Analytics",      risk: "medium", icon: "◉", color: "#5090dc" },
+    social:         { label: "Social",         risk: "medium", icon: "◎", color: "#8264c8" },
+    functional:     { label: "Functional",     risk: "low",    icon: "◌", color: "#50a878" },
+    cdn:            { label: "CDN / Fonts",    risk: "low",    icon: "○", color: "#787878" },
+    cmp:            { label: "CMP",            risk: "none",   icon: "✓", color: "#50a878" },
+    "third-party":  { label: "Third-party",    risk: "medium", icon: "◇", color: "#909090" },
+};
+
+const RESOURCE_ICONS = {
+    script:     "{ }",
+    stylesheet: "≡",
+    image:      "⊡",
+    font:       "Aa",
+    xhr:        "↕",
+    fetch:      "↕",
+    media:      "▷",
+    document:   "☰",
+};
+
+const RISK_ORDER = { high: 0, medium: 1, low: 2, none: 3 };
+const CAT_ORDER  = { fingerprinting: 0, advertising: 1, analytics: 2, social: 3, functional: 4, cdn: 5, cmp: 6, "third-party": 7 };
+
 
 export default function CompliancePage() {
     const { id, handle } = useParams();
@@ -58,6 +83,7 @@ export default function CompliancePage() {
     const [observedCookies, setObservedCookies] = useState(null);
     const [preConsentTransfers, setPreConsentTransfers] = useState(null);
     const [scanLoading, setScanLoading] = useState(false);
+    const [activeFilter, setActiveFilter] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const domainsForApi = useMemo(
@@ -286,26 +312,83 @@ export default function CompliancePage() {
                                 </div>
                             )}
 
-                            {preConsentTransfers?.pre_consent_transfers?.length > 0 && (
-                                <div className="compliance-transfers__list">
-                                    {preConsentTransfers.pre_consent_transfers.map((t) => (
-                                        <div key={t.host} className={"compliance-transfers__row compliance-transfers__row--" + (t.category || "other")}>
-                                            <div className="compliance-transfers__row-main">
-                                                <span className="compliance-transfers__row-service">
-                                                    {t.service || t.host}
-                                                </span>
-                                                <span className="compliance-transfers__row-host">{t.host}</span>
-                                            </div>
-                                            <span className={"compliance-transfers__row-cat compliance-transfers__row-cat--" + (t.category || "other")}>
-                                                {t.category || "unknown"}
-                                            </span>
-                                            <span className="compliance-transfers__row-flag" title="Fires before consent">
-                                                Pre-consent
-                                            </span>
+                            {preConsentTransfers?.pre_consent_transfers?.length > 0 && (() => {
+                                const transfers = preConsentTransfers.pre_consent_transfers;
+                                const countsByCategory = transfers.reduce((acc, t) => {
+                                    acc[t.category] = (acc[t.category] || 0) + 1;
+                                    return acc;
+                                }, {});
+                                const sortedCategories = Object.entries(countsByCategory)
+                                    .sort(([a], [b]) => (CAT_ORDER[a] ?? 99) - (CAT_ORDER[b] ?? 99));
+                                const displayed = activeFilter
+                                    ? transfers.filter(t => t.category === activeFilter)
+                                    : transfers;
+
+                                return (
+                                    <>
+                                        {/* ── Category summary cards ── */}
+                                        <div className="transfers-summary">
+                                            {sortedCategories.map(([cat, count]) => {
+                                                const meta = CATEGORY_META[cat] || { label: cat, risk: "medium", icon: "◇", color: "#909090" };
+                                                const isActive = activeFilter === cat;
+                                                return (
+                                                    <button
+                                                        key={cat}
+                                                        type="button"
+                                                        className={"transfers-summary__card" + (isActive ? " --active" : "")}
+                                                        onClick={() => setActiveFilter(isActive ? null : cat)}
+                                                        style={{ "--cat-color": meta.color }}
+                                                    >
+                                                        <span className="transfers-summary__card-icon">{meta.icon}</span>
+                                                        <span className="transfers-summary__card-count">{count}</span>
+                                                        <span className="transfers-summary__card-label">{meta.label}</span>
+                                                        {meta.risk !== "none" && (
+                                                            <span className={"transfers-summary__card-risk --" + meta.risk}>
+                                                                {meta.risk === "high" ? "High" : meta.risk === "medium" ? "Med" : "Low"}
+                                                            </span>
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
+                                            {activeFilter && (
+                                                <button type="button" className="transfers-summary__clear" onClick={() => setActiveFilter(null)}>
+                                                    Show all
+                                                </button>
+                                            )}
                                         </div>
-                                    ))}
-                                </div>
-                            )}
+
+                                        {/* ── Transfer rows ── */}
+                                        <div className="compliance-transfers__list">
+                                            {displayed.map((t) => {
+                                                const meta = CATEGORY_META[t.category] || { label: t.category, risk: "medium", icon: "◇", color: "#909090" };
+                                                const resIcon = RESOURCE_ICONS[t.resourceType] || "•";
+                                                return (
+                                                    <div key={t.host} className={"compliance-transfers__row compliance-transfers__row--" + (t.category || "other")}>
+                                                        <span className="compliance-transfers__row-icon" style={{ color: meta.color }}>
+                                                            {meta.icon}
+                                                        </span>
+                                                        <div className="compliance-transfers__row-main">
+                                                            <span className="compliance-transfers__row-service">{t.service || t.host}</span>
+                                                            <span className="compliance-transfers__row-host">{t.host}</span>
+                                                        </div>
+                                                        <span className="compliance-transfers__row-resource" title={t.resourceType}>
+                                                            {resIcon}
+                                                        </span>
+                                                        <span className={"compliance-transfers__row-cat compliance-transfers__row-cat--" + (t.category || "other")}>
+                                                            {meta.label || t.category}
+                                                        </span>
+                                                        {meta.risk !== "none" && (
+                                                            <span className={"compliance-transfers__row-risk --" + meta.risk}>
+                                                                {meta.risk === "high" ? "High risk" : meta.risk === "medium" ? "Medium" : "Low"}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </>
+                                );
+                            })()}
 
                             {preConsentTransfers?.pre_consent_transfers?.length === 0 && !scanLoading && (
                                 <div className="compliance-transfers__empty compliance-transfers__empty--clean">
