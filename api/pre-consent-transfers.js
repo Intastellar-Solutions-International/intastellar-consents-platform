@@ -19,6 +19,38 @@
 import pkg from "pg";
 const { Pool } = pkg;
 
+const BANNER_CATEGORY = {
+    advertising:    "marketing",
+    fingerprinting: "marketing",
+    social:         "marketing",
+    analytics:      "analytics",
+    functional:     "functional",
+    cdn:            "functional",
+    cmp:            "necessary",
+    "third-party":  "functional",
+};
+
+function enrichWithBannerCategory(transfers, cookies, domain) {
+    const domainRoot = domain.split(".").slice(-2).join(".");
+    const enrichedTransfers = transfers.map(t => ({
+        ...t,
+        bannerCategory: t.bannerCategory || BANNER_CATEGORY[t.category] || "functional",
+    }));
+    const enrichedCookies = cookies.map(c => {
+        if (c.bannerCategory) return c;
+        const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
+        const isFirstParty  = cookieRoot === domainRoot;
+        const matchedVendor = enrichedTransfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);
+        return {
+            ...c,
+            bannerCategory: matchedVendor
+                ? matchedVendor.bannerCategory
+                : isFirstParty ? "necessary" : "functional",
+        };
+    });
+    return { enrichedTransfers, enrichedCookies };
+}
+
 let pool;
 function getPool() {
     if (!pool) {
@@ -105,13 +137,18 @@ export default async function handler(req, res) {
         }
 
         const row = rows[0];
+        const { enrichedTransfers, enrichedCookies } = enrichWithBannerCategory(
+            row.transfers || [],
+            row.cookies   || [],
+            row.domain,
+        );
         res.json({
             domain:                row.domain,
             scanned_at:            row.scanned_at,
             scan_duration_ms:      row.scan_duration_ms,
             status:                row.status,
-            pre_consent_transfers: row.transfers || [],
-            pre_consent_cookies:   row.cookies   || [],
+            pre_consent_transfers: enrichedTransfers,
+            pre_consent_cookies:   enrichedCookies,
             ...(row.error_message ? { error: row.error_message } : {}),
         });
     } catch (err) {

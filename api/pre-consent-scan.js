@@ -108,6 +108,18 @@ const TRACKERS = [
 
 const CATEGORY_ORDER = { advertising: 0, fingerprinting: 1, analytics: 2, social: 3, functional: 4, cdn: 5, "third-party": 6 };
 
+// Maps internal scan category → cookie-banner consent category
+const BANNER_CATEGORY = {
+    advertising:    "marketing",
+    fingerprinting: "marketing",
+    social:         "marketing",
+    analytics:      "analytics",
+    functional:     "functional",
+    cdn:            "functional",
+    cmp:            "necessary",
+    "third-party":  "functional",
+};
+
 // Data processing country per service — primary legal entity / data centre country (ISO alpha-2).
 // Used to highlight destination countries on the compliance map.
 // Deliberately NOT based on CDN edge IP — the legal entity is what matters under GDPR Ch. V.
@@ -266,29 +278,41 @@ async function scanDomain(domain) {
 
         const transfers = [];
         for (const [host, info] of seen) {
-            const match = classifyHost(host);
+            const match    = classifyHost(host);
+            const category = match?.category || "third-party";
             transfers.push({
                 host,
-                service:      match?.service     || host,
-                category:     match?.category    || "third-party",
-                dataRegion:   match?.dataRegion  || "non-eu",
-                dataCountry:  match?.dataCountry || null,
-                resourceType: info.resourceType,
+                service:        match?.service     || host,
+                category,
+                bannerCategory: BANNER_CATEGORY[category] || "functional",
+                dataRegion:     match?.dataRegion  || "non-eu",
+                dataCountry:    match?.dataCountry || null,
+                resourceType:   info.resourceType,
             });
         }
         transfers.sort((a, b) => (CATEGORY_ORDER[a.category] ?? 6) - (CATEGORY_ORDER[b.category] ?? 6));
 
-        const cookies = rawCookies.map(c => ({
-            name:     c.name,
-            domain:   c.domain,
-            path:     c.path,
-            httpOnly: c.httpOnly,
-            secure:   c.secure,
-            sameSite: c.sameSite || "None",
-            session:  c.expires === -1,
-            expires:  c.expires !== -1 ? c.expires : null,
-            size:     c.size,
-        }));
+        const targetRoot = domain.split(".").slice(-2).join(".");
+        const cookies = rawCookies.map(c => {
+            const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
+            const isFirstParty  = cookieRoot === targetRoot;
+            const matchedVendor = transfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);
+            const bannerCategory = matchedVendor
+                ? matchedVendor.bannerCategory
+                : isFirstParty ? "necessary" : "functional";
+            return {
+                name:     c.name,
+                domain:   c.domain,
+                path:     c.path,
+                httpOnly: c.httpOnly,
+                secure:   c.secure,
+                sameSite: c.sameSite || "None",
+                session:  c.expires === -1,
+                expires:  c.expires !== -1 ? c.expires : null,
+                size:     c.size,
+                bannerCategory,
+            };
+        });
 
         return { transfers, cookies, durationMs: Date.now() - startMs, error: null };
     } catch (err) {

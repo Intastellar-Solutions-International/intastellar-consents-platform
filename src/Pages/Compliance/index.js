@@ -27,6 +27,13 @@ const CATEGORY_META = {
     "third-party":  { label: "Third-party",    risk: "medium", icon: "◇", color: "#909090" },
 };
 
+const BANNER_CATEGORY_META = {
+    necessary:  { label: "Necessary",  color: "#50a878" },
+    analytics:  { label: "Analytics",  color: "#5090dc" },
+    marketing:  { label: "Marketing",  color: "#dc5050" },
+    functional: { label: "Functional", color: "#c0a053" },
+};
+
 const RESOURCE_LABELS = {
     script:     "Script",
     stylesheet: "CSS",
@@ -562,6 +569,17 @@ export default function CompliancePage() {
                                                                     </div>
                                                                     {isExp && (
                                                                         <div className="compliance-transfers__row-detail">
+                                                                            {t.bannerCategory && (() => {
+                                                                                const bm = BANNER_CATEGORY_META[t.bannerCategory];
+                                                                                return (
+                                                                                    <span className="compliance-transfers__row-detail-item">
+                                                                                        <span className="compliance-transfers__row-detail-label">Consent category</span>
+                                                                                        <span className="compliance-banner-cat" style={{ "--bc-color": bm?.color || "#909090" }}>
+                                                                                            {bm?.label || t.bannerCategory}
+                                                                                        </span>
+                                                                                    </span>
+                                                                                );
+                                                                            })()}
                                                                             {t.dataCountry && (
                                                                                 <span className="compliance-transfers__row-detail-item">
                                                                                     <span className="compliance-transfers__row-detail-label">Data country</span>
@@ -674,6 +692,7 @@ export default function CompliancePage() {
                                             <span>Name / Domain</span>
                                             <span>Party</span>
                                             <span>Lifetime</span>
+                                            <span>Category</span>
                                             <span>Flags</span>
                                         </div>
                                         <div className="compliance-cookies__list">
@@ -691,6 +710,14 @@ export default function CompliancePage() {
                                                         <span className={"compliance-cookies__row-lifetime" + (c.session ? " --session" : " --persistent")}>
                                                             {c.session ? "Session" : "Persistent"}
                                                         </span>
+                                                        {c.bannerCategory && (() => {
+                                                            const bm = BANNER_CATEGORY_META[c.bannerCategory];
+                                                            return (
+                                                                <span className="compliance-banner-cat" style={{ "--bc-color": bm?.color || "#909090" }}>
+                                                                    {bm?.label || c.bannerCategory}
+                                                                </span>
+                                                            );
+                                                        })()}
                                                         <div className="compliance-cookies__flags">
                                                             {c.httpOnly && <span className="compliance-cookies__flag">HttpOnly</span>}
                                                             {c.secure   && <span className="compliance-cookies__flag">Secure</span>}

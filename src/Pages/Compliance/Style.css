@@ -971,6 +971,21 @@
     white-space: pre-wrap;
 }
 
+/* ── Consent / banner category badge ────────────────────────────────────────── */
+.compliance-banner-cat {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border: 1px solid color-mix(in srgb, var(--bc-color, #909090) 35%, transparent);
+    background: color-mix(in srgb, var(--bc-color, #909090) 10%, transparent);
+    color: color-mix(in srgb, var(--bc-color, #909090) 90%, #fff);
+}
+
 /* ── Pagination controls ─────────────────────────────────────────────────────── */
 .compliance-pagination {
     display: flex;
