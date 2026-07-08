@@ -293,6 +293,9 @@ export default function Map(props) {
             }
         }
 
+        console.log("showTooltips", (dataFlowMode) ? false : true);
+        console.log("dataFlowMode", dataFlowCountries.length);
+
         new svgMap({
             targetElementID: "svgMap",
             data: {
@@ -343,6 +346,7 @@ export default function Map(props) {
                 applyData: "total",
                 values: mapCountries,
             },
+            showTooltips: false,
             /* onGetTooltip: (tooltipDiv, countryID, countryValues) => {
                 if (!countryValues) return "";
                 const fmt = (n) => (n != null && !isNaN(n) ? (typeof n === "number" ? n.toLocaleString("de-DE") : n) : "-");
@@ -391,12 +395,22 @@ export default function Map(props) {
                 return text;
             }, */
             initialZoom: zoomLevel,
-            initialLocation: center,
+            initialLocation: center
         });
 
         // Post-paint: flow lines (data-flow mode) or simple country stroke highlights
         requestAnimationFrame(() => {
             if (dataFlowMode) {
+                // Disable pointer events on all country paths so svgMap never
+                // fires its mouseenter tooltip — it's appended to <body> so CSS
+                // scoping won't reach it; killing the trigger is more reliable
+                el.querySelectorAll("path").forEach(p => {
+                    p.style.pointerEvents = "none";
+                });
+                // Also hide any tooltip already in the DOM from a prior render
+                document.querySelectorAll(".svgMap-tooltip").forEach(t => {
+                    t.style.display = "none";
+                });
                 drawDataFlows(el, dataFlowCountries, dataFlowOrigin);
             } else if (dataFlowCountries.length) {
                 dataFlowCountries.forEach(code => {
