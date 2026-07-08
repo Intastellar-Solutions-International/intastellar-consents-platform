@@ -14,7 +14,7 @@
  *   POSTGRES_URL  — Neon connection string (EU Frankfurt)
  */
 
-import chromium from "chrome-aws-lambda";
+import chromium from "@sparticuz/chromium";
 import puppeteer from "puppeteer-core";
 import pkg from "pg";
 const { Pool } = pkg;
@@ -122,7 +122,7 @@ async function scanDomain(domain) {
     const browser = await puppeteer.launch({
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath,
+        executablePath: await chromium.executablePath(),
         headless: chromium.headless,
     });
 
