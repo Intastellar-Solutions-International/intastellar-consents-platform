@@ -22,6 +22,10 @@ export const reportsLinks = [
         name: "Channel Analytics",
         path: "/reports/marketing",
     },
+    {
+        name: "Compliance overview",
+        path: "/reports/compliance",
+    },
 ];
 
 const HUB_CARDS = [

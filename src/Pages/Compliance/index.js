@@ -16,6 +16,16 @@ import "./Style.css";
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 
+const EU_EEA_COUNTRIES = new Set([
+    "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic",
+    "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary",
+    "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta",
+    "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia",
+    "Spain", "Sweden",
+    // EEA non-EU
+    "Iceland", "Liechtenstein", "Norway",
+]);
+
 export default function CompliancePage() {
     const { id, handle } = useParams();
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
@@ -61,6 +71,28 @@ export default function CompliancePage() {
         () => (handle ? handle : currentDomain) || "combined view",
         [handle, currentDomain]
     );
+
+    const transferStats = useMemo(() => {
+        const countries = activeDataCountry?.data?.Countries;
+        if (!countries?.length) return null;
+        let euTotal = 0;
+        let nonEuTotal = 0;
+        const nonEuMap = [];
+        for (const c of countries) {
+            if (c.country === "Unknown") continue;
+            const count = c.num?.total ?? 0;
+            if (EU_EEA_COUNTRIES.has(c.country)) {
+                euTotal += count;
+            } else {
+                nonEuTotal += count;
+                nonEuMap.push({ name: c.country, count });
+            }
+        }
+        const total = euTotal + nonEuTotal;
+        const euPct = total > 0 ? Math.round((euTotal / total) * 100) : 0;
+        const topNonEu = nonEuMap.sort((a, b) => b.count - a.count).slice(0, 6);
+        return { euTotal, nonEuTotal, euPct, nonEuPct: 100 - euPct, topNonEu, total };
+    }, [activeDataCountry]);
 
     useEffect(() => {
         const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
@@ -205,8 +237,72 @@ export default function CompliancePage() {
                 )}
             </div>
 
-            {/* ── Audit card ── */}
+            {/* ── Content ── */}
             <div className="dashboard-content compliance-page">
+
+                {/* ── Data transfer section ── */}
+                {transferStats && (
+                    <div className="dashboard-section compliance-transfers">
+                        <h2 className="dashboard-section-label">Data transfers</h2>
+                        <div className="compliance-transfers__card">
+                            <div className="compliance-transfers__cols">
+                                <div className="compliance-transfers__col compliance-transfers__col--eu">
+                                    <span className="compliance-transfers__pct">{transferStats.euPct}%</span>
+                                    <span className="compliance-transfers__count">
+                                        {transferStats.euTotal.toLocaleString("de-DE")} interactions
+                                    </span>
+                                    <span className="compliance-transfers__region">EU / EEA</span>
+                                    <span className="compliance-transfers__note">
+                                        Within the European Economic Area — processed under GDPR
+                                    </span>
+                                </div>
+                                <div className="compliance-transfers__col compliance-transfers__col--third">
+                                    <span className="compliance-transfers__pct">{transferStats.nonEuPct}%</span>
+                                    <span className="compliance-transfers__count">
+                                        {transferStats.nonEuTotal.toLocaleString("de-DE")} interactions
+                                    </span>
+                                    <span className="compliance-transfers__region">Third countries</span>
+                                    <span className="compliance-transfers__note">
+                                        Outside EEA — may require SCCs or adequacy decision
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Split bar */}
+                            <div className="compliance-transfers__bar-track" aria-hidden>
+                                <div
+                                    className="compliance-transfers__bar-eu"
+                                    style={{ width: `${transferStats.euPct}%` }}
+                                />
+                                <div
+                                    className="compliance-transfers__bar-third"
+                                    style={{ width: `${transferStats.nonEuPct}%` }}
+                                />
+                            </div>
+
+                            {/* Top third-country origins */}
+                            {transferStats.topNonEu.length > 0 && (
+                                <div className="compliance-transfers__origins">
+                                    <span className="compliance-transfers__origins-label">
+                                        Top third-country origins
+                                    </span>
+                                    <div className="compliance-transfers__origin-tags">
+                                        {transferStats.topNonEu.map((c) => (
+                                            <span key={c.name} className="compliance-transfers__tag">
+                                                {c.name}
+                                                <span className="compliance-transfers__tag-count">
+                                                    {c.count.toLocaleString("de-DE")}
+                                                </span>
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* ── Audit card ── */}
                 <div className="compliance-page__audit">
                     <AuditSnapshotCard
                         platformId={id}

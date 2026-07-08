@@ -39,7 +39,7 @@ export default function Nav() {
                         <Link className={"navItems" + (homeActive ? " --active" : "")} to={homePath}><i className="dashboard-icons home" style={{
                             backgroundImage: `url(${home})`
                         }} data-icon={home}></i> <span className="hiddenCollapsed">Home</span></Link>
-                        <Link className={"navItems" + (path.indexOf("/reports") > -1 ? " --active" : "")} to={reportsPathResolved}><i className="dashboard-icons reports" style={{
+                        <Link className={"navItems" + (path.indexOf("/reports") > -1 && path.indexOf("/compliance") === -1 ? " --active" : "")} to={reportsPathResolved}><i className="dashboard-icons reports" style={{
                             backgroundImage: `url(${reports})`
                         }} data-icon={reports}></i> <span className="hiddenCollapsed">Reports</span></Link>
                         <Link className={"navItems" + (path.indexOf("/compare") > -1 ? " --active" : "")} to={"/" + localStorage.getItem("platform") + "/compare"}><i className="dashboard-icons compare" style={{
