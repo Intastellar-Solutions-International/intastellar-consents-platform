@@ -232,6 +232,24 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        getPreConsentTransfers: {
+            url: `${PrimaryHost}/cmp/pre-consent-transfers`,
+            method: "GET",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
+        triggerPreConsentScan: {
+            url: `${PrimaryHost}/cmp/pre-consent-transfers/scan`,
+            method: "POST",
+            headers: {
+                "Authorization": Authentication.getToken(),
+                "Organisation": Authentication.getOrganisation(),
+                "Content-Type": "application/json"
+            }
+        },
     },
     settings: {
         createUser: {

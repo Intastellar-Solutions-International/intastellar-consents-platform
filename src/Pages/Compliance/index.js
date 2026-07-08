@@ -16,15 +16,6 @@ import "./Style.css";
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 
-const EU_EEA_COUNTRIES = new Set([
-    "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czech Republic",
-    "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary",
-    "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta",
-    "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia",
-    "Spain", "Sweden",
-    // EEA non-EU
-    "Iceland", "Liechtenstein", "Norway",
-]);
 
 export default function CompliancePage() {
     const { id, handle } = useParams();
@@ -65,6 +56,8 @@ export default function CompliancePage() {
     const [activeData, setActiveData] = useState(null);
     const [activeDataCountry, setActiveDataCountry] = useState(null);
     const [observedCookies, setObservedCookies] = useState(null);
+    const [preConsentTransfers, setPreConsentTransfers] = useState(null);
+    const [scanLoading, setScanLoading] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const domainsForApi = useMemo(
@@ -72,27 +65,6 @@ export default function CompliancePage() {
         [handle, currentDomain]
     );
 
-    const transferStats = useMemo(() => {
-        const countries = activeDataCountry?.data?.Countries;
-        if (!countries?.length) return null;
-        let euTotal = 0;
-        let nonEuTotal = 0;
-        const nonEuMap = [];
-        for (const c of countries) {
-            if (c.country === "Unknown") continue;
-            const count = c.num?.total ?? 0;
-            if (EU_EEA_COUNTRIES.has(c.country)) {
-                euTotal += count;
-            } else {
-                nonEuTotal += count;
-                nonEuMap.push({ name: c.country, count });
-            }
-        }
-        const total = euTotal + nonEuTotal;
-        const euPct = total > 0 ? Math.round((euTotal / total) * 100) : 0;
-        const topNonEu = nonEuMap.sort((a, b) => b.count - a.count).slice(0, 6);
-        return { euTotal, nonEuTotal, euPct, nonEuPct: 100 - euPct, topNonEu, total };
-    }, [activeDataCountry]);
 
     useEffect(() => {
         const unsubscribe = Authentication.onDemoModeChange(setDemoMode);
@@ -168,7 +140,40 @@ export default function CompliancePage() {
                 setObservedCookies(data);
             })
             .catch(console.error);
+
+        const domain = handle || currentDomain;
+        if (domain && domain !== "combined view") {
+            fetch(`${API[id].getPreConsentTransfers.url}?domain=${encodeURIComponent(domain)}`, {
+                method: API[id].getPreConsentTransfers.method,
+                headers: { ...API[id].getPreConsentTransfers.headers },
+            })
+                .then((r) => r.json())
+                .then((data) => {
+                    if (data === "Err_Login_Expired") {
+                        localStorage.removeItem("globals");
+                        window.location.href = "/login";
+                        return;
+                    }
+                    setPreConsentTransfers(data);
+                })
+                .catch(() => setPreConsentTransfers(null));
+        }
     }, [id, domainsForApi, fromDate, toDate, compareRange, previousPeriod, previousPeriod2, workspaceId]);
+
+    const triggerScan = () => {
+        const domain = handle || currentDomain;
+        if (!domain || domain === "combined view" || !API[id]) return;
+        setScanLoading(true);
+        fetch(API[id].triggerPreConsentScan.url, {
+            method: API[id].triggerPreConsentScan.method,
+            headers: { ...API[id].triggerPreConsentScan.headers },
+            body: JSON.stringify({ domain, workspaceId }),
+        })
+            .then((r) => r.json())
+            .then((data) => setPreConsentTransfers(data))
+            .catch(console.error)
+            .finally(() => setScanLoading(false));
+    };
 
     if (!id || !API[id]) return null;
 
@@ -240,62 +245,72 @@ export default function CompliancePage() {
             {/* ── Content ── */}
             <div className="dashboard-content compliance-page">
 
-                {/* ── Data transfer section ── */}
-                {transferStats && (
+                {/* ── Pre-consent data transfers ── */}
+                {(handle || currentDomain) && (handle || currentDomain) !== "combined view" && (
                     <div className="dashboard-section compliance-transfers">
-                        <h2 className="dashboard-section-label">Data transfers</h2>
+                        <h2 className="dashboard-section-label">Pre-consent data transfers</h2>
                         <div className="compliance-transfers__card">
-                            <div className="compliance-transfers__cols">
-                                <div className="compliance-transfers__col compliance-transfers__col--eu">
-                                    <span className="compliance-transfers__pct">{transferStats.euPct}%</span>
-                                    <span className="compliance-transfers__count">
-                                        {transferStats.euTotal.toLocaleString("de-DE")} interactions
-                                    </span>
-                                    <span className="compliance-transfers__region">EU / EEA</span>
-                                    <span className="compliance-transfers__note">
-                                        Within the European Economic Area — processed under GDPR
-                                    </span>
+                            <div className="compliance-transfers__header">
+                                <div className="compliance-transfers__header-text">
+                                    <p className="compliance-transfers__desc">
+                                        Third-party services that receive visitor data before consent is given —
+                                        e.g. analytics scripts, social pixels, advertising trackers.
+                                        Each represents a potential Chapter V transfer under GDPR.
+                                    </p>
+                                    {preConsentTransfers?.scanned_at && (
+                                        <span className="compliance-transfers__scan-time">
+                                            Last scanned {new Date(preConsentTransfers.scanned_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                                        </span>
+                                    )}
                                 </div>
-                                <div className="compliance-transfers__col compliance-transfers__col--third">
-                                    <span className="compliance-transfers__pct">{transferStats.nonEuPct}%</span>
-                                    <span className="compliance-transfers__count">
-                                        {transferStats.nonEuTotal.toLocaleString("de-DE")} interactions
-                                    </span>
-                                    <span className="compliance-transfers__region">Third countries</span>
-                                    <span className="compliance-transfers__note">
-                                        Outside EEA — may require SCCs or adequacy decision
-                                    </span>
-                                </div>
+                                <button
+                                    type="button"
+                                    className={"compliance-transfers__scan-btn" + (scanLoading ? " --loading" : "")}
+                                    onClick={triggerScan}
+                                    disabled={scanLoading}
+                                >
+                                    {scanLoading ? "Scanning…" : "Scan now"}
+                                </button>
                             </div>
 
-                            {/* Split bar */}
-                            <div className="compliance-transfers__bar-track" aria-hidden>
-                                <div
-                                    className="compliance-transfers__bar-eu"
-                                    style={{ width: `${transferStats.euPct}%` }}
-                                />
-                                <div
-                                    className="compliance-transfers__bar-third"
-                                    style={{ width: `${transferStats.nonEuPct}%` }}
-                                />
-                            </div>
+                            {!preConsentTransfers && !scanLoading && (
+                                <div className="compliance-transfers__empty">
+                                    <span className="compliance-transfers__empty-icon" aria-hidden>⟳</span>
+                                    <span>No scan data yet — run a scan to detect pre-consent transfers for this domain.</span>
+                                </div>
+                            )}
 
-                            {/* Top third-country origins */}
-                            {transferStats.topNonEu.length > 0 && (
-                                <div className="compliance-transfers__origins">
-                                    <span className="compliance-transfers__origins-label">
-                                        Top third-country origins
-                                    </span>
-                                    <div className="compliance-transfers__origin-tags">
-                                        {transferStats.topNonEu.map((c) => (
-                                            <span key={c.name} className="compliance-transfers__tag">
-                                                {c.name}
-                                                <span className="compliance-transfers__tag-count">
-                                                    {c.count.toLocaleString("de-DE")}
+                            {scanLoading && (
+                                <div className="compliance-transfers__empty compliance-transfers__empty--loading">
+                                    <span>Scanning {handle || currentDomain}…</span>
+                                </div>
+                            )}
+
+                            {preConsentTransfers?.pre_consent_transfers?.length > 0 && (
+                                <div className="compliance-transfers__list">
+                                    {preConsentTransfers.pre_consent_transfers.map((t) => (
+                                        <div key={t.host} className={"compliance-transfers__row compliance-transfers__row--" + (t.category || "other")}>
+                                            <div className="compliance-transfers__row-main">
+                                                <span className="compliance-transfers__row-service">
+                                                    {t.service || t.host}
                                                 </span>
+                                                <span className="compliance-transfers__row-host">{t.host}</span>
+                                            </div>
+                                            <span className={"compliance-transfers__row-cat compliance-transfers__row-cat--" + (t.category || "other")}>
+                                                {t.category || "unknown"}
                                             </span>
-                                        ))}
-                                    </div>
+                                            <span className="compliance-transfers__row-flag" title="Fires before consent">
+                                                Pre-consent
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {preConsentTransfers?.pre_consent_transfers?.length === 0 && !scanLoading && (
+                                <div className="compliance-transfers__empty compliance-transfers__empty--clean">
+                                    <span className="compliance-transfers__empty-icon" aria-hidden>✓</span>
+                                    <span>No pre-consent transfers detected in the last scan.</span>
                                 </div>
                             )}
                         </div>
