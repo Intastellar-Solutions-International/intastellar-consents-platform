@@ -11,6 +11,10 @@
     "api/pre-consent-scan.js": {
       "memory": 1536,
       "maxDuration": 60
+    },
+    "api/cookie-banner-scan.js": {
+      "memory": 1536,
+      "maxDuration": 60
     }
   }
 }
