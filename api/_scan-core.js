@@ -102,6 +102,7 @@ export const TRACKERS = [
     // CDN / fonts
     { domains: ["fonts.googleapis.com", "fonts.gstatic.com"],    service: "Google Fonts",          category: "cdn"            },
     { domains: ["ajax.googleapis.com"],                           service: "Google CDN",            category: "cdn"            },
+    { domains: ["google.com"],                                    service: "Google Inc.",            category: "analytics"      },
     { domains: ["cdn.jsdelivr.net"],                              service: "jsDelivr CDN",          category: "cdn"            },
     { domains: ["cdnjs.cloudflare.com"],                          service: "Cloudflare CDN",        category: "cdn"            },
 
