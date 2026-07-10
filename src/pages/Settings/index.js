@@ -4,6 +4,7 @@ import { reportsLinks as settingsSidebarLinks } from "../../Components/Header/Si
 import StickyPageTitle from "../../Components/Header/Sticky";
 import Authentication from "../../Authentication/Auth";
 import { canAccess } from "../../Functions/tier.js";
+import appStorage from '../../Functions/storage.js';
 
 const Link = window.ReactRouterDOM.Link;
 const { useMemo } = React;
@@ -47,7 +48,7 @@ export default function Settings() {
 
     const scopeLine = useMemo(() => {
         try {
-            const org = JSON.parse(localStorage.getItem("organisation"));
+            const org = JSON.parse(appStorage.getItem("organisation"));
             const name = org?.name;
             if (name) return name;
         } catch {

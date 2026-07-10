@@ -28,6 +28,7 @@ import Widget from "../../Components/widget/widget.js";
 import ErrorBoundary from "../../Components/Error/ErrorBoundary.js";
 import Authentication from "../../Authentication/Auth";
 import punycode from "punycode";
+import appStorage from '../../Functions/storage.js';
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -38,8 +39,8 @@ export default function Dashboard(props) {
     const [currentDomain, setCurrentDomain] = useContext(DomainContext);
     const [organisation, setOrganisation] = useContext(OrganisationContext);
     const [activeWorkspace] = useContext(WorkspaceContext);
-    const subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
-    const userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
+    const subscriptionStatus = JSON.parse(appStorage.getItem("subscription"));
+    const userProfile = JSON.parse(appStorage.getItem("globals")).user.avatar;
 
     const [demoMode, setDemoMode] = useState(Authentication.DemoMode);
     const [timeToDecision, setTimeToDecision] = useState("global");
@@ -148,7 +149,7 @@ export default function Dashboard(props) {
         // Get organisation ID
         let orgId = null;
         try {
-            const orgRaw = localStorage.getItem("organisation");
+            const orgRaw = appStorage.getItem("organisation");
             if (orgRaw) {
                 const org = JSON.parse(orgRaw);
                 orgId = org?.id;
@@ -225,7 +226,7 @@ export default function Dashboard(props) {
             body: JSON.stringify({ workspaceId }),
         }).then((res) => res.json()).then((data) => {
             if (data === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -251,7 +252,7 @@ export default function Dashboard(props) {
             body: JSON.stringify({ workspaceId }),
         }).then((res) => res.json()).then((country) => {
             if (country === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -326,7 +327,7 @@ export default function Dashboard(props) {
                 )}
                 {/* <div className="profilePicture-container">
                     <img src={userProfile} className="profilePicture" />
-                    <p className="profile-user">Welcome, {JSON.parse(localStorage.getItem("globals")).user.name.firstName}</p>
+                    <p className="profile-user">Welcome, {JSON.parse(appStorage.getItem("globals")).user.name.firstName}</p>
                     <p>This dashboard shows aggregated consent interactions for the selected period. <br />
                         Use it to monitor acceptance rates and category-level consent behavior.</p>
 

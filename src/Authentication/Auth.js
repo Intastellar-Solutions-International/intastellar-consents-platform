@@ -1,3 +1,4 @@
+import appStorage from '../Functions/storage.js';
 let DemoMode = false;
 const listeners = [];
 const Authentication = {
@@ -56,8 +57,8 @@ const Authentication = {
 
             setLoading(false);
 
-            localStorage.setItem("organisation", response.organisation);
-            localStorage.setItem("globals", JSON.stringify(response));
+            appStorage.setItem("organisation", response.organisation);
+            appStorage.setItem("globals", JSON.stringify(response));
 
             if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
                 window.location.href = "/dashboard";
@@ -68,8 +69,8 @@ const Authentication = {
         })
     },
     Logout: function () {
-        localStorage.removeItem("globals");
-        localStorage.removeItem("organisation");
+        appStorage.removeItem("globals");
+        appStorage.removeItem("organisation");
         localStorage.removeItem("domains");
         document.cookie = "inta_acc=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         window.location.href = "/";
@@ -79,15 +80,15 @@ const Authentication = {
         const urlParams = new URLSearchParams(window.location.search);
         const tokenFromUrl = urlParams.get('token');
 
-        const token = (JSON.parse(localStorage.getItem("globals"))?.token) ? "Bearer " + JSON.parse(localStorage.getItem("globals"))?.token : tokenFromUrl ? tokenFromUrl : null;
+        const token = (JSON.parse(appStorage.getItem("globals"))?.token) ? "Bearer " + JSON.parse(appStorage.getItem("globals"))?.token : tokenFromUrl ? tokenFromUrl : null;
         return token;
     },
     getUserId: function () {
-        const email = (JSON.parse(localStorage.getItem("globals"))?.user?.email) ? JSON.parse(localStorage.getItem("globals"))?.user?.email : undefined;
+        const email = (JSON.parse(appStorage.getItem("globals"))?.user?.email) ? JSON.parse(appStorage.getItem("globals"))?.user?.email : undefined;
         return email;
     },
     getOrganisation: function () {
-        const raw = localStorage.getItem("organisation");
+        const raw = appStorage.getItem("organisation");
         if (raw == null || raw === undefined) return undefined;
         try {
             return JSON.parse(raw)?.id;
@@ -147,7 +148,7 @@ const Authentication = {
      */
     getOrganisationAccessStatusForOrganisation: function (organisation_id) {
         if (organisation_id == null || organisation_id === undefined) return undefined;
-        const raw = localStorage.getItem("globals");
+        const raw = appStorage.getItem("globals");
         if (raw == null || raw === undefined) return undefined;
         let g;
         try {
@@ -169,7 +170,7 @@ const Authentication = {
         const orgId = this.getOrganisation();
         const fromAccess = this.getOrganisationAccessStatusForOrganisation(orgId);
         if (fromAccess != null && fromAccess !== "") return fromAccess;
-        const raw = localStorage.getItem("globals");
+        const raw = appStorage.getItem("globals");
         if (!raw) return null;
         try {
             return JSON.parse(raw)?.status ?? null;

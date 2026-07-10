@@ -20,6 +20,7 @@ import {
 import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
 import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
 import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
+import appStorage from '../../../Functions/storage.js';
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -1697,7 +1698,7 @@ export default function MarketingReport() {
                 return;
             }
             if (json === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -1713,7 +1714,7 @@ export default function MarketingReport() {
                     setCompareBaselineNote("Comparison window returned non-JSON data.");
                 }
                 if (jsonB === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }
@@ -1820,7 +1821,7 @@ export default function MarketingReport() {
                     return;
                 }
                 if (json === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }

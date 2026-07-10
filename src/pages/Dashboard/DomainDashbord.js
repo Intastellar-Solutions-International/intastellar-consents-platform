@@ -14,6 +14,7 @@ import { LiveView } from "../../components/LiveView/index.js";
 import Select from "../../Components/SelectInput/Selector.js";
 import punycode from "punycode";
 import { PremiumTier } from "../../Components/tiers/index.js";
+import appStorage from '../../Functions/storage.js';
 
 const { useState, useEffect, useRef, useContext, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -69,7 +70,7 @@ export default function DomainDashbord(props) {
             headers: API[id].getInteractionsByCountry.headers,
         }).then((res) => res.json()).then((country) => {
             if (country === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -90,7 +91,7 @@ export default function DomainDashbord(props) {
             headers: API[id].observedCookies.headers,
         }).then((res) => res.json()).then((cookiesData) => {
             if (cookiesData === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -104,7 +105,7 @@ export default function DomainDashbord(props) {
             headers: API[id].getInteractions.headers,
         }).then((res) => res.json()).then((data) => {
             if (data === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }

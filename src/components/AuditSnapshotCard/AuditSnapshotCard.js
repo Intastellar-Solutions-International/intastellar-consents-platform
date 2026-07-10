@@ -11,6 +11,7 @@ import { useUserLocale } from "../../Functions/userLocale.js";
 import { deriveComplianceRegionStatus } from "./complianceRegions.js";
 import AuditComplianceMiniMap from "./AuditComplianceMiniMap.js";
 import "./AuditSnapshotCard.css";
+import appStorage from '../../Functions/storage.js';
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -241,7 +242,7 @@ export default function AuditSnapshotCard(props) {
                 }
                 if (cancelled) return;
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }
@@ -364,7 +365,7 @@ export default function AuditSnapshotCard(props) {
                     return;
                 }
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }

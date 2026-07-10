@@ -1,6 +1,7 @@
 const { useState, useEffect, useRef, useContext } = React;
 import "./BugReport.css";
 import API from "../../API/api";
+import appStorage from '../../Functions/storage.js';
 export default function BugReport() {
     const [isOpen, setIsOpen] = useState(false);
     const [statusMessage, setStatusMessage] = useState(null);
@@ -69,8 +70,8 @@ export default function BugReport() {
                             </section>
                             <label>Describe your problem:</label>
                             <textarea className="bugReport-input --height --feedbackMessage" col="50" placeholder="Please describe your problem here..."></textarea>
-                            <input className="bugReport-input" type="hidden" value={JSON.parse(localStorage.getItem("globals"))?.profile?.email} placeholder="email" />
-                            <input className="bugReport-input" type="hidden" value={JSON.parse(localStorage.getItem("globals"))?.profile?.first_name + " " + JSON.parse(localStorage.getItem("globals"))?.profile?.last_name} placeholder="email" />
+                            <input className="bugReport-input" type="hidden" value={JSON.parse(appStorage.getItem("globals"))?.profile?.email} placeholder="email" />
+                            <input className="bugReport-input" type="hidden" value={JSON.parse(appStorage.getItem("globals"))?.profile?.first_name + " " + JSON.parse(appStorage.getItem("globals"))?.profile?.last_name} placeholder="email" />
 
                             <button className="bugReport-send">Send feedback</button>
                         </form>

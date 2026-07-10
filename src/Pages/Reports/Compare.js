@@ -6,6 +6,7 @@ const useParams = window.ReactRouterDOM.useParams;
 import Fetch from "../../Functions/fetch";
 import "../Dashboard/Style.css";
 import "./Style.css";
+import appStorage from '../../Functions/storage.js';
 
 const SLOT_COUNT = 5;
 
@@ -109,7 +110,7 @@ export default function Compare({ organisations: _organisations, domains }) {
                 }),
             });
             if (response.status === 401 || response.status === 403) {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -122,7 +123,7 @@ export default function Compare({ organisations: _organisations, domains }) {
             } else {
                 const data = await response.json();
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }
@@ -151,7 +152,7 @@ export default function Compare({ organisations: _organisations, domains }) {
         )
             .then((data) => {
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }

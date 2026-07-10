@@ -1,5 +1,6 @@
 const { useState, useEffect } = React;
 import Authentication from "../Authentication/Auth";
+import appStorage from './storage.js';
 
 function ignoreAbortError(err, setError) {
     if (err && (err.name === "AbortError" || err.code === 20)) {
@@ -86,7 +87,7 @@ export default function useFetch(updateInterval, url, method, headers, body, han
     ]);
 
     if (data == "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        appStorage.removeItem("globals");
         window.location.href = "/login";
         return;
     }

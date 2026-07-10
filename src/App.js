@@ -42,6 +42,7 @@ import Workspaces from "./Pages/Settings/Workspaces";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
 import { canAccess } from "./Functions/tier.js";
+import appStorage from './Functions/storage.js';
 
 const { useState, useEffect, useRef, createContext } = React;
 const Router = window.ReactRouterDOM.BrowserRouter;
@@ -51,14 +52,14 @@ const Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
-export const OrganisationContext = createContext(localStorage.getItem("organisation"));
+export const OrganisationContext = createContext(appStorage.getItem("organisation"));
 export const AllOrg = createContext(null);
 export const DomainContext = createContext(null);
 export const WorkspaceContext = createContext([null, () => {}]);
 
 export default function App() {
     const [dashboardView, setDashboardView] = useState((localStorage.getItem("platform")) ? localStorage.getItem("platform") : null);
-    const [organisation, setOrganisation] = useState((localStorage.getItem("organisation")) ? localStorage.getItem("organisation") : null);
+    const [organisation, setOrganisation] = useState((appStorage.getItem("organisation")) ? appStorage.getItem("organisation") : null);
     const [activeWorkspace, setActiveWorkspace] = useState(() => {
         try {
             const s = localStorage.getItem("current_workspace");
@@ -70,7 +71,7 @@ export default function App() {
     const [domains, setDomains] = useState(null);
     const [domainError, setDomainError] = useState(false);
     const [subscriptionStatus, setSubscriptionStatus] = useState(() => {
-        const cached = localStorage.getItem("subscription");
+        const cached = appStorage.getItem("subscription");
         if (cached) {
             try { return JSON.parse(cached); } catch { /* ignore */ }
         }
@@ -80,7 +81,7 @@ export default function App() {
     const navigate = window.ReactRouterDOM.useHistory();
 
     useEffect(() => {
-        const globals = localStorage.getItem("globals");
+        const globals = appStorage.getItem("globals");
         const path = window.location.pathname;
         const isApiRoute = path === "/api" || path.startsWith("/api/");
         if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
@@ -88,7 +89,7 @@ export default function App() {
         }
     }, []);
 
-    if (localStorage.getItem("globals") != null) {
+    if (appStorage.getItem("globals") != null) {
         const path = window.location.pathname;
         // Only redirect if id is present and not already on dashboard
         if ((path === "/login" || path === "/") && id) {
@@ -104,7 +105,7 @@ export default function App() {
                 organisationMember: Authentication.getUserId()
             })).then((data) => {
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     navigate.push("/login");
                     return;
                 }
@@ -115,12 +116,12 @@ export default function App() {
                 organization: Authentication.getOrganisation()
             })).then((data) => {
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     navigate.push("/login");
                     return;
                 }
                 setSubscriptionStatus(data);
-                localStorage.setItem("subscription", JSON.stringify(data));
+                appStorage.setItem("subscription", JSON.stringify(data));
             });
 
             if (id && API[id]?.getDomains?.url != undefined) {
@@ -169,7 +170,7 @@ export default function App() {
         }, []);
 
         const subscriptionLoading = subscriptionStatus?.subscription == null;
-        const orgId = (() => { try { return JSON.parse(localStorage.getItem("organisation"))?.id; } catch { return null; } })();
+        const orgId = (() => { try { return JSON.parse(appStorage.getItem("organisation"))?.id; } catch { return null; } })();
         const needsPayment = !subscriptionLoading && subscriptionStatus?.subscription === "none" && Number(orgId) !== 1;
 
         if (id === null && organisations) {
@@ -237,21 +238,21 @@ export default function App() {
                                         <Route path="/settings/create-organisation">
                                             {
                                                 subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <CreateOrganisation /> : <p>No access</p>}
+                                                    {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <CreateOrganisation /> : <p>No access</p>}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/settings/add-user">
                                             <ErrorBoundary>
-                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <AddUser /> : <p>No access</p>}
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <AddUser /> : <p>No access</p>}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/add-domain">
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> :
                                                 <ErrorBoundary>
-                                                    {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" 
-                                                    || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin"
-                                                    || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "manager" ?
+                                                    {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" 
+                                                    || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin"
+                                                    || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "manager" ?
                                                         <SettingsAddDomain /> : <p>No access</p>}
                                                 </ErrorBoundary>
                                             }
@@ -333,7 +334,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/dashboard">
                                             <ErrorBoundary>
-                                                <PlatformSelector setId={setId} platforms={JSON.parse(localStorage.getItem("globals"))?.access?.type} />
+                                                <PlatformSelector setId={setId} platforms={JSON.parse(appStorage.getItem("globals"))?.access?.type} />
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/login" exact>
@@ -345,13 +346,13 @@ export default function App() {
                                         <Route path="/settings/config-gdpr"></Route>
                                         <Route path="/settings/blacklist-ip">
                                             <ErrorBoundary>
-                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <BlacklistIp /> : null}
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <BlacklistIp /> : null}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/workspaces">
                                             <ErrorBoundary>
                                                 {(() => {
-                                                    const orgRaw = localStorage.getItem("organisation");
+                                                    const orgRaw = appStorage.getItem("organisation");
                                                     let org = null;
                                                     try { org = JSON.parse(orgRaw); } catch { /* ignore */ }
                                                     const role = org?.id ? Authentication.getOrganisationAccessStatusForOrganisation(org.id) : null;
@@ -368,7 +369,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/settings/create-user">
                                             <ErrorBoundary>
-                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? <CreateUser /> : null}
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <CreateUser /> : null}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/" exact>

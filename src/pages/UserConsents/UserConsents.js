@@ -21,6 +21,7 @@ import {
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import { FRAMEWORK_IDS, frameworksForAuditRow } from "../../components/AuditSnapshotCard/complianceRegions.js";
 import punycode from "punycode";
+import appStorage from '../../Functions/storage.js';
 
 const { useState, useEffect, useRef, useContext, useCallback, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
@@ -468,7 +469,7 @@ export default function UserConsents(props) {
             }
             const res = await fetch(url, { method, headers });
             if (res.status === 401) {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }

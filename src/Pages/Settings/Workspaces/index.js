@@ -14,6 +14,7 @@ import {
     populateVerificationCache,
 } from "../../../Functions/domainVerification";
 import "../Style.css";
+import appStorage from '../../../Functions/storage.js';
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -22,7 +23,7 @@ const Link = window.ReactRouterDOM.Link;
  */
 function getCurrentOrgId() {
     try {
-        const orgRaw = localStorage.getItem("organisation");
+        const orgRaw = appStorage.getItem("organisation");
         if (orgRaw) {
             const org = JSON.parse(orgRaw);
             return org?.id || null;

@@ -2,6 +2,7 @@ import Authentication from "../../Authentication/Auth";
 import CheckoutForm from "./CheckoutForm";
 import "./Style/Plans.css";
 import { PrimaryHost } from "../../API/host";
+import appStorage from '../../Functions/storage.js';
 
 const { useState } = React;
 
@@ -77,7 +78,7 @@ export default function SubscriptionPlans() {
     const [error, setError] = useState(null);
     const [initiating, setInitiating] = useState(null);
 
-    const companyName = (() => { try { return JSON.parse(localStorage.getItem("organisation"))?.name; } catch { return null; } })();
+    const companyName = (() => { try { return JSON.parse(appStorage.getItem("organisation"))?.name; } catch { return null; } })();
     const email = Authentication.getUserId();
 
     const handleSelectPlan = async (plan) => {

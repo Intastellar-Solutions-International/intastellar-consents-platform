@@ -4,6 +4,7 @@ import API from "../API/api";
 import Authentication from "../Authentication/Auth";
 import { LPFooter } from "../Components/Footer";
 import { IntastellarButton } from "@intastellar/signin-sdk-react";
+import appStorage from '../Functions/storage.js';
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useEffect = window.React.useEffect;
@@ -38,8 +39,8 @@ export default function Login() {
 
                 localStorage.setItem("platform", "gdpr");
 
-                localStorage.setItem("organisation", response[0]);
-                localStorage.setItem("globals", JSON.stringify(account));
+                appStorage.setItem("organisation", response[0]);
+                appStorage.setItem("globals", JSON.stringify(account));
 
                 if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
                     window.location.href = "/dashboard";

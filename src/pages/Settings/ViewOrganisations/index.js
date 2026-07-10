@@ -8,6 +8,7 @@ import SideNav from "../../../Components/Header/SideNav";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 import StickyPageTitle from "../../../Components/Header/Sticky";
 import "../Style.css";
+import appStorage from '../../../Functions/storage.js';
 
 const Link = window.ReactRouterDOM.Link;
 
@@ -70,7 +71,7 @@ export default function ViewOrg() {
 
     function canCreateOrganisationFromHere() {
         try {
-            const id = JSON.parse(localStorage.getItem("organisation")).id;
+            const id = JSON.parse(appStorage.getItem("organisation")).id;
             const r = Authentication.getOrganisationAccessStatusForOrganisation(id);
             return r === "admin" || r === "super-admin";
         } catch {
@@ -105,7 +106,7 @@ export default function ViewOrg() {
         ).then((re) => {
             setPending(null);
             if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -118,7 +119,7 @@ export default function ViewOrg() {
                 return;
             }
             try {
-                const raw = localStorage.getItem("organisation");
+                const raw = appStorage.getItem("organisation");
                 if (raw) {
                     const o = JSON.parse(raw);
                     if (String(o.id) === String(modalOrg.id)) {
@@ -149,7 +150,7 @@ export default function ViewOrg() {
         ).then((re) => {
             setPending(null);
             if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -164,11 +165,11 @@ export default function ViewOrg() {
                 return;
             }
             try {
-                const raw = localStorage.getItem("organisation");
+                const raw = appStorage.getItem("organisation");
                 if (raw) {
                     const o = JSON.parse(raw);
                     if (String(o.id) === String(modalOrg.id)) {
-                        localStorage.removeItem("organisation");
+                        appStorage.removeItem("organisation");
                         window.location.href = "/settings";
                         return;
                     }

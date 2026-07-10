@@ -4,6 +4,7 @@ import logoBlack from "../Components/Header/logo-black.svg";
 import { LPFooter } from "../Components/Footer";
 import API from "../API/api.js";
 import { useIntastellar } from "@intastellar/signin-sdk-react";
+import appStorage from '../Functions/storage.js';
 
 function handleLogin(account) {
     if (!account) return;
@@ -27,7 +28,7 @@ function handleLogin(account) {
                 }
 
                 localStorage.setItem("platform", "gdpr");
-                localStorage.setItem("organisation", JSON.stringify(response[0]));
+                appStorage.setItem("organisation", JSON.stringify(response[0]));
 
                 localStorage.setItem(
                     "globals",

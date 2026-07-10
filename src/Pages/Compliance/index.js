@@ -12,6 +12,7 @@ import {
 import Authentication from "../../Authentication/Auth";
 import "../Dashboard/Style.css";
 import "./Style.css";
+import appStorage from '../../Functions/storage.js';
 
 const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
@@ -154,7 +155,7 @@ export default function CompliancePage() {
             .then((r) => r.json())
             .then((data) => {
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }
@@ -171,7 +172,7 @@ export default function CompliancePage() {
             .then((r) => r.json())
             .then((data) => {
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }
@@ -187,7 +188,7 @@ export default function CompliancePage() {
             .then((r) => r.json())
             .then((data) => {
                 if (data === "Err_Login_Expired") {
-                    localStorage.removeItem("globals");
+                    appStorage.removeItem("globals");
                     window.location.href = "/login";
                     return;
                 }
@@ -204,7 +205,7 @@ export default function CompliancePage() {
                 .then((r) => r.json())
                 .then((data) => {
                     if (data === "Err_Login_Expired") {
-                        localStorage.removeItem("globals");
+                        appStorage.removeItem("globals");
                         window.location.href = "/login";
                         return;
                     }

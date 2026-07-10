@@ -17,6 +17,7 @@ import {
 } from "../../Functions/domainVerification.js";
 import { canAccess } from "../../Functions/tier.js";
 import punycode from "punycode";
+import appStorage from '../../Functions/storage.js';
 
 const { useState, useEffect, useContext, useMemo } = React;
 const useHistory = window.ReactRouterDOM.useHistory;
@@ -190,7 +191,7 @@ function getDomainVerificationStatus(domain, orgId) {
  */
 function getCurrentOrgId() {
     try {
-        const orgRaw = localStorage.getItem("organisation");
+        const orgRaw = appStorage.getItem("organisation");
         if (orgRaw) {
             const org = JSON.parse(orgRaw);
             return org?.id || null;
@@ -226,7 +227,7 @@ export default function Header(props) {
         [location.pathname, globalDomain]
     );
     const [currentDomain, setCurrentDomain] = useState(displayDomain);
-    const profileImage = JSON.parse(localStorage.getItem("globals"))?.user?.avatar;
+    const profileImage = JSON.parse(appStorage.getItem("globals"))?.user?.avatar;
     let domainList = null;
     const history = useHistory();
     const platformId = props.id || window.location.pathname.split("/").filter(Boolean)[0] || "gdpr";
@@ -259,13 +260,13 @@ export default function Header(props) {
             organisationMember: Authentication.getUserId()
         })).then((data) => {
             if (data === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
 
-            if (JSON.parse(localStorage.getItem("globals")).organisation == null) {
-                JSON.parse(localStorage.getItem("globals")).organisation = data;
+            if (JSON.parse(appStorage.getItem("globals")).organisation == null) {
+                JSON.parse(appStorage.getItem("globals")).organisation = data;
             }
             setallOrganisations(data);
         });
@@ -298,7 +299,7 @@ export default function Header(props) {
         }
         Fetch(domainsApi.url, domainsApi.method, domainsApi.headers).then((data) => {
             if (data === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -450,7 +451,7 @@ export default function Header(props) {
                                     defaultValue={Organisation}
                                     onChange={(e) => {
                                         setOrganisation(e);
-                                        localStorage.setItem("organisation", e);
+                                        appStorage.setItem("organisation", e);
                                         window.location.reload();
                                     }}
                                     items={allOrganisations}
@@ -567,8 +568,8 @@ export default function Header(props) {
                 {(viewUserProfile) ? <IntastellarAccounts
                     profile={{
                         image: profileImage,
-                        name: JSON.parse(localStorage.getItem("globals"))?.user?.name?.firstName,
-                        email: JSON.parse(localStorage.getItem("globals"))?.user?.email,
+                        name: JSON.parse(appStorage.getItem("globals"))?.user?.name?.firstName,
+                        email: JSON.parse(appStorage.getItem("globals"))?.user?.email,
                     }}
                     workspaces={agencyWorkspaces}
                     activeWorkspace={activeWorkspace}

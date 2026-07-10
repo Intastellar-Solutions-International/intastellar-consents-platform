@@ -1,5 +1,6 @@
 import { TIERS_ORDER, TIER_LABELS, TIER_PRICES, getTier } from '../../Functions/tier.js';
 import './Style.css';
+import appStorage from '../../Functions/storage.js';
 
 const { useState } = React;
 
@@ -7,9 +8,9 @@ const IS_DEV = window.location.hostname === 'localhost' || window.location.hostn
 
 function getRealTier() {
     try {
-        const org = JSON.parse(localStorage.getItem('organisation') || '{}');
+        const org = JSON.parse(appStorage.getItem('organisation') || '{}');
         if (org?.id && String(org.id) === '1') return 'agency-pro';
-        const sub = JSON.parse(localStorage.getItem('subscription') || '{}');
+        const sub = JSON.parse(appStorage.getItem('subscription') || '{}');
         const s = sub?.subscription;
         if (s === 'agency' || s === 'agency-pro') return 'agency-pro';
         if (s === 'growth') return 'growth';

@@ -4,10 +4,11 @@ import Authentication from "../../Authentication/Auth";
 import "./Style/Stripe.css";
 import { AllOrg } from "../../App";
 import Select from "../SelectInput/Selector";
+import appStorage from '../../Functions/storage.js';
 
 export default function StripePayment(props) {
     document.title = "Choose your Plan | Intastellar Consents";
-    const companyName = JSON.parse(localStorage.getItem("organisation"))?.name;
+    const companyName = JSON.parse(appStorage.getItem("organisation"))?.name;
 
     const isProduction = process.env.NODE_ENV === "production";
 

@@ -8,12 +8,13 @@ import SideNav from "../../../Components/Header/SideNav";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks";
 import StickyPageTitle from "../../../Components/Header/Sticky";
 import "../Style.css";
+import appStorage from '../../../Functions/storage.js';
 
 const Link = window.ReactRouterDOM.Link;
 
 function getCurrentOrganisationId() {
     try {
-        const o = JSON.parse(localStorage.getItem("organisation"));
+        const o = JSON.parse(appStorage.getItem("organisation"));
         return o?.id != null ? String(o.id) : null;
     } catch {
         return null;
@@ -118,7 +119,7 @@ export default function ViewUsers() {
         ).then((re) => {
             setPending(null);
             if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
@@ -154,7 +155,7 @@ export default function ViewUsers() {
         ).then((re) => {
             setPending(null);
             if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }

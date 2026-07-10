@@ -1,6 +1,7 @@
 const useLocation = window.ReactRouterDOM.useLocation;
 const { useState, useEffect, useRef, useContext } = React;
 import API from "../API/api";
+import appStorage from '../Functions/storage.js';
 export default function AuthLogin() {
     const location = useLocation();
     const query = new URLSearchParams(location.search);
@@ -37,8 +38,8 @@ export default function AuthLogin() {
             return;
         }
 
-        localStorage.setItem("organisation", response.organisation);
-        localStorage.setItem("globals", JSON.stringify(response));
+        appStorage.setItem("organisation", response.organisation);
+        appStorage.setItem("globals", JSON.stringify(response));
 
         if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
             window.location.href = "/dashboard";

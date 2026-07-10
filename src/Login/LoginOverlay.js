@@ -2,6 +2,7 @@ import "./Login.css";
 import logo from "../Components/Header/logo.png";
 import API from "../API/api";
 import Authentication from "../Authentication/Auth";
+import appStorage from '../Functions/storage.js';
 
 export default function LoginOverLay() {
     document.title = "Signin | Intastellar Consents";
@@ -12,7 +13,7 @@ export default function LoginOverLay() {
     const [isLoading, setLoading] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(null);
 
-    if(JSON.parse(localStorage.getItem("globals"))?.token !== undefined || JSON.parse(localStorage.getItem("globals"))?.status){
+    if(JSON.parse(appStorage.getItem("globals"))?.token !== undefined || JSON.parse(appStorage.getItem("globals"))?.status){
         window.location.href = "/dashboard";
     }
 

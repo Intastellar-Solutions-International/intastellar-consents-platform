@@ -4,6 +4,7 @@ const { useState, useEffect, useRef, createContext } = React;
 import SuccessWindow from "../SuccessWindow/index";
 import API from "../../API/api";
 import Fetch from "../../Functions/fetch";
+import appStorage from '../../Functions/storage.js';
 export default function DomainList(props) {
     const currentDomain = props.domains;
     const [viewPopUp, setPopUp] = useState(false);
@@ -11,8 +12,8 @@ export default function DomainList(props) {
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [savedDomains, setSavedDomains] = useState([]);
-    const organisationId = (localStorage.getItem("organisation") != null) ? JSON.parse(localStorage.getItem("organisation")).id : null;
-    const [organisation, setOrganisation] = useState(JSON.parse(localStorage.getItem("organisation")));
+    const organisationId = (appStorage.getItem("organisation") != null) ? JSON.parse(appStorage.getItem("organisation")).id : null;
+    const [organisation, setOrganisation] = useState(JSON.parse(appStorage.getItem("organisation")));
     const [privacyPolicyLink, setPrivacyPolicyLink] = useState("");
     const [choosenColor, setChoosenColor] = useState("red");
     const [bannerArrangement, setBannerArrangement] = useState("ltr");

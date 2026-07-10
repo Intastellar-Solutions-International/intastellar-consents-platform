@@ -2,13 +2,14 @@ import Select from "../SelectInput/Selector"
 import "./PlatformSelector.css";
 import logo from "../Header/logo.png";
 import { OrganisationContext } from "../../App";
+import appStorage from '../../Functions/storage.js';
 const { useState, useEffect, useContext } = React;
 export default function PlatformSelector(props) {
 
     const items = Object.keys(props?.platforms).map((platform) => {
         return props?.platforms[platform];
     }).filter((company) => {
-        return company.name === localStorage.getItem("organisation").name
+        return company.name === appStorage.getItem("organisation").name
     })?.map((platform) => {
         return {
             type: platform.access.type,
@@ -41,7 +42,7 @@ export default function PlatformSelector(props) {
                         <p>You don´t have access to any platforms yet, please contact your administrator.</p>
                         <Select defaultValue={"Choose another Organisation"} key={""} items={props?.platforms} onChange={
                             (e) => {
-                                localStorage.setItem("organisation", JSON.parse(e));
+                                appStorage.setItem("organisation", JSON.parse(e));
                                 window.location.reload();
                             }
                         } />

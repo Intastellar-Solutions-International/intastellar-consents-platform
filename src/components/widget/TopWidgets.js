@@ -5,6 +5,7 @@ import { Loading } from "./Loading";
 import ErrorBoundary from "../Error/ErrorBoundary";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
+import appStorage from '../../Functions/storage.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -16,7 +17,7 @@ export default function TopWidgets(props) {
 
     const [loading, data, error, updated] = useFetch(30, APIUrl, APIMethod, APIHeader);
     if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        appStorage.removeItem("globals");
         window.location.href = "/login";
         return;
     }

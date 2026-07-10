@@ -14,6 +14,7 @@ import {
     removeAuditReportEntry,
 } from "../../../Functions/auditReportsStorage";
 import { useSyncDomainFromRoute } from "../../../Functions/domainPathSegments.js";
+import appStorage from '../../../Functions/storage.js';
 
 const useParams = window.ReactRouterDOM.useParams;
 
@@ -151,7 +152,7 @@ export default function AuditReport() {
         });
 
         if (response.status === 401 || response.status === 403) {
-            localStorage.removeItem("globals");
+            appStorage.removeItem("globals");
             window.location.href = "/login";
             return { ok: false };
         }
@@ -165,7 +166,7 @@ export default function AuditReport() {
         try {
             const data = await response.json();
             if (data === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return { ok: false };
             }

@@ -4,6 +4,7 @@ import "./Style.css";
 import { Loading, CurrentPageLoading } from "../../Components/widget/Loading";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import punycode from "punycode";
+import appStorage from '../../Functions/storage.js';
 
 const { useState, useEffect, useRef } = React;
 
@@ -25,7 +26,7 @@ export default function Websites() {
             headers: API[id].audit.headers,
         }).then((data) => {
             if (data === "Err_Login_Expired") {
-                localStorage.removeItem("globals");
+                appStorage.removeItem("globals");
                 window.location.href = "/login";
                 return;
             }
