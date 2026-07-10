@@ -470,12 +470,12 @@ const API = {
     },
     jurisdictionConfig: {
         get: {
-            url: `${PrimaryHost}/cmp/jurisdiction-config`,
+            url: `${ScannerHost}/api/jurisdiction-config`,
             method: "GET",
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },
         save: {
-            url: `${PrimaryHost}/cmp/jurisdiction-config`,
+            url: `${ScannerHost}/api/jurisdiction-config`,
             method: "POST",
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },

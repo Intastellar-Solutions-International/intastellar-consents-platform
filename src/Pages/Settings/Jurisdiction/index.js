@@ -3,7 +3,6 @@ import API from "../../../API/api.js";
 import SideNav from "../../../Components/Header/SideNav.js";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks/index.js";
 import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
-import Authentication from "../../../Authentication/Auth.js";
 import "../Style.css";
 import {
     FRAMEWORK_IDS,
@@ -14,20 +13,56 @@ import {
 } from "../../../Functions/jurisdictionEngine.js";
 
 const BANNER_TYPE_OPTIONS = [
-    { value: "auto",         label: "Auto (recommended)" },
-    { value: "opt-in",       label: "Opt-in banner" },
-    { value: "opt-out",      label: "Opt-out banner" },
-    { value: "notice-only",  label: "Notice only" },
+    { value: "auto",        label: "Auto (recommended)" },
+    { value: "opt-in",      label: "Opt-in banner" },
+    { value: "opt-out",     label: "Opt-out banner" },
+    { value: "notice-only", label: "Notice only" },
 ];
 
-const DEFAULT_CONFIG = Object.fromEntries(
+const DEFAULT_FRAMEWORK_CONFIG = Object.fromEntries(
     FRAMEWORK_IDS.map((fw) => [fw, { enabled: fw === "GDPR", bannerType: "auto" }])
 );
+
+function Toggle({ on, onToggle, label }) {
+    return (
+        <button
+            type="button"
+            role="switch"
+            aria-checked={on}
+            onClick={onToggle}
+            style={{
+                display: "flex", alignItems: "center", gap: "10px",
+                background: "none", border: "none", padding: 0, cursor: "pointer",
+            }}
+        >
+            <span style={{
+                flexShrink: 0,
+                width: "40px", height: "22px",
+                borderRadius: "11px",
+                background: on ? "rgba(192,159,83,0.75)" : "rgba(100,100,100,0.4)",
+                position: "relative",
+                transition: "background 0.2s",
+            }}>
+                <span style={{
+                    position: "absolute",
+                    top: "3px",
+                    left: on ? "21px" : "3px",
+                    width: "16px", height: "16px",
+                    borderRadius: "50%",
+                    background: "#fff",
+                    transition: "left 0.2s",
+                }} />
+            </span>
+            {label && <span style={{ fontSize: "0.9375rem", fontWeight: 600, color: on ? "#f2f2f2" : "#888" }}>{label}</span>}
+        </button>
+    );
+}
 
 export default function JurisdictionConfig() {
     document.title = "Jurisdiction Configuration | Settings | Intastellar Consents";
 
-    const [config, setConfig] = useState(DEFAULT_CONFIG);
+    const [managed, setManaged] = useState(false);
+    const [config, setConfig] = useState(DEFAULT_FRAMEWORK_CONFIG);
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState(null);
 
@@ -38,14 +73,17 @@ export default function JurisdictionConfig() {
         })
             .then((r) => r.json())
             .then((data) => {
-                if (data && typeof data === "object" && !data.error) {
-                    setConfig({ ...DEFAULT_CONFIG, ...data });
+                if (data && !data.error) {
+                    setManaged(Boolean(data.managed));
+                    if (data.config && typeof data.config === "object") {
+                        setConfig({ ...DEFAULT_FRAMEWORK_CONFIG, ...data.config });
+                    }
                 }
             })
             .catch(() => {});
     }, []);
 
-    function toggle(fw) {
+    function toggleFramework(fw) {
         setConfig((prev) => ({
             ...prev,
             [fw]: { ...prev[fw], enabled: !prev[fw].enabled },
@@ -65,7 +103,7 @@ export default function JurisdictionConfig() {
         fetch(API.jurisdictionConfig.save.url, {
             method: API.jurisdictionConfig.save.method,
             headers: API.jurisdictionConfig.save.headers,
-            body: JSON.stringify(config),
+            body: JSON.stringify({ managed, config }),
         })
             .then((r) => r.json())
             .then(() => setStatus("saved"))
@@ -83,14 +121,9 @@ export default function JurisdictionConfig() {
             <SideNav links={reportsLinks} title="Settings" />
             <main className="dashboard-content settings-subpage settings-subpage--wide">
                 <StickyPageTitle title="Jurisdiction Configuration" />
-                <p className="settings-subpage__intro">
-                    Enable the regulations that apply to your visitors and configure how the consent banner
-                    behaves per jurisdiction. The banner type is set automatically based on each regulation
-                    but can be overridden.
-                </p>
 
                 {status === "saved" && (
-                    <p className="settings-subpage__status">Configuration saved successfully.</p>
+                    <p className="settings-subpage__status">Configuration saved.</p>
                 )}
                 {status === "error" && (
                     <p className="settings-subpage__status settings-subpage__status--error">
@@ -98,42 +131,43 @@ export default function JurisdictionConfig() {
                     </p>
                 )}
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "28px" }}>
+                {/* Mode selector */}
+                <div className="settings-subpage__panel" style={{ marginBottom: "20px" }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", flexWrap: "wrap" }}>
+                        <div style={{ flex: "1 1 280px" }}>
+                            <Toggle on={managed} onToggle={() => setManaged((v) => !v)} label="Managed mode" />
+                            <p style={{ margin: "8px 0 0", fontSize: "0.8125rem", color: "rgba(180,180,180,0.85)", lineHeight: 1.5 }}>
+                                {managed
+                                    ? "Only the regulations you enable below will trigger a banner. Use this when you want full control over which regions see a consent prompt."
+                                    : "The banner automatically applies any matching regulation based on the visitor's location. Ideal for simple sites that just want a compliant banner without manual configuration."}
+                            </p>
+                        </div>
+                        <div style={{ flex: "0 0 auto", alignSelf: "center" }}>
+                            <span style={{
+                                display: "inline-block",
+                                padding: "4px 12px",
+                                borderRadius: "8px",
+                                fontSize: "0.75rem", fontWeight: 700,
+                                textTransform: "uppercase", letterSpacing: "0.07em",
+                                background: managed ? "rgba(192,159,83,0.15)" : "rgba(80,130,210,0.15)",
+                                border: `1px solid ${managed ? "rgba(192,159,83,0.35)" : "rgba(80,130,210,0.35)"}`,
+                                color: managed ? "#d4b87a" : "#88b0e8",
+                            }}>
+                                {managed ? "Managed" : "Auto"}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Framework toggles — only meaningful in managed mode */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "28px", opacity: managed ? 1 : 0.4, pointerEvents: managed ? "auto" : "none", transition: "opacity 0.2s" }}>
                     {FRAMEWORK_IDS.map((fw) => {
                         const enabled = config[fw]?.enabled ?? false;
                         return (
                             <div key={fw} className="settings-subpage__panel" style={{ display: "flex", flexWrap: "wrap", gap: "16px 24px", alignItems: "flex-start" }}>
                                 <div style={{ flex: "1 1 280px" }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "6px" }}>
-                                        <button
-                                            type="button"
-                                            role="switch"
-                                            aria-checked={enabled}
-                                            onClick={() => toggle(fw)}
-                                            style={{
-                                                flexShrink: 0,
-                                                width: "40px", height: "22px",
-                                                borderRadius: "11px",
-                                                border: "none",
-                                                background: enabled ? "rgba(192,159,83,0.75)" : "rgba(100,100,100,0.4)",
-                                                cursor: "pointer",
-                                                position: "relative",
-                                                transition: "background 0.2s",
-                                            }}
-                                        >
-                                            <span style={{
-                                                position: "absolute",
-                                                top: "3px",
-                                                left: enabled ? "21px" : "3px",
-                                                width: "16px", height: "16px",
-                                                borderRadius: "50%",
-                                                background: "#fff",
-                                                transition: "left 0.2s",
-                                            }} />
-                                        </button>
-                                        <span style={{ fontWeight: 600, fontSize: "0.9375rem", color: enabled ? "#f2f2f2" : "#888" }}>
-                                            {FRAMEWORK_LABELS[fw]}
-                                        </span>
+                                    <div style={{ marginBottom: "6px" }}>
+                                        <Toggle on={enabled} onToggle={() => toggleFramework(fw)} label={FRAMEWORK_LABELS[fw]} />
                                     </div>
                                     <p style={{ margin: 0, fontSize: "0.8125rem", color: "rgba(180,180,180,0.85)", lineHeight: 1.5 }}>
                                         {FRAMEWORK_DESCRIPTIONS[fw]}
@@ -143,7 +177,7 @@ export default function JurisdictionConfig() {
                                     </p>
                                 </div>
 
-                                {enabled && (
+                                {enabled ? (
                                     <div style={{ flex: "0 0 220px" }}>
                                         <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 600, color: "#b8b8b8", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.07em" }}>
                                             Banner type
@@ -161,9 +195,7 @@ export default function JurisdictionConfig() {
                                             ))}
                                         </select>
                                     </div>
-                                )}
-
-                                {!enabled && (
+                                ) : (
                                     <div style={{ flex: "0 0 220px", display: "flex", alignItems: "center" }}>
                                         <span style={{ fontSize: "0.75rem", color: "rgba(140,140,140,0.7)", fontStyle: "italic" }}>Disabled — no banner shown</span>
                                     </div>
