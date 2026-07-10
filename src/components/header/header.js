@@ -15,6 +15,7 @@ import {
     isDomainVerified,
     isVerificationExpired,
 } from "../../Functions/domainVerification.js";
+import { canAccess } from "../../Functions/tier.js";
 import punycode from "punycode";
 
 const { useState, useEffect, useContext, useMemo } = React;
@@ -128,34 +129,8 @@ function readCachedDomains() {
     }
 }
 
-/**
- * Check if user has agency subscription or is Intastellar Solutions (org ID 1)
- */
 function hasAgencySubscription() {
-    try {
-        // Allow access for Intastellar Solutions (org ID 1)
-        const orgRaw = localStorage.getItem("organisation");
-        if (orgRaw) {
-            // Handle both JSON string and plain value formats
-            let org = orgRaw;
-            try {
-                org = JSON.parse(orgRaw);
-            } catch {
-                /* not JSON, use raw value */
-            }
-            // Check for org ID 1 (compare as strings to handle both number and string)
-            if (org?.id != null && String(org.id) === "1") return true;
-        }
-
-        const sub = localStorage.getItem("subscription");
-        if (sub) {
-            const parsed = JSON.parse(sub);
-            return parsed?.subscription === "agency";
-        }
-    } catch {
-        /* ignore */
-    }
-    return false;
+    return canAccess('agency-pro');
 }
 
 /**

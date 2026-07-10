@@ -3,6 +3,7 @@ import SideNav from "../../Components/Header/SideNav";
 import { reportsLinks as settingsSidebarLinks } from "../../Components/Header/SideNavLinks";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import Authentication from "../../Authentication/Auth";
+import { canAccess } from "../../Functions/tier.js";
 
 const Link = window.ReactRouterDOM.Link;
 const { useMemo } = React;
@@ -19,32 +20,6 @@ const SETTINGS_HUB_COPY = {
     "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains.",
 };
 
-function hasAgencySubscription() {
-    try {
-        // Allow access for Intastellar Solutions (org ID 1)
-        const orgRaw = localStorage.getItem("organisation");
-        if (orgRaw) {
-            // Handle both JSON string and plain value formats
-            let org = orgRaw;
-            try {
-                org = JSON.parse(orgRaw);
-            } catch {
-                /* not JSON, use raw value */
-            }
-            // Check for org ID 1 (compare as strings to handle both number and string)
-            if (org?.id != null && String(org.id) === "1") return true;
-        }
-
-        const sub = localStorage.getItem("subscription");
-        if (sub) {
-            const parsed = JSON.parse(sub);
-            return parsed?.subscription === "agency";
-        }
-    } catch {
-        /* ignore */
-    }
-    return false;
-}
 
 function userCanSeeSidebarLink(link) {
     if (!link?.view?.length) return true;
@@ -65,7 +40,7 @@ export default function Settings() {
         return settingsSidebarLinks.filter((link) => {
             if (!userCanSeeSidebarLink(link)) return false;
             if (link.path === "/settings/blacklist-ip" && !canOpenBlacklistRoute()) return false;
-            if (link.requiresAgency && !hasAgencySubscription()) return false;
+            if (link.requiresTier && !canAccess(link.requiresTier)) return false;
             return true;
         });
     }, []);

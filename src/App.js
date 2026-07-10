@@ -39,6 +39,9 @@ import MarketingReport from "./Pages/Reports/MarketingReport";
 import CompliancePage from "./Pages/Compliance";
 import LoadingSpinner from "./Components/LoadingSpinner/LoadingSpinner";
 import Workspaces from "./Pages/Settings/Workspaces";
+import TierGate from "./Components/TierGate";
+import DevTierSwitcher from "./Components/DevTierSwitcher";
+import { canAccess } from "./Functions/tier.js";
 
 const { useState, useEffect, useRef, createContext } = React;
 const Router = window.ReactRouterDOM.BrowserRouter;
@@ -196,22 +199,20 @@ export default function App() {
                                     <Switch>
                                         <Route path="/:id/dashboard" exact>
                                             <div style={{ flex: "1" }}>
-                                                {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <>
-                                                        {domainError ? <AddDomain /> :
-                                                            (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
-                                                        }
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Dashboard" fullPage /> : <>
+                                                    {domainError ? <AddDomain /> :
+                                                        (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
+                                                    }
                                                 </>}
                                             </div>
                                         </Route>
                                         <Route path='/:id/view/:handle'>
                                             <div style={{ flex: "1" }}>
-                                                {
-                                                    subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <>
-                                                        {domainError ? <AddDomain /> :
-                                                            (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
-                                                        }
-                                                    </>}
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Dashboard" fullPage /> : <>
+                                                    {domainError ? <AddDomain /> :
+                                                        (id == "gdpr") ? <Dashboard dashboardView={dashboardView} setDashboardView={setDashboardView} /> : <FerryDashboard />
+                                                    }
+                                                </>}
                                             </div>
                                         </Route>
                                         <Route path="/signup" exact>
@@ -271,88 +272,64 @@ export default function App() {
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/user-consents" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Consent Audit Log" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/user-consents/:uid" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Consent Audit Log" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/audit-report" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Audit Report" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/marketing" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Platform Reconciliation" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/compliance" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <CompliancePage />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Compliance Reports" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <CompliancePage />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/compliance" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <CompliancePage />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Compliance Reports" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <CompliancePage />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/view/:handle" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <Reports organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Reports" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <Reports organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <Reports organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Reports" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <Reports organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/user-consents" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Consent Audit Log" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/user-consents/:uid" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Consent Audit Log" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <UserConsents organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/audit-report" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Audit Report" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/marketing" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Platform Reconciliation" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/dashboard">
                                             <ErrorBoundary>
@@ -376,18 +353,17 @@ export default function App() {
                                                 {(() => {
                                                     const orgRaw = localStorage.getItem("organisation");
                                                     let org = null;
-                                                    try {
-                                                        org = JSON.parse(orgRaw);
-                                                    } catch {
-                                                        /* not JSON */
-                                                    }
+                                                    try { org = JSON.parse(orgRaw); } catch { /* ignore */ }
                                                     const role = org?.id ? Authentication.getOrganisationAccessStatusForOrganisation(org.id) : null;
                                                     const isAdminRole = role === "admin" || role === "super-admin";
-                                                    const sub = localStorage.getItem("subscription");
-                                                    // Compare ID as string to handle both number and string formats
-                                                    const hasAgency = (org?.id != null && String(org.id) === "1") || (sub && JSON.parse(sub)?.subscription === "agency");
-                                                    return isAdminRole && hasAgency ? <Workspaces /> : <p style={{ padding: "40px", color: "#999" }}>Agency subscription required to access client workspaces.</p>;
+                                                    if (!canAccess('agency-pro')) return <TierGate minTier="agency-pro" featureName="Client Workspaces" fullPage />;
+                                                    return isAdminRole ? <Workspaces /> : <p style={{ padding: "40px", color: "#999" }}>Admin access required.</p>;
                                                 })()}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/plans" exact>
+                                            <ErrorBoundary>
+                                                <SubscriptionPlans />
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/create-user">
@@ -401,11 +377,9 @@ export default function App() {
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/:id/compare" exact>
-                                            {
-                                                subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {domainError ? <AddDomain /> : <Compare organisations={organisations} domains={domains} />}
-                                                </ErrorBoundary>
-                                            }
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Portfolio Benchmark" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <Compare organisations={organisations} domains={domains} />}
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/experiments" exact>
                                             <ErrorBoundary>
@@ -437,6 +411,7 @@ export default function App() {
                                 </footer>
                             </div>
                         </Route>
+                    <DevTierSwitcher />
                     </Router>
                 </>
             )

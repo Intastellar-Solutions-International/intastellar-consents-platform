@@ -3,6 +3,7 @@ const Link = window.ReactRouterDOM.Link;
 const useParams = window.ReactRouterDOM.useParams;
 import Authentication from "../../Authentication/Auth";
 import { lockBodyScroll, unlockBodyScroll } from "../../Functions/bodyScrollLock.js";
+import { canAccess } from "../../Functions/tier.js";
 
 export default function SideNav(props) {
     const useLocation = window.ReactRouterDOM.useLocation;
@@ -87,31 +88,8 @@ export default function SideNav(props) {
                             return null;
                         }
 
-                        // Check agency subscription requirement
-                        if (link.requiresAgency) {
-                            try {
-                                // Allow access for Intastellar Solutions (org ID 1)
-                                const orgRaw = localStorage.getItem("organisation");
-                                let org = null;
-                                if (orgRaw) {
-                                    try {
-                                        org = JSON.parse(orgRaw);
-                                    } catch {
-                                        /* not JSON */
-                                    }
-                                }
-                                // Compare as strings to handle both number and string id
-                                if (org?.id != null && String(org.id) === "1") {
-                                    // Org 1 has access, continue
-                                } else {
-                                    const sub = localStorage.getItem("subscription");
-                                    if (!sub || JSON.parse(sub)?.subscription !== "agency") {
-                                        return null;
-                                    }
-                                }
-                            } catch {
-                                return null;
-                            }
+                        if (link.requiresTier && !canAccess(link.requiresTier)) {
+                            return null;
                         }
 
                         const url = (() => {

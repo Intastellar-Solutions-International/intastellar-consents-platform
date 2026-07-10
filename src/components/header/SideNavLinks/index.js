@@ -38,7 +38,7 @@ export const reportsLinks = [
         name: "Client Workspaces",
         path: "/settings/workspaces",
         view: ["admin", "super-admin"],
-        requiresAgency: true
+        requiresTier: 'agency-pro',
     }
 ]
 

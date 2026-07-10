@@ -3,6 +3,7 @@ import SideNav from "../../Components/Header/SideNav";
 import StickyPageTitle from "../../Components/Header/Sticky";
 import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, reportsPath, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+import { canAccess, TIER_LABELS } from "../../Functions/tier.js";
 import "./Reports.css";
 
 const useParams = window.ReactRouterDOM.useParams;
@@ -13,18 +14,22 @@ export const reportsLinks = [
     {
         name: "Audit log",
         path: "/reports/user-consents",
+        requiresTier: 'personal',
     },
     {
         name: "Audit reports",
         path: "/reports/audit-report",
+        requiresTier: 'personal',
     },
     {
         name: "Channel Analytics",
         path: "/reports/marketing",
+        requiresTier: 'growth',
     },
     {
         name: "Compliance overview",
         path: "/reports/compliance",
+        requiresTier: 'starter',
     },
 ];
 
@@ -35,6 +40,7 @@ const HUB_CARDS = [
         description:
             "Per-user consent history and timestamps for troubleshooting, support, and compliance review.",
         leaf: "/user-consents",
+        minTier: 'personal',
     },
     {
         key: "audit-reports",
@@ -42,6 +48,7 @@ const HUB_CARDS = [
         description:
             "Aggregated audit views and exports to summarise consent activity for your selected scope.",
         leaf: "/audit-report",
+        minTier: 'personal',
     },
     {
         key: "marketing",
@@ -49,6 +56,7 @@ const HUB_CARDS = [
         description:
             "Consent volume and acceptance by channel and campaign (UTMs and landing URL marketing parameters).",
         leaf: "/marketing",
+        minTier: 'growth',
     },
 ];
 
@@ -92,15 +100,31 @@ export default function Reports() {
                         <span className="reports-hub__scope-value">{scopeLabel}</span>
                     </div>
                     <div className="reports-hub__grid">
-                        {cardHrefs.map((card) => (
-                            <Link key={card.key} className="reports-hub__card" to={card.to}>
-                                <span className="reports-hub__card-title">
-                                    {card.title}
-                                    <span className="reports-hub__card-arrow" aria-hidden="true" />
-                                </span>
-                                <p className="reports-hub__card-desc">{card.description}</p>
-                            </Link>
-                        ))}
+                        {cardHrefs.map((card) => {
+                            const locked = card.minTier && !canAccess(card.minTier);
+                            if (locked) {
+                                return (
+                                    <div key={card.key} className="reports-hub__card reports-hub__card--locked" aria-disabled="true">
+                                        <span className="reports-hub__card-title">
+                                            {card.title}
+                                            <span className="reports-hub__card-lock" aria-label={`Requires ${TIER_LABELS[card.minTier]}`}>
+                                                {TIER_LABELS[card.minTier]}
+                                            </span>
+                                        </span>
+                                        <p className="reports-hub__card-desc">{card.description}</p>
+                                    </div>
+                                );
+                            }
+                            return (
+                                <Link key={card.key} className="reports-hub__card" to={card.to}>
+                                    <span className="reports-hub__card-title">
+                                        {card.title}
+                                        <span className="reports-hub__card-arrow" aria-hidden="true" />
+                                    </span>
+                                    <p className="reports-hub__card-desc">{card.description}</p>
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
