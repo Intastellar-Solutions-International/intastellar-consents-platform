@@ -177,7 +177,7 @@ export default function App() {
             return (
                 <>
                     <PlatformSelector setId={setId} platforms={organisations} />
-                    {/* <BugReport /> */}
+                    <BugReport />
                 </>
             )
         } else {
@@ -190,7 +190,7 @@ export default function App() {
                                 <ErrorBoundary>
                                     {id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
                                         <Header id={id} />
-                                        {/* <BugReport /> */}
+                                        <BugReport />
                                     </> : null}
                                 </ErrorBoundary>
                                 <div className="main-grid">
