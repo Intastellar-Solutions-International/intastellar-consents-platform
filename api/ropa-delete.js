@@ -29,7 +29,6 @@ async function ensureTable(db) {
         CREATE TABLE IF NOT EXISTS ropa_entries (
             id                      SERIAL PRIMARY KEY,
             organisation_id         INTEGER NOT NULL,
-            domain                  VARCHAR(255) DEFAULT NULL,
             activity_name           TEXT NOT NULL,
             controller_name         TEXT DEFAULT '',
             controller_contact      TEXT DEFAULT '',
@@ -47,11 +46,11 @@ async function ensureTable(db) {
             source                  TEXT DEFAULT 'manual',
             created_at              TIMESTAMPTZ DEFAULT NOW(),
             updated_at              TIMESTAMPTZ DEFAULT NOW()
-        );
-        CREATE INDEX IF NOT EXISTS ropa_entries_org_idx ON ropa_entries(organisation_id);
-        CREATE INDEX IF NOT EXISTS ropa_entries_domain_idx ON ropa_entries(domain);
-        ALTER TABLE ropa_entries ADD COLUMN IF NOT EXISTS domain VARCHAR(255) DEFAULT NULL;
+        )
     `);
+    await db.query(`ALTER TABLE ropa_entries ADD COLUMN IF NOT EXISTS domain VARCHAR(255) DEFAULT NULL`);
+    await db.query(`CREATE INDEX IF NOT EXISTS ropa_entries_org_idx ON ropa_entries(organisation_id)`);
+    await db.query(`CREATE INDEX IF NOT EXISTS ropa_entries_domain_idx ON ropa_entries(domain)`);
     tableReady = true;
 }
 
