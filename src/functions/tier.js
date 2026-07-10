@@ -61,7 +61,7 @@ export function getTier() {
         if (org?.id && String(org.id) === '1') return 'agency-pro';
 
         const sub = JSON.parse(appStorage.getItem('subscription') || '{}');
-        return mapSubscriptionToTier(sub?.subscription);
+        return mapSubscriptionToTier(sub?.tier ?? sub?.subscription);
     } catch {
         return 'none';
     }
