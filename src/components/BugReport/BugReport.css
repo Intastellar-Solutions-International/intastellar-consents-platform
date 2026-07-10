@@ -330,7 +330,7 @@
 .br-root {
     position: fixed;
     bottom: 20px;
-    left: 20px;
+    left: 80px;
     z-index: 9989;
     font-family: inherit;
 }
