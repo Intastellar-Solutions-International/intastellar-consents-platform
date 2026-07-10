@@ -113,7 +113,7 @@ export default function App() {
             });
 
             Fetch(API.Subscription.url, API.Subscription.method, API.Subscription.headers, JSON.stringify({
-                organization: Authentication.getOrganisation()
+                user: Authentication.getUserId()
             })).then((data) => {
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");

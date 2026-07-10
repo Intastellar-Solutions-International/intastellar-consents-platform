@@ -12,11 +12,10 @@ const API = {
         url: `${LoginHost}/consents/signup/v1/signup`,
     },
     Subscription: {
-        url: `${PrimaryHost}/payment/subscription/v1/subscription`,
+        url: `${LoginHost}/rest/getSubscription.php`,
         method: "POST",
         headers: {
             "Authorization": Authentication.getToken(),
-            "Organisation": Authentication.getOrganisation(),
             "Content-Type": "application/json"
         }
     },
