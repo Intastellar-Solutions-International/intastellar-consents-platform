@@ -1,37 +1,14 @@
 /**
- * GET  /api/ropa          — list all RoPA entries for the organisation
- * GET  /api/ropa?id=123   — get a single entry
- * POST /api/ropa          — create one or more entries (body: entry | { entries: [] })
- * POST /api/ropa?action=auto-populate — seed draft entries from pre-consent scan data
+ * GET  /api/ropa              — list entries (org-wide + domain-specific if ?domain= provided)
+ * GET  /api/ropa?id=123       — get a single entry
+ * POST /api/ropa              — create entry(ies); body may include { domain }
+ * POST /api/ropa?action=auto-populate — seed drafts from scans; body: { domain? }
+ *   domain omitted → scan all domains for the org
+ *   domain set     → scan only that domain; tag entries to it
  *
  * Headers:
  *   Authorization  Bearer <token>
  *   Organisation   <organisation_id>
- *
- * Table DDL (run once in Neon console):
- *
- *   CREATE TABLE IF NOT EXISTS ropa_entries (
- *     id                      SERIAL PRIMARY KEY,
- *     organisation_id         INTEGER NOT NULL,
- *     activity_name           TEXT NOT NULL,
- *     controller_name         TEXT DEFAULT '',
- *     controller_contact      TEXT DEFAULT '',
- *     dpo_contact             TEXT DEFAULT '',
- *     purpose                 TEXT DEFAULT 'analytics',
- *     framework               TEXT DEFAULT 'GDPR',
- *     legal_basis             TEXT DEFAULT '',
- *     data_subject_categories JSONB DEFAULT '[]',
- *     data_categories         JSONB DEFAULT '[]',
- *     recipients              JSONB DEFAULT '[]',
- *     third_country_transfers JSONB DEFAULT '[]',
- *     retention_period        TEXT DEFAULT '',
- *     security_measures       TEXT DEFAULT '',
- *     is_draft                BOOLEAN DEFAULT false,
- *     source                  TEXT DEFAULT 'manual',
- *     created_at              TIMESTAMPTZ DEFAULT NOW(),
- *     updated_at              TIMESTAMPTZ DEFAULT NOW()
- *   );
- *   CREATE INDEX IF NOT EXISTS ropa_entries_org_idx ON ropa_entries(organisation_id);
  */
 
 import pkg from "pg";
@@ -56,6 +33,7 @@ async function ensureTable(db) {
         CREATE TABLE IF NOT EXISTS ropa_entries (
             id                      SERIAL PRIMARY KEY,
             organisation_id         INTEGER NOT NULL,
+            domain                  VARCHAR(255) DEFAULT NULL,
             activity_name           TEXT NOT NULL,
             controller_name         TEXT DEFAULT '',
             controller_contact      TEXT DEFAULT '',
@@ -75,6 +53,8 @@ async function ensureTable(db) {
             updated_at              TIMESTAMPTZ DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS ropa_entries_org_idx ON ropa_entries(organisation_id);
+        CREATE INDEX IF NOT EXISTS ropa_entries_domain_idx ON ropa_entries(domain);
+        ALTER TABLE ropa_entries ADD COLUMN IF NOT EXISTS domain VARCHAR(255) DEFAULT NULL;
     `);
     tableReady = true;
 }
@@ -111,9 +91,15 @@ function validateJwt(authHeader) {
     }
 }
 
+function cleanDomain(raw) {
+    if (!raw) return null;
+    return raw.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0] || null;
+}
+
 function rowToEntry(row) {
     return {
         id:                     row.id,
+        domain:                 row.domain,
         activityName:           row.activity_name,
         controllerName:         row.controller_name,
         controllerContact:      row.controller_contact,
@@ -137,58 +123,76 @@ function rowToEntry(row) {
 async function insertEntry(db, organisationId, e) {
     const { rows } = await db.query(
         `INSERT INTO ropa_entries
-           (organisation_id, activity_name, controller_name, controller_contact, dpo_contact,
+           (organisation_id, domain, activity_name, controller_name, controller_contact, dpo_contact,
             purpose, framework, legal_basis, data_subject_categories, data_categories,
             recipients, third_country_transfers, retention_period, security_measures,
             is_draft, source)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
          RETURNING *`,
         [
             organisationId,
-            e.activityName     || "Untitled activity",
-            e.controllerName   || "",
-            e.controllerContact|| "",
-            e.dpoContact       || "",
-            e.purpose          || "analytics",
-            e.framework        || "GDPR",
-            e.legalBasis       || "",
+            cleanDomain(e.domain) || null,
+            e.activityName      || "Untitled activity",
+            e.controllerName    || "",
+            e.controllerContact || "",
+            e.dpoContact        || "",
+            e.purpose           || "analytics",
+            e.framework         || "GDPR",
+            e.legalBasis        || "",
             JSON.stringify(e.dataSubjectCategories || []),
             JSON.stringify(e.dataCategories        || []),
             JSON.stringify(e.recipients            || []),
             JSON.stringify(e.thirdCountryTransfers || []),
-            e.retentionPeriod  || "",
-            e.securityMeasures || "",
+            e.retentionPeriod   || "",
+            e.securityMeasures  || "",
             e.isDraft === true,
-            e.source           || "manual",
+            e.source            || "manual",
         ]
     );
     return rows[0];
 }
 
-async function handleAutoPopulate(db, organisationId, res) {
-    // Get the latest scan per domain for this org
+async function handleAutoPopulate(db, organisationId, body, res) {
+    const targetDomain = cleanDomain(body.domain);
+
+    // Get the latest scan per domain, optionally scoped to one domain
+    const scanParams = targetDomain ? [organisationId, targetDomain] : [organisationId];
+    const domainFilter = targetDomain ? "AND domain = $2" : "";
     const { rows: scans } = await db.query(
         `SELECT DISTINCT ON (domain) domain, transfers
            FROM pre_consent_scans
-          WHERE organisation_id = $1
+          WHERE organisation_id = $1 ${domainFilter}
             AND scanned_at > NOW() - INTERVAL '30 days'
           ORDER BY domain, scanned_at DESC`,
-        [organisationId]
+        scanParams
     );
 
     if (!scans.length) {
-        return res.status(200).json({ created: 0, message: "No recent scans found for this organisation." });
+        return res.status(200).json({ created: 0, message: "No recent scans found." });
     }
 
-    // Collect unique services across all scans
-    const serviceMap = new Map();
+    // Collect unique services; key = "domain::serviceName" to allow same service on different domains
+    const toCreate = [];
     for (const scan of scans) {
+        const scanDomain = scan.domain;
         const transfers = Array.isArray(scan.transfers) ? scan.transfers : [];
+
+        // Get existing names for this domain to avoid duplicates
+        const { rows: existing } = await db.query(
+            `SELECT activity_name FROM ropa_entries
+              WHERE organisation_id = $1 AND (domain = $2 OR domain IS NULL)`,
+            [organisationId, scanDomain]
+        );
+        const existingNames = new Set(existing.map((r) => r.activity_name));
+
+        const seenThisDomain = new Set();
         for (const t of transfers) {
             const name = (t.service || t.host || "Unknown processor").trim();
-            if (serviceMap.has(name)) continue;
+            if (seenThisDomain.has(name) || existingNames.has(name)) continue;
+            seenThisDomain.add(name);
             const isNonEu = (t.dataRegion || "").toLowerCase() !== "eu" && t.dataCountry;
-            serviceMap.set(name, {
+            toCreate.push({
+                domain:                scanDomain,
                 activityName:          name,
                 purpose:               t.category || "analytics",
                 recipients:            [{ name, host: t.host || "" }],
@@ -199,26 +203,13 @@ async function handleAutoPopulate(db, organisationId, res) {
         }
     }
 
-    if (!serviceMap.size) {
-        return res.status(200).json({ created: 0, message: "No services detected in recent scan data." });
-    }
-
-    // Skip services that already have a RoPA entry
-    const { rows: existing } = await db.query(
-        `SELECT activity_name FROM ropa_entries WHERE organisation_id = $1`,
-        [organisationId]
-    );
-    const existingNames = new Set(existing.map((r) => r.activity_name));
-    const toCreate = [...serviceMap.values()].filter((e) => !existingNames.has(e.activityName));
-
     if (!toCreate.length) {
         return res.status(200).json({ created: 0, message: "All detected services already have RoPA entries." });
     }
 
     const created = [];
     for (const e of toCreate) {
-        const row = await insertEntry(db, organisationId, e);
-        created.push(rowToEntry(row));
+        created.push(rowToEntry(await insertEntry(db, organisationId, e)));
     }
 
     return res.status(201).json({ created: created.length, entries: created });
@@ -250,16 +241,29 @@ export default async function handler(req, res) {
                 if (!rows.length) return res.status(404).json({ error: "Entry not found" });
                 return res.json(rowToEntry(rows[0]));
             }
-            const { rows } = await db.query(
-                `SELECT * FROM ropa_entries WHERE organisation_id = $1 ORDER BY created_at DESC`,
-                [organisationId]
-            );
+
+            const domain = cleanDomain(req.query.domain);
+            let rows;
+            if (domain) {
+                // Show domain-specific entries + org-wide (domain IS NULL) entries
+                ({ rows } = await db.query(
+                    `SELECT * FROM ropa_entries
+                      WHERE organisation_id = $1 AND (domain = $2 OR domain IS NULL)
+                      ORDER BY domain NULLS LAST, created_at DESC`,
+                    [organisationId, domain]
+                ));
+            } else {
+                ({ rows } = await db.query(
+                    `SELECT * FROM ropa_entries WHERE organisation_id = $1 ORDER BY domain NULLS LAST, created_at DESC`,
+                    [organisationId]
+                ));
+            }
             return res.json(rows.map(rowToEntry));
         }
 
         if (req.method === "POST") {
             if (req.query.action === "auto-populate") {
-                return await handleAutoPopulate(db, organisationId, res);
+                return await handleAutoPopulate(db, organisationId, req.body || {}, res);
             }
             const body = req.body || {};
             const entries = Array.isArray(body.entries) ? body.entries : [body];

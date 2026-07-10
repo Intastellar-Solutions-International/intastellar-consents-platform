@@ -29,6 +29,7 @@ async function ensureTable(db) {
         CREATE TABLE IF NOT EXISTS ropa_entries (
             id                      SERIAL PRIMARY KEY,
             organisation_id         INTEGER NOT NULL,
+            domain                  VARCHAR(255) DEFAULT NULL,
             activity_name           TEXT NOT NULL,
             controller_name         TEXT DEFAULT '',
             controller_contact      TEXT DEFAULT '',
@@ -48,6 +49,8 @@ async function ensureTable(db) {
             updated_at              TIMESTAMPTZ DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS ropa_entries_org_idx ON ropa_entries(organisation_id);
+        CREATE INDEX IF NOT EXISTS ropa_entries_domain_idx ON ropa_entries(domain);
+        ALTER TABLE ropa_entries ADD COLUMN IF NOT EXISTS domain VARCHAR(255) DEFAULT NULL;
     `);
     tableReady = true;
 }
@@ -84,9 +87,15 @@ function validateJwt(authHeader) {
     }
 }
 
+function cleanDomain(raw) {
+    if (!raw) return null;
+    return raw.trim().toLowerCase().replace(/^https?:\/\//, "").split("/")[0] || null;
+}
+
 function rowToEntry(row) {
     return {
         id:                     row.id,
+        domain:                 row.domain,
         activityName:           row.activity_name,
         controllerName:         row.controller_name,
         controllerContact:      row.controller_contact,
@@ -132,24 +141,26 @@ export default async function handler(req, res) {
         await ensureTable(db);
         const { rows } = await db.query(
             `UPDATE ropa_entries SET
-               activity_name           = $1,
-               controller_name         = $2,
-               controller_contact      = $3,
-               dpo_contact             = $4,
-               purpose                 = $5,
-               framework               = $6,
-               legal_basis             = $7,
-               data_subject_categories = $8,
-               data_categories         = $9,
-               recipients              = $10,
-               third_country_transfers = $11,
-               retention_period        = $12,
-               security_measures       = $13,
-               is_draft                = $14,
+               domain                  = $1,
+               activity_name           = $2,
+               controller_name         = $3,
+               controller_contact      = $4,
+               dpo_contact             = $5,
+               purpose                 = $6,
+               framework               = $7,
+               legal_basis             = $8,
+               data_subject_categories = $9,
+               data_categories         = $10,
+               recipients              = $11,
+               third_country_transfers = $12,
+               retention_period        = $13,
+               security_measures       = $14,
+               is_draft                = $15,
                updated_at              = NOW()
-             WHERE id = $15 AND organisation_id = $16
+             WHERE id = $16 AND organisation_id = $17
              RETURNING *`,
             [
+                cleanDomain(e.domain) || null,
                 e.activityName      || "Untitled activity",
                 e.controllerName    || "",
                 e.controllerContact || "",

@@ -29,6 +29,7 @@ async function ensureTable(db) {
         CREATE TABLE IF NOT EXISTS ropa_entries (
             id                      SERIAL PRIMARY KEY,
             organisation_id         INTEGER NOT NULL,
+            domain                  VARCHAR(255) DEFAULT NULL,
             activity_name           TEXT NOT NULL,
             controller_name         TEXT DEFAULT '',
             controller_contact      TEXT DEFAULT '',
@@ -48,6 +49,8 @@ async function ensureTable(db) {
             updated_at              TIMESTAMPTZ DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS ropa_entries_org_idx ON ropa_entries(organisation_id);
+        CREATE INDEX IF NOT EXISTS ropa_entries_domain_idx ON ropa_entries(domain);
+        ALTER TABLE ropa_entries ADD COLUMN IF NOT EXISTS domain VARCHAR(255) DEFAULT NULL;
     `);
     tableReady = true;
 }
@@ -106,6 +109,7 @@ function jsonArrayToText(val) {
 
 const CSV_HEADERS = [
     "ID",
+    "Domain",
     "Activity Name",
     "Controller Name",
     "Controller Contact",
@@ -153,6 +157,7 @@ export default async function handler(req, res) {
         for (const row of rows) {
             lines.push([
                 csvEscape(row.id),
+                csvEscape(row.domain || ""),
                 csvEscape(row.activity_name),
                 csvEscape(row.controller_name),
                 csvEscape(row.controller_contact),

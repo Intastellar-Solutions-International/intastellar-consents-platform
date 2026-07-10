@@ -27,6 +27,7 @@ export const TRACKERS = [
     { domains: ["matomo.cloud", "matomo.org"],                    service: "Matomo",                  category: "analytics"    },
     { domains: ["plausible.io"],                                  service: "Plausible",               category: "analytics"    },
     { domains: ["statcounter.com"],                               service: "StatCounter",             category: "analytics"    },
+    { domains: ["analytics.ahrefs.com"],                         service: "Ahrefs Pte. Ltd.",         category: "analytics"    },
     { domains: ["sentry.io", "browser.sentry-cdn.com"],           service: "Sentry",                  category: "analytics"    },
     { domains: ["cloudflareinsights.com"],                        service: "Cloudflare Web Analytics", category: "analytics"   },
     { domains: ["nr-data.net", "js-agent.newrelic.com"],          service: "New Relic",               category: "analytics"    },

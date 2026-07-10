@@ -1,15 +1,19 @@
-const { useState, useEffect, useCallback } = window.React;
+const { useState, useEffect, useCallback, useContext } = window.React;
 const useHistory = window.ReactRouterDOM.useHistory;
 import API from "../../../API/api.js";
 import SideNav from "../../../Components/Header/SideNav.js";
 import { reportsLinks } from "../../../Components/Header/SideNavLinks/index.js";
 import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
 import Authentication from "../../../Authentication/Auth.js";
+import { DomainContext } from "../../../App.js";
+import { isCombinedOrClearDomain } from "../../../Functions/domainPathSegments.js";
 import "../Style.css";
 
 export default function ROPA() {
     document.title = "Record of Processing Activities | Settings | Intastellar Consents";
     const history = useHistory();
+    const [globalDomain] = useContext(DomainContext);
+    const activeDomain = isCombinedOrClearDomain(globalDomain) ? null : globalDomain;
 
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,7 +22,10 @@ export default function ROPA() {
 
     const load = useCallback(() => {
         setLoading(true);
-        fetch(API.ropa.list.url, {
+        const url = activeDomain
+            ? `${API.ropa.list.url}?domain=${encodeURIComponent(activeDomain)}`
+            : API.ropa.list.url;
+        fetch(url, {
             method: API.ropa.list.method,
             headers: API.ropa.list.headers,
         })
@@ -26,7 +33,7 @@ export default function ROPA() {
             .then((data) => setEntries(Array.isArray(data) ? data : []))
             .catch(() => setEntries([]))
             .finally(() => setLoading(false));
-    }, []);
+    }, [activeDomain]);
 
     useEffect(() => { load(); }, [load]);
 
@@ -35,6 +42,7 @@ export default function ROPA() {
         fetch(API.ropa.autoPopulate.url, {
             method: API.ropa.autoPopulate.method,
             headers: API.ropa.autoPopulate.headers,
+            body: JSON.stringify(activeDomain ? { domain: activeDomain } : {}),
         })
             .then((r) => r.json())
             .then((result) => {
@@ -101,7 +109,7 @@ export default function ROPA() {
                             disabled={populating}
                             style={{ background: "rgba(80,130,210,0.18)", borderColor: "rgba(80,130,210,0.4)", color: "#a8c4f0" }}
                         >
-                            {populating ? "Scanning…" : "Auto-populate from scan"}
+                            {populating ? "Scanning…" : activeDomain ? `Auto-populate from ${activeDomain}` : "Auto-populate from all scans"}
                         </button>
                         <button
                             type="button"
@@ -133,13 +141,22 @@ export default function ROPA() {
                         {entries.map((entry) => (
                             <div key={entry.id} className="settings-subpage__panel" style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: "12px 20px" }}>
                                 <div style={{ flex: "1 1 260px" }}>
-                                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px", flexWrap: "wrap" }}>
                                         <span style={{ fontWeight: 600, fontSize: "0.9375rem", color: "#f2f2f2" }}>
                                             {entry.activityName}
                                         </span>
                                         {entry.isDraft && (
                                             <span style={{ padding: "2px 8px", borderRadius: "5px", fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", background: "rgba(192,159,83,0.15)", border: "1px solid rgba(192,159,83,0.3)", color: "#c0a053" }}>
                                                 Draft
+                                            </span>
+                                        )}
+                                        {entry.domain ? (
+                                            <span style={{ padding: "2px 8px", borderRadius: "5px", fontSize: "0.65rem", fontWeight: 600, background: "rgba(80,130,210,0.12)", border: "1px solid rgba(80,130,210,0.3)", color: "#88b0e8", fontFamily: "ui-monospace, monospace" }}>
+                                                {entry.domain}
+                                            </span>
+                                        ) : (
+                                            <span style={{ padding: "2px 8px", borderRadius: "5px", fontSize: "0.65rem", fontWeight: 600, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(160,160,160,0.7)" }}>
+                                                org-wide
                                             </span>
                                         )}
                                     </div>
