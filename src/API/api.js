@@ -511,27 +511,32 @@ const API = {
     },
     ropa: {
         list: {
-            url: `${PrimaryHost}/cmp/ropa`,
+            url: `${ScannerHost}/api/ropa`,
             method: "GET",
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },
         create: {
-            url: `${PrimaryHost}/cmp/ropa`,
+            url: `${ScannerHost}/api/ropa`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        autoPopulate: {
+            url: `${ScannerHost}/api/ropa?action=auto-populate`,
             method: "POST",
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },
         update: {
-            url: `${PrimaryHost}/cmp/ropa/update`,
+            url: `${ScannerHost}/api/ropa-update`,
             method: "POST",
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },
         delete: {
-            url: `${PrimaryHost}/cmp/ropa/delete`,
+            url: `${ScannerHost}/api/ropa-delete`,
             method: "POST",
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },
         export: {
-            url: `${PrimaryHost}/cmp/ropa/export`,
+            url: `${ScannerHost}/api/ropa-export`,
             method: "POST",
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },

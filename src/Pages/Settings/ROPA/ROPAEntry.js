@@ -93,7 +93,7 @@ export default function ROPAEntry() {
 
     useEffect(() => {
         if (isNew) return;
-        fetch(`${API.ropa.list.url}/${entryId}`, {
+        fetch(`${API.ropa.list.url}?id=${entryId}`, {
             method: "GET",
             headers: API.ropa.list.headers,
         })

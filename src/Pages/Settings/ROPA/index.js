@@ -32,34 +32,13 @@ export default function ROPA() {
 
     function autoPopulate() {
         setPopulating(true);
-        fetch(API.gdpr.getPreConsentTransfers.url, {
-            method: API.gdpr.getPreConsentTransfers.method,
-            headers: API.gdpr.getPreConsentTransfers.headers,
+        fetch(API.ropa.autoPopulate.url, {
+            method: API.ropa.autoPopulate.method,
+            headers: API.ropa.autoPopulate.headers,
         })
             .then((r) => r.json())
-            .then((transfers) => {
-                if (!Array.isArray(transfers)) return;
-                const seen = new Set(entries.map((e) => e.activityName));
-                const drafts = [];
-                for (const t of transfers) {
-                    const name = t.service || t.host || "Unknown processor";
-                    if (seen.has(name)) continue;
-                    seen.add(name);
-                    drafts.push({
-                        activityName: name,
-                        purpose: t.category || "analytics",
-                        recipients: [{ name, host: t.host }],
-                        thirdCountryTransfers: t.dataRegion !== "eu" ? [{ country: t.dataCountry, mechanism: "SCC" }] : [],
-                        isDraft: true,
-                        createdAt: new Date().toISOString(),
-                    });
-                }
-                if (drafts.length === 0) return;
-                return fetch(API.ropa.create.url, {
-                    method: API.ropa.create.method,
-                    headers: API.ropa.create.headers,
-                    body: JSON.stringify({ entries: drafts }),
-                }).then(() => load());
+            .then((result) => {
+                if (result.created > 0) load();
             })
             .catch(() => {})
             .finally(() => setPopulating(false));
