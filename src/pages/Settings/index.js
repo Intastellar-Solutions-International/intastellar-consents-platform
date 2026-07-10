@@ -16,7 +16,9 @@ const SETTINGS_HUB_COPY = {
     "/settings/view-organisations": "Browse organisations, edit them, or create a new one from here.",
     "/settings/add-domain": "Connect a new site or hostname for the consent platform.",
     "/settings/view-domains": "Inspect domains linked to this organisation.",
-    "/settings/config-gdpr": "GDPR-related configuration for this workspace (when enabled).",
+    "/settings/config-gdpr": "Configure which regulations apply to your visitors and set the banner type per jurisdiction.",
+    "/settings/legal-basis": "Assign a legal basis to each processing purpose under each active regulation for audit and DSR responses.",
+    "/settings/ropa": "Maintain your Article 30 Record of Processing Activities. Auto-populate from pre-consent scan data.",
     "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting.",
     "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains.",
 };

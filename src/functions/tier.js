@@ -29,14 +29,18 @@ export const TIERS_ORDER = ['none', 'personal', 'starter', 'growth', 'agency-pro
 export const FEATURE_TIERS = {
     audit_log:                 'personal',
     csv_export:                'personal',
+    dsr_portal:                'personal',
     analytics_dashboard:       'starter',
     reporting:                 'starter',
     cookie_scanner:            'starter',
+    jurisdiction_config:       'starter',
     advanced_reporting:        'growth',
     team_insights:             'growth',
     ad_platform_reconciliation:'growth',
     blind_spot_detection:      'growth',
     cost_per_consent:          'growth',
+    legal_basis_tracking:      'growth',
+    ropa_builder:              'growth',
     multi_client_management:   'agency-pro',
     client_level_reporting:    'agency-pro',
 };

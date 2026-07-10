@@ -22,6 +22,11 @@ export const reportsLinks = [
         requiresTier: 'personal',
     },
     {
+        name: "DSR Portal",
+        path: "/reports/dsr",
+        requiresTier: 'personal',
+    },
+    {
         name: "Channel Analytics",
         path: "/reports/marketing",
         requiresTier: 'growth',
@@ -48,6 +53,14 @@ const HUB_CARDS = [
         description:
             "Aggregated audit views and exports to summarise consent activity for your selected scope.",
         leaf: "/audit-report",
+        minTier: 'personal',
+    },
+    {
+        key: "dsr",
+        title: "Data Subject Requests",
+        description:
+            "Track access, erasure, and portability requests with automatic deadlines per regulation (GDPR, LGPD, CCPA, PDPA, POPIA).",
+        leaf: "/dsr",
         minTier: 'personal',
     },
     {

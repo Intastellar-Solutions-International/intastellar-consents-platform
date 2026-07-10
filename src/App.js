@@ -39,6 +39,12 @@ import MarketingReport from "./Pages/Reports/MarketingReport";
 import CompliancePage from "./Pages/Compliance";
 import LoadingSpinner from "./Components/LoadingSpinner/LoadingSpinner";
 import Workspaces from "./Pages/Settings/Workspaces";
+import JurisdictionConfig from "./Pages/Settings/Jurisdiction";
+import LegalBasis from "./Pages/Settings/LegalBasis";
+import ROPA from "./Pages/Settings/ROPA";
+import ROPAEntry from "./Pages/Settings/ROPA/ROPAEntry";
+import DSR from "./Pages/DSR";
+import DSRDetail from "./Pages/DSR/DSRDetail";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
 import { canAccess } from "./Functions/tier.js";
@@ -343,7 +349,32 @@ export default function App() {
                                         <Route path="/auth-login">
                                             <AuthLogin />
                                         </Route>
-                                        <Route path="/settings/config-gdpr"></Route>
+                                        <Route path="/settings/config-gdpr">
+                                            <ErrorBoundary>
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Jurisdiction Configuration" fullPage /> : <JurisdictionConfig />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/legal-basis">
+                                            <ErrorBoundary>
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Legal Basis Tracking" fullPage /> : <LegalBasis />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/ropa/:entryId">
+                                            <ErrorBoundary>
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="RoPA Builder" fullPage /> : <ROPAEntry />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/ropa" exact>
+                                            <ErrorBoundary>
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="RoPA Builder" fullPage /> : <ROPA />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/:id/reports/dsr/:requestId" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Data Subject Requests" fullPage /> : <ErrorBoundary><DSRDetail /></ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/:id/reports/dsr" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Data Subject Requests" fullPage /> : <ErrorBoundary><DSR /></ErrorBoundary>}
+                                        </Route>
                                         <Route path="/settings/blacklist-ip">
                                             <ErrorBoundary>
                                                 {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <BlacklistIp /> : null}

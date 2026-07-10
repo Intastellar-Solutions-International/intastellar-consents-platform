@@ -19,16 +19,24 @@ export const reportsLinks = [
         path: "/settings/add-domain",
         view: ["admin", "super-admin", "manager"]
     },
-    /* {
-        name: "View Domains",
-        path: "/settings/view-domains",
-        view: ["admin", "super-admin", "manager"]
+    {
+        name: "Jurisdiction",
+        path: "/settings/config-gdpr",
+        view: ["admin", "super-admin", "manager"],
+        requiresTier: 'starter',
     },
     {
-        name: "Config GDPR",
-        path: "/settings/config-gdpr",
-        view: ["admin", "super-admin", "manager"]
-    }, */
+        name: "Legal Basis",
+        path: "/settings/legal-basis",
+        view: ["admin", "super-admin", "manager"],
+        requiresTier: 'growth',
+    },
+    {
+        name: "RoPA Builder",
+        path: "/settings/ropa",
+        view: ["admin", "super-admin", "manager"],
+        requiresTier: 'growth',
+    },
     {
         name: "Blacklist IP",
         path: "/settings/blacklist-ip",

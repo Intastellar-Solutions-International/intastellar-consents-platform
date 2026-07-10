@@ -467,7 +467,75 @@ const API = {
                 "Content-Type": "application/json",
             }
         }
-    }
+    },
+    jurisdictionConfig: {
+        get: {
+            url: `${PrimaryHost}/cmp/jurisdiction-config`,
+            method: "GET",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        save: {
+            url: `${PrimaryHost}/cmp/jurisdiction-config`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+    },
+    dsr: {
+        list: {
+            url: `${PrimaryHost}/cmp/dsr`,
+            method: "GET",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        create: {
+            url: `${PrimaryHost}/cmp/dsr`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        update: {
+            url: `${PrimaryHost}/cmp/dsr/update`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+    },
+    legalBasis: {
+        get: {
+            url: `${PrimaryHost}/cmp/legal-basis-config`,
+            method: "GET",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        save: {
+            url: `${PrimaryHost}/cmp/legal-basis-config`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+    },
+    ropa: {
+        list: {
+            url: `${PrimaryHost}/cmp/ropa`,
+            method: "GET",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        create: {
+            url: `${PrimaryHost}/cmp/ropa`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        update: {
+            url: `${PrimaryHost}/cmp/ropa/update`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        delete: {
+            url: `${PrimaryHost}/cmp/ropa/delete`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        export: {
+            url: `${PrimaryHost}/cmp/ropa/export`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+    },
 };
 
 export default API;
