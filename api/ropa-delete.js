@@ -22,6 +22,36 @@ function getPool() {
     return pool;
 }
 
+let tableReady = false;
+async function ensureTable(db) {
+    if (tableReady) return;
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS ropa_entries (
+            id                      SERIAL PRIMARY KEY,
+            organisation_id         INTEGER NOT NULL,
+            activity_name           TEXT NOT NULL,
+            controller_name         TEXT DEFAULT '',
+            controller_contact      TEXT DEFAULT '',
+            dpo_contact             TEXT DEFAULT '',
+            purpose                 TEXT DEFAULT 'analytics',
+            framework               TEXT DEFAULT 'GDPR',
+            legal_basis             TEXT DEFAULT '',
+            data_subject_categories JSONB DEFAULT '[]',
+            data_categories         JSONB DEFAULT '[]',
+            recipients              JSONB DEFAULT '[]',
+            third_country_transfers JSONB DEFAULT '[]',
+            retention_period        TEXT DEFAULT '',
+            security_measures       TEXT DEFAULT '',
+            is_draft                BOOLEAN DEFAULT false,
+            source                  TEXT DEFAULT 'manual',
+            created_at              TIMESTAMPTZ DEFAULT NOW(),
+            updated_at              TIMESTAMPTZ DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS ropa_entries_org_idx ON ropa_entries(organisation_id);
+    `);
+    tableReady = true;
+}
+
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
     "https://consentsplatform.com",
@@ -74,7 +104,9 @@ export default async function handler(req, res) {
     if (!id) return res.status(400).json({ error: "Missing id" });
 
     try {
-        const { rowCount } = await getPool().query(
+        const db = getPool();
+        await ensureTable(db);
+        const { rowCount } = await db.query(
             `DELETE FROM ropa_entries WHERE id = $1 AND organisation_id = $2`,
             [id, organisationId]
         );
