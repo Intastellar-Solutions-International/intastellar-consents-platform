@@ -114,15 +114,34 @@ Public, no auth required. Returns all cookies and vendors detected in the most r
 
 ---
 
-### TODO — Additional endpoints to implement in the banner repo
+### TODO — Additional behaviours to implement in the banner repo
 
 The following behaviours already exist in the CMP dashboard but the banner script needs to call them:
 
-| # | What | Endpoint to call | When |
-|---|------|-----------------|------|
+| # | What | Endpoint / mechanism | When |
+|---|------|---------------------|------|
 | 1 | **Jurisdiction config** | `GET /api/jurisdiction-config-public?org=` | On banner init — built, see above |
 | 2 | **Cookie categories, cookies & vendors** | `GET /api/cookie-banner?domain=` | On banner init — built, see above |
 | 3 | **Record consent** | Existing PHP endpoint on `apis.intastellarsolutions.com` | When visitor accepts / rejects — already wired |
 | 4 | **Respect managed mode** | Use `mode` + `frameworks` from endpoint #1 | Instead of always auto-applying LGPD, CCPA, POPIA, PDPA |
 | 5 | **Per-framework banner type** | Use `bannerType` per framework from endpoint #1 | Show opt-in vs opt-out vs notice-only per regulation |
 | 6 | **Script/cookie blocking** | Use `categories` from endpoint #2 | Block vendors + cookies by category until consent given |
+| 7 | **Scan bypass** | Check `window.__ICS_SCAN__` — see below | Skip banner during automated scans |
+
+---
+
+### Scan Bypass — `window.__ICS_SCAN__`
+
+When the Intastellar scanner (Puppeteer) loads a page it sets `window.__ICS_SCAN__ = true` via `evaluateOnNewDocument` **before any page scripts run**. The banner should check this flag at initialisation and exit early if it is set, so the scanner can capture all cookies — including those that are normally only set after the visitor grants consent.
+
+**Banner-side implementation (add at the very top of the banner init function):**
+
+```js
+// Suppress the banner during Intastellar cookie scans so all cookies are visible.
+if (typeof window !== 'undefined' && window.__ICS_SCAN__) return;
+```
+
+This is safe because:
+- `window.__ICS_SCAN__` is only set via Puppeteer's `evaluateOnNewDocument`, which requires executing JavaScript in the page context — it cannot be injected remotely or via a URL parameter
+- Real visitors never have this flag; it is not readable or settable from normal browser sessions
+- Suppressing the banner during scans does not affect visitor consent flows

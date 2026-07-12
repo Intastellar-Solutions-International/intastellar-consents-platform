@@ -343,6 +343,10 @@ export async function scanDomain(domain) {
             Object.defineProperty(navigator, "webdriver",  { get: () => undefined });
             Object.defineProperty(navigator, "plugins",    { get: () => [1, 2, 3, 4, 5] });
             Object.defineProperty(navigator, "languages",  { get: () => ["en-GB", "en-US", "en"] });
+            // Signal to the Intastellar Consents banner (and any banner that honours it)
+            // that this is an automated cookie scan — banner should suppress itself so all
+            // post-consent cookies are visible to the scanner.
+            window.__ICS_SCAN__ = true;
         });
 
         await page.setUserAgent(
