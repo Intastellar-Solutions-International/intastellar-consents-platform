@@ -22,7 +22,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { scanDomain } from "./_scan-core.js";
+import { scanDomain, describeCookie } from "./_scan-core.js";
 
 let pool;
 function getPool() {
@@ -212,6 +212,7 @@ function buildCategories(domain, transfers, rawCookies) {
             secure:         c.secure,
             sameSite:       c.sameSite,
             bannerCategory,
+            description:    c.description || describeCookie(c.name) || null,
         };
 
         const cookieService = vendorServiceForCookie(c.name);
@@ -300,7 +301,6 @@ export default async function handler(req, res) {
         }
 
         // No scan at all — run one now and return the results to this visitor
-        const scannedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
         const { transfers, cookies: rawCookies, durationMs, error } = await scanDomain(domain);
         const finalStatus = error ? "failed" : "completed";
         const finalAt     = new Date().toISOString().slice(0, 19).replace("T", " ");

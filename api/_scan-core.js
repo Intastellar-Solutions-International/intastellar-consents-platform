@@ -528,6 +528,118 @@ export function categoryFromCookieName(name) {
     return null;
 }
 
+// ── Cookie descriptions ───────────────────────────────────────────────────────
+export const COOKIE_META = [
+    // Google Analytics
+    { exact:  "_ga",                    description: "Google Analytics client ID — identifies a unique visitor across sessions. Expires after 2 years." },
+    { exact:  "_gid",                   description: "Google Analytics session cookie — distinguishes users within a 24-hour session." },
+    { prefix: "_ga_",                   description: "Google Analytics 4 property cookie — stores session state for a specific GA4 measurement ID." },
+    { prefix: "_gat",                   description: "Google Analytics throttle cookie — limits the request rate to Google Analytics. Expires after 1 minute." },
+    { prefix: "_gac_",                  description: "Google Ads campaign cookie — stores campaign click information for conversion attribution." },
+    { exact:  "_gcl_au",               description: "Google Conversion Linker cookie — set by Google Tag Manager to link ad clicks to conversions." },
+    { prefix: "_gcl_aw",               description: "Google Ads click ID — stores the Google Click Identifier (GCLID) for conversion tracking." },
+    { prefix: "_gcl_dc",               description: "Google DoubleClick click ID — stores the DCLID for display ad conversion tracking." },
+    { prefix: "_gcl_",                 description: "Google conversion linker cookie — associates ad clicks with on-site actions for attribution." },
+    // Old Google Analytics (ga.js / urchin)
+    { exact:  "__utma",                 description: "Google Analytics legacy cookie — tracks unique visitors and session count. Expires after 2 years." },
+    { exact:  "__utmb",                 description: "Google Analytics legacy session cookie — tracks session start time. Expires after 30 minutes." },
+    { exact:  "__utmc",                 description: "Google Analytics legacy session end cookie — used to determine whether to start a new session." },
+    { exact:  "__utmz",                 description: "Google Analytics legacy referral cookie — stores traffic source and campaign data. Expires after 6 months." },
+    // Hotjar
+    { exact:  "_hjid",                  description: "Hotjar user ID cookie — assigns a unique ID to a visitor to track across sessions. Expires after 1 year." },
+    { prefix: "_hjSession_",            description: "Hotjar current session data — stores session attributes including whether the user is in a recording sample." },
+    { prefix: "_hjSessionUser_",        description: "Hotjar session user cookie — stores the Hotjar user ID and session start time. Expires after 1 year." },
+    { exact:  "_hjAbsoluteSessionInProgress", description: "Hotjar session flag — detects the first pageview of a session. Expires after 30 minutes." },
+    { exact:  "_hjFirstSeen",           description: "Hotjar first visit marker — identifies whether this is a visitor's first session. Session cookie." },
+    { prefix: "_hjIncludedIn",          description: "Hotjar sampling flag — determines whether this visitor is included in a data sample. Session cookie." },
+    { prefix: "_hj",                    description: "Hotjar tracking cookie — used for session recording, heatmaps and visitor behaviour analysis." },
+    // Facebook / Meta
+    { exact:  "_fbp",                   description: "Facebook Pixel browser ID — identifies browsers for ad delivery and conversion measurement. Expires after 3 months." },
+    { exact:  "_fbc",                   description: "Facebook click ID — stores the fbclid URL parameter from a Facebook ad click. Expires after 3 months." },
+    // HubSpot
+    { exact:  "hubspotutk",             description: "HubSpot visitor token — tracks a visitor's identity across visits and form submissions. Expires after 13 months." },
+    { exact:  "__hstc",                 description: "HubSpot tracking cookie — stores subdomain, initial referrer, first and last visit timestamps. Expires after 13 months." },
+    { exact:  "__hssc",                 description: "HubSpot session cookie — tracks session number and session start time within a visit." },
+    { exact:  "__hssrc",                description: "HubSpot source cookie — set when a browser opens a new tab; used to determine if the visitor is a new session." },
+    // LinkedIn
+    { exact:  "li_sugr",                description: "LinkedIn user identification cookie — probabilistically matches visitors to LinkedIn profiles for ad targeting." },
+    { exact:  "UserMatchHistory",       description: "LinkedIn ad retargeting cookie — enables retargeting of visitors who have seen a LinkedIn ad. Expires after 1 month." },
+    { exact:  "lidc",                   description: "LinkedIn data centre routing cookie — selects a data centre for subsequent requests. Expires after 24 hours." },
+    { exact:  "bcookie",                description: "LinkedIn browser ID cookie — identifies a browser instance for LinkedIn features. Expires after 1 year." },
+    { exact:  "bscookie",               description: "LinkedIn secure browser ID — same purpose as bcookie but set with Secure flag. Expires after 1 year." },
+    { exact:  "li_gc",                  description: "LinkedIn consent cookie — stores the visitor's consent choice for LinkedIn cookies." },
+    // Microsoft Clarity
+    { exact:  "_clck",                  description: "Microsoft Clarity user ID — persists the Clarity user ID and preferences. Expires after 1 year." },
+    { exact:  "_clsk",                  description: "Microsoft Clarity session key — connects multiple page views within a single session. Expires after 24 hours." },
+    // TikTok
+    { exact:  "_ttp",                   description: "TikTok Pixel tracking ID — stores a visitor's browser ID for ad performance measurement. Expires after 13 months." },
+    // Twitter / X
+    { exact:  "muc_ads",                description: "Twitter/X ad measurement cookie — measures ad performance for logged-out users. Expires after 2 years." },
+    { exact:  "personalization_id",     description: "Twitter/X personalisation cookie — links activity on the website to the Twitter/X platform for ad targeting. Expires after 2 years." },
+    // Pinterest
+    { prefix: "_pin_",                  description: "Pinterest tracking cookie — identifies visitors from Pinterest for ad conversion measurement." },
+    { prefix: "_pinterest_",            description: "Pinterest session cookie — tracks Pinterest-referred sessions for analytics." },
+    // VWO
+    { exact:  "_vwo_consent",           description: "VWO consent record — stores the visitor's consent decision for VWO tracking. Expires after 1 year." },
+    { exact:  "_vwo_uuid",              description: "VWO visitor ID — assigns a unique ID to each visitor for experiment assignment. Expires after 1 year." },
+    { exact:  "_vwo_uuid_v2",           description: "VWO visitor ID v2 — updated unique visitor identifier for A/B test assignment. Expires after 1 year." },
+    { prefix: "_vwo_",                  description: "VWO tracking cookie — used for A/B testing, personalisation and conversion optimisation." },
+    { prefix: "_vis_opt_",              description: "VWO optimisation cookie — stores experiment variant assignment and visitor targeting data." },
+    // Stripe
+    { exact:  "__stripe_mid",           description: "Stripe fraud prevention cookie — identifies the browser for fraud detection purposes. Expires after 1 year." },
+    { exact:  "__stripe_sid",           description: "Stripe session cookie — short-lived session identifier used during payment flows. Expires after 30 minutes." },
+    { prefix: "__stripe_",              description: "Stripe cookie — used for payment security and fraud prevention during checkout." },
+    // Cloudflare
+    { exact:  "__cf_bm",                description: "Cloudflare bot management cookie — distinguishes human visitors from automated bots. Expires after 30 minutes." },
+    { exact:  "cf_clearance",           description: "Cloudflare challenge clearance cookie — proves a visitor has passed a Cloudflare security challenge. Expires after 1 day." },
+    { prefix: "__cf",                   description: "Cloudflare security cookie — used for DDoS protection and bot detection." },
+    // Klaviyo
+    { exact:  "__kla_id",               description: "Klaviyo visitor ID — tracks website visitors for email marketing attribution. Expires after 2 years." },
+    // Amplitude
+    { prefix: "amplitude_",             description: "Amplitude analytics cookie — stores device ID and session data for product analytics." },
+    // Wistia
+    { prefix: "_wijs",                  description: "Wistia video analytics cookie — tracks video engagement and viewer behaviour." },
+    // Trustpilot
+    { prefix: "tp.",                    description: "Trustpilot cookie — used for review widget functionality and fraud prevention." },
+    // Reddit
+    { exact:  "reddaid",                description: "Reddit Ads cookie — identifies a visitor for Reddit advertising attribution." },
+    // Microsoft Advertising
+    { exact:  "MUID",                   description: "Microsoft unique identifier — tracks users across Microsoft sites for advertising. Expires after 1 year." },
+    // Intercom
+    { prefix: "intercom-",              description: "Intercom messenger cookie — stores visitor identity and session state for the chat widget." },
+    // Pinterest
+    { exact:  "_pin_unauth",            description: "Pinterest anonymous tracking cookie — identifies anonymous visitors for ad measurement." },
+    // Common server-side session cookies
+    { exact:  "PHPSESSID",             description: "PHP session cookie — maintains a server-side session for the current user. Session cookie." },
+    { exact:  "JSESSIONID",            description: "Java session cookie — maintains a server-side session for Java/Spring applications. Session cookie." },
+    { exact:  "ASP.NET_SessionId",     description: "ASP.NET session cookie — maintains a server-side session for .NET applications. Session cookie." },
+    { exact:  "XSRF-TOKEN",            description: "CSRF protection token — prevents cross-site request forgery attacks. Session cookie." },
+    { exact:  "csrf_token",            description: "CSRF protection token — prevents cross-site request forgery attacks. Session cookie." },
+    // WordPress
+    { prefix: "wordpress_",            description: "WordPress authentication cookie — stores login credentials for authenticated users." },
+    { prefix: "wp-settings-",          description: "WordPress user settings cookie — stores interface preferences for logged-in users." },
+    { exact:  "wordpress_test_cookie", description: "WordPress cookie check — verifies that cookies are enabled in the visitor's browser." },
+    { exact:  "comment_author",        description: "WordPress comment author cookie — remembers the name and email used in comment forms. Expires after 1 year." },
+    // Consent management
+    { exact:  "IntastellarConsentSolution", description: "Intastellar Consents record — stores the visitor's consent choices for this website. Expires after 3 months." },
+    { prefix: "OptanonConsent",        description: "OneTrust consent record — stores the visitor's cookie category consent choices." },
+    { exact:  "OptanonAlertBoxClosed", description: "OneTrust banner dismissed flag — records that the visitor has closed the consent banner." },
+    { prefix: "CookieConsent",         description: "Cookiebot consent record — stores the visitor's cookie consent choices and expiry." },
+    { prefix: "cookieyes",             description: "CookieYes consent record — stores the visitor's consent preferences." },
+    { prefix: "cc_cookie",             description: "Cookie Consent record — stores the visitor's cookie category preferences." },
+    { prefix: "cmplz_",               description: "Complianz consent cookie — stores the visitor's GDPR consent choices for this website." },
+    { prefix: "euconsent",             description: "IAB TCF consent string — stores the encoded vendor consent record under the IAB Transparency & Consent Framework." },
+    { prefix: "uc_",                   description: "Usercentrics consent cookie — stores the visitor's consent settings." },
+];
+
+export function describeCookie(name) {
+    for (const p of COOKIE_META) {
+        if (p.exact  && name === p.exact)           return p.description;
+        if (p.prefix && name.startsWith(p.prefix))  return p.description;
+    }
+    return null;
+}
+
 export function classifyHost(hostname) {
     for (const entry of TRACKERS) {
         for (const pattern of entry.domains) {
@@ -727,16 +839,17 @@ export async function scanDomain(domain) {
                 : categoryFromCookieName(c.name)
                 ?? (isFirstParty ? "necessary" : "functional");
             return {
-                name:     c.name,
-                domain:   c.domain,
-                path:     c.path,
-                httpOnly: c.httpOnly,
-                secure:   c.secure,
-                sameSite: c.sameSite || "None",
-                session:  c.expires === -1,
-                expires:  c.expires !== -1 ? c.expires : null,
-                size:     c.size,
+                name:        c.name,
+                domain:      c.domain,
+                path:        c.path,
+                httpOnly:    c.httpOnly,
+                secure:      c.secure,
+                sameSite:    c.sameSite || "None",
+                session:     c.expires === -1,
+                expires:     c.expires !== -1 ? c.expires : null,
+                size:        c.size,
                 bannerCategory,
+                description: describeCookie(c.name) || null,
             };
         });
 
