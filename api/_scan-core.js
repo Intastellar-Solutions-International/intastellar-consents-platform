@@ -114,7 +114,7 @@ export const TRACKERS = [
     { domains: ["cdn.consentmanager.net", "consentmanager.net"],  service: "Consentmanager",        category: "cmp"           },
     { domains: ["hs-banner.com"],                                 service: "HubSpot Cookie Banner", category: "cmp"           },
     // Own CMP infrastructure — not a third-party transfer
-    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com"], service: "Intastellar Consents", category: "cmp" },
+    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com"], service: "Intastellar Consents", category: "cmp" },
 ];
 
 // ── Service metadata ──────────────────────────────────────────────────────────

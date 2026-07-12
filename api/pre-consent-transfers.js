@@ -126,6 +126,7 @@ function getPool() {
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
+    "https://www.consentsmanagement.com",
     "https://consentsplatform.com",
     "http://localhost:8080",
     "http://localhost:3000",
