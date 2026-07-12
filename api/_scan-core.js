@@ -619,6 +619,20 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "__chartbeat",      bannerCategory: "analytics"  }, // Chartbeat
     // Woopra
     { exact:  "wooTracker",       bannerCategory: "analytics"  }, // Woopra visitor tracker
+    // GitHub
+    { exact:  "_octo",                bannerCategory: "analytics"  }, // GitHub session analytics
+    { exact:  "preferred_color_mode", bannerCategory: "functional" }, // UI colour preference
+    { exact:  "tz",                   bannerCategory: "functional" }, // timezone preference
+    { exact:  "cpu_bucket",           bannerCategory: "analytics"  }, // performance A/B bucketing
+    { exact:  "color_mode",           bannerCategory: "functional" }, // extended colour mode settings
+    { exact:  "dotcom_user",          bannerCategory: "functional" }, // remembers last signed-in username
+    // Generic preference cookies (appear first-party on many platforms)
+    { exact:  "timezone",         bannerCategory: "functional" },
+    { exact:  "language",         bannerCategory: "functional" },
+    { exact:  "locale",           bannerCategory: "functional" },
+    { exact:  "currency",         bannerCategory: "functional" },
+    { exact:  "dark_mode",        bannerCategory: "functional" },
+    { exact:  "theme",            bannerCategory: "functional" },
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
     { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
