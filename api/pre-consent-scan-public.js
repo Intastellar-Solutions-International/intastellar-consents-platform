@@ -2,25 +2,22 @@
  * POST /api/pre-consent-scan-public
  *
  * Public scan trigger — no authentication required.
- * Intended to be called by the cookie banner when /api/cookie-banner returns 404
- * (no scan exists yet for this domain).
  *
- * Body: { domain }
+ * Responds 202 immediately, then delegates the actual Puppeteer scan to
+ * /api/scan-domain-task (a separate Lambda invocation). This keeps Chromium
+ * out of this function entirely, so an OOM in the scanner can never prevent
+ * the 202 response from being delivered to the caller.
  *
- * Rate limits (enforced via DB, no external service needed):
- *   - 429 if a scan is already running (status = pending)
- *   - 200 + status "recent_scan" if a completed scan exists within the last 24 hours
- *   - 202 otherwise — scan starts immediately, result available ~30s later
- *
- * The scan runs inside the same lambda invocation after the 202 response is sent.
- * Vercel keeps the lambda alive until the handler function resolves.
+ * Rate limits (enforced via DB):
+ *   - 429 if a scan is already running (status = pending / in_progress)
+ *   - 200 + status "recent_scan" if a completed scan exists within 24 hours
+ *   - 202 otherwise
  *
  * CORS: wildcard — safe to call from any website.
  */
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { scanDomain } from "./_scan-core.js";
 
 let pool;
 function getPool() {
@@ -35,7 +32,8 @@ function getPool() {
 }
 
 const DOMAIN_RE = /^[a-z0-9]([a-z0-9.-]{0,251}[a-z0-9])?$/;
-const RESCAN_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+const RESCAN_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+const SCANNER_BASE = process.env.SCANNER_SELF_URL || "https://www.intastellarconsents.com";
 
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -84,7 +82,7 @@ export default async function handler(req, res) {
     if (rows.length) {
         const latest = rows[0];
 
-        if (latest.status === "pending") {
+        if (latest.status === "pending" || latest.status === "in_progress") {
             return res.status(429).json({
                 domain:  cleanDomain,
                 status:  "scan_in_progress",
@@ -95,19 +93,18 @@ export default async function handler(req, res) {
         const ageMs = Date.now() - new Date(latest.scanned_at).getTime();
         if (latest.status === "completed" && ageMs < RESCAN_COOLDOWN_MS) {
             return res.status(200).json({
-                domain:  cleanDomain,
-                status:  "recent_scan",
-                message: "A recent scan already exists.",
+                domain:     cleanDomain,
+                status:     "recent_scan",
+                message:    "A recent scan already exists.",
                 scanned_at: latest.scanned_at,
             });
         }
     }
 
-    // Inherit org_id from the last known scan for this domain (0 = unassociated public scan)
-    const orgId = rows.length ? (rows[0].organisation_id || 0) : 0;
-
-    // Insert a pending row and grab its id so we can update it after the scan
+    const orgId    = rows.length ? (rows[0].organisation_id || 0) : 0;
     const pendingAt = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+    // Insert pending row first so concurrent callers see it immediately
     let pendingId;
     try {
         const ins = await db.query(
@@ -123,31 +120,25 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Internal server error" });
     }
 
-    // Respond 202 immediately — lambda continues running after res.json()
+    // Respond 202 before doing any heavy work
     res.status(202).json({
         domain:  cleanDomain,
         status:  "scan_queued",
         message: `Scan started. Results will be available at /api/cookie-banner?domain=${cleanDomain} in ~30 seconds.`,
     });
 
-    // Run the scan (still inside the same lambda invocation)
-    const { transfers, cookies, durationMs, error } = await scanDomain(cleanDomain);
-    const finalStatus = error ? "failed" : "completed";
-    const finalAt     = new Date().toISOString().slice(0, 19).replace("T", " ");
-
+    // Delegate the actual Puppeteer scan to scan-domain-task (separate Lambda).
+    // This keeps Chromium out of this process so an OOM can't kill this response.
     try {
-        await db.query(
-            `UPDATE pre_consent_scans
-                SET status           = $1,
-                    transfers        = $2,
-                    cookies          = $3,
-                    scan_duration_ms = $4,
-                    scanned_at       = $5,
-                    error_message    = $6
-              WHERE id = $7`,
-            [finalStatus, JSON.stringify(transfers), JSON.stringify(cookies), durationMs, finalAt, error || null, pendingId]
-        );
+        await fetch(`${SCANNER_BASE}/api/scan-domain-task`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${process.env.CRON_SECRET || ""}`,
+            },
+            body: JSON.stringify({ domain: cleanDomain, pendingId }),
+        });
     } catch (err) {
-        console.error("[pre-consent-scan-public] DB update failed:", err.message);
+        console.error("[pre-consent-scan-public] scan dispatch failed:", err.message);
     }
 }
