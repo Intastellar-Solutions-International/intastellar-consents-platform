@@ -322,6 +322,62 @@ export function classifyHost(hostname) {
     return null;
 }
 
+// ── RDAP lookup for unknown domains ──────────────────────────────────────────
+// Cache persists across warm lambda invocations to avoid redundant lookups.
+const rdapCache = new Map();
+
+async function lookupRdap(domainRoot) {
+    if (rdapCache.has(domainRoot)) return rdapCache.get(domainRoot);
+
+    try {
+        const res = await fetch(`https://rdap.org/domain/${domainRoot}`, {
+            signal: AbortSignal.timeout(4000),
+            headers: { Accept: "application/rdap+json, application/json" },
+        });
+        if (!res.ok) { rdapCache.set(domainRoot, null); return null; }
+
+        const data = await res.json();
+        let orgName = null;
+        let country = null;
+
+        for (const entity of (data.entities || [])) {
+            // Prefer registrant, accept technical as fallback
+            if (!entity.roles?.some(r => r === "registrant" || r === "technical")) continue;
+            for (const field of (entity.vcardArray?.[1] || [])) {
+                if ((field[0] === "fn" || field[0] === "org") && !orgName) {
+                    orgName = typeof field[3] === "string" ? field[3].trim() : null;
+                }
+                if (field[0] === "adr" && !country) {
+                    // vCard adr value: [poBox, extended, street, locality, region, postal, country]
+                    const adr = Array.isArray(field[3]) ? field[3] : [];
+                    country = adr[6] || null;
+                }
+            }
+            // Also check nested entities (some registrars nest the org)
+            for (const nested of (entity.entities || [])) {
+                for (const field of (nested.vcardArray?.[1] || [])) {
+                    if ((field[0] === "fn" || field[0] === "org") && !orgName) {
+                        orgName = typeof field[3] === "string" ? field[3].trim() : null;
+                    }
+                }
+            }
+            if (orgName) break;
+        }
+
+        // Discard privacy-redacted placeholders
+        if (orgName && /redacted|privacy|protected|proxy|withheld/i.test(orgName)) {
+            orgName = null;
+        }
+
+        const result = orgName ? { service: orgName, dataCountry: country || null } : null;
+        rdapCache.set(domainRoot, result);
+        return result;
+    } catch {
+        rdapCache.set(domainRoot, null);
+        return null;
+    }
+}
+
 // ── Core scan ─────────────────────────────────────────────────────────────────
 export async function scanDomain(domain) {
     const startMs = Date.now();
@@ -393,20 +449,40 @@ export async function scanDomain(domain) {
         const { cookies: rawCookies } = await cdpClient.send("Network.getAllCookies");
         await browser.close();
 
-        const transfers = [];
+        // Classify all observed hosts; collect unrecognised roots for RDAP lookup
+        const rawTransfers = [];
+        const unknownRoots = new Set();
+
         for (const [host, info] of seen) {
-            const match    = classifyHost(host);
+            const match = classifyHost(host);
+            rawTransfers.push({ host, info, match });
+            if (!match) unknownRoots.add(host.split(".").slice(-2).join("."));
+        }
+
+        // Run RDAP lookups in parallel for all unclassified domain roots
+        const rdapResults = new Map();
+        await Promise.all(
+            [...unknownRoots].map(async root => {
+                const result = await lookupRdap(root);
+                if (result) rdapResults.set(root, result);
+            })
+        );
+
+        const transfers = rawTransfers.map(({ host, info, match }) => {
+            const root  = host.split(".").slice(-2).join(".");
+            const rdap  = !match ? rdapResults.get(root) : null;
             const category = match?.category || "third-party";
-            transfers.push({
+            return {
                 host,
-                service:        match?.service     || host,
+                service:        match?.service     || rdap?.service    || host,
                 category,
                 bannerCategory: BANNER_CATEGORY[category] || "functional",
                 dataRegion:     match?.dataRegion  || "non-eu",
-                dataCountry:    match?.dataCountry || null,
+                dataCountry:    match?.dataCountry || rdap?.dataCountry || null,
                 resourceType:   info.resourceType,
-            });
-        }
+                rdapLookup:     !match && !!rdap,
+            };
+        });
         transfers.sort((a, b) => (CATEGORY_ORDER[a.category] ?? 6) - (CATEGORY_ORDER[b.category] ?? 6));
 
         const cookies = rawCookies.map(c => {
