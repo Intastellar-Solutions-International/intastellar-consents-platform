@@ -176,9 +176,12 @@ export default function App() {
 
         }, []);
 
-        const subscriptionLoading = subscriptionStatus?.subscription == null;
-        const orgId = (() => { try { return JSON.parse(appStorage.getItem("organisation"))?.id; } catch { return null; } })();
-        const needsPayment = !subscriptionLoading && subscriptionStatus?.subscription === "none" && Number(orgId) !== 1;
+        const orgId = getOrg()?.id;
+        const isDevOrg = Number(orgId) === 1;
+        const hasNoSubscription = subscriptionStatus?.subscription === "none"
+            || (typeof subscriptionStatus?.message === "string" && subscriptionStatus.message.includes("Subscription not found"));
+        const subscriptionLoading = !isDevOrg && !hasNoSubscription && subscriptionStatus?.subscription == null;
+        const needsPayment = !isDevOrg && !subscriptionLoading && hasNoSubscription;
 
         if (id === null && organisations) {
             return (
