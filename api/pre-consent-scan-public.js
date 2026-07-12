@@ -101,34 +101,14 @@ export default async function handler(req, res) {
         }
     }
 
-    const orgId    = rows.length ? (rows[0].organisation_id || null) : null;
-    const pendingAt = new Date().toISOString().slice(0, 19).replace("T", " ");
-
-    // Insert pending row first so concurrent callers see it immediately
-    let pendingId;
-    try {
-        const ins = await db.query(
-            `INSERT INTO pre_consent_scans
-                 (domain, organisation_id, scanned_at, status, transfers, cookies)
-              VALUES ($1, $2, $3, 'pending', '[]', '[]')
-              RETURNING id`,
-            [cleanDomain, orgId, pendingAt]
-        );
-        pendingId = ins.rows[0].id;
-    } catch (err) {
-        console.error("[pre-consent-scan-public] DB insert failed:", err.message);
-        return res.status(500).json({ error: "Internal server error" });
-    }
-
-    // Respond 202 before doing any heavy work
+    // Respond 202 immediately — scan-domain-task creates its own in_progress row
     res.status(202).json({
         domain:  cleanDomain,
         status:  "scan_queued",
         message: `Scan started. Results will be available at /api/cookie-banner?domain=${cleanDomain} in ~30 seconds.`,
     });
 
-    // Delegate the actual Puppeteer scan to scan-domain-task (separate Lambda).
-    // This keeps Chromium out of this process so an OOM can't kill this response.
+    // Delegate to scan-domain-task (separate Lambda — keeps Chromium out of this process)
     try {
         await fetch(`${SCANNER_BASE}/api/scan-domain-task`, {
             method: "POST",
@@ -136,7 +116,7 @@ export default async function handler(req, res) {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${process.env.CRON_SECRET || ""}`,
             },
-            body: JSON.stringify({ domain: cleanDomain, pendingId }),
+            body: JSON.stringify({ domain: cleanDomain }),
         });
     } catch (err) {
         console.error("[pre-consent-scan-public] scan dispatch failed:", err.message);
