@@ -36,6 +36,15 @@ export const TRACKERS = [
     { domains: ["abtasty.com"],                                   service: "AB Tasty",                category: "analytics"    },
     { domains: ["kameleoon.com", "kameleoon.eu"],                 service: "Kameleoon",               category: "analytics"    },
     { domains: ["vwo.com", "dev.visualwebsiteoptimizer.com", "wingify.com"], service: "VWO",          category: "analytics"    },
+    { domains: ["app.posthog.com", "posthog.com", "eu.posthog.com"], service: "PostHog",           category: "analytics"    },
+    { domains: ["datadoghq.com", "browser-intake-datadoghq.com"],   service: "Datadog",             category: "analytics"    },
+    { domains: ["mc.yandex.ru", "mc.yandex.com", "yandex.ru"],      service: "Yandex Metrica",      category: "analytics"    },
+    { domains: ["luckyorange.com", "luckyorange.net"],               service: "Lucky Orange",        category: "analytics"    },
+    { domains: ["inspectlet.com"],                                   service: "Inspectlet",          category: "analytics"    },
+    { domains: ["bugsnag.com"],                                      service: "Bugsnag",             category: "analytics"    },
+    { domains: ["rollbar.com"],                                      service: "Rollbar",             category: "analytics"    },
+    { domains: ["stats.wp.com", "pixel.wp.com"],                    service: "Jetpack / WP.com Stats", category: "analytics" },
+    { domains: ["cdn.pagesense.io", "pagesense.io"],                 service: "Zoho PageSense",      category: "analytics"    },
 
     // Advertising
     { domains: ["connect.facebook.net", "graph.facebook.com", "www.facebook.com", "facebook.com", "fbcdn.net"], service: "Facebook / Meta Pixel", category: "advertising"    },
@@ -65,6 +74,17 @@ export const TRACKERS = [
     { domains: ["list-manage.com", "chimpstatic.com", "mailchimp.com", "mailchimpapp.com"], service: "Mailchimp", category: "advertising" },
     { domains: ["klaviyo.com", "static.klaviyo.com"],             service: "Klaviyo",              category: "advertising"    },
     { domains: ["omnisnippet1.com", "omnisend.com"],              service: "Omnisend",             category: "advertising"    },
+    { domains: ["activecampaign.com", "trackcmp.net"],            service: "ActiveCampaign",       category: "advertising"    },
+    { domains: ["sendinblue.com", "brevo.com", "sibautomation.com"], service: "Brevo (Sendinblue)", category: "advertising"   },
+    { domains: ["mailerlite.com", "assets.mailerlite.com"],       service: "MailerLite",           category: "advertising"    },
+    { domains: ["drip.com", "getdrip.com"],                       service: "Drip",                 category: "advertising"    },
+    { domains: ["convertkit.com", "convertkit-mail.com"],         service: "ConvertKit",           category: "advertising"    },
+    { domains: ["getresponse.com"],                               service: "GetResponse",          category: "advertising"    },
+    { domains: ["mc.sendgrid.net", "sendgrid.net"],               service: "SendGrid (Twilio)",    category: "advertising"    },
+    { domains: ["demdex.net", "adobedc.net"],                     service: "Adobe Audience Manager", category: "advertising"  },
+    { domains: ["assets.adobedtm.com", "adobedtm.com"],          service: "Adobe Experience Platform", category: "advertising"},
+    { domains: ["go.pardot.com", "salesforce.com", "sfdcopens.com"], service: "Salesforce",        category: "advertising"    },
+    { domains: ["cdninstagram.com", "instagram.com"],             service: "Instagram (Meta)",     category: "advertising"    },
     { domains: ["go.g2.com", "g2.com"],                          service: "G2",                    category: "advertising"    },
     { domains: ["log.fc.yahoo.com", "analytics.yahoo.com", "sp.analytics.yahoo.com"], service: "Yahoo Advertising", category: "advertising" },
     { domains: ["marketo.net", "mktoresp.com", "mktdns.net", "mktossl.com"], service: "Adobe Marketo", category: "advertising" },
@@ -77,6 +97,8 @@ export const TRACKERS = [
     { domains: ["addthis.com"],                                   service: "AddThis",               category: "social"         },
     { domains: ["sharethis.com"],                                 service: "ShareThis",             category: "social"         },
     { domains: ["widget.trustpilot.com", "invitejs.trustpilot.com", "trustpilot.com"], service: "Trustpilot", category: "social" },
+    { domains: ["static.ads-twitter.com", "t.co", "abs.twimg.com", "twimg.com"], service: "Twitter / X CDN", category: "social" },
+    { domains: ["g.reviews.google.com", "business.google.com"],   service: "Google Reviews",       category: "social"         },
 
     // Fingerprinting
     { domains: ["fingerprintjs.com", "fpjs.io", "fingerprint.com"], service: "FingerprintJS",      category: "fingerprinting" },
@@ -104,13 +126,28 @@ export const TRACKERS = [
     { domains: ["philips-hue.com", "meethue.com"],                service: "Philips Hue (Signify)", category: "functional"     },
     { domains: ["w.org", "wordpress.org", "wordpress.com"],       service: "WordPress (Automattic)", category: "functional"    },
     { domains: ["server.arcgisonline.com", "arcgisonline.com", "arcgis.com"], service: "ArcGIS Online (Esri)", category: "functional" },
+    { domains: ["cdn.shopify.com", "shopify.com", "shopifycdn.com", "myshopify.com"], service: "Shopify",  category: "functional" },
+    { domains: ["help.helpscout.net", "beacon-v2.helpscout.net", "helpscout.net", "helpscout.com"], service: "Help Scout", category: "functional" },
+    { domains: ["config.gorgias.io", "gorgias.io", "gorgias.com"], service: "Gorgias",             category: "functional"     },
+    { domains: ["widget.surveymonkey.com", "surveymonkey.com"],   service: "SurveyMonkey",         category: "functional"     },
+    { domains: ["delighted.com"],                                  service: "Delighted",            category: "functional"     },
+    { domains: ["app.sumo.com", "sumo.com", "sumome.com"],        service: "Sumo",                 category: "functional"     },
+    { domains: ["privy.com"],                                      service: "Privy",                category: "functional"     },
+    { domains: ["wisepops.com"],                                   service: "Wisepops",             category: "functional"     },
+    { domains: ["gstatic.com"],                                    service: "Google Static Assets", category: "functional"     },
 
-    // CDN / fonts
+    // CDN / fonts / infrastructure
     { domains: ["fonts.googleapis.com", "fonts.gstatic.com"],    service: "Google Fonts",          category: "cdn"            },
     { domains: ["ajax.googleapis.com"],                           service: "Google CDN",            category: "cdn"            },
-    { domains: ["google.com", "google.de"],                       service: "Google Inc.",            category: "analytics"      },
     { domains: ["cdn.jsdelivr.net"],                              service: "jsDelivr CDN",          category: "cdn"            },
-    { domains: ["cdnjs.cloudflare.com"],                          service: "Cloudflare CDN",        category: "cdn"            },
+    { domains: ["cdnjs.cloudflare.com", "cloudflare.com"],       service: "Cloudflare CDN",        category: "cdn"            },
+    { domains: ["cloudfront.net"],                                service: "AWS CloudFront",        category: "cdn"            },
+    { domains: ["fastly.net", "fastly.com"],                      service: "Fastly CDN",            category: "cdn"            },
+    { domains: ["akamaihd.net", "akamaized.net", "edgekey.net"], service: "Akamai CDN",            category: "cdn"            },
+    { domains: ["unpkg.com"],                                     service: "unpkg CDN",             category: "cdn"            },
+    { domains: ["bootstrapcdn.com", "stackpath.bootstrapcdn.com"], service: "Bootstrap CDN",       category: "cdn"            },
+    { domains: ["code.jquery.com"],                               service: "jQuery CDN",            category: "cdn"            },
+    { domains: ["google.com", "google.de"],                       service: "Google Inc.",           category: "analytics"      },
 
     // Third-party CMP platforms
     { domains: ["cdn.cookielaw.org", "optanon.blob.core.windows.net", "onetrust.com", "cookielaw.org"], service: "OneTrust", category: "cmp" },
@@ -119,6 +156,13 @@ export const TRACKERS = [
     { domains: ["policy.app.cookieinformation.com", "cookieinformation.com"], service: "Cookie Information", category: "cmp" },
     { domains: ["cdn.consentmanager.net", "consentmanager.net"],  service: "Consentmanager",        category: "cmp"           },
     { domains: ["hs-banner.com"],                                 service: "HubSpot Cookie Banner", category: "cmp"           },
+    { domains: ["cs.iubenda.com", "cdn.iubenda.com", "iubenda.com"], service: "iubenda",          category: "cmp"            },
+    { domains: ["axeptio.eu"],                                    service: "Axeptio",              category: "cmp"            },
+    { domains: ["cookiefirst.com"],                               service: "CookieFirst",          category: "cmp"            },
+    { domains: ["app.termly.io", "termly.io"],                   service: "Termly",               category: "cmp"            },
+    { domains: ["sdk.privacy-center.org", "didomi.io"],          service: "Didomi",               category: "cmp"            },
+    { domains: ["cmp.quantcast.com", "quantcast.mgr.consensu.org", "quantcast.com"], service: "Quantcast Choice", category: "cmp" },
+    { domains: ["cookiehub.com"],                                 service: "CookieHub",            category: "cmp"            },
     // Own CMP infrastructure — not a third-party transfer
     { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com", "intastellar-consents.com", "www.intastellar-consents.com"], service: "Intastellar Consents", category: "cmp" },
 ];
@@ -135,6 +179,9 @@ export const DATA_COUNTRIES = {
     "Sentry": "US", "Cloudflare Web Analytics": "US", "New Relic": "US",
     "Wistia": "US", "Optimizely": "US", "AB Tasty": "FR",
     "Kameleoon": "FR", "VWO": "US",
+    "PostHog": "US", "Datadog": "US", "Yandex Metrica": "RU",
+    "Lucky Orange": "US", "Inspectlet": "US", "Bugsnag": "GB", "Rollbar": "US",
+    "Jetpack / WP.com Stats": "US", "Zoho PageSense": "US",
     // Advertising
     "Facebook / Meta Pixel": "US", "Google Ads": "US",
     "LinkedIn Insight Tag": "US", "Twitter / X Pixel": "US",
@@ -147,10 +194,15 @@ export const DATA_COUNTRIES = {
     "Adform": "DK", "Capterra": "US", "Pinterest": "US",
     "Reddit Ads": "US", "Mailchimp": "US", "Klaviyo": "US", "Omnisend": "US",
     "G2": "US", "Yahoo Advertising": "US", "Adobe Marketo": "US",
+    "ActiveCampaign": "US", "Brevo (Sendinblue)": "FR", "MailerLite": "US",
+    "Drip": "US", "ConvertKit": "US", "GetResponse": "PL",
+    "SendGrid (Twilio)": "US", "Adobe Audience Manager": "US",
+    "Adobe Experience Platform": "US", "Salesforce": "US",
+    "Instagram (Meta)": "US",
     // Social
     "Twitter / X Widgets": "US", "LinkedIn Widgets": "US",
     "Google Sign-In": "US", "Disqus": "US", "AddThis": "US", "ShareThis": "US",
-    "Trustpilot": "DK",
+    "Trustpilot": "DK", "Twitter / X CDN": "US", "Google Reviews": "US",
     // Fingerprinting
     "FingerprintJS": "US", "SEON": "HU",
     // Functional
@@ -162,11 +214,18 @@ export const DATA_COUNTRIES = {
     "Gravatar (Automattic)": "US", "WordPress (Automattic)": "US",
     "Weglot SAS": "FR", "ArcGIS Online (Esri)": "US",
     "Philips Hue (Signify)": "NL",
+    "Shopify": "CA", "Help Scout": "US", "Gorgias": "US",
+    "SurveyMonkey": "US", "Delighted": "US", "Sumo": "US",
+    "Privy": "US", "Wisepops": "FR", "Google Static Assets": "US",
     // CDN / fonts
     "Google Fonts": "US", "Google CDN": "US", "jsDelivr CDN": "BE", "Cloudflare CDN": "US",
+    "AWS CloudFront": "US", "Fastly CDN": "US", "Akamai CDN": "US",
+    "unpkg CDN": "US", "Bootstrap CDN": "US", "jQuery CDN": "US",
     // CMP
     "OneTrust": "US", "Cookiebot": "DK", "Usercentrics": "DE",
     "Cookie Information": "DK", "Consentmanager": "DE", "HubSpot Cookie Banner": "US",
+    "iubenda": "IT", "Axeptio": "FR", "CookieFirst": "NL",
+    "Termly": "US", "Didomi": "FR", "Quantcast Choice": "US", "CookieHub": "IS",
     "Intastellar Consents": "DK",
 };
 
@@ -201,11 +260,21 @@ export const DATA_REGIONS = {
     "Mailchimp":              "non-eu", "Klaviyo":                "non-eu", "Omnisend": "non-eu",
     "G2":                     "non-eu", "Yahoo Advertising":      "non-eu",
     "Adobe Marketo":          "non-eu",
+    "ActiveCampaign": "non-eu", "Brevo (Sendinblue)": "eu",  "MailerLite":  "non-eu",
+    "Drip":           "non-eu", "ConvertKit":         "non-eu", "GetResponse": "eu",
+    "SendGrid (Twilio)": "non-eu", "Adobe Audience Manager": "non-eu",
+    "Adobe Experience Platform": "non-eu", "Salesforce": "non-eu",
+    "Instagram (Meta)": "non-eu",
     // Social
     "Twitter / X Widgets": "non-eu", "LinkedIn Widgets": "non-eu",
     "Google Sign-In":      "non-eu", "Disqus":           "non-eu",
     "AddThis":             "non-eu", "ShareThis":        "non-eu",
-    "Trustpilot":          "eu",
+    "Trustpilot":          "eu",     "Twitter / X CDN":  "non-eu",
+    "Google Reviews":      "non-eu",
+    // Analytics (new)
+    "PostHog": "non-eu", "Datadog": "non-eu", "Yandex Metrica": "non-eu",
+    "Lucky Orange": "non-eu", "Inspectlet": "non-eu", "Bugsnag": "non-eu",
+    "Rollbar": "non-eu", "Jetpack / WP.com Stats": "non-eu", "Zoho PageSense": "non-eu",
     // Fingerprinting
     "FingerprintJS": "non-eu", "SEON": "eu",
     // Functional
@@ -220,13 +289,20 @@ export const DATA_REGIONS = {
     "Gravatar (Automattic)":  "non-eu", "WordPress (Automattic)":  "non-eu",
     "Weglot SAS":             "eu",     "ArcGIS Online (Esri)":    "non-eu",
     "Philips Hue (Signify)":  "eu",
+    "Shopify":         "non-eu", "Help Scout":     "non-eu", "Gorgias":    "non-eu",
+    "SurveyMonkey":    "non-eu", "Delighted":      "non-eu", "Sumo":       "non-eu",
+    "Privy":           "non-eu", "Wisepops":       "eu",     "Google Static Assets": "non-eu",
     // CDN / fonts
     "Google Fonts": "non-eu", "Google CDN": "non-eu",
     "jsDelivr CDN": "eu",     "Cloudflare CDN": "non-eu",
+    "AWS CloudFront": "non-eu", "Fastly CDN": "non-eu", "Akamai CDN": "non-eu",
+    "unpkg CDN": "non-eu", "Bootstrap CDN": "non-eu", "jQuery CDN": "non-eu",
     // CMP
     "OneTrust":             "non-eu", "Cookiebot":         "eu",
     "Usercentrics":         "eu",     "Cookie Information": "eu",
     "Consentmanager":       "eu",     "HubSpot Cookie Banner": "non-eu",
+    "iubenda": "eu", "Axeptio": "eu", "CookieFirst": "eu",
+    "Termly": "non-eu", "Didomi": "eu", "Quantcast Choice": "non-eu", "CookieHub": "eu",
     "Intastellar Consents": "eu",
 };
 
