@@ -120,6 +120,7 @@ const BANNER_CATEGORIES = ["necessary", "analytics", "marketing", "functional"];
 const COOKIE_VENDOR_PATTERNS = [
     { prefix: "_ga",                service: "Google Analytics"        },
     { exact:  "_gid",               service: "Google Analytics"        },
+    { exact:  "_gcl_au",            service: "Google Tag Manager"      },
     { prefix: "_gcl_",              service: "Google Ads"              },
     { prefix: "_gac_",              service: "Google Ads"              },
     { prefix: "_hj",                service: "Hotjar"                  },
@@ -213,8 +214,15 @@ function buildCategories(domain, transfers, rawCookies) {
             bannerCategory,
         };
 
+        const cookieService = vendorServiceForCookie(c.name);
+        // Exact service name match, then brand-family fallback (e.g. "Google Ads" cookie
+        // on a site where only "Google Analytics" was detected — both are Google).
         const owningVendor = domainVendor
-            || vendorByService.get(vendorServiceForCookie(c.name));
+            || vendorByService.get(cookieService)
+            || (cookieService
+                ? [...vendorByService.values()].find(v =>
+                    v.service.split(" ")[0] === cookieService.split(" ")[0])
+                : null);
         if (owningVendor) owningVendor.cookies.push(enriched);
 
         return enriched;

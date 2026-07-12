@@ -164,7 +164,7 @@ export const TRACKERS = [
     { domains: ["cmp.quantcast.com", "quantcast.mgr.consensu.org", "quantcast.com"], service: "Quantcast Choice", category: "cmp" },
     { domains: ["cookiehub.com"],                                 service: "CookieHub",            category: "cmp"            },
     // Own CMP infrastructure — not a third-party transfer
-    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com", "intastellar-consents.com", "www.intastellar-consents.com"], service: "Intastellar Consents", category: "cmp" },
+    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com", "intastellar-consents.com", "www.intastellar-consents.com", "intastellarconsents.com", "www.intastellarconsents.com"], service: "Intastellar Consents", category: "cmp" },
 ];
 
 // ── Service metadata ──────────────────────────────────────────────────────────
