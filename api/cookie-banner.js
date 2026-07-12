@@ -161,6 +161,78 @@ function vendorServiceForCookie(name) {
     return null;
 }
 
+// Shared data-processing: turns raw transfers + cookies arrays into the
+// grouped categories object the banner consumes.
+function buildCategories(domain, transfers, rawCookies) {
+    const domainRoot = domain.split(".").slice(-2).join(".");
+
+    const vendorMap = new Map();
+    for (const t of (transfers || [])) {
+        const bannerCategory = t.bannerCategory || BANNER_CATEGORY[t.category] || "functional";
+        if (!vendorMap.has(t.service)) {
+            vendorMap.set(t.service, {
+                service:        t.service,
+                category:       t.category,
+                bannerCategory,
+                dataRegion:     t.dataRegion,
+                dataCountry:    t.dataCountry,
+                hosts:          [],
+                cookies:        [],
+            });
+        }
+        const vendor = vendorMap.get(t.service);
+        if (!vendor.hosts.includes(t.host)) vendor.hosts.push(t.host);
+    }
+    const vendors = [...vendorMap.values()];
+
+    const vendorByService = new Map(vendors.map(v => [v.service, v]));
+    const vendorByRoot    = new Map();
+    for (const v of vendors) {
+        for (const host of v.hosts) {
+            vendorByRoot.set(host.split(".").slice(-2).join("."), v);
+        }
+    }
+
+    const cookies = (rawCookies || []).map(c => {
+        const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
+        const isFirstParty  = cookieRoot === domainRoot;
+        const domainVendor  = vendorByRoot.get(cookieRoot);
+        const bannerCategory = c.bannerCategory
+            || (domainVendor ? domainVendor.bannerCategory : null)
+            || categoryFromCookieName(c.name)
+            || (isFirstParty ? "necessary" : "functional");
+
+        const enriched = {
+            name:           c.name,
+            domain:         c.domain,
+            session:        c.session,
+            expires:        c.expires ?? null,
+            httpOnly:       c.httpOnly,
+            secure:         c.secure,
+            sameSite:       c.sameSite,
+            bannerCategory,
+        };
+
+        const owningVendor = domainVendor
+            || vendorByService.get(vendorServiceForCookie(c.name));
+        if (owningVendor) owningVendor.cookies.push(enriched);
+
+        return enriched;
+    });
+
+    const categories = Object.fromEntries(
+        BANNER_CATEGORIES.map(cat => [
+            cat,
+            {
+                cookies: cookies.filter(c => c.bannerCategory === cat),
+                vendors: vendors.filter(v => v.bannerCategory === cat),
+            },
+        ])
+    );
+
+    return categories;
+}
+
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -181,7 +253,10 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { rows } = await getPool().query(
+        const db = getPool();
+
+        // Happy path — completed scan already exists
+        const { rows } = await db.query(
             `SELECT domain, scanned_at, transfers, cookies
                FROM pre_consent_scans
               WHERE domain = $1 AND status = 'completed'
@@ -190,152 +265,62 @@ export default async function handler(req, res) {
             [domain]
         );
 
-        if (!rows.length) {
-            // No completed scan — check whether one is already running
-            const { rows: pending } = await getPool().query(
-                `SELECT id FROM pre_consent_scans
-                  WHERE domain = $1 AND status = 'pending'
-                  LIMIT 1`,
-                [domain]
-            );
-
-            if (pending.length) {
-                return res.status(202).json({
-                    domain,
-                    status:  "scan_in_progress",
-                    message: "A scan is already running. Re-call this endpoint in ~30 seconds.",
-                });
-            }
-
-            // No scan at all — trigger one automatically
-            const pendingAt = new Date().toISOString().slice(0, 19).replace("T", " ");
-            let pendingId;
-            try {
-                const ins = await getPool().query(
-                    `INSERT INTO pre_consent_scans
-                         (domain, organisation_id, scanned_at, status, transfers, cookies)
-                      VALUES ($1, 0, $2, 'pending', '[]', '[]')
-                      RETURNING id`,
-                    [domain, pendingAt]
-                );
-                pendingId = ins.rows[0].id;
-            } catch (insErr) {
-                console.error("[cookie-banner] auto-scan insert failed:", insErr.message);
-            }
-
-            // Respond 202 immediately; lambda keeps running until the handler resolves
-            res.status(202).json({
-                domain,
-                status:  "scan_queued",
-                message: "No scan data found. A scan has started automatically — re-call this endpoint in ~30 seconds.",
+        if (rows.length) {
+            const row = rows[0];
+            res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
+            return res.json({
+                domain:     row.domain,
+                scanned_at: row.scanned_at,
+                categories: buildCategories(row.domain, row.transfers, row.cookies),
             });
-
-            if (pendingId) {
-                const { transfers, cookies, durationMs, error } = await scanDomain(domain);
-                const finalStatus = error ? "failed" : "completed";
-                const finalAt     = new Date().toISOString().slice(0, 19).replace("T", " ");
-                try {
-                    await getPool().query(
-                        `UPDATE pre_consent_scans
-                            SET status           = $1,
-                                transfers        = $2,
-                                cookies          = $3,
-                                scan_duration_ms = $4,
-                                scanned_at       = $5,
-                                error_message    = $6
-                          WHERE id = $7`,
-                        [finalStatus, JSON.stringify(transfers), JSON.stringify(cookies), durationMs, finalAt, error || null, pendingId]
-                    );
-                } catch (updErr) {
-                    console.error("[cookie-banner] auto-scan update failed:", updErr.message);
-                }
-            }
-            return;
         }
 
-        const row        = rows[0];
-        const domainRoot = domain.split(".").slice(-2).join(".");
-
-        // Group transfers by service name — multiple hosts (e.g. track.hubspot.com +
-        // app.hubspot.com) are merged into a single vendor entry with a hosts array.
-        const vendorMap = new Map();
-        for (const t of (row.transfers || [])) {
-            const bannerCategory = t.bannerCategory || BANNER_CATEGORY[t.category] || "functional";
-            if (!vendorMap.has(t.service)) {
-                vendorMap.set(t.service, {
-                    service:        t.service,
-                    category:       t.category,
-                    bannerCategory,
-                    dataRegion:     t.dataRegion,
-                    dataCountry:    t.dataCountry,
-                    hosts:          [],
-                    cookies:        [],
-                });
-            }
-            const vendor = vendorMap.get(t.service);
-            if (!vendor.hosts.includes(t.host)) vendor.hosts.push(t.host);
-        }
-        const vendors = [...vendorMap.values()];
-
-        // Build lookup maps for cookie association
-        const vendorByService = new Map(vendors.map(v => [v.service, v]));
-        const vendorByRoot    = new Map();
-        for (const v of vendors) {
-            for (const host of v.hosts) {
-                vendorByRoot.set(host.split(".").slice(-2).join("."), v);
-            }
-        }
-
-        // Enrich cookies with bannerCategory, then associate each cookie with its vendor
-        const cookies = (row.cookies || []).map(c => {
-            const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
-            const isFirstParty  = cookieRoot === domainRoot;
-            const domainVendor  = vendorByRoot.get(cookieRoot);
-            const bannerCategory = c.bannerCategory
-                || (domainVendor ? domainVendor.bannerCategory : null)
-                || categoryFromCookieName(c.name)
-                || (isFirstParty ? "necessary" : "functional");
-
-            const enriched = {
-                name:           c.name,
-                domain:         c.domain,
-                session:        c.session,
-                expires:        c.expires ?? null,
-                httpOnly:       c.httpOnly,
-                secure:         c.secure,
-                sameSite:       c.sameSite,
-                bannerCategory,
-            };
-
-            // Associate cookie with its vendor:
-            // 1. domain root match (third-party cookies set on the vendor's own domain)
-            // 2. name pattern match (first-party-set cookies like _ga, _hj*, _gcl_*)
-            const owningVendor = domainVendor
-                || vendorByService.get(vendorServiceForCookie(c.name));
-            if (owningVendor) owningVendor.cookies.push(enriched);
-
-            return enriched;
-        });
-
-        // Group by banner category
-        const categories = Object.fromEntries(
-            BANNER_CATEGORIES.map(cat => [
-                cat,
-                {
-                    cookies: cookies.filter(c => c.bannerCategory === cat),
-                    vendors: vendors.filter(v => v.bannerCategory === cat),
-                },
-            ])
+        // A scan is already running — tell the banner to retry shortly
+        const { rows: pending } = await db.query(
+            `SELECT id FROM pre_consent_scans
+              WHERE domain = $1 AND status = 'pending'
+              LIMIT 1`,
+            [domain]
         );
+
+        if (pending.length) {
+            return res.status(202).json({
+                domain,
+                status:  "scan_in_progress",
+                message: "A scan is already running. Re-call this endpoint in ~30 seconds.",
+            });
+        }
+
+        // No scan at all — run one now and return the results to this visitor
+        const scannedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
+        const { transfers, cookies: rawCookies, durationMs, error } = await scanDomain(domain);
+        const finalStatus = error ? "failed" : "completed";
+        const finalAt     = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+        try {
+            await db.query(
+                `INSERT INTO pre_consent_scans
+                     (domain, organisation_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message)
+                  VALUES ($1, 0, $2, $3, $4, $5, $6, $7)`,
+                [domain, finalAt, durationMs, finalStatus, JSON.stringify(transfers), JSON.stringify(rawCookies), error || null]
+            );
+        } catch (insErr) {
+            console.error("[cookie-banner] auto-scan save failed:", insErr.message);
+        }
+
+        if (error) {
+            return res.status(500).json({ error: "Scan failed: " + error });
+        }
 
         res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
         return res.json({
-            domain:     row.domain,
-            scanned_at: row.scanned_at,
-            categories,
+            domain,
+            scanned_at: finalAt,
+            categories: buildCategories(domain, transfers, rawCookies),
         });
+
     } catch (err) {
-        console.error("[cookie-banner] DB error:", err.message);
+        console.error("[cookie-banner] error:", err.message);
         return res.status(500).json({ error: "Internal server error" });
     }
 }

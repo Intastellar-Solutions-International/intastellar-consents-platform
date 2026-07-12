@@ -111,14 +111,14 @@ Public, no auth required. Returns all cookies and vendors detected in the most r
 | Status | Meaning |
 |--------|---------|
 | `200` | Scan data returned — render the banner normally |
-| `202` + `status: "scan_queued"` | No scan existed; one has started automatically. Re-call in ~30s |
-| `202` + `status: "scan_in_progress"` | A scan is already running. Re-call in ~30s |
+| `202` + `status: "scan_in_progress"` | A concurrent scan is already running (rare). Re-call in ~30s |
+| `500` | Scan ran but failed — fall back to a basic notice-only banner |
 
 **Notes:**
 - CORS is wildcard (`*`) — safe to call from any website
+- If no scan exists the endpoint **runs a live scan and returns the data to that first visitor** (~30s response time on first call only). Every subsequent visitor gets a cached `200`.
 - `200` responses are cached for 1 hour at the CDN edge (`s-maxage=3600`), with a 24-hour `stale-while-revalidate` window
-- `202` responses are never cached — always trigger a fresh check on the next call
-- If no scan data exists the endpoint auto-triggers a scan and returns 202; the first visitor sees fallback/empty categories, subsequent visitors get real data
+- `202` only occurs if two visitors hit an unscanned domain at the exact same moment
 
 ---
 
