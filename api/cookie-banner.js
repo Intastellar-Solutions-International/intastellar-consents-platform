@@ -22,6 +22,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
+import { scanDomain } from "./_scan-core.js";
 
 let pool;
 function getPool() {
@@ -190,9 +191,66 @@ export default async function handler(req, res) {
         );
 
         if (!rows.length) {
-            return res.status(404).json({
-                error: "No completed scan found for this domain. Trigger a scan from the Intastellar dashboard first.",
+            // No completed scan — check whether one is already running
+            const { rows: pending } = await getPool().query(
+                `SELECT id FROM pre_consent_scans
+                  WHERE domain = $1 AND status = 'pending'
+                  LIMIT 1`,
+                [domain]
+            );
+
+            if (pending.length) {
+                return res.status(202).json({
+                    domain,
+                    status:  "scan_in_progress",
+                    message: "A scan is already running. Re-call this endpoint in ~30 seconds.",
+                });
+            }
+
+            // No scan at all — trigger one automatically
+            const pendingAt = new Date().toISOString().slice(0, 19).replace("T", " ");
+            let pendingId;
+            try {
+                const ins = await getPool().query(
+                    `INSERT INTO pre_consent_scans
+                         (domain, organisation_id, scanned_at, status, transfers, cookies)
+                      VALUES ($1, 0, $2, 'pending', '[]', '[]')
+                      RETURNING id`,
+                    [domain, pendingAt]
+                );
+                pendingId = ins.rows[0].id;
+            } catch (insErr) {
+                console.error("[cookie-banner] auto-scan insert failed:", insErr.message);
+            }
+
+            // Respond 202 immediately; lambda keeps running until the handler resolves
+            res.status(202).json({
+                domain,
+                status:  "scan_queued",
+                message: "No scan data found. A scan has started automatically — re-call this endpoint in ~30 seconds.",
             });
+
+            if (pendingId) {
+                const { transfers, cookies, durationMs, error } = await scanDomain(domain);
+                const finalStatus = error ? "failed" : "completed";
+                const finalAt     = new Date().toISOString().slice(0, 19).replace("T", " ");
+                try {
+                    await getPool().query(
+                        `UPDATE pre_consent_scans
+                            SET status           = $1,
+                                transfers        = $2,
+                                cookies          = $3,
+                                scan_duration_ms = $4,
+                                scanned_at       = $5,
+                                error_message    = $6
+                          WHERE id = $7`,
+                        [finalStatus, JSON.stringify(transfers), JSON.stringify(cookies), durationMs, finalAt, error || null, pendingId]
+                    );
+                } catch (updErr) {
+                    console.error("[cookie-banner] auto-scan update failed:", updErr.message);
+                }
+            }
+            return;
         }
 
         const row        = rows[0];

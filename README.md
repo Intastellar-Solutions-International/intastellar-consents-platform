@@ -106,11 +106,19 @@ Public, no auth required. Returns all cookies and vendors detected in the most r
 - Block cookies listed under those categories until consent is granted
 - `necessary` cookies and vendors are always allowed — never prompt or block them
 
+**Status codes:**
+
+| Status | Meaning |
+|--------|---------|
+| `200` | Scan data returned — render the banner normally |
+| `202` + `status: "scan_queued"` | No scan existed; one has started automatically. Re-call in ~30s |
+| `202` + `status: "scan_in_progress"` | A scan is already running. Re-call in ~30s |
+
 **Notes:**
 - CORS is wildcard (`*`) — safe to call from any website
-- Response is cached for 1 hour at the CDN edge (`s-maxage=3600`), with a 24-hour `stale-while-revalidate` window so banners never block on a cold cache miss
-- Returns `404` if no completed scan exists for the domain — banner should fall back to showing categories with empty lists (no blocking, basic notice only)
-- Run a scan from the Intastellar dashboard to populate data for a domain
+- `200` responses are cached for 1 hour at the CDN edge (`s-maxage=3600`), with a 24-hour `stale-while-revalidate` window
+- `202` responses are never cached — always trigger a fresh check on the next call
+- If no scan data exists the endpoint auto-triggers a scan and returns 202; the first visitor sees fallback/empty categories, subsequent visitors get real data
 
 ---
 
