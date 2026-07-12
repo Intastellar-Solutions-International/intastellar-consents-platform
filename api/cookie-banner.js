@@ -37,9 +37,35 @@ function getPool() {
 }
 
 const COOKIE_NAME_PATTERNS = [
+    // Google Analytics (current)
     { prefix: "_ga",              bannerCategory: "analytics"  },
+    { prefix: "_dc_gtm_",         bannerCategory: "analytics"  },
+    // Google Analytics (legacy __utm*)
+    { exact:  "__utmz",           bannerCategory: "analytics"  },
+    { exact:  "__utmt",           bannerCategory: "analytics"  },
+    { exact:  "__utmv",           bannerCategory: "analytics"  },
+    { exact:  "__utmd",           bannerCategory: "analytics"  },
+    // Google Ads / Conversion
     { prefix: "_gcl_",            bannerCategory: "marketing"  },
     { prefix: "_gac_",            bannerCategory: "marketing"  },
+    // Google Advertising / DoubleClick
+    { exact:  "NID",              bannerCategory: "marketing"  },
+    { exact:  "IDE",              bannerCategory: "marketing"  },
+    { exact:  "DSID",             bannerCategory: "marketing"  },
+    { exact:  "1P_JAR",           bannerCategory: "marketing"  },
+    { exact:  "__gads",           bannerCategory: "marketing"  },
+    { exact:  "__gpi",            bannerCategory: "marketing"  },
+    { exact:  "ANID",             bannerCategory: "marketing"  },
+    { exact:  "OTZ",              bannerCategory: "analytics"  },
+    { exact:  "test_cookie",      bannerCategory: "marketing"  },
+    // Google consent / auth
+    { exact:  "CONSENT",          bannerCategory: "necessary"  },
+    { exact:  "SID",              bannerCategory: "functional" },
+    { exact:  "HSID",             bannerCategory: "functional" },
+    { exact:  "SSID",             bannerCategory: "functional" },
+    { exact:  "APISID",           bannerCategory: "functional" },
+    { exact:  "SAPISID",          bannerCategory: "functional" },
+    { exact:  "__Secure-ENID",    bannerCategory: "functional" },
     { exact:  "_fbp",             bannerCategory: "marketing"  },
     { exact:  "_fbc",             bannerCategory: "marketing"  },
     { exact:  "__hstc",           bannerCategory: "marketing"  },
@@ -79,6 +105,30 @@ const COOKIE_NAME_PATTERNS = [
     { exact:  "_vwo_consent",     bannerCategory: "necessary"  },
     { prefix: "_vwo_",            bannerCategory: "analytics"  },
     { prefix: "_vis_opt_",        bannerCategory: "analytics"  },
+    // Vimeo
+    { exact:  "vuid",             bannerCategory: "analytics"  },
+    // Matomo / Piwik
+    { prefix: "_pk_id",           bannerCategory: "analytics"  },
+    { prefix: "_pk_ses",          bannerCategory: "analytics"  },
+    { prefix: "_pk_ref",          bannerCategory: "analytics"  },
+    { prefix: "_pk_cvar",         bannerCategory: "analytics"  },
+    // Chat widgets
+    { prefix: "crisp-client",     bannerCategory: "functional" },
+    { prefix: "drift_",           bannerCategory: "functional" },
+    { prefix: "driftt_",          bannerCategory: "functional" },
+    { exact:  "__zlcmid",         bannerCategory: "functional" },
+    { prefix: "freshworks",       bannerCategory: "functional" },
+    // YouTube / Google Video
+    { exact:  "PREF",                  bannerCategory: "functional" },
+    { exact:  "YSC",                   bannerCategory: "analytics"  },
+    { exact:  "VISITOR_INFO1_LIVE",    bannerCategory: "analytics"  },
+    { exact:  "VISITOR_PRIVACY_METADATA", bannerCategory: "necessary" },
+    { exact:  "GPS",                   bannerCategory: "analytics"  },
+    { prefix: "__Secure-YEC",          bannerCategory: "analytics"  },
+    { prefix: "__Secure-3PAPISID",     bannerCategory: "marketing"  },
+    { prefix: "__Secure-3PSID",        bannerCategory: "marketing"  },
+    { prefix: "__Secure-1PAPISID",     bannerCategory: "functional" },
+    { prefix: "__Secure-1PSID",        bannerCategory: "functional" },
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
     { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },

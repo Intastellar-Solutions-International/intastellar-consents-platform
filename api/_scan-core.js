@@ -457,11 +457,35 @@ export const BANNER_CATEGORY = {
 // Matches well-known first-party cookie names written by third-party scripts,
 // so e.g. _ga set on the scanned domain is correctly classified as analytics.
 export const COOKIE_NAME_PATTERNS = [
-    // Google Analytics
+    // Google Analytics (current)
     { prefix: "_ga",              bannerCategory: "analytics"  }, // _ga, _ga_XXXXX, _gid, _gat
+    { prefix: "_dc_gtm_",         bannerCategory: "analytics"  }, // Google Tag Manager container
+    // Google Analytics (legacy __utm*)
+    { exact:  "__utmz",           bannerCategory: "analytics"  },
+    { exact:  "__utmt",           bannerCategory: "analytics"  },
+    { exact:  "__utmv",           bannerCategory: "analytics"  },
+    { exact:  "__utmd",           bannerCategory: "analytics"  },
     // Google Ads / Conversion
     { prefix: "_gcl_",            bannerCategory: "marketing"  },
     { prefix: "_gac_",            bannerCategory: "marketing"  },
+    // Google Advertising / DoubleClick
+    { exact:  "NID",              bannerCategory: "marketing"  }, // Google ad profile / personalisation
+    { exact:  "IDE",              bannerCategory: "marketing"  }, // DoubleClick ad targeting
+    { exact:  "DSID",             bannerCategory: "marketing"  }, // Google ad targeting (signed-in users)
+    { exact:  "1P_JAR",           bannerCategory: "marketing"  }, // Google ad targeting / conversion
+    { exact:  "__gads",           bannerCategory: "marketing"  }, // Google Ads (publisher-side)
+    { exact:  "__gpi",            bannerCategory: "marketing"  }, // Google Publisher Identity
+    { exact:  "ANID",             bannerCategory: "marketing"  }, // Google Ads ID (non-EU)
+    { exact:  "OTZ",              bannerCategory: "analytics"  }, // Google aggregated analytics
+    { exact:  "test_cookie",      bannerCategory: "marketing"  }, // DoubleClick cookie support test
+    // Google consent / auth (functional or necessary)
+    { exact:  "CONSENT",          bannerCategory: "necessary"  }, // Google consent choice
+    { exact:  "SID",              bannerCategory: "functional" }, // Google account session
+    { exact:  "HSID",             bannerCategory: "functional" }, // Google account security
+    { exact:  "SSID",             bannerCategory: "functional" }, // Google account security
+    { exact:  "APISID",           bannerCategory: "functional" }, // Google API auth
+    { exact:  "SAPISID",          bannerCategory: "functional" }, // Google secure API auth
+    { exact:  "__Secure-ENID",    bannerCategory: "functional" }, // Google account ENID
     // Meta / Facebook
     { exact:  "_fbp",             bannerCategory: "marketing"  },
     { exact:  "_fbc",             bannerCategory: "marketing"  },
@@ -507,6 +531,30 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "_wijs",            bannerCategory: "analytics"  },
     // Trustpilot
     { prefix: "tp.",              bannerCategory: "marketing"  },
+    // Vimeo
+    { exact:  "vuid",             bannerCategory: "analytics"  }, // Vimeo user ID for analytics
+    // Matomo / Piwik (often self-hosted, appears first-party)
+    { prefix: "_pk_id",           bannerCategory: "analytics"  }, // Matomo visitor ID
+    { prefix: "_pk_ses",          bannerCategory: "analytics"  }, // Matomo session cookie
+    { prefix: "_pk_ref",          bannerCategory: "analytics"  }, // Matomo referrer
+    { prefix: "_pk_cvar",         bannerCategory: "analytics"  }, // Matomo custom variables
+    // Chat widgets
+    { prefix: "crisp-client",     bannerCategory: "functional" }, // Crisp live chat
+    { prefix: "drift_",           bannerCategory: "functional" }, // Drift chat
+    { prefix: "driftt_",          bannerCategory: "functional" }, // Drift chat (alt prefix)
+    { exact:  "__zlcmid",         bannerCategory: "functional" }, // Zendesk/Zopim chat ID
+    { prefix: "freshworks",       bannerCategory: "functional" }, // Freshdesk/Freshchat
+    // YouTube / Google Video
+    { exact:  "PREF",                  bannerCategory: "functional" }, // user preferences (language, playback)
+    { exact:  "YSC",                   bannerCategory: "analytics"  }, // session tracking for video views
+    { exact:  "VISITOR_INFO1_LIVE",    bannerCategory: "analytics"  }, // bandwidth & feature detection
+    { exact:  "VISITOR_PRIVACY_METADATA", bannerCategory: "necessary" }, // stores consent/privacy choice
+    { exact:  "GPS",                   bannerCategory: "analytics"  }, // mobile location tracking
+    { prefix: "__Secure-YEC",          bannerCategory: "analytics"  },
+    { prefix: "__Secure-3PAPISID",     bannerCategory: "marketing"  },
+    { prefix: "__Secure-3PSID",        bannerCategory: "marketing"  },
+    { prefix: "__Secure-1PAPISID",     bannerCategory: "functional" },
+    { prefix: "__Secure-1PSID",        bannerCategory: "functional" },
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
     { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
@@ -530,6 +578,17 @@ export function categoryFromCookieName(name) {
 
 // ── Cookie descriptions ───────────────────────────────────────────────────────
 export const COOKIE_META = [
+    // YouTube
+    { exact:  "PREF",                     description: "YouTube preference cookie — stores user settings such as language, playback speed, and volume." },
+    { exact:  "YSC",                      description: "YouTube session cookie — tracks video views and interactions during a browser session." },
+    { exact:  "VISITOR_INFO1_LIVE",       description: "YouTube bandwidth detection cookie — estimates connection speed to optimise video quality." },
+    { exact:  "VISITOR_PRIVACY_METADATA", description: "YouTube privacy metadata cookie — stores the user's privacy and consent choices for YouTube." },
+    { exact:  "GPS",                      description: "YouTube GPS cookie — registers a unique ID on mobile devices to enable location-based advertising." },
+    { prefix: "__Secure-YEC",             description: "YouTube encrypted session cookie — maintains session state for signed-in users." },
+    { prefix: "__Secure-3PAPISID",        description: "Google security cookie — used to protect user data and prevent unauthorised access to Google accounts." },
+    { prefix: "__Secure-3PSID",           description: "Google session cookie — stores encrypted session information for signed-in Google account holders." },
+    { prefix: "__Secure-1PAPISID",        description: "Google first-party API session cookie — authenticates API requests for signed-in users." },
+    { prefix: "__Secure-1PSID",           description: "Google first-party session ID — maintains session state for signed-in Google users." },
     // Google Analytics
     { exact:  "_ga",                    description: "Google Analytics client ID — identifies a unique visitor across sessions. Expires after 2 years." },
     { exact:  "_gid",                   description: "Google Analytics session cookie — distinguishes users within a 24-hour session." },
