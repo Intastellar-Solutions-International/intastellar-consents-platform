@@ -280,7 +280,7 @@ export default async function handler(req, res) {
 
         if (rows.length) {
             const row = rows[0];
-            res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
+            res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
             return res.json({
                 domain:     row.domain,
                 scanned_at: row.scanned_at,
@@ -324,7 +324,7 @@ export default async function handler(req, res) {
             return res.status(500).json({ error: "Scan failed: " + error });
         }
 
-        res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
+        res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
         return res.json({
             domain,
             scanned_at: finalAt,
