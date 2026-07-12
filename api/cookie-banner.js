@@ -108,6 +108,49 @@ const BANNER_CATEGORY = {
 
 const BANNER_CATEGORIES = ["necessary", "analytics", "marketing", "functional"];
 
+// Maps cookie name patterns to the vendor service they belong to.
+// Used to associate first-party-set cookies (e.g. _ga on .example.com) back
+// to the correct third-party vendor.
+const COOKIE_VENDOR_PATTERNS = [
+    { prefix: "_ga",                service: "Google Analytics"        },
+    { exact:  "_gid",               service: "Google Analytics"        },
+    { prefix: "_gcl_",              service: "Google Ads"              },
+    { prefix: "_gac_",              service: "Google Ads"              },
+    { prefix: "_hj",                service: "Hotjar"                  },
+    { exact:  "_fbp",               service: "Facebook / Meta Pixel"   },
+    { exact:  "_fbc",               service: "Facebook / Meta Pixel"   },
+    { exact:  "hubspotutk",         service: "HubSpot"                 },
+    { exact:  "__hstc",             service: "HubSpot"                 },
+    { exact:  "__hssc",             service: "HubSpot"                 },
+    { exact:  "__hssrc",            service: "HubSpot"                 },
+    { exact:  "li_sugr",            service: "LinkedIn Insight Tag"    },
+    { exact:  "UserMatchHistory",   service: "LinkedIn Insight Tag"    },
+    { exact:  "lidc",               service: "LinkedIn Insight Tag"    },
+    { exact:  "bcookie",            service: "LinkedIn Insight Tag"    },
+    { exact:  "bscookie",           service: "LinkedIn Insight Tag"    },
+    { exact:  "_clck",              service: "Microsoft Clarity"       },
+    { exact:  "_clsk",              service: "Microsoft Clarity"       },
+    { exact:  "_ttp",               service: "TikTok Pixel"            },
+    { exact:  "muc_ads",            service: "Twitter / X Pixel"       },
+    { exact:  "personalization_id", service: "Twitter / X Pixel"       },
+    { prefix: "_pin_",              service: "Pinterest"               },
+    { prefix: "_pinterest_",        service: "Pinterest"               },
+    { exact:  "reddaid",            service: "Reddit Pixel"            },
+    { exact:  "__kla_id",           service: "Klaviyo"                 },
+    { prefix: "amplitude_",         service: "Amplitude"               },
+    { prefix: "__stripe_",          service: "Stripe"                  },
+    { prefix: "_wijs",              service: "Wistia"                  },
+    { prefix: "tp.",                service: "Trustpilot"              },
+];
+
+function vendorServiceForCookie(name) {
+    for (const p of COOKIE_VENDOR_PATTERNS) {
+        if (p.exact  && name === p.exact)           return p.service;
+        if (p.prefix && name.startsWith(p.prefix))  return p.service;
+    }
+    return null;
+}
+
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -155,18 +198,25 @@ export default async function handler(req, res) {
             dataRegion:     t.dataRegion,
             dataCountry:    t.dataCountry,
             resourceType:   t.resourceType,
+            cookies:        [],
         }));
 
-        // Enrich cookies with bannerCategory
+        // Build a fast service-name → vendor index for name-pattern matching
+        const vendorByService = new Map(vendors.map(v => [v.service, v]));
+        // Build a fast domain-root → vendor index for domain matching
+        const vendorByRoot    = new Map(vendors.map(v => [v.host.split(".").slice(-2).join("."), v]));
+
+        // Enrich cookies with bannerCategory, then associate each cookie with its vendor
         const cookies = (row.cookies || []).map(c => {
             const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
             const isFirstParty  = cookieRoot === domainRoot;
-            const matchedVendor = vendors.find(v => v.host.split(".").slice(-2).join(".") === cookieRoot);
+            const domainVendor  = vendorByRoot.get(cookieRoot);
             const bannerCategory = c.bannerCategory
-                || (matchedVendor ? matchedVendor.bannerCategory : null)
+                || (domainVendor ? domainVendor.bannerCategory : null)
                 || categoryFromCookieName(c.name)
                 || (isFirstParty ? "necessary" : "functional");
-            return {
+
+            const enriched = {
                 name:           c.name,
                 domain:         c.domain,
                 session:        c.session,
@@ -176,6 +226,15 @@ export default async function handler(req, res) {
                 sameSite:       c.sameSite,
                 bannerCategory,
             };
+
+            // Associate cookie with its vendor:
+            // 1. domain root match (third-party cookies set on the vendor's own domain)
+            // 2. name pattern match (first-party-set cookies like _ga, _hj*, _gcl_*)
+            const owningVendor = domainVendor
+                || vendorByService.get(vendorServiceForCookie(c.name));
+            if (owningVendor) owningVendor.cookies.push(enriched);
+
+            return enriched;
         });
 
         // Group by banner category
