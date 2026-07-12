@@ -92,7 +92,7 @@ export const TRACKERS = [
     // Social widgets & review platforms
     { domains: ["platform.twitter.com", "syndication.twitter.com"], service: "Twitter / X Widgets", category: "social"       },
     { domains: ["platform.linkedin.com"],                         service: "LinkedIn Widgets",      category: "social"         },
-    { domains: ["apis.google.com", "accounts.google.com"],       service: "Google Sign-In",        category: "social"         },
+    { domains: ["apis.google.com", "accounts.google.com"],       service: "Google Sign-In",        category: "functional"     },
     { domains: ["disqus.com", "disquscdn.com"],                   service: "Disqus",                category: "social"         },
     { domains: ["addthis.com"],                                   service: "AddThis",               category: "social"         },
     { domains: ["sharethis.com"],                                 service: "ShareThis",             category: "social"         },
