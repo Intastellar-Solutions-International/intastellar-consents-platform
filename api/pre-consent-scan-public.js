@@ -101,7 +101,7 @@ export default async function handler(req, res) {
         }
     }
 
-    const orgId    = rows.length ? (rows[0].organisation_id || 0) : 0;
+    const orgId    = rows.length ? (rows[0].organisation_id || null) : null;
     const pendingAt = new Date().toISOString().slice(0, 19).replace("T", " ");
 
     // Insert pending row first so concurrent callers see it immediately

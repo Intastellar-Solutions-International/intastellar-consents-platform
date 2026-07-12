@@ -313,7 +313,7 @@ export default async function handler(req, res) {
             await db.query(
                 `INSERT INTO pre_consent_scans
                      (domain, organisation_id, scanned_at, scan_duration_ms, status, transfers, cookies, error_message)
-                  VALUES ($1, 0, $2, $3, $4, $5, $6, $7)`,
+                  VALUES ($1, NULL, $2, $3, $4, $5, $6, $7)`,
                 [domain, finalAt, durationMs, finalStatus, JSON.stringify(transfers), JSON.stringify(rawCookies), error || null]
             );
         } catch (insErr) {
