@@ -18,6 +18,14 @@
       "memory": 1536,
       "maxDuration": 60
     },
+    "api/pre-consent-scan-public.js": {
+      "memory": 1536,
+      "maxDuration": 60
+    },
+    "api/cookie-banner.js": {
+      "memory": 1536,
+      "maxDuration": 60
+    },
     "api/cookie-banner-scan.js": {
       "memory": 1536,
       "maxDuration": 60
