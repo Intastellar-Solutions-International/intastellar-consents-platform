@@ -129,6 +129,70 @@ const COOKIE_NAME_PATTERNS = [
     { prefix: "__Secure-3PSID",        bannerCategory: "marketing"  },
     { prefix: "__Secure-1PAPISID",     bannerCategory: "functional" },
     { prefix: "__Secure-1PSID",        bannerCategory: "functional" },
+    // Microsoft Ads / UET
+    { exact:  "MUID",             bannerCategory: "marketing"  },
+    { exact:  "MSFPC",            bannerCategory: "marketing"  },
+    { exact:  "MR",               bannerCategory: "marketing"  },
+    { prefix: "_uetsid",          bannerCategory: "marketing"  },
+    { prefix: "_uetvid",          bannerCategory: "marketing"  },
+    // Adobe Analytics
+    { exact:  "s_vi",             bannerCategory: "analytics"  },
+    { exact:  "s_fid",            bannerCategory: "analytics"  },
+    { exact:  "s_cc",             bannerCategory: "analytics"  },
+    { exact:  "s_sq",             bannerCategory: "analytics"  },
+    { exact:  "s_nr",             bannerCategory: "analytics"  },
+    { prefix: "AMCV_",            bannerCategory: "analytics"  },
+    { prefix: "AMCVS_",           bannerCategory: "analytics"  },
+    // Adobe Target / Audience Manager
+    { exact:  "mbox",             bannerCategory: "marketing"  },
+    { prefix: "mboxSession",      bannerCategory: "marketing"  },
+    { exact:  "at_check",         bannerCategory: "marketing"  },
+    { exact:  "demdex",           bannerCategory: "marketing"  },
+    { exact:  "dpm",              bannerCategory: "marketing"  },
+    // Segment
+    { prefix: "ajs_",             bannerCategory: "analytics"  },
+    // Mixpanel
+    { prefix: "mp_",              bannerCategory: "analytics"  },
+    // FullStory
+    { exact:  "fs_uid",           bannerCategory: "analytics"  },
+    { prefix: "fs_",              bannerCategory: "analytics"  },
+    // Heap
+    { prefix: "_hp2_",            bannerCategory: "analytics"  },
+    { prefix: "_hp2id",           bannerCategory: "analytics"  },
+    // Yandex Metrica
+    { prefix: "_ym_",             bannerCategory: "analytics"  },
+    { exact:  "yabs-sid",         bannerCategory: "marketing"  },
+    // Snapchat Pixel
+    { exact:  "_scid",            bannerCategory: "marketing"  },
+    { exact:  "_sctr",            bannerCategory: "marketing"  },
+    // Twitter / X (extended)
+    { exact:  "ct0",              bannerCategory: "marketing"  },
+    { exact:  "twid",             bannerCategory: "marketing"  },
+    { prefix: "guest_id",         bannerCategory: "marketing"  },
+    // Criteo
+    { exact:  "cto_bundle",       bannerCategory: "marketing"  },
+    { exact:  "cto_tld_test",     bannerCategory: "marketing"  },
+    // Taboola
+    { exact:  "t_gid",            bannerCategory: "marketing"  },
+    { prefix: "taboola_",         bannerCategory: "marketing"  },
+    // Outbrain
+    { exact:  "obuid",            bannerCategory: "marketing"  },
+    // Quora Pixel
+    { exact:  "_qca",             bannerCategory: "marketing"  },
+    // Pardot / Salesforce Marketing Cloud
+    { prefix: "visitor_id",       bannerCategory: "marketing"  },
+    { prefix: "lpv",              bannerCategory: "marketing"  },
+    { exact:  "pardot",           bannerCategory: "marketing"  },
+    // Braze
+    { prefix: "__braze_",         bannerCategory: "marketing"  },
+    // Session recording & heatmaps
+    { prefix: "mf_",              bannerCategory: "analytics"  },
+    { prefix: "SL_",              bannerCategory: "analytics"  },
+    { exact:  "_lo_uid",          bannerCategory: "analytics"  },
+    { exact:  "_lo_v",            bannerCategory: "analytics"  },
+    { prefix: "__chartbeat",      bannerCategory: "analytics"  },
+    // Woopra
+    { exact:  "wooTracker",       bannerCategory: "analytics"  },
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
     { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
@@ -140,6 +204,9 @@ const COOKIE_NAME_PATTERNS = [
     { prefix: "GDPR",             bannerCategory: "necessary"  },
     { prefix: "uc_",              bannerCategory: "necessary"  }, // Usercentrics
     { prefix: "CI_",              bannerCategory: "necessary"  }, // Cookie Information
+    { prefix: "_iub_cs-",         bannerCategory: "necessary"  }, // iubenda consent
+    { exact:  "didomi_token",     bannerCategory: "necessary"  }, // Didomi consent
+    { prefix: "didomi_",          bannerCategory: "necessary"  }, // Didomi (other)
     { exact:  "IntastellarConsentSolution", bannerCategory: "necessary" }, // Intastellar Consents — stores visitor consent, expires 3 months
 ];
 

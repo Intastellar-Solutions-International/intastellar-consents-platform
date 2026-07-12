@@ -555,6 +555,70 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "__Secure-3PSID",        bannerCategory: "marketing"  },
     { prefix: "__Secure-1PAPISID",     bannerCategory: "functional" },
     { prefix: "__Secure-1PSID",        bannerCategory: "functional" },
+    // Microsoft Ads / UET
+    { exact:  "MUID",             bannerCategory: "marketing"  }, // Microsoft User ID
+    { exact:  "MSFPC",            bannerCategory: "marketing"  }, // Microsoft First Party Cookie
+    { exact:  "MR",               bannerCategory: "marketing"  }, // Microsoft redirect tracking
+    { prefix: "_uetsid",          bannerCategory: "marketing"  }, // Microsoft UET session
+    { prefix: "_uetvid",          bannerCategory: "marketing"  }, // Microsoft UET visitor
+    // Adobe Analytics
+    { exact:  "s_vi",             bannerCategory: "analytics"  }, // Adobe Analytics visitor ID
+    { exact:  "s_fid",            bannerCategory: "analytics"  }, // Adobe Analytics fallback visitor ID
+    { exact:  "s_cc",             bannerCategory: "analytics"  }, // Adobe Analytics cookie check
+    { exact:  "s_sq",             bannerCategory: "analytics"  }, // Adobe Analytics click map
+    { exact:  "s_nr",             bannerCategory: "analytics"  }, // Adobe Analytics return visit
+    { prefix: "AMCV_",            bannerCategory: "analytics"  }, // Adobe Marketing Cloud visitor
+    { prefix: "AMCVS_",           bannerCategory: "analytics"  }, // Adobe Marketing Cloud session
+    // Adobe Target / Audience Manager
+    { exact:  "mbox",             bannerCategory: "marketing"  }, // Adobe Target
+    { prefix: "mboxSession",      bannerCategory: "marketing"  }, // Adobe Target session
+    { exact:  "at_check",         bannerCategory: "marketing"  }, // Adobe Target cookie check
+    { exact:  "demdex",           bannerCategory: "marketing"  }, // Adobe Audience Manager user ID
+    { exact:  "dpm",              bannerCategory: "marketing"  }, // Adobe Audience Manager DPM
+    // Segment
+    { prefix: "ajs_",             bannerCategory: "analytics"  }, // ajs_anonymous_id, ajs_user_id
+    // Mixpanel
+    { prefix: "mp_",              bannerCategory: "analytics"  }, // Mixpanel distinct ID / properties
+    // FullStory
+    { exact:  "fs_uid",           bannerCategory: "analytics"  }, // FullStory user ID
+    { prefix: "fs_",              bannerCategory: "analytics"  }, // FullStory session cookies
+    // Heap
+    { prefix: "_hp2_",            bannerCategory: "analytics"  }, // Heap analytics
+    { prefix: "_hp2id",           bannerCategory: "analytics"  }, // Heap visitor ID
+    // Yandex Metrica
+    { prefix: "_ym_",             bannerCategory: "analytics"  }, // _ym_uid, _ym_d, _ym_isad, etc.
+    { exact:  "yabs-sid",         bannerCategory: "marketing"  }, // Yandex advertising session
+    // Snapchat Pixel
+    { exact:  "_scid",            bannerCategory: "marketing"  }, // Snapchat click ID
+    { exact:  "_sctr",            bannerCategory: "marketing"  }, // Snapchat tracking
+    // Twitter / X (extended)
+    { exact:  "ct0",              bannerCategory: "marketing"  }, // Twitter CSRF / tracking token
+    { exact:  "twid",             bannerCategory: "marketing"  }, // Twitter user ID
+    { prefix: "guest_id",         bannerCategory: "marketing"  }, // guest_id, guest_id_marketing, guest_id_ads
+    // Criteo
+    { exact:  "cto_bundle",       bannerCategory: "marketing"  }, // Criteo ad bundle
+    { exact:  "cto_tld_test",     bannerCategory: "marketing"  }, // Criteo TLD test
+    // Taboola
+    { exact:  "t_gid",            bannerCategory: "marketing"  }, // Taboola global ID
+    { prefix: "taboola_",         bannerCategory: "marketing"  }, // Taboola session/user
+    // Outbrain
+    { exact:  "obuid",            bannerCategory: "marketing"  }, // Outbrain user ID
+    // Quora Pixel
+    { exact:  "_qca",             bannerCategory: "marketing"  }, // Quora conversion / audience
+    // Pardot / Salesforce Marketing Cloud
+    { prefix: "visitor_id",       bannerCategory: "marketing"  }, // Pardot visitor tracking
+    { prefix: "lpv",              bannerCategory: "marketing"  }, // Pardot page view tracking
+    { exact:  "pardot",           bannerCategory: "marketing"  }, // Pardot session
+    // Braze
+    { prefix: "__braze_",         bannerCategory: "marketing"  }, // Braze engagement/targeting
+    // Session recording & heatmaps
+    { prefix: "mf_",              bannerCategory: "analytics"  }, // Mouseflow
+    { prefix: "SL_",              bannerCategory: "analytics"  }, // Smartlook
+    { exact:  "_lo_uid",          bannerCategory: "analytics"  }, // Lucky Orange user ID
+    { exact:  "_lo_v",            bannerCategory: "analytics"  }, // Lucky Orange visit count
+    { prefix: "__chartbeat",      bannerCategory: "analytics"  }, // Chartbeat
+    // Woopra
+    { exact:  "wooTracker",       bannerCategory: "analytics"  }, // Woopra visitor tracker
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
     { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
@@ -566,6 +630,9 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "GDPR",             bannerCategory: "necessary"  },
     { prefix: "uc_",              bannerCategory: "necessary"  }, // Usercentrics
     { prefix: "CI_",              bannerCategory: "necessary"  }, // Cookie Information
+    { prefix: "_iub_cs-",         bannerCategory: "necessary"  }, // iubenda consent
+    { exact:  "didomi_token",     bannerCategory: "necessary"  }, // Didomi consent
+    { prefix: "didomi_",          bannerCategory: "necessary"  }, // Didomi (other)
 ];
 
 export function categoryFromCookieName(name) {
