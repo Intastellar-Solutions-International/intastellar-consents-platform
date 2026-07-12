@@ -35,10 +35,10 @@ export const TRACKERS = [
     { domains: ["optimizely.com"],                                service: "Optimizely",              category: "analytics"    },
     { domains: ["abtasty.com"],                                   service: "AB Tasty",                category: "analytics"    },
     { domains: ["kameleoon.com", "kameleoon.eu"],                 service: "Kameleoon",               category: "analytics"    },
-    { domains: ["vwo.com", "dev.visualwebsiteoptimizer.com"],     service: "VWO",                     category: "analytics"    },
+    { domains: ["vwo.com", "dev.visualwebsiteoptimizer.com", "wingify.com"], service: "VWO",          category: "analytics"    },
 
     // Advertising
-    { domains: ["connect.facebook.net", "graph.facebook.com"],   service: "Facebook / Meta Pixel", category: "advertising"    },
+    { domains: ["connect.facebook.net", "graph.facebook.com", "www.facebook.com", "facebook.com", "fbcdn.net"], service: "Facebook / Meta Pixel", category: "advertising"    },
     { domains: ["googleadservices.com", "doubleclick.net", "googlesyndication.com", "google.com/pagead"], service: "Google Ads", category: "advertising" },
     { domains: ["ads.linkedin.com", "snap.licdn.com"],           service: "LinkedIn Insight Tag",  category: "advertising"    },
     { domains: ["analytics.twitter.com", "static.ads-twitter.com", "ads.twitter.com"], service: "Twitter / X Pixel", category: "advertising" },
@@ -64,6 +64,7 @@ export const TRACKERS = [
     { domains: ["alb.reddit.com", "redd.it", "redditstatic.com"], service: "Reddit Ads",           category: "advertising"    },
     { domains: ["list-manage.com", "chimpstatic.com", "mailchimp.com", "mailchimpapp.com"], service: "Mailchimp", category: "advertising" },
     { domains: ["klaviyo.com", "static.klaviyo.com"],             service: "Klaviyo",              category: "advertising"    },
+    { domains: ["omnisnippet1.com", "omnisend.com"],              service: "Omnisend",             category: "advertising"    },
     { domains: ["go.g2.com", "g2.com"],                          service: "G2",                    category: "advertising"    },
     { domains: ["log.fc.yahoo.com", "analytics.yahoo.com", "sp.analytics.yahoo.com"], service: "Yahoo Advertising", category: "advertising" },
     { domains: ["marketo.net", "mktoresp.com", "mktdns.net", "mktossl.com"], service: "Adobe Marketo", category: "advertising" },
@@ -98,11 +99,16 @@ export const TRACKERS = [
     { domains: ["js.stripe.com", "stripe.com", "stripe.network"], service: "Stripe",              category: "functional"     },
     { domains: ["paypalobjects.com", "paypal.com"],               service: "PayPal",               category: "functional"     },
     { domains: ["recaptcha.net", "www.google.com/recaptcha"],    service: "Google reCAPTCHA",      category: "functional"     },
+    { domains: ["cdn.weglot.com", "weglot.com"],                  service: "Weglot SAS",            category: "functional"     },
+    { domains: ["gravatar.com"],                                   service: "Gravatar (Automattic)", category: "functional"     },
+    { domains: ["philips-hue.com", "meethue.com"],                service: "Philips Hue (Signify)", category: "functional"     },
+    { domains: ["w.org", "wordpress.org", "wordpress.com"],       service: "WordPress (Automattic)", category: "functional"    },
+    { domains: ["server.arcgisonline.com", "arcgisonline.com", "arcgis.com"], service: "ArcGIS Online (Esri)", category: "functional" },
 
     // CDN / fonts
     { domains: ["fonts.googleapis.com", "fonts.gstatic.com"],    service: "Google Fonts",          category: "cdn"            },
     { domains: ["ajax.googleapis.com"],                           service: "Google CDN",            category: "cdn"            },
-    { domains: ["google.com"],                                    service: "Google Inc.",            category: "analytics"      },
+    { domains: ["google.com", "google.de"],                       service: "Google Inc.",            category: "analytics"      },
     { domains: ["cdn.jsdelivr.net"],                              service: "jsDelivr CDN",          category: "cdn"            },
     { domains: ["cdnjs.cloudflare.com"],                          service: "Cloudflare CDN",        category: "cdn"            },
 
@@ -114,7 +120,7 @@ export const TRACKERS = [
     { domains: ["cdn.consentmanager.net", "consentmanager.net"],  service: "Consentmanager",        category: "cmp"           },
     { domains: ["hs-banner.com"],                                 service: "HubSpot Cookie Banner", category: "cmp"           },
     // Own CMP infrastructure — not a third-party transfer
-    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com"], service: "Intastellar Consents", category: "cmp" },
+    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com", "intastellar-consents.com", "www.intastellar-consents.com"], service: "Intastellar Consents", category: "cmp" },
 ];
 
 // ── Service metadata ──────────────────────────────────────────────────────────
@@ -139,7 +145,7 @@ export const DATA_COUNTRIES = {
     "OpenX": "US", "HubSpot": "US", "Salesforce Pardot": "US",
     "Comscore": "US", "Xandr / AppNexus": "US", "Zemanta": "US",
     "Adform": "DK", "Capterra": "US", "Pinterest": "US",
-    "Reddit Ads": "US", "Mailchimp": "US", "Klaviyo": "US",
+    "Reddit Ads": "US", "Mailchimp": "US", "Klaviyo": "US", "Omnisend": "US",
     "G2": "US", "Yahoo Advertising": "US", "Adobe Marketo": "US",
     // Social
     "Twitter / X Widgets": "US", "LinkedIn Widgets": "US",
@@ -153,6 +159,9 @@ export const DATA_COUNTRIES = {
     "Typeform": "ES", "Calendly": "US",
     "YouTube": "US", "Vimeo": "US",
     "Stripe": "US", "PayPal": "US", "Google reCAPTCHA": "US",
+    "Gravatar (Automattic)": "US", "WordPress (Automattic)": "US",
+    "Weglot SAS": "FR", "ArcGIS Online (Esri)": "US",
+    "Philips Hue (Signify)": "NL",
     // CDN / fonts
     "Google Fonts": "US", "Google CDN": "US", "jsDelivr CDN": "BE", "Cloudflare CDN": "US",
     // CMP
@@ -189,7 +198,7 @@ export const DATA_REGIONS = {
     "Xandr / AppNexus":       "non-eu", "Zemanta":                "non-eu",
     "Adform":                 "eu",     "Capterra":               "non-eu",
     "Pinterest":              "non-eu", "Reddit Ads":             "non-eu",
-    "Mailchimp":              "non-eu", "Klaviyo":                "non-eu",
+    "Mailchimp":              "non-eu", "Klaviyo":                "non-eu", "Omnisend": "non-eu",
     "G2":                     "non-eu", "Yahoo Advertising":      "non-eu",
     "Adobe Marketo":          "non-eu",
     // Social
@@ -208,6 +217,9 @@ export const DATA_REGIONS = {
     "YouTube":         "non-eu", "Vimeo":          "non-eu",
     "Stripe":          "non-eu", "PayPal":         "non-eu",
     "Google reCAPTCHA": "non-eu",
+    "Gravatar (Automattic)":  "non-eu", "WordPress (Automattic)":  "non-eu",
+    "Weglot SAS":             "eu",     "ArcGIS Online (Esri)":    "non-eu",
+    "Philips Hue (Signify)":  "eu",
     // CDN / fonts
     "Google Fonts": "non-eu", "Google CDN": "non-eu",
     "jsDelivr CDN": "eu",     "Cloudflare CDN": "non-eu",
@@ -426,13 +438,18 @@ export async function scanDomain(domain) {
 
         page.on("request", (req) => {
             try {
+                const type = req.resourceType();
+                if (type === "image" || type === "media") {
+                    req.continue().catch(() => {});
+                    return;
+                }
                 const u = new URL(req.url());
                 const host = u.hostname;
                 const hostRoot = host.split(".").slice(-2).join(".");
                 if (hostRoot !== targetRoot && !seen.has(host)) {
                     seen.set(host, {
                         host,
-                        resourceType: req.resourceType(),
+                        resourceType: type,
                         url: req.url().split("?")[0].slice(0, 200),
                     });
                 }
