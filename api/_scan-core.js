@@ -715,14 +715,14 @@ async function lookupRdap(domainRoot) {
 // ── Core scan ─────────────────────────────────────────────────────────────────
 export async function scanDomain(domain) {
     const startMs = Date.now();
-    const browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        executablePath: await chromium.executablePath(),
-        headless: chromium.headless,
-    });
-
+    let browser;
     try {
+        browser = await puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
+        });
         const page = await browser.newPage();
         await page.setCacheEnabled(false);
 
@@ -855,7 +855,7 @@ export async function scanDomain(domain) {
 
         return { transfers, cookies, durationMs: Date.now() - startMs, error: null };
     } catch (err) {
-        await browser.close().catch(() => {});
+        if (browser) await browser.close().catch(() => {});
         return { transfers: [], cookies: [], durationMs: Date.now() - startMs, error: err.message };
     }
 }

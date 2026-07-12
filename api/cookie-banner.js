@@ -321,7 +321,12 @@ export default async function handler(req, res) {
         }
 
         if (error) {
-            return res.status(500).json({ error: "Scan failed: " + error });
+            return res.status(503).json({
+                domain,
+                status:  "scan_failed",
+                message: "Scan could not complete. Re-call this endpoint to retry.",
+                error,
+            });
         }
 
         res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");

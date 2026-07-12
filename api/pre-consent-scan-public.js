@@ -65,15 +65,21 @@ export default async function handler(req, res) {
 
     const db = getPool();
 
-    // Check for an in-progress or recently completed scan
-    const { rows } = await db.query(
-        `SELECT id, organisation_id, status, scanned_at
-           FROM pre_consent_scans
-          WHERE domain = $1
-          ORDER BY scanned_at DESC
-          LIMIT 1`,
-        [cleanDomain]
-    );
+    let rows;
+    try {
+        const result = await db.query(
+            `SELECT id, organisation_id, status, scanned_at
+               FROM pre_consent_scans
+              WHERE domain = $1
+              ORDER BY scanned_at DESC
+              LIMIT 1`,
+            [cleanDomain]
+        );
+        rows = result.rows;
+    } catch (err) {
+        console.error("[pre-consent-scan-public] DB select failed:", err.message);
+        return res.status(500).json({ error: "Internal server error" });
+    }
 
     if (rows.length) {
         const latest = rows[0];
