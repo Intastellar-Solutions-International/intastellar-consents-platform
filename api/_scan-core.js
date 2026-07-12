@@ -306,6 +306,140 @@ export const DATA_REGIONS = {
     "Intastellar Consents": "eu",
 };
 
+// ── Per-vendor enrichment metadata ────────────────────────────────────────────
+// transferMechanism values:
+//   "EEA"                        — vendor is in the EEA, no transfer
+//   "Adequacy Decision"          — vendor's country has EU adequacy decision
+//   "EU-US Data Privacy Framework" — US vendor certified under the EU-US DPF
+//   "Standard Contractual Clauses" — fallback transfer mechanism
+export const VENDOR_META = {
+    // Analytics
+    "Google Analytics":   { description: "Web analytics service tracking traffic and user behaviour", privacyUrl: "https://policies.google.com/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Google Tag Manager": { description: "Tag management system for deploying marketing and analytics scripts", privacyUrl: "https://policies.google.com/privacy", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Hotjar":             { description: "Heatmaps, session recordings and user feedback tools", privacyUrl: "https://www.hotjar.com/legal/policies/privacy/", legalBasis: "consent", transferMechanism: "EEA" },
+    "Amplitude":          { description: "Product analytics platform for tracking user journeys", privacyUrl: "https://amplitude.com/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Mixpanel":           { description: "Event-based product analytics platform", privacyUrl: "https://mixpanel.com/legal/privacy-policy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Segment":            { description: "Customer data platform that collects and routes analytics events", privacyUrl: "https://www.twilio.com/en-us/legal/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "FullStory":          { description: "Digital experience analytics with session replay", privacyUrl: "https://www.fullstory.com/legal/privacy-policy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Microsoft Clarity":  { description: "Free heatmap and session recording tool by Microsoft", privacyUrl: "https://privacy.microsoft.com/privacystatement", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Mouseflow":          { description: "Session replay, heatmaps and funnel analytics", privacyUrl: "https://mouseflow.com/privacy/", legalBasis: "consent", transferMechanism: "EEA" },
+    "Heap":               { description: "Automatic event capture analytics platform", privacyUrl: "https://heap.io/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "LogRocket":          { description: "Session replay and frontend monitoring platform", privacyUrl: "https://logrocket.com/privacy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Smartlook":          { description: "Session recordings and event tracking analytics", privacyUrl: "https://www.smartlook.com/privacy-policy/", legalBasis: "consent", transferMechanism: "EEA" },
+    "Crazy Egg":          { description: "Heatmap and A/B testing tool", privacyUrl: "https://www.crazyegg.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Matomo":             { description: "Open-source privacy-friendly web analytics platform", privacyUrl: "https://matomo.org/privacy-policy/", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
+    "Plausible":          { description: "Lightweight privacy-first web analytics", privacyUrl: "https://plausible.io/privacy", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
+    "Sentry":             { description: "Application error tracking and performance monitoring", privacyUrl: "https://sentry.io/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Cloudflare Web Analytics": { description: "Privacy-first web analytics from Cloudflare", privacyUrl: "https://www.cloudflare.com/privacypolicy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "New Relic":          { description: "Observability platform for application performance monitoring", privacyUrl: "https://newrelic.com/termsandconditions/privacy", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Wistia":             { description: "Video hosting and analytics platform for businesses", privacyUrl: "https://wistia.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Optimizely":         { description: "A/B testing and experimentation platform", privacyUrl: "https://www.optimizely.com/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "AB Tasty":           { description: "A/B testing, personalisation and feature management", privacyUrl: "https://www.abtasty.com/privacy-policy/", legalBasis: "consent", transferMechanism: "EEA" },
+    "Kameleoon":          { description: "AI-powered A/B testing and personalisation platform", privacyUrl: "https://www.kameleoon.com/en/privacy-policy", legalBasis: "consent", transferMechanism: "EEA" },
+    "VWO":                { description: "Visual website optimiser — A/B testing and conversion optimisation", privacyUrl: "https://vwo.com/privacy-policy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "PostHog":            { description: "Open-source product analytics, session replay and feature flags", privacyUrl: "https://posthog.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Datadog":            { description: "Cloud monitoring and analytics platform", privacyUrl: "https://www.datadoghq.com/legal/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Yandex Metrica":     { description: "Web analytics service by Yandex with session replay", privacyUrl: "https://yandex.com/legal/privacy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Lucky Orange":       { description: "Conversion optimisation with heatmaps and session recordings", privacyUrl: "https://www.luckyorange.com/privacy.php", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Bugsnag":            { description: "Application error monitoring and crash reporting", privacyUrl: "https://smartbear.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Rollbar":            { description: "Real-time error tracking and debugging platform", privacyUrl: "https://rollbar.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Jetpack / WP.com Stats": { description: "WordPress.com site statistics and performance tools", privacyUrl: "https://automattic.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Ahrefs Pte. Ltd.":   { description: "SEO analytics platform", privacyUrl: "https://ahrefs.com/privacy", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Inspectlet":         { description: "Session recording and heatmap analytics", privacyUrl: "https://www.inspectlet.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "StatCounter":        { description: "Web analytics and visitor tracking service", privacyUrl: "https://statcounter.com/privacy/", legalBasis: "consent", transferMechanism: "EEA" },
+    "Zoho PageSense":     { description: "Conversion optimisation and personalisation platform by Zoho", privacyUrl: "https://www.zoho.com/privacy.html", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    // Advertising
+    "Facebook / Meta Pixel": { description: "Conversion tracking and audience targeting pixel for Meta platforms", privacyUrl: "https://www.facebook.com/privacy/policy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Instagram (Meta)":   { description: "Social media content and advertising platform by Meta", privacyUrl: "https://www.facebook.com/privacy/policy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Google Ads":         { description: "Conversion tracking and remarketing for Google advertising", privacyUrl: "https://policies.google.com/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "LinkedIn Insight Tag": { description: "Conversion tracking and audience insights for LinkedIn ads", privacyUrl: "https://www.linkedin.com/legal/privacy-policy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Twitter / X Pixel":  { description: "Conversion tracking pixel for Twitter/X advertising", privacyUrl: "https://twitter.com/en/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Snapchat Pixel":     { description: "Conversion tracking pixel for Snapchat advertising", privacyUrl: "https://snap.com/en-US/privacy/privacy-policy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Microsoft Advertising": { description: "Conversion tracking and remarketing for Microsoft/Bing ads", privacyUrl: "https://privacy.microsoft.com/privacystatement", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "TikTok Pixel":       { description: "Conversion tracking pixel for TikTok advertising", privacyUrl: "https://www.tiktok.com/legal/privacy-policy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Criteo":             { description: "Retargeting and performance advertising platform", privacyUrl: "https://www.criteo.com/privacy/", legalBasis: "consent", transferMechanism: "EEA" },
+    "Pinterest":          { description: "Visual discovery and advertising platform", privacyUrl: "https://policy.pinterest.com/privacy-policy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "HubSpot":            { description: "CRM, marketing automation and analytics platform", privacyUrl: "https://legal.hubspot.com/privacy-policy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Mailchimp":          { description: "Email marketing and marketing automation platform", privacyUrl: "https://www.intuit.com/privacy/statement/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Klaviyo":            { description: "Email and SMS marketing automation platform for e-commerce", privacyUrl: "https://www.klaviyo.com/legal/privacy-notice", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Omnisend":           { description: "Email and SMS marketing automation for e-commerce", privacyUrl: "https://www.omnisend.com/privacy-policy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "ActiveCampaign":     { description: "Email marketing and CRM automation platform", privacyUrl: "https://www.activecampaign.com/privacy-policy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Brevo (Sendinblue)": { description: "Email, SMS and CRM marketing platform", privacyUrl: "https://www.brevo.com/legal/privacypolicy/", legalBasis: "consent", transferMechanism: "EEA" },
+    "MailerLite":         { description: "Email marketing platform with automation and landing pages", privacyUrl: "https://www.mailerlite.com/legal/privacy-policy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Drip":               { description: "E-commerce CRM and email marketing automation", privacyUrl: "https://www.drip.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "ConvertKit":         { description: "Email marketing platform for creators and bloggers", privacyUrl: "https://convertkit.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "GetResponse":        { description: "Email marketing and online campaign management platform", privacyUrl: "https://www.getresponse.com/legal/privacy", legalBasis: "consent", transferMechanism: "EEA" },
+    "SendGrid (Twilio)":  { description: "Transactional and marketing email delivery service", privacyUrl: "https://www.twilio.com/en-us/legal/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Adobe Audience Manager": { description: "Data management platform for audience segmentation and targeting", privacyUrl: "https://www.adobe.com/privacy.html", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Adobe Experience Platform": { description: "Adobe tag management and analytics deployment system", privacyUrl: "https://www.adobe.com/privacy.html", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Adobe Marketo":      { description: "B2B marketing automation and lead management platform", privacyUrl: "https://www.adobe.com/privacy.html", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Salesforce":         { description: "CRM and marketing cloud platform", privacyUrl: "https://www.salesforce.com/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Salesforce Pardot":  { description: "B2B marketing automation platform by Salesforce", privacyUrl: "https://www.salesforce.com/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Outbrain":           { description: "Native advertising and content discovery network", privacyUrl: "https://www.outbrain.com/privacy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Taboola":            { description: "Content recommendation and native advertising network", privacyUrl: "https://www.taboola.com/privacy-policy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Criteo":             { description: "Retargeting and performance display advertising platform", privacyUrl: "https://www.criteo.com/privacy/", legalBasis: "consent", transferMechanism: "EEA" },
+    "The Trade Desk":     { description: "Demand-side programmatic advertising platform", privacyUrl: "https://www.thetradedesk.com/us/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Adform":             { description: "European ad tech platform for programmatic advertising", privacyUrl: "https://site.adform.com/privacy-center/overview/", legalBasis: "consent", transferMechanism: "EEA" },
+    "Xandr / AppNexus":   { description: "Programmatic advertising marketplace by Microsoft", privacyUrl: "https://www.xandr.com/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Amazon Advertising": { description: "Advertising solutions and DSP by Amazon", privacyUrl: "https://www.amazon.com/gp/help/customer/display.html?nodeId=468496", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Yahoo Advertising":  { description: "Display and search advertising platform by Yahoo", privacyUrl: "https://legal.yahoo.com/us/en/yahoo/privacy/index.html", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "FingerprintJS":      { description: "Browser fingerprinting for fraud detection and visitor identification", privacyUrl: "https://fingerprint.com/privacy-policy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "SEON":               { description: "Fraud prevention using device fingerprinting and behavioural analysis", privacyUrl: "https://seon.io/privacy-policy/", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
+    // Social
+    "Twitter / X Widgets": { description: "Embedded tweets and social sharing widgets", privacyUrl: "https://twitter.com/en/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "LinkedIn Widgets":   { description: "Embedded LinkedIn sharing and follow buttons", privacyUrl: "https://www.linkedin.com/legal/privacy-policy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Google Sign-In":     { description: "OAuth-based sign-in using Google accounts", privacyUrl: "https://policies.google.com/privacy", legalBasis: "contract", transferMechanism: "EU-US Data Privacy Framework" },
+    "Trustpilot":         { description: "Customer review and rating platform", privacyUrl: "https://legal.trustpilot.com/end-user-privacy-terms", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
+    "Disqus":             { description: "Third-party comment hosting and community platform", privacyUrl: "https://disqus.com/privacy-policy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    // Functional
+    "Intercom":           { description: "Customer messaging and support chat platform", privacyUrl: "https://www.intercom.com/legal/privacy", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Zendesk":            { description: "Customer service and support ticketing platform", privacyUrl: "https://www.zendesk.com/company/agreements-and-terms/privacy-notice/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Drift":              { description: "Conversational marketing and live chat platform", privacyUrl: "https://www.drift.com/privacy-policy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Tawk.to":            { description: "Free live chat widget for websites", privacyUrl: "https://www.tawk.to/privacy-policy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Crisp":              { description: "Customer messaging platform with live chat and chatbot", privacyUrl: "https://crisp.chat/en/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
+    "LiveChat":           { description: "Live chat customer support software", privacyUrl: "https://www.livechat.com/legal/privacy-policy/", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
+    "Freshchat":          { description: "Messaging and customer support software by Freshworks", privacyUrl: "https://www.freshworks.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Tidio":              { description: "Live chat and chatbot platform for customer service", privacyUrl: "https://www.tidio.com/privacy-policy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Typeform":           { description: "Interactive form and survey builder", privacyUrl: "https://www.typeform.com/help/a/typeforms-privacy-policy-360029273192/", legalBasis: "contract", transferMechanism: "EEA" },
+    "Calendly":           { description: "Appointment scheduling and booking platform", privacyUrl: "https://calendly.com/privacy", legalBasis: "contract", transferMechanism: "EU-US Data Privacy Framework" },
+    "YouTube":            { description: "Video hosting and streaming platform by Google", privacyUrl: "https://policies.google.com/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Vimeo":              { description: "Professional video hosting and sharing platform", privacyUrl: "https://vimeo.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Stripe":             { description: "Online payment processing and infrastructure platform", privacyUrl: "https://stripe.com/privacy", legalBasis: "contract", transferMechanism: "EU-US Data Privacy Framework" },
+    "PayPal":             { description: "Online payment platform and digital wallet service", privacyUrl: "https://www.paypal.com/webapps/mpp/ua/privacy-full", legalBasis: "contract", transferMechanism: "EU-US Data Privacy Framework" },
+    "Google reCAPTCHA":   { description: "Bot detection and spam prevention service by Google", privacyUrl: "https://policies.google.com/privacy", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Weglot SAS":         { description: "Automated website translation and multilingual SEO service", privacyUrl: "https://weglot.com/privacy/", legalBasis: "contract", transferMechanism: "EEA" },
+    "Gravatar (Automattic)": { description: "Globally recognised avatar service linked to email addresses", privacyUrl: "https://automattic.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "WordPress (Automattic)": { description: "Content management system assets and APIs by Automattic", privacyUrl: "https://automattic.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Shopify":            { description: "E-commerce platform hosting storefront and checkout scripts", privacyUrl: "https://www.shopify.com/legal/privacy", legalBasis: "contract", transferMechanism: "Adequacy Decision" },
+    "Help Scout":         { description: "Customer support and help desk platform", privacyUrl: "https://www.helpscout.com/company/legal/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Gorgias":            { description: "E-commerce helpdesk and customer support platform", privacyUrl: "https://www.gorgias.com/privacy-policy", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "SurveyMonkey":       { description: "Online survey and questionnaire platform", privacyUrl: "https://www.surveymonkey.com/mp/legal/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Philips Hue (Signify)": { description: "Smart lighting control and integration scripts by Signify", privacyUrl: "https://www.signify.com/en-us/privacy/privacy-notice", legalBasis: "contract", transferMechanism: "EEA" },
+    "ArcGIS Online (Esri)": { description: "Mapping and geospatial services for web map tiles", privacyUrl: "https://www.esri.com/en-us/privacy/overview", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Google Static Assets": { description: "Static resources and APIs served from Google infrastructure", privacyUrl: "https://policies.google.com/privacy", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    // CDN / infrastructure
+    "Google Fonts":       { description: "Web font hosting and delivery service by Google", privacyUrl: "https://policies.google.com/privacy", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Google CDN":         { description: "Content delivery network for JavaScript libraries by Google", privacyUrl: "https://policies.google.com/privacy", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "jsDelivr CDN":       { description: "Open-source CDN for npm packages and GitHub releases", privacyUrl: "https://www.jsdelivr.com/privacy-policy", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
+    "Cloudflare CDN":     { description: "Content delivery network and DDoS protection by Cloudflare", privacyUrl: "https://www.cloudflare.com/privacypolicy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "AWS CloudFront":     { description: "Content delivery network by Amazon Web Services", privacyUrl: "https://aws.amazon.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    "Fastly CDN":         { description: "Edge cloud platform and content delivery network", privacyUrl: "https://www.fastly.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Akamai CDN":         { description: "Content delivery network and cloud security platform", privacyUrl: "https://www.akamai.com/legal/compliance/privacy-trust-center", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
+    // CMP
+    "OneTrust":           { description: "Consent management and privacy compliance platform", privacyUrl: "https://www.onetrust.com/privacy-notice/", legalBasis: "legal_obligation", transferMechanism: "EU-US Data Privacy Framework" },
+    "Cookiebot":          { description: "Automated cookie consent management solution", privacyUrl: "https://www.cookiebot.com/en/privacy-policy/", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "Usercentrics":       { description: "Consent management platform with TCF support", privacyUrl: "https://usercentrics.com/privacy-policy/", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "Cookie Information": { description: "GDPR-compliant cookie consent solution", privacyUrl: "https://cookieinformation.com/privacy-policy/", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "iubenda":            { description: "Privacy policy generator and consent management platform", privacyUrl: "https://www.iubenda.com/privacy-policy/65675", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "Axeptio":            { description: "Cookie consent management with conversational UX", privacyUrl: "https://www.axeptio.eu/en/privacy", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "CookieFirst":        { description: "Cookie consent management and compliance platform", privacyUrl: "https://cookiefirst.com/privacy-policy/", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "Didomi":             { description: "Consent management and preference platform", privacyUrl: "https://www.didomi.io/privacy-policy", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "Termly":             { description: "Privacy policy and cookie consent management platform", privacyUrl: "https://termly.io/our-privacy-policy/", legalBasis: "legal_obligation", transferMechanism: "Standard Contractual Clauses" },
+    "Quantcast Choice":   { description: "IAB TCF-certified consent management platform", privacyUrl: "https://www.quantcast.com/privacy/", legalBasis: "legal_obligation", transferMechanism: "EU-US Data Privacy Framework" },
+    "CookieHub":          { description: "Cookie consent and compliance management tool", privacyUrl: "https://cookiehub.com/privacy", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "Intastellar Consents": { description: "Consent management platform by Intastellar Solutions", privacyUrl: "https://www.intastellarsolutions.com/about/legal/privacy", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+};
+
 export const CATEGORY_ORDER = { advertising: 0, fingerprinting: 1, analytics: 2, social: 3, functional: 4, cdn: 5, "third-party": 6 };
 
 export const BANNER_CATEGORY = {
@@ -562,18 +696,24 @@ export async function scanDomain(domain) {
         );
 
         const transfers = rawTransfers.map(({ host, info, match }) => {
-            const root  = host.split(".").slice(-2).join(".");
-            const rdap  = !match ? rdapResults.get(root) : null;
+            const root     = host.split(".").slice(-2).join(".");
+            const rdap     = !match ? rdapResults.get(root) : null;
             const category = match?.category || "third-party";
+            const service  = match?.service || rdap?.service || host;
+            const meta     = VENDOR_META[service] || {};
             return {
                 host,
-                service:        match?.service     || rdap?.service    || host,
+                service,
                 category,
-                bannerCategory: BANNER_CATEGORY[category] || "functional",
-                dataRegion:     match?.dataRegion  || "non-eu",
-                dataCountry:    match?.dataCountry || rdap?.dataCountry || null,
-                resourceType:   info.resourceType,
-                rdapLookup:     !match && !!rdap,
+                bannerCategory:    BANNER_CATEGORY[category] || "functional",
+                dataRegion:        match?.dataRegion  || "non-eu",
+                dataCountry:       match?.dataCountry || rdap?.dataCountry || null,
+                resourceType:      info.resourceType,
+                rdapLookup:        !match && !!rdap,
+                description:       meta.description       || null,
+                privacyUrl:        meta.privacyUrl        || null,
+                legalBasis:        meta.legalBasis        || null,
+                transferMechanism: meta.transferMechanism || null,
             };
         });
         transfers.sort((a, b) => (CATEGORY_ORDER[a.category] ?? 6) - (CATEGORY_ORDER[b.category] ?? 6));
