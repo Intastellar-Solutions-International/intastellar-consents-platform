@@ -114,7 +114,7 @@ export const TRACKERS = [
     { domains: ["cdn.consentmanager.net", "consentmanager.net"],  service: "Consentmanager",        category: "cmp"           },
     { domains: ["hs-banner.com"],                                 service: "HubSpot Cookie Banner", category: "cmp"           },
     // Own CMP infrastructure — not a third-party transfer
-    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com"], service: "Intastellar CMP", category: "cmp" },
+    { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com"], service: "Intastellar Consents", category: "cmp" },
 ];
 
 // ── Service metadata ──────────────────────────────────────────────────────────
@@ -158,7 +158,7 @@ export const DATA_COUNTRIES = {
     // CMP
     "OneTrust": "US", "Cookiebot": "DK", "Usercentrics": "DE",
     "Cookie Information": "DK", "Consentmanager": "DE", "HubSpot Cookie Banner": "US",
-    "Intastellar CMP": "DK",
+    "Intastellar Consents": "DK",
 };
 
 export const DATA_REGIONS = {
@@ -215,7 +215,7 @@ export const DATA_REGIONS = {
     "OneTrust":             "non-eu", "Cookiebot":         "eu",
     "Usercentrics":         "eu",     "Cookie Information": "eu",
     "Consentmanager":       "eu",     "HubSpot Cookie Banner": "non-eu",
-    "Intastellar CMP":      "eu",
+    "Intastellar Consents": "eu",
 };
 
 export const CATEGORY_ORDER = { advertising: 0, fingerprinting: 1, analytics: 2, social: 3, functional: 4, cdn: 5, "third-party": 6 };

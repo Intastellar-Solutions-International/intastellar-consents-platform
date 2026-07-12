@@ -74,6 +74,10 @@ const COOKIE_NAME_PATTERNS = [
     { prefix: "_wijs",            bannerCategory: "analytics"  },
     // Trustpilot
     { prefix: "tp.",              bannerCategory: "marketing"  },
+    // VWO — consent cookie is necessary; other VWO cookies are analytics
+    { exact:  "_vwo_consent",     bannerCategory: "necessary"  },
+    { prefix: "_vwo_",            bannerCategory: "analytics"  },
+    { prefix: "_vis_opt_",        bannerCategory: "analytics"  },
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
     { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
@@ -85,6 +89,7 @@ const COOKIE_NAME_PATTERNS = [
     { prefix: "GDPR",             bannerCategory: "necessary"  },
     { prefix: "uc_",              bannerCategory: "necessary"  }, // Usercentrics
     { prefix: "CI_",              bannerCategory: "necessary"  }, // Cookie Information
+    { exact:  "IntastellarConsentSolution", bannerCategory: "necessary" }, // Intastellar Consents — stores visitor consent, expires 3 months
 ];
 
 function categoryFromCookieName(name) {
@@ -135,12 +140,16 @@ const COOKIE_VENDOR_PATTERNS = [
     { exact:  "personalization_id", service: "Twitter / X Pixel"       },
     { prefix: "_pin_",              service: "Pinterest"               },
     { prefix: "_pinterest_",        service: "Pinterest"               },
+    { exact:  "_vwo_consent",       service: "VWO"                     },
+    { prefix: "_vwo_",              service: "VWO"                     },
+    { prefix: "_vis_opt_",          service: "VWO"                     },
     { exact:  "reddaid",            service: "Reddit Pixel"            },
     { exact:  "__kla_id",           service: "Klaviyo"                 },
     { prefix: "amplitude_",         service: "Amplitude"               },
     { prefix: "__stripe_",          service: "Stripe"                  },
     { prefix: "_wijs",              service: "Wistia"                  },
     { prefix: "tp.",                service: "Trustpilot"              },
+    { exact:  "IntastellarConsentSolution", service: "Intastellar Consents" },
 ];
 
 function vendorServiceForCookie(name) {
@@ -189,22 +198,35 @@ export default async function handler(req, res) {
         const row        = rows[0];
         const domainRoot = domain.split(".").slice(-2).join(".");
 
-        // Enrich vendors with bannerCategory (backfills legacy rows that predate the field)
-        const vendors = (row.transfers || []).map(t => ({
-            service:        t.service,
-            host:           t.host,
-            category:       t.category,
-            bannerCategory: t.bannerCategory || BANNER_CATEGORY[t.category] || "functional",
-            dataRegion:     t.dataRegion,
-            dataCountry:    t.dataCountry,
-            resourceType:   t.resourceType,
-            cookies:        [],
-        }));
+        // Group transfers by service name — multiple hosts (e.g. track.hubspot.com +
+        // app.hubspot.com) are merged into a single vendor entry with a hosts array.
+        const vendorMap = new Map();
+        for (const t of (row.transfers || [])) {
+            const bannerCategory = t.bannerCategory || BANNER_CATEGORY[t.category] || "functional";
+            if (!vendorMap.has(t.service)) {
+                vendorMap.set(t.service, {
+                    service:        t.service,
+                    category:       t.category,
+                    bannerCategory,
+                    dataRegion:     t.dataRegion,
+                    dataCountry:    t.dataCountry,
+                    hosts:          [],
+                    cookies:        [],
+                });
+            }
+            const vendor = vendorMap.get(t.service);
+            if (!vendor.hosts.includes(t.host)) vendor.hosts.push(t.host);
+        }
+        const vendors = [...vendorMap.values()];
 
-        // Build a fast service-name → vendor index for name-pattern matching
+        // Build lookup maps for cookie association
         const vendorByService = new Map(vendors.map(v => [v.service, v]));
-        // Build a fast domain-root → vendor index for domain matching
-        const vendorByRoot    = new Map(vendors.map(v => [v.host.split(".").slice(-2).join("."), v]));
+        const vendorByRoot    = new Map();
+        for (const v of vendors) {
+            for (const host of v.hosts) {
+                vendorByRoot.set(host.split(".").slice(-2).join("."), v);
+            }
+        }
 
         // Enrich cookies with bannerCategory, then associate each cookie with its vendor
         const cookies = (row.cookies || []).map(c => {
