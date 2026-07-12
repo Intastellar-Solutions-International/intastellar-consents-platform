@@ -48,7 +48,7 @@ import DSRDetail from "./Pages/DSR/DSRDetail";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
 import { canAccess } from "./Functions/tier.js";
-import appStorage from './Functions/storage.js';
+import appStorage, { getOrg } from './Functions/storage.js';
 
 const { useState, useEffect, useRef, createContext } = React;
 const Router = window.ReactRouterDOM.BrowserRouter;
@@ -120,7 +120,7 @@ export default function App() {
 
             Fetch(API.Subscription.url, API.Subscription.method, API.Subscription.headers, JSON.stringify({
                 user: Authentication.getUserId(),
-                org_id: JSON.parse(appStorage.getItem("organisation")).id
+                org_id: getOrg()?.id
             })).then((data) => {
                 if (data === "Err_Login_Expired") {
                     appStorage.removeItem("globals");
@@ -245,21 +245,21 @@ export default function App() {
                                         <Route path="/settings/create-organisation">
                                             {
                                                 subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : <ErrorBoundary>
-                                                    {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <CreateOrganisation /> : <p>No access</p>}
+                                                    {Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "super-admin" ? <CreateOrganisation /> : <p>No access</p>}
                                                 </ErrorBoundary>
                                             }
                                         </Route>
                                         <Route path="/settings/add-user">
                                             <ErrorBoundary>
-                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <AddUser /> : <p>No access</p>}
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "super-admin" ? <AddUser /> : <p>No access</p>}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/add-domain">
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> :
                                                 <ErrorBoundary>
-                                                    {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" 
-                                                    || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin"
-                                                    || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "manager" ?
+                                                    {Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "admin" 
+                                                    || Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "super-admin"
+                                                    || Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "manager" ?
                                                         <SettingsAddDomain /> : <p>No access</p>}
                                                 </ErrorBoundary>
                                             }
@@ -378,7 +378,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/settings/blacklist-ip">
                                             <ErrorBoundary>
-                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <BlacklistIp /> : null}
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "super-admin" ? <BlacklistIp /> : null}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/workspaces">
@@ -401,7 +401,7 @@ export default function App() {
                                         </Route>
                                         <Route path="/settings/create-user">
                                             <ErrorBoundary>
-                                                {Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(JSON.parse(appStorage.getItem("organisation")).id) === "super-admin" ? <CreateUser /> : null}
+                                                {Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "admin" || Authentication.getOrganisationAccessStatusForOrganisation(getOrg()?.id) === "super-admin" ? <CreateUser /> : null}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/" exact>

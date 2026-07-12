@@ -96,3 +96,12 @@ const appStorage = {
 };
 
 export default appStorage;
+
+/** Safely parse the stored organisation object. Returns null if missing or unparseable. */
+export function getOrg() {
+    try {
+        return JSON.parse(appStorage.getItem('organisation') || 'null');
+    } catch {
+        return null;
+    }
+}
