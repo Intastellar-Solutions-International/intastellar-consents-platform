@@ -114,6 +114,44 @@ Public, no auth required. Returns all cookies and vendors detected in the most r
 
 ---
 
+---
+
+### 3. Trigger a Scan (when no data exists yet)
+
+```
+POST /api/pre-consent-scan-public
+Content-Type: application/json
+
+{ "domain": "example.com" }
+```
+
+Call this when `/api/cookie-banner` returns `404`. The scan runs asynchronously — the response comes back immediately and the results are ready ~30 seconds later.
+
+**Responses:**
+
+| Status | `status` field | Meaning |
+|--------|---------------|---------|
+| `202` | `scan_queued` | Scan started — poll `/api/cookie-banner` after ~30s |
+| `200` | `recent_scan` | Completed scan already exists within the last 24 hours |
+| `429` | `scan_in_progress` | A scan is already running — try `/api/cookie-banner` shortly |
+| `400` | — | `domain` missing or invalid |
+
+**Recommended banner flow:**
+```
+1. GET /api/cookie-banner?domain=example.com
+   → 200  → render banner with real data ✓
+   → 404  → POST /api/pre-consent-scan-public { domain: "example.com" }
+            → render banner with empty/fallback categories for this first visitor
+            → next visitor gets populated data from step 1
+```
+
+**Notes:**
+- CORS is wildcard (`*`) — safe to call from any website
+- Rate-limited to one scan per domain per 24 hours (enforced via DB)
+- `organisation_id` is inherited from any prior dashboard scan for this domain, or `0` for first-time public scans
+
+---
+
 ### TODO — Additional behaviours to implement in the banner repo
 
 The following behaviours already exist in the CMP dashboard but the banner script needs to call them:

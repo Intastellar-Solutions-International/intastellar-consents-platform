@@ -249,6 +249,13 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        triggerPublicScan: {
+            url: `${ScannerHost}/api/pre-consent-scan-public`,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        },
     },
     settings: {
         createUser: {
