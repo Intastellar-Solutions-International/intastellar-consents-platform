@@ -566,6 +566,12 @@ export default function CompliancePage() {
                                                                     </div>
                                                                     {isExp && (
                                                                         <div className="compliance-transfers__row-detail">
+                                                                            {t.description && (
+                                                                                <span className="compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full">
+                                                                                    <span className="compliance-transfers__row-detail-label">About</span>
+                                                                                    {t.description}
+                                                                                </span>
+                                                                            )}
                                                                             {t.bannerCategory && (() => {
                                                                                 const bm = BANNER_CATEGORY_META[t.bannerCategory];
                                                                                 return (
@@ -577,6 +583,18 @@ export default function CompliancePage() {
                                                                                     </span>
                                                                                 );
                                                                             })()}
+                                                                            {t.legalBasis && (
+                                                                                <span className="compliance-transfers__row-detail-item">
+                                                                                    <span className="compliance-transfers__row-detail-label">Legal basis</span>
+                                                                                    {t.legalBasis}
+                                                                                </span>
+                                                                            )}
+                                                                            {t.transferMechanism && (
+                                                                                <span className="compliance-transfers__row-detail-item">
+                                                                                    <span className="compliance-transfers__row-detail-label">Transfer mechanism</span>
+                                                                                    {t.transferMechanism}
+                                                                                </span>
+                                                                            )}
                                                                             {t.dataCountry && (
                                                                                 <span className="compliance-transfers__row-detail-item">
                                                                                     <span className="compliance-transfers__row-detail-label">Data country</span>
@@ -601,7 +619,14 @@ export default function CompliancePage() {
                                                                                     {t.purposes.join(", ")}
                                                                                 </span>
                                                                             )}
-                                                                            {!t.dataCountry && !t.url && !t.initiator && !t.purposes?.length && (
+                                                                            {t.privacyUrl && (
+                                                                                <span className="compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full">
+                                                                                    <a className="compliance-transfers__row-detail-privacy" href={t.privacyUrl} target="_blank" rel="noopener noreferrer">
+                                                                                        Privacy policy ↗
+                                                                                    </a>
+                                                                                </span>
+                                                                            )}
+                                                                            {!t.description && !t.dataCountry && !t.url && !t.initiator && !t.purposes?.length && (
                                                                                 <span className="compliance-transfers__row-detail-item" style={{ color: "rgba(255,255,255,0.25)" }}>
                                                                                     No additional detail available for this transfer.
                                                                                 </span>
@@ -700,6 +725,9 @@ export default function CompliancePage() {
                                                         <div className="compliance-cookies__row-main">
                                                             <span className="compliance-cookies__row-name">{c.name}</span>
                                                             <span className="compliance-cookies__row-domain">{c.domain}</span>
+                                                            {c.description && (
+                                                                <span className="compliance-cookies__row-desc">{c.description}</span>
+                                                            )}
                                                         </div>
                                                         <span className={"compliance-cookies__row-party" + (isThird ? " --third" : " --first")}>
                                                             {isThird ? "3rd party" : "1st party"}

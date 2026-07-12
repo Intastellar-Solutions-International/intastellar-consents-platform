@@ -483,6 +483,15 @@
     text-overflow: ellipsis;
 }
 
+.compliance-cookies__row-desc {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.38);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-style: italic;
+}
+
 .compliance-cookies__row-party {
     flex-shrink: 0;
     padding: 3px 9px;
@@ -986,6 +995,16 @@
     color: rgba(192, 159, 83, 0.75);
     word-break: break-all;
     white-space: pre-wrap;
+}
+
+.compliance-transfers__row-detail-privacy {
+    font-size: 0.72rem;
+    color: rgba(80, 144, 220, 0.8);
+    text-decoration: none;
+}
+.compliance-transfers__row-detail-privacy:hover {
+    color: rgba(80, 144, 220, 1);
+    text-decoration: underline;
 }
 
 /* ── Consent / banner category badge ────────────────────────────────────────── */

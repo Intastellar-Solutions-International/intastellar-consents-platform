@@ -172,13 +172,17 @@ function buildCategories(domain, transfers, rawCookies) {
         const bannerCategory = t.bannerCategory || BANNER_CATEGORY[t.category] || "functional";
         if (!vendorMap.has(t.service)) {
             vendorMap.set(t.service, {
-                service:        t.service,
-                category:       t.category,
+                service:           t.service,
+                category:          t.category,
                 bannerCategory,
-                dataRegion:     t.dataRegion,
-                dataCountry:    t.dataCountry,
-                hosts:          [],
-                cookies:        [],
+                dataRegion:        t.dataRegion,
+                dataCountry:       t.dataCountry,
+                description:       t.description       || null,
+                privacyUrl:        t.privacyUrl        || null,
+                legalBasis:        t.legalBasis        || null,
+                transferMechanism: t.transferMechanism || null,
+                hosts:             [],
+                cookies:           [],
             });
         }
         const vendor = vendorMap.get(t.service);
