@@ -19,7 +19,7 @@ const REQUEST_TYPES = [
     { id: "opt_out",     label: "Opt-out of sale / share" },
 ];
 
-const REGULATIONS = ["GDPR", "LGPD", "CCPA", "PDPA", "POPIA"];
+const REGULATIONS = ["GDPR", "LGPD", "CCPA", "CDPA", "CPA", "UCPA", "CTDPA", "POPIA", "PDPA", "APA", "PDPL", "PIPEDA", "LAW25"];
 
 const STATUS_STYLES = {
     pending:     { bg: "rgba(192,159,83,0.15)", border: "rgba(192,159,83,0.35)", color: "#d4b87a", label: "Pending" },

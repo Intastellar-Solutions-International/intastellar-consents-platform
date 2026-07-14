@@ -74,7 +74,7 @@ export const EU_EEA_UK_NUMERIC = [
     833, // Isle of Man
 ];
 
-const FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "POPIA", "PDPA"];
+const FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "CDPA", "CPA", "UCPA", "CTDPA", "POPIA", "PDPA", "APA", "PDPL", "PIPEDA", "LAW25"];
 
 /**
  * Which frameworks a single audit row suggests (regulation_applied first, then country inference).
@@ -85,16 +85,27 @@ export function frameworksForAuditRow(row) {
     const reg = String(row?.regulation_applied ?? "").toUpperCase();
     const cc = String(row?.country_code ?? "").toUpperCase().trim();
     const out = new Set();
-    if (reg.includes("GDPR")) out.add("GDPR");
-    if (reg.includes("LGPD")) out.add("LGPD");
-    if (reg.includes("CCPA") || reg.includes("CPRA")) out.add("CCPA");
-    if (reg.includes("POPIA")) out.add("POPIA");
-    if (reg.includes("PDPA")) out.add("PDPA");
+    if (reg.includes("GDPR"))                                                             out.add("GDPR");
+    if (reg.includes("LGPD"))                                                             out.add("LGPD");
+    if (reg.includes("CCPA") || reg.includes("CPRA"))                                    out.add("CCPA");
+    if (reg.includes("CDPA"))                                                             out.add("CDPA");
+    if (reg.includes("CPA") && !reg.includes("CCPA") && !reg.includes("UCPA"))          out.add("CPA");
+    if (reg.includes("UCPA"))                                                             out.add("UCPA");
+    if (reg.includes("CTDPA"))                                                            out.add("CTDPA");
+    if (reg.includes("POPIA"))                                                            out.add("POPIA");
+    if (reg.includes("PDPA"))                                                             out.add("PDPA");
+    if (reg.includes("APA"))                                                              out.add("APA");
+    if (reg.includes("PDPL"))                                                             out.add("PDPL");
+    if (reg.includes("PIPEDA"))                                                           out.add("PIPEDA");
+    if (reg.includes("LAW25") || reg.includes("LAW 25") || reg.includes("ACT 25"))      out.add("LAW25");
     if (out.size > 0) return out;
-    if (cc === "BR") out.add("LGPD");
+    if (cc === "BR")      out.add("LGPD");
     else if (cc === "US") out.add("CCPA");
     else if (cc === "ZA") out.add("POPIA");
     else if (cc === "TH") out.add("PDPA");
+    else if (cc === "AU") out.add("APA");
+    else if (cc === "SA") out.add("PDPL");
+    else if (cc === "CA") { out.add("PIPEDA"); out.add("LAW25"); }
     else if (EU_EEA_UK.has(cc)) out.add("GDPR");
     return out;
 }
