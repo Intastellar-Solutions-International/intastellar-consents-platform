@@ -354,7 +354,6 @@
 
 .audit-snapshot-card__feed-map-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(200px, 42%);
     align-items: stretch;
     gap: 16px 20px;
     margin: 14px 0 16px;
