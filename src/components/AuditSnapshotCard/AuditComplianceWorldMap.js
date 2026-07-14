@@ -30,12 +30,15 @@ const FILL = {
 };
 
 const LABEL = [
-    { fw: "GDPR", lon: 12, lat: 54 },
-    { fw: "LGPD", lon: -53, lat: -12 },
+    { fw: "GDPR",   lon: 12,     lat: 54   },
+    { fw: "LGPD",   lon: -53,    lat: -12  },
     /** CCPA / CPRA scope shown as California only on this map */
-    { fw: "CCPA", lon: -119.2, lat: 36.5 },
-    { fw: "POPIA", lon: 25, lat: -28 },
-    { fw: "PDPA", lon: 101.5, lat: 3.1 },
+    { fw: "CCPA",   lon: -119.2, lat: 36.5 },
+    { fw: "POPIA",  lon: 25,     lat: -28  },
+    { fw: "PDPA",   lon: 101.5,  lat: 3.1  },
+    { fw: "APA",    lon: 134,    lat: -26  },
+    { fw: "PDPL",   lon: 45,     lat: 24   },
+    { fw: "PIPEDA", lon: -96,    lat: 60   },
 ];
 
 const LABEL_COLOR = {
@@ -48,13 +51,24 @@ const LABEL_COLOR = {
 
 const US_NUMERIC = 840;
 
-/** Country-level ISO numeric → framework. CCPA is not applied to the whole US (840); California is drawn from US states TopoJSON. */
+/**
+ * Country-level ISO numeric → framework.
+ * CCPA, CDPA, CPA, UCPA, CTDPA are all empty here — they are drawn from US states TopoJSON.
+ */
 const FRAMEWORK_BY_NUMERIC = {
-    GDPR: new Set(EU_EEA_UK_NUMERIC),
-    CCPA: new Set(),
-    LGPD: new Set([76]),
-    POPIA: new Set([710]),
-    PDPA: new Set([760, 840]),
+    GDPR:   new Set(EU_EEA_UK_NUMERIC),
+    LGPD:   new Set([76]),
+    POPIA:  new Set([710]),
+    PDPA:   new Set([764, 702]),  // Thailand (764), Singapore (702)
+    APA:    new Set([36]),        // Australia
+    PDPL:   new Set([682]),       // Saudi Arabia
+    PIPEDA: new Set([124]),       // Canada (federal — LAW25 shares this territory)
+    // US state laws drawn from states TopoJSON:
+    CCPA:   new Set(),
+    CDPA:   new Set(),
+    CPA:    new Set(),
+    UCPA:   new Set(),
+    CTDPA:  new Set(),
 };
 
 function topoIdToNumeric(id) {
@@ -65,19 +79,16 @@ function topoIdToNumeric(id) {
 
 function frameworkForNumeric(num) {
     if (num == null) return null;
-    if (FRAMEWORK_BY_NUMERIC.GDPR.has(num)) return "GDPR";
-    if (FRAMEWORK_BY_NUMERIC.CCPA.has(num)) return "CCPA";
-    if (FRAMEWORK_BY_NUMERIC.LGPD.has(num)) return "LGPD";
-    if (FRAMEWORK_BY_NUMERIC.POPIA.has(num)) return "POPIA";
-    if (FRAMEWORK_BY_NUMERIC.PDPA.has(num)) return "PDPA";
+    if (FRAMEWORK_BY_NUMERIC.GDPR.has(num))   return "GDPR";
+    if (FRAMEWORK_BY_NUMERIC.LGPD.has(num))   return "LGPD";
+    if (FRAMEWORK_BY_NUMERIC.POPIA.has(num))  return "POPIA";
+    if (FRAMEWORK_BY_NUMERIC.PDPA.has(num))   return "PDPA";
+    if (FRAMEWORK_BY_NUMERIC.APA.has(num))    return "APA";
+    if (FRAMEWORK_BY_NUMERIC.PDPL.has(num))   return "PDPL";
+    if (FRAMEWORK_BY_NUMERIC.PIPEDA.has(num)) return "PIPEDA";
     return null;
 }
 
-/** FIPS 06 — California (us-atlas states-10m). */
-function isCaliforniaStateTopoId(id) {
-    const s = String(id ?? "").padStart(2, "0");
-    return s === "06";
-}
 
 function fillForFrameworkStatus(st, inSample) {
     if (st === "observed") {
@@ -134,8 +145,16 @@ export default function AuditComplianceWorldMap({
         regionStatus?.GDPR?.status,
         regionStatus?.LGPD?.status,
         regionStatus?.CCPA?.status,
+        regionStatus?.CDPA?.status,
+        regionStatus?.CPA?.status,
+        regionStatus?.UCPA?.status,
+        regionStatus?.CTDPA?.status,
         regionStatus?.POPIA?.status,
         regionStatus?.PDPA?.status,
+        regionStatus?.APA?.status,
+        regionStatus?.PDPL?.status,
+        regionStatus?.PIPEDA?.status,
+        regionStatus?.LAW25?.status,
         sampleCountryCodesKey,
         selectedUpper ?? "",
     ].join("|");
@@ -222,37 +241,51 @@ export default function AuditComplianceWorldMap({
         for (const { path } of pathsWithMeta) landG.appendChild(path);
 
         if (statesTopo) {
-            const stCa = stOf("CCPA");
-            const caFeatures = topoToFeatures(statesTopo, "states").filter((feat) => isCaliforniaStateTopoId(feat.id));
+            // Each entry maps a US state FIPS code to the framework it represents.
+            const US_STATE_LAYERS = [
+                { fips: "06", fw: "CCPA",  cls: "audit-compliance-world-map__ccpa-california" },
+                { fips: "51", fw: "CDPA",  cls: null },  // Virginia
+                { fips: "08", fw: "CPA",   cls: null },  // Colorado
+                { fips: "49", fw: "UCPA",  cls: null },  // Utah
+                { fips: "09", fw: "CTDPA", cls: null },  // Connecticut
+            ];
+            const allStateFeatures = topoToFeatures(statesTopo, "states");
             const isUSSelected = selUpper === "US";
-            for (const feat of caFeatures) {
-                const dCa = feat.rings.map(ringToPathD).join(" ");
-                if (!dCa.trim()) continue;
-                const pCa = document.createElementNS(NS, "path");
-                pCa.setAttribute("d", dCa);
-                pCa.setAttribute("class", "audit-compliance-world-map__country audit-compliance-world-map__ccpa-california");
-                pCa.setAttribute("data-cc", "US");
-                pCa.setAttribute("data-subdivision", "US-CA");
-                const o = fillForFrameworkStatus(stCa, inSampleUS);
-                let { fill: fillCa, stroke: strokeCa, strokeW: strokeWCa } = o;
-                if (isUSSelected) {
-                    strokeCa = "rgba(192, 159, 83, 0.98)";
-                    strokeWCa = "2.4";
-                    pCa.classList.add("audit-compliance-world-map__country--selected");
-                }
-                pCa.setAttribute("fill", fillCa);
-                pCa.setAttribute("stroke", strokeCa);
-                pCa.setAttribute("stroke-width", strokeWCa);
-                pCa.classList.add("audit-compliance-world-map__country--clickable");
-                pCa.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onSelectCountryRef.current?.((prev) => {
-                        const p = prev ? String(prev).toUpperCase() : null;
-                        return p === "US" ? null : "US";
+
+            for (const { fips, fw, cls } of US_STATE_LAYERS) {
+                const fwStatus = stOf(fw);
+                const stateFeats = allStateFeatures.filter(
+                    (feat) => String(feat.id ?? "").padStart(2, "0") === fips
+                );
+                for (const feat of stateFeats) {
+                    const dSt = feat.rings.map(ringToPathD).join(" ");
+                    if (!dSt.trim()) continue;
+                    const pSt = document.createElementNS(NS, "path");
+                    pSt.setAttribute("d", dSt);
+                    pSt.setAttribute("class", ["audit-compliance-world-map__country", cls].filter(Boolean).join(" "));
+                    pSt.setAttribute("data-cc", "US");
+                    pSt.setAttribute("data-subdivision", `US-${fips}`);
+                    const o = fillForFrameworkStatus(fwStatus, inSampleUS);
+                    let { fill: fillSt, stroke: strokeSt, strokeW: strokeWSt } = o;
+                    if (isUSSelected) {
+                        strokeSt  = "rgba(192, 159, 83, 0.98)";
+                        strokeWSt = "2.4";
+                        pSt.classList.add("audit-compliance-world-map__country--selected");
+                    }
+                    pSt.setAttribute("fill", fillSt);
+                    pSt.setAttribute("stroke", strokeSt);
+                    pSt.setAttribute("stroke-width", strokeWSt);
+                    pSt.classList.add("audit-compliance-world-map__country--clickable");
+                    pSt.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onSelectCountryRef.current?.((prev) => {
+                            const pr = prev ? String(prev).toUpperCase() : null;
+                            return pr === "US" ? null : "US";
+                        });
                     });
-                });
-                landG.appendChild(pCa);
+                    landG.appendChild(pSt);
+                }
             }
         }
 
