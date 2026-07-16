@@ -94,6 +94,7 @@ export const TRACKERS = [
     { domains: ["mc.sendgrid.net", "sendgrid.net"],               service: "SendGrid (Twilio)",    category: "advertising"    },
     { domains: ["demdex.net", "adobedc.net"],                     service: "Adobe Audience Manager", category: "advertising"  },
     { domains: ["assets.adobedtm.com", "adobedtm.com"],          service: "Adobe Experience Platform", category: "advertising"},
+    { domains: ["sc.omtrdc.net", "2o7.net", "omtrdc.net"],          service: "Adobe Analytics",          category: "analytics"  },
     { domains: ["go.pardot.com", "salesforce.com", "sfdcopens.com"], service: "Salesforce",        category: "advertising"    },
     { domains: ["cdninstagram.com", "instagram.com"],             service: "Instagram (Meta)",     category: "advertising"    },
     { domains: ["go.g2.com", "g2.com"],                          service: "G2",                    category: "advertising"    },
@@ -206,7 +207,8 @@ export const DATA_COUNTRIES = {
     "LiveRamp": "US", "Podscribe": "US", "Veritonic": "US", "Impact": "US",
     "Spotify Ads": "US", "TVSquared": "US", "Sojern": "US", "Contentsquare": "FR", "Pinterest": "US",
     "Reddit Ads": "US", "Mailchimp": "US", "Klaviyo": "US", "Omnisend": "US",
-    "G2": "US", "Yahoo Advertising": "US", "Adobe Marketo": "US",
+    "G2": "US", "Yahoo Advertising": "US", "Adobe Analytics": "US", "Apple": "US",
+    "Adobe Marketo": "US",
     "ActiveCampaign": "US", "Brevo (Sendinblue)": "FR", "MailerLite": "US",
     "Drip": "US", "ConvertKit": "US", "GetResponse": "PL",
     "SendGrid (Twilio)": "US", "Adobe Audience Manager": "US",
@@ -275,6 +277,7 @@ export const DATA_REGIONS = {
     "Pinterest":              "non-eu", "Reddit Ads":             "non-eu",
     "Mailchimp":              "non-eu", "Klaviyo":                "non-eu", "Omnisend": "non-eu",
     "G2":                     "non-eu", "Yahoo Advertising":      "non-eu",
+    "Adobe Analytics":        "non-eu", "Apple": "non-eu",
     "Adobe Marketo":          "non-eu",
     "ActiveCampaign": "non-eu", "Brevo (Sendinblue)": "eu",  "MailerLite":  "non-eu",
     "Drip":           "non-eu", "ConvertKit":         "non-eu", "GetResponse": "eu",
@@ -388,6 +391,8 @@ export const VENDOR_META = {
     "SendGrid (Twilio)":  { description: "Transactional and marketing email delivery service", privacyUrl: "https://www.twilio.com/en-us/legal/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
     "Adobe Audience Manager": { description: "Data management platform for audience segmentation and targeting", privacyUrl: "https://www.adobe.com/privacy.html", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
     "Adobe Experience Platform": { description: "Adobe tag management and analytics deployment system", privacyUrl: "https://www.adobe.com/privacy.html", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Adobe Analytics":     { description: "Web analytics platform for tracking visitor behaviour, campaign performance and conversion funnels", privacyUrl: "https://www.adobe.com/privacy/analytics.html", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Apple":               { description: "First-party cookies set by Apple Inc. for store geo-routing, marketing attribution and session management", privacyUrl: "https://www.apple.com/legal/privacy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "Adobe Marketo":      { description: "B2B marketing automation and lead management platform", privacyUrl: "https://www.adobe.com/privacy.html", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
     "Salesforce":         { description: "CRM and marketing cloud platform", privacyUrl: "https://www.salesforce.com/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
     "Salesforce Pardot":  { description: "B2B marketing automation platform by Salesforce", privacyUrl: "https://www.salesforce.com/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
@@ -624,6 +629,7 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "_uetsid",          bannerCategory: "marketing"  }, // Microsoft UET session
     { prefix: "_uetvid",          bannerCategory: "marketing"  }, // Microsoft UET visitor
     // Adobe Analytics
+    { exact:  "mk_epub",          bannerCategory: "marketing"  }, // Apple marketing attribution
     { exact:  "s_vi",             bannerCategory: "analytics"  }, // Adobe Analytics visitor ID
     { exact:  "s_fid",            bannerCategory: "analytics"  }, // Adobe Analytics fallback visitor ID
     { exact:  "s_cc",             bannerCategory: "analytics"  }, // Adobe Analytics cookie check
@@ -807,6 +813,13 @@ export const COOKIE_VENDOR_HINTS = [
     { prefix: "_cq_",              service: "Contentsquare"       },
     { prefix: "IR_",               service: "Impact"              },
     { exact:  "_cfuvid",           service: "Cloudflare"          },
+    { exact:  "s_vi",              service: "Adobe Analytics"     },
+    { exact:  "s_fid",             service: "Adobe Analytics"     },
+    { exact:  "s_cc",              service: "Adobe Analytics"     },
+    { exact:  "s_sq",              service: "Adobe Analytics"     },
+    { exact:  "s_nr",              service: "Adobe Analytics"     },
+    { exact:  "geo",               service: "Apple"               },
+    { exact:  "mk_epub",           service: "Apple"               },
     { exact:  "IntastellarConsentSolution", service: "Intastellar Consents" },
 ];
 
@@ -969,6 +982,15 @@ export const COOKIE_META = [
     { prefix: "wp-settings-",          description: "WordPress user settings cookie — stores interface preferences for logged-in users." },
     { exact:  "wordpress_test_cookie", description: "WordPress cookie check — verifies that cookies are enabled in the visitor's browser." },
     { exact:  "comment_author",        description: "WordPress comment author cookie — remembers the name and email used in comment forms. Expires after 1 year." },
+    // Adobe Analytics
+    { exact:  "s_vi",                    description: "Adobe Analytics visitor ID — identifies a unique visitor across sessions. Persists for up to 2 years." },
+    { exact:  "s_fid",                   description: "Adobe Analytics fallback visitor ID — used when s_vi cannot be set (e.g. in private browsing). Expires after 5 years." },
+    { exact:  "s_cc",                    description: "Adobe Analytics cookie check — determines whether cookies are enabled in the visitor's browser. Session cookie." },
+    { exact:  "s_sq",                    description: "Adobe Analytics ClickMap cookie — stores information about the previous link clicked by the visitor. Session cookie." },
+    { exact:  "s_nr",                    description: "Adobe Analytics return visit cookie — records the timestamp and visit number for new vs returning visitor detection." },
+    // Apple
+    { exact:  "geo",                     description: "Apple geo-routing cookie — stores the visitor's detected country code to redirect to the correct regional Apple Store. Session cookie." },
+    { exact:  "mk_epub",                 description: "Apple marketing attribution cookie — tracks which marketing campaign directed the visitor to Apple.com for campaign performance measurement." },
     // Consent management
     { exact:  "IntastellarConsentSolution", description: "Intastellar Consents record — stores the visitor's consent choices for this website. Expires after 3 months." },
     { prefix: "OptanonConsent",        description: "OneTrust consent record — stores the visitor's cookie category consent choices." },

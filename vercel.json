@@ -10,6 +10,10 @@
     }
   ],
   "functions": {
+    "api/cookie-lookup.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
     "api/cookie-audit.js": {
       "memory": 1536,
       "maxDuration": 20
