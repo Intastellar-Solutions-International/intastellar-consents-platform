@@ -22,7 +22,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { scanDomain, describeCookie } from "./_scan-core.js";
+import { scanDomain, describeCookie, categoryFromCookieName, vendorFromCookieName } from "./_scan-core.js";
 
 let pool;
 function getPool() {
@@ -36,219 +36,6 @@ function getPool() {
     return pool;
 }
 
-const COOKIE_NAME_PATTERNS = [
-    // Google Analytics (current)
-    { prefix: "_ga",              bannerCategory: "analytics"  },
-    { prefix: "_dc_gtm_",         bannerCategory: "analytics"  },
-    // Google Analytics (legacy __utm*)
-    { exact:  "__utmz",           bannerCategory: "analytics"  },
-    { exact:  "__utmt",           bannerCategory: "analytics"  },
-    { exact:  "__utmv",           bannerCategory: "analytics"  },
-    { exact:  "__utmd",           bannerCategory: "analytics"  },
-    // Google Ads / Conversion
-    { prefix: "_gcl_",            bannerCategory: "marketing"  },
-    { prefix: "_gac_",            bannerCategory: "marketing"  },
-    // Google Advertising / DoubleClick
-    { exact:  "NID",              bannerCategory: "marketing"  },
-    { exact:  "IDE",              bannerCategory: "marketing"  },
-    { exact:  "DSID",             bannerCategory: "marketing"  },
-    { exact:  "1P_JAR",           bannerCategory: "marketing"  },
-    { exact:  "__gads",           bannerCategory: "marketing"  },
-    { exact:  "__gpi",            bannerCategory: "marketing"  },
-    { exact:  "ANID",             bannerCategory: "marketing"  },
-    { exact:  "OTZ",              bannerCategory: "analytics"  },
-    { exact:  "test_cookie",      bannerCategory: "marketing"  },
-    // Google consent / auth
-    { exact:  "CONSENT",          bannerCategory: "necessary"  },
-    { exact:  "SID",              bannerCategory: "functional" },
-    { exact:  "HSID",             bannerCategory: "functional" },
-    { exact:  "SSID",             bannerCategory: "functional" },
-    { exact:  "APISID",           bannerCategory: "functional" },
-    { exact:  "SAPISID",          bannerCategory: "functional" },
-    { exact:  "__Secure-ENID",    bannerCategory: "functional" },
-    { exact:  "_fbp",             bannerCategory: "marketing"  },
-    { exact:  "_fbc",             bannerCategory: "marketing"  },
-    { exact:  "__hstc",           bannerCategory: "marketing"  },
-    { exact:  "__hssc",           bannerCategory: "marketing"  },
-    { exact:  "__hssrc",          bannerCategory: "marketing"  },
-    { exact:  "hubspotutk",       bannerCategory: "marketing"  },
-    { exact:  "li_sugr",          bannerCategory: "marketing"  },
-    { exact:  "UserMatchHistory", bannerCategory: "marketing"  },
-    { exact:  "lidc",             bannerCategory: "marketing"  },
-    { exact:  "bcookie",          bannerCategory: "marketing"  },
-    { exact:  "bscookie",         bannerCategory: "marketing"  },
-    { prefix: "_hj",              bannerCategory: "analytics"  },
-    { exact:  "_clck",            bannerCategory: "analytics"  },
-    { exact:  "_clsk",            bannerCategory: "analytics"  },
-    { exact:  "_ttp",             bannerCategory: "marketing"  },
-    { exact:  "muc_ads",          bannerCategory: "marketing"  },
-    { exact:  "personalization_id", bannerCategory: "marketing" },
-    { prefix: "amplitude_",       bannerCategory: "analytics"  },
-    { prefix: "intercom-",        bannerCategory: "functional" },
-    { prefix: "_vcrr_",           bannerCategory: "necessary"  },
-    { prefix: "__cf",             bannerCategory: "security"   },
-    { exact:  "cf_clearance",     bannerCategory: "security"   },
-    // Pinterest
-    { prefix: "_pin_",            bannerCategory: "marketing"  },
-    { prefix: "_pinterest_",      bannerCategory: "marketing"  },
-    // Reddit
-    { exact:  "reddaid",          bannerCategory: "marketing"  },
-    { exact:  "reddit_session",   bannerCategory: "marketing"  },
-    // Klaviyo
-    { exact:  "__kla_id",         bannerCategory: "marketing"  },
-    // Stripe (payment / functional)
-    { prefix: "__stripe_",        bannerCategory: "functional" },
-    // Wistia video analytics
-    { prefix: "_wijs",            bannerCategory: "analytics"  },
-    // Trustpilot
-    { prefix: "tp.",              bannerCategory: "marketing"  },
-    // VWO — consent cookie is necessary; other VWO cookies are analytics
-    { exact:  "_vwo_consent",     bannerCategory: "necessary"  },
-    { prefix: "_vwo_",            bannerCategory: "analytics"  },
-    { prefix: "_vis_opt_",        bannerCategory: "analytics"  },
-    // Vimeo
-    { exact:  "vuid",             bannerCategory: "analytics"  },
-    // Matomo / Piwik
-    { prefix: "_pk_id",           bannerCategory: "analytics"  },
-    { prefix: "_pk_ses",          bannerCategory: "analytics"  },
-    { prefix: "_pk_ref",          bannerCategory: "analytics"  },
-    { prefix: "_pk_cvar",         bannerCategory: "analytics"  },
-    // Chat widgets
-    { prefix: "crisp-client",     bannerCategory: "functional" },
-    { prefix: "drift_",           bannerCategory: "functional" },
-    { prefix: "driftt_",          bannerCategory: "functional" },
-    { exact:  "__zlcmid",         bannerCategory: "functional" },
-    { prefix: "freshworks",       bannerCategory: "functional" },
-    // YouTube / Google Video
-    { exact:  "PREF",                  bannerCategory: "functional" },
-    { exact:  "YSC",                   bannerCategory: "analytics"  },
-    { exact:  "VISITOR_INFO1_LIVE",    bannerCategory: "analytics"  },
-    { exact:  "VISITOR_PRIVACY_METADATA", bannerCategory: "necessary" },
-    { exact:  "GPS",                   bannerCategory: "analytics"  },
-    { prefix: "__Secure-YEC",          bannerCategory: "analytics"  },
-    { prefix: "__Secure-3PAPISID",     bannerCategory: "marketing"  },
-    { prefix: "__Secure-3PSID",        bannerCategory: "marketing"  },
-    { prefix: "__Secure-1PAPISID",     bannerCategory: "functional" },
-    { prefix: "__Secure-1PSID",        bannerCategory: "functional" },
-    // Microsoft Ads / UET
-    { exact:  "MUID",             bannerCategory: "marketing"  },
-    { exact:  "MSFPC",            bannerCategory: "marketing"  },
-    { exact:  "MR",               bannerCategory: "marketing"  },
-    { prefix: "_uetsid",          bannerCategory: "marketing"  },
-    { prefix: "_uetvid",          bannerCategory: "marketing"  },
-    // Adobe Analytics
-    { exact:  "s_vi",             bannerCategory: "analytics"  },
-    { exact:  "s_fid",            bannerCategory: "analytics"  },
-    { exact:  "s_cc",             bannerCategory: "analytics"  },
-    { exact:  "s_sq",             bannerCategory: "analytics"  },
-    { exact:  "s_nr",             bannerCategory: "analytics"  },
-    { prefix: "AMCV_",            bannerCategory: "analytics"  },
-    { prefix: "AMCVS_",           bannerCategory: "analytics"  },
-    // Adobe Target / Audience Manager
-    { exact:  "mbox",             bannerCategory: "marketing"  },
-    { prefix: "mboxSession",      bannerCategory: "marketing"  },
-    { exact:  "at_check",         bannerCategory: "marketing"  },
-    { exact:  "demdex",           bannerCategory: "marketing"  },
-    { exact:  "dpm",              bannerCategory: "marketing"  },
-    // Segment
-    { prefix: "ajs_",             bannerCategory: "analytics"  },
-    // Mixpanel
-    { prefix: "mp_",              bannerCategory: "analytics"  },
-    // FullStory
-    { exact:  "fs_uid",           bannerCategory: "analytics"  },
-    { prefix: "fs_",              bannerCategory: "analytics"  },
-    // Heap
-    { prefix: "_hp2_",            bannerCategory: "analytics"  },
-    { prefix: "_hp2id",           bannerCategory: "analytics"  },
-    // Yandex Metrica
-    { prefix: "_ym_",             bannerCategory: "analytics"  },
-    { exact:  "yabs-sid",         bannerCategory: "marketing"  },
-    // Snapchat Pixel
-    { exact:  "_scid",            bannerCategory: "marketing"  },
-    { exact:  "_sctr",            bannerCategory: "marketing"  },
-    // Twitter / X (extended)
-    { exact:  "ct0",              bannerCategory: "marketing"  },
-    { exact:  "twid",             bannerCategory: "marketing"  },
-    { prefix: "guest_id",         bannerCategory: "marketing"  },
-    // Criteo
-    { exact:  "cto_bundle",       bannerCategory: "marketing"  },
-    { exact:  "cto_tld_test",     bannerCategory: "marketing"  },
-    // Taboola
-    { exact:  "t_gid",            bannerCategory: "marketing"  },
-    { prefix: "taboola_",         bannerCategory: "marketing"  },
-    // Outbrain
-    { exact:  "obuid",            bannerCategory: "marketing"  },
-    // Quora Pixel
-    { exact:  "_qca",             bannerCategory: "marketing"  },
-    // Pardot / Salesforce Marketing Cloud
-    { prefix: "visitor_id",       bannerCategory: "marketing"  },
-    { prefix: "lpv",              bannerCategory: "marketing"  },
-    { exact:  "pardot",           bannerCategory: "marketing"  },
-    // Braze
-    { prefix: "__braze_",         bannerCategory: "marketing"  },
-    // Session recording & heatmaps
-    { prefix: "mf_",              bannerCategory: "analytics"  },
-    { prefix: "SL_",              bannerCategory: "analytics"  },
-    { exact:  "_lo_uid",          bannerCategory: "analytics"  },
-    { exact:  "_lo_v",            bannerCategory: "analytics"  },
-    { prefix: "__chartbeat",      bannerCategory: "analytics"  },
-    // Woopra
-    { exact:  "wooTracker",       bannerCategory: "analytics"  },
-    // GitHub
-    { exact:  "_octo",                bannerCategory: "analytics"  },
-    { exact:  "preferred_color_mode", bannerCategory: "functional" },
-    { exact:  "tz",                   bannerCategory: "functional" },
-    { exact:  "cpu_bucket",           bannerCategory: "analytics"  },
-    { exact:  "color_mode",           bannerCategory: "functional" },
-    { exact:  "dotcom_user",          bannerCategory: "functional" },
-    // Generic preference cookies (appear first-party on many platforms)
-    { exact:  "timezone",             bannerCategory: "functional" },
-    { exact:  "language",             bannerCategory: "functional" },
-    { exact:  "lang",                 bannerCategory: "functional" },
-    { exact:  "locale",               bannerCategory: "functional" },
-    { exact:  "region",               bannerCategory: "functional" },
-    { exact:  "country",              bannerCategory: "functional" },
-    { exact:  "country_code",         bannerCategory: "functional" },
-    { exact:  "currency",             bannerCategory: "functional" },
-    { exact:  "market",               bannerCategory: "functional" },
-    { exact:  "geo",                  bannerCategory: "functional" },
-    { exact:  "geo_country",          bannerCategory: "functional" },
-    { exact:  "user_lang",            bannerCategory: "functional" },
-    { exact:  "user_locale",          bannerCategory: "functional" },
-    { exact:  "user_region",          bannerCategory: "functional" },
-    { exact:  "user_country",         bannerCategory: "functional" },
-    { exact:  "preferred_language",   bannerCategory: "functional" },
-    { exact:  "site_language",        bannerCategory: "functional" },
-    { exact:  "selected_language",    bannerCategory: "functional" },
-    { exact:  "display_currency",     bannerCategory: "functional" },
-    { exact:  "price_currency",       bannerCategory: "functional" },
-    { exact:  "dark_mode",            bannerCategory: "functional" },
-    { exact:  "color_scheme",         bannerCategory: "functional" },
-    { exact:  "theme",                bannerCategory: "functional" },
-    { exact:  "font_size",            bannerCategory: "functional" },
-    { exact:  "sidebar",              bannerCategory: "functional" },
-    // Consent management platforms (necessary)
-    { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
-    { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
-    { prefix: "CookieConsent",    bannerCategory: "necessary"  },
-    { prefix: "cookieyes",        bannerCategory: "necessary"  },
-    { prefix: "cc_cookie",        bannerCategory: "necessary"  },
-    { prefix: "cmplz_",           bannerCategory: "necessary"  },
-    { prefix: "euconsent",        bannerCategory: "necessary"  },
-    { prefix: "GDPR",             bannerCategory: "necessary"  },
-    { prefix: "uc_",              bannerCategory: "necessary"  }, // Usercentrics
-    { prefix: "CI_",              bannerCategory: "necessary"  }, // Cookie Information
-    { prefix: "_iub_cs-",         bannerCategory: "necessary"  }, // iubenda consent
-    { exact:  "didomi_token",     bannerCategory: "necessary"  }, // Didomi consent
-    { prefix: "didomi_",          bannerCategory: "necessary"  }, // Didomi (other)
-    { exact:  "IntastellarConsentSolution", bannerCategory: "necessary" }, // Intastellar Consents — stores visitor consent, expires 3 months
-];
-
-function categoryFromCookieName(name) {
-    for (const p of COOKIE_NAME_PATTERNS) {
-        if (p.exact  && name === p.exact)          return p.bannerCategory;
-        if (p.prefix && name.startsWith(p.prefix)) return p.bannerCategory;
-    }
     return null;
 }
 
@@ -268,53 +55,7 @@ const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "f
 // Maps cookie name patterns to the vendor service they belong to.
 // Used to associate first-party-set cookies (e.g. _ga on .example.com) back
 // to the correct third-party vendor.
-const COOKIE_VENDOR_PATTERNS = [
-    { prefix: "_ga",                service: "Google Analytics"        },
-    { exact:  "_gid",               service: "Google Analytics"        },
-    { exact:  "_gcl_au",            service: "Google Tag Manager"      },
-    { prefix: "_gcl_",              service: "Google Ads"              },
-    { prefix: "_gac_",              service: "Google Ads"              },
-    { prefix: "_hj",                service: "Hotjar"                  },
-    { exact:  "_fbp",               service: "Facebook / Meta Pixel"   },
-    { exact:  "_fbc",               service: "Facebook / Meta Pixel"   },
-    { exact:  "hubspotutk",         service: "HubSpot"                 },
-    { exact:  "__hstc",             service: "HubSpot"                 },
-    { exact:  "__hssc",             service: "HubSpot"                 },
-    { exact:  "__hssrc",            service: "HubSpot"                 },
-    { exact:  "li_sugr",            service: "LinkedIn Insight Tag"    },
-    { exact:  "UserMatchHistory",   service: "LinkedIn Insight Tag"    },
-    { exact:  "lidc",               service: "LinkedIn Insight Tag"    },
-    { exact:  "bcookie",            service: "LinkedIn Insight Tag"    },
-    { exact:  "bscookie",           service: "LinkedIn Insight Tag"    },
-    { exact:  "_clck",              service: "Microsoft Clarity"       },
-    { exact:  "_clsk",              service: "Microsoft Clarity"       },
-    { exact:  "_ttp",               service: "TikTok Pixel"            },
-    { exact:  "muc_ads",            service: "Twitter / X Pixel"       },
-    { exact:  "personalization_id", service: "Twitter / X Pixel"       },
-    { prefix: "_pin_",              service: "Pinterest"               },
-    { prefix: "_pinterest_",        service: "Pinterest"               },
-    { exact:  "_vwo_consent",       service: "VWO"                     },
-    { prefix: "_vwo_",              service: "VWO"                     },
-    { prefix: "_vis_opt_",          service: "VWO"                     },
-    { exact:  "reddaid",            service: "Reddit Pixel"            },
-    { exact:  "__kla_id",           service: "Klaviyo"                 },
-    { prefix: "amplitude_",         service: "Amplitude"               },
-    { prefix: "__stripe_",          service: "Stripe"                  },
-    { prefix: "_wijs",              service: "Wistia"                  },
-    { prefix: "tp.",                service: "Trustpilot"              },
-    { exact:  "__cf_bm",                    service: "Cloudflare"            },
-    { exact:  "cf_clearance",              service: "Cloudflare"            },
-    { prefix: "__cf",                      service: "Cloudflare"            },
-    { exact:  "li_gc",                     service: "LinkedIn Insight Tag"  },
-    { exact:  "IntastellarConsentSolution", service: "Intastellar Consents" },
-    { prefix: "_vcrr_",                    service: "Vercel"                },
-];
 
-function vendorServiceForCookie(name) {
-    for (const p of COOKIE_VENDOR_PATTERNS) {
-        if (p.exact  && name === p.exact)           return p.service;
-        if (p.prefix && name.startsWith(p.prefix))  return p.service;
-    }
     return null;
 }
 
@@ -368,7 +109,7 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}) {
             || c.bannerCategory
             || (isFirstParty ? "necessary" : "functional");
 
-        const cookieService = vendorServiceForCookie(c.name);
+        const cookieService = vendorFromCookieName(c.name);
         const enriched = {
             name:           c.name,
             domain:         c.domain,
