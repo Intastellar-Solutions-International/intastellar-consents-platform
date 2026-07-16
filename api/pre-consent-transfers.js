@@ -98,7 +98,6 @@ function enrichWithBannerCategory(transfers, cookies, domain) {
         bannerCategory: t.bannerCategory || BANNER_CATEGORY[t.category] || "functional",
     }));
     const enrichedCookies = cookies.map(c => {
-        if (c.bannerCategory) return c;
         const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
         const isFirstParty  = cookieRoot === domainRoot;
         const matchedVendor = enrichedTransfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);

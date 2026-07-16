@@ -355,9 +355,9 @@ function buildCategories(domain, transfers, rawCookies) {
         const isFirstParty  = cookieRoot === domainRoot;
         const domainVendor  = vendorByRoot.get(cookieRoot);
         const nameCategory  = categoryFromCookieName(c.name);
-        const bannerCategory = c.bannerCategory
-            || nameCategory
+        const bannerCategory = nameCategory
             || (domainVendor ? domainVendor.bannerCategory : null)
+            || c.bannerCategory
             || (isFirstParty ? "necessary" : "functional");
 
         const enriched = {

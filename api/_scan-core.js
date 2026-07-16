@@ -514,9 +514,11 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "amplitude_",       bannerCategory: "analytics"  },
     // Intercom
     { prefix: "intercom-",        bannerCategory: "functional" },
-    // Cloudflare (bot / security — functional)
-    { prefix: "__cf",             bannerCategory: "functional" },
-    { exact:  "cf_clearance",     bannerCategory: "functional" },
+    // Vercel
+    { prefix: "_vcrr_",           bannerCategory: "necessary"  },
+    // Cloudflare (bot management / security)
+    { prefix: "__cf",             bannerCategory: "security"   },
+    { exact:  "cf_clearance",     bannerCategory: "security"   },
     // Pinterest
     { prefix: "_pin_",            bannerCategory: "marketing"  },
     { prefix: "_pinterest_",      bannerCategory: "marketing"  },
