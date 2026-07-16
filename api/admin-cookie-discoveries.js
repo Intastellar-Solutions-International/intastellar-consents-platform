@@ -60,13 +60,33 @@ async function ensureSchema(db) {
     `).catch(() => {});
 
     await db.query(`
+        CREATE TABLE IF NOT EXISTS cookie_discoveries (
+            name             TEXT        PRIMARY KEY,
+            times_seen       INTEGER     NOT NULL DEFAULT 1,
+            first_seen_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            last_seen_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            example_sites    TEXT[]      NOT NULL DEFAULT '{}',
+            has_description  BOOLEAN     NOT NULL DEFAULT FALSE,
+            has_vendor       BOOLEAN     NOT NULL DEFAULT FALSE,
+            has_category     BOOLEAN     NOT NULL DEFAULT FALSE,
+            status           TEXT                 DEFAULT 'pending',
+            cookie_domains   TEXT[]               DEFAULT '{}',
+            enriched_vendor  TEXT,
+            enriched_category TEXT,
+            enriched_description TEXT,
+            enriched_source  TEXT
+        )
+    `).catch(() => {});
+
+    // Add any columns that may be missing from older table versions
+    await db.query(`
         ALTER TABLE cookie_discoveries
-            ADD COLUMN IF NOT EXISTS status             TEXT    DEFAULT 'pending',
-            ADD COLUMN IF NOT EXISTS cookie_domains     TEXT[]  DEFAULT '{}',
-            ADD COLUMN IF NOT EXISTS enriched_vendor    TEXT,
-            ADD COLUMN IF NOT EXISTS enriched_category  TEXT,
+            ADD COLUMN IF NOT EXISTS status               TEXT    DEFAULT 'pending',
+            ADD COLUMN IF NOT EXISTS cookie_domains       TEXT[]  DEFAULT '{}',
+            ADD COLUMN IF NOT EXISTS enriched_vendor      TEXT,
+            ADD COLUMN IF NOT EXISTS enriched_category    TEXT,
             ADD COLUMN IF NOT EXISTS enriched_description TEXT,
-            ADD COLUMN IF NOT EXISTS enriched_source    TEXT
+            ADD COLUMN IF NOT EXISTS enriched_source      TEXT
     `).catch(() => {});
 }
 
@@ -83,30 +103,35 @@ export default async function handler(req, res) {
 
     // ── GET — list all discoveries + promoted definitions ──────────────────────
     if (req.method === "GET") {
-        const [discRes, defRes] = await Promise.all([
-            db.query(`
-                SELECT name, times_seen, first_seen_at, last_seen_at,
-                       example_sites, cookie_domains,
-                       has_vendor, has_category,
-                       enriched_vendor, enriched_category,
-                       enriched_description, enriched_source,
-                       status
-                  FROM cookie_discoveries
-                 WHERE status != 'dismissed'
-                 ORDER BY times_seen DESC, last_seen_at DESC
-            `),
-            db.query(`
-                SELECT name, is_prefix, vendor, category, description,
-                       privacy_url, legal_basis, transfer_mechanism, promoted_at
-                  FROM cookie_definitions
-                 ORDER BY promoted_at DESC
-            `),
-        ]);
+        try {
+            const [discRes, defRes] = await Promise.all([
+                db.query(`
+                    SELECT name, times_seen, first_seen_at, last_seen_at,
+                           example_sites, cookie_domains,
+                           has_vendor, has_category,
+                           enriched_vendor, enriched_category,
+                           enriched_description, enriched_source,
+                           status
+                      FROM cookie_discoveries
+                     WHERE status != 'dismissed'
+                     ORDER BY times_seen DESC, last_seen_at DESC
+                `),
+                db.query(`
+                    SELECT name, is_prefix, vendor, category, description,
+                           privacy_url, legal_basis, transfer_mechanism, promoted_at
+                      FROM cookie_definitions
+                     ORDER BY promoted_at DESC
+                `),
+            ]);
 
-        return res.json({
-            discoveries: discRes.rows,
-            definitions: defRes.rows,
-        });
+            return res.json({
+                discoveries: discRes.rows,
+                definitions: defRes.rows,
+            });
+        } catch (err) {
+            console.error("[admin-cookie-discoveries] GET error:", err.message);
+            return res.status(500).json({ error: "Failed to load data", discoveries: [], definitions: [] });
+        }
     }
 
     // ── POST — actions ─────────────────────────────────────────────────────────
