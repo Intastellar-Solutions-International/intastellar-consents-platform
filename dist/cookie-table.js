@@ -41,10 +41,18 @@
             session:    'Session',
             persistent: 'Persistent',
             loading:    'Loading cookie list…',
-            retrying:   'Scan in progress — please reload in ~30 s.',
+            retrying:   'Scan in progress — please reload in ~30 s.',
             error:      'Could not load the cookie list. Please try again later.',
             noCookies:  'No cookies detected for this category.',
             updated:    'Last updated:',
+            intro:      'Cookies are small text files placed on your device when you visit a website. They may contain an anonymous unique identifier and are used to remember your preferences or track your behaviour across visits. In addition to cookies, we may use other tracking technologies such as web beacons, tags, and scripts to collect and analyse information about your use of this service. The table below lists all cookies and trackers currently in use on this website, grouped by purpose.',
+            catDesc: {
+                necessary:  'These cookies are essential for the website to function correctly. They enable core features such as page navigation, security, and access to protected areas. Without them, the website cannot operate as intended and they cannot be switched off.',
+                security:   'These cookies help us detect and prevent malicious activity, bots, and fraudulent behaviour. They do not store any personally identifiable information.',
+                analytics:  'These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. They allow us to measure traffic, identify popular content, and improve the overall user experience.',
+                marketing:  'These cookies track your browsing activity across websites to deliver personalised and relevant advertising. They are typically set by our advertising partners and allow those partners to build a profile of your interests.',
+                functional: 'These cookies enable enhanced features and personalisation such as live chat widgets, embedded videos, and social media integrations. Disabling them may reduce the functionality of certain parts of the website.',
+            },
         },
         de: {
             necessary:  'Notwendig',
@@ -60,10 +68,18 @@
             session:    'Sitzung',
             persistent: 'Dauerhaft',
             loading:    'Cookie-Liste wird geladen…',
-            retrying:   'Scan läuft — bitte in ~30 s neu laden.',
+            retrying:   'Scan läuft — bitte in ~30 s neu laden.',
             error:      'Cookie-Liste konnte nicht geladen werden.',
             noCookies:  'Keine Cookies für diese Kategorie erkannt.',
             updated:    'Zuletzt aktualisiert:',
+            intro:      'Cookies sind kleine Textdateien, die auf Ihrem Gerät gespeichert werden, wenn Sie eine Website besuchen. Sie können eine anonyme eindeutige Kennung enthalten und werden verwendet, um Ihre Einstellungen zu speichern oder Ihr Verhalten über mehrere Besuche hinweg zu verfolgen. Neben Cookies können wir auch andere Tracking-Technologien wie Web-Beacons, Tags und Skripte einsetzen, um Informationen über Ihre Nutzung dieses Dienstes zu erfassen und zu analysieren. Die nachstehende Tabelle listet alle Cookies und Tracker auf, die derzeit auf dieser Website verwendet werden, geordnet nach Zweck.',
+            catDesc: {
+                necessary:  'Diese Cookies sind für den ordnungsgemäßen Betrieb der Website unentbehrlich. Sie ermöglichen grundlegende Funktionen wie Navigation, Sicherheit und den Zugriff auf geschützte Bereiche. Ohne sie kann die Website nicht wie vorgesehen funktionieren und sie können nicht deaktiviert werden.',
+                security:   'Diese Cookies helfen uns, böswillige Aktivitäten, Bots und betrügerisches Verhalten zu erkennen und zu verhindern. Sie speichern keine personenbezogenen Daten.',
+                analytics:  'Diese Cookies helfen uns zu verstehen, wie Besucher mit unserer Website interagieren, indem sie Informationen anonym erfassen und auswerten. Sie ermöglichen es uns, den Datenverkehr zu messen, beliebte Inhalte zu identifizieren und die allgemeine Nutzererfahrung zu verbessern.',
+                marketing:  'Diese Cookies verfolgen Ihre Surfaktivitäten auf verschiedenen Websites, um Ihnen personalisierte und relevante Werbung anzuzeigen. Sie werden in der Regel von unseren Werbepartnern gesetzt und ermöglichen diesen, ein Profil Ihrer Interessen aufzubauen.',
+                functional: 'Diese Cookies ermöglichen erweiterte Funktionen und Personalisierung, wie z. B. Live-Chat-Widgets, eingebettete Videos und Social-Media-Integrationen. Das Deaktivieren dieser Cookies kann die Funktionalität bestimmter Teile der Website einschränken.',
+            },
         },
     };
 
@@ -91,8 +107,10 @@
         el.id = STYLE_ID;
         el.textContent = [
             '.ics-ct{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;color:inherit;line-height:1.5}',
+            '.ics-ct-intro{font-size:14px;color:#374151;line-height:1.6;margin-bottom:24px}',
             '.ics-ct-group{margin-bottom:28px}',
-            '.ics-ct-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#888;margin-bottom:8px}',
+            '.ics-ct-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#888;margin-bottom:4px}',
+            '.ics-ct-group-desc{font-size:13px;color:#6b7280;margin:0 0 10px}',
             '.ics-ct-table{width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden}',
             '.ics-ct-table th,.ics-ct-table td{text-align:left;padding:9px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top}',
             '.ics-ct-table th{background:#f9fafb;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.04em}',
@@ -119,13 +137,17 @@
         var scannedAt = data.scanned_at;
         var html = '<div class="ics-ct">';
 
+        html += '<p class="ics-ct-intro">' + esc(L.intro) + '</p>';
+
         CAT_ORDER.forEach(function (cat) {
             var group = cats[cat];
             if (!group || !group.cookies || !group.cookies.length) return;
 
             var grouped = groupCookiesByName(group.cookies);
+            var desc = L.catDesc && L.catDesc[cat] ? L.catDesc[cat] : '';
             html += '<div class="ics-ct-group">';
             html += '<div class="ics-ct-group-label">' + esc(L[cat] || cat) + ' (' + grouped.length + ')</div>';
+            if (desc) html += '<p class="ics-ct-group-desc">' + esc(desc) + '</p>';
             html += '<table class="ics-ct-table"><thead><tr>';
             html += '<th>' + L.colName + '</th>';
             html += '<th>' + L.colDomain + '</th>';
