@@ -114,7 +114,7 @@ export default async function handler(req, res) {
                            enriched_description, enriched_source,
                            status
                       FROM cookie_discoveries
-                     WHERE status != 'dismissed'
+                     WHERE status = 'pending'
                      ORDER BY times_seen DESC, last_seen_at DESC
                 `),
                 db.query(`

@@ -212,10 +212,35 @@ function DiscoveriesTab({ discoveries, onAction, onBatchAction }) {
 function DefinitionsTab({ definitions, onAction }) {
     const [filter, setFilter] = useState("");
     const [busy, setBusy] = useState({});
+    const [edits, setEdits] = useState({});
+    const [dirty, setDirty] = useState({});
 
     const filtered = definitions.filter(d =>
         !filter || d.name.toLowerCase().includes(filter.toLowerCase())
     );
+
+    function edit(name, field, val) {
+        setEdits(prev => ({ ...prev, [name]: { ...(prev[name] || {}), [field]: val } }));
+        setDirty(prev => ({ ...prev, [name]: true }));
+    }
+
+    function getEdit(name, field, fallback = "") {
+        return edits[name]?.[field] ?? fallback;
+    }
+
+    async function save(row) {
+        setBusy(b => ({ ...b, [row.name]: true }));
+        const e = edits[row.name] || {};
+        await onAction("promote", {
+            name:        row.name,
+            is_prefix:   e.is_prefix   ?? row.is_prefix  ?? false,
+            vendor:      e.vendor      ?? row.vendor      ?? "",
+            category:    e.category    ?? row.category    ?? "",
+            description: e.description ?? row.description ?? "",
+        });
+        setDirty(prev => ({ ...prev, [row.name]: false }));
+        setBusy(b => ({ ...b, [row.name]: false }));
+    }
 
     async function deleteDefinition(name) {
         if (!window.confirm(`Remove "${name}" from promoted definitions?`)) return;
@@ -256,23 +281,63 @@ function DefinitionsTab({ definitions, onAction }) {
                         {filtered.map(row => (
                             <tr key={row.name}>
                                 <td><span className="cdb-name">{row.name}{row.is_prefix ? "*" : ""}</span></td>
-                                <td style={{ textAlign: "center", color: "rgba(255,255,255,0.4)" }}>
-                                    {row.is_prefix ? "✓" : "—"}
+                                <td style={{ textAlign: "center" }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={getEdit(row.name, "is_prefix", row.is_prefix ?? false)}
+                                        onChange={e => edit(row.name, "is_prefix", e.target.checked)}
+                                    />
                                 </td>
-                                <td style={{ fontSize: "0.8rem" }}>{row.vendor || "—"}</td>
-                                <td><CategoryBadge category={row.category} /></td>
-                                <td className="cdb-desc-cell">{row.description || "—"}</td>
+                                <td>
+                                    <input
+                                        className="cdb-input"
+                                        style={{ minWidth: 110 }}
+                                        value={getEdit(row.name, "vendor", row.vendor || "")}
+                                        onChange={e => edit(row.name, "vendor", e.target.value)}
+                                    />
+                                </td>
+                                <td>
+                                    <select
+                                        className="cdb-select"
+                                        value={getEdit(row.name, "category", row.category || "")}
+                                        onChange={e => edit(row.name, "category", e.target.value)}
+                                    >
+                                        <option value="">—</option>
+                                        {CATEGORIES.map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+                                </td>
+                                <td className="cdb-desc-cell">
+                                    <input
+                                        className="cdb-input"
+                                        style={{ minWidth: 200 }}
+                                        value={getEdit(row.name, "description", row.description || "")}
+                                        onChange={e => edit(row.name, "description", e.target.value)}
+                                    />
+                                </td>
                                 <td style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", whiteSpace: "nowrap" }}>
                                     {row.promoted_at ? new Date(row.promoted_at).toLocaleDateString() : "—"}
                                 </td>
                                 <td>
-                                    <button
-                                        className="cdb-btn --delete"
-                                        disabled={!!busy[row.name]}
-                                        onClick={() => deleteDefinition(row.name)}
-                                    >
-                                        Delete
-                                    </button>
+                                    <div className="cdb-actions">
+                                        {dirty[row.name] && (
+                                            <button
+                                                className="cdb-btn --promote"
+                                                disabled={!!busy[row.name]}
+                                                onClick={() => save(row)}
+                                            >
+                                                Save
+                                            </button>
+                                        )}
+                                        <button
+                                            className="cdb-btn --delete"
+                                            disabled={!!busy[row.name]}
+                                            onClick={() => deleteDefinition(row.name)}
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
