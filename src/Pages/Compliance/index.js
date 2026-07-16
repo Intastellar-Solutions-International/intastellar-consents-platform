@@ -1035,7 +1035,7 @@ export default function CompliancePage() {
                             </button>
                         </div>
                         <p className="compliance-embed-modal__hint">
-                            Optional: add <code>data-lang="de"</code> to the div for German labels.
+                            Optional: add <code>data-lang="de"</code> for translated labels. If visitors use an ad blocker, add <code>data-api-base="/your-proxy"</code> and proxy that path to <code>https://www.intastellarconsents.com/api/cookie-banner</code> on your server.
                         </p>
                     </div>
                 </div>

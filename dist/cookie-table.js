@@ -707,9 +707,13 @@
 
         container.innerHTML = '<p class="ics-ct-msg">' + esc(L.loading) + '</p>';
 
-        var url = BASE + '/api/cookie-banner?domain=' + encodeURIComponent(domain);
+        // data-api-base lets the embedding site proxy the API through their own domain,
+        // making the request first-party and bypassing content-blocker / ITP restrictions.
+        // e.g. data-api-base="/ics-proxy"  →  GET /ics-proxy?domain=example.com
+        var apiBase = (container.getAttribute('data-api-base') || '').trim() || (BASE + '/api/cookie-banner');
+        var url = apiBase + (apiBase.indexOf('?') === -1 ? '?' : '&') + 'domain=' + encodeURIComponent(domain);
 
-        fetch(url)
+        fetch(url, { mode: 'cors', cache: 'no-cache' })
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 if (data.status === 'scan_in_progress' || data.status === 'scan_queued') {
