@@ -561,6 +561,9 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "MUID",             bannerCategory: "marketing"  }, // Microsoft User ID
     { exact:  "MSFPC",            bannerCategory: "marketing"  }, // Microsoft First Party Cookie
     { exact:  "MR",               bannerCategory: "marketing"  }, // Microsoft redirect tracking
+    { exact:  "SRM_B",            bannerCategory: "marketing"  }, // Bing remarketing
+    { exact:  "ANONCHK",          bannerCategory: "analytics"  }, // Microsoft Clarity anonymous check
+    { exact:  "SM",               bannerCategory: "analytics"  }, // Microsoft Clarity session mapping
     { prefix: "_uetsid",          bannerCategory: "marketing"  }, // Microsoft UET session
     { prefix: "_uetvid",          bannerCategory: "marketing"  }, // Microsoft UET visitor
     // Adobe Analytics
@@ -765,8 +768,12 @@ export const COOKIE_META = [
     { prefix: "tp.",                    description: "Trustpilot cookie — used for review widget functionality and fraud prevention." },
     // Reddit
     { exact:  "reddaid",                description: "Reddit Ads cookie — identifies a visitor for Reddit advertising attribution." },
-    // Microsoft Advertising
+    // Microsoft Advertising / Clarity
     { exact:  "MUID",                   description: "Microsoft unique identifier — tracks users across Microsoft sites for advertising. Expires after 1 year." },
+    { exact:  "MR",                     description: "Microsoft redirect cookie — tracks ad click redirects for Bing Ads conversion measurement. Expires after 7 days." },
+    { exact:  "SRM_B",                  description: "Bing remarketing cookie — identifies visitors for Bing Ads audience targeting and retargeting. Expires after 1 year." },
+    { exact:  "ANONCHK",               description: "Microsoft Clarity anonymous check cookie — verifies that cookie-based session tracking is supported in the browser. Session cookie." },
+    { exact:  "SM",                     description: "Microsoft Clarity session mapping cookie — links anonymous session data across page views for session replay. Session cookie." },
     // Intercom
     { prefix: "intercom-",              description: "Intercom messenger cookie — stores visitor identity and session state for the chat widget." },
     // Pinterest
@@ -968,8 +975,16 @@ export async function scanDomain(domain) {
         });
 
         if (clicked) {
-            // Give post-consent scripts (GA4, GTM, etc.) time to fire and write cookies.
-            await new Promise(r => setTimeout(r, 3000));
+            // GA4 with GCM v2 often only writes _ga / _ga_* on a page load where
+            // consent is already granted from the start. Reload so GA initialises
+            // with the IntastellarConsentSolution cookie already present.
+            try {
+                await page.goto(`https://${domain}`, { waitUntil: "networkidle2", timeout: 25000 });
+            } catch (e) {
+                if (!e.message.includes("timeout") && !e.message.includes("Navigation")) throw e;
+            }
+            // Brief extra wait for any deferred analytics beacons.
+            await new Promise(r => setTimeout(r, 2000));
         }
 
         const { cookies: rawCookies } = await cdpClient.send("Network.getAllCookies");
