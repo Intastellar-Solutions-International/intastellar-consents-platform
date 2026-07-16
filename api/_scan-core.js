@@ -952,13 +952,14 @@ export async function scanDomain(domain) {
         try {
             await page.waitForSelector(
                 "#intastellarCookieSettings--acceptAll, .intastellarCookieSettings--acceptAll",
-                { timeout: 4000 }
+                { timeout: 6000, visible: true }
             );
             await page.click(
                 "#intastellarCookieSettings--acceptAll, .intastellarCookieSettings--acceptAll"
             );
-            // Wait for post-consent requests (GA, GTM, etc.) to complete.
-            await page.waitForNetworkIdle({ idleTime: 1500, timeout: 6000 }).catch(() => {});
+            // Give post-consent scripts (GA4, GTM, etc.) time to fire and write cookies.
+            // page.waitForNetworkIdle() requires puppeteer ≥14; use setTimeout for compat.
+            await new Promise(r => setTimeout(r, 3000));
         } catch {
             // Banner not present — site uses a different CMP or no banner at all.
         }
