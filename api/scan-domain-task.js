@@ -50,25 +50,38 @@ async function recordDiscoveries(db, scannedSite, cookies) {
     );
     if (!unknown.length) return;
 
+    // Ensure cookie_domains column exists (safe to call repeatedly — no-ops if already present)
+    await db.query(`
+        ALTER TABLE cookie_discoveries ADD COLUMN IF NOT EXISTS cookie_domains TEXT[] DEFAULT '{}'
+    `).catch(() => {});
+
     for (const c of unknown) {
-        const hasVendor   = !!vendorFromCookieName(c.name);
-        const hasCategory = !!categoryFromCookieName(c.name);
+        const hasVendor    = !!vendorFromCookieName(c.name);
+        const hasCategory  = !!categoryFromCookieName(c.name);
+        const cookieDomain = c.domain ? c.domain.replace(/^\./, "") : null;
         await db.query(`
             INSERT INTO cookie_discoveries
-                (name, example_sites, has_vendor, has_category)
-            VALUES ($1, ARRAY[$2::text], $3, $4)
+                (name, example_sites, cookie_domains, has_vendor, has_category)
+            VALUES ($1, ARRAY[$2::text], $3, $4, $5)
             ON CONFLICT (name) DO UPDATE SET
                 times_seen      = cookie_discoveries.times_seen + 1,
                 last_seen_at    = NOW(),
                 has_description = FALSE,
-                has_vendor      = $3 OR cookie_discoveries.has_vendor,
-                has_category    = $4 OR cookie_discoveries.has_category,
+                has_vendor      = $4 OR cookie_discoveries.has_vendor,
+                has_category    = $5 OR cookie_discoveries.has_category,
                 example_sites   = CASE
-                    WHEN $2 = ANY(cookie_discoveries.example_sites)         THEN cookie_discoveries.example_sites
+                    WHEN $2 = ANY(cookie_discoveries.example_sites)              THEN cookie_discoveries.example_sites
                     WHEN array_length(cookie_discoveries.example_sites, 1) >= 10 THEN cookie_discoveries.example_sites
                     ELSE array_append(cookie_discoveries.example_sites, $2::text)
+                END,
+                cookie_domains  = CASE
+                    WHEN $6 IS NULL                                               THEN cookie_discoveries.cookie_domains
+                    WHEN $6 = ANY(cookie_discoveries.cookie_domains)              THEN cookie_discoveries.cookie_domains
+                    WHEN array_length(cookie_discoveries.cookie_domains, 1) >= 10 THEN cookie_discoveries.cookie_domains
+                    ELSE array_append(cookie_discoveries.cookie_domains, $6::text)
                 END
-        `, [c.name, scannedSite, hasVendor, hasCategory]);
+        `, [c.name, scannedSite, cookieDomain ? `{${cookieDomain}}` : '{}',
+            hasVendor, hasCategory, cookieDomain]);
     }
 
     console.log(`[scan-domain-task] recorded ${unknown.length} cookie discoveries from ${scannedSite}`);

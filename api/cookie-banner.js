@@ -52,7 +52,7 @@ const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "f
 // Shared data-processing: turns raw transfers + cookies arrays into the
 // grouped categories object the banner consumes.
 // overrides: Record<cookieName, { bannerCategory?, vendor?, description? }>
-function buildCategories(domain, transfers, rawCookies, overrides = {}) {
+function buildCategories(domain, transfers, rawCookies, overrides = {}, definitions = []) {
     const domainRoot = domain.split(".").slice(-2).join(".");
 
     const vendorMap = new Map();
@@ -92,9 +92,16 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}) {
         const isFirstParty  = cookieRoot === domainRoot;
         const domainVendor  = vendorByRoot.get(cookieRoot);
         const nameCategory  = categoryFromCookieName(c.name);
+
+        // Check promoted cookie_definitions for this cookie name (exact then prefix)
+        const defMatch = definitions.find(d =>
+            d.is_prefix ? c.name.startsWith(d.name) : c.name === d.name
+        );
+
         // User override wins for unknown cookies; well-known pattern matches always take priority
         const bannerCategory = nameCategory
             || (ov.bannerCategory || null)
+            || defMatch?.category
             || (domainVendor ? domainVendor.bannerCategory : null)
             || c.bannerCategory
             || (isFirstParty ? "necessary" : "functional");
@@ -109,8 +116,8 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}) {
             secure:         c.secure,
             sameSite:       c.sameSite,
             bannerCategory,
-            description:    ov.description || c.description || describeCookie(c.name) || null,
-            provider:       ov.vendor || cookieService || null,
+            description:    ov.description || c.description || describeCookie(c.name) || defMatch?.description || null,
+            provider:       ov.vendor || cookieService || defMatch?.vendor || null,
         };
 
         // Exact service name match, then brand-family fallback (e.g. "Google Ads" cookie
@@ -137,6 +144,17 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}) {
     );
 
     return categories;
+}
+
+async function loadDefinitions(db) {
+    try {
+        const { rows } = await db.query(
+            `SELECT name, is_prefix, vendor, category, description FROM cookie_definitions`
+        );
+        return rows;
+    } catch (_) {
+        return [];
+    }
 }
 
 async function loadOverrides(db, domain) {
@@ -196,12 +214,15 @@ export default async function handler(req, res) {
 
         if (rows.length) {
             const row = rows[0];
-            const overrides = await loadOverrides(db, row.domain);
+            const [overrides, definitions] = await Promise.all([
+                loadOverrides(db, row.domain),
+                loadDefinitions(db),
+            ]);
             res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
             return res.json({
                 domain:     row.domain,
                 scanned_at: row.scanned_at,
-                categories: buildCategories(row.domain, row.transfers, row.cookies, overrides),
+                categories: buildCategories(row.domain, row.transfers, row.cookies, overrides, definitions),
             });
         }
 
@@ -248,12 +269,15 @@ export default async function handler(req, res) {
             });
         }
 
-        const overrides = await loadOverrides(db, domain);
+        const [overrides, definitions] = await Promise.all([
+            loadOverrides(db, domain),
+            loadDefinitions(db),
+        ]);
         res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
         return res.json({
             domain,
             scanned_at: finalAt,
-            categories: buildCategories(domain, transfers, rawCookies, overrides),
+            categories: buildCategories(domain, transfers, rawCookies, overrides, definitions),
         });
 
     } catch (err) {

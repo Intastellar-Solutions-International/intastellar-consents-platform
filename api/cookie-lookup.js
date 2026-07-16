@@ -90,6 +90,32 @@ function buildVerifiedNameSet(verifiedMap) {
     return names;
 }
 
+async function loadDefinitions(db) {
+    try {
+        const { rows } = await db.query(
+            `SELECT name, is_prefix, vendor, category, description,
+                    privacy_url, legal_basis, transfer_mechanism
+               FROM cookie_definitions
+              ORDER BY name`
+        );
+        return rows.map(r => ({
+            name:              r.is_prefix ? r.name + "*" : r.name,
+            isPrefix:          r.is_prefix,
+            source:            "promoted",
+            vendor:            r.vendor            ?? null,
+            category:          r.category          ?? null,
+            description:       r.description       ?? null,
+            dataCountry:       r.vendor ? (DATA_COUNTRIES[r.vendor] ?? null) : null,
+            dataRegion:        r.vendor ? (DATA_REGIONS[r.vendor]   ?? null) : null,
+            privacyUrl:        r.privacy_url        ?? null,
+            legalBasis:        r.legal_basis        ?? null,
+            transferMechanism: r.transfer_mechanism ?? null,
+        }));
+    } catch (_) {
+        return [];
+    }
+}
+
 async function loadDiscoveries(db, excludeNames) {
     try {
         const { rows } = await db.query(
@@ -173,21 +199,29 @@ export default async function handler(req, res) {
         return res.json(lookupByName(clean));
     }
 
-    // Full list — static verified + DB discovered
+    // Full list — static verified + DB promoted definitions + DB discovered
     const verifiedMap  = buildVerifiedList();
     const verifiedList = [...verifiedMap.values()];
     const excludeNames = buildVerifiedNameSet(verifiedMap);
 
-    const db           = getPool();
-    const discovered   = await loadDiscoveries(db, excludeNames);
+    const db          = getPool();
+    const [definitions, discovered] = await Promise.all([
+        loadDefinitions(db),
+        loadDiscoveries(db, excludeNames),
+    ]);
 
-    const cookies = [...verifiedList, ...discovered];
+    // Promoted definitions also excluded from discovered list
+    const promotedNames = new Set(definitions.map(d => d.isPrefix ? d.name.slice(0, -1) : d.name));
+    const filteredDiscovered = discovered.filter(d => !promotedNames.has(d.name));
+
+    const cookies = [...verifiedList, ...definitions, ...filteredDiscovered];
 
     res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=3600");
     return res.json({
         total:      cookies.length,
         verified:   verifiedList.length,
-        discovered: discovered.length,
+        promoted:   definitions.length,
+        discovered: filteredDiscovered.length,
         cookies,
     });
 }
