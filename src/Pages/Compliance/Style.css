@@ -478,7 +478,7 @@
     font-size: 0.68rem;
     color: rgba(255, 255, 255, 0.28);
     font-family: monospace;
-    white-space: nowrap;
+    white-space: pre-wrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
