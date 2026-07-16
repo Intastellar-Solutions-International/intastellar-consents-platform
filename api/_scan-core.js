@@ -344,7 +344,7 @@ export const VENDOR_META = {
     "Bugsnag":            { description: "Application error monitoring and crash reporting", privacyUrl: "https://smartbear.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "Rollbar":            { description: "Real-time error tracking and debugging platform", privacyUrl: "https://rollbar.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "Jetpack / WP.com Stats": { description: "WordPress.com site statistics and performance tools", privacyUrl: "https://automattic.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
-    "Ahrefs Pte. Ltd.":   { description: "SEO analytics platform", privacyUrl: "https://ahrefs.com/privacy", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Ahrefs Pte. Ltd.":   { description: "SEO analytics platform", privacyUrl: "https://ahrefs.com/legal/privacy-policy", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "Inspectlet":         { description: "Session recording and heatmap analytics", privacyUrl: "https://www.inspectlet.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
     "StatCounter":        { description: "Web analytics and visitor tracking service", privacyUrl: "https://statcounter.com/privacy/", legalBasis: "consent", transferMechanism: "EEA" },
     "Zoho PageSense":     { description: "Conversion optimisation and personalisation platform by Zoho", privacyUrl: "https://www.zoho.com/privacy.html", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
