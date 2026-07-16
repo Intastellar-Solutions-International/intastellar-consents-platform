@@ -85,6 +85,7 @@ const COOKIE_NAME_PATTERNS = [
     { exact:  "personalization_id", bannerCategory: "marketing" },
     { prefix: "amplitude_",       bannerCategory: "analytics"  },
     { prefix: "intercom-",        bannerCategory: "functional" },
+    { prefix: "_vcrr_",           bannerCategory: "necessary"  },
     { prefix: "__cf",             bannerCategory: "security"   },
     { exact:  "cf_clearance",     bannerCategory: "security"   },
     // Pinterest
@@ -302,6 +303,7 @@ const COOKIE_VENDOR_PATTERNS = [
     { prefix: "_wijs",              service: "Wistia"                  },
     { prefix: "tp.",                service: "Trustpilot"              },
     { exact:  "IntastellarConsentSolution", service: "Intastellar Consents" },
+    { prefix: "_vcrr_",                    service: "Vercel"                },
 ];
 
 function vendorServiceForCookie(name) {
