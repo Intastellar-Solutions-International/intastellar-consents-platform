@@ -36672,6 +36672,26 @@ var API = {
       headers: {
         "Content-Type": "application/json"
       }
+    },
+    cookieOverrides: {
+      get: {
+        url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/cookie-overrides"),
+        method: "GET",
+        headers: {
+          "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+          "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+          "Content-Type": "application/json"
+        }
+      },
+      save: {
+        url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/cookie-overrides"),
+        method: "POST",
+        headers: {
+          "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+          "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+          "Content-Type": "application/json"
+        }
+      }
     }
   },
   settings: {
@@ -51055,18 +51075,39 @@ function CompliancePage() {
     }
   }, [handle, currentDomain]);
   useEffect(function () {
+    var _API$id;
     var d = handle || currentDomain || "";
     if (!d || d === "combined view") {
       setCookieOverrides({});
       return;
     }
+
+    // Apply localStorage immediately for instant render
+    var local = {};
     try {
-      var stored = JSON.parse(localStorage.getItem("cookieOverrides_".concat(d)) || "{}");
-      setCookieOverrides(stored && _typeof(stored) === "object" ? stored : {});
-    } catch (_unused2) {
-      setCookieOverrides({});
-    }
-  }, [handle, currentDomain]);
+      local = JSON.parse(localStorage.getItem("cookieOverrides_".concat(d)) || "{}") || {};
+    } catch (_unused2) {}
+    setCookieOverrides(local);
+
+    // Fetch from server and merge (server wins — syncs across sessions/browsers)
+    if (!id || !((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) !== null && _API$id !== void 0 && (_API$id = _API$id.gdpr) !== null && _API$id !== void 0 && _API$id.cookieOverrides)) return;
+    var cfg = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].gdpr.cookieOverrides.get;
+    fetch("".concat(cfg.url, "?domain=").concat(encodeURIComponent(d)), {
+      method: cfg.method,
+      headers: cfg.headers
+    }).then(function (r) {
+      return r.ok ? r.json() : null;
+    }).then(function (data) {
+      if (!(data !== null && data !== void 0 && data.overrides)) return;
+      setCookieOverrides(function (prev) {
+        var merged = _objectSpread(_objectSpread({}, prev), data.overrides);
+        try {
+          localStorage.setItem("cookieOverrides_".concat(d), JSON.stringify(merged));
+        } catch (_unused3) {}
+        return merged;
+      });
+    })["catch"](function () {});
+  }, [handle, currentDomain, id]);
   useEffect(function () {
     var _preConsentTransfers$, _preConsentTransfers$2, _preConsentTransfers$3, _preConsentTransfers$4;
     if (!(preConsentTransfers !== null && preConsentTransfers !== void 0 && preConsentTransfers.scanned_at)) return;
@@ -51083,7 +51124,7 @@ function CompliancePage() {
       var next = [entry].concat(_toConsumableArray(prev)).slice(0, 5);
       try {
         localStorage.setItem("scanHistory_".concat(domain), JSON.stringify(next));
-      } catch (_unused3) {}
+      } catch (_unused4) {}
       return next;
     });
   }, [preConsentTransfers, handle, currentDomain]);
@@ -51106,10 +51147,24 @@ function CompliancePage() {
   function saveCookieOverride(cookieName, draft) {
     var d = handle || currentDomain || "";
     setCookieOverrides(function (prev) {
+      var _API$id2;
       var next = _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, cookieName, _objectSpread(_objectSpread({}, prev[cookieName]), draft)));
       try {
         localStorage.setItem("cookieOverrides_".concat(d), JSON.stringify(next));
-      } catch (_unused4) {}
+      } catch (_unused5) {}
+
+      // Persist to server (fire-and-forget)
+      if (id && (_API$id2 = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) !== null && _API$id2 !== void 0 && (_API$id2 = _API$id2.gdpr) !== null && _API$id2 !== void 0 && _API$id2.cookieOverrides) {
+        var cfg = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].gdpr.cookieOverrides.save;
+        fetch(cfg.url, {
+          method: cfg.method,
+          headers: cfg.headers,
+          body: JSON.stringify({
+            domain: d,
+            overrides: _defineProperty({}, cookieName, draft)
+          })
+        })["catch"](function () {});
+      }
       return next;
     });
   }

@@ -256,6 +256,26 @@ const API = {
                 "Content-Type": "application/json"
             }
         },
+        cookieOverrides: {
+            get: {
+                url: `${ScannerHost}/api/cookie-overrides`,
+                method: "GET",
+                headers: {
+                    "Authorization": Authentication.getToken(),
+                    "Organisation": Authentication.getOrganisation(),
+                    "Content-Type": "application/json"
+                }
+            },
+            save: {
+                url: `${ScannerHost}/api/cookie-overrides`,
+                method: "POST",
+                headers: {
+                    "Authorization": Authentication.getToken(),
+                    "Organisation": Authentication.getOrganisation(),
+                    "Content-Type": "application/json"
+                }
+            },
+        },
     },
     settings: {
         createUser: {

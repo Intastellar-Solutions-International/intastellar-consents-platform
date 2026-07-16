@@ -320,7 +320,8 @@ function vendorServiceForCookie(name) {
 
 // Shared data-processing: turns raw transfers + cookies arrays into the
 // grouped categories object the banner consumes.
-function buildCategories(domain, transfers, rawCookies) {
+// overrides: Record<cookieName, { bannerCategory?, vendor?, description? }>
+function buildCategories(domain, transfers, rawCookies, overrides = {}) {
     const domainRoot = domain.split(".").slice(-2).join(".");
 
     const vendorMap = new Map();
@@ -355,15 +356,19 @@ function buildCategories(domain, transfers, rawCookies) {
     }
 
     const cookies = (rawCookies || []).map(c => {
+        const ov            = overrides[c.name] || {};
         const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
         const isFirstParty  = cookieRoot === domainRoot;
         const domainVendor  = vendorByRoot.get(cookieRoot);
         const nameCategory  = categoryFromCookieName(c.name);
+        // User override wins for unknown cookies; well-known pattern matches always take priority
         const bannerCategory = nameCategory
+            || (ov.bannerCategory || null)
             || (domainVendor ? domainVendor.bannerCategory : null)
             || c.bannerCategory
             || (isFirstParty ? "necessary" : "functional");
 
+        const cookieService = vendorServiceForCookie(c.name);
         const enriched = {
             name:           c.name,
             domain:         c.domain,
@@ -373,11 +378,9 @@ function buildCategories(domain, transfers, rawCookies) {
             secure:         c.secure,
             sameSite:       c.sameSite,
             bannerCategory,
-            description:    c.description || describeCookie(c.name) || null,
+            description:    ov.description || c.description || describeCookie(c.name) || null,
+            provider:       ov.vendor || cookieService || null,
         };
-
-        const cookieService = vendorServiceForCookie(c.name);
-        enriched.provider = cookieService || null;
 
         // Exact service name match, then brand-family fallback (e.g. "Google Ads" cookie
         // on a site where only "Google Analytics" was detected — both are Google).
@@ -403,6 +406,28 @@ function buildCategories(domain, transfers, rawCookies) {
     );
 
     return categories;
+}
+
+async function loadOverrides(db, domain) {
+    try {
+        const { rows } = await db.query(
+            `SELECT cookie_name, banner_category, vendor, description
+               FROM cookie_overrides WHERE domain = $1`,
+            [domain]
+        );
+        const map = {};
+        for (const r of rows) {
+            map[r.cookie_name] = {
+                bannerCategory: r.banner_category || "",
+                vendor:         r.vendor          || "",
+                description:    r.description     || "",
+            };
+        }
+        return map;
+    } catch (_) {
+        // table may not exist yet
+        return {};
+    }
 }
 
 export default async function handler(req, res) {
@@ -439,11 +464,12 @@ export default async function handler(req, res) {
 
         if (rows.length) {
             const row = rows[0];
+            const overrides = await loadOverrides(db, row.domain);
             res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
             return res.json({
                 domain:     row.domain,
                 scanned_at: row.scanned_at,
-                categories: buildCategories(row.domain, row.transfers, row.cookies),
+                categories: buildCategories(row.domain, row.transfers, row.cookies, overrides),
             });
         }
 
@@ -488,11 +514,12 @@ export default async function handler(req, res) {
             });
         }
 
+        const overrides = await loadOverrides(db, domain);
         res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
         return res.json({
             domain,
             scanned_at: finalAt,
-            categories: buildCategories(domain, transfers, rawCookies),
+            categories: buildCategories(domain, transfers, rawCookies, overrides),
         });
 
     } catch (err) {

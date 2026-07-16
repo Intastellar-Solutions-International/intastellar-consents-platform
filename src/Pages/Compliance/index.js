@@ -265,11 +265,29 @@ export default function CompliancePage() {
     useEffect(() => {
         const d = handle || currentDomain || "";
         if (!d || d === "combined view") { setCookieOverrides({}); return; }
+
+        // Apply localStorage immediately for instant render
+        let local = {};
         try {
-            const stored = JSON.parse(localStorage.getItem(`cookieOverrides_${d}`) || "{}");
-            setCookieOverrides(stored && typeof stored === "object" ? stored : {});
-        } catch { setCookieOverrides({}); }
-    }, [handle, currentDomain]);
+            local = JSON.parse(localStorage.getItem(`cookieOverrides_${d}`) || "{}") || {};
+        } catch {}
+        setCookieOverrides(local);
+
+        // Fetch from server and merge (server wins — syncs across sessions/browsers)
+        if (!id || !API[id]?.gdpr?.cookieOverrides) return;
+        const cfg = API[id].gdpr.cookieOverrides.get;
+        fetch(`${cfg.url}?domain=${encodeURIComponent(d)}`, { method: cfg.method, headers: cfg.headers })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (!data?.overrides) return;
+                setCookieOverrides(prev => {
+                    const merged = { ...prev, ...data.overrides };
+                    try { localStorage.setItem(`cookieOverrides_${d}`, JSON.stringify(merged)); } catch {}
+                    return merged;
+                });
+            })
+            .catch(() => {});
+    }, [handle, currentDomain, id]);
 
     useEffect(() => {
         if (!preConsentTransfers?.scanned_at) return;
@@ -304,6 +322,17 @@ export default function CompliancePage() {
         setCookieOverrides(prev => {
             const next = { ...prev, [cookieName]: { ...prev[cookieName], ...draft } };
             try { localStorage.setItem(`cookieOverrides_${d}`, JSON.stringify(next)); } catch {}
+
+            // Persist to server (fire-and-forget)
+            if (id && API[id]?.gdpr?.cookieOverrides) {
+                const cfg = API[id].gdpr.cookieOverrides.save;
+                fetch(cfg.url, {
+                    method: cfg.method,
+                    headers: cfg.headers,
+                    body: JSON.stringify({ domain: d, overrides: { [cookieName]: draft } }),
+                }).catch(() => {});
+            }
+
             return next;
         });
     }
