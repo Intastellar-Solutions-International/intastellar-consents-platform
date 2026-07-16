@@ -75,8 +75,8 @@ async function recordDiscoveries(db, scannedSite, cookies) {
                     ELSE array_append(cookie_discoveries.example_sites, $2::text)
                 END,
                 cookie_domains  = CASE
-                    WHEN $6 IS NULL                                               THEN cookie_discoveries.cookie_domains
-                    WHEN $6 = ANY(cookie_discoveries.cookie_domains)              THEN cookie_discoveries.cookie_domains
+                    WHEN $6::text IS NULL                                               THEN cookie_discoveries.cookie_domains
+                    WHEN $6::text = ANY(cookie_discoveries.cookie_domains)              THEN cookie_discoveries.cookie_domains
                     WHEN array_length(cookie_discoveries.cookie_domains, 1) >= 10 THEN cookie_discoveries.cookie_domains
                     ELSE array_append(cookie_discoveries.cookie_domains, $6::text)
                 END
