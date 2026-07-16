@@ -85,8 +85,8 @@ const COOKIE_NAME_PATTERNS = [
     { exact:  "personalization_id", bannerCategory: "marketing" },
     { prefix: "amplitude_",       bannerCategory: "analytics"  },
     { prefix: "intercom-",        bannerCategory: "functional" },
-    { prefix: "__cf",             bannerCategory: "necessary"  },
-    { exact:  "cf_clearance",     bannerCategory: "necessary"  },
+    { prefix: "__cf",             bannerCategory: "security"   },
+    { exact:  "cf_clearance",     bannerCategory: "security"   },
     // Pinterest
     { prefix: "_pin_",            bannerCategory: "marketing"  },
     { prefix: "_pinterest_",      bannerCategory: "marketing"  },
@@ -262,7 +262,7 @@ const BANNER_CATEGORY = {
     "third-party":  "functional",
 };
 
-const BANNER_CATEGORIES = ["necessary", "analytics", "marketing", "functional"];
+const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "functional"];
 
 // Maps cookie name patterns to the vendor service they belong to.
 // Used to associate first-party-set cookies (e.g. _ga on .example.com) back

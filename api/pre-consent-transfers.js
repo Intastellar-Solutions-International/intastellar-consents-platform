@@ -53,8 +53,8 @@ const COOKIE_NAME_PATTERNS = [
     { exact:  "personalization_id", bannerCategory: "marketing" },
     { prefix: "amplitude_",       bannerCategory: "analytics"  },
     { prefix: "intercom-",        bannerCategory: "functional" },
-    { prefix: "__cf",             bannerCategory: "necessary"  },
-    { exact:  "cf_clearance",     bannerCategory: "necessary"  },
+    { prefix: "__cf",             bannerCategory: "security"   },
+    { exact:  "cf_clearance",     bannerCategory: "security"   },
     // Pinterest
     { prefix: "_pin_",            bannerCategory: "marketing"  },
     { prefix: "_pinterest_",      bannerCategory: "marketing"  },

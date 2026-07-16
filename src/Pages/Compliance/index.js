@@ -30,6 +30,7 @@ const CATEGORY_META = {
 
 const BANNER_CATEGORY_META = {
     necessary:  { label: "Necessary",  color: "#50a878" },
+    security:   { label: "Security",   color: "#3bb5ac" },
     analytics:  { label: "Analytics",  color: "#5090dc" },
     marketing:  { label: "Marketing",  color: "#dc5050" },
     functional: { label: "Functional", color: "#c0a053" },

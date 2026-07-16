@@ -29,6 +29,7 @@
     var LABELS = {
         en: {
             necessary:  'Necessary',
+            security:   'Security',
             analytics:  'Analytics',
             marketing:  'Marketing',
             functional: 'Functional',
@@ -47,6 +48,7 @@
         },
         de: {
             necessary:  'Notwendig',
+            security:   'Sicherheit',
             analytics:  'Analyse',
             marketing:  'Marketing',
             functional: 'Funktional',
@@ -65,7 +67,7 @@
         },
     };
 
-    var CAT_ORDER = ['necessary', 'analytics', 'marketing', 'functional'];
+    var CAT_ORDER = ['necessary', 'security', 'analytics', 'marketing', 'functional'];
 
     function injectStyles() {
         if (document.getElementById(STYLE_ID)) return;

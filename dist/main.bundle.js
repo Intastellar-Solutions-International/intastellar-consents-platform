@@ -49367,6 +49367,10 @@ var BANNER_CATEGORY_META = {
     label: "Necessary",
     color: "#50a878"
   },
+  security: {
+    label: "Security",
+    color: "#3bb5ac"
+  },
   analytics: {
     label: "Analytics",
     color: "#5090dc"
