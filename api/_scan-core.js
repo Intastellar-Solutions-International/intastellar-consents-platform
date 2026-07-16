@@ -946,6 +946,22 @@ export async function scanDomain(domain) {
             if (!e.message.includes("timeout") && !e.message.includes("Navigation")) throw e;
         }
 
+        // If Intastellar Consents is present, click "Accept All" so GCM v2 signals
+        // flip to "granted" and analytics cookies (GA etc.) are actually written.
+        try {
+            await page.waitForSelector(
+                "#intastellarCookieSettings--acceptAll, .intastellarCookieSettings--acceptAll",
+                { timeout: 4000 }
+            );
+            await page.click(
+                "#intastellarCookieSettings--acceptAll, .intastellarCookieSettings--acceptAll"
+            );
+            // Wait for post-consent requests (GA, GTM, etc.) to complete.
+            await page.waitForNetworkIdle({ idleTime: 1500, timeout: 6000 }).catch(() => {});
+        } catch {
+            // Banner not present — site uses a different CMP or no banner at all.
+        }
+
         const { cookies: rawCookies } = await cdpClient.send("Network.getAllCookies");
         await browser.close();
 
