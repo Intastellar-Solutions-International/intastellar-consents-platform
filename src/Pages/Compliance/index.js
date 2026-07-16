@@ -103,6 +103,7 @@ export default function CompliancePage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedTransfer, setExpandedTransfer] = useState(null);
     const [scanHistory, setScanHistory] = useState([]);
+    const [copyTableCopied, setCopyTableCopied] = useState(false);
 
     const domainsForApi = useMemo(
         () => (handle ? handle : currentDomain) || "combined view",
@@ -288,6 +289,22 @@ export default function CompliancePage() {
             ];
             downloadCSV(rows, `pre-consent-cookies-${scanDomain}.csv`);
         }
+    };
+
+    const copyCookieTable = () => {
+        const items = preConsentTransfers?.pre_consent_cookies || [];
+        const baseDomain = (handle || currentDomain || "").replace(/^www\./, "");
+        const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const rows = items.map(c => {
+            const isThird = !c.domain.replace(/^\./, "").endsWith(baseDomain);
+            const bm = c.bannerCategory ? (BANNER_CATEGORY_META[c.bannerCategory]?.label || c.bannerCategory) : "";
+            return `<tr><td>${esc(c.name)}</td><td>${esc(c.domain)}</td><td>${isThird ? "3rd party" : "1st party"}</td><td>${c.session ? "Session" : "Persistent"}</td><td>${esc(bm)}</td><td>${esc(c.description || "")}</td></tr>`;
+        }).join("");
+        const html = `<table><thead><tr><th>Cookie name</th><th>Domain</th><th>Party</th><th>Lifetime</th><th>Category</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table>`;
+        navigator.clipboard.writeText(html).then(() => {
+            setCopyTableCopied(true);
+            setTimeout(() => setCopyTableCopied(false), 2000);
+        });
     };
 
     if (!id || !API[id]) return null;
@@ -710,6 +727,15 @@ export default function CompliancePage() {
                                             </div>
                                         ) : (
                                         <>
+                                        <div className="compliance-cookies__table-actions">
+                                            <button
+                                                type="button"
+                                                className="compliance-transfers__export-btn"
+                                                onClick={copyCookieTable}
+                                            >
+                                                {copyTableCopied ? "Copied!" : "Copy cookie table"}
+                                            </button>
+                                        </div>
                                         <div className="compliance-cookies__list-header" aria-hidden>
                                             <span>Name / Domain</span>
                                             <span>Party</span>

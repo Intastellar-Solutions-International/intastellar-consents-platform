@@ -17170,102 +17170,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.top-countries{
         width: 100vw;
         border-radius: 0;
     }
-}
-
-/* Suppress svgMap tooltip in data-flow mode */
-.world-map--flow .svgMap-tooltip {
-    display: none !important;
-}
-
-/* ── Data flow legend ────────────────────────────────────────────────────────── */
-.world-map__legend {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-}
-
-.world-map__legend-swatch {
-    flex-shrink: 0;
-    width: 18px;
-    height: 10px;
-    border-radius: 2px;
-}
-
-.world-map__legend-swatch--flow {
-    background: rgba(220, 80, 80, 0.15);
-    border: 1.5px solid rgba(220, 80, 80, 0.7);
-}
-
-.world-map__legend-swatch--origin {
-    background: rgba(80, 168, 120, 0.2);
-    border: 1.5px solid rgba(80, 168, 120, 0.8);
-    border-radius: 50%;
-    width: 10px;
-    height: 10px;
-}
-
-.world-map__legend-sep {
-    width: 1px;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.12);
-    margin: 0 2px;
-}
-
-.world-map__legend-label {
-    font-size: 0.68rem;
-    color: rgba(255, 255, 255, 0.38);
-    letter-spacing: 0.02em;
-}
-
-/* ── Data flow SVG overlay ────────────────────────────────────────────────────── */
-@keyframes flow-arc-draw {
-    from { stroke-dashoffset: var(--arc-len, 600); }
-    to   { stroke-dashoffset: 0; }
-}
-
-@keyframes flow-origin-pulse {
-    0%, 100% { r: 6; opacity: 0.5; }
-    50%       { r: 10; opacity: 0.1; }
-}
-
-.flow-arc {
-    stroke: rgba(220, 80, 80, 0.5);
-    stroke-width: 1.3;
-    fill: none;
-    stroke-dasharray: 600;
-    stroke-dashoffset: 600;
-    animation: flow-arc-draw 1.2s ease forwards;
-}
-
-.flow-dot {
-    fill: rgba(220, 80, 80, 0.9);
-    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.6));
-}
-
-.flow-origin-ring {
-    fill: rgba(80, 168, 120, 0.15);
-    stroke: rgba(80, 168, 120, 0.8);
-    stroke-width: 1.5;
-    animation: flow-origin-pulse 2.4s ease-in-out infinite;
-}
-
-.flow-origin-dot {
-    fill: #50a878;
-    filter: drop-shadow(0 0 3px rgba(80, 168, 120, 0.7));
-}
-
-.flow-dest-ring {
-    fill: rgba(220, 80, 80, 0.12);
-    stroke: rgba(220, 80, 80, 0.6);
-    stroke-width: 1.2;
-}
-
-.flow-dest-dot {
-    fill: rgba(220, 80, 80, 0.85);
-    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.5));
-}`, "",{"version":3,"sources":["webpack://./src/Components/Charts/WorldMap/Style.css"],"names":[],"mappings":"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","sourcesContent":[".top-countries{\n    font-size: 14px;\n    text-align: left;\n    padding: 0px 10px;\n}\n\n.map-selected {\n    fill: #E3DA37;\n}\n  \n.map-unselected {\n    fill: #699EAA;\n}\n\n.map-selected:hover, .map-unselected:hover {\n    cursor: pointer;\n}\n\n.countryStats{\n    padding: 15px;\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));\n    text-align: center;\n}\n\n.country{\n    padding: 20px 0px;\n    background-color: #343434;\n    border-radius: 10px;\n}\n\n.svgMap-wrapper {\n    width: 100%;\n    height: 100%;\n}\n\n.svgMap-map-wrapper {\n    width: 100%;\n    min-height: 355px;\n    height: 100%;\n    background-color: transparent;\n}\n\n.svgMap-map-container, .svgMap-container{\n    height: 100%;\n}\n\n/* Let tooltip newlines (\\n) create line breaks */\n.svgMap-tooltip,\n.svgMap-tooltip-content,\n.svgMap-tooltip table {\n    white-space: pre-line;\n}\n\n@media screen and (max-width: 768px) {\n    .svgMap-map-wrapper {\n        width: 100%;\n        height: 100%;\n    }\n\n    .top-countries .grid-container {\n        display: grid;\n    }\n}\n\n/* ========== World map layout (dashboard) ========== */\n\n.world-map {\n    display: grid;\n    grid-template-columns: 1fr minmax(260px, 300px);\n    gap: 20px;\n    align-items: stretch;\n    width: 100%;\n    min-height: 0;\n}\n\n.world-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 200px;\n    padding: 32px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.world-map__empty-msg {\n    margin: 0;\n    font-size: 0.95rem;\n    color: rgba(255, 255, 255, 0.45);\n    text-align: center;\n}\n\n.world-map__main {\n    display: flex;\n    flex-direction: column;\n    min-width: 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: linear-gradient(\n        165deg,\n        rgba(52, 52, 52, 0.5) 0%,\n        rgba(34, 34, 34, 0.65) 100%\n    );\n    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);\n    overflow: hidden;\n}\n\n.world-map__main::before {\n    content: \"\";\n    display: block;\n    height: 3px;\n    background: linear-gradient(\n        90deg,\n        rgba(192, 159, 83, 0.25),\n        rgba(192, 159, 83, 0.85),\n        rgba(192, 159, 83, 0.25)\n    );\n}\n\n.world-map__header {\n    padding: 16px 20px 12px;\n    text-align: left;\n}\n\n.world-map__title {\n    margin: 0;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n    letter-spacing: -0.02em;\n}\n\n.world-map__subtitle {\n    margin: 6px 0 0 0;\n    font-size: 0.8rem;\n    line-height: 1.45;\n    color: rgba(255, 255, 255, 0.42);\n    max-width: 42rem;\n}\n\n.world-map__map-shell {\n    flex: 1;\n    min-height: 360px;\n    padding: 0 8px 12px;\n}\n\n.world-map__map-inner {\n    width: 100%;\n    height: 100%;\n    min-height: 340px;\n    border-radius: 10px;\n    overflow: hidden;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.world-map__side {\n    display: flex;\n    flex-direction: column;\n    min-width: 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: linear-gradient(180deg, rgba(48, 48, 48, 0.75) 0%, rgba(32, 32, 32, 0.9) 100%);\n    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);\n    overflow: hidden;\n}\n\n.world-map__side-head {\n    padding: 14px 16px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.world-map__side-title {\n    margin: 0;\n    font-size: 0.82rem;\n    font-weight: 600;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.world-map__side-hint {\n    margin: 6px 0 0 0;\n    font-size: 0.72rem;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.world-map__list-scroll {\n    flex: 1;\n    overflow-y: auto;\n    padding: 8px 10px 12px;\n    min-height: 200px;\n    max-height: 420px;\n}\n\n.world-map__row {\n    display: flex;\n    align-items: stretch;\n    gap: 10px;\n    width: 100%;\n    margin: 0 0 8px 0;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.18);\n    color: inherit;\n    font: inherit;\n    text-align: left;\n    cursor: pointer;\n    transition: border-color 0.2s ease, background 0.2s ease;\n}\n\n.world-map__row:hover:not(:disabled) {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.06);\n}\n\n.world-map__row:disabled {\n    opacity: 0.45;\n    cursor: default;\n}\n\n.world-map__row:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n.world-map__row-rank {\n    flex-shrink: 0;\n    width: 26px;\n    height: 26px;\n    margin-top: 2px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.72rem;\n    font-weight: 700;\n    color: rgba(255, 255, 255, 0.5);\n    background: rgba(255, 255, 255, 0.06);\n    border-radius: 8px;\n}\n\n.world-map__row-body {\n    flex: 1;\n    min-width: 0;\n}\n\n.world-map__row-top {\n    display: flex;\n    justify-content: space-between;\n    align-items: baseline;\n    gap: 8px;\n}\n\n.world-map__row-name {\n    font-size: 0.85rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.9);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.world-map__row-val {\n    flex-shrink: 0;\n    font-size: 0.82rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    color: rgba(192, 159, 83, 0.95);\n    text-align: right;\n}\n\n.world-map__row-cmp {\n    display: inline-block;\n    margin-left: 6px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    color: rgba(140, 200, 235, 0.92);\n    vertical-align: middle;\n}\n\n.world-map__row-bar {\n    margin-top: 6px;\n    height: 4px;\n    border-radius: 999px;\n    background: rgba(255, 255, 255, 0.08);\n    overflow: hidden;\n}\n\n.world-map__row-bar-fill {\n    height: 100%;\n    border-radius: 999px;\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.35), rgba(218, 190, 120, 0.95));\n    transition: width 0.35s ease;\n}\n\n@media screen and (max-width: 960px) {\n    .world-map {\n        grid-template-columns: 1fr;\n    }\n\n    .world-map__list-scroll {\n        max-height: 260px;\n    }\n\n    .world-map__map-shell {\n        min-height: 300px;\n    }\n\n    .world-map__map-inner {\n        min-height: 280px;\n    }\n}\n\n/* ========== Country detail drawer ========== */\n\n.world-map-drawer-backdrop {\n    position: fixed;\n    inset: 0;\n    z-index: 198;\n    background: rgba(0, 0, 0, 0.55);\n    animation: world-map-fade-in 0.2s ease;\n}\n\n.world-map-drawer {\n    position: fixed;\n    top: 0;\n    right: 0;\n    z-index: 199;\n    width: min(420px, 100vw - 16px);\n    max-width: 100%;\n    height: 100vh;\n    height: 100dvh;\n    display: flex;\n    flex-direction: column;\n    padding: 0;\n    margin: 0;\n    border: none;\n    border-left: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 14px 0 0 14px;\n    background: linear-gradient(180deg, rgba(44, 44, 44, 0.98) 0%, rgba(26, 26, 26, 1) 100%);\n    box-shadow: -12px 0 48px rgba(0, 0, 0, 0.45);\n    animation: world-map-slide-in 0.28s cubic-bezier(0.4, 0, 0.2, 1);\n    overflow: hidden;\n}\n\n@keyframes world-map-fade-in {\n    from {\n        opacity: 0;\n    }\n    to {\n        opacity: 1;\n    }\n}\n\n@keyframes world-map-slide-in {\n    from {\n        transform: translateX(100%);\n        opacity: 0.85;\n    }\n    to {\n        transform: translateX(0);\n        opacity: 1;\n    }\n}\n\n.world-map-drawer__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px;\n    padding: 18px 18px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n}\n\n.world-map-drawer__title-wrap {\n    min-width: 0;\n}\n\n.world-map-drawer__title {\n    margin: 0;\n    font-size: 1.2rem;\n    font-weight: 600;\n    color: rgb(245, 245, 245);\n    line-height: 1.25;\n    word-break: break-word;\n}\n\n.world-map-drawer__iso {\n    display: inline-block;\n    margin-top: 6px;\n    padding: 2px 8px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.12em;\n    color: rgba(255, 255, 255, 0.45);\n    background: rgba(255, 255, 255, 0.06);\n    border-radius: 6px;\n}\n\n.world-map-drawer__close {\n    flex-shrink: 0;\n    width: 40px;\n    height: 40px;\n    margin: 0;\n    padding: 0;\n    border: none;\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(255, 255, 255, 0.85);\n    font-size: 26px;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease;\n}\n\n.world-map-drawer__close:hover {\n    background: rgba(255, 255, 255, 0.12);\n}\n\n.world-map-drawer__share {\n    padding: 14px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    flex-shrink: 0;\n}\n\n.world-map-drawer__share-label {\n    display: block;\n    font-size: 0.62rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.38);\n    margin-bottom: 8px;\n}\n\n.world-map-drawer__share-bar {\n    height: 8px;\n    border-radius: 999px;\n    background: rgba(255, 255, 255, 0.08);\n    overflow: hidden;\n}\n\n.world-map-drawer__share-fill {\n    height: 100%;\n    border-radius: 999px;\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.4), rgba(218, 190, 120, 0.95));\n    transition: width 0.4s ease;\n}\n\n.world-map-drawer__share-pct {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.8rem;\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.world-map-drawer__empty {\n    margin: 0;\n    padding: 20px 18px;\n    font-size: 0.88rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.world-map-drawer__stats {\n    list-style: none;\n    margin: 0;\n    padding: 12px 18px 20px;\n    overflow-y: auto;\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    gap: 10px;\n}\n\n.world-map-drawer__stat {\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.world-map-drawer__stat-top {\n    display: flex;\n    align-items: baseline;\n    justify-content: space-between;\n    gap: 12px;\n}\n\n.world-map-drawer__stat-label {\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.4);\n}\n\n.world-map-drawer__stat-value {\n    font-size: 1rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: rgb(240, 240, 240);\n    flex-shrink: 0;\n}\n\n.world-map-drawer__stat-sub {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.45);\n    font-variant-numeric: tabular-nums;\n}\n\n.world-map-drawer__stat-cmp {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.72rem;\n    line-height: 1.4;\n    color: rgba(150, 200, 235, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.world-map-drawer__extras {\n    flex-shrink: 0;\n    padding: 0 18px 22px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    max-height: min(55vh, 480px);\n    overflow-y: auto;\n}\n\n.world-map-drawer__extras-title {\n    margin: 0;\n    padding: 16px 0 10px;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.38);\n}\n\n.world-map-drawer__embed {\n    border-radius: 12px;\n    overflow: hidden;\n}\n\n.world-map-drawer__embed .device-interactions {\n    margin: 0;\n    box-shadow: none;\n}\n\n.world-map-drawer__embed .device-interactions::before {\n    height: 2px;\n}\n\n.world-map-drawer__cta {\n    flex-shrink: 0;\n    padding: 14px 18px 18px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.world-map-drawer__cta-link {\n    position: relative;\n    display: grid;\n    grid-template-columns: 1fr auto;\n    grid-template-rows: auto auto;\n    gap: 2px 12px;\n    align-items: center;\n    padding: 12px 14px;\n    border-radius: 12px;\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18), rgba(192, 159, 83, 0.06));\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #f5e6c5;\n    text-decoration: none;\n    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;\n}\n\n.world-map-drawer__cta-link:hover,\n.world-map-drawer__cta-link:focus-visible {\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.28), rgba(192, 159, 83, 0.1));\n    border-color: rgba(192, 159, 83, 0.6);\n    transform: translateY(-1px);\n    outline: none;\n}\n\n.world-map-drawer__cta-label {\n    grid-column: 1;\n    grid-row: 1;\n    font-size: 0.9rem;\n    font-weight: 600;\n    color: #fff;\n    letter-spacing: 0.01em;\n}\n\n.world-map-drawer__cta-sub {\n    grid-column: 1;\n    grid-row: 2;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.62);\n    line-height: 1.35;\n}\n\n.world-map-drawer__cta-arrow {\n    grid-column: 2;\n    grid-row: 1 / span 2;\n    font-size: 1.15rem;\n    font-weight: 600;\n    color: #c09f53;\n}\n\n@media screen and (max-width: 480px) {\n    .world-map-drawer {\n        width: 100vw;\n        border-radius: 0;\n    }\n}\n\n/* Suppress svgMap tooltip in data-flow mode */\n.world-map--flow .svgMap-tooltip {\n    display: none !important;\n}\n\n/* ── Data flow legend ────────────────────────────────────────────────────────── */\n.world-map__legend {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n    margin-top: 8px;\n    flex-wrap: wrap;\n}\n\n.world-map__legend-swatch {\n    flex-shrink: 0;\n    width: 18px;\n    height: 10px;\n    border-radius: 2px;\n}\n\n.world-map__legend-swatch--flow {\n    background: rgba(220, 80, 80, 0.15);\n    border: 1.5px solid rgba(220, 80, 80, 0.7);\n}\n\n.world-map__legend-swatch--origin {\n    background: rgba(80, 168, 120, 0.2);\n    border: 1.5px solid rgba(80, 168, 120, 0.8);\n    border-radius: 50%;\n    width: 10px;\n    height: 10px;\n}\n\n.world-map__legend-sep {\n    width: 1px;\n    height: 12px;\n    background: rgba(255, 255, 255, 0.12);\n    margin: 0 2px;\n}\n\n.world-map__legend-label {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.38);\n    letter-spacing: 0.02em;\n}\n\n/* ── Data flow SVG overlay ────────────────────────────────────────────────────── */\n@keyframes flow-arc-draw {\n    from { stroke-dashoffset: var(--arc-len, 600); }\n    to   { stroke-dashoffset: 0; }\n}\n\n@keyframes flow-origin-pulse {\n    0%, 100% { r: 6; opacity: 0.5; }\n    50%       { r: 10; opacity: 0.1; }\n}\n\n.flow-arc {\n    stroke: rgba(220, 80, 80, 0.5);\n    stroke-width: 1.3;\n    fill: none;\n    stroke-dasharray: 600;\n    stroke-dashoffset: 600;\n    animation: flow-arc-draw 1.2s ease forwards;\n}\n\n.flow-dot {\n    fill: rgba(220, 80, 80, 0.9);\n    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.6));\n}\n\n.flow-origin-ring {\n    fill: rgba(80, 168, 120, 0.15);\n    stroke: rgba(80, 168, 120, 0.8);\n    stroke-width: 1.5;\n    animation: flow-origin-pulse 2.4s ease-in-out infinite;\n}\n\n.flow-origin-dot {\n    fill: #50a878;\n    filter: drop-shadow(0 0 3px rgba(80, 168, 120, 0.7));\n}\n\n.flow-dest-ring {\n    fill: rgba(220, 80, 80, 0.12);\n    stroke: rgba(220, 80, 80, 0.6);\n    stroke-width: 1.2;\n}\n\n.flow-dest-dot {\n    fill: rgba(220, 80, 80, 0.85);\n    filter: drop-shadow(0 0 2px rgba(220, 80, 80, 0.5));\n}"],"sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/Components/Charts/WorldMap/Style.css"],"names":[],"mappings":"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","sourcesContent":[".top-countries{\n    font-size: 14px;\n    text-align: left;\n    padding: 0px 10px;\n}\n\n.map-selected {\n    fill: #E3DA37;\n}\n  \n.map-unselected {\n    fill: #699EAA;\n}\n\n.map-selected:hover, .map-unselected:hover {\n    cursor: pointer;\n}\n\n.countryStats{\n    padding: 15px;\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));\n    text-align: center;\n}\n\n.country{\n    padding: 20px 0px;\n    background-color: #343434;\n    border-radius: 10px;\n}\n\n.svgMap-wrapper {\n    width: 100%;\n    height: 100%;\n}\n\n.svgMap-map-wrapper {\n    width: 100%;\n    min-height: 355px;\n    height: 100%;\n    background-color: transparent;\n}\n\n.svgMap-map-container, .svgMap-container{\n    height: 100%;\n}\n\n/* Let tooltip newlines (\\n) create line breaks */\n.svgMap-tooltip,\n.svgMap-tooltip-content,\n.svgMap-tooltip table {\n    white-space: pre-line;\n}\n\n@media screen and (max-width: 768px) {\n    .svgMap-map-wrapper {\n        width: 100%;\n        height: 100%;\n    }\n\n    .top-countries .grid-container {\n        display: grid;\n    }\n}\n\n/* ========== World map layout (dashboard) ========== */\n\n.world-map {\n    display: grid;\n    grid-template-columns: 1fr minmax(260px, 300px);\n    gap: 20px;\n    align-items: stretch;\n    width: 100%;\n    min-height: 0;\n}\n\n.world-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 200px;\n    padding: 32px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.world-map__empty-msg {\n    margin: 0;\n    font-size: 0.95rem;\n    color: rgba(255, 255, 255, 0.45);\n    text-align: center;\n}\n\n.world-map__main {\n    display: flex;\n    flex-direction: column;\n    min-width: 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: linear-gradient(\n        165deg,\n        rgba(52, 52, 52, 0.5) 0%,\n        rgba(34, 34, 34, 0.65) 100%\n    );\n    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);\n    overflow: hidden;\n}\n\n.world-map__main::before {\n    content: \"\";\n    display: block;\n    height: 3px;\n    background: linear-gradient(\n        90deg,\n        rgba(192, 159, 83, 0.25),\n        rgba(192, 159, 83, 0.85),\n        rgba(192, 159, 83, 0.25)\n    );\n}\n\n.world-map__header {\n    padding: 16px 20px 12px;\n    text-align: left;\n}\n\n.world-map__title {\n    margin: 0;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n    letter-spacing: -0.02em;\n}\n\n.world-map__subtitle {\n    margin: 6px 0 0 0;\n    font-size: 0.8rem;\n    line-height: 1.45;\n    color: rgba(255, 255, 255, 0.42);\n    max-width: 42rem;\n}\n\n.world-map__map-shell {\n    flex: 1;\n    min-height: 360px;\n    padding: 0 8px 12px;\n}\n\n.world-map__map-inner {\n    width: 100%;\n    height: 100%;\n    min-height: 340px;\n    border-radius: 10px;\n    overflow: hidden;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.world-map__side {\n    display: flex;\n    flex-direction: column;\n    min-width: 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: linear-gradient(180deg, rgba(48, 48, 48, 0.75) 0%, rgba(32, 32, 32, 0.9) 100%);\n    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);\n    overflow: hidden;\n}\n\n.world-map__side-head {\n    padding: 14px 16px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.world-map__side-title {\n    margin: 0;\n    font-size: 0.82rem;\n    font-weight: 600;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.world-map__side-hint {\n    margin: 6px 0 0 0;\n    font-size: 0.72rem;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.world-map__list-scroll {\n    flex: 1;\n    overflow-y: auto;\n    padding: 8px 10px 12px;\n    min-height: 200px;\n    max-height: 420px;\n}\n\n.world-map__row {\n    display: flex;\n    align-items: stretch;\n    gap: 10px;\n    width: 100%;\n    margin: 0 0 8px 0;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.18);\n    color: inherit;\n    font: inherit;\n    text-align: left;\n    cursor: pointer;\n    transition: border-color 0.2s ease, background 0.2s ease;\n}\n\n.world-map__row:hover:not(:disabled) {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.06);\n}\n\n.world-map__row:disabled {\n    opacity: 0.45;\n    cursor: default;\n}\n\n.world-map__row:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n.world-map__row-rank {\n    flex-shrink: 0;\n    width: 26px;\n    height: 26px;\n    margin-top: 2px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.72rem;\n    font-weight: 700;\n    color: rgba(255, 255, 255, 0.5);\n    background: rgba(255, 255, 255, 0.06);\n    border-radius: 8px;\n}\n\n.world-map__row-body {\n    flex: 1;\n    min-width: 0;\n}\n\n.world-map__row-top {\n    display: flex;\n    justify-content: space-between;\n    align-items: baseline;\n    gap: 8px;\n}\n\n.world-map__row-name {\n    font-size: 0.85rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.9);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.world-map__row-val {\n    flex-shrink: 0;\n    font-size: 0.82rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    color: rgba(192, 159, 83, 0.95);\n    text-align: right;\n}\n\n.world-map__row-cmp {\n    display: inline-block;\n    margin-left: 6px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    color: rgba(140, 200, 235, 0.92);\n    vertical-align: middle;\n}\n\n.world-map__row-bar {\n    margin-top: 6px;\n    height: 4px;\n    border-radius: 999px;\n    background: rgba(255, 255, 255, 0.08);\n    overflow: hidden;\n}\n\n.world-map__row-bar-fill {\n    height: 100%;\n    border-radius: 999px;\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.35), rgba(218, 190, 120, 0.95));\n    transition: width 0.35s ease;\n}\n\n@media screen and (max-width: 960px) {\n    .world-map {\n        grid-template-columns: 1fr;\n    }\n\n    .world-map__list-scroll {\n        max-height: 260px;\n    }\n\n    .world-map__map-shell {\n        min-height: 300px;\n    }\n\n    .world-map__map-inner {\n        min-height: 280px;\n    }\n}\n\n/* ========== Country detail drawer ========== */\n\n.world-map-drawer-backdrop {\n    position: fixed;\n    inset: 0;\n    z-index: 198;\n    background: rgba(0, 0, 0, 0.55);\n    animation: world-map-fade-in 0.2s ease;\n}\n\n.world-map-drawer {\n    position: fixed;\n    top: 0;\n    right: 0;\n    z-index: 199;\n    width: min(420px, 100vw - 16px);\n    max-width: 100%;\n    height: 100vh;\n    height: 100dvh;\n    display: flex;\n    flex-direction: column;\n    padding: 0;\n    margin: 0;\n    border: none;\n    border-left: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 14px 0 0 14px;\n    background: linear-gradient(180deg, rgba(44, 44, 44, 0.98) 0%, rgba(26, 26, 26, 1) 100%);\n    box-shadow: -12px 0 48px rgba(0, 0, 0, 0.45);\n    animation: world-map-slide-in 0.28s cubic-bezier(0.4, 0, 0.2, 1);\n    overflow: hidden;\n}\n\n@keyframes world-map-fade-in {\n    from {\n        opacity: 0;\n    }\n    to {\n        opacity: 1;\n    }\n}\n\n@keyframes world-map-slide-in {\n    from {\n        transform: translateX(100%);\n        opacity: 0.85;\n    }\n    to {\n        transform: translateX(0);\n        opacity: 1;\n    }\n}\n\n.world-map-drawer__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px;\n    padding: 18px 18px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n}\n\n.world-map-drawer__title-wrap {\n    min-width: 0;\n}\n\n.world-map-drawer__title {\n    margin: 0;\n    font-size: 1.2rem;\n    font-weight: 600;\n    color: rgb(245, 245, 245);\n    line-height: 1.25;\n    word-break: break-word;\n}\n\n.world-map-drawer__iso {\n    display: inline-block;\n    margin-top: 6px;\n    padding: 2px 8px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.12em;\n    color: rgba(255, 255, 255, 0.45);\n    background: rgba(255, 255, 255, 0.06);\n    border-radius: 6px;\n}\n\n.world-map-drawer__close {\n    flex-shrink: 0;\n    width: 40px;\n    height: 40px;\n    margin: 0;\n    padding: 0;\n    border: none;\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(255, 255, 255, 0.85);\n    font-size: 26px;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease;\n}\n\n.world-map-drawer__close:hover {\n    background: rgba(255, 255, 255, 0.12);\n}\n\n.world-map-drawer__share {\n    padding: 14px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    flex-shrink: 0;\n}\n\n.world-map-drawer__share-label {\n    display: block;\n    font-size: 0.62rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.38);\n    margin-bottom: 8px;\n}\n\n.world-map-drawer__share-bar {\n    height: 8px;\n    border-radius: 999px;\n    background: rgba(255, 255, 255, 0.08);\n    overflow: hidden;\n}\n\n.world-map-drawer__share-fill {\n    height: 100%;\n    border-radius: 999px;\n    background: linear-gradient(90deg, rgba(192, 159, 83, 0.4), rgba(218, 190, 120, 0.95));\n    transition: width 0.4s ease;\n}\n\n.world-map-drawer__share-pct {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.8rem;\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.world-map-drawer__empty {\n    margin: 0;\n    padding: 20px 18px;\n    font-size: 0.88rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.world-map-drawer__stats {\n    list-style: none;\n    margin: 0;\n    padding: 12px 18px 20px;\n    overflow-y: auto;\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    gap: 10px;\n}\n\n.world-map-drawer__stat {\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.world-map-drawer__stat-top {\n    display: flex;\n    align-items: baseline;\n    justify-content: space-between;\n    gap: 12px;\n}\n\n.world-map-drawer__stat-label {\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.4);\n}\n\n.world-map-drawer__stat-value {\n    font-size: 1rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: rgb(240, 240, 240);\n    flex-shrink: 0;\n}\n\n.world-map-drawer__stat-sub {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.45);\n    font-variant-numeric: tabular-nums;\n}\n\n.world-map-drawer__stat-cmp {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.72rem;\n    line-height: 1.4;\n    color: rgba(150, 200, 235, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.world-map-drawer__extras {\n    flex-shrink: 0;\n    padding: 0 18px 22px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    max-height: min(55vh, 480px);\n    overflow-y: auto;\n}\n\n.world-map-drawer__extras-title {\n    margin: 0;\n    padding: 16px 0 10px;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.38);\n}\n\n.world-map-drawer__embed {\n    border-radius: 12px;\n    overflow: hidden;\n}\n\n.world-map-drawer__embed .device-interactions {\n    margin: 0;\n    box-shadow: none;\n}\n\n.world-map-drawer__embed .device-interactions::before {\n    height: 2px;\n}\n\n.world-map-drawer__cta {\n    flex-shrink: 0;\n    padding: 14px 18px 18px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.world-map-drawer__cta-link {\n    position: relative;\n    display: grid;\n    grid-template-columns: 1fr auto;\n    grid-template-rows: auto auto;\n    gap: 2px 12px;\n    align-items: center;\n    padding: 12px 14px;\n    border-radius: 12px;\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18), rgba(192, 159, 83, 0.06));\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #f5e6c5;\n    text-decoration: none;\n    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;\n}\n\n.world-map-drawer__cta-link:hover,\n.world-map-drawer__cta-link:focus-visible {\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.28), rgba(192, 159, 83, 0.1));\n    border-color: rgba(192, 159, 83, 0.6);\n    transform: translateY(-1px);\n    outline: none;\n}\n\n.world-map-drawer__cta-label {\n    grid-column: 1;\n    grid-row: 1;\n    font-size: 0.9rem;\n    font-weight: 600;\n    color: #fff;\n    letter-spacing: 0.01em;\n}\n\n.world-map-drawer__cta-sub {\n    grid-column: 1;\n    grid-row: 2;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.62);\n    line-height: 1.35;\n}\n\n.world-map-drawer__cta-arrow {\n    grid-column: 2;\n    grid-row: 1 / span 2;\n    font-size: 1.15rem;\n    font-weight: 600;\n    color: #c09f53;\n}\n\n@media screen and (max-width: 480px) {\n    .world-map-drawer {\n        width: 100vw;\n        border-radius: 0;\n    }\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -17336,6 +17241,158 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.crawler-intro{
     }
     
 }`, "",{"version":3,"sources":["webpack://./src/Components/Crawler/Style.css"],"names":[],"mappings":"AAAA;IACI,kBAAkB;IAClB,iBAAiB;AACrB;AACA;IACI,aAAa;IACb,SAAS;IACT,uBAAuB;IACvB,mBAAmB;IACnB,gBAAgB;IAChB,mBAAmB;IACnB,yBAAyB;IACzB,mBAAmB;IACnB,aAAa;AACjB;;AAEA;IACI,kBAAkB;IAClB,YAAY;IACZ,kBAAkB;IAClB,yBAAyB;IACzB,kBAAkB;IAClB,eAAe;IACf,iBAAiB;IACjB,yBAAyB;IACzB,WAAW;IACX,iBAAiB;IACjB,cAAc;AAClB;;AAEA;IACI;QACI,sBAAsB;IAC1B;IACA;QACI,cAAc;QACd,eAAe;QACf,WAAW;IACf;;IAEA;QACI,kBAAkB;IACtB;;AAEJ","sourcesContent":[".crawler-intro{\n    text-align: center;\n    line-height: .5em;\n}\n.crawler-form{\n    display: flex;\n    gap: 20px;\n    justify-content: center;\n    align-items: center;\n    margin-top: 20px;\n    margin-bottom: 20px;\n    background-color: #8e8e8e;\n    border-radius: 10px;\n    padding: 15px;\n}\n\n.crawl-cta{\n    padding: 12px 35px;\n    border: none;\n    border-radius: 5px;\n    background-color: #dcbf00;\n    width: max-content;\n    font-size: 14px;\n    font-weight: bold;\n    text-transform: uppercase;\n    color: #fff;\n    margin-left: auto;\n    flex-shrink: 0;\n}\n\n@media screen and (max-width: 768px){\n    .crawler-form{\n        flex-direction: column;\n    }\n    .crawl-cta{\n        margin-left: 0;\n        margin-top: 5px;\n        width: 100%;\n    }\n\n    .crawler-intro{\n        line-height: 1.5em;\n    }\n    \n}"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/Components/DevTierSwitcher/Style.css":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/Components/DevTierSwitcher/Style.css ***!
+  \****************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.dev-tier {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    font-family: inherit;
+}
+
+.dev-tier__toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: rgba(18, 18, 22, 0.94);
+    border: 1px solid rgba(192, 159, 83, 0.4);
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.75rem;
+    color: #c8c8c8;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    transition: border-color 0.2s ease;
+}
+
+.dev-tier__toggle:hover {
+    border-color: rgba(192, 159, 83, 0.7);
+}
+
+.dev-tier__badge {
+    font-weight: 700;
+    font-size: 0.5625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c0a053;
+    background: rgba(192, 159, 83, 0.13);
+    border-radius: 4px;
+    padding: 2px 6px;
+}
+
+.dev-tier__current {
+    font-weight: 500;
+    color: #e8e8e8;
+}
+
+.dev-tier__current--override {
+    color: #c0a053;
+}
+
+/* ── Panel ──────────────────────────────────────────────── */
+.dev-tier__panel {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    right: 0;
+    min-width: 230px;
+    background: rgba(18, 18, 22, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(14px);
+}
+
+.dev-tier__heading {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #606060;
+    margin: 0 0 12px;
+}
+
+.dev-tier__options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dev-tier__option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.03);
+    color: #c0c0c0;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    text-align: left;
+    width: 100%;
+}
+
+.dev-tier__option:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #f0f0f0;
+    border-color: rgba(255, 255, 255, 0.14);
+}
+
+.dev-tier__option--active {
+    border-color: rgba(192, 159, 83, 0.5);
+    background: rgba(192, 159, 83, 0.1);
+    color: #faf6ee;
+}
+
+.dev-tier__price {
+    font-size: 0.75rem;
+    color: #606060;
+}
+
+.dev-tier__option--active .dev-tier__price {
+    color: #c0a053;
+}
+
+.dev-tier__option--reset {
+    color: #707070;
+    font-size: 0.75rem;
+    margin-top: 4px;
+    border-color: rgba(255, 255, 255, 0.04);
+}
+
+.dev-tier__option--reset:hover {
+    color: #c0c0c0;
+}
+`, "",{"version":3,"sources":["webpack://./src/Components/DevTierSwitcher/Style.css"],"names":[],"mappings":"AAAA;IACI,eAAe;IACf,YAAY;IACZ,WAAW;IACX,aAAa;IACb,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;IACR,iBAAiB;IACjB,kCAAkC;IAClC,yCAAyC;IACzC,mBAAmB;IACnB,eAAe;IACf,oBAAoB;IACpB,kBAAkB;IAClB,cAAc;IACd,2BAA2B;IAC3B,yCAAyC;IACzC,kCAAkC;AACtC;;AAEA;IACI,qCAAqC;AACzC;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,sBAAsB;IACtB,yBAAyB;IACzB,cAAc;IACd,oCAAoC;IACpC,kBAAkB;IAClB,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,cAAc;AAClB;;AAEA,8DAA8D;AAC9D;IACI,kBAAkB;IAClB,yBAAyB;IACzB,QAAQ;IACR,gBAAgB;IAChB,kCAAkC;IAClC,0CAA0C;IAC1C,mBAAmB;IACnB,aAAa;IACb,0CAA0C;IAC1C,2BAA2B;AAC/B;;AAEA;IACI,mBAAmB;IACnB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,cAAc;IACd,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;;AAEA;IACI,aAAa;IACb,8BAA8B;IAC9B,mBAAmB;IACnB,kBAAkB;IAClB,kBAAkB;IAClB,2CAA2C;IAC3C,qCAAqC;IACrC,cAAc;IACd,oBAAoB;IACpB,oBAAoB;IACpB,eAAe;IACf,4EAA4E;IAC5E,gBAAgB;IAChB,WAAW;AACf;;AAEA;IACI,qCAAqC;IACrC,cAAc;IACd,uCAAuC;AAC3C;;AAEA;IACI,qCAAqC;IACrC,mCAAmC;IACnC,cAAc;AAClB;;AAEA;IACI,kBAAkB;IAClB,cAAc;AAClB;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,eAAe;IACf,uCAAuC;AAC3C;;AAEA;IACI,cAAc;AAClB","sourcesContent":[".dev-tier {\n    position: fixed;\n    bottom: 20px;\n    right: 20px;\n    z-index: 9999;\n    font-family: inherit;\n}\n\n.dev-tier__toggle {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 8px 14px;\n    background: rgba(18, 18, 22, 0.94);\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    border-radius: 20px;\n    cursor: pointer;\n    font-family: inherit;\n    font-size: 0.75rem;\n    color: #c8c8c8;\n    backdrop-filter: blur(10px);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);\n    transition: border-color 0.2s ease;\n}\n\n.dev-tier__toggle:hover {\n    border-color: rgba(192, 159, 83, 0.7);\n}\n\n.dev-tier__badge {\n    font-weight: 700;\n    font-size: 0.5625rem;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.13);\n    border-radius: 4px;\n    padding: 2px 6px;\n}\n\n.dev-tier__current {\n    font-weight: 500;\n    color: #e8e8e8;\n}\n\n.dev-tier__current--override {\n    color: #c0a053;\n}\n\n/* ── Panel ──────────────────────────────────────────────── */\n.dev-tier__panel {\n    position: absolute;\n    bottom: calc(100% + 10px);\n    right: 0;\n    min-width: 230px;\n    background: rgba(18, 18, 22, 0.97);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 14px;\n    padding: 16px;\n    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);\n    backdrop-filter: blur(14px);\n}\n\n.dev-tier__heading {\n    font-size: 0.625rem;\n    font-weight: 700;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: #606060;\n    margin: 0 0 12px;\n}\n\n.dev-tier__options {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.dev-tier__option {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    padding: 10px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.03);\n    color: #c0c0c0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;\n    text-align: left;\n    width: 100%;\n}\n\n.dev-tier__option:hover {\n    background: rgba(255, 255, 255, 0.07);\n    color: #f0f0f0;\n    border-color: rgba(255, 255, 255, 0.14);\n}\n\n.dev-tier__option--active {\n    border-color: rgba(192, 159, 83, 0.5);\n    background: rgba(192, 159, 83, 0.1);\n    color: #faf6ee;\n}\n\n.dev-tier__price {\n    font-size: 0.75rem;\n    color: #606060;\n}\n\n.dev-tier__option--active .dev-tier__price {\n    color: #c0a053;\n}\n\n.dev-tier__option--reset {\n    color: #707070;\n    font-size: 0.75rem;\n    margin-top: 4px;\n    border-color: rgba(255, 255, 255, 0.04);\n}\n\n.dev-tier__option--reset:hover {\n    color: #c0c0c0;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -20010,116 +20067,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Legacy panel (unused in app; kept f
     outline-offset: 2px;
 }
 
-/* ── Workspace switcher in profile panel ──────────────────────────────────── */
-.ia-menu__workspace-panel--switcher {
-    text-align: left;
-    margin-top: 16px;
-}
-
-.ia-menu__ws-list {
-    list-style: none;
-    margin: 10px 0 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.ia-menu__ws-item {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    background: rgba(255, 255, 255, 0.03);
-    color: #d8d8d8;
-    font-size: 0.8125rem;
-    font-family: inherit;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.15s ease, border-color 0.15s ease;
-}
-
-.ia-menu__ws-item:hover {
-    background: rgba(192, 159, 83, 0.1);
-    border-color: rgba(192, 159, 83, 0.3);
-    color: #f0f0f0;
-}
-
-.ia-menu__ws-item--active {
-    background: rgba(192, 159, 83, 0.14);
-    border-color: rgba(192, 159, 83, 0.45);
-    color: #e8d5a8;
-}
-
-.ia-menu__ws-icon {
-    font-size: 0.75rem;
-    flex-shrink: 0;
-    width: 14px;
-    text-align: center;
-    opacity: 0.8;
-}
-
-.ia-menu__ws-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-}
-
-.ia-menu__ws-name {
-    display: block;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.ia-menu__ws-domain {
-    display: block;
-    font-size: 0.6875rem;
-    color: #7a8190;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.ia-menu__ws-item--active .ia-menu__ws-domain {
-    color: #b89b6a;
-}
-
-.ia-menu__ws-count {
-    flex-shrink: 0;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    padding: 2px 6px;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.08);
-    color: #9aa0a6;
-}
-
-.ia-menu__ws-clear {
-    width: 100%;
-    margin-top: 8px;
-    padding: 7px 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    background: transparent;
-    color: #7a8190;
-    font-size: 0.75rem;
-    font-family: inherit;
-    cursor: pointer;
-    transition: color 0.15s ease, border-color 0.15s ease;
-}
-
-.ia-menu__ws-clear:hover {
-    border-color: rgba(220, 100, 100, 0.35);
-    color: #f0c4c4;
-}
-
 .ia-menu__footer {
     padding: 14px 16px 16px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -20186,7 +20133,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Legacy panel (unused in app; kept f
         right: 10px;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Components/IntastellarAccounts/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* Legacy panel (unused in app; kept for compatibility) */\n.services-overview-container {\n    width: 345px;\n    height: auto;\n    max-height: 600px;\n    overflow: hidden;\n    border-radius: 10px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    background: rgba(255, 255, 255, 0.8);\n    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);\n    -webkit-backdrop-filter: blur(10px);\n    backdrop-filter: blur(10px);\n}\n\n/* Account dropdown — aligned with dashboard dark UI + login gold accents */\n.ia-menu.user_content {\n    width: min(calc(100vw - 32px), 320px);\n    max-height: min(90vh, 640px);\n    overflow: hidden;\n    border-radius: 14px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 56px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    -webkit-backdrop-filter: blur(18px);\n    backdrop-filter: blur(18px);\n}\n\n.ia-menu__accent {\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 38%;\n    max-width: 120px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.ia-menu__body {\n    padding: 22px 18px 12px;\n    max-height: calc(min(90vh, 640px) - 76px);\n    overflow-y: auto;\n    text-align: center;\n}\n\n.ia-menu__brand {\n    margin-bottom: 14px;\n}\n\n.ia-menu__brand-logo {\n    display: block;\n    width: min(160px, 72%);\n    height: auto;\n    margin: 0 auto;\n    opacity: 0.92;\n    filter: brightness(0) invert(1);\n}\n\n.ia-menu__avatar-wrap {\n    position: relative;\n    width: max-content;\n    margin: 0 auto 16px;\n}\n\n.ia-menu__avatar {\n    width: 88px;\n    height: 88px;\n    border-radius: 50%;\n    object-fit: cover;\n    display: block;\n    border: 3px solid rgba(192, 159, 83, 0.35);\n    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);\n}\n\n.ia-menu__identity {\n    color: #e8e8e8;\n}\n\n.ia-menu__greeting {\n    margin: 0 0 4px;\n    font-size: 1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f0f0f0;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__email {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.4;\n    color: #9aa0a6;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__manage {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.25);\n    color: #d8d8d8 !important;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    text-decoration: none;\n    text-align: left;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n    box-sizing: border-box;\n}\n\n.ia-menu__manage:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.1);\n    color: #f4f4f4 !important;\n}\n\n.ia-menu__manage-icon {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: 8px;\n    object-fit: contain;\n}\n\n.ia-menu__workspace-panel {\n    margin-top: 16px;\n    padding: 12px 14px 12px;\n    text-align: left;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.32) 58%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.ia-menu__workspace-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 14px;\n}\n\n.ia-menu__workspace-copy {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.ia-menu__workspace-kicker {\n    display: block;\n    margin: 0;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: #c0a053;\n    line-height: 1.25;\n}\n\n.ia-menu__demo-label {\n    display: block;\n    margin: 0;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    letter-spacing: 0.01em;\n    color: #ececec;\n    line-height: 1.3;\n}\n\n.ia-menu__demo-hint {\n    margin: 0;\n    margin-top: 10px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    font-size: 0.6875rem;\n    line-height: 1.45;\n    color: #8b9199;\n}\n\n.ia-menu__switch {\n    position: relative;\n    display: inline-block;\n    width: 44px;\n    height: 24px;\n    flex-shrink: 0;\n}\n\n.ia-menu__switch input {\n    opacity: 0;\n    width: 0;\n    height: 0;\n}\n\n.ia-menu__switch-slider {\n    position: absolute;\n    cursor: pointer;\n    inset: 0;\n    background: rgba(255, 255, 255, 0.12);\n    transition: background 0.25s ease;\n    border-radius: 34px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.ia-menu__switch-slider::before {\n    position: absolute;\n    content: \"\";\n    height: 18px;\n    width: 18px;\n    left: 3px;\n    bottom: 2px;\n    background: #f0f0f0;\n    transition: transform 0.25s ease;\n    border-radius: 50%;\n    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider {\n    background: rgba(192, 159, 83, 0.35);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider::before {\n    transform: translateX(20px);\n    background: #e8d5a8;\n}\n\n.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n/* ── Workspace switcher in profile panel ──────────────────────────────────── */\n.ia-menu__workspace-panel--switcher {\n    text-align: left;\n    margin-top: 16px;\n}\n\n.ia-menu__ws-list {\n    list-style: none;\n    margin: 10px 0 0;\n    padding: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 4px;\n}\n\n.ia-menu__ws-item {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 9px 10px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.03);\n    color: #d8d8d8;\n    font-size: 0.8125rem;\n    font-family: inherit;\n    cursor: pointer;\n    text-align: left;\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.ia-menu__ws-item:hover {\n    background: rgba(192, 159, 83, 0.1);\n    border-color: rgba(192, 159, 83, 0.3);\n    color: #f0f0f0;\n}\n\n.ia-menu__ws-item--active {\n    background: rgba(192, 159, 83, 0.14);\n    border-color: rgba(192, 159, 83, 0.45);\n    color: #e8d5a8;\n}\n\n.ia-menu__ws-icon {\n    font-size: 0.75rem;\n    flex-shrink: 0;\n    width: 14px;\n    text-align: center;\n    opacity: 0.8;\n}\n\n.ia-menu__ws-info {\n    flex: 1;\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 1px;\n}\n\n.ia-menu__ws-name {\n    display: block;\n    font-weight: 600;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__ws-domain {\n    display: block;\n    font-size: 0.6875rem;\n    color: #7a8190;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__ws-item--active .ia-menu__ws-domain {\n    color: #b89b6a;\n}\n\n.ia-menu__ws-count {\n    flex-shrink: 0;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    padding: 2px 6px;\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.08);\n    color: #9aa0a6;\n}\n\n.ia-menu__ws-clear {\n    width: 100%;\n    margin-top: 8px;\n    padding: 7px 10px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: transparent;\n    color: #7a8190;\n    font-size: 0.75rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: color 0.15s ease, border-color 0.15s ease;\n}\n\n.ia-menu__ws-clear:hover {\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.ia-menu__footer {\n    padding: 14px 16px 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.ia-menu__sign-out {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    margin: 0;\n    padding: 11px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(255, 255, 255, 0.04);\n    color: #c9cdd3;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n}\n\n.ia-menu__sign-out:hover {\n    border-color: rgba(220, 100, 100, 0.45);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n}\n\n.ia-menu__sign-out-icon {\n    flex-shrink: 0;\n    opacity: 0.9;\n}\n\n.dropdown-links {\n    max-height: 140px;\n    height: auto;\n    overflow: scroll;\n}\n\n.dropdown-links a {\n    color: #000;\n    font-size: 15px;\n    padding: 15px;\n    display: block;\n    text-decoration: none;\n}\n\n.dropdown-links a:hover {\n    background: #b7b7b7;\n    text-decoration: none;\n    color: #000;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .ia-menu.user_content,\n    .services-overview-container {\n        top: 60px;\n        right: 10px;\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Components/IntastellarAccounts/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* Legacy panel (unused in app; kept for compatibility) */\n.services-overview-container {\n    width: 345px;\n    height: auto;\n    max-height: 600px;\n    overflow: hidden;\n    border-radius: 10px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    background: rgba(255, 255, 255, 0.8);\n    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.22), inset -1px 1px 1px rgba(255, 255, 255, 0.5);\n    -webkit-backdrop-filter: blur(10px);\n    backdrop-filter: blur(10px);\n}\n\n/* Account dropdown — aligned with dashboard dark UI + login gold accents */\n.ia-menu.user_content {\n    width: min(calc(100vw - 32px), 320px);\n    max-height: min(90vh, 640px);\n    overflow: hidden;\n    border-radius: 14px;\n    float: right;\n    position: absolute;\n    top: 60px;\n    right: 20px;\n    box-sizing: border-box;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    box-shadow:\n        0 24px 56px rgba(0, 0, 0, 0.5),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    -webkit-backdrop-filter: blur(18px);\n    backdrop-filter: blur(18px);\n}\n\n.ia-menu__accent {\n    position: absolute;\n    top: 0;\n    left: 50%;\n    transform: translateX(-50%);\n    width: 38%;\n    max-width: 120px;\n    height: 3px;\n    border-radius: 0 0 8px 8px;\n    background: linear-gradient(90deg, transparent, rgba(192, 159, 83, 0.9), transparent);\n    pointer-events: none;\n}\n\n.ia-menu__body {\n    padding: 22px 18px 12px;\n    max-height: calc(min(90vh, 640px) - 76px);\n    overflow-y: auto;\n    text-align: center;\n}\n\n.ia-menu__brand {\n    margin-bottom: 14px;\n}\n\n.ia-menu__brand-logo {\n    display: block;\n    width: min(160px, 72%);\n    height: auto;\n    margin: 0 auto;\n    opacity: 0.92;\n    filter: brightness(0) invert(1);\n}\n\n.ia-menu__avatar-wrap {\n    position: relative;\n    width: max-content;\n    margin: 0 auto 16px;\n}\n\n.ia-menu__avatar {\n    width: 88px;\n    height: 88px;\n    border-radius: 50%;\n    object-fit: cover;\n    display: block;\n    border: 3px solid rgba(192, 159, 83, 0.35);\n    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);\n}\n\n.ia-menu__identity {\n    color: #e8e8e8;\n}\n\n.ia-menu__greeting {\n    margin: 0 0 4px;\n    font-size: 1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f0f0f0;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__email {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    line-height: 1.4;\n    color: #9aa0a6;\n    text-align: center;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.ia-menu__manage {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.25);\n    color: #d8d8d8 !important;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    text-decoration: none;\n    text-align: left;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n    box-sizing: border-box;\n}\n\n.ia-menu__manage:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.1);\n    color: #f4f4f4 !important;\n}\n\n.ia-menu__manage-icon {\n    flex-shrink: 0;\n    width: 32px;\n    height: 32px;\n    border-radius: 8px;\n    object-fit: contain;\n}\n\n.ia-menu__workspace-panel {\n    margin-top: 16px;\n    padding: 12px 14px 12px;\n    text-align: left;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.22);\n    background: linear-gradient(\n        165deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.32) 58%\n    );\n    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);\n}\n\n.ia-menu__workspace-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 14px;\n}\n\n.ia-menu__workspace-copy {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    gap: 2px;\n    min-width: 0;\n    flex: 1;\n}\n\n.ia-menu__workspace-kicker {\n    display: block;\n    margin: 0;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.14em;\n    text-transform: uppercase;\n    color: #c0a053;\n    line-height: 1.25;\n}\n\n.ia-menu__demo-label {\n    display: block;\n    margin: 0;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    letter-spacing: 0.01em;\n    color: #ececec;\n    line-height: 1.3;\n}\n\n.ia-menu__demo-hint {\n    margin: 0;\n    margin-top: 10px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    font-size: 0.6875rem;\n    line-height: 1.45;\n    color: #8b9199;\n}\n\n.ia-menu__switch {\n    position: relative;\n    display: inline-block;\n    width: 44px;\n    height: 24px;\n    flex-shrink: 0;\n}\n\n.ia-menu__switch input {\n    opacity: 0;\n    width: 0;\n    height: 0;\n}\n\n.ia-menu__switch-slider {\n    position: absolute;\n    cursor: pointer;\n    inset: 0;\n    background: rgba(255, 255, 255, 0.12);\n    transition: background 0.25s ease;\n    border-radius: 34px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.ia-menu__switch-slider::before {\n    position: absolute;\n    content: \"\";\n    height: 18px;\n    width: 18px;\n    left: 3px;\n    bottom: 2px;\n    background: #f0f0f0;\n    transition: transform 0.25s ease;\n    border-radius: 50%;\n    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider {\n    background: rgba(192, 159, 83, 0.35);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.ia-menu__switch input:checked + .ia-menu__switch-slider::before {\n    transform: translateX(20px);\n    background: #e8d5a8;\n}\n\n.ia-menu__switch input:focus-visible + .ia-menu__switch-slider {\n    outline: 2px solid rgba(192, 159, 83, 0.7);\n    outline-offset: 2px;\n}\n\n.ia-menu__footer {\n    padding: 14px 16px 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.ia-menu__sign-out {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 10px;\n    margin: 0;\n    padding: 11px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(255, 255, 255, 0.04);\n    color: #c9cdd3;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        color 0.2s ease;\n}\n\n.ia-menu__sign-out:hover {\n    border-color: rgba(220, 100, 100, 0.45);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n}\n\n.ia-menu__sign-out-icon {\n    flex-shrink: 0;\n    opacity: 0.9;\n}\n\n.dropdown-links {\n    max-height: 140px;\n    height: auto;\n    overflow: scroll;\n}\n\n.dropdown-links a {\n    color: #000;\n    font-size: 15px;\n    padding: 15px;\n    display: block;\n    text-decoration: none;\n}\n\n.dropdown-links a:hover {\n    background: #b7b7b7;\n    text-decoration: none;\n    color: #000;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .ia-menu.user_content,\n    .services-overview-container {\n        top: 60px;\n        right: 10px;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -21289,6 +21236,140 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.table{
     white-space: wrap;
     overflow: scroll;
 }`, "",{"version":3,"sources":["webpack://./src/Components/Tabel/Style.css"],"names":[],"mappings":"AAAA;IACI,yBAAyB;IACzB,aAAa;IACb,mBAAmB;IACnB,iBAAiB;IACjB,gBAAgB;IAChB,kBAAkB;AACtB;;AAEA;IACI,eAAe;IACf,6BAA6B;IAC7B,iBAAiB;IACjB,gBAAgB;IAChB,MAAM;IACN,yBAAyB;IACzB,UAAU;AACd;;AAEA;IACI,aAAa;IACb,qCAAqC;IACrC,eAAe;IACf,SAAS;IACT,iBAAiB;AACrB;;AAEA;IACI,WAAW;IACX,cAAc;IACd,iBAAiB;IACjB,gBAAgB;AACpB","sourcesContent":[".table{\n    background-color: #5c5c5c;\n    padding: 15px;\n    border-radius: 10px;\n    max-height: 500px;\n    overflow: scroll;\n    position: relative;\n}\n\n.table-header{\n    font-size: 18px;\n    border-bottom: 1px solid #fff;\n    font-weight: bold;\n    position: sticky;\n    top: 0;\n    background-color: #5c5c5c;\n    z-index: 1;\n}\n\n.table-row{\n    display: grid;\n    grid-template-columns: repeat(7, 1fr);\n    padding: 15px 0;\n    gap: 10px;\n    white-space: wrap;\n}\n\n.table-cell{\n    color: #fff;\n    padding: 0 5px;\n    white-space: wrap;\n    overflow: scroll;\n}"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/Components/TierGate/Style.css":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/Components/TierGate/Style.css ***!
+  \*********************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `/* ── Full-page gate ─────────────────────────────────────── */
+.tier-gate--page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 48px 24px;
+    text-align: center;
+    gap: 16px;
+}
+
+/* ── Inline gate ────────────────────────────────────────── */
+.tier-gate--inline {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.tier-gate__blurred {
+    filter: blur(4px);
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.4;
+}
+
+.tier-gate__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+    gap: 10px;
+    padding: 24px;
+    text-align: center;
+}
+
+/* ── Lock icon ──────────────────────────────────────────── */
+.tier-gate__icon {
+    width: 52px;
+    height: 52px;
+    color: #c0a053;
+    flex-shrink: 0;
+}
+
+.tier-gate--inline .tier-gate__icon {
+    width: 32px;
+    height: 32px;
+}
+
+/* ── Text ───────────────────────────────────────────────── */
+.tier-gate__heading {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #f0f0f0;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.tier-gate--inline .tier-gate__heading {
+    font-size: 0.9375rem;
+}
+
+.tier-gate__tier-name {
+    color: #c0a053;
+    font-weight: 600;
+}
+
+.tier-gate__sub {
+    font-size: 0.875rem;
+    color: #909090;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ── CTA button ─────────────────────────────────────────── */
+.tier-gate__btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 11px 28px;
+    border-radius: 10px;
+    border: 1px solid rgba(192, 159, 83, 0.5);
+    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 65, 0.14) 100%);
+    color: #faf6ee;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.tier-gate__btn:hover {
+    border-color: rgba(192, 159, 83, 0.8);
+    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 65, 0.22) 100%);
+    color: #faf6ee;
+    text-decoration: none;
+}
+
+.tier-gate__link {
+    color: #c0a053;
+    text-decoration: none;
+}
+
+.tier-gate__link:hover {
+    text-decoration: underline;
+}
+`, "",{"version":3,"sources":["webpack://./src/Components/TierGate/Style.css"],"names":[],"mappings":"AAAA,8DAA8D;AAC9D;IACI,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,uBAAuB;IACvB,gBAAgB;IAChB,kBAAkB;IAClB,kBAAkB;IAClB,SAAS;AACb;;AAEA,8DAA8D;AAC9D;IACI,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;AACpB;;AAEA;IACI,iBAAiB;IACjB,oBAAoB;IACpB,iBAAiB;IACjB,YAAY;AAChB;;AAEA;IACI,kBAAkB;IAClB,QAAQ;IACR,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,uBAAuB;IACvB,+BAA+B;IAC/B,0BAA0B;IAC1B,SAAS;IACT,aAAa;IACb,kBAAkB;AACtB;;AAEA,8DAA8D;AAC9D;IACI,WAAW;IACX,YAAY;IACZ,cAAc;IACd,cAAc;AAClB;;AAEA;IACI,WAAW;IACX,YAAY;AAChB;;AAEA,8DAA8D;AAC9D;IACI,iBAAiB;IACjB,gBAAgB;IAChB,cAAc;IACd,SAAS;IACT,gBAAgB;AACpB;;AAEA;IACI,oBAAoB;AACxB;;AAEA;IACI,cAAc;IACd,gBAAgB;AACpB;;AAEA;IACI,mBAAmB;IACnB,cAAc;IACd,SAAS;IACT,gBAAgB;AACpB;;AAEA,8DAA8D;AAC9D;IACI,qBAAqB;IACrB,eAAe;IACf,kBAAkB;IAClB,mBAAmB;IACnB,yCAAyC;IACzC,+FAA+F;IAC/F,cAAc;IACd,oBAAoB;IACpB,gBAAgB;IAChB,qBAAqB;IACrB,wDAAwD;AAC5D;;AAEA;IACI,qCAAqC;IACrC,+FAA+F;IAC/F,cAAc;IACd,qBAAqB;AACzB;;AAEA;IACI,cAAc;IACd,qBAAqB;AACzB;;AAEA;IACI,0BAA0B;AAC9B","sourcesContent":["/* ── Full-page gate ─────────────────────────────────────── */\n.tier-gate--page {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    min-height: 60vh;\n    padding: 48px 24px;\n    text-align: center;\n    gap: 16px;\n}\n\n/* ── Inline gate ────────────────────────────────────────── */\n.tier-gate--inline {\n    position: relative;\n    border-radius: 12px;\n    overflow: hidden;\n}\n\n.tier-gate__blurred {\n    filter: blur(4px);\n    pointer-events: none;\n    user-select: none;\n    opacity: 0.4;\n}\n\n.tier-gate__overlay {\n    position: absolute;\n    inset: 0;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    background: rgba(0, 0, 0, 0.55);\n    backdrop-filter: blur(2px);\n    gap: 10px;\n    padding: 24px;\n    text-align: center;\n}\n\n/* ── Lock icon ──────────────────────────────────────────── */\n.tier-gate__icon {\n    width: 52px;\n    height: 52px;\n    color: #c0a053;\n    flex-shrink: 0;\n}\n\n.tier-gate--inline .tier-gate__icon {\n    width: 32px;\n    height: 32px;\n}\n\n/* ── Text ───────────────────────────────────────────────── */\n.tier-gate__heading {\n    font-size: 1.2rem;\n    font-weight: 400;\n    color: #f0f0f0;\n    margin: 0;\n    line-height: 1.4;\n}\n\n.tier-gate--inline .tier-gate__heading {\n    font-size: 0.9375rem;\n}\n\n.tier-gate__tier-name {\n    color: #c0a053;\n    font-weight: 600;\n}\n\n.tier-gate__sub {\n    font-size: 0.875rem;\n    color: #909090;\n    margin: 0;\n    line-height: 1.5;\n}\n\n/* ── CTA button ─────────────────────────────────────────── */\n.tier-gate__btn {\n    display: inline-block;\n    margin-top: 8px;\n    padding: 11px 28px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.5);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 65, 0.14) 100%);\n    color: #faf6ee;\n    font-size: 0.9375rem;\n    font-weight: 500;\n    text-decoration: none;\n    transition: border-color 0.2s ease, background 0.2s ease;\n}\n\n.tier-gate__btn:hover {\n    border-color: rgba(192, 159, 83, 0.8);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 65, 0.22) 100%);\n    color: #faf6ee;\n    text-decoration: none;\n}\n\n.tier-gate__link {\n    color: #c0a053;\n    text-decoration: none;\n}\n\n.tier-gate__link:hover {\n    text-decoration: underline;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -23547,6 +23628,15 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
     text-overflow: ellipsis;
 }
 
+.compliance-cookies__row-desc {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.38);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-style: italic;
+}
+
 .compliance-cookies__row-party {
     flex-shrink: 0;
     padding: 3px 9px;
@@ -23871,6 +23961,13 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
     color: rgba(255, 255, 255, 0.75);
 }
 
+/* ── Cookie table actions ────────────────────────────────────────────────────── */
+.compliance-cookies__table-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
 /* ── Scan history ────────────────────────────────────────────────────────────── */
 .compliance-transfers__history {
     display: flex;
@@ -24052,6 +24149,16 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
     white-space: pre-wrap;
 }
 
+.compliance-transfers__row-detail-privacy {
+    font-size: 0.72rem;
+    color: rgba(80, 144, 220, 0.8);
+    text-decoration: none;
+}
+.compliance-transfers__row-detail-privacy:hover {
+    color: rgba(80, 144, 220, 1);
+    text-decoration: underline;
+}
+
 /* ── Consent / banner category badge ────────────────────────────────────────── */
 .compliance-banner-cat {
     flex-shrink: 0;
@@ -24106,7 +24213,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
     min-width: 52px;
     text-align: center;
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* ComplianceFlowMap SVG fills the hero */\n.compliance-hero .cfm {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.88);\n    letter-spacing: 0.01em;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n/* ── Side-by-side grid ───────────────────────────────────────────────────────── */\n.compliance-bottom-grid {\n    display: grid;\n    grid-template-columns: 3fr 2fr;\n    gap: 24px;\n    align-items: start;\n}\n\n/* When the transfers card is absent (combined view), audit takes full width */\n.compliance-bottom-grid > .compliance-page__audit:first-child {\n    grid-column: 1 / -1;\n}\n\n@media (max-width: 900px) {\n    .compliance-bottom-grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n\n/* ── Tab switcher ────────────────────────────────────────────────────────────── */\n.compliance-transfers__tabs {\n    display: flex;\n    gap: 2px;\n    margin-bottom: 20px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n    padding-bottom: 0;\n}\n\n.compliance-transfers__tab {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n    padding: 8px 14px 10px;\n    background: transparent;\n    border: none;\n    border-bottom: 2px solid transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.8rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    margin-bottom: -1px;\n    transition: color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-transfers__tab:hover {\n    color: rgba(255, 255, 255, 0.6);\n}\n\n.compliance-transfers__tab.--active {\n    color: rgba(255, 255, 255, 0.88);\n    border-bottom-color: #c0a053;\n}\n\n.compliance-tab-pill {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    min-width: 18px;\n    height: 18px;\n    padding: 0 5px;\n    border-radius: 9px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    background: rgba(255, 255, 255, 0.08);\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.compliance-transfers__tab.--active .compliance-tab-pill {\n    background: rgba(192, 159, 83, 0.18);\n    color: rgba(192, 159, 83, 0.9);\n}\n\n/* ── Cookies list ────────────────────────────────────────────────────────────── */\n.compliance-cookies__list {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n\n.compliance-cookies__row {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-cookies__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-cookies__row-name {\n    font-size: 0.82rem;\n    font-weight: 600;\n    font-family: monospace;\n    color: rgba(255, 255, 255, 0.78);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-domain {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.28);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-party {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-cookies__row-party.--third {\n    background: rgba(220, 80, 80, 0.1);\n    border-color: rgba(220, 80, 80, 0.25);\n    color: rgba(240, 130, 120, 0.85);\n}\n\n.compliance-cookies__row-party.--first {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-cookies__row-lifetime {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n}\n\n.compliance-cookies__row-lifetime.--persistent {\n    color: rgba(220, 160, 60, 0.75);\n}\n\n.compliance-cookies__row-lifetime.--session {\n    color: rgba(255, 255, 255, 0.28);\n}\n\n.compliance-cookies__flags {\n    display: flex;\n    gap: 4px;\n    flex-shrink: 0;\n    flex-wrap: wrap;\n}\n\n.compliance-cookies__flag {\n    padding: 2px 7px;\n    border-radius: 4px;\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    background: rgba(80, 144, 220, 0.08);\n    border: 1px solid rgba(80, 144, 220, 0.18);\n    color: rgba(140, 190, 240, 0.7);\n}\n\n@media (max-width: 580px) {\n    .compliance-cookies__row {\n        flex-wrap: wrap;\n    }\n    .compliance-cookies__flags {\n        width: 100%;\n    }\n}\n\n/* ── Category summary cards ─────────────────────────────────────────────────── */\n.transfers-summary {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n    margin-bottom: 18px;\n}\n\n.transfers-summary__card {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 4px;\n    padding: 12px 18px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    cursor: pointer;\n    font-family: inherit;\n    color: inherit;\n    transition: background 0.15s ease, border-color 0.15s ease;\n    min-width: 76px;\n    text-align: center;\n}\n\n.transfers-summary__card:hover {\n    background: rgba(255, 255, 255, 0.05);\n    border-color: rgba(255, 255, 255, 0.13);\n}\n\n.transfers-summary__card.--active {\n    background: color-mix(in srgb, var(--cat-color, #c0a053) 12%, transparent);\n    border-color: color-mix(in srgb, var(--cat-color, #c0a053) 40%, transparent);\n}\n\n.transfers-summary__card-icon {\n    font-size: 0.9rem;\n    line-height: 1;\n    color: var(--cat-color, rgba(255, 255, 255, 0.5));\n}\n\n.transfers-summary__card-count {\n    font-size: 1.6rem;\n    font-weight: 200;\n    color: rgba(255, 255, 255, 0.88);\n    line-height: 1;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n}\n\n.transfers-summary__card-label {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.transfers-summary__card-risk {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    padding: 2px 7px;\n    border-radius: 10px;\n    margin-top: 2px;\n}\n\n.transfers-summary__card-risk.--high {\n    background: rgba(220, 80, 80, 0.15);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.transfers-summary__card-risk.--medium {\n    background: rgba(220, 160, 60, 0.12);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.transfers-summary__card-risk.--low {\n    background: rgba(80, 168, 120, 0.1);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n.transfers-summary__clear {\n    align-self: center;\n    padding: 6px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.72rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: all 0.15s ease;\n}\n\n.transfers-summary__clear:hover {\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* ── Row additions ───────────────────────────────────────────────────────────── */\n.compliance-transfers__row-icon {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    width: 18px;\n    text-align: center;\n    line-height: 1;\n}\n\n.compliance-transfers__row-resource {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.3);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.compliance-transfers__row-resource--script   { background: rgba(120, 100, 220, 0.1); border-color: rgba(120, 100, 220, 0.2); color: rgba(170, 155, 240, 0.75); }\n.compliance-transfers__row-resource--xhr,\n.compliance-transfers__row-resource--fetch    { background: rgba(220, 160, 60, 0.08); border-color: rgba(220, 160, 60, 0.18); color: rgba(230, 185, 100, 0.7);  }\n.compliance-transfers__row-resource--image    { background: rgba(80, 168, 120, 0.07); border-color: rgba(80, 168, 120, 0.16); color: rgba(120, 200, 150, 0.65); }\n.compliance-transfers__row-resource--font     { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.09); color: rgba(255, 255, 255, 0.28); }\n.compliance-transfers__row-resource--stylesheet { background: rgba(80, 144, 220, 0.07); border-color: rgba(80, 144, 220, 0.16); color: rgba(140, 190, 240, 0.65); }\n\n/* ── EU / Non-EU region badge ────────────────────────────────────────────────── */\n.compliance-transfers__row-region {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    white-space: nowrap;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-region.--eu {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.7);\n}\n\n.compliance-transfers__row-region.--non-eu {\n    background: rgba(220, 140, 50, 0.1);\n    border-color: rgba(220, 140, 50, 0.22);\n    color: rgba(230, 175, 100, 0.8);\n}\n\n/* ── Extra category colours ──────────────────────────────────────────────────── */\n.compliance-transfers__row--cmp {\n    border-color: rgba(80, 168, 120, 0.12);\n    background: rgba(80, 168, 120, 0.03);\n}\n\n.compliance-transfers__row-cat--cmp {\n    background: rgba(80, 168, 120, 0.1);\n    border-color: rgba(80, 168, 120, 0.25);\n    color: rgba(120, 200, 150, 0.85);\n}\n\n.compliance-transfers__row-cat--fingerprinting {\n    background: rgba(192, 54, 90, 0.12);\n    border-color: rgba(192, 54, 90, 0.3);\n    color: rgba(230, 120, 150, 0.9);\n}\n\n.compliance-transfers__row-cat--functional {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.8);\n}\n\n.compliance-transfers__row-cat--cdn {\n    background: rgba(150, 150, 150, 0.07);\n    border-color: rgba(150, 150, 150, 0.18);\n    color: rgba(180, 180, 180, 0.55);\n}\n\n.compliance-transfers__row-cat--third-party {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.32);\n}\n\n@media (max-width: 580px) {\n    .transfers-summary {\n        gap: 6px;\n    }\n\n    .transfers-summary__card {\n        min-width: 64px;\n        padding: 10px 12px 8px;\n    }\n\n    .compliance-transfers__row-resource,\n    .compliance-transfers__row-region {\n        display: none;\n    }\n}\n\n/* ── Combined-view placeholder ──────────────────────────────────────────────── */\n.compliance-transfers__combined-placeholder {\n    display: flex;\n    align-items: center;\n    gap: 14px;\n    padding: 28px 22px;\n    color: rgba(255, 255, 255, 0.3);\n    font-size: 0.82rem;\n    line-height: 1.5;\n}\n\n.compliance-transfers__combined-placeholder p {\n    margin: 0;\n    max-width: 440px;\n}\n\n.compliance-transfers__combined-placeholder-icon {\n    font-size: 1.4rem;\n    flex-shrink: 0;\n    opacity: 0.35;\n}\n\n/* ── Header actions (export + scan) ─────────────────────────────────────────── */\n.compliance-transfers__header-actions {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__export-btn {\n    padding: 8px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 255, 255, 0.45);\n    font-size: 0.75rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;\n    white-space: nowrap;\n}\n\n.compliance-transfers__export-btn:hover {\n    background: rgba(255, 255, 255, 0.08);\n    border-color: rgba(255, 255, 255, 0.18);\n    color: rgba(255, 255, 255, 0.75);\n}\n\n/* ── Scan history ────────────────────────────────────────────────────────────── */\n.compliance-transfers__history {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: 6px;\n    padding: 10px 0 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    margin-bottom: 4px;\n}\n\n.compliance-transfers__history-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n    margin-right: 4px;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__history-chip {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-transfers__history-chip-detail {\n    color: rgba(255, 255, 255, 0.2);\n}\n\n/* ── Search input ────────────────────────────────────────────────────────────── */\n.compliance-search {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 10px;\n}\n\n.compliance-search__input {\n    flex: 1;\n    padding: 8px 12px;\n    border-radius: 7px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.03);\n    color: rgba(255, 255, 255, 0.75);\n    font-size: 0.8rem;\n    font-family: inherit;\n    outline: none;\n    transition: border-color 0.15s ease, background 0.15s ease;\n    min-width: 0;\n}\n\n.compliance-search__input::placeholder {\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-search__input:focus {\n    border-color: rgba(192, 159, 83, 0.4);\n    background: rgba(255, 255, 255, 0.05);\n}\n\n.compliance-search__input::-webkit-search-cancel-button {\n    filter: invert(0.5);\n    cursor: pointer;\n}\n\n.compliance-search__count {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.3);\n    white-space: nowrap;\n    flex-shrink: 0;\n}\n\n/* ── List column headers ─────────────────────────────────────────────────────── */\n.compliance-transfers__list-header {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 4px 14px 6px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-transfers__list-header > span:first-child { width: 18px; flex-shrink: 0; }\n.compliance-transfers__list-header > span:nth-child(2) { flex: 1; min-width: 0; }\n.compliance-transfers__list-header > span:last-child   { width: 18px; flex-shrink: 0; }\n\n.compliance-cookies__list-header {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 4px 14px 6px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-cookies__list-header > span:first-child { flex: 1; min-width: 0; }\n\n/* ── Expandable transfer rows ────────────────────────────────────────────────── */\n.compliance-transfers__row-wrap {\n    display: flex;\n    flex-direction: column;\n}\n\n.compliance-transfers__row {\n    cursor: pointer;\n    transition: background 0.12s ease, border-color 0.12s ease;\n}\n\n.compliance-transfers__row:hover,\n.compliance-transfers__row.--expanded {\n    background: rgba(255, 80, 80, 0.08);\n    border-color: rgba(255, 80, 80, 0.22);\n}\n\n.compliance-transfers__row-toggle {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    color: rgba(255, 255, 255, 0.25);\n    width: 14px;\n    text-align: center;\n    transition: color 0.12s ease;\n}\n\n.compliance-transfers__row:hover .compliance-transfers__row-toggle,\n.compliance-transfers__row.--expanded .compliance-transfers__row-toggle {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.compliance-transfers__row-detail {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px 20px;\n    padding: 10px 14px 12px 44px;\n    border: 1px solid rgba(255, 80, 80, 0.12);\n    border-top: none;\n    border-radius: 0 0 8px 8px;\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-transfers__row-detail-item {\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.55);\n}\n\n.compliance-transfers__row-detail-item--full {\n    width: 100%;\n}\n\n.compliance-transfers__row-detail-label {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-transfers__row-detail-code {\n    font-family: monospace;\n    font-size: 0.72rem;\n    color: rgba(192, 159, 83, 0.75);\n    word-break: break-all;\n    white-space: pre-wrap;\n}\n\n/* ── Consent / banner category badge ────────────────────────────────────────── */\n.compliance-banner-cat {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    white-space: nowrap;\n    border: 1px solid color-mix(in srgb, var(--bc-color, #909090) 35%, transparent);\n    background: color-mix(in srgb, var(--bc-color, #909090) 10%, transparent);\n    color: color-mix(in srgb, var(--bc-color, #909090) 90%, #fff);\n}\n\n/* ── Pagination controls ─────────────────────────────────────────────────────── */\n.compliance-pagination {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 14px 0 2px;\n}\n\n.compliance-pagination__btn {\n    padding: 5px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.45);\n    font-size: 0.75rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-pagination__btn:hover:not(:disabled) {\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(255, 255, 255, 0.75);\n    border-color: rgba(255, 255, 255, 0.16);\n}\n\n.compliance-pagination__btn:disabled {\n    opacity: 0.25;\n    cursor: not-allowed;\n}\n\n.compliance-pagination__info {\n    font-size: 0.72rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-variant-numeric: tabular-nums;\n    min-width: 52px;\n    text-align: center;\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Pages/Compliance/Style.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Hero map — full-width ── */\n.compliance-hero {\n    position: relative;\n    width: 100%;\n    min-height: 380px;\n    max-height: 520px;\n    height: 46vh;\n    overflow: hidden;\n    background: #0e0c09;\n}\n\n/* Bottom fade to page background */\n.compliance-hero::after {\n    content: \"\";\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    height: 200px;\n    background: linear-gradient(to bottom, transparent 0%, rgba(14, 12, 9, 0.85) 65%, #0e0c09 100%);\n    pointer-events: none;\n    z-index: 2;\n}\n\n/* Suppress the right-side country list — map fills full width in the hero */\n.compliance-hero .world-map {\n    grid-template-columns: 1fr;\n    height: 100%;\n    min-height: 0;\n}\n\n.compliance-hero .world-map__side {\n    display: none;\n}\n\n.compliance-hero .world-map__main {\n    height: 100%;\n}\n\n.compliance-hero .world-map__header {\n    display: none;\n}\n\n.compliance-hero .world-map__map-shell {\n    height: 100%;\n    flex: 1;\n}\n\n.compliance-hero .svgMap-map-wrapper {\n    min-height: 0;\n    height: 100%;\n}\n\n/* ComplianceFlowMap SVG fills the hero */\n.compliance-hero .cfm {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n}\n\n/* Stats strip overlaid at the bottom of the hero, above the gradient */\n.compliance-hero__stats {\n    position: absolute;\n    bottom: 0;\n    left: 0;\n    right: 0;\n    z-index: 3;\n    display: flex;\n    align-items: center;\n    gap: 0;\n    padding: 16px 24px 20px;\n}\n\n.compliance-hero__stat {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 0 0 auto;\n}\n\n.compliance-hero__stat-value {\n    font-size: 1.4rem;\n    font-weight: 300;\n    color: #e8e8e8;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n\n.compliance-hero__stat-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-hero__stat-divider {\n    width: 1px;\n    height: 32px;\n    background: rgba(255, 255, 255, 0.08);\n    flex-shrink: 0;\n    margin: 0 22px;\n}\n\n.compliance-hero__audit-btn {\n    margin-left: auto;\n    flex-shrink: 0;\n    padding: 9px 18px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c0a053;\n    font-size: 0.82rem;\n    font-weight: 600;\n    text-decoration: none;\n    letter-spacing: 0.02em;\n    backdrop-filter: blur(8px);\n    transition: background 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-hero__audit-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.6);\n    text-decoration: none;\n}\n\n/* ── Content area below hero ── */\n.compliance-page {\n    padding-top: 20px;\n}\n\n/* ── Pre-consent data transfer section ── */\n.compliance-transfers__card {\n    padding: 20px 22px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(24, 22, 18, 0.75);\n}\n\n.compliance-transfers__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 20px;\n    margin-bottom: 20px;\n}\n\n.compliance-transfers__header-text {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    min-width: 0;\n}\n\n.compliance-transfers__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.88);\n    letter-spacing: 0.01em;\n}\n\n.compliance-transfers__desc {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(255, 255, 255, 0.38);\n    max-width: 520px;\n}\n\n.compliance-transfers__scan-time {\n    font-size: 0.67rem;\n    color: rgba(255, 255, 255, 0.22);\n    font-weight: 500;\n}\n\n.compliance-transfers__scan-btn {\n    flex-shrink: 0;\n    padding: 8px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n    color: #c0a053;\n    font-size: 0.78rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;\n}\n\n.compliance-transfers__scan-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__scan-btn.--loading,\n.compliance-transfers__scan-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Empty / status states */\n.compliance-transfers__empty {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 18px 0 4px;\n    font-size: 0.82rem;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.compliance-transfers__empty-icon {\n    font-size: 1.1rem;\n    line-height: 1;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__empty--loading {\n    color: rgba(192, 159, 83, 0.55);\n}\n\n.compliance-transfers__empty--clean {\n    color: rgba(120, 200, 140, 0.7);\n}\n\n/* Transfer rows */\n.compliance-transfers__list {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.compliance-transfers__row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 80, 80, 0.15);\n    background: rgba(255, 60, 60, 0.05);\n}\n\n.compliance-transfers__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-transfers__row-service {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(255, 255, 255, 0.82);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-transfers__row-host {\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n/* Category badge */\n.compliance-transfers__row-cat {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-cat--advertising {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 80, 80, 0.3);\n    color: rgba(240, 140, 130, 0.9);\n}\n\n.compliance-transfers__row-cat--analytics {\n    background: rgba(100, 160, 220, 0.1);\n    border-color: rgba(100, 160, 220, 0.25);\n    color: rgba(140, 190, 240, 0.85);\n}\n\n.compliance-transfers__row-cat--social {\n    background: rgba(130, 100, 200, 0.1);\n    border-color: rgba(130, 100, 200, 0.25);\n    color: rgba(175, 150, 230, 0.85);\n}\n\n.compliance-transfers__row-cat--other,\n.compliance-transfers__row-cat--unknown {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n/* Pre-consent flag */\n.compliance-transfers__row-flag {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    background: rgba(220, 100, 60, 0.12);\n    border: 1px solid rgba(220, 100, 60, 0.3);\n    color: rgba(240, 160, 120, 0.9);\n}\n\n@media (max-width: 580px) {\n    .compliance-transfers__header {\n        flex-direction: column;\n        align-items: stretch;\n    }\n\n    .compliance-transfers__scan-btn {\n        align-self: flex-start;\n    }\n\n    .compliance-transfers__row {\n        flex-wrap: wrap;\n    }\n}\n\n/* ── Side-by-side grid ───────────────────────────────────────────────────────── */\n.compliance-bottom-grid {\n    display: grid;\n    grid-template-columns: 3fr 2fr;\n    gap: 24px;\n    align-items: start;\n}\n\n/* When the transfers card is absent (combined view), audit takes full width */\n.compliance-bottom-grid > .compliance-page__audit:first-child {\n    grid-column: 1 / -1;\n}\n\n@media (max-width: 900px) {\n    .compliance-bottom-grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n.compliance-page__audit .audit-snapshot-card:hover {\n    transform: none;\n    border-color: rgba(255, 255, 255, 0.1);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n}\n\n@media (max-width: 680px) {\n    .compliance-hero {\n        max-height: 60vw;\n        min-height: 240px;\n    }\n\n    .compliance-hero__stats {\n        flex-wrap: wrap;\n        gap: 10px 0;\n        padding: 12px 16px 16px;\n    }\n\n    .compliance-hero__stat-divider {\n        display: none;\n    }\n\n    .compliance-hero__audit-btn {\n        margin-left: 0;\n        width: 100%;\n        text-align: center;\n    }\n}\n\n/* ── Tab switcher ────────────────────────────────────────────────────────────── */\n.compliance-transfers__tabs {\n    display: flex;\n    gap: 2px;\n    margin-bottom: 20px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n    padding-bottom: 0;\n}\n\n.compliance-transfers__tab {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n    padding: 8px 14px 10px;\n    background: transparent;\n    border: none;\n    border-bottom: 2px solid transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.8rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    margin-bottom: -1px;\n    transition: color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-transfers__tab:hover {\n    color: rgba(255, 255, 255, 0.6);\n}\n\n.compliance-transfers__tab.--active {\n    color: rgba(255, 255, 255, 0.88);\n    border-bottom-color: #c0a053;\n}\n\n.compliance-tab-pill {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    min-width: 18px;\n    height: 18px;\n    padding: 0 5px;\n    border-radius: 9px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    background: rgba(255, 255, 255, 0.08);\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.compliance-transfers__tab.--active .compliance-tab-pill {\n    background: rgba(192, 159, 83, 0.18);\n    color: rgba(192, 159, 83, 0.9);\n}\n\n/* ── Cookies list ────────────────────────────────────────────────────────────── */\n.compliance-cookies__list {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n\n.compliance-cookies__row {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-cookies__row-main {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n    min-width: 0;\n}\n\n.compliance-cookies__row-name {\n    font-size: 0.82rem;\n    font-weight: 600;\n    font-family: monospace;\n    color: rgba(255, 255, 255, 0.78);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-domain {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.28);\n    font-family: monospace;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.compliance-cookies__row-desc {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.38);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    font-style: italic;\n}\n\n.compliance-cookies__row-party {\n    flex-shrink: 0;\n    padding: 3px 9px;\n    border-radius: 20px;\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    border: 1px solid transparent;\n}\n\n.compliance-cookies__row-party.--third {\n    background: rgba(220, 80, 80, 0.1);\n    border-color: rgba(220, 80, 80, 0.25);\n    color: rgba(240, 130, 120, 0.85);\n}\n\n.compliance-cookies__row-party.--first {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-cookies__row-lifetime {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n}\n\n.compliance-cookies__row-lifetime.--persistent {\n    color: rgba(220, 160, 60, 0.75);\n}\n\n.compliance-cookies__row-lifetime.--session {\n    color: rgba(255, 255, 255, 0.28);\n}\n\n.compliance-cookies__flags {\n    display: flex;\n    gap: 4px;\n    flex-shrink: 0;\n    flex-wrap: wrap;\n}\n\n.compliance-cookies__flag {\n    padding: 2px 7px;\n    border-radius: 4px;\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    background: rgba(80, 144, 220, 0.08);\n    border: 1px solid rgba(80, 144, 220, 0.18);\n    color: rgba(140, 190, 240, 0.7);\n}\n\n@media (max-width: 580px) {\n    .compliance-cookies__row {\n        flex-wrap: wrap;\n    }\n    .compliance-cookies__flags {\n        width: 100%;\n    }\n}\n\n/* ── Category summary cards ─────────────────────────────────────────────────── */\n.transfers-summary {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n    margin-bottom: 18px;\n}\n\n.transfers-summary__card {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 4px;\n    padding: 12px 18px 10px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    cursor: pointer;\n    font-family: inherit;\n    color: inherit;\n    transition: background 0.15s ease, border-color 0.15s ease;\n    min-width: 76px;\n    text-align: center;\n}\n\n.transfers-summary__card:hover {\n    background: rgba(255, 255, 255, 0.05);\n    border-color: rgba(255, 255, 255, 0.13);\n}\n\n.transfers-summary__card.--active {\n    background: color-mix(in srgb, var(--cat-color, #c0a053) 12%, transparent);\n    border-color: color-mix(in srgb, var(--cat-color, #c0a053) 40%, transparent);\n}\n\n.transfers-summary__card-icon {\n    font-size: 0.9rem;\n    line-height: 1;\n    color: var(--cat-color, rgba(255, 255, 255, 0.5));\n}\n\n.transfers-summary__card-count {\n    font-size: 1.6rem;\n    font-weight: 200;\n    color: rgba(255, 255, 255, 0.88);\n    line-height: 1;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: -0.02em;\n}\n\n.transfers-summary__card-label {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.transfers-summary__card-risk {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    padding: 2px 7px;\n    border-radius: 10px;\n    margin-top: 2px;\n}\n\n.transfers-summary__card-risk.--high {\n    background: rgba(220, 80, 80, 0.15);\n    color: rgba(240, 130, 120, 0.9);\n}\n\n.transfers-summary__card-risk.--medium {\n    background: rgba(220, 160, 60, 0.12);\n    color: rgba(230, 180, 100, 0.85);\n}\n\n.transfers-summary__card-risk.--low {\n    background: rgba(80, 168, 120, 0.1);\n    color: rgba(120, 200, 150, 0.75);\n}\n\n.transfers-summary__clear {\n    align-self: center;\n    padding: 6px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.35);\n    font-size: 0.72rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: all 0.15s ease;\n}\n\n.transfers-summary__clear:hover {\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.6);\n}\n\n/* ── Row additions ───────────────────────────────────────────────────────────── */\n.compliance-transfers__row-icon {\n    flex-shrink: 0;\n    font-size: 0.85rem;\n    width: 18px;\n    text-align: center;\n    line-height: 1;\n}\n\n.compliance-transfers__row-resource {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.3);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.compliance-transfers__row-resource--script   { background: rgba(120, 100, 220, 0.1); border-color: rgba(120, 100, 220, 0.2); color: rgba(170, 155, 240, 0.75); }\n.compliance-transfers__row-resource--xhr,\n.compliance-transfers__row-resource--fetch    { background: rgba(220, 160, 60, 0.08); border-color: rgba(220, 160, 60, 0.18); color: rgba(230, 185, 100, 0.7);  }\n.compliance-transfers__row-resource--image    { background: rgba(80, 168, 120, 0.07); border-color: rgba(80, 168, 120, 0.16); color: rgba(120, 200, 150, 0.65); }\n.compliance-transfers__row-resource--font     { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.09); color: rgba(255, 255, 255, 0.28); }\n.compliance-transfers__row-resource--stylesheet { background: rgba(80, 144, 220, 0.07); border-color: rgba(80, 144, 220, 0.16); color: rgba(140, 190, 240, 0.65); }\n\n/* ── EU / Non-EU region badge ────────────────────────────────────────────────── */\n.compliance-transfers__row-region {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    white-space: nowrap;\n    border: 1px solid transparent;\n}\n\n.compliance-transfers__row-region.--eu {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.7);\n}\n\n.compliance-transfers__row-region.--non-eu {\n    background: rgba(220, 140, 50, 0.1);\n    border-color: rgba(220, 140, 50, 0.22);\n    color: rgba(230, 175, 100, 0.8);\n}\n\n/* ── Extra category colours ──────────────────────────────────────────────────── */\n.compliance-transfers__row--cmp {\n    border-color: rgba(80, 168, 120, 0.12);\n    background: rgba(80, 168, 120, 0.03);\n}\n\n.compliance-transfers__row-cat--cmp {\n    background: rgba(80, 168, 120, 0.1);\n    border-color: rgba(80, 168, 120, 0.25);\n    color: rgba(120, 200, 150, 0.85);\n}\n\n.compliance-transfers__row-cat--fingerprinting {\n    background: rgba(192, 54, 90, 0.12);\n    border-color: rgba(192, 54, 90, 0.3);\n    color: rgba(230, 120, 150, 0.9);\n}\n\n.compliance-transfers__row-cat--functional {\n    background: rgba(80, 168, 120, 0.08);\n    border-color: rgba(80, 168, 120, 0.2);\n    color: rgba(120, 200, 150, 0.8);\n}\n\n.compliance-transfers__row-cat--cdn {\n    background: rgba(150, 150, 150, 0.07);\n    border-color: rgba(150, 150, 150, 0.18);\n    color: rgba(180, 180, 180, 0.55);\n}\n\n.compliance-transfers__row-cat--third-party {\n    background: rgba(255, 255, 255, 0.04);\n    border-color: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.32);\n}\n\n@media (max-width: 580px) {\n    .transfers-summary {\n        gap: 6px;\n    }\n\n    .transfers-summary__card {\n        min-width: 64px;\n        padding: 10px 12px 8px;\n    }\n\n    .compliance-transfers__row-resource,\n    .compliance-transfers__row-region {\n        display: none;\n    }\n}\n\n/* ── Combined-view placeholder ──────────────────────────────────────────────── */\n.compliance-transfers__combined-placeholder {\n    display: flex;\n    align-items: center;\n    gap: 14px;\n    padding: 28px 22px;\n    color: rgba(255, 255, 255, 0.3);\n    font-size: 0.82rem;\n    line-height: 1.5;\n}\n\n.compliance-transfers__combined-placeholder p {\n    margin: 0;\n    max-width: 440px;\n}\n\n.compliance-transfers__combined-placeholder-icon {\n    font-size: 1.4rem;\n    flex-shrink: 0;\n    opacity: 0.35;\n}\n\n/* ── Header actions (export + scan) ─────────────────────────────────────────── */\n.compliance-transfers__header-actions {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__export-btn {\n    padding: 8px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 255, 255, 0.45);\n    font-size: 0.75rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    letter-spacing: 0.02em;\n    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;\n    white-space: nowrap;\n}\n\n.compliance-transfers__export-btn:hover {\n    background: rgba(255, 255, 255, 0.08);\n    border-color: rgba(255, 255, 255, 0.18);\n    color: rgba(255, 255, 255, 0.75);\n}\n\n/* ── Cookie table actions ────────────────────────────────────────────────────── */\n.compliance-cookies__table-actions {\n    display: flex;\n    justify-content: flex-end;\n    margin-bottom: 8px;\n}\n\n/* ── Scan history ────────────────────────────────────────────────────────────── */\n.compliance-transfers__history {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: 6px;\n    padding: 10px 0 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    margin-bottom: 4px;\n}\n\n.compliance-transfers__history-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n    margin-right: 4px;\n    flex-shrink: 0;\n}\n\n.compliance-transfers__history-chip {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.02);\n    font-size: 0.7rem;\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.compliance-transfers__history-chip-detail {\n    color: rgba(255, 255, 255, 0.2);\n}\n\n/* ── Search input ────────────────────────────────────────────────────────────── */\n.compliance-search {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 10px;\n}\n\n.compliance-search__input {\n    flex: 1;\n    padding: 8px 12px;\n    border-radius: 7px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.03);\n    color: rgba(255, 255, 255, 0.75);\n    font-size: 0.8rem;\n    font-family: inherit;\n    outline: none;\n    transition: border-color 0.15s ease, background 0.15s ease;\n    min-width: 0;\n}\n\n.compliance-search__input::placeholder {\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-search__input:focus {\n    border-color: rgba(192, 159, 83, 0.4);\n    background: rgba(255, 255, 255, 0.05);\n}\n\n.compliance-search__input::-webkit-search-cancel-button {\n    filter: invert(0.5);\n    cursor: pointer;\n}\n\n.compliance-search__count {\n    font-size: 0.68rem;\n    color: rgba(255, 255, 255, 0.3);\n    white-space: nowrap;\n    flex-shrink: 0;\n}\n\n/* ── List column headers ─────────────────────────────────────────────────────── */\n.compliance-transfers__list-header {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 4px 14px 6px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-transfers__list-header > span:first-child { width: 18px; flex-shrink: 0; }\n.compliance-transfers__list-header > span:nth-child(2) { flex: 1; min-width: 0; }\n.compliance-transfers__list-header > span:last-child   { width: 18px; flex-shrink: 0; }\n\n.compliance-cookies__list-header {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 4px 14px 6px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.09em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-cookies__list-header > span:first-child { flex: 1; min-width: 0; }\n\n/* ── Expandable transfer rows ────────────────────────────────────────────────── */\n.compliance-transfers__row-wrap {\n    display: flex;\n    flex-direction: column;\n}\n\n.compliance-transfers__row {\n    cursor: pointer;\n    transition: background 0.12s ease, border-color 0.12s ease;\n}\n\n.compliance-transfers__row:hover,\n.compliance-transfers__row.--expanded {\n    background: rgba(255, 80, 80, 0.08);\n    border-color: rgba(255, 80, 80, 0.22);\n}\n\n.compliance-transfers__row-toggle {\n    flex-shrink: 0;\n    font-size: 0.65rem;\n    color: rgba(255, 255, 255, 0.25);\n    width: 14px;\n    text-align: center;\n    transition: color 0.12s ease;\n}\n\n.compliance-transfers__row:hover .compliance-transfers__row-toggle,\n.compliance-transfers__row.--expanded .compliance-transfers__row-toggle {\n    color: rgba(255, 255, 255, 0.5);\n}\n\n.compliance-transfers__row-detail {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px 20px;\n    padding: 10px 14px 12px 44px;\n    border: 1px solid rgba(255, 80, 80, 0.12);\n    border-top: none;\n    border-radius: 0 0 8px 8px;\n    background: rgba(255, 255, 255, 0.02);\n}\n\n.compliance-transfers__row-detail-item {\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.55);\n}\n\n.compliance-transfers__row-detail-item--full {\n    width: 100%;\n}\n\n.compliance-transfers__row-detail-label {\n    font-size: 0.58rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.2);\n}\n\n.compliance-transfers__row-detail-code {\n    font-family: monospace;\n    font-size: 0.72rem;\n    color: rgba(192, 159, 83, 0.75);\n    word-break: break-all;\n    white-space: pre-wrap;\n}\n\n.compliance-transfers__row-detail-privacy {\n    font-size: 0.72rem;\n    color: rgba(80, 144, 220, 0.8);\n    text-decoration: none;\n}\n.compliance-transfers__row-detail-privacy:hover {\n    color: rgba(80, 144, 220, 1);\n    text-decoration: underline;\n}\n\n/* ── Consent / banner category badge ────────────────────────────────────────── */\n.compliance-banner-cat {\n    flex-shrink: 0;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    white-space: nowrap;\n    border: 1px solid color-mix(in srgb, var(--bc-color, #909090) 35%, transparent);\n    background: color-mix(in srgb, var(--bc-color, #909090) 10%, transparent);\n    color: color-mix(in srgb, var(--bc-color, #909090) 90%, #fff);\n}\n\n/* ── Pagination controls ─────────────────────────────────────────────────────── */\n.compliance-pagination {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 14px 0 2px;\n}\n\n.compliance-pagination__btn {\n    padding: 5px 14px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: transparent;\n    color: rgba(255, 255, 255, 0.45);\n    font-size: 0.75rem;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;\n}\n\n.compliance-pagination__btn:hover:not(:disabled) {\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(255, 255, 255, 0.75);\n    border-color: rgba(255, 255, 255, 0.16);\n}\n\n.compliance-pagination__btn:disabled {\n    opacity: 0.25;\n    cursor: not-allowed;\n}\n\n.compliance-pagination__info {\n    font-size: 0.72rem;\n    color: rgba(255, 255, 255, 0.3);\n    font-variant-numeric: tabular-nums;\n    min-width: 52px;\n    text-align: center;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -24133,6 +24240,131 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, ``, "",{"version":3,"sources":[],"names":[],"mappings":"","sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/Pages/DSR/Style.css":
+/*!***********************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/Pages/DSR/Style.css ***!
+  \***********************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.dsr-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 220;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+}
+
+.dsr-modal__card {
+    width: 100%;
+    max-width: 480px;
+    padding: 24px 22px 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);
+    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.dsr-modal__card h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #f2f2f2;
+}
+
+.dsr-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.dsr-timeline__item {
+    display: flex;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dsr-timeline__item:last-child {
+    border-bottom: none;
+}
+
+.dsr-timeline__dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: rgba(192, 159, 83, 0.7);
+}
+
+.dsr-timeline__action {
+    font-size: 0.875rem;
+    color: #e0e0e0;
+    line-height: 1.4;
+}
+
+.dsr-timeline__time {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.75rem;
+    color: rgba(150, 150, 150, 0.8);
+}
+
+.dsr-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.dsr-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dsr-meta-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(192, 159, 83, 0.9);
+}
+
+.dsr-meta-value {
+    font-size: 0.875rem;
+    color: #e4e4e4;
+    line-height: 1.4;
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/DSR/Style.css"],"names":[],"mappings":"AAAA;IACI,eAAe;IACf,QAAQ;IACR,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,aAAa;IACb,+BAA+B;IAC/B,0BAA0B;AAC9B;;AAEA;IACI,WAAW;IACX,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,2CAA2C;IAC3C,2FAA2F;IAC3F,0CAA0C;IAC1C,aAAa;IACb,sBAAsB;IACtB,SAAS;AACb;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,MAAM;IACN,UAAU;IACV,SAAS;IACT,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,SAAS;IACT,eAAe;IACf,kDAAkD;AACtD;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,cAAc;IACd,UAAU;IACV,WAAW;IACX,eAAe;IACf,kBAAkB;IAClB,mCAAmC;AACvC;;AAEA;IACI,mBAAmB;IACnB,cAAc;IACd,gBAAgB;AACpB;;AAEA;IACI,cAAc;IACd,eAAe;IACf,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,4DAA4D;IAC5D,SAAS;AACb;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,yBAAyB;IACzB,sBAAsB;IACtB,8BAA8B;AAClC;;AAEA;IACI,mBAAmB;IACnB,cAAc;IACd,gBAAgB;AACpB","sourcesContent":[".dsr-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.dsr-modal__card {\n    width: 100%;\n    max-width: 480px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n    display: flex;\n    flex-direction: column;\n    gap: 14px;\n}\n\n.dsr-modal__card h2 {\n    margin: 0;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.dsr-timeline {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n    padding: 0;\n    margin: 0;\n    list-style: none;\n}\n\n.dsr-timeline__item {\n    display: flex;\n    gap: 14px;\n    padding: 12px 0;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.dsr-timeline__item:last-child {\n    border-bottom: none;\n}\n\n.dsr-timeline__dot {\n    flex-shrink: 0;\n    width: 8px;\n    height: 8px;\n    margin-top: 6px;\n    border-radius: 50%;\n    background: rgba(192, 159, 83, 0.7);\n}\n\n.dsr-timeline__action {\n    font-size: 0.875rem;\n    color: #e0e0e0;\n    line-height: 1.4;\n}\n\n.dsr-timeline__time {\n    display: block;\n    margin-top: 2px;\n    font-size: 0.75rem;\n    color: rgba(150, 150, 150, 0.8);\n}\n\n.dsr-meta-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));\n    gap: 14px;\n}\n\n.dsr-meta-item {\n    display: flex;\n    flex-direction: column;\n    gap: 4px;\n}\n\n.dsr-meta-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.08em;\n    color: rgba(192, 159, 83, 0.9);\n}\n\n.dsr-meta-value {\n    font-size: 0.875rem;\n    color: #e4e4e4;\n    line-height: 1.4;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -28688,12 +28920,36 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.reports-hub {
     color: rgba(180, 180, 180, 0.95);
 }
 
+.reports-hub__card--locked {
+    opacity: 0.55;
+    cursor: default;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.reports-hub__card--locked .reports-hub__card-title {
+    color: #a0a0a0;
+}
+
+.reports-hub__card-lock {
+    margin-left: auto;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #c0a053;
+    background: rgba(192, 159, 83, 0.12);
+    border: 1px solid rgba(192, 159, 83, 0.28);
+    border-radius: 20px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+}
+
 @media screen and (max-width: 600px) {
     .reports-hub__grid {
         grid-template-columns: 1fr;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Reports/Reports.css"],"names":[],"mappings":"AAAA;IACI,mBAAmB;IACnB,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,mBAAmB;IACnB,iBAAiB;IACjB,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,oBAAoB;IACpB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,cAAc;IACd,sBAAsB;AAC1B;;AAEA;IACI,aAAa;IACb,4DAA4D;IAC5D,SAAS;AACb;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,uBAAuB;IACvB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,2FAA2F;IAC3F;;+CAE2C;IAC3C,qBAAqB;IACrB,cAAc;IACd;;;;4BAIwB;AAC5B;;AAEA;IACI,sCAAsC;IACtC,2FAA2F;IAC3F;;+CAE2C;IAC3C,2BAA2B;AAC/B;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,cAAc;IACd,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,WAAW;AACf;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,iBAAiB;IACjB,gDAAgD;IAChD,iDAAiD;IACjD,yBAAyB;IACzB,eAAe;AACnB;;AAEA;IACI,SAAS;IACT,oBAAoB;IACpB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI;QACI,0BAA0B;IAC9B;AACJ","sourcesContent":[".reports-hub {\n    padding: 8px 0 48px;\n    max-width: 920px;\n}\n\n.reports-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.reports-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.reports-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.reports-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.reports-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.reports-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.reports-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.reports-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.reports-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.reports-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.reports-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .reports-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Pages/Reports/Reports.css"],"names":[],"mappings":"AAAA;IACI,mBAAmB;IACnB,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,mBAAmB;IACnB,iBAAiB;IACjB,mBAAmB;IACnB,0CAA0C;IAC1C,8BAA8B;IAC9B,oBAAoB;IACpB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,cAAc;IACd,sBAAsB;AAC1B;;AAEA;IACI,aAAa;IACb,4DAA4D;IAC5D,SAAS;AACb;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,uBAAuB;IACvB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,2FAA2F;IAC3F;;+CAE2C;IAC3C,qBAAqB;IACrB,cAAc;IACd;;;;4BAIwB;AAC5B;;AAEA;IACI,sCAAsC;IACtC,2FAA2F;IAC3F;;+CAE2C;IAC3C,2BAA2B;AAC/B;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,cAAc;IACd,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,WAAW;AACf;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,iBAAiB;IACjB,gDAAgD;IAChD,iDAAiD;IACjD,yBAAyB;IACzB,eAAe;AACnB;;AAEA;IACI,SAAS;IACT,oBAAoB;IACpB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,eAAe;IACf,uCAAuC;AAC3C;;AAEA;IACI,cAAc;AAClB;;AAEA;IACI,iBAAiB;IACjB,mBAAmB;IACnB,gBAAgB;IAChB,qBAAqB;IACrB,yBAAyB;IACzB,cAAc;IACd,oCAAoC;IACpC,0CAA0C;IAC1C,mBAAmB;IACnB,gBAAgB;IAChB,cAAc;AAClB;;AAEA;IACI;QACI,0BAA0B;IAC9B;AACJ","sourcesContent":[".reports-hub {\n    padding: 8px 0 48px;\n    max-width: 920px;\n}\n\n.reports-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.reports-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.reports-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.reports-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.reports-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.reports-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.reports-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.reports-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.reports-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.reports-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.reports-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n.reports-hub__card--locked {\n    opacity: 0.55;\n    cursor: default;\n    border-color: rgba(255, 255, 255, 0.06);\n}\n\n.reports-hub__card--locked .reports-hub__card-title {\n    color: #a0a0a0;\n}\n\n.reports-hub__card-lock {\n    margin-left: auto;\n    font-size: 0.625rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.28);\n    border-radius: 20px;\n    padding: 2px 8px;\n    flex-shrink: 0;\n}\n\n@media screen and (max-width: 600px) {\n    .reports-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -31623,7 +31879,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Audit log — link to UserConsents 
 
 .audit-snapshot-card__feed-map-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(200px, 42%);
     align-items: stretch;
     gap: 16px 20px;
     margin: 14px 0 16px;
@@ -31662,7 +31917,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Audit log — link to UserConsents 
     background: rgba(0, 0, 0, 0.18);
     border: 1px solid rgba(255, 255, 255, 0.06);
 }
-`, "",{"version":3,"sources":["webpack://./src/components/AuditSnapshotCard/AuditSnapshotCard.css"],"names":[],"mappings":"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","sourcesContent":["/* Audit log — link to UserConsents from dashboard */\n.audit-snapshot-card {\n    display: block;\n    margin-bottom: 20px;\n    text-decoration: none;\n    color: inherit;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(24, 22, 18, 0.75);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;\n}\n\n.audit-snapshot-card:hover {\n    border-color: rgba(192, 159, 83, 0.4);\n    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);\n    transform: translateY(-1px);\n}\n\n.audit-snapshot-card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.85);\n    outline-offset: 3px;\n}\n\n/* System health — glanceable top accent */\n.audit-snapshot-card--health-healthy {\n    border-top: 3px solid rgba(100, 190, 125, 0.95);\n}\n\n.audit-snapshot-card--health-degraded {\n    border-top: 3px solid rgba(220, 165, 75, 0.95);\n}\n\n.audit-snapshot-card--health-error {\n    border-top: 3px solid rgba(230, 95, 95, 0.95);\n}\n\n.audit-snapshot-card--health-loading {\n    border-top: 3px solid rgba(130, 165, 210, 0.9);\n}\n\n.audit-snapshot-card__body {\n    padding: 18px 22px 20px;\n}\n\n.audit-snapshot-card__text {\n    min-width: 0;\n}\n\n.audit-snapshot-card__title-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px 16px;\n    margin-bottom: 6px;\n}\n\n.audit-snapshot-card__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #e8e8e8;\n    flex: 1;\n    min-width: 9rem;\n}\n\n.audit-snapshot-card__health-sub {\n    margin: 0 0 16px;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: #949494;\n    max-width: 48rem;\n}\n\n.audit-snapshot-card__health-pill {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 12px;\n    border-radius: 999px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    flex-shrink: 0;\n    max-width: min(100%, 17rem);\n    border: 1px solid transparent;\n}\n\n.audit-snapshot-card__health-label {\n    line-height: 1.25;\n    text-align: left;\n}\n\n.audit-snapshot-card__health-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.audit-snapshot-card__health-pill--healthy {\n    background: rgba(80, 150, 100, 0.25);\n    border-color: rgba(120, 200, 145, 0.5);\n    color: #b5e8c8;\n}\n\n.audit-snapshot-card__health-pill--healthy .audit-snapshot-card__health-dot {\n    background: #6fd88a;\n    box-shadow: 0 0 10px rgba(111, 216, 138, 0.55);\n}\n\n.audit-snapshot-card__health-pill--degraded {\n    background: rgba(200, 140, 60, 0.22);\n    border-color: rgba(230, 175, 80, 0.45);\n    color: #f0d9a8;\n}\n\n.audit-snapshot-card__health-pill--degraded .audit-snapshot-card__health-dot {\n    background: #e8b04a;\n    box-shadow: 0 0 8px rgba(232, 176, 74, 0.45);\n}\n\n.audit-snapshot-card__health-pill--error {\n    background: rgba(200, 70, 70, 0.22);\n    border-color: rgba(235, 110, 110, 0.5);\n    color: #f0b0b0;\n}\n\n.audit-snapshot-card__health-pill--error .audit-snapshot-card__health-dot {\n    background: #e85c5c;\n    box-shadow: 0 0 8px rgba(232, 92, 92, 0.55);\n}\n\n.audit-snapshot-card__health-pill--loading {\n    background: rgba(90, 120, 170, 0.22);\n    border-color: rgba(140, 170, 220, 0.45);\n    color: #c5d8f0;\n}\n\n.audit-snapshot-card__health-pill--loading .audit-snapshot-card__health-dot {\n    background: #8cb4e8;\n    animation: audit-snapshot-health-pulse 1.1s ease-in-out infinite;\n}\n\n@keyframes audit-snapshot-health-pulse {\n    0%,\n    100% {\n        opacity: 1;\n    }\n    50% {\n        opacity: 0.35;\n    }\n}\n\n.audit-snapshot-card__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    color: #888;\n}\n\n.audit-snapshot-card__stats {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 0;\n    margin: 16px 0 0;\n    padding: 14px 18px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.2);\n    border: 1px solid rgba(255, 255, 255, 0.05);\n}\n\n.audit-snapshot-card__stat {\n    margin: 0;\n    padding: 0 20px 0 0;\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    margin-right: 20px;\n}\n\n.audit-snapshot-card__stat:last-child {\n    border-right: none;\n    padding-right: 0;\n    margin-right: 0;\n}\n\n.audit-snapshot-card__stat dt {\n    margin: 0 0 3px;\n    font-size: 0.67rem;\n    font-weight: 600;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.audit-snapshot-card__stat dd {\n    margin: 0;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: #c0a053;\n    font-variant-numeric: tabular-nums;\n}\n\n.audit-snapshot-card__cta-wrap {\n    margin-top: 18px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.audit-snapshot-card__cta {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.85rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 10px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.audit-snapshot-card:hover .audit-snapshot-card__cta {\n    background: rgba(192, 159, 83, 0.14);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.audit-snapshot-card__meta-lines {\n    margin: 0 0 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.audit-snapshot-card__meta-line {\n    margin: 0;\n    display: flex;\n    flex-wrap: wrap;\n    align-items: baseline;\n    gap: 8px 12px;\n    font-size: 0.85rem;\n    line-height: 1.4;\n}\n\n.audit-snapshot-card__meta-label {\n    font-weight: 600;\n    color: #b8b8b8;\n    min-width: 10rem;\n}\n\n.audit-snapshot-card__meta-value {\n    color: #e4e4e4;\n}\n\n.audit-snapshot-card__meta-suffix {\n    font-size: 0.72rem;\n    font-weight: 500;\n    letter-spacing: 0.04em;\n    color: #777;\n    text-transform: uppercase;\n}\n\n.audit-snapshot-card__feed {\n    list-style: none;\n    margin: 0 0 16px;\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.audit-snapshot-card__feed--demo {\n    border-style: dashed;\n    border-color: rgba(192, 159, 83, 0.25);\n}\n\n.audit-snapshot-card__feed-note {\n    margin: 0 0 10px;\n    padding-bottom: 8px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #888;\n}\n\n.audit-snapshot-card__feed-row {\n    margin: 0;\n    padding: 6px 0;\n    font-size: 0.8125rem;\n    color: #c8c8c8;\n    display: flex;\n    flex-wrap: wrap;\n    align-items: baseline;\n    gap: 4px 6px;\n}\n\n.audit-snapshot-card__feed-row + .audit-snapshot-card__feed-row {\n    border-top: 1px solid rgba(255, 255, 255, 0.05);\n}\n\n.audit-snapshot-card__feed-row--interactive {\n    cursor: pointer;\n    border-radius: 6px;\n    margin: 0 -6px;\n    padding: 6px;\n    transition:\n        background 0.15s ease,\n        box-shadow 0.15s ease;\n}\n\n.audit-snapshot-card__feed-row--interactive:hover {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.audit-snapshot-card__feed-row--interactive:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 2px;\n}\n\n.audit-snapshot-card__feed-row--map-selected {\n    background: rgba(192, 159, 83, 0.12);\n    box-shadow: inset 3px 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.audit-snapshot-card__feed-country {\n    font-weight: 700;\n    color: #c0a053;\n    min-width: 1.75rem;\n}\n\n.audit-snapshot-card__feed-fw {\n    color: #9ec5e8;\n}\n\n.audit-snapshot-card__feed-summary {\n    color: #dcdcdc;\n}\n\n.audit-snapshot-card__feed-time {\n    margin-left: auto;\n    font-variant-numeric: tabular-nums;\n    color: #999;\n}\n\n.audit-snapshot-card__feed-sep {\n    color: #555;\n    user-select: none;\n}\n\n.audit-snapshot-card__feed-map-row {\n    display: grid;\n    grid-template-columns: minmax(0, 1fr) minmax(200px, 42%);\n    align-items: stretch;\n    gap: 16px 20px;\n    margin: 14px 0 16px;\n}\n\n@media (max-width: 720px) {\n    .audit-snapshot-card__feed-map-row {\n        grid-template-columns: 1fr;\n    }\n}\n\n.audit-snapshot-card__feed-col {\n    min-width: 0;\n}\n\n.audit-snapshot-card__map-col {\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n}\n\n.audit-snapshot-card__map-col > .audit-compliance-map {\n    flex: 1 1 auto;\n    min-height: 0;\n}\n\n.audit-snapshot-card__feed-col .audit-snapshot-card__feed {\n    margin-bottom: 0;\n}\n\n.audit-snapshot-card__feed-col .audit-snapshot-card__hint {\n    margin: 0;\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/components/AuditSnapshotCard/AuditSnapshotCard.css"],"names":[],"mappings":"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","sourcesContent":["/* Audit log — link to UserConsents from dashboard */\n.audit-snapshot-card {\n    display: block;\n    margin-bottom: 20px;\n    text-decoration: none;\n    color: inherit;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(24, 22, 18, 0.75);\n    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.16);\n    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;\n}\n\n.audit-snapshot-card:hover {\n    border-color: rgba(192, 159, 83, 0.4);\n    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);\n    transform: translateY(-1px);\n}\n\n.audit-snapshot-card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.85);\n    outline-offset: 3px;\n}\n\n/* System health — glanceable top accent */\n.audit-snapshot-card--health-healthy {\n    border-top: 3px solid rgba(100, 190, 125, 0.95);\n}\n\n.audit-snapshot-card--health-degraded {\n    border-top: 3px solid rgba(220, 165, 75, 0.95);\n}\n\n.audit-snapshot-card--health-error {\n    border-top: 3px solid rgba(230, 95, 95, 0.95);\n}\n\n.audit-snapshot-card--health-loading {\n    border-top: 3px solid rgba(130, 165, 210, 0.9);\n}\n\n.audit-snapshot-card__body {\n    padding: 18px 22px 20px;\n}\n\n.audit-snapshot-card__text {\n    min-width: 0;\n}\n\n.audit-snapshot-card__title-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 12px 16px;\n    margin-bottom: 6px;\n}\n\n.audit-snapshot-card__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #e8e8e8;\n    flex: 1;\n    min-width: 9rem;\n}\n\n.audit-snapshot-card__health-sub {\n    margin: 0 0 16px;\n    font-size: 0.78rem;\n    line-height: 1.4;\n    color: #949494;\n    max-width: 48rem;\n}\n\n.audit-snapshot-card__health-pill {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 12px;\n    border-radius: 999px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    flex-shrink: 0;\n    max-width: min(100%, 17rem);\n    border: 1px solid transparent;\n}\n\n.audit-snapshot-card__health-label {\n    line-height: 1.25;\n    text-align: left;\n}\n\n.audit-snapshot-card__health-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.audit-snapshot-card__health-pill--healthy {\n    background: rgba(80, 150, 100, 0.25);\n    border-color: rgba(120, 200, 145, 0.5);\n    color: #b5e8c8;\n}\n\n.audit-snapshot-card__health-pill--healthy .audit-snapshot-card__health-dot {\n    background: #6fd88a;\n    box-shadow: 0 0 10px rgba(111, 216, 138, 0.55);\n}\n\n.audit-snapshot-card__health-pill--degraded {\n    background: rgba(200, 140, 60, 0.22);\n    border-color: rgba(230, 175, 80, 0.45);\n    color: #f0d9a8;\n}\n\n.audit-snapshot-card__health-pill--degraded .audit-snapshot-card__health-dot {\n    background: #e8b04a;\n    box-shadow: 0 0 8px rgba(232, 176, 74, 0.45);\n}\n\n.audit-snapshot-card__health-pill--error {\n    background: rgba(200, 70, 70, 0.22);\n    border-color: rgba(235, 110, 110, 0.5);\n    color: #f0b0b0;\n}\n\n.audit-snapshot-card__health-pill--error .audit-snapshot-card__health-dot {\n    background: #e85c5c;\n    box-shadow: 0 0 8px rgba(232, 92, 92, 0.55);\n}\n\n.audit-snapshot-card__health-pill--loading {\n    background: rgba(90, 120, 170, 0.22);\n    border-color: rgba(140, 170, 220, 0.45);\n    color: #c5d8f0;\n}\n\n.audit-snapshot-card__health-pill--loading .audit-snapshot-card__health-dot {\n    background: #8cb4e8;\n    animation: audit-snapshot-health-pulse 1.1s ease-in-out infinite;\n}\n\n@keyframes audit-snapshot-health-pulse {\n    0%,\n    100% {\n        opacity: 1;\n    }\n    50% {\n        opacity: 0.35;\n    }\n}\n\n.audit-snapshot-card__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    color: #888;\n}\n\n.audit-snapshot-card__stats {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 0;\n    margin: 16px 0 0;\n    padding: 14px 18px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.2);\n    border: 1px solid rgba(255, 255, 255, 0.05);\n}\n\n.audit-snapshot-card__stat {\n    margin: 0;\n    padding: 0 20px 0 0;\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    margin-right: 20px;\n}\n\n.audit-snapshot-card__stat:last-child {\n    border-right: none;\n    padding-right: 0;\n    margin-right: 0;\n}\n\n.audit-snapshot-card__stat dt {\n    margin: 0 0 3px;\n    font-size: 0.67rem;\n    font-weight: 600;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.3);\n}\n\n.audit-snapshot-card__stat dd {\n    margin: 0;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: #c0a053;\n    font-variant-numeric: tabular-nums;\n}\n\n.audit-snapshot-card__cta-wrap {\n    margin-top: 18px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.audit-snapshot-card__cta {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.85rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 10px 16px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.audit-snapshot-card:hover .audit-snapshot-card__cta {\n    background: rgba(192, 159, 83, 0.14);\n    border-color: rgba(192, 159, 83, 0.55);\n}\n\n.audit-snapshot-card__meta-lines {\n    margin: 0 0 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.audit-snapshot-card__meta-line {\n    margin: 0;\n    display: flex;\n    flex-wrap: wrap;\n    align-items: baseline;\n    gap: 8px 12px;\n    font-size: 0.85rem;\n    line-height: 1.4;\n}\n\n.audit-snapshot-card__meta-label {\n    font-weight: 600;\n    color: #b8b8b8;\n    min-width: 10rem;\n}\n\n.audit-snapshot-card__meta-value {\n    color: #e4e4e4;\n}\n\n.audit-snapshot-card__meta-suffix {\n    font-size: 0.72rem;\n    font-weight: 500;\n    letter-spacing: 0.04em;\n    color: #777;\n    text-transform: uppercase;\n}\n\n.audit-snapshot-card__feed {\n    list-style: none;\n    margin: 0 0 16px;\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.audit-snapshot-card__feed--demo {\n    border-style: dashed;\n    border-color: rgba(192, 159, 83, 0.25);\n}\n\n.audit-snapshot-card__feed-note {\n    margin: 0 0 10px;\n    padding-bottom: 8px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #888;\n}\n\n.audit-snapshot-card__feed-row {\n    margin: 0;\n    padding: 6px 0;\n    font-size: 0.8125rem;\n    color: #c8c8c8;\n    display: flex;\n    flex-wrap: wrap;\n    align-items: baseline;\n    gap: 4px 6px;\n}\n\n.audit-snapshot-card__feed-row + .audit-snapshot-card__feed-row {\n    border-top: 1px solid rgba(255, 255, 255, 0.05);\n}\n\n.audit-snapshot-card__feed-row--interactive {\n    cursor: pointer;\n    border-radius: 6px;\n    margin: 0 -6px;\n    padding: 6px;\n    transition:\n        background 0.15s ease,\n        box-shadow 0.15s ease;\n}\n\n.audit-snapshot-card__feed-row--interactive:hover {\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.audit-snapshot-card__feed-row--interactive:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.75);\n    outline-offset: 2px;\n}\n\n.audit-snapshot-card__feed-row--map-selected {\n    background: rgba(192, 159, 83, 0.12);\n    box-shadow: inset 3px 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.audit-snapshot-card__feed-country {\n    font-weight: 700;\n    color: #c0a053;\n    min-width: 1.75rem;\n}\n\n.audit-snapshot-card__feed-fw {\n    color: #9ec5e8;\n}\n\n.audit-snapshot-card__feed-summary {\n    color: #dcdcdc;\n}\n\n.audit-snapshot-card__feed-time {\n    margin-left: auto;\n    font-variant-numeric: tabular-nums;\n    color: #999;\n}\n\n.audit-snapshot-card__feed-sep {\n    color: #555;\n    user-select: none;\n}\n\n.audit-snapshot-card__feed-map-row {\n    display: grid;\n    align-items: stretch;\n    gap: 16px 20px;\n    margin: 14px 0 16px;\n}\n\n@media (max-width: 720px) {\n    .audit-snapshot-card__feed-map-row {\n        grid-template-columns: 1fr;\n    }\n}\n\n.audit-snapshot-card__feed-col {\n    min-width: 0;\n}\n\n.audit-snapshot-card__map-col {\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n}\n\n.audit-snapshot-card__map-col > .audit-compliance-map {\n    flex: 1 1 auto;\n    min-height: 0;\n}\n\n.audit-snapshot-card__feed-col .audit-snapshot-card__feed {\n    margin-bottom: 0;\n}\n\n.audit-snapshot-card__feed-col .audit-snapshot-card__hint {\n    margin: 0;\n    padding: 12px 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -35363,11 +35618,10 @@ var API = {
     url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.LoginHost, "/consents/signup/v1/signup")
   },
   Subscription: {
-    url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/payment/subscription/v1/subscription"),
+    url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.LoginHost, "/rest/getSubscription.php"),
     method: "POST",
     headers: {
       "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
-      "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
       "Content-Type": "application/json"
     }
   },
@@ -35608,6 +35862,13 @@ var API = {
         "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
         "Content-Type": "application/json"
       }
+    },
+    triggerPublicScan: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/pre-consent-scan-public"),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
     }
   },
   settings: {
@@ -35820,11 +36081,138 @@ var API = {
   },
   github: {
     createIssue: {
-      url: "https://api.github.com/repositories/Intastellar-Solutions-International/intastellar-analytics/issues",
+      url: "https://api.github.com/repos/Intastellar-Solutions-International/intastellar-consents-platorm/issues",
       method: "POST",
       headers: {
-        "Authorization": "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",
-        'X-GitHub-Api-Version': '2022-11-28'
+        "Authorization": "Bearer ".concat("MISSING_ENV_VAR".GITHUB_ISSUES_TOKEN),
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  jurisdictionConfig: {
+    get: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/jurisdiction-config"),
+      method: "GET",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    save: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/jurisdiction-config"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  dsr: {
+    list: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/dsr"),
+      method: "GET",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    create: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/dsr"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    update: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/dsr/update"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  legalBasis: {
+    get: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/legal-basis-config"),
+      method: "GET",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    save: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/legal-basis-config"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  ropa: {
+    list: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ropa"),
+      method: "GET",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    create: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ropa"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    autoPopulate: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ropa?action=auto-populate"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    update: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ropa-update"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    "delete": {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ropa-delete"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    "export": {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ropa-export"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
       }
     }
   }
@@ -35959,12 +36347,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./Pages/Compliance */ "./src/Pages/Compliance/index.js");
 /* harmony import */ var _Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./Components/LoadingSpinner/LoadingSpinner */ "./src/Components/LoadingSpinner/LoadingSpinner.js");
 /* harmony import */ var _Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./Pages/Settings/Workspaces */ "./src/Pages/Settings/Workspaces/index.js");
+/* harmony import */ var _Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./Pages/Settings/Jurisdiction */ "./src/Pages/Settings/Jurisdiction/index.js");
+/* harmony import */ var _Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./Pages/Settings/LegalBasis */ "./src/Pages/Settings/LegalBasis/index.js");
+/* harmony import */ var _Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./Pages/Settings/ROPA */ "./src/Pages/Settings/ROPA/index.js");
+/* harmony import */ var _Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./Pages/Settings/ROPA/ROPAEntry */ "./src/Pages/Settings/ROPA/ROPAEntry.js");
+/* harmony import */ var _Pages_DSR__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./Pages/DSR */ "./src/Pages/DSR/index.js");
+/* harmony import */ var _Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./Pages/DSR/DSRDetail */ "./src/Pages/DSR/DSRDetail.js");
+/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
+/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -36018,7 +36426,7 @@ var Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
-var OrganisationContext = createContext(localStorage.getItem("organisation"));
+var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("organisation"));
 var AllOrg = createContext(null);
 var DomainContext = createContext(null);
 var WorkspaceContext = createContext([null, function () {}]);
@@ -36027,7 +36435,7 @@ function App() {
     _useState2 = _slicedToArray(_useState, 2),
     dashboardView = _useState2[0],
     setDashboardView = _useState2[1];
-  var _useState3 = useState(localStorage.getItem("organisation") ? localStorage.getItem("organisation") : null),
+  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("organisation") : null),
     _useState4 = _slicedToArray(_useState3, 2),
     organisation = _useState4[0],
     setOrganisation = _useState4[1];
@@ -36059,7 +36467,7 @@ function App() {
     domainError = _useState12[0],
     setDomainError = _useState12[1];
   var _useState13 = useState(function () {
-      var cached = localStorage.getItem("subscription");
+      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("subscription");
       if (cached) {
         try {
           return JSON.parse(cached);
@@ -36080,14 +36488,15 @@ function App() {
     setId = _useState16[1];
   var navigate = window.ReactRouterDOM.useHistory();
   useEffect(function () {
-    var globals = localStorage.getItem("globals");
+    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("globals");
     var path = window.location.pathname;
     var isApiRoute = path === "/api" || path.startsWith("/api/");
     if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
       window.location.replace("/login");
     }
   }, []);
-  if (localStorage.getItem("globals") != null) {
+  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("globals") != null) {
+    var _getOrg2;
     var path = window.location.pathname;
     // Only redirect if id is present and not already on dashboard
     if ((path === "/login" || path === "/") && id) {
@@ -36099,27 +36508,28 @@ function App() {
 
     /* const [domainLoadings, data, error, getUpdated] = useFetch(null, API[id].getDomains.url, API[id].getDomains.method, API[id].getDomains.headers); */
     useEffect(function () {
-      var _API$id;
+      var _getOrg, _API$id;
       (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].settings.getOrganisation.headers, JSON.stringify({
         organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          localStorage.removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
         setOrganisations(data);
       });
       (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.headers, JSON.stringify({
-        organization: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisation()
+        user: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId(),
+        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          localStorage.removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
         setSubscriptionStatus(data);
-        localStorage.setItem("subscription", JSON.stringify(data));
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].setItem("subscription", JSON.stringify(data));
       });
       if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
         (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.headers).then(function (data) {
@@ -36162,23 +36572,18 @@ function App() {
         });
       }
     }, []);
-    var subscriptionLoading = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
-    var orgId = function () {
-      try {
-        var _JSON$parse;
-        return (_JSON$parse = JSON.parse(localStorage.getItem("organisation"))) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.id;
-      } catch (_unused4) {
-        return null;
-      }
-    }();
-    var needsPayment = !subscriptionLoading && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" && Number(orgId) !== 1;
+    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
+    var isDevOrg = Number(orgId) === 1;
+    var hasNoSubscription = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" || typeof (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.message) === "string" && subscriptionStatus.message.includes("Subscription not found");
+    var subscriptionLoading = !isDevOrg && !hasNoSubscription && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
+    var needsPayment = !isDevOrg && !subscriptionLoading && hasNoSubscription;
     if (id === null && organisations) {
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
         platforms: organisations
-      }));
+      }), /*#__PURE__*/React.createElement(_Components_BugReport_BugReport__WEBPACK_IMPORTED_MODULE_25__["default"], null));
     } else {
-      var _JSON$parse2;
+      var _getOrg3, _getOrg4, _getOrg5, _getOrg6, _getOrg7, _getOrg8, _getOrg9, _JSON$parse, _getOrg0, _getOrg1, _getOrg10, _getOrg11;
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(OrganisationContext.Provider, {
         value: [organisation, setOrganisation]
       }, /*#__PURE__*/React.createElement(WorkspaceContext.Provider, {
@@ -36187,7 +36592,7 @@ function App() {
         value: [currentDomain, setCurrentDomain]
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, id && window.location.pathname != "/" || window.location.pathname != "/login" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_header__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: id
-      })) : null), /*#__PURE__*/React.createElement("div", {
+      }), /*#__PURE__*/React.createElement(_Components_BugReport_BugReport__WEBPACK_IMPORTED_MODULE_25__["default"], null)) : null), /*#__PURE__*/React.createElement("div", {
         className: "main-grid"
       }, id && window.location.pathname != "/" || window.location.pathname != "/login" ? /*#__PURE__*/React.createElement(_Components_Header_Nav__WEBPACK_IMPORTED_MODULE_6__["default"], null) : null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
         path: "/:id/dashboard",
@@ -36196,7 +36601,11 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_8__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "starter",
+        featureName: "Analytics Dashboard",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_8__["default"], {
         dashboardView: dashboardView,
         setDashboardView: setDashboardView
       }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
@@ -36205,7 +36614,11 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_8__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "starter",
+        featureName: "Analytics Dashboard",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(React.Fragment, null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : id == "gdpr" ? /*#__PURE__*/React.createElement(_Pages_Dashboard_Dashboard_js__WEBPACK_IMPORTED_MODULE_8__["default"], {
         dashboardView: dashboardView,
         setDashboardView: setDashboardView
       }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
@@ -36222,11 +36635,11 @@ function App() {
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
@@ -36235,64 +36648,112 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Consent Audit Log",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Consent Audit Log",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_36__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Audit Report",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_36__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "growth",
+        featureName: "Ad Platform Reconciliation",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "starter",
+        featureName: "Compliance Reports",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "starter",
+        featureName: "Compliance Reports",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Reports",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_22__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_22__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Reports",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Reports__WEBPACK_IMPORTED_MODULE_22__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Consent Audit Log",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Consent Audit Log",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_UserConsents_UserConsents__WEBPACK_IMPORTED_MODULE_21__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_36__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Audit Report",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_36__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "growth",
+        featureName: "Ad Platform Reconciliation",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/dashboard"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
-        platforms: (_JSON$parse2 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.access) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.type
+        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/login",
         exact: true
@@ -36300,38 +36761,82 @@ function App() {
         path: "/auth-login"
       }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/config-gdpr"
-      }), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "starter",
+        featureName: "Jurisdiction Configuration",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_41__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/settings/legal-basis"
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "growth",
+        featureName: "Legal Basis Tracking",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_42__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/settings/ropa/:entryId"
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "growth",
+        featureName: "RoPA Builder",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_44__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/settings/ropa",
+        exact: true
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "growth",
+        featureName: "RoPA Builder",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_43__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/:id/reports/dsr/:requestId",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Data Subject Requests",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_46__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/:id/reports/dsr",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "personal",
+        featureName: "Data Subject Requests",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR__WEBPACK_IMPORTED_MODULE_45__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/blacklist-ip"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org, _org2, _JSON$parse3) {
-        var orgRaw = localStorage.getItem("organisation");
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org) {
+        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("organisation");
         var org = null;
         try {
           org = JSON.parse(orgRaw);
-        } catch (_unused5) {
-          /* not JSON */
-        }
+        } catch (_unused4) {/* ignore */}
         var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
-        var sub = localStorage.getItem("subscription");
-        // Compare ID as string to handle both number and string formats
-        var hasAgency = ((_org2 = org) === null || _org2 === void 0 ? void 0 : _org2.id) != null && String(org.id) === "1" || sub && ((_JSON$parse3 = JSON.parse(sub)) === null || _JSON$parse3 === void 0 ? void 0 : _JSON$parse3.subscription) === "agency";
-        return isAdminRole && hasAgency ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_40__["default"], null) : /*#__PURE__*/React.createElement("p", {
+        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+          minTier: "agency-pro",
+          featureName: "Client Workspaces",
+          fullPage: true
+        });
+        return isAdminRole ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_40__["default"], null) : /*#__PURE__*/React.createElement("p", {
           style: {
             padding: "40px",
             color: "#999"
           }
-        }, "Agency subscription required to access client workspaces.");
+        }, "Admin access required.");
       }())), /*#__PURE__*/React.createElement(Route, {
+        path: "/settings/plans",
+        exact: true
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(JSON.parse(localStorage.getItem("organisation")).id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_31__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        minTier: "growth",
+        featureName: "Portfolio Benchmark",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_Compare__WEBPACK_IMPORTED_MODULE_31__["default"], {
         organisations: organisations,
         domains: domains
       }))), /*#__PURE__*/React.createElement(Route, {
@@ -36353,7 +36858,7 @@ function App() {
       }, /*#__PURE__*/React.createElement("img", {
         src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
         className: "crawlerPage-logo"
-      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International"))))));
+      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_48__["default"], null)));
     }
   } else {
     return /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
@@ -36390,6 +36895,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Functions/storage.js */ "./src/Functions/storage.js");
+
 var DemoMode = false;
 var listeners = [];
 var Authentication = {
@@ -36446,8 +36953,8 @@ var Authentication = {
         return;
       }
       setLoading(false);
-      localStorage.setItem("organisation", response.organisation);
-      localStorage.setItem("globals", JSON.stringify(response));
+      _Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].setItem("organisation", response.organisation);
+      _Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].setItem("globals", JSON.stringify(response));
       if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
         window.location.href = "/dashboard";
       } else {
@@ -36456,8 +36963,8 @@ var Authentication = {
     });
   },
   Logout: function Logout() {
-    localStorage.removeItem("globals");
-    localStorage.removeItem("organisation");
+    _Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].removeItem("globals");
+    _Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].removeItem("organisation");
     localStorage.removeItem("domains");
     document.cookie = "inta_acc=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     window.location.href = "/";
@@ -36467,16 +36974,16 @@ var Authentication = {
     // Get token from query string
     var urlParams = new URLSearchParams(window.location.search);
     var tokenFromUrl = urlParams.get('token');
-    var token = (_JSON$parse = JSON.parse(localStorage.getItem("globals"))) !== null && _JSON$parse !== void 0 && _JSON$parse.token ? "Bearer " + ((_JSON$parse2 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.token) : tokenFromUrl ? tokenFromUrl : null;
+    var token = (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem("globals"))) !== null && _JSON$parse !== void 0 && _JSON$parse.token ? "Bearer " + ((_JSON$parse2 = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem("globals"))) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.token) : tokenFromUrl ? tokenFromUrl : null;
     return token;
   },
   getUserId: function getUserId() {
     var _JSON$parse3, _JSON$parse4;
-    var email = (_JSON$parse3 = JSON.parse(localStorage.getItem("globals"))) !== null && _JSON$parse3 !== void 0 && (_JSON$parse3 = _JSON$parse3.user) !== null && _JSON$parse3 !== void 0 && _JSON$parse3.email ? (_JSON$parse4 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse4 === void 0 || (_JSON$parse4 = _JSON$parse4.user) === null || _JSON$parse4 === void 0 ? void 0 : _JSON$parse4.email : undefined;
+    var email = (_JSON$parse3 = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem("globals"))) !== null && _JSON$parse3 !== void 0 && (_JSON$parse3 = _JSON$parse3.user) !== null && _JSON$parse3 !== void 0 && _JSON$parse3.email ? (_JSON$parse4 = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem("globals"))) === null || _JSON$parse4 === void 0 || (_JSON$parse4 = _JSON$parse4.user) === null || _JSON$parse4 === void 0 ? void 0 : _JSON$parse4.email : undefined;
     return email;
   },
   getOrganisation: function getOrganisation() {
-    var raw = localStorage.getItem("organisation");
+    var raw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem("organisation");
     if (raw == null || raw === undefined) return undefined;
     try {
       var _JSON$parse5;
@@ -36533,7 +37040,7 @@ var Authentication = {
   getOrganisationAccessStatusForOrganisation: function getOrganisationAccessStatusForOrganisation(organisation_id) {
     var _g;
     if (organisation_id == null || organisation_id === undefined) return undefined;
-    var raw = localStorage.getItem("globals");
+    var raw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem("globals");
     if (raw == null || raw === undefined) return undefined;
     var g;
     try {
@@ -36556,7 +37063,7 @@ var Authentication = {
     var orgId = this.getOrganisation();
     var fromAccess = this.getOrganisationAccessStatusForOrganisation(orgId);
     if (fromAccess != null && fromAccess !== "") return fromAccess;
-    var raw = localStorage.getItem("globals");
+    var raw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem("globals");
     if (!raw) return null;
     try {
       var _JSON$parse$status, _JSON$parse6;
@@ -36718,6 +37225,194 @@ function AddDomain(_ref) {
     }
   }, body);
 }
+
+/***/ }),
+
+/***/ "./src/Components/AuditSnapshotCard/complianceRegions.js":
+/*!***************************************************************!*\
+  !*** ./src/Components/AuditSnapshotCard/complianceRegions.js ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   EU_EEA_UK: () => (/* binding */ EU_EEA_UK),
+/* harmony export */   EU_EEA_UK_NUMERIC: () => (/* binding */ EU_EEA_UK_NUMERIC),
+/* harmony export */   FRAMEWORK_IDS: () => (/* binding */ FRAMEWORK_IDS),
+/* harmony export */   deriveComplianceRegionStatus: () => (/* binding */ deriveComplianceRegionStatus),
+/* harmony export */   frameworksForAuditRow: () => (/* binding */ frameworksForAuditRow)
+/* harmony export */ });
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+/** EU member states + EEA (IS, LI, NO) + UK — for inferring GDPR-relevant traffic from country_code. */
+var EU_EEA_UK = new Set(["AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "IS", "LI", "NO", "GB", "GI", "IM"]);
+
+// ISO 3166-1 numeric codes for EU + EEA + UK
+var EU_EEA_UK_NUMERIC = [40,
+// Austria
+56,
+// Belgium
+100,
+// Bulgaria
+191,
+// Croatia
+196,
+// Cyprus
+203,
+// Czech Republic
+208,
+// Denmark
+233,
+// Estonia
+246,
+// Finland
+250,
+// France
+276,
+// Germany
+300,
+// Greece
+348,
+// Hungary
+372,
+// Ireland
+380,
+// Italy
+428,
+// Latvia
+440,
+// Lithuania
+442,
+// Luxembourg
+470,
+// Malta
+528,
+// Netherlands
+616,
+// Poland
+620,
+// Portugal
+642,
+// Romania
+703,
+// Slovakia
+705,
+// Slovenia
+724,
+// Spain
+752,
+// Sweden
+// EEA
+352,
+// Iceland
+438,
+// Liechtenstein
+578,
+// Norway
+// UK
+826,
+// United Kingdom
+292,
+// Gibraltar
+833 // Isle of Man
+];
+var FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "CDPA", "CPA", "UCPA", "CTDPA", "POPIA", "PDPA", "APA", "PDPL", "PIPEDA", "LAW25"];
+
+/**
+ * Which frameworks a single audit row suggests (regulation_applied first, then country inference).
+ * @param {object} row
+ * @returns {Set<string>}
+ */
+function frameworksForAuditRow(row) {
+  var _row$regulation_appli, _row$country_code;
+  var reg = String((_row$regulation_appli = row === null || row === void 0 ? void 0 : row.regulation_applied) !== null && _row$regulation_appli !== void 0 ? _row$regulation_appli : "").toUpperCase();
+  var cc = String((_row$country_code = row === null || row === void 0 ? void 0 : row.country_code) !== null && _row$country_code !== void 0 ? _row$country_code : "").toUpperCase().trim();
+  var out = new Set();
+  if (reg.includes("GDPR")) out.add("GDPR");
+  if (reg.includes("LGPD")) out.add("LGPD");
+  if (reg.includes("CCPA") || reg.includes("CPRA")) out.add("CCPA");
+  if (reg.includes("CDPA")) out.add("CDPA");
+  if (reg.includes("CPA") && !reg.includes("CCPA") && !reg.includes("UCPA")) out.add("CPA");
+  if (reg.includes("UCPA")) out.add("UCPA");
+  if (reg.includes("CTDPA")) out.add("CTDPA");
+  if (reg.includes("POPIA")) out.add("POPIA");
+  if (reg.includes("PDPA")) out.add("PDPA");
+  if (reg.includes("APA")) out.add("APA");
+  if (reg.includes("PDPL")) out.add("PDPL");
+  if (reg.includes("PIPEDA")) out.add("PIPEDA");
+  if (reg.includes("LAW25") || reg.includes("LAW 25") || reg.includes("ACT 25")) out.add("LAW25");
+  if (out.size > 0) return out;
+  if (cc === "BR") out.add("LGPD");else if (cc === "US") out.add("CCPA");else if (cc === "ZA") out.add("POPIA");else if (cc === "TH") out.add("PDPA");else if (cc === "AU") out.add("APA");else if (cc === "SA") out.add("PDPL");else if (cc === "CA") {
+    out.add("PIPEDA");
+    out.add("LAW25");
+  } else if (EU_EEA_UK.has(cc)) out.add("GDPR");
+  return out;
+}
+
+/**
+ * @param {object[]} rows — audit log rows for the selected period
+ * @param {Record<string, 'ok'|'watch'|'risk'>|null|undefined} riskFromApi — optional backend overrides
+ * @returns {Record<string, { status: 'observed'|'none'|'watch'|'risk', source: 'sample'|'api' }>}
+ */
+function deriveComplianceRegionStatus(rows, riskFromApi) {
+  var observed = new Set();
+  var _iterator = _createForOfIteratorHelper(Array.isArray(rows) ? rows : []),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var row = _step.value;
+      var _iterator3 = _createForOfIteratorHelper(frameworksForAuditRow(row)),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var f = _step3.value;
+          observed.add(f);
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+    }
+    /** @type {Record<string, { status: 'observed'|'none'|'watch'|'risk', source: 'sample'|'api' }>} */
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  var result = {};
+  var _iterator2 = _createForOfIteratorHelper(FRAMEWORK_IDS),
+    _step2;
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var id = _step2.value;
+      var api = riskFromApi === null || riskFromApi === void 0 ? void 0 : riskFromApi[id];
+      if (api === "risk" || api === "watch") {
+        result[id] = {
+          status: api,
+          source: "api"
+        };
+      } else if (api === "ok") {
+        result[id] = {
+          status: "observed",
+          source: "api"
+        };
+      } else {
+        result[id] = {
+          status: observed.has(id) ? "observed" : "none",
+          source: "sample"
+        };
+      }
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
+  return result;
+}
+
 
 /***/ }),
 
@@ -38124,129 +38819,6 @@ function buildCodeToName() {
   return m;
 }
 var CODE_TO_NAME = buildCodeToName();
-
-// ── SVG namespace helper ──────────────────────────────────────────────────────
-var NS = "http://www.w3.org/2000/svg";
-var XNS = "http://www.w3.org/1999/xlink";
-function svgEl(tag) {
-  var attrs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var el = document.createElementNS(NS, tag);
-  Object.entries(attrs).forEach(function (_ref3) {
-    var _ref4 = _slicedToArray(_ref3, 2),
-      k = _ref4[0],
-      v = _ref4[1];
-    if (k === "xlink:href") el.setAttributeNS(XNS, k, v);else el.setAttribute(k, v);
-  });
-  return el;
-}
-function getCountryCenter(svgRoot, code) {
-  var paths = svgRoot.querySelectorAll("[data-id=\"".concat(code, "\"]"));
-  if (!paths.length) return null;
-  var x1 = Infinity,
-    y1 = Infinity,
-    x2 = -Infinity,
-    y2 = -Infinity;
-  paths.forEach(function (p) {
-    try {
-      var b = p.getBBox();
-      if (b.width === 0 && b.height === 0) return;
-      x1 = Math.min(x1, b.x);
-      y1 = Math.min(y1, b.y);
-      x2 = Math.max(x2, b.x + b.width);
-      y2 = Math.max(y2, b.y + b.height);
-    } catch (_unused) {}
-  });
-  return x1 === Infinity ? null : {
-    x: (x1 + x2) / 2,
-    y: (y1 + y2) / 2
-  };
-}
-function drawDataFlows(containerEl, flowCountries, originCode) {
-  var svgRoot = containerEl.querySelector("svg");
-  if (!svgRoot) return;
-  svgRoot.querySelectorAll(".data-flow-overlay").forEach(function (g) {
-    return g.remove();
-  });
-  var overlay = svgEl("g", {
-    "class": "data-flow-overlay"
-  });
-  svgRoot.appendChild(overlay);
-  var origin = getCountryCenter(svgRoot, originCode);
-  if (!origin) return;
-
-  // EU origin marker
-  overlay.appendChild(svgEl("circle", {
-    cx: origin.x,
-    cy: origin.y,
-    r: "6",
-    "class": "flow-origin-ring"
-  }));
-  overlay.appendChild(svgEl("circle", {
-    cx: origin.x,
-    cy: origin.y,
-    r: "3.5",
-    "class": "flow-origin-dot"
-  }));
-  var seen = new Set();
-  flowCountries.forEach(function (code, i) {
-    if (seen.has(code)) return;
-    seen.add(code);
-    var dest = getCountryCenter(svgRoot, code);
-    if (!dest) return;
-    var dx = dest.x - origin.x;
-    var dy = dest.y - origin.y;
-    var dist = Math.sqrt(dx * dx + dy * dy);
-    var cx = origin.x + dx * 0.5;
-    var cy = origin.y + dy * 0.5 - dist * 0.35;
-    var pathId = "fp-".concat(code);
-    var d = "M ".concat(origin.x, " ").concat(origin.y, " Q ").concat(cx, " ").concat(cy, " ").concat(dest.x, " ").concat(dest.y);
-
-    // Arc
-    var arc = svgEl("path", {
-      id: pathId,
-      d: d,
-      fill: "none",
-      "class": "flow-arc",
-      style: "animation-delay:".concat(i * 0.18, "s")
-    });
-    overlay.appendChild(arc);
-
-    // Travelling dot
-    var dot = svgEl("circle", {
-      r: "2.5",
-      "class": "flow-dot"
-    });
-    var anim = svgEl("animateMotion", {
-      dur: "".concat(2.8 + i % 4 * 0.6, "s"),
-      repeatCount: "indefinite",
-      begin: "".concat(i * 0.45, "s"),
-      keyPoints: "0;1",
-      keyTimes: "0;1",
-      calcMode: "spline",
-      keySplines: "0.3 0 0.7 1"
-    });
-    var mpath = svgEl("mpath", {
-      "xlink:href": "#".concat(pathId)
-    });
-    anim.appendChild(mpath);
-    dot.appendChild(anim);
-    overlay.appendChild(dot);
-
-    // Destination marker
-    overlay.appendChild(svgEl("circle", {
-      cx: dest.x,
-      cy: dest.y,
-      r: "5",
-      "class": "flow-dest-ring"
-    }));
-    overlay.appendChild(svgEl("circle", {
-      cx: dest.x,
-      cy: dest.y,
-      r: "2.8",
-      "class": "flow-dest-dot"
-    }));
-  });
-}
 function Map(props) {
   var _data$date, _data$date2;
   var data = props.data;
@@ -38254,9 +38826,6 @@ function Map(props) {
   var countries = data === null || data === void 0 ? void 0 : data.Countries;
   var demoMode = props.demoMode;
   var renderCountryPanelExtras = props.renderCountryPanelExtras;
-  var dataFlowCountries = props.dataFlowCountries || [];
-  var dataFlowMode = props.dataFlowMode || false;
-  var dataFlowOrigin = props.dataFlowOrigin || "DE";
   var compareOn = Boolean((data === null || data === void 0 || (_data$date = data.date) === null || _data$date === void 0 ? void 0 : _data$date.previousStart) && (data === null || data === void 0 || (_data$date2 = data.date) === null || _data$date2 === void 0 ? void 0 : _data$date2.previousEnd));
   var _useState = useState(null),
     _useState2 = _slicedToArray(_useState, 2),
@@ -38330,13 +38899,13 @@ function Map(props) {
     }
   }, [countries]);
   useEffect(function () {
-    if (!(countries !== null && countries !== void 0 && countries.length) && !dataFlowMode) return undefined;
+    if (!(countries !== null && countries !== void 0 && countries.length)) return undefined;
     var el = document.getElementById("svgMap");
     if (!el) return undefined;
     el.innerHTML = "";
     var zoomLevel = 1.2;
     var center = [0, 0];
-    if ((countries === null || countries === void 0 ? void 0 : countries.length) > 0 && !dataFlowMode) {
+    if (countries.length > 0) {
       var min = Math.min.apply(Math, _toConsumableArray(countries.map(function (country) {
         return country.num.total;
       })));
@@ -38366,8 +38935,6 @@ function Map(props) {
         center = [(latMax + latMin) / 2, (lngMax + lngMin) / 2];
       }
     }
-    console.log("showTooltips", dataFlowMode ? false : true);
-    console.log("dataFlowMode", dataFlowCountries.length);
     new svgMap({
       targetElementID: "svgMap",
       data: {
@@ -38418,7 +38985,6 @@ function Map(props) {
         applyData: "total",
         values: mapCountries
       },
-      showTooltips: false,
       /* onGetTooltip: (tooltipDiv, countryID, countryValues) => {
           if (!countryValues) return "";
           const fmt = (n) => (n != null && !isNaN(n) ? (typeof n === "number" ? n.toLocaleString("de-DE") : n) : "-");
@@ -38467,32 +39033,6 @@ function Map(props) {
       initialZoom: zoomLevel,
       initialLocation: center
     });
-
-    // Post-paint: flow lines (data-flow mode) or simple country stroke highlights
-    requestAnimationFrame(function () {
-      if (dataFlowMode) {
-        // Disable pointer events on all country paths so svgMap never
-        // fires its mouseenter tooltip — it's appended to <body> so CSS
-        // scoping won't reach it; killing the trigger is more reliable
-        el.querySelectorAll("path").forEach(function (p) {
-          p.style.pointerEvents = "none";
-        });
-        // Also hide any tooltip already in the DOM from a prior render
-        document.querySelectorAll(".svgMap-tooltip").forEach(function (t) {
-          t.style.display = "none";
-        });
-        drawDataFlows(el, dataFlowCountries, dataFlowOrigin);
-      } else if (dataFlowCountries.length) {
-        dataFlowCountries.forEach(function (code) {
-          el.querySelectorAll("[data-id=\"".concat(code, "\"]")).forEach(function (path) {
-            if (!mapCountries[code]) path.style.fill = "rgba(220, 80, 80, 0.18)";
-            path.style.stroke = "rgba(220, 80, 80, 0.75)";
-            path.style.strokeWidth = "1.5";
-            path.style.strokeLinejoin = "round";
-          });
-        });
-      }
-    });
     var onMapClick = function onMapClick(e) {
       var _e$target$closest, _e$target;
       var node = (_e$target$closest = (_e$target = e.target).closest) === null || _e$target$closest === void 0 ? void 0 : _e$target$closest.call(_e$target, "[data-id]");
@@ -38504,7 +39044,7 @@ function Map(props) {
     return function () {
       return el.removeEventListener("click", onMapClick);
     };
-  }, [countries, mapCountries, demoMode, resolveSelection, dataFlowCountries, dataFlowMode, dataFlowOrigin]);
+  }, [countries, mapCountries, demoMode, resolveSelection]);
   useEffect(function () {
     var updateVisibleCount = function updateVisibleCount() {
       var scroll = document.querySelector(".world-map__list-scroll");
@@ -38522,52 +39062,34 @@ function Map(props) {
       window.clearTimeout(t);
     };
   }, [countries]);
-  if (!(countries !== null && countries !== void 0 && countries.length) && !dataFlowMode) {
+  if (!(countries !== null && countries !== void 0 && countries.length)) {
     return /*#__PURE__*/React.createElement("div", {
       className: "world-map world-map--empty"
     }, /*#__PURE__*/React.createElement("p", {
       className: "world-map__empty-msg"
     }, "No geographic data for this period."));
   }
-  var ranked = countries !== null && countries !== void 0 && countries.length ? _toConsumableArray(countries).filter(function (c) {
+  var ranked = _toConsumableArray(countries).filter(function (c) {
     return c.country !== "Unknown";
   }).sort(function (a, b) {
     return b.num.total - a.num.total;
-  }) : [];
+  });
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "world-map" + (dataFlowMode ? " world-map--flow" : "")
+    className: "world-map"
   }, /*#__PURE__*/React.createElement("div", {
     className: "world-map__main"
   }, /*#__PURE__*/React.createElement("header", {
     className: "world-map__header"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "world-map__title"
-  }, dataFlowMode ? "Pre-consent data transfers" : "Global consent activity"), /*#__PURE__*/React.createElement("p", {
+  }, "Global consent activity"), /*#__PURE__*/React.createElement("p", {
     className: "world-map__subtitle"
-  }, dataFlowMode ? "Arcs show where visitor data is sent before consent is given. Lines from EU to each third-party data processor." : "Darker regions indicate more interactions. Click any country to open a detailed breakdown.".concat(compareOn ? " Tooltips include comparison-period deltas." : "")), dataFlowMode && dataFlowCountries.length > 0 && /*#__PURE__*/React.createElement("div", {
-    className: "world-map__legend"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "world-map__legend-swatch world-map__legend-swatch--origin"
-  }), /*#__PURE__*/React.createElement("span", {
-    className: "world-map__legend-label"
-  }, "EU origin"), /*#__PURE__*/React.createElement("span", {
-    className: "world-map__legend-sep"
-  }), /*#__PURE__*/React.createElement("span", {
-    className: "world-map__legend-swatch world-map__legend-swatch--flow"
-  }), /*#__PURE__*/React.createElement("span", {
-    className: "world-map__legend-label"
-  }, "Non-EU destination")), !dataFlowMode && dataFlowCountries.length > 0 && /*#__PURE__*/React.createElement("div", {
-    className: "world-map__legend"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "world-map__legend-swatch world-map__legend-swatch--flow"
-  }), /*#__PURE__*/React.createElement("span", {
-    className: "world-map__legend-label"
-  }, "Pre-consent data flows to these countries"))), /*#__PURE__*/React.createElement("div", {
+  }, "Darker regions indicate more interactions. Click any country to open a detailed breakdown.", compareOn ? " Tooltips and the drawer include comparison-period totals, counts, and percentage-point deltas where baseline data exists." : "")), /*#__PURE__*/React.createElement("div", {
     className: "world-map__map-shell"
   }, /*#__PURE__*/React.createElement("div", {
     id: "svgMap",
     className: "world-map__map-inner"
-  }))), !dataFlowMode && ranked.length > 0 && /*#__PURE__*/React.createElement("aside", {
+  }))), /*#__PURE__*/React.createElement("aside", {
     className: "world-map__side",
     "aria-label": "Top countries by volume"
   }, /*#__PURE__*/React.createElement("div", {
@@ -40064,6 +40586,159 @@ function Crawler(_ref) {
     headers: ["Name", "Domain"],
     data: data
   }))));
+}
+
+/***/ }),
+
+/***/ "./src/Components/DevTierSwitcher/Style.css":
+/*!**************************************************!*\
+  !*** ./src/Components/DevTierSwitcher/Style.css ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/Components/DevTierSwitcher/Style.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/Components/DevTierSwitcher/index.js":
+/*!*************************************************!*\
+  !*** ./src/Components/DevTierSwitcher/index.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ DevTierSwitcher)
+/* harmony export */ });
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Style.css */ "./src/Components/DevTierSwitcher/Style.css");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+var _React = React,
+  useState = _React.useState;
+var IS_DEV = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+function getRealTier() {
+  try {
+    var org = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_2__["default"].getItem('organisation') || '{}');
+    if (org !== null && org !== void 0 && org.id && String(org.id) === '1') return 'agency-pro';
+    var sub = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_2__["default"].getItem('subscription') || '{}');
+    var s = sub === null || sub === void 0 ? void 0 : sub.subscription;
+    if (s === 'agency' || s === 'agency-pro') return 'agency-pro';
+    if (s === 'growth') return 'growth';
+    if (s === 'starter') return 'starter';
+    if (s === 'personal') return 'personal';
+  } catch (_unused) {/* ignore */}
+  return 'none';
+}
+function DevTierSwitcher() {
+  if (!IS_DEV) return null;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    open = _useState2[0],
+    setOpen = _useState2[1];
+  var currentTier = (0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.getTier)();
+  var isDevOverride = localStorage.getItem('dev_tier') !== null;
+  var handleSelect = function handleSelect(tier) {
+    if (tier === '__real__') {
+      localStorage.removeItem('dev_tier');
+    } else {
+      localStorage.setItem('dev_tier', tier);
+    }
+    window.location.reload();
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "dev-tier".concat(open ? ' dev-tier--open' : '')
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "dev-tier__toggle",
+    onClick: function onClick() {
+      return setOpen(function (o) {
+        return !o;
+      });
+    },
+    title: "Dev: simulate subscription tier",
+    "aria-expanded": open
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dev-tier__badge"
+  }, "DEV"), /*#__PURE__*/React.createElement("span", {
+    className: "dev-tier__current".concat(isDevOverride ? ' dev-tier__current--override' : '')
+  }, _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.TIER_LABELS[currentTier])), open && /*#__PURE__*/React.createElement("div", {
+    className: "dev-tier__panel",
+    role: "dialog",
+    "aria-label": "Tier simulator"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "dev-tier__heading"
+  }, "Simulate Tier"), /*#__PURE__*/React.createElement("div", {
+    className: "dev-tier__options"
+  }, _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.TIERS_ORDER.filter(function (t) {
+    return t !== 'none';
+  }).map(function (tier) {
+    return /*#__PURE__*/React.createElement("button", {
+      key: tier,
+      className: "dev-tier__option".concat(isDevOverride && currentTier === tier ? ' dev-tier__option--active' : ''),
+      onClick: function onClick() {
+        return handleSelect(tier);
+      }
+    }, /*#__PURE__*/React.createElement("span", null, _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.TIER_LABELS[tier]), /*#__PURE__*/React.createElement("span", {
+      className: "dev-tier__price"
+    }, _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.TIER_PRICES[tier]));
+  }), isDevOverride && /*#__PURE__*/React.createElement("button", {
+    className: "dev-tier__option dev-tier__option--reset",
+    onClick: function onClick() {
+      return handleSelect('__real__');
+    }
+  }, /*#__PURE__*/React.createElement("span", null, "\u21A9 Use real subscription"), /*#__PURE__*/React.createElement("span", {
+    className: "dev-tier__price"
+  }, _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.TIER_LABELS[getRealTier()])))));
 }
 
 /***/ }),
@@ -41767,12 +42442,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icons_reports_svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./icons/reports.svg */ "./src/Components/Header/icons/reports.svg");
 /* harmony import */ var _icons_domain_svg__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./icons/domain.svg */ "./src/Components/Header/icons/domain.svg");
 /* harmony import */ var _icons_expand_svg__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./icons/expand.svg */ "./src/Components/Header/icons/expand.svg");
-/* harmony import */ var _icons_settings_svg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./icons/settings.svg */ "./src/Components/Header/icons/settings.svg");
-/* harmony import */ var _icons_logout_svg__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./icons/logout.svg */ "./src/Components/Header/icons/logout.svg");
-/* harmony import */ var _icons_dashboard_svg__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./icons/dashboard.svg */ "./src/Components/Header/icons/dashboard.svg");
-/* harmony import */ var _icons_experiment_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./icons/experiment.svg */ "./src/Components/Header/icons/experiment.svg");
-/* harmony import */ var _icons_benchmark_svg__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./icons/benchmark.svg */ "./src/Components/Header/icons/benchmark.svg");
-/* harmony import */ var _icons_compliance_svg__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./icons/compliance.svg */ "./src/Components/Header/icons/compliance.svg");
+/* harmony import */ var _icons_cookies_svg__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./icons/cookies.svg */ "./src/Components/Header/icons/cookies.svg");
+/* harmony import */ var _icons_settings_svg__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./icons/settings.svg */ "./src/Components/Header/icons/settings.svg");
+/* harmony import */ var _icons_logout_svg__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./icons/logout.svg */ "./src/Components/Header/icons/logout.svg");
+/* harmony import */ var _icons_dashboard_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./icons/dashboard.svg */ "./src/Components/Header/icons/dashboard.svg");
+/* harmony import */ var _icons_experiment_svg__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./icons/experiment.svg */ "./src/Components/Header/icons/experiment.svg");
+/* harmony import */ var _icons_benchmark_svg__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./icons/benchmark.svg */ "./src/Components/Header/icons/benchmark.svg");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -41805,7 +42480,6 @@ function Nav() {
   var platform = localStorage.getItem("platform") || "gdpr";
   var homePath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.dashboardPath)(platform, currentDomain);
   var reportsPathResolved = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.reportsPath)(platform, currentDomain, "");
-  var compliancePath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.reportsPath)(platform, currentDomain, "/compliance");
   var path = location.pathname;
   // Dashboard: /:id/dashboard or /:id/view/:handle — not /:id/reports/view/... (that also contains "/view/")
   var homeActive = /\/[^/]+\/dashboard(\/|$|\?)/.test(path) || /^\/[^/]+\/view\//.test(path);
@@ -41827,7 +42501,7 @@ function Nav() {
   }), " ", /*#__PURE__*/React.createElement("span", {
     className: "hiddenCollapsed"
   }, "Home")), /*#__PURE__*/React.createElement(Link, {
-    className: "navItems" + (path.indexOf("/reports") > -1 && path.indexOf("/compliance") === -1 ? " --active" : ""),
+    className: "navItems" + (path.indexOf("/reports") > -1 ? " --active" : ""),
     to: reportsPathResolved
   }, /*#__PURE__*/React.createElement("i", {
     className: "dashboard-icons reports",
@@ -41843,9 +42517,9 @@ function Nav() {
   }, /*#__PURE__*/React.createElement("i", {
     className: "dashboard-icons compare",
     style: {
-      backgroundImage: "url(".concat(_icons_benchmark_svg__WEBPACK_IMPORTED_MODULE_12__["default"], ")")
+      backgroundImage: "url(".concat(_icons_benchmark_svg__WEBPACK_IMPORTED_MODULE_13__["default"], ")")
     },
-    "data-icon": _icons_benchmark_svg__WEBPACK_IMPORTED_MODULE_12__["default"]
+    "data-icon": _icons_benchmark_svg__WEBPACK_IMPORTED_MODULE_13__["default"]
   }), " ", /*#__PURE__*/React.createElement("span", {
     className: "hiddenCollapsed"
   }, "Portfolio Benchmark")), /*#__PURE__*/React.createElement(Link, {
@@ -41854,23 +42528,23 @@ function Nav() {
   }, /*#__PURE__*/React.createElement("i", {
     className: "dashboard-icons experiments",
     style: {
-      backgroundImage: "url(".concat(_icons_experiment_svg__WEBPACK_IMPORTED_MODULE_11__["default"], ")")
+      backgroundImage: "url(".concat(_icons_experiment_svg__WEBPACK_IMPORTED_MODULE_12__["default"], ")")
     },
-    "data-icon": _icons_experiment_svg__WEBPACK_IMPORTED_MODULE_11__["default"]
+    "data-icon": _icons_experiment_svg__WEBPACK_IMPORTED_MODULE_12__["default"]
   }), " ", /*#__PURE__*/React.createElement("span", {
     className: "hiddenCollapsed"
   }, "A/B Testing")), /*#__PURE__*/React.createElement(Link, {
-    className: "navItems" + (path.indexOf("/compliance") > -1 ? " --active" : ""),
-    to: compliancePath
+    className: "navItems" + (path.indexOf("/cookies") > -1 ? " --active" : ""),
+    to: "/" + localStorage.getItem("platform") + "/cookies"
   }, /*#__PURE__*/React.createElement("i", {
-    className: "dashboard-icons compliance",
+    className: "dashboard-icons cookies",
     style: {
-      backgroundImage: "url(".concat(_icons_compliance_svg__WEBPACK_IMPORTED_MODULE_13__["default"], ")")
+      backgroundImage: "url(".concat(_icons_cookies_svg__WEBPACK_IMPORTED_MODULE_8__["default"], ")")
     },
-    "data-icon": _icons_compliance_svg__WEBPACK_IMPORTED_MODULE_13__["default"]
+    "data-icon": _icons_cookies_svg__WEBPACK_IMPORTED_MODULE_8__["default"]
   }), " ", /*#__PURE__*/React.createElement("span", {
     className: "hiddenCollapsed"
-  }, "Compliance")), /*#__PURE__*/React.createElement("section", {
+  }, "Cookies")), /*#__PURE__*/React.createElement("section", {
     className: "navItems--bottom"
   }, /*#__PURE__*/React.createElement(Link, {
     className: "navItems" + (path.indexOf("/settings") > -1 ? " --active" : ""),
@@ -41878,9 +42552,9 @@ function Nav() {
   }, /*#__PURE__*/React.createElement("i", {
     className: "dashboard-icons settings",
     style: {
-      backgroundImage: "url(".concat(_icons_settings_svg__WEBPACK_IMPORTED_MODULE_8__["default"], ")")
+      backgroundImage: "url(".concat(_icons_settings_svg__WEBPACK_IMPORTED_MODULE_9__["default"], ")")
     },
-    "data-icon": _icons_settings_svg__WEBPACK_IMPORTED_MODULE_8__["default"]
+    "data-icon": _icons_settings_svg__WEBPACK_IMPORTED_MODULE_9__["default"]
   }), " ", /*#__PURE__*/React.createElement("span", {
     className: "hiddenCollapsed"
   }, "Settings")), /*#__PURE__*/React.createElement("button", {
@@ -41891,11 +42565,11 @@ function Nav() {
   }, /*#__PURE__*/React.createElement("i", {
     className: "dashboard-icons logout",
     style: {
-      backgroundImage: "url(".concat(_icons_logout_svg__WEBPACK_IMPORTED_MODULE_9__["default"], ")")
+      backgroundImage: "url(".concat(_icons_logout_svg__WEBPACK_IMPORTED_MODULE_10__["default"], ")")
     }
   }), " ", /*#__PURE__*/React.createElement("span", {
     className: "hiddenCollapsed",
-    "data-icon": _icons_logout_svg__WEBPACK_IMPORTED_MODULE_9__["default"]
+    "data-icon": _icons_logout_svg__WEBPACK_IMPORTED_MODULE_10__["default"]
   }, "Logout")))))));
 }
 
@@ -42631,22 +43305,18 @@ function Header(props) {
     _useState8 = _slicedToArray(_useState7, 2),
     viewUserProfile = _useState8[0],
     setViewUserProfile = _useState8[1];
-  var _useContext5 = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.WorkspaceContext),
-    _useContext6 = _slicedToArray(_useContext5, 2),
-    activeWorkspace = _useContext6[0],
-    setActiveWorkspace = _useContext6[1];
   var _useState9 = useState(function () {
-      return readAgencyWorkspaces();
+      return getCurrentWorkspace();
     }),
     _useState0 = _slicedToArray(_useState9, 2),
-    agencyWorkspaces = _useState0[0],
-    setAgencyWorkspaces = _useState0[1];
+    activeWorkspace = _useState0[0],
+    setActiveWorkspace = _useState0[1];
   var Platform = localStorage.getItem("platform") == "gdpr" ? "Intastellar Consents | CMP" : "Ferry Booking";
   useEffect(function () {
     setCurrentDomain(displayDomain);
   }, [displayDomain]);
   useEffect(function () {
-    var _API$workspaces, _API$platformKey;
+    var _API$platformKey;
     (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_3__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.url, _API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.method, _API_api__WEBPACK_IMPORTED_MODULE_4__["default"].settings.getOrganisation.headers, JSON.stringify({
       organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getUserId()
     })).then(function (data) {
@@ -42660,26 +43330,6 @@ function Header(props) {
       }
       setallOrganisations(data);
     });
-
-    // Fetch workspaces from backend so the profile switcher and domain
-    // dropdown always reflect the live DB state.
-    var wsOrgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getOrganisation();
-    if (wsOrgId && (_API$workspaces = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"].workspaces) !== null && _API$workspaces !== void 0 && (_API$workspaces = _API$workspaces.list) !== null && _API$workspaces !== void 0 && _API$workspaces.url) {
-      fetch(_API_api__WEBPACK_IMPORTED_MODULE_4__["default"].workspaces.list.url, {
-        method: "GET",
-        headers: {
-          "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getToken(),
-          "Organisation": String(wsOrgId),
-          "Content-Type": "application/json"
-        }
-      }).then(function (r) {
-        return r.ok ? r.json() : null;
-      }).then(function (data) {
-        if (!(data !== null && data !== void 0 && data.workspaces)) return;
-        setAgencyWorkspaces(data.workspaces);
-        localStorage.setItem("agency_workspaces", JSON.stringify(data.workspaces));
-      })["catch"](function () {});
-    }
     var platformKey = resolveDomainsPlatformKey(_API_api__WEBPACK_IMPORTED_MODULE_4__["default"]);
     var domainsApi = (_API$platformKey = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][platformKey]) === null || _API$platformKey === void 0 ? void 0 : _API$platformKey.getDomains;
     if (!(domainsApi !== null && domainsApi !== void 0 && domainsApi.url)) {
@@ -42768,7 +43418,8 @@ function Header(props) {
 
     // For agency users, add client workspaces at the top
     if (hasAgencySubscription()) {
-      if (agencyWorkspaces.length > 0) {
+      var workspaces = readAgencyWorkspaces();
+      if (workspaces.length > 0) {
         // Add workspaces header
         domainList.push({
           name: "Client Workspaces",
@@ -42776,7 +43427,7 @@ function Header(props) {
           type: "separator"
         });
         // Add workspaces to the list
-        agencyWorkspaces.forEach(function (ws) {
+        workspaces.forEach(function (ws) {
           var _ws$domains;
           var primaryDomain = getPrimaryDomainFromWorkspace(ws);
           var domainCount = ((_ws$domains = ws.domains) === null || _ws$domains === void 0 ? void 0 : _ws$domains.length) || 1;
@@ -42899,8 +43550,8 @@ function Header(props) {
         // Use workspaceData if available, otherwise fetch from storage
         var ws = parsed.workspaceData;
         if (!ws) {
-          var workspaces = readAgencyWorkspaces();
-          ws = workspaces.find(function (w) {
+          var _workspaces = readAgencyWorkspaces();
+          ws = _workspaces.find(function (w) {
             return w.id === parsed.id;
           });
         }
@@ -42937,7 +43588,6 @@ function Header(props) {
     onClick: function onClick() {
       setActiveWorkspace(null);
       setCurrentWorkspace(null);
-      clearWorkspaceFilter();
       setCurrentDomain("combined view");
       setGlobalDomain("combined view");
       (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.navigateWithDomain)(history, platformId, "combined view", location.pathname);
@@ -42960,23 +43610,6 @@ function Header(props) {
       name: (_JSON$parse2 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.user) === null || _JSON$parse2 === void 0 || (_JSON$parse2 = _JSON$parse2.name) === null || _JSON$parse2 === void 0 ? void 0 : _JSON$parse2.firstName,
       email: (_JSON$parse3 = JSON.parse(localStorage.getItem("globals"))) === null || _JSON$parse3 === void 0 || (_JSON$parse3 = _JSON$parse3.user) === null || _JSON$parse3 === void 0 ? void 0 : _JSON$parse3.email
     },
-    workspaces: agencyWorkspaces,
-    activeWorkspace: activeWorkspace,
-    onWorkspaceSelect: function onWorkspaceSelect(ws) {
-      var _ws$domains3;
-      setActiveWorkspace(ws);
-      setCurrentWorkspace(ws);
-      setWorkspaceFilter(((_ws$domains3 = ws.domains) === null || _ws$domains3 === void 0 ? void 0 : _ws$domains3.map(function (d) {
-        return d.domain;
-      })) || []);
-      setViewUserProfile(false);
-    },
-    onWorkspaceClear: function onWorkspaceClear() {
-      setActiveWorkspace(null);
-      setCurrentWorkspace(null);
-      clearWorkspaceFilter();
-      setViewUserProfile(false);
-    },
     setIsOpen: setViewUserProfile
   }) : null));
 }
@@ -42997,17 +43630,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/Components/Header/icons/compliance.svg":
-/*!****************************************************!*\
-  !*** ./src/Components/Header/icons/compliance.svg ***!
-  \****************************************************/
+/***/ "./src/Components/Header/icons/cookies.svg":
+/*!*************************************************!*\
+  !*** ./src/Components/Header/icons/cookies.svg ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "751c397a5dac2b15f01750b29745bdf8.svg");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "6cf081ac1291b3b7903f1594f68e6f68.svg");
 
 /***/ }),
 
@@ -43403,7 +44036,6 @@ var _window$React = window.React,
   useState = _window$React.useState,
   useEffect = _window$React.useEffect;
 function Account(props) {
-  var _props$workspaces;
   var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].DemoMode),
     _useState2 = _slicedToArray(_useState, 2),
     demoMode = _useState2[0],
@@ -43448,47 +44080,7 @@ function Account(props) {
     className: "ia-menu__manage-icon",
     width: 32,
     height: 32
-  }), /*#__PURE__*/React.createElement("span", null, "Manage your Intastellar account"))), ((_props$workspaces = props.workspaces) === null || _props$workspaces === void 0 ? void 0 : _props$workspaces.length) > 0 && /*#__PURE__*/React.createElement("div", {
-    className: "ia-menu__workspace-panel ia-menu__workspace-panel--switcher",
-    role: "group",
-    "aria-labelledby": "ia-ws-label"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "ia-menu__workspace-kicker",
-    id: "ia-ws-label"
-  }, "Client Workspaces"), /*#__PURE__*/React.createElement("ul", {
-    className: "ia-menu__ws-list",
-    role: "list"
-  }, props.workspaces.map(function (ws) {
-    var _props$activeWorkspac, _ref, _ws$domains, _ws$domains2, _ws$domains3;
-    var isActive = ((_props$activeWorkspac = props.activeWorkspace) === null || _props$activeWorkspac === void 0 ? void 0 : _props$activeWorkspac.id) === ws.id;
-    var primaryDomain = (_ref = ((_ws$domains = ws.domains) === null || _ws$domains === void 0 ? void 0 : _ws$domains.find(function (d) {
-      return d.isPrimary;
-    })) || ((_ws$domains2 = ws.domains) === null || _ws$domains2 === void 0 ? void 0 : _ws$domains2[0])) === null || _ref === void 0 ? void 0 : _ref.domain;
-    return /*#__PURE__*/React.createElement("li", {
-      key: ws.id
-    }, /*#__PURE__*/React.createElement("button", {
-      type: "button",
-      className: "ia-menu__ws-item".concat(isActive ? " ia-menu__ws-item--active" : ""),
-      onClick: function onClick() {
-        return isActive ? props.onWorkspaceClear() : props.onWorkspaceSelect(ws);
-      }
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "ia-menu__ws-icon",
-      "aria-hidden": "true"
-    }, isActive ? "✓" : "○"), /*#__PURE__*/React.createElement("span", {
-      className: "ia-menu__ws-info"
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "ia-menu__ws-name"
-    }, ws.name), primaryDomain && /*#__PURE__*/React.createElement("span", {
-      className: "ia-menu__ws-domain"
-    }, primaryDomain)), ((_ws$domains3 = ws.domains) === null || _ws$domains3 === void 0 ? void 0 : _ws$domains3.length) > 1 && /*#__PURE__*/React.createElement("span", {
-      className: "ia-menu__ws-count"
-    }, ws.domains.length)));
-  })), props.activeWorkspace && /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "ia-menu__ws-clear",
-    onClick: props.onWorkspaceClear
-  }, "Exit workspace")), _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation() == 1 ? /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("span", null, "Manage your Intastellar account"))), _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation() == 1 ? /*#__PURE__*/React.createElement("div", {
     className: "ia-menu__workspace-panel",
     role: "group",
     "aria-labelledby": "ia-workspace-section"
@@ -44299,7 +44891,7 @@ __webpack_require__.r(__webpack_exports__);
 var _React = React,
   useEffect = _React.useEffect,
   useRef = _React.useRef;
-var PUBLISHABLE_KEY =  false ? 0 : "pk_test_cdjFXrTVnj1SdyYXzlTz95Sk";
+var PUBLISHABLE_KEY =  false ? 0 : "MISSING_ENV_VAR".STRIPE_PUBLISHABLE_KEY_TEST;
 function getStripe() {
   if (window.Stripe) return Promise.resolve(window.Stripe(PUBLISHABLE_KEY));
   return new Promise(function (resolve) {
@@ -44865,6 +45457,138 @@ function Table(props) {
       key: i
     }, d.seenPreConsent));
   })))));
+}
+
+/***/ }),
+
+/***/ "./src/Components/TierGate/Style.css":
+/*!*******************************************!*\
+  !*** ./src/Components/TierGate/Style.css ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/Components/TierGate/Style.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/Components/TierGate/index.js":
+/*!******************************************!*\
+  !*** ./src/Components/TierGate/index.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ TierGate)
+/* harmony export */ });
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Style.css */ "./src/Components/TierGate/Style.css");
+
+
+var Link = window.ReactRouterDOM.Link;
+
+// fullPage: replaces the whole content area with an upgrade prompt
+// inline: blurs children and overlays a lock message
+function TierGate(_ref) {
+  var minTier = _ref.minTier,
+    featureName = _ref.featureName,
+    children = _ref.children,
+    fullPage = _ref.fullPage;
+  if ((0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.canAccess)(minTier)) return children !== null && children !== void 0 ? children : null;
+  var tierLabel = _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.TIER_LABELS[minTier];
+  var tierPrice = _Functions_tier_js__WEBPACK_IMPORTED_MODULE_0__.TIER_PRICES[minTier];
+  var lockIcon = /*#__PURE__*/React.createElement("svg", {
+    className: "tier-gate__icon",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("rect", {
+    x: "5",
+    y: "11",
+    width: "14",
+    height: "10",
+    rx: "2",
+    stroke: "currentColor",
+    strokeWidth: "1.5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 11V7a4 4 0 0 1 8 0v4",
+    stroke: "currentColor",
+    strokeWidth: "1.5",
+    strokeLinecap: "round"
+  }));
+  if (fullPage || !children) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "tier-gate tier-gate--page"
+    }, lockIcon, /*#__PURE__*/React.createElement("h2", {
+      className: "tier-gate__heading"
+    }, featureName ? "".concat(featureName, " requires ") : 'Requires the ', /*#__PURE__*/React.createElement("span", {
+      className: "tier-gate__tier-name"
+    }, tierLabel), featureName ? ' plan' : ' plan'), /*#__PURE__*/React.createElement("p", {
+      className: "tier-gate__sub"
+    }, "Upgrade to ", tierLabel, " starting at ", tierPrice, " to unlock this feature."), /*#__PURE__*/React.createElement(Link, {
+      to: "/settings/plans",
+      className: "tier-gate__btn"
+    }, "View Plans"));
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "tier-gate tier-gate--inline"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "tier-gate__blurred",
+    "aria-hidden": "true"
+  }, children), /*#__PURE__*/React.createElement("div", {
+    className: "tier-gate__overlay"
+  }, lockIcon, /*#__PURE__*/React.createElement("p", {
+    className: "tier-gate__heading"
+  }, featureName !== null && featureName !== void 0 ? featureName : 'This feature', " requires", ' ', /*#__PURE__*/React.createElement("span", {
+    className: "tier-gate__tier-name"
+  }, tierLabel)), /*#__PURE__*/React.createElement("p", {
+    className: "tier-gate__sub"
+  }, tierPrice, " \u2014 ", /*#__PURE__*/React.createElement(Link, {
+    to: "/settings/plans",
+    className: "tier-gate__link"
+  }, "View Plans"))));
 }
 
 /***/ }),
@@ -45903,17 +46627,18 @@ function useSyncDomainFromRoute(handle, setCurrentDomain) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   checkDomainVerification: () => (/* binding */ checkDomainVerification),
+/* harmony export */   generateVerificationToken: () => (/* binding */ generateVerificationToken),
 /* harmony export */   getDaysUntilReverification: () => (/* binding */ getDaysUntilReverification),
 /* harmony export */   getDomainsNeedingReverification: () => (/* binding */ getDomainsNeedingReverification),
 /* harmony export */   getOrCreateVerificationRecord: () => (/* binding */ getOrCreateVerificationRecord),
+/* harmony export */   getOrCreateVerificationToken: () => (/* binding */ getOrCreateVerificationToken),
 /* harmony export */   getVerificationStatus: () => (/* binding */ getVerificationStatus),
 /* harmony export */   getVerificationStatusLabel: () => (/* binding */ getVerificationStatusLabel),
 /* harmony export */   isDomainVerified: () => (/* binding */ isDomainVerified),
 /* harmony export */   isVerificationExpired: () => (/* binding */ isVerificationExpired),
-/* harmony export */   populateVerificationCache: () => (/* binding */ populateVerificationCache)
+/* harmony export */   manuallyVerifyDomain: () => (/* binding */ manuallyVerifyDomain),
+/* harmony export */   resetVerification: () => (/* binding */ resetVerification)
 /* harmony export */ });
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _API_host__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../API/host */ "./src/API/host.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
@@ -45928,300 +46653,265 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
  * Domain Verification Utility
  *
  * Handles domain ownership verification for organisations and workspaces.
- * Uses the backend API as the source of truth; localStorage is a read-through
- * cache so synchronous render calls (getVerificationStatusLabel) stay fast.
+ * Currently uses localStorage for storage - will be replaced with backend API.
  */
 
-
-
 var STORAGE_KEY = "domain_verifications";
-var REVERIFICATION_DAYS = 14;
+var REVERIFICATION_DAYS = 14; // Re-verify every 14 days
 
-// ── Cache helpers ─────────────────────────────────────────────────────────────
+/**
+ * Generate a unique verification token for a domain + organisation combination
+ */
+function generateVerificationToken(domain, organisationId) {
+  var timestamp = Date.now().toString(36);
+  var random = Math.random().toString(36).substring(2, 10);
+  return "inta_".concat(organisationId, "_").concat(timestamp, "_").concat(random);
+}
 
+/**
+ * Get all stored verification records
+ */
 function getStoredVerifications() {
   try {
     var stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) return JSON.parse(stored);
-  } catch (_unused) {/* ignore */}
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch (_unused) {
+    /* ignore */
+  }
   return {};
 }
+
+/**
+ * Save verification records to localStorage
+ */
 function saveVerifications(verifications) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(verifications));
-  } catch (_unused2) {/* ignore */}
+  } catch (_unused2) {
+    /* ignore */
+  }
 }
+
+/**
+ * Create a unique key for domain + organisation combination
+ */
 function createKey(domain, organisationId) {
   return "".concat(organisationId, ":").concat(domain.toLowerCase());
 }
 
-// ── Auth headers (fresh at call time) ────────────────────────────────────────
-
-function authHeaders() {
-  return {
-    "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getToken(),
-    "Content-Type": "application/json"
-  };
-}
-
-// ── Public API ────────────────────────────────────────────────────────────────
-
 /**
- * Writes a verification record from an external source (e.g. workspace list
- * response) into the local cache without hitting the backend.
- * Only overwrites if the incoming data is newer or the cache is empty.
- */
-function populateVerificationCache(domain, organisationId, data) {
-  var _data$verifiedAt, _data$lastCheckedAt, _data$nextVerificatio, _data$createdAt;
-  var verifications = getStoredVerifications();
-  var key = createKey(domain, organisationId);
-  var existing = verifications[key];
-
-  // Don't overwrite a more recent local check with stale backend data
-  if (existing !== null && existing !== void 0 && existing.lastCheckedAt && data.lastCheckedAt && existing.lastCheckedAt >= data.lastCheckedAt) {
-    return;
-  }
-  verifications[key] = {
-    domain: domain.toLowerCase(),
-    organisationId: organisationId,
-    token: data.token,
-    verified: data.verified,
-    verifiedAt: (_data$verifiedAt = data.verifiedAt) !== null && _data$verifiedAt !== void 0 ? _data$verifiedAt : null,
-    lastCheckedAt: (_data$lastCheckedAt = data.lastCheckedAt) !== null && _data$lastCheckedAt !== void 0 ? _data$lastCheckedAt : null,
-    nextVerificationDue: (_data$nextVerificatio = data.nextVerificationDue) !== null && _data$nextVerificatio !== void 0 ? _data$nextVerificatio : null,
-    createdAt: (_data$createdAt = data.createdAt) !== null && _data$createdAt !== void 0 ? _data$createdAt : null
-  };
-  saveVerifications(verifications);
-}
-
-/**
- * Reads the cached verification record for a domain (sync, for rendering).
+ * Get verification status for a domain
+ * @returns {Object|null} Verification record or null if not found
  */
 function getVerificationStatus(domain, organisationId) {
   var verifications = getStoredVerifications();
-  return verifications[createKey(domain, organisationId)] || null;
+  var key = createKey(domain, organisationId);
+  return verifications[key] || null;
 }
 
 /**
- * Returns true when a domain is verified and the verification hasn't expired.
+ * Check if a domain is verified and verification hasn't expired
  */
 function isDomainVerified(domain, organisationId) {
   var status = getVerificationStatus(domain, organisationId);
-  if (!status || !status.verified) return false;
+  if (!status || !status.verified) {
+    return false;
+  }
+
+  // Check if re-verification is needed
   if (status.nextVerificationDue) {
-    return new Date() <= new Date(status.nextVerificationDue);
+    var dueDate = new Date(status.nextVerificationDue);
+    if (new Date() > dueDate) {
+      return false; // Verification expired
+    }
   }
   return true;
 }
 
 /**
- * Returns true when the domain was verified but the re-verification window
- * has passed.
+ * Check if verification is expired (was verified but needs re-verification)
  */
 function isVerificationExpired(domain, organisationId) {
   var status = getVerificationStatus(domain, organisationId);
-  if (!status || !status.verified) return false;
+  if (!status || !status.verified) {
+    return false; // Never verified, not "expired"
+  }
   if (status.nextVerificationDue) {
-    return new Date() > new Date(status.nextVerificationDue);
+    var dueDate = new Date(status.nextVerificationDue);
+    return new Date() > dueDate;
   }
   return false;
 }
 
 /**
- * Gets or creates a verification record via the backend, then writes the
- * result into the local cache and returns it.
- *
- * @returns {Promise<object>} Verification record
+ * Get or create a verification token for a domain
+ * If token already exists, return it; otherwise generate a new one
  */
-function getOrCreateVerificationRecord(_x, _x2) {
-  return _getOrCreateVerificationRecord.apply(this, arguments);
+function getOrCreateVerificationToken(domain, organisationId) {
+  var _verifications$key;
+  var verifications = getStoredVerifications();
+  var key = createKey(domain, organisationId);
+  if ((_verifications$key = verifications[key]) !== null && _verifications$key !== void 0 && _verifications$key.token) {
+    return verifications[key].token;
+  }
+
+  // Generate new token
+  var token = generateVerificationToken(domain, organisationId);
+  verifications[key] = {
+    domain: domain.toLowerCase(),
+    organisationId: organisationId,
+    token: token,
+    verified: false,
+    verifiedAt: null,
+    lastCheckedAt: null,
+    nextVerificationDue: null,
+    createdAt: new Date().toISOString()
+  };
+  saveVerifications(verifications);
+  return token;
 }
 
 /**
- * Triggers a live verification check via the backend.
- * Updates the local cache with the result.
- *
- * @returns {Promise<{success: boolean, message: string, verifiedAt?, nextVerificationDue?}>}
+ * Get full verification record, creating one if it doesn't exist
  */
-function _getOrCreateVerificationRecord() {
-  _getOrCreateVerificationRecord = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(domain, organisationId) {
-    var domainLower, cached, res, data, verifications, key;
+function getOrCreateVerificationRecord(domain, organisationId) {
+  var token = getOrCreateVerificationToken(domain, organisationId);
+  return getVerificationStatus(domain, organisationId);
+}
+
+/**
+ * Simulate verification check (will be replaced with actual API call)
+ * In production, this would fetch the domain and check for the token
+ *
+ * @param {string} domain - Domain to verify
+ * @param {number} organisationId - Organisation ID
+ * @returns {Promise<{success: boolean, message: string}>}
+ */
+function checkDomainVerification(_x, _x2) {
+  return _checkDomainVerification.apply(this, arguments);
+}
+
+/**
+ * Mark a domain as manually verified (for testing/admin purposes)
+ */
+function _checkDomainVerification() {
+  _checkDomainVerification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(domain, organisationId) {
+    var verifications, key, record, simulatedSuccess, now, nextDue;
     return _regenerator().w(function (_context) {
       while (1) switch (_context.n) {
         case 0:
-          domainLower = domain.toLowerCase(); // Return cached record if it already has a token
-          cached = getVerificationStatus(domainLower, organisationId);
-          if (!(cached !== null && cached !== void 0 && cached.token)) {
+          verifications = getStoredVerifications();
+          key = createKey(domain, organisationId);
+          record = verifications[key];
+          if (record) {
             _context.n = 1;
             break;
           }
-          return _context.a(2, cached);
+          return _context.a(2, {
+            success: false,
+            message: "No verification token found. Please generate a token first."
+          });
         case 1:
           _context.n = 2;
-          return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_1__.PrimaryHost, "/analytics/settings/domain-verification/v1/init"), {
-            method: "POST",
-            headers: authHeaders(),
-            body: JSON.stringify({
-              domain: domainLower,
-              organisationId: organisationId
-            })
+          return new Promise(function (resolve) {
+            return setTimeout(resolve, 1500);
           });
         case 2:
-          res = _context.v;
-          if (res.ok) {
+          // TODO: Replace with actual verification API call
+          // The backend would:
+          // 1. Fetch the domain's HTML
+          // 2. Look for <meta name="intastellar-verification" content="TOKEN">
+          // 3. Or check for window.INTA.verification === TOKEN
+          // 4. Return success/failure
+          // For now, simulate random success/failure for testing
+          // In production, remove this and use actual API
+          simulatedSuccess = Math.random() > 0.3; // 70% success rate for testing
+          if (!simulatedSuccess) {
             _context.n = 3;
             break;
           }
-          throw new Error("Failed to initialise verification record");
-        case 3:
-          _context.n = 4;
-          return res.json();
-        case 4:
-          data = _context.v;
-          // Populate cache
-          verifications = getStoredVerifications();
-          key = createKey(domainLower, organisationId);
-          verifications[key] = {
-            domain: data.domain,
-            organisationId: organisationId,
-            token: data.token,
-            verified: data.verified,
-            verifiedAt: data.verifiedAt,
-            lastCheckedAt: data.lastCheckedAt,
-            nextVerificationDue: data.nextVerificationDue,
-            createdAt: data.createdAt
-          };
+          now = new Date();
+          nextDue = new Date(now);
+          nextDue.setDate(nextDue.getDate() + REVERIFICATION_DAYS);
+          verifications[key] = _objectSpread(_objectSpread({}, record), {}, {
+            verified: true,
+            verifiedAt: now.toISOString(),
+            lastCheckedAt: now.toISOString(),
+            nextVerificationDue: nextDue.toISOString()
+          });
           saveVerifications(verifications);
-          return _context.a(2, verifications[key]);
+          return _context.a(2, {
+            success: true,
+            message: "Domain verified successfully!",
+            verifiedAt: now.toISOString(),
+            nextVerificationDue: nextDue.toISOString()
+          });
+        case 3:
+          verifications[key] = _objectSpread(_objectSpread({}, record), {}, {
+            lastCheckedAt: new Date().toISOString()
+          });
+          saveVerifications(verifications);
+          return _context.a(2, {
+            success: false,
+            message: "Verification token not found on domain. Please ensure the token is properly installed."
+          });
+        case 4:
+          return _context.a(2);
       }
     }, _callee);
   }));
-  return _getOrCreateVerificationRecord.apply(this, arguments);
-}
-function checkDomainVerification(_x3, _x4) {
   return _checkDomainVerification.apply(this, arguments);
+}
+function manuallyVerifyDomain(domain, organisationId) {
+  var verifications = getStoredVerifications();
+  var key = createKey(domain, organisationId);
+  var now = new Date();
+  var nextDue = new Date(now);
+  nextDue.setDate(nextDue.getDate() + REVERIFICATION_DAYS);
+  var existingRecord = verifications[key] || {
+    domain: domain.toLowerCase(),
+    organisationId: organisationId,
+    token: generateVerificationToken(domain, organisationId),
+    createdAt: now.toISOString()
+  };
+  verifications[key] = _objectSpread(_objectSpread({}, existingRecord), {}, {
+    verified: true,
+    verifiedAt: now.toISOString(),
+    lastCheckedAt: now.toISOString(),
+    nextVerificationDue: nextDue.toISOString()
+  });
+  saveVerifications(verifications);
 }
 
 /**
- * Returns a UI label object for the current verification state of a domain.
- * Reads from the local cache (synchronous, safe to call during render).
+ * Reset verification status for a domain (for testing)
  */
-function _checkDomainVerification() {
-  _checkDomainVerification = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(domain, organisationId) {
-    var _verifications$key;
-    var domainLower, initRes, initData, _verifications, _key, verifications, key, res, data, _t;
-    return _regenerator().w(function (_context2) {
-      while (1) switch (_context2.p = _context2.n) {
-        case 0:
-          domainLower = domain.toLowerCase(); // Always call /init directly (bypassing the localStorage cache) before
-          // checking. /init is idempotent — it returns the existing record if one
-          // exists in the DB. This self-heals the case where the localStorage was
-          // populated by the old simulation but the DB record never existed, or
-          // was lost. Without this, a cached-but-stale token would reach /check
-          // and get a 404.
-          _context2.p = 1;
-          _context2.n = 2;
-          return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_1__.PrimaryHost, "/analytics/settings/domain-verification/v1/init"), {
-            method: "POST",
-            headers: authHeaders(),
-            body: JSON.stringify({
-              domain: domainLower,
-              organisationId: organisationId
-            })
-          });
-        case 2:
-          initRes = _context2.v;
-          if (!initRes.ok) {
-            _context2.n = 4;
-            break;
-          }
-          _context2.n = 3;
-          return initRes.json();
-        case 3:
-          initData = _context2.v;
-          _verifications = getStoredVerifications();
-          _key = createKey(domainLower, organisationId);
-          _verifications[_key] = {
-            domain: initData.domain,
-            organisationId: organisationId,
-            token: initData.token,
-            verified: initData.verified,
-            verifiedAt: initData.verifiedAt,
-            lastCheckedAt: initData.lastCheckedAt,
-            nextVerificationDue: initData.nextVerificationDue,
-            createdAt: initData.createdAt
-          };
-          saveVerifications(_verifications);
-        case 4:
-          _context2.n = 6;
-          break;
-        case 5:
-          _context2.p = 5;
-          _t = _context2.v;
-        case 6:
-          verifications = getStoredVerifications();
-          key = createKey(domainLower, organisationId);
-          if ((_verifications$key = verifications[key]) !== null && _verifications$key !== void 0 && _verifications$key.token) {
-            _context2.n = 7;
-            break;
-          }
-          return _context2.a(2, {
-            success: false,
-            message: "Could not create a verification token. Please try again."
-          });
-        case 7:
-          _context2.n = 8;
-          return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_1__.PrimaryHost, "/analytics/settings/domain-verification/v1/check"), {
-            method: "POST",
-            headers: authHeaders(),
-            body: JSON.stringify({
-              domain: domainLower,
-              organisationId: organisationId
-            })
-          });
-        case 8:
-          res = _context2.v;
-          _context2.n = 9;
-          return res.json();
-        case 9:
-          data = _context2.v;
-          if (res.ok) {
-            _context2.n = 10;
-            break;
-          }
-          return _context2.a(2, {
-            success: false,
-            message: data.detail || data.error || "Verification check failed."
-          });
-        case 10:
-          // Update cache
-          if (data.success) {
-            verifications[key] = _objectSpread(_objectSpread({}, verifications[key]), {}, {
-              verified: true,
-              verifiedAt: data.verifiedAt,
-              lastCheckedAt: data.verifiedAt,
-              nextVerificationDue: data.nextVerificationDue
-            });
-          } else {
-            verifications[key] = _objectSpread(_objectSpread({}, verifications[key]), {}, {
-              lastCheckedAt: new Date().toISOString()
-            });
-          }
-          saveVerifications(verifications);
-          return _context2.a(2, data);
-      }
-    }, _callee2, null, [[1, 5]]);
-  }));
-  return _checkDomainVerification.apply(this, arguments);
+function resetVerification(domain, organisationId) {
+  var verifications = getStoredVerifications();
+  var key = createKey(domain, organisationId);
+  if (verifications[key]) {
+    verifications[key] = _objectSpread(_objectSpread({}, verifications[key]), {}, {
+      verified: false,
+      verifiedAt: null,
+      lastCheckedAt: null,
+      nextVerificationDue: null
+    });
+    saveVerifications(verifications);
+  }
 }
+
+/**
+ * Get verification status label for UI display
+ */
 function getVerificationStatusLabel(domain, organisationId) {
   var status = getVerificationStatus(domain, organisationId);
-  if (!(status !== null && status !== void 0 && status.token)) {
-    // No verification record exists yet — render nothing
+  if (!status) {
     return {
-      label: "",
-      type: "none",
-      icon: ""
+      label: "Unverified",
+      type: "unverified",
+      icon: "?"
     };
   }
   if (!status.verified) {
@@ -46246,17 +46936,22 @@ function getVerificationStatusLabel(domain, organisationId) {
 }
 
 /**
- * Returns the number of days until re-verification is required, or null.
+ * Get days until re-verification is required
  */
 function getDaysUntilReverification(domain, organisationId) {
   var status = getVerificationStatus(domain, organisationId);
-  if (!(status !== null && status !== void 0 && status.nextVerificationDue)) return null;
-  var diffMs = new Date(status.nextVerificationDue) - new Date();
-  return Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+  if (!(status !== null && status !== void 0 && status.nextVerificationDue)) {
+    return null;
+  }
+  var dueDate = new Date(status.nextVerificationDue);
+  var now = new Date();
+  var diffTime = dueDate - now;
+  var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
 }
 
 /**
- * Returns all locally-cached domains that need re-verification within X days.
+ * Get all domains that need re-verification soon (within X days)
  */
 function getDomainsNeedingReverification() {
   var withinDays = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 3;
@@ -46750,6 +47445,799 @@ function numericToAlpha2(num) {
 
 /***/ }),
 
+/***/ "./src/Functions/jurisdictionEngine.js":
+/*!*********************************************!*\
+  !*** ./src/Functions/jurisdictionEngine.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BANNER_TYPE_BY_FRAMEWORK: () => (/* binding */ BANNER_TYPE_BY_FRAMEWORK),
+/* harmony export */   DSR_DEADLINES_DAYS: () => (/* binding */ DSR_DEADLINES_DAYS),
+/* harmony export */   FRAMEWORK_COUNTRY_COUNTS: () => (/* binding */ FRAMEWORK_COUNTRY_COUNTS),
+/* harmony export */   FRAMEWORK_DESCRIPTIONS: () => (/* binding */ FRAMEWORK_DESCRIPTIONS),
+/* harmony export */   FRAMEWORK_IDS: () => (/* reexport safe */ _components_AuditSnapshotCard_complianceRegions_js__WEBPACK_IMPORTED_MODULE_0__.FRAMEWORK_IDS),
+/* harmony export */   FRAMEWORK_LABELS: () => (/* binding */ FRAMEWORK_LABELS),
+/* harmony export */   getFrameworksForCountry: () => (/* binding */ getFrameworksForCountry)
+/* harmony export */ });
+/* harmony import */ var _components_AuditSnapshotCard_complianceRegions_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/AuditSnapshotCard/complianceRegions.js */ "./src/components/AuditSnapshotCard/complianceRegions.js");
+
+var COUNTRY_FRAMEWORK_MAP = {
+  BR: ["LGPD"],
+  US: ["CCPA", "CDPA", "CPA", "UCPA", "CTDPA"],
+  ZA: ["POPIA"],
+  TH: ["PDPA"],
+  SG: ["PDPA"],
+  AU: ["APA"],
+  SA: ["PDPL"],
+  CA: ["PIPEDA", "LAW25"]
+};
+var BANNER_TYPE_BY_FRAMEWORK = {
+  GDPR: "opt-in",
+  LGPD: "opt-in",
+  PDPA: "opt-in",
+  POPIA: "opt-in",
+  CCPA: "opt-out",
+  CDPA: "opt-out",
+  CPA: "opt-out",
+  UCPA: "opt-out",
+  CTDPA: "opt-out",
+  APA: "opt-out",
+  PDPL: "opt-in",
+  PIPEDA: "opt-in",
+  LAW25: "opt-in"
+};
+var FRAMEWORK_LABELS = {
+  GDPR: "GDPR (EU / EEA / UK)",
+  LGPD: "LGPD (Brazil)",
+  CCPA: "CCPA / CPRA (California, USA)",
+  CDPA: "CDPA (Virginia, USA)",
+  CPA: "CPA (Colorado, USA)",
+  UCPA: "UCPA (Utah, USA)",
+  CTDPA: "CTDPA (Connecticut, USA)",
+  POPIA: "POPIA (South Africa)",
+  PDPA: "PDPA (Thailand / Singapore)",
+  APA: "Privacy Act (Australia)",
+  PDPL: "PDPL (Saudi Arabia)",
+  PIPEDA: "PIPEDA (Canada)",
+  LAW25: "Law 25 (Quebec, Canada)"
+};
+var FRAMEWORK_DESCRIPTIONS = {
+  GDPR: "Applies to visitors from EU member states, EEA countries, and the United Kingdom.",
+  LGPD: "Brazil's Lei Geral de Proteção de Dados. Requires opt-in consent, similar to GDPR.",
+  CCPA: "California Consumer Privacy Act. Requires an opt-out of sale / share mechanism for US visitors.",
+  CDPA: "Virginia Consumer Data Protection Act. Applies to businesses processing data of Virginia residents. Requires opt-out of data sale and explicit consent for sensitive data.",
+  CPA: "Colorado Privacy Act. Applies to businesses processing data of Colorado residents. Requires opt-out rights and support for universal opt-out signals.",
+  UCPA: "Utah Consumer Privacy Act. Applies to businesses processing data of Utah residents. Requires opt-out of targeted advertising and sale of personal data.",
+  CTDPA: "Connecticut Data Privacy Act. Applies to businesses processing data of Connecticut residents. Requires opt-out and data minimisation obligations.",
+  POPIA: "South Africa's Protection of Personal Information Act. Requires lawful processing conditions.",
+  PDPA: "Data protection acts in Thailand and Singapore. Require opt-in consent from covered visitors.",
+  APA: "Australia's Privacy Act 1988 and Australian Privacy Principles. Applies to organisations handling personal information of Australian residents.",
+  PDPL: "Saudi Arabia's Personal Data Protection Law. Requires explicit consent for collection and processing of personal data of Saudi residents.",
+  PIPEDA: "Canada's Personal Information Protection and Electronic Documents Act. Requires meaningful consent for collection, use, and disclosure of personal information.",
+  LAW25: "Quebec's Law 25 modernises privacy rules for businesses operating in Quebec, requiring explicit consent, privacy impact assessments, and transparency obligations."
+};
+var FRAMEWORK_COUNTRY_COUNTS = {
+  GDPR: 33,
+  LGPD: 1,
+  CCPA: 1,
+  CDPA: 1,
+  CPA: 1,
+  UCPA: 1,
+  CTDPA: 1,
+  POPIA: 1,
+  PDPA: 2,
+  APA: 1,
+  PDPL: 1,
+  PIPEDA: 1,
+  LAW25: 1
+};
+var DSR_DEADLINES_DAYS = {
+  GDPR: 30,
+  LGPD: 15,
+  PDPA: 30,
+  POPIA: 30,
+  CCPA: 45,
+  CDPA: 45,
+  CPA: 45,
+  UCPA: 45,
+  CTDPA: 45,
+  APA: 30,
+  PDPL: 30,
+  PIPEDA: 30,
+  LAW25: 30
+};
+
+/**
+ * Returns frameworks and default banner type for a given ISO alpha-2 country code.
+ * @param {string} alpha2
+ * @returns {{ frameworks: string[], bannerType: "opt-in"|"opt-out"|"notice-only" }}
+ */
+function getFrameworksForCountry(alpha2) {
+  var code = String(alpha2 || "").toUpperCase().trim();
+  if (!code) return {
+    frameworks: [],
+    bannerType: "notice-only"
+  };
+  var explicit = COUNTRY_FRAMEWORK_MAP[code];
+  if (explicit) {
+    var bannerType = explicit.reduce(function (acc, fw) {
+      var t = BANNER_TYPE_BY_FRAMEWORK[fw] || "notice-only";
+      if (t === "opt-in") return "opt-in";
+      if (acc === "notice-only" && t === "opt-out") return "opt-out";
+      return acc;
+    }, "notice-only");
+    return {
+      frameworks: explicit,
+      bannerType: bannerType
+    };
+  }
+  if (_components_AuditSnapshotCard_complianceRegions_js__WEBPACK_IMPORTED_MODULE_0__.EU_EEA_UK.has(code)) {
+    return {
+      frameworks: ["GDPR"],
+      bannerType: "opt-in"
+    };
+  }
+  return {
+    frameworks: [],
+    bannerType: "notice-only"
+  };
+}
+
+
+/***/ }),
+
+/***/ "./src/Functions/legalBasisDefinitions.js":
+/*!************************************************!*\
+  !*** ./src/Functions/legalBasisDefinitions.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DEFAULT_LEGAL_BASIS: () => (/* binding */ DEFAULT_LEGAL_BASIS),
+/* harmony export */   LEGAL_BASES: () => (/* binding */ LEGAL_BASES),
+/* harmony export */   PROCESSING_PURPOSES: () => (/* binding */ PROCESSING_PURPOSES)
+/* harmony export */ });
+var LEGAL_BASES = {
+  GDPR: [{
+    id: "consent",
+    label: "Consent (Art. 6(1)(a))"
+  }, {
+    id: "contract",
+    label: "Contract (Art. 6(1)(b))"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation (Art. 6(1)(c))"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests (Art. 6(1)(d))"
+  }, {
+    id: "public_task",
+    label: "Public Task (Art. 6(1)(e))"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests (Art. 6(1)(f))"
+  }],
+  LGPD: [{
+    id: "consent",
+    label: "Consent (Art. 7(I))"
+  }, {
+    id: "legal_obligation",
+    label: "Legal / Regulatory Obligation (Art. 7(II))"
+  }, {
+    id: "public_policy",
+    label: "Public Policy Administration (Art. 7(III))"
+  }, {
+    id: "research",
+    label: "Research by Research Entity (Art. 7(IV))"
+  }, {
+    id: "contract",
+    label: "Contract Performance (Art. 7(V))"
+  }, {
+    id: "legal_proceedings",
+    label: "Exercise of Rights in Legal Proceedings (Art. 7(VI))"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests (Art. 7(VII))"
+  }, {
+    id: "health_protection",
+    label: "Health Protection (Art. 7(VIII))"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests (Art. 7(IX))"
+  }, {
+    id: "credit_protection",
+    label: "Credit Protection (Art. 7(X))"
+  }],
+  PDPA: [{
+    id: "consent",
+    label: "Consent (S. 19)"
+  }, {
+    id: "contract",
+    label: "Contract (S. 24(1))"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests (S. 24(2))"
+  }, {
+    id: "public_interest",
+    label: "Public Interest (S. 24(3))"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests (S. 24(4))"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation (S. 24(5))"
+  }],
+  CCPA: [{
+    id: "opt_out",
+    label: "Opt-Out of Sale / Share"
+  }, {
+    id: "service_provider",
+    label: "Service Provider Use"
+  }, {
+    id: "contractor",
+    label: "Contractor Use"
+  }],
+  CDPA: [{
+    id: "consent",
+    label: "Consent"
+  }, {
+    id: "contract",
+    label: "Contract Performance"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests"
+  }, {
+    id: "public_interest",
+    label: "Public Interest"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests"
+  }, {
+    id: "opt_out",
+    label: "Opt-Out of Sale / Targeted Advertising"
+  }],
+  CPA: [{
+    id: "consent",
+    label: "Consent"
+  }, {
+    id: "contract",
+    label: "Contract Performance"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests"
+  }, {
+    id: "public_interest",
+    label: "Public Interest"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests"
+  }, {
+    id: "opt_out",
+    label: "Opt-Out of Sale / Targeted Advertising"
+  }],
+  UCPA: [{
+    id: "consent",
+    label: "Consent"
+  }, {
+    id: "contract",
+    label: "Contract Performance"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests"
+  }, {
+    id: "public_interest",
+    label: "Public Interest"
+  }, {
+    id: "opt_out",
+    label: "Opt-Out of Sale / Targeted Advertising"
+  }],
+  CTDPA: [{
+    id: "consent",
+    label: "Consent"
+  }, {
+    id: "contract",
+    label: "Contract Performance"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests"
+  }, {
+    id: "public_interest",
+    label: "Public Interest"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests"
+  }, {
+    id: "opt_out",
+    label: "Opt-Out of Sale / Targeted Advertising"
+  }],
+  POPIA: [{
+    id: "consent",
+    label: "Consent (S. 11(1)(a))"
+  }, {
+    id: "contract",
+    label: "Contract (S. 11(1)(b))"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation (S. 11(1)(c))"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests (S. 11(1)(d))"
+  }, {
+    id: "public_interest",
+    label: "Public Interest (S. 11(1)(e))"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests (S. 11(1)(f))"
+  }],
+  APA: [{
+    id: "consent",
+    label: "Consent (APP 3)"
+  }, {
+    id: "legal_obligation",
+    label: "Authorised by Law (APP 3.4)"
+  }, {
+    id: "vital_interest",
+    label: "Unreasonable / Impractical to Seek Consent"
+  }, {
+    id: "public_interest",
+    label: "Public Interest"
+  }, {
+    id: "research",
+    label: "Research or Statistical Purposes"
+  }, {
+    id: "legitimate_interest",
+    label: "Directly Related Purpose"
+  }],
+  PDPL: [{
+    id: "consent",
+    label: "Explicit Consent"
+  }, {
+    id: "contract",
+    label: "Contract Performance"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests"
+  }, {
+    id: "public_interest",
+    label: "Public Interest or Official Authority"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests"
+  }],
+  PIPEDA: [{
+    id: "express_consent",
+    label: "Express Consent"
+  }, {
+    id: "implied_consent",
+    label: "Implied Consent"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation or Court Order"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests (emergency)"
+  }, {
+    id: "research",
+    label: "Research, Journalism or Statistical Purpose"
+  }, {
+    id: "publicly_available",
+    label: "Publicly Available Information"
+  }],
+  LAW25: [{
+    id: "consent",
+    label: "Explicit Consent"
+  }, {
+    id: "contract",
+    label: "Contract Performance"
+  }, {
+    id: "legal_obligation",
+    label: "Legal Obligation"
+  }, {
+    id: "vital_interest",
+    label: "Vital Interests"
+  }, {
+    id: "public_interest",
+    label: "Public Interest"
+  }, {
+    id: "research",
+    label: "Research or Statistical Purpose"
+  }, {
+    id: "legitimate_interest",
+    label: "Legitimate Interests"
+  }]
+};
+var PROCESSING_PURPOSES = [{
+  id: "analytics",
+  label: "Analytics & Performance"
+}, {
+  id: "marketing",
+  label: "Marketing & Advertising"
+}, {
+  id: "advertising",
+  label: "Targeted Advertising"
+}, {
+  id: "functional",
+  label: "Functional / Preferences"
+}, {
+  id: "personalisation",
+  label: "Personalisation"
+}, {
+  id: "security",
+  label: "Security & Fraud Prevention"
+}, {
+  id: "payment",
+  label: "Payment Processing"
+}, {
+  id: "research",
+  label: "Research & Development"
+}];
+var DEFAULT_LEGAL_BASIS = {
+  GDPR: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "consent",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "legitimate_interest"
+  },
+  LGPD: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "consent",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "research"
+  },
+  PDPA: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "consent",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "legitimate_interest"
+  },
+  CCPA: {
+    analytics: "opt_out",
+    marketing: "opt_out",
+    advertising: "opt_out",
+    functional: "service_provider",
+    personalisation: "opt_out",
+    security: "service_provider",
+    payment: "service_provider",
+    research: "service_provider"
+  },
+  CDPA: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "opt_out",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "legitimate_interest"
+  },
+  CPA: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "opt_out",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "legitimate_interest"
+  },
+  UCPA: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "opt_out",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "public_interest"
+  },
+  CTDPA: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "opt_out",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "legitimate_interest"
+  },
+  POPIA: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "consent",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "legitimate_interest"
+  },
+  APA: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "consent",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "research"
+  },
+  PDPL: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "consent",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "legitimate_interest"
+  },
+  PIPEDA: {
+    analytics: "implied_consent",
+    marketing: "express_consent",
+    advertising: "express_consent",
+    functional: "implied_consent",
+    personalisation: "express_consent",
+    security: "legal_obligation",
+    payment: "contract",
+    research: "research"
+  },
+  LAW25: {
+    analytics: "legitimate_interest",
+    marketing: "consent",
+    advertising: "consent",
+    functional: "legitimate_interest",
+    personalisation: "consent",
+    security: "legitimate_interest",
+    payment: "contract",
+    research: "research"
+  }
+};
+
+/***/ }),
+
+/***/ "./src/Functions/storage.js":
+/*!**********************************!*\
+  !*** ./src/Functions/storage.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   getOrg: () => (/* binding */ getOrg)
+/* harmony export */ });
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+/**
+ * Secure storage utility.
+ *
+ * Sensitive auth keys (globals, organisation, subscription) are stored in
+ * cookies with Secure + SameSite=Strict flags so they are only transmitted
+ * over HTTPS and protected against CSRF.
+ *
+ * Note: these cookies are NOT HttpOnly — setting HttpOnly from JavaScript is
+ * blocked by browsers. HttpOnly protection for the JWT token requires the
+ * server to issue the cookie via a Set-Cookie response header instead of
+ * returning it in the response body. That remains a future server-side task.
+ *
+ * All other keys continue to use localStorage unchanged.
+ */
+
+var SECURE_KEYS = new Set(['globals', 'organisation', 'subscription']);
+
+// 7-day session for auth data; subscription can be stale for longer
+var EXPIRY_DAYS = {
+  globals: 7,
+  organisation: 7,
+  subscription: 1
+};
+var IS_HTTPS = window.location.protocol === 'https:';
+var SECURE = IS_HTTPS ? '; Secure' : '';
+function cookieExpiry(days) {
+  var d = new Date();
+  d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+  return d.toUTCString();
+}
+function writeCookie(name, value, days) {
+  document.cookie = ["".concat(name, "=").concat(encodeURIComponent(value)), "expires=".concat(cookieExpiry(days)), 'path=/', 'SameSite=Strict', SECURE].filter(Boolean).join('; ');
+}
+function readCookie(name) {
+  var prefix = name + '=';
+  var _iterator = _createForOfIteratorHelper(document.cookie.split(';')),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var part = _step.value;
+      var c = part.trim();
+      if (c.startsWith(prefix)) {
+        return decodeURIComponent(c.slice(prefix.length));
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return null;
+}
+function deleteCookie(name) {
+  document.cookie = ["".concat(name, "="), 'expires=Thu, 01 Jan 1970 00:00:00 UTC', 'path=/', 'SameSite=Strict', SECURE].filter(Boolean).join('; ');
+}
+var appStorage = {
+  getItem: function getItem(key) {
+    if (SECURE_KEYS.has(key)) {
+      // Cookie is the source of truth; fall back to localStorage for
+      // sessions that predate this change (migration path).
+      var cookieVal = readCookie(key);
+      if (cookieVal !== null) return cookieVal;
+      return localStorage.getItem(key);
+    }
+    return localStorage.getItem(key);
+  },
+  setItem: function setItem(key, value) {
+    if (SECURE_KEYS.has(key)) {
+      var _EXPIRY_DAYS$key;
+      writeCookie(key, value, (_EXPIRY_DAYS$key = EXPIRY_DAYS[key]) !== null && _EXPIRY_DAYS$key !== void 0 ? _EXPIRY_DAYS$key : 7);
+      // Remove the plain localStorage copy to avoid the old value
+      // being picked up by code not yet migrated.
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, value);
+    }
+  },
+  removeItem: function removeItem(key) {
+    if (SECURE_KEYS.has(key)) {
+      deleteCookie(key);
+    }
+    // Always clear localStorage too — handles pre-migration sessions
+    // and any code that still writes directly to localStorage.
+    localStorage.removeItem(key);
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appStorage);
+
+/** Safely parse the stored organisation object. Returns null if missing or unparseable. */
+function getOrg() {
+  try {
+    return JSON.parse(appStorage.getItem('organisation') || 'null');
+  } catch (_unused) {
+    return null;
+  }
+}
+
+/***/ }),
+
+/***/ "./src/Functions/tier.js":
+/*!*******************************!*\
+  !*** ./src/Functions/tier.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FEATURE_TIERS: () => (/* binding */ FEATURE_TIERS),
+/* harmony export */   TIERS: () => (/* binding */ TIERS),
+/* harmony export */   TIERS_ORDER: () => (/* binding */ TIERS_ORDER),
+/* harmony export */   TIER_LABELS: () => (/* binding */ TIER_LABELS),
+/* harmony export */   TIER_PRICES: () => (/* binding */ TIER_PRICES),
+/* harmony export */   canAccess: () => (/* binding */ canAccess),
+/* harmony export */   getTier: () => (/* binding */ getTier),
+/* harmony export */   hasFeature: () => (/* binding */ hasFeature)
+/* harmony export */ });
+/* harmony import */ var _storage_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./storage.js */ "./src/Functions/storage.js");
+
+var TIERS = {
+  none: 0,
+  personal: 1,
+  starter: 2,
+  growth: 3,
+  'agency-pro': 4
+};
+var TIER_LABELS = {
+  none: 'No Plan',
+  personal: 'Personal',
+  starter: 'Starter',
+  growth: 'Growth',
+  'agency-pro': 'Agency Pro'
+};
+var TIER_PRICES = {
+  none: null,
+  personal: '€5/mo',
+  starter: '€15/mo',
+  growth: '€30/mo',
+  'agency-pro': '€39/mo'
+};
+var TIERS_ORDER = ['none', 'personal', 'starter', 'growth', 'agency-pro'];
+
+// Each feature key maps to its minimum required tier
+var FEATURE_TIERS = {
+  audit_log: 'personal',
+  csv_export: 'personal',
+  dsr_portal: 'personal',
+  analytics_dashboard: 'starter',
+  reporting: 'starter',
+  cookie_scanner: 'starter',
+  jurisdiction_config: 'starter',
+  advanced_reporting: 'growth',
+  team_insights: 'growth',
+  ad_platform_reconciliation: 'growth',
+  blind_spot_detection: 'growth',
+  cost_per_consent: 'growth',
+  legal_basis_tracking: 'growth',
+  ropa_builder: 'growth',
+  multi_client_management: 'agency-pro',
+  client_level_reporting: 'agency-pro'
+};
+function mapSubscriptionToTier(subscription) {
+  switch (subscription) {
+    case 'personal':
+      return 'personal';
+    case 'starter':
+      return 'starter';
+    case 'growth':
+      return 'growth';
+    case 'agency-pro':
+    case 'agency':
+      return 'agency-pro';
+    // backward compat with old "agency" value
+    default:
+      return 'none';
+  }
+}
+function getTier() {
+  var devTier = localStorage.getItem('dev_tier');
+  if (devTier && TIERS[devTier] !== undefined) return devTier;
+  try {
+    var _sub$tier;
+    var org = JSON.parse(_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem('organisation') || '{}');
+    if (org !== null && org !== void 0 && org.id && String(org.id) === '1') return 'agency-pro';
+    var sub = JSON.parse(_storage_js__WEBPACK_IMPORTED_MODULE_0__["default"].getItem('subscription') || '{}');
+    return mapSubscriptionToTier((_sub$tier = sub === null || sub === void 0 ? void 0 : sub.tier) !== null && _sub$tier !== void 0 ? _sub$tier : sub === null || sub === void 0 ? void 0 : sub.subscription);
+  } catch (_unused) {
+    return 'none';
+  }
+}
+function canAccess(minTier) {
+  return TIERS[getTier()] >= TIERS[minTier];
+}
+function hasFeature(feature) {
+  var required = FEATURE_TIERS[feature];
+  if (!required) return false;
+  return canAccess(required);
+}
+
+/***/ }),
+
 /***/ "./src/Functions/userLocale.js":
 /*!*************************************!*\
   !*** ./src/Functions/userLocale.js ***!
@@ -46827,6 +48315,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ AuthLogin)
 /* harmony export */ });
 /* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../API/api */ "./src/API/api.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Functions/storage.js */ "./src/Functions/storage.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 var useLocation = window.ReactRouterDOM.useLocation;
 var _React = React,
@@ -46834,6 +48323,7 @@ var _React = React,
   useEffect = _React.useEffect,
   useRef = _React.useRef,
   useContext = _React.useContext;
+
 
 function AuthLogin() {
   var _parsedToken$user;
@@ -46868,8 +48358,8 @@ function AuthLogin() {
       console.error("Error logging in");
       return;
     }
-    localStorage.setItem("organisation", response.organisation);
-    localStorage.setItem("globals", JSON.stringify(response));
+    _Functions_storage_js__WEBPACK_IMPORTED_MODULE_1__["default"].setItem("organisation", response.organisation);
+    _Functions_storage_js__WEBPACK_IMPORTED_MODULE_1__["default"].setItem("globals", JSON.stringify(response));
     if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
       window.location.href = "/dashboard";
     } else {
@@ -46959,12 +48449,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../API/api.js */ "./src/API/api.js");
 /* harmony import */ var _intastellar_signin_sdk_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @intastellar/signin-sdk-react */ "./node_modules/@intastellar/signin-sdk-react/dist/index.js");
 /* harmony import */ var _intastellar_signin_sdk_react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_intastellar_signin_sdk_react__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Functions/storage.js */ "./src/Functions/storage.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+
 
 
 
@@ -46992,7 +48484,7 @@ function handleLogin(account) {
       return;
     }
     localStorage.setItem("platform", "gdpr");
-    localStorage.setItem("organisation", JSON.stringify(response[0]));
+    _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__["default"].setItem("organisation", JSON.stringify(response[0]));
     localStorage.setItem("globals", JSON.stringify(_objectSpread(_objectSpread({}, account), {}, {
       organisation_access: response.map(function (organisation) {
         var _organisation$users$f;
@@ -47318,6 +48810,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Components/Footer */ "./src/Components/Footer/index.js");
 /* harmony import */ var _intastellar_signin_sdk_react__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @intastellar/signin-sdk-react */ "./node_modules/@intastellar/signin-sdk-react/dist/index.js");
 /* harmony import */ var _intastellar_signin_sdk_react__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_intastellar_signin_sdk_react__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../Functions/storage.js */ "./src/Functions/storage.js");
+
 
 
 
@@ -47354,8 +48848,8 @@ function Login() {
           return;
         }
         localStorage.setItem("platform", "gdpr");
-        localStorage.setItem("organisation", response[0]);
-        localStorage.setItem("globals", JSON.stringify(account));
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__["default"].setItem("organisation", response[0]);
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__["default"].setItem("globals", JSON.stringify(account));
         if (localStorage.getItem("platform") === null || localStorage.getItem("platform") === undefined) {
           window.location.href = "/dashboard";
         } else {
@@ -47792,6 +49286,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
 /* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/Compliance/Style.css");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -47813,6 +49308,7 @@ var _React = React,
   useEffect = _React.useEffect,
   useContext = _React.useContext,
   useMemo = _React.useMemo;
+
 
 
 
@@ -48025,6 +49521,10 @@ function CompliancePage() {
     _useState40 = _slicedToArray(_useState39, 2),
     scanHistory = _useState40[0],
     setScanHistory = _useState40[1];
+  var _useState41 = useState(false),
+    _useState42 = _slicedToArray(_useState41, 2),
+    copyTableCopied = _useState42[0],
+    setCopyTableCopied = _useState42[1];
   var domainsForApi = useMemo(function () {
     return (handle ? handle : currentDomain) || "combined view";
   }, [handle, currentDomain]);
@@ -48071,7 +49571,7 @@ function CompliancePage() {
       return r.json();
     }).then(function (data) {
       if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -48089,7 +49589,7 @@ function CompliancePage() {
       return r.json();
     }).then(function (data) {
       if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -48105,7 +49605,7 @@ function CompliancePage() {
       return r.json();
     }).then(function (data) {
       if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -48120,7 +49620,7 @@ function CompliancePage() {
         return r.json();
       }).then(function (data) {
         if (data === "Err_Login_Expired") {
-          localStorage.removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__["default"].removeItem("globals");
           window.location.href = "/login";
           return;
         }
@@ -48212,6 +49712,26 @@ function CompliancePage() {
       })));
       downloadCSV(_rows, "pre-consent-cookies-".concat(scanDomain, ".csv"));
     }
+  };
+  var copyCookieTable = function copyCookieTable() {
+    var items = (preConsentTransfers === null || preConsentTransfers === void 0 ? void 0 : preConsentTransfers.pre_consent_cookies) || [];
+    var baseDomain = (handle || currentDomain || "").replace(/^www\./, "");
+    var esc = function esc(s) {
+      return String(s !== null && s !== void 0 ? s : "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    };
+    var rows = items.map(function (c) {
+      var _BANNER_CATEGORY_META;
+      var isThird = !c.domain.replace(/^\./, "").endsWith(baseDomain);
+      var bm = c.bannerCategory ? ((_BANNER_CATEGORY_META = BANNER_CATEGORY_META[c.bannerCategory]) === null || _BANNER_CATEGORY_META === void 0 ? void 0 : _BANNER_CATEGORY_META.label) || c.bannerCategory : "";
+      return "<tr><td>".concat(esc(c.name), "</td><td>").concat(esc(c.domain), "</td><td>").concat(isThird ? "3rd party" : "1st party", "</td><td>").concat(c.session ? "Session" : "Persistent", "</td><td>").concat(esc(bm), "</td><td>").concat(esc(c.description || ""), "</td></tr>");
+    }).join("");
+    var html = "<table><thead><tr><th>Cookie name</th><th>Domain</th><th>Party</th><th>Lifetime</th><th>Category</th><th>Description</th></tr></thead><tbody>".concat(rows, "</tbody></table>");
+    navigator.clipboard.writeText(html).then(function () {
+      setCopyTableCopied(true);
+      setTimeout(function () {
+        return setCopyTableCopied(false);
+      }, 2000);
+    });
   };
   if (!id || !_API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) return null;
   var preCount = observedCookies === null || observedCookies === void 0 || (_observedCookies$preC = observedCookies.preConsent) === null || _observedCookies$preC === void 0 ? void 0 : _observedCookies$preC.count;
@@ -48498,7 +50018,11 @@ function CompliancePage() {
           "aria-hidden": true
         }, isExp ? "▾" : "▸")), isExp && /*#__PURE__*/React.createElement("div", {
           className: "compliance-transfers__row-detail"
-        }, t.bannerCategory && function () {
+        }, t.description && /*#__PURE__*/React.createElement("span", {
+          className: "compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "compliance-transfers__row-detail-label"
+        }, "About"), t.description), t.bannerCategory && function () {
           var bm = BANNER_CATEGORY_META[t.bannerCategory];
           return /*#__PURE__*/React.createElement("span", {
             className: "compliance-transfers__row-detail-item"
@@ -48510,7 +50034,15 @@ function CompliancePage() {
               "--bc-color": (bm === null || bm === void 0 ? void 0 : bm.color) || "#909090"
             }
           }, (bm === null || bm === void 0 ? void 0 : bm.label) || t.bannerCategory));
-        }(), t.dataCountry && /*#__PURE__*/React.createElement("span", {
+        }(), t.legalBasis && /*#__PURE__*/React.createElement("span", {
+          className: "compliance-transfers__row-detail-item"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "compliance-transfers__row-detail-label"
+        }, "Legal basis"), t.legalBasis), t.transferMechanism && /*#__PURE__*/React.createElement("span", {
+          className: "compliance-transfers__row-detail-item"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "compliance-transfers__row-detail-label"
+        }, "Transfer mechanism"), t.transferMechanism), t.dataCountry && /*#__PURE__*/React.createElement("span", {
           className: "compliance-transfers__row-detail-item"
         }, /*#__PURE__*/React.createElement("span", {
           className: "compliance-transfers__row-detail-label"
@@ -48530,7 +50062,14 @@ function CompliancePage() {
           className: "compliance-transfers__row-detail-item"
         }, /*#__PURE__*/React.createElement("span", {
           className: "compliance-transfers__row-detail-label"
-        }, "Purposes"), t.purposes.join(", ")), !t.dataCountry && !t.url && !t.initiator && !((_t$purposes2 = t.purposes) !== null && _t$purposes2 !== void 0 && _t$purposes2.length) && /*#__PURE__*/React.createElement("span", {
+        }, "Purposes"), t.purposes.join(", ")), t.privacyUrl && /*#__PURE__*/React.createElement("span", {
+          className: "compliance-transfers__row-detail-item compliance-transfers__row-detail-item--full"
+        }, /*#__PURE__*/React.createElement("a", {
+          className: "compliance-transfers__row-detail-privacy",
+          href: t.privacyUrl,
+          target: "_blank",
+          rel: "noopener noreferrer"
+        }, "Privacy policy \u2197")), !t.description && !t.dataCountry && !t.url && !t.initiator && !((_t$purposes2 = t.purposes) !== null && _t$purposes2 !== void 0 && _t$purposes2.length) && /*#__PURE__*/React.createElement("span", {
           className: "compliance-transfers__row-detail-item",
           style: {
             color: "rgba(255,255,255,0.25)"
@@ -48596,6 +50135,12 @@ function CompliancePage() {
     }, cookies.length, " result", cookies.length !== 1 ? "s" : "")), !cookies.length ? /*#__PURE__*/React.createElement("div", {
       className: "compliance-transfers__empty"
     }, /*#__PURE__*/React.createElement("span", null, "No cookies match \"", searchQuery, "\".")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+      className: "compliance-cookies__table-actions"
+    }, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "compliance-transfers__export-btn",
+      onClick: copyCookieTable
+    }, copyTableCopied ? "Copied!" : "Copy cookie table")), /*#__PURE__*/React.createElement("div", {
       className: "compliance-cookies__list-header",
       "aria-hidden": true
     }, /*#__PURE__*/React.createElement("span", null, "Name / Domain"), /*#__PURE__*/React.createElement("span", null, "Party"), /*#__PURE__*/React.createElement("span", null, "Lifetime"), /*#__PURE__*/React.createElement("span", null, "Category"), /*#__PURE__*/React.createElement("span", null, "Flags")), /*#__PURE__*/React.createElement("div", {
@@ -48611,7 +50156,9 @@ function CompliancePage() {
         className: "compliance-cookies__row-name"
       }, c.name), /*#__PURE__*/React.createElement("span", {
         className: "compliance-cookies__row-domain"
-      }, c.domain)), /*#__PURE__*/React.createElement("span", {
+      }, c.domain), c.description && /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__row-desc"
+      }, c.description)), /*#__PURE__*/React.createElement("span", {
         className: "compliance-cookies__row-party" + (isThird ? " --third" : " --first")
       }, isThird ? "3rd party" : "1st party"), /*#__PURE__*/React.createElement("span", {
         className: "compliance-cookies__row-lifetime" + (c.session ? " --session" : " --persistent")
@@ -48811,6 +50358,812 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
+/***/ "./src/Pages/DSR/DSRDetail.js":
+/*!************************************!*\
+  !*** ./src/Pages/DSR/DSRDetail.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ DSRDetail)
+/* harmony export */ });
+/* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../API/api.js */ "./src/API/api.js");
+/* harmony import */ var _Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Components/Header/SideNav.js */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Reports_Reports_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Reports/Reports.js */ "./src/Pages/Reports/Reports.js");
+/* harmony import */ var _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Functions/jurisdictionEngine.js */ "./src/Functions/jurisdictionEngine.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/DSR/Style.css");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect,
+  useCallback = _window$React.useCallback;
+var useParams = window.ReactRouterDOM.useParams;
+var Link = window.ReactRouterDOM.Link;
+
+
+
+
+
+
+var REQUEST_TYPE_LABELS = {
+  access: "Access (Right to know)",
+  erasure: "Erasure (Right to be forgotten)",
+  portability: "Portability",
+  restriction: "Restriction of processing",
+  objection: "Objection to processing",
+  opt_out: "Opt-out of sale / share"
+};
+var STATUS_STYLES = {
+  pending: {
+    bg: "rgba(192,159,83,0.15)",
+    border: "rgba(192,159,83,0.35)",
+    color: "#d4b87a",
+    label: "Pending"
+  },
+  in_progress: {
+    bg: "rgba(80,130,210,0.15)",
+    border: "rgba(80,130,210,0.35)",
+    color: "#88b0e8",
+    label: "In Progress"
+  },
+  completed: {
+    bg: "rgba(80,180,100,0.15)",
+    border: "rgba(80,180,100,0.35)",
+    color: "#7dd590",
+    label: "Completed"
+  },
+  overdue: {
+    bg: "rgba(220,80,80,0.15)",
+    border: "rgba(220,80,80,0.35)",
+    color: "#f0a8a0",
+    label: "Overdue"
+  }
+};
+function StatusBadge(_ref) {
+  var status = _ref.status;
+  var s = STATUS_STYLES[status] || STATUS_STYLES.pending;
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "4px 12px",
+      borderRadius: "8px",
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.06em",
+      background: s.bg,
+      border: "1px solid ".concat(s.border),
+      color: s.color
+    }
+  }, s.label);
+}
+function DSRDetail() {
+  var _DSR_DEADLINES_DAYS$r;
+  var _useParams = useParams(),
+    id = _useParams.id,
+    requestId = _useParams.requestId;
+  var _useState = useState(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    request = _useState2[0],
+    setRequest = _useState2[1];
+  var _useState3 = useState(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    updating = _useState6[0],
+    setUpdating = _useState6[1];
+  var load = useCallback(function () {
+    setLoading(true);
+    fetch("".concat(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.list.url, "/").concat(requestId), {
+      method: "GET",
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.list.headers
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      return setRequest(data);
+    })["catch"](function () {
+      return setRequest(null);
+    })["finally"](function () {
+      return setLoading(false);
+    });
+  }, [requestId]);
+  useEffect(function () {
+    load();
+  }, [load]);
+  function updateStatus(newStatus) {
+    if (!request) return;
+    setUpdating(true);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.update.url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.update.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.update.headers,
+      body: JSON.stringify({
+        id: requestId,
+        status: newStatus
+      })
+    }).then(function (r) {
+      return r.json();
+    }).then(function () {
+      return load();
+    })["catch"](function () {})["finally"](function () {
+      return setUpdating(false);
+    });
+  }
+  if (loading) {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      links: _Reports_Reports_js__WEBPACK_IMPORTED_MODULE_3__.reportsLinks,
+      title: "Reports"
+    }), /*#__PURE__*/React.createElement("main", {
+      className: "dashboard-content settings-subpage settings-subpage--wide"
+    }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      title: "DSR Detail"
+    }), /*#__PURE__*/React.createElement("p", {
+      className: "settings-subpage__empty"
+    }, "Loading\u2026")));
+  }
+  if (!request) {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      links: _Reports_Reports_js__WEBPACK_IMPORTED_MODULE_3__.reportsLinks,
+      title: "Reports"
+    }), /*#__PURE__*/React.createElement("main", {
+      className: "dashboard-content settings-subpage settings-subpage--wide"
+    }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      title: "DSR Detail"
+    }), /*#__PURE__*/React.createElement("p", {
+      className: "settings-subpage__empty"
+    }, "Request not found.")));
+  }
+  var days = (_DSR_DEADLINES_DAYS$r = _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_4__.DSR_DEADLINES_DAYS[request.regulation]) !== null && _DSR_DEADLINES_DAYS$r !== void 0 ? _DSR_DEADLINES_DAYS$r : 30;
+  var deadline = new Date(request.submitted);
+  deadline.setDate(deadline.getDate() + days);
+  var isOverdue = new Date() > deadline && request.status !== "completed";
+  var derivedStatus = request.status === "completed" ? "completed" : isOverdue ? "overdue" : request.status || "pending";
+  document.title = "DSR \u2014 ".concat(request.uid, " | Intastellar Consents");
+  var auditLogHref = "/".concat(id, "/reports/user-consents?uid=").concat(encodeURIComponent(request.uid));
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    links: _Reports_Reports_js__WEBPACK_IMPORTED_MODULE_3__.reportsLinks,
+    title: "Reports"
+  }), /*#__PURE__*/React.createElement("main", {
+    className: "dashboard-content settings-subpage settings-subpage--wide"
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    title: "Data Subject Request"
+  }), /*#__PURE__*/React.createElement(Link, {
+    to: "/".concat(id, "/reports/dsr"),
+    className: "settings-subpage__back"
+  }, "\u2190 All requests"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__panel",
+    style: {
+      marginBottom: "20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexWrap: "wrap",
+      alignItems: "flex-start",
+      justifyContent: "space-between",
+      gap: "12px 20px",
+      marginBottom: "20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    style: {
+      margin: "0 0 6px",
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.08em",
+      color: "rgba(192,159,83,0.9)"
+    }
+  }, "Subject UID"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      margin: 0,
+      fontFamily: "ui-monospace, monospace",
+      fontSize: "1rem",
+      color: "#f2f2f2"
+    }
+  }, request.uid)), /*#__PURE__*/React.createElement(StatusBadge, {
+    status: derivedStatus
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "dsr-meta-grid"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dsr-meta-item"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-label"
+  }, "Request type"), /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-value"
+  }, REQUEST_TYPE_LABELS[request.type] || request.type)), /*#__PURE__*/React.createElement("div", {
+    className: "dsr-meta-item"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-label"
+  }, "Regulation"), /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-value"
+  }, _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_4__.FRAMEWORK_LABELS[request.regulation] || request.regulation)), /*#__PURE__*/React.createElement("div", {
+    className: "dsr-meta-item"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-label"
+  }, "Submitted"), /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-value"
+  }, new Date(request.submitted).toLocaleDateString())), /*#__PURE__*/React.createElement("div", {
+    className: "dsr-meta-item"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-label"
+  }, "Deadline"), /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-value",
+    style: {
+      color: isOverdue ? "#f0a8a0" : undefined
+    }
+  }, deadline.toLocaleDateString(), /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginLeft: "6px",
+      fontSize: "0.75rem",
+      color: "rgba(140,140,140,0.7)"
+    }
+  }, "(", days, " days)"))), request.notes && /*#__PURE__*/React.createElement("div", {
+    className: "dsr-meta-item",
+    style: {
+      gridColumn: "1 / -1"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-label"
+  }, "Notes"), /*#__PURE__*/React.createElement("span", {
+    className: "dsr-meta-value"
+  }, request.notes))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginTop: "20px",
+      paddingTop: "18px",
+      borderTop: "1px solid rgba(255,255,255,0.08)",
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "10px",
+      alignItems: "center"
+    }
+  }, /*#__PURE__*/React.createElement(Link, {
+    to: auditLogHref,
+    style: {
+      padding: "9px 16px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(255,255,255,0.06)",
+      color: "#e0e0e0",
+      fontSize: "0.875rem",
+      fontWeight: 600,
+      textDecoration: "none"
+    }
+  }, "View consent history \u2192"), derivedStatus !== "completed" && /*#__PURE__*/React.createElement(React.Fragment, null, derivedStatus === "pending" && /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--primary",
+    onClick: function onClick() {
+      return updateStatus("in_progress");
+    },
+    disabled: updating
+  }, "Mark in progress"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--primary",
+    onClick: function onClick() {
+      return updateStatus("completed");
+    },
+    disabled: updating,
+    style: {
+      background: "rgba(80,180,100,0.2)",
+      borderColor: "rgba(80,180,100,0.45)",
+      color: "#a8edb8"
+    }
+  }, "Mark completed")))), Array.isArray(request.history) && request.history.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__panel"
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      margin: "0 0 14px",
+      fontSize: "0.8125rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.08em",
+      color: "rgba(192,159,83,0.9)"
+    }
+  }, "Activity"), /*#__PURE__*/React.createElement("ul", {
+    className: "dsr-timeline"
+  }, request.history.map(function (entry, i) {
+    return /*#__PURE__*/React.createElement("li", {
+      key: i,
+      className: "dsr-timeline__item"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "dsr-timeline__dot"
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "dsr-timeline__action"
+    }, entry.action, /*#__PURE__*/React.createElement("span", {
+      className: "dsr-timeline__time"
+    }, new Date(entry.at).toLocaleString())));
+  })))));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/DSR/Style.css":
+/*!*********************************!*\
+  !*** ./src/Pages/DSR/Style.css ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/Pages/DSR/Style.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/Pages/DSR/index.js":
+/*!********************************!*\
+  !*** ./src/Pages/DSR/index.js ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ DSR)
+/* harmony export */ });
+/* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../API/api.js */ "./src/API/api.js");
+/* harmony import */ var _Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Components/Header/SideNav.js */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Reports_Reports_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Reports/Reports.js */ "./src/Pages/Reports/Reports.js");
+/* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Functions/jurisdictionEngine.js */ "./src/Functions/jurisdictionEngine.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/DSR/Style.css");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect,
+  useCallback = _window$React.useCallback;
+var useParams = window.ReactRouterDOM.useParams;
+var useHistory = window.ReactRouterDOM.useHistory;
+var Link = window.ReactRouterDOM.Link;
+
+
+
+
+
+
+
+var REQUEST_TYPES = [{
+  id: "access",
+  label: "Access (Right to know)"
+}, {
+  id: "erasure",
+  label: "Erasure (Right to be forgotten)"
+}, {
+  id: "portability",
+  label: "Portability"
+}, {
+  id: "restriction",
+  label: "Restriction of processing"
+}, {
+  id: "objection",
+  label: "Objection to processing"
+}, {
+  id: "opt_out",
+  label: "Opt-out of sale / share"
+}];
+var REGULATIONS = ["GDPR", "LGPD", "CCPA", "CDPA", "CPA", "UCPA", "CTDPA", "POPIA", "PDPA", "APA", "PDPL", "PIPEDA", "LAW25"];
+var STATUS_STYLES = {
+  pending: {
+    bg: "rgba(192,159,83,0.15)",
+    border: "rgba(192,159,83,0.35)",
+    color: "#d4b87a",
+    label: "Pending"
+  },
+  in_progress: {
+    bg: "rgba(80,130,210,0.15)",
+    border: "rgba(80,130,210,0.35)",
+    color: "#88b0e8",
+    label: "In Progress"
+  },
+  completed: {
+    bg: "rgba(80,180,100,0.15)",
+    border: "rgba(80,180,100,0.35)",
+    color: "#7dd590",
+    label: "Completed"
+  },
+  overdue: {
+    bg: "rgba(220,80,80,0.15)",
+    border: "rgba(220,80,80,0.35)",
+    color: "#f0a8a0",
+    label: "Overdue"
+  }
+};
+function deadlineDate(submittedIso, regulation) {
+  var _DSR_DEADLINES_DAYS$r;
+  var days = (_DSR_DEADLINES_DAYS$r = _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.DSR_DEADLINES_DAYS[regulation]) !== null && _DSR_DEADLINES_DAYS$r !== void 0 ? _DSR_DEADLINES_DAYS$r : 30;
+  var d = new Date(submittedIso);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+function deriveStatus(request) {
+  if (request.status === "completed") return "completed";
+  var deadline = deadlineDate(request.submitted, request.regulation);
+  if (new Date() > deadline) return "overdue";
+  return request.status || "pending";
+}
+function StatusBadge(_ref) {
+  var status = _ref.status;
+  var s = STATUS_STYLES[status] || STATUS_STYLES.pending;
+  return /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "inline-flex",
+      alignItems: "center",
+      padding: "3px 10px",
+      borderRadius: "6px",
+      fontSize: "0.6875rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.06em",
+      background: s.bg,
+      border: "1px solid ".concat(s.border),
+      color: s.color
+    }
+  }, s.label);
+}
+function DSR() {
+  var _DSR_DEADLINES_DAYS$f, _DSR_DEADLINES_DAYS$f2;
+  document.title = "Data Subject Requests | Reports | Intastellar Consents";
+  var _useParams = useParams(),
+    id = _useParams.id;
+  var history = useHistory();
+  var _useState = useState([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    requests = _useState2[0],
+    setRequests = _useState2[1];
+  var _useState3 = useState(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    showModal = _useState6[0],
+    setShowModal = _useState6[1];
+  var _useState7 = useState({
+      uid: "",
+      type: "access",
+      regulation: "GDPR",
+      notes: ""
+    }),
+    _useState8 = _slicedToArray(_useState7, 2),
+    form = _useState8[0],
+    setForm = _useState8[1];
+  var _useState9 = useState(false),
+    _useState0 = _slicedToArray(_useState9, 2),
+    submitting = _useState0[0],
+    setSubmitting = _useState0[1];
+  var load = useCallback(function () {
+    setLoading(true);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.list.url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.list.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.list.headers
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      return setRequests(Array.isArray(data) ? data : []);
+    })["catch"](function () {
+      return setRequests([]);
+    })["finally"](function () {
+      return setLoading(false);
+    });
+  }, []);
+  useEffect(function () {
+    load();
+  }, [load]);
+  function submitRequest() {
+    if (!form.uid.trim()) return;
+    setSubmitting(true);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.create.url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.create.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].dsr.create.headers,
+      body: JSON.stringify(_objectSpread(_objectSpread({}, form), {}, {
+        submitted: new Date().toISOString(),
+        submittedBy: _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_4__["default"].getUserId()
+      }))
+    }).then(function (r) {
+      return r.json();
+    }).then(function () {
+      setShowModal(false);
+      setForm({
+        uid: "",
+        type: "access",
+        regulation: "GDPR",
+        notes: ""
+      });
+      load();
+    })["catch"](function () {})["finally"](function () {
+      return setSubmitting(false);
+    });
+  }
+  var enriched = requests.map(function (r) {
+    return _objectSpread(_objectSpread({}, r), {}, {
+      derivedStatus: deriveStatus(r)
+    });
+  });
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    links: _Reports_Reports_js__WEBPACK_IMPORTED_MODULE_3__.reportsLinks,
+    title: "Reports"
+  }), /*#__PURE__*/React.createElement("main", {
+    className: "dashboard-content settings-subpage settings-subpage--wide"
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    title: "Data Subject Requests"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__intro"
+  }, "Track and manage data subject requests (access, erasure, portability, etc.) with automatic deadlines per regulation. Click a request to view the subject's consent history and update its status."), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__toolbar"
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: "0.875rem",
+      color: "rgba(180,180,180,0.8)"
+    }
+  }, enriched.length, " request", enriched.length !== 1 ? "s" : "", enriched.filter(function (r) {
+    return r.derivedStatus === "overdue";
+  }).length > 0 && /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginLeft: "10px",
+      color: "#f0a8a0",
+      fontWeight: 600
+    }
+  }, enriched.filter(function (r) {
+    return r.derivedStatus === "overdue";
+  }).length, " overdue")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-subpage__submit",
+    onClick: function onClick() {
+      return setShowModal(true);
+    }
+  }, "+ New request")), loading ? /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__empty"
+  }, "Loading\u2026") : enriched.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__empty"
+  }, "No data subject requests yet. Create one above.") : /*#__PURE__*/React.createElement("div", {
+    className: "settings-table-wrap"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "settings-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Subject UID"), /*#__PURE__*/React.createElement("th", null, "Type"), /*#__PURE__*/React.createElement("th", null, "Regulation"), /*#__PURE__*/React.createElement("th", null, "Submitted"), /*#__PURE__*/React.createElement("th", null, "Deadline"), /*#__PURE__*/React.createElement("th", null, "Status"))), /*#__PURE__*/React.createElement("tbody", null, enriched.map(function (r) {
+    var _REQUEST_TYPES$find, _DSR_DEADLINES_DAYS$r2;
+    var dl = deadlineDate(r.submitted, r.regulation);
+    var typeLabel = ((_REQUEST_TYPES$find = REQUEST_TYPES.find(function (t) {
+      return t.id === r.type;
+    })) === null || _REQUEST_TYPES$find === void 0 ? void 0 : _REQUEST_TYPES$find.label) || r.type;
+    return /*#__PURE__*/React.createElement("tr", {
+      key: r.id,
+      style: {
+        cursor: "pointer"
+      },
+      onClick: function onClick() {
+        return history.push("/".concat(id, "/reports/dsr/").concat(r.id));
+      }
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        fontFamily: "ui-monospace, monospace",
+        fontSize: "0.8125rem",
+        color: "#c0a053"
+      }
+    }, r.uid), /*#__PURE__*/React.createElement("td", null, typeLabel), /*#__PURE__*/React.createElement("td", null, _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.FRAMEWORK_LABELS[r.regulation] || r.regulation), /*#__PURE__*/React.createElement("td", {
+      style: {
+        color: "rgba(180,180,180,0.85)",
+        fontSize: "0.8125rem"
+      }
+    }, new Date(r.submitted).toLocaleDateString()), /*#__PURE__*/React.createElement("td", {
+      style: {
+        fontSize: "0.8125rem",
+        color: r.derivedStatus === "overdue" ? "#f0a8a0" : "rgba(180,180,180,0.85)"
+      }
+    }, dl.toLocaleDateString(), /*#__PURE__*/React.createElement("span", {
+      style: {
+        marginLeft: "6px",
+        fontSize: "0.6875rem",
+        color: "rgba(140,140,140,0.7)"
+      }
+    }, "(", (_DSR_DEADLINES_DAYS$r2 = _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.DSR_DEADLINES_DAYS[r.regulation]) !== null && _DSR_DEADLINES_DAYS$r2 !== void 0 ? _DSR_DEADLINES_DAYS$r2 : 30, " days)")), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement(StatusBadge, {
+      status: r.derivedStatus
+    })));
+  })))), showModal && /*#__PURE__*/React.createElement("div", {
+    className: "dsr-modal",
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-labelledby": "dsr-modal-title"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "dsr-modal__card"
+  }, /*#__PURE__*/React.createElement("h2", {
+    id: "dsr-modal-title"
+  }, "New data subject request"), /*#__PURE__*/React.createElement("div", {
+    className: "settings-org-modal__field-block"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, "Subject UID *"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "settings-blacklist-modal__card input",
+    placeholder: "e.g. user-abc123 or UUID",
+    value: form.uid,
+    onChange: function onChange(e) {
+      return setForm(function (f) {
+        return _objectSpread(_objectSpread({}, f), {}, {
+          uid: e.target.value
+        });
+      });
+    },
+    style: {
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "10px 12px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.35)",
+      color: "#f0f0f0",
+      fontSize: "0.875rem",
+      fontFamily: "inherit",
+      marginBottom: "0"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "settings-org-modal__field-block"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, "Request type"), /*#__PURE__*/React.createElement("select", {
+    className: "settings-org-modal__select settings-blacklist-modal__card",
+    value: form.type,
+    onChange: function onChange(e) {
+      return setForm(function (f) {
+        return _objectSpread(_objectSpread({}, f), {}, {
+          type: e.target.value
+        });
+      });
+    },
+    style: {
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "10px 12px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.35)",
+      color: "#f0f0f0",
+      fontSize: "0.875rem",
+      fontFamily: "inherit"
+    }
+  }, REQUEST_TYPES.map(function (t) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: t.id,
+      value: t.id
+    }, t.label);
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "settings-org-modal__field-block"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, "Regulation"), /*#__PURE__*/React.createElement("select", {
+    className: "settings-org-modal__select settings-blacklist-modal__card",
+    value: form.regulation,
+    onChange: function onChange(e) {
+      return setForm(function (f) {
+        return _objectSpread(_objectSpread({}, f), {}, {
+          regulation: e.target.value
+        });
+      });
+    },
+    style: {
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "10px 12px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.35)",
+      color: "#f0f0f0",
+      fontSize: "0.875rem",
+      fontFamily: "inherit"
+    }
+  }, REGULATIONS.map(function (r) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: r,
+      value: r
+    }, _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.FRAMEWORK_LABELS[r] || r);
+  })), /*#__PURE__*/React.createElement("p", {
+    style: {
+      margin: "6px 0 0",
+      fontSize: "0.75rem",
+      color: "rgba(150,150,150,0.8)"
+    }
+  }, "Deadline: ", (_DSR_DEADLINES_DAYS$f = _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.DSR_DEADLINES_DAYS[form.regulation]) !== null && _DSR_DEADLINES_DAYS$f !== void 0 ? _DSR_DEADLINES_DAYS$f : 30, " days from today (", new Date(Date.now() + ((_DSR_DEADLINES_DAYS$f2 = _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.DSR_DEADLINES_DAYS[form.regulation]) !== null && _DSR_DEADLINES_DAYS$f2 !== void 0 ? _DSR_DEADLINES_DAYS$f2 : 30) * 86400000).toLocaleDateString(), ")")), /*#__PURE__*/React.createElement("div", {
+    className: "settings-org-modal__field-block"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, "Notes (optional)"), /*#__PURE__*/React.createElement("textarea", {
+    rows: 3,
+    placeholder: "Internal notes about this request\u2026",
+    value: form.notes,
+    onChange: function onChange(e) {
+      return setForm(function (f) {
+        return _objectSpread(_objectSpread({}, f), {}, {
+          notes: e.target.value
+        });
+      });
+    },
+    style: {
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "10px 12px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.35)",
+      color: "#f0f0f0",
+      fontSize: "0.875rem",
+      fontFamily: "inherit",
+      resize: "vertical"
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "settings-blacklist-modal__actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn",
+    onClick: function onClick() {
+      return setShowModal(false);
+    }
+  }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--primary",
+    onClick: submitRequest,
+    disabled: submitting || !form.uid.trim()
+  }, submitting ? "Creating…" : "Create request"))))));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Dashboard/Dashboard.js":
 /*!******************************************!*\
   !*** ./src/Pages/Dashboard/Dashboard.js ***!
@@ -48842,6 +51195,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Error_ErrorBoundary_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Components/Error/ErrorBoundary.js */ "./src/Components/Error/ErrorBoundary.js");
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
 /* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
@@ -48854,6 +51208,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -48897,8 +51252,8 @@ function Dashboard(props) {
   var _useContext5 = useContext(_App_js__WEBPACK_IMPORTED_MODULE_5__.WorkspaceContext),
     _useContext6 = _slicedToArray(_useContext5, 1),
     activeWorkspace = _useContext6[0];
-  var subscriptionStatus = JSON.parse(localStorage.getItem("subscription"));
-  var userProfile = JSON.parse(localStorage.getItem("globals")).user.avatar;
+  var subscriptionStatus = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__["default"].getItem("subscription"));
+  var userProfile = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__["default"].getItem("globals")).user.avatar;
   var _useState = useState(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_19__["default"].DemoMode),
     _useState2 = _slicedToArray(_useState, 2),
     demoMode = _useState2[0],
@@ -49038,7 +51393,7 @@ function Dashboard(props) {
     // Get organisation ID
     var orgId = null;
     try {
-      var orgRaw = localStorage.getItem("organisation");
+      var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__["default"].getItem("organisation");
       if (orgRaw) {
         var org = JSON.parse(orgRaw);
         orgId = org === null || org === void 0 ? void 0 : org.id;
@@ -49113,7 +51468,7 @@ function Dashboard(props) {
       return res.json();
     }).then(function (data) {
       if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -49139,7 +51494,7 @@ function Dashboard(props) {
       return res.json();
     }).then(function (country) {
       if (country === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -49436,6 +51791,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_SelectInput_Selector_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../Components/SelectInput/Selector.js */ "./src/Components/SelectInput/Selector.js");
 /* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 /* harmony import */ var _Components_tiers_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../Components/tiers/index.js */ "./src/Components/tiers/index.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
@@ -49446,6 +51802,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -49548,7 +51905,7 @@ function DomainDashbord(props) {
       return res.json();
     }).then(function (country) {
       if (country === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_16__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -49568,7 +51925,7 @@ function DomainDashbord(props) {
       return res.json();
     }).then(function (cookiesData) {
       if (cookiesData === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_16__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -49583,7 +51940,7 @@ function DomainDashbord(props) {
       return res.json();
     }).then(function (data) {
       if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_16__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -50057,12 +52414,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_widget_Loading__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/widget/Loading */ "./src/Components/widget/Loading.js");
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -50096,7 +52455,7 @@ function Websites() {
       headers: _API_api__WEBPACK_IMPORTED_MODULE_1__["default"][id].audit.headers
     }).then(function (data) {
       if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -52632,6 +54991,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AuditReports_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./AuditReports.css */ "./src/Pages/Reports/AuditReport/AuditReports.css");
 /* harmony import */ var _Functions_auditReportsStorage__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../Functions/auditReportsStorage */ "./src/Functions/auditReportsStorage.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
@@ -52653,6 +55013,7 @@ var _React = React,
   useEffect = _React.useEffect,
   useMemo = _React.useMemo,
   useContext = _React.useContext;
+
 
 
 
@@ -52830,7 +55191,7 @@ function AuditReport() {
               _context.n = 3;
               break;
             }
-            localStorage.removeItem("globals");
+            _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__["default"].removeItem("globals");
             window.location.href = "/login";
             return _context.a(2, {
               ok: false
@@ -52859,7 +55220,7 @@ function AuditReport() {
               _context.n = 8;
               break;
             }
-            localStorage.removeItem("globals");
+            _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__["default"].removeItem("globals");
             window.location.href = "/login";
             return _context.a(2, {
               ok: false
@@ -53149,6 +55510,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Functions_fetch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Functions/fetch */ "./src/Functions/fetch.js");
 /* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/Reports/Style.css");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -53176,6 +55538,7 @@ var _React = React,
 
 
 var useParams = window.ReactRouterDOM.useParams;
+
 
 
 
@@ -53334,7 +55697,7 @@ function Compare(_ref) {
               _context.n = 3;
               break;
             }
-            localStorage.removeItem("globals");
+            _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__["default"].removeItem("globals");
             window.location.href = "/login";
             return _context.a(2);
           case 3:
@@ -53358,7 +55721,7 @@ function Compare(_ref) {
               _context.n = 7;
               break;
             }
-            localStorage.removeItem("globals");
+            _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__["default"].removeItem("globals");
             window.location.href = "/login";
             return _context.a(2);
           case 7:
@@ -53390,7 +55753,7 @@ function Compare(_ref) {
       domains: comparisonDomains
     })).then(function (data) {
       if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -55293,6 +57656,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./MarketingReconciliationPanel.js */ "./src/Pages/Reports/MarketingReport/MarketingReconciliationPanel.js");
 /* harmony import */ var _MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./MarketingSuggestionsStrip.js */ "./src/Pages/Reports/MarketingReport/MarketingSuggestionsStrip.js");
 /* harmony import */ var _marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./marketingSuggestions.js */ "./src/Pages/Reports/MarketingReport/marketingSuggestions.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -55320,6 +57684,7 @@ var _React = React,
   useMemo = _React.useMemo,
   useContext = _React.useContext,
   useCallback = _React.useCallback;
+
 
 
 
@@ -57021,7 +59386,7 @@ function MarketingReport() {
             _context.n = 9;
             break;
           }
-          localStorage.removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_13__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context.a(2);
         case 9:
@@ -57045,7 +59410,7 @@ function MarketingReport() {
             _context.n = 11;
             break;
           }
-          localStorage.removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_13__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context.a(2);
         case 11:
@@ -57174,7 +59539,7 @@ function MarketingReport() {
                 _context2.n = 10;
                 break;
               }
-              localStorage.removeItem("globals");
+              _Functions_storage_js__WEBPACK_IMPORTED_MODULE_13__["default"].removeItem("globals");
               window.location.href = "/login";
               return _context2.a(2);
             case 10:
@@ -58215,7 +60580,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var _Reports_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Reports.css */ "./src/Pages/Reports/Reports.css");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Reports_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Reports.css */ "./src/Pages/Reports/Reports.css");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -58234,6 +60600,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
+
 var useParams = window.ReactRouterDOM.useParams;
 var Link = window.ReactRouterDOM.Link;
 var _React = React,
@@ -58241,32 +60608,49 @@ var _React = React,
   useMemo = _React.useMemo;
 var reportsLinks = [{
   name: "Audit log",
-  path: "/reports/user-consents"
+  path: "/reports/user-consents",
+  requiresTier: 'personal'
 }, {
   name: "Audit reports",
-  path: "/reports/audit-report"
+  path: "/reports/audit-report",
+  requiresTier: 'personal'
+}, {
+  name: "DSR Portal",
+  path: "/reports/dsr",
+  requiresTier: 'personal'
 }, {
   name: "Channel Analytics",
-  path: "/reports/marketing"
+  path: "/reports/marketing",
+  requiresTier: 'growth'
 }, {
   name: "Compliance overview",
-  path: "/reports/compliance"
+  path: "/reports/compliance",
+  requiresTier: 'starter'
 }];
 var HUB_CARDS = [{
   key: "audit-log",
   title: "Audit log",
   description: "Per-user consent history and timestamps for troubleshooting, support, and compliance review.",
-  leaf: "/user-consents"
+  leaf: "/user-consents",
+  minTier: 'personal'
 }, {
   key: "audit-reports",
   title: "Audit reports",
   description: "Aggregated audit views and exports to summarise consent activity for your selected scope.",
-  leaf: "/audit-report"
+  leaf: "/audit-report",
+  minTier: 'personal'
+}, {
+  key: "dsr",
+  title: "Data Subject Requests",
+  description: "Track access, erasure, and portability requests with automatic deadlines per regulation (GDPR, LGPD, CCPA, PDPA, POPIA).",
+  leaf: "/dsr",
+  minTier: 'personal'
 }, {
   key: "marketing",
   title: "Channel Analytics",
   description: "Consent volume and acceptance by channel and campaign (UTMs and landing URL marketing parameters).",
-  leaf: "/marketing"
+  leaf: "/marketing",
+  minTier: 'growth'
 }];
 function Reports() {
   document.title = "Reports | Intastellar Consents | CMP";
@@ -58317,6 +60701,21 @@ function Reports() {
   }, scopeLabel)), /*#__PURE__*/React.createElement("div", {
     className: "reports-hub__grid"
   }, cardHrefs.map(function (card) {
+    var locked = card.minTier && !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_5__.canAccess)(card.minTier);
+    if (locked) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: card.key,
+        className: "reports-hub__card reports-hub__card--locked",
+        "aria-disabled": "true"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "reports-hub__card-title"
+      }, card.title, /*#__PURE__*/React.createElement("span", {
+        className: "reports-hub__card-lock",
+        "aria-label": "Requires ".concat(_Functions_tier_js__WEBPACK_IMPORTED_MODULE_5__.TIER_LABELS[card.minTier])
+      }, _Functions_tier_js__WEBPACK_IMPORTED_MODULE_5__.TIER_LABELS[card.minTier])), /*#__PURE__*/React.createElement("p", {
+        className: "reports-hub__card-desc"
+      }, card.description));
+    }
     return /*#__PURE__*/React.createElement(Link, {
       key: card.key,
       className: "reports-hub__card",
@@ -59254,6 +61653,1579 @@ function CreateUser() {
 
 /***/ }),
 
+/***/ "./src/Pages/Settings/Jurisdiction/index.js":
+/*!**************************************************!*\
+  !*** ./src/Pages/Settings/Jurisdiction/index.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ JurisdictionConfig)
+/* harmony export */ });
+/* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../API/api.js */ "./src/API/api.js");
+/* harmony import */ var _Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Components/Header/SideNav.js */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks/index.js */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Functions/jurisdictionEngine.js */ "./src/Functions/jurisdictionEngine.js");
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect;
+
+
+
+
+
+
+var BANNER_TYPE_OPTIONS = [{
+  value: "auto",
+  label: "Auto (recommended)"
+}, {
+  value: "opt-in",
+  label: "Opt-in banner"
+}, {
+  value: "opt-out",
+  label: "Opt-out banner"
+}, {
+  value: "notice-only",
+  label: "Notice only"
+}];
+var DEFAULT_FRAMEWORK_CONFIG = Object.fromEntries(_Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.FRAMEWORK_IDS.map(function (fw) {
+  return [fw, {
+    enabled: fw === "GDPR",
+    bannerType: "auto"
+  }];
+}));
+function Toggle(_ref) {
+  var on = _ref.on,
+    onToggle = _ref.onToggle,
+    label = _ref.label;
+  return /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    role: "switch",
+    "aria-checked": on,
+    onClick: onToggle,
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      background: "none",
+      border: "none",
+      padding: 0,
+      cursor: "pointer"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      flexShrink: 0,
+      width: "40px",
+      height: "22px",
+      borderRadius: "11px",
+      background: on ? "rgba(192,159,83,0.75)" : "rgba(100,100,100,0.4)",
+      position: "relative",
+      transition: "background 0.2s"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      position: "absolute",
+      top: "3px",
+      left: on ? "21px" : "3px",
+      width: "16px",
+      height: "16px",
+      borderRadius: "50%",
+      background: "#fff",
+      transition: "left 0.2s"
+    }
+  })), label && /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: "0.9375rem",
+      fontWeight: 600,
+      color: on ? "#f2f2f2" : "#888"
+    }
+  }, label));
+}
+function JurisdictionConfig() {
+  document.title = "Jurisdiction Configuration | Settings | Intastellar Consents";
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    managed = _useState2[0],
+    setManaged = _useState2[1];
+  var _useState3 = useState(DEFAULT_FRAMEWORK_CONFIG),
+    _useState4 = _slicedToArray(_useState3, 2),
+    config = _useState4[0],
+    setConfig = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    saving = _useState6[0],
+    setSaving = _useState6[1];
+  var _useState7 = useState(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    status = _useState8[0],
+    setStatus = _useState8[1];
+  useEffect(function () {
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].jurisdictionConfig.get.url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].jurisdictionConfig.get.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].jurisdictionConfig.get.headers
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      if (data && !data.error) {
+        setManaged(Boolean(data.managed));
+        if (data.config && _typeof(data.config) === "object") {
+          setConfig(_objectSpread(_objectSpread({}, DEFAULT_FRAMEWORK_CONFIG), data.config));
+        }
+      }
+    })["catch"](function () {});
+  }, []);
+  function toggleFramework(fw) {
+    setConfig(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, fw, _objectSpread(_objectSpread({}, prev[fw]), {}, {
+        enabled: !prev[fw].enabled
+      })));
+    });
+  }
+  function setBannerType(fw, value) {
+    setConfig(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, fw, _objectSpread(_objectSpread({}, prev[fw]), {}, {
+        bannerType: value
+      })));
+    });
+  }
+  function save() {
+    setSaving(true);
+    setStatus(null);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].jurisdictionConfig.save.url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].jurisdictionConfig.save.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].jurisdictionConfig.save.headers,
+      body: JSON.stringify({
+        managed: managed,
+        config: config
+      })
+    }).then(function (r) {
+      return r.json();
+    }).then(function () {
+      return setStatus("saved");
+    })["catch"](function () {
+      return setStatus("error");
+    })["finally"](function () {
+      return setSaving(false);
+    });
+  }
+  var resolvedBannerType = function resolvedBannerType(fw) {
+    var _config$fw;
+    var override = (_config$fw = config[fw]) === null || _config$fw === void 0 ? void 0 : _config$fw.bannerType;
+    return override && override !== "auto" ? override : _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.BANNER_TYPE_BY_FRAMEWORK[fw] || "notice-only";
+  };
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    links: _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
+    title: "Settings"
+  }), /*#__PURE__*/React.createElement("main", {
+    className: "dashboard-content settings-subpage settings-subpage--wide"
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Jurisdiction Configuration"
+  }), status === "saved" && /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status"
+  }, "Configuration saved."), status === "error" && /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status settings-subpage__status--error"
+  }, "Failed to save \u2014 please try again."), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__panel",
+    style: {
+      marginBottom: "20px"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "16px",
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1 1 280px"
+    }
+  }, /*#__PURE__*/React.createElement(Toggle, {
+    on: managed,
+    onToggle: function onToggle() {
+      return setManaged(function (v) {
+        return !v;
+      });
+    },
+    label: "Managed mode"
+  }), /*#__PURE__*/React.createElement("p", {
+    style: {
+      margin: "8px 0 0",
+      fontSize: "0.8125rem",
+      color: "rgba(180,180,180,0.85)",
+      lineHeight: 1.5
+    }
+  }, managed ? "Only the regulations you enable below will trigger a banner. Use this when you want full control over which regions see a consent prompt." : "The banner automatically applies any matching regulation based on the visitor's location. Ideal for simple sites that just want a compliant banner without manual configuration.")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "0 0 auto",
+      alignSelf: "center"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: "inline-block",
+      padding: "4px 12px",
+      borderRadius: "8px",
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.07em",
+      background: managed ? "rgba(192,159,83,0.15)" : "rgba(80,130,210,0.15)",
+      border: "1px solid ".concat(managed ? "rgba(192,159,83,0.35)" : "rgba(80,130,210,0.35)"),
+      color: managed ? "#d4b87a" : "#88b0e8"
+    }
+  }, managed ? "Managed" : "Auto")))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "14px",
+      marginBottom: "28px",
+      opacity: managed ? 1 : 0.4,
+      pointerEvents: managed ? "auto" : "none",
+      transition: "opacity 0.2s"
+    }
+  }, _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.FRAMEWORK_IDS.map(function (fw) {
+    var _config$fw$enabled, _config$fw2, _config$fw3;
+    var enabled = (_config$fw$enabled = (_config$fw2 = config[fw]) === null || _config$fw2 === void 0 ? void 0 : _config$fw2.enabled) !== null && _config$fw$enabled !== void 0 ? _config$fw$enabled : false;
+    return /*#__PURE__*/React.createElement("div", {
+      key: fw,
+      className: "settings-subpage__panel",
+      style: {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "16px 24px",
+        alignItems: "flex-start"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: "1 1 280px"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        marginBottom: "6px"
+      }
+    }, /*#__PURE__*/React.createElement(Toggle, {
+      on: enabled,
+      onToggle: function onToggle() {
+        return toggleFramework(fw);
+      },
+      label: _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.FRAMEWORK_LABELS[fw]
+    })), /*#__PURE__*/React.createElement("p", {
+      style: {
+        margin: 0,
+        fontSize: "0.8125rem",
+        color: "rgba(180,180,180,0.85)",
+        lineHeight: 1.5
+      }
+    }, _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.FRAMEWORK_DESCRIPTIONS[fw], /*#__PURE__*/React.createElement("span", {
+      style: {
+        marginLeft: "8px",
+        fontSize: "0.75rem",
+        color: "rgba(192,159,83,0.75)"
+      }
+    }, _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.FRAMEWORK_COUNTRY_COUNTS[fw], " ", _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_5__.FRAMEWORK_COUNTRY_COUNTS[fw] === 1 ? "country" : "countries"))), enabled ? /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: "0 0 220px"
+      }
+    }, /*#__PURE__*/React.createElement("label", {
+      style: {
+        display: "block",
+        fontSize: "0.75rem",
+        fontWeight: 600,
+        color: "#b8b8b8",
+        marginBottom: "6px",
+        textTransform: "uppercase",
+        letterSpacing: "0.07em"
+      }
+    }, "Banner type"), /*#__PURE__*/React.createElement("select", {
+      className: "settings-subpage__select",
+      value: ((_config$fw3 = config[fw]) === null || _config$fw3 === void 0 ? void 0 : _config$fw3.bannerType) || "auto",
+      onChange: function onChange(e) {
+        return setBannerType(fw, e.target.value);
+      },
+      style: {
+        width: "100%"
+      }
+    }, BANNER_TYPE_OPTIONS.map(function (o) {
+      return /*#__PURE__*/React.createElement("option", {
+        key: o.value,
+        value: o.value
+      }, o.value === "auto" ? "".concat(o.label, " \u2014 ").concat(resolvedBannerType(fw)) : o.label);
+    }))) : /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: "0 0 220px",
+        display: "flex",
+        alignItems: "center"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: "0.75rem",
+        color: "rgba(140,140,140,0.7)",
+        fontStyle: "italic"
+      }
+    }, "Disabled \u2014 no banner shown")));
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-subpage__submit",
+    onClick: save,
+    disabled: saving
+  }, saving ? "Saving…" : "Save changes")));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/Settings/LegalBasis/index.js":
+/*!************************************************!*\
+  !*** ./src/Pages/Settings/LegalBasis/index.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ LegalBasis)
+/* harmony export */ });
+/* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../API/api.js */ "./src/API/api.js");
+/* harmony import */ var _Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Components/Header/SideNav.js */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks/index.js */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Functions/legalBasisDefinitions.js */ "./src/Functions/legalBasisDefinitions.js");
+/* harmony import */ var _Components_AuditSnapshotCard_complianceRegions_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Components/AuditSnapshotCard/complianceRegions.js */ "./src/Components/AuditSnapshotCard/complianceRegions.js");
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect;
+
+
+
+
+
+
+
+function buildDefault() {
+  var out = {};
+  var _iterator = _createForOfIteratorHelper(_Components_AuditSnapshotCard_complianceRegions_js__WEBPACK_IMPORTED_MODULE_6__.FRAMEWORK_IDS),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var fw = _step.value;
+      out[fw] = {};
+      var _iterator2 = _createForOfIteratorHelper(_Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.PROCESSING_PURPOSES),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var _DEFAULT_LEGAL_BASIS$, _LEGAL_BASES$fw$0$id, _LEGAL_BASES$fw;
+          var p = _step2.value;
+          out[fw][p.id] = ((_DEFAULT_LEGAL_BASIS$ = _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.DEFAULT_LEGAL_BASIS[fw]) === null || _DEFAULT_LEGAL_BASIS$ === void 0 ? void 0 : _DEFAULT_LEGAL_BASIS$[p.id]) || ((_LEGAL_BASES$fw$0$id = (_LEGAL_BASES$fw = _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.LEGAL_BASES[fw]) === null || _LEGAL_BASES$fw === void 0 || (_LEGAL_BASES$fw = _LEGAL_BASES$fw[0]) === null || _LEGAL_BASES$fw === void 0 ? void 0 : _LEGAL_BASES$fw.id) !== null && _LEGAL_BASES$fw$0$id !== void 0 ? _LEGAL_BASES$fw$0$id : "consent");
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return out;
+}
+function LegalBasis() {
+  document.title = "Legal Basis Tracking | Settings | Intastellar Consents";
+  var _useState = useState(buildDefault),
+    _useState2 = _slicedToArray(_useState, 2),
+    config = _useState2[0],
+    setConfig = _useState2[1];
+  var _useState3 = useState(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    saving = _useState4[0],
+    setSaving = _useState4[1];
+  var _useState5 = useState(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    status = _useState6[0],
+    setStatus = _useState6[1];
+  useEffect(function () {
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].legalBasis.get.url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].legalBasis.get.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].legalBasis.get.headers
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      if (data && _typeof(data) === "object" && !data.error) {
+        setConfig(function (prev) {
+          return _objectSpread(_objectSpread({}, prev), data);
+        });
+      }
+    })["catch"](function () {});
+  }, []);
+  function setBase(fw, purposeId, value) {
+    setConfig(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, fw, _objectSpread(_objectSpread({}, prev[fw]), {}, _defineProperty({}, purposeId, value))));
+    });
+  }
+  function save() {
+    setSaving(true);
+    setStatus(null);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].legalBasis.save.url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].legalBasis.save.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].legalBasis.save.headers,
+      body: JSON.stringify(config)
+    }).then(function (r) {
+      return r.json();
+    }).then(function () {
+      return setStatus("saved");
+    })["catch"](function () {
+      return setStatus("error");
+    })["finally"](function () {
+      return setSaving(false);
+    });
+  }
+  var activeFrameworks = _Components_AuditSnapshotCard_complianceRegions_js__WEBPACK_IMPORTED_MODULE_6__.FRAMEWORK_IDS.filter(function (fw) {
+    return _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.LEGAL_BASES[fw];
+  });
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    links: _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
+    title: "Settings"
+  }), /*#__PURE__*/React.createElement("main", {
+    className: "dashboard-content settings-subpage settings-subpage--wide"
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Legal Basis Tracking"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__intro"
+  }, "Assign a legal basis to each processing purpose under each active regulation. These assignments are shown alongside consent decisions in the audit log, making it easy to demonstrate compliance during an inspection or DSR response."), status === "saved" && /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status"
+  }, "Legal basis configuration saved."), status === "error" && /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status settings-subpage__status--error"
+  }, "Failed to save \u2014 please try again."), /*#__PURE__*/React.createElement("div", {
+    style: {
+      overflowX: "auto",
+      marginBottom: "24px"
+    }
+  }, /*#__PURE__*/React.createElement("table", {
+    style: {
+      borderCollapse: "collapse",
+      width: "100%",
+      minWidth: "".concat(220 + activeFrameworks.length * 180, "px")
+    }
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    style: {
+      textAlign: "left",
+      padding: "12px 16px",
+      fontSize: "0.65rem",
+      fontWeight: 700,
+      letterSpacing: "0.1em",
+      textTransform: "uppercase",
+      color: "rgba(192,159,83,0.95)",
+      borderBottom: "1px solid rgba(255,255,255,0.1)",
+      background: "rgba(0,0,0,0.25)",
+      width: "200px"
+    }
+  }, "Processing purpose"), activeFrameworks.map(function (fw) {
+    return /*#__PURE__*/React.createElement("th", {
+      key: fw,
+      style: {
+        textAlign: "left",
+        padding: "12px 16px",
+        fontSize: "0.65rem",
+        fontWeight: 700,
+        letterSpacing: "0.1em",
+        textTransform: "uppercase",
+        color: "rgba(192,159,83,0.95)",
+        borderBottom: "1px solid rgba(255,255,255,0.1)",
+        background: "rgba(0,0,0,0.25)"
+      }
+    }, fw);
+  }))), /*#__PURE__*/React.createElement("tbody", null, _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.PROCESSING_PURPOSES.map(function (p, i) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: p.id,
+      style: {
+        background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.015)"
+      }
+    }, /*#__PURE__*/React.createElement("td", {
+      style: {
+        padding: "12px 16px",
+        fontSize: "0.875rem",
+        color: "#e0e0e0",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        fontWeight: 500
+      }
+    }, p.label), activeFrameworks.map(function (fw) {
+      var _config$fw;
+      var bases = _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.LEGAL_BASES[fw] || [];
+      return /*#__PURE__*/React.createElement("td", {
+        key: fw,
+        style: {
+          padding: "8px 16px",
+          borderBottom: "1px solid rgba(255,255,255,0.06)"
+        }
+      }, /*#__PURE__*/React.createElement("select", {
+        className: "settings-subpage__select",
+        style: {
+          width: "100%",
+          minWidth: "160px"
+        },
+        value: ((_config$fw = config[fw]) === null || _config$fw === void 0 ? void 0 : _config$fw[p.id]) || "",
+        onChange: function onChange(e) {
+          return setBase(fw, p.id, e.target.value);
+        }
+      }, bases.map(function (b) {
+        return /*#__PURE__*/React.createElement("option", {
+          key: b.id,
+          value: b.id
+        }, b.label);
+      })));
+    }));
+  })))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-subpage__submit",
+    onClick: save,
+    disabled: saving
+  }, saving ? "Saving…" : "Save changes")));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/Settings/ROPA/ROPAEntry.js":
+/*!**********************************************!*\
+  !*** ./src/Pages/Settings/ROPA/ROPAEntry.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ROPAEntry)
+/* harmony export */ });
+/* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../API/api.js */ "./src/API/api.js");
+/* harmony import */ var _Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Components/Header/SideNav.js */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks/index.js */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Functions/legalBasisDefinitions.js */ "./src/Functions/legalBasisDefinitions.js");
+/* harmony import */ var _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Functions/jurisdictionEngine.js */ "./src/Functions/jurisdictionEngine.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect;
+var useParams = window.ReactRouterDOM.useParams;
+var useHistory = window.ReactRouterDOM.useHistory;
+var Link = window.ReactRouterDOM.Link;
+
+
+
+
+
+
+
+var DATA_SUBJECT_CATEGORIES = ["Customers", "Employees", "Prospects", "Users", "Minors", "Website visitors", "Other"];
+var DATA_CATEGORIES = ["Contact details", "Identifiers (IP, device ID)", "Behavioural data", "Financial data", "Health data", "Location data", "Preferences", "Other"];
+var TRANSFER_MECHANISMS = ["Adequacy decision", "Standard Contractual Clauses (SCCs)", "Binding Corporate Rules (BCRs)", "Derogation (Art. 49)", "Not applicable"];
+var EMPTY_ENTRY = {
+  activityName: "",
+  controllerName: "",
+  controllerContact: "",
+  dpoContact: "",
+  purpose: "",
+  framework: "GDPR",
+  legalBasis: "legitimate_interest",
+  dataSubjectCategories: [],
+  dataCategories: [],
+  recipients: [],
+  thirdCountryTransfers: [],
+  retentionPeriod: "",
+  securityMeasures: ""
+};
+function Field(_ref) {
+  var label = _ref.label,
+    children = _ref.children,
+    required = _ref.required;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "settings-org-modal__field-block"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "settings-org-modal__label"
+  }, label, required && " *"), children);
+}
+function TextInput(_ref2) {
+  var value = _ref2.value,
+    _onChange = _ref2.onChange,
+    placeholder = _ref2.placeholder;
+  return /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: value,
+    onChange: function onChange(e) {
+      return _onChange(e.target.value);
+    },
+    placeholder: placeholder,
+    style: {
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "10px 12px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.35)",
+      color: "#f0f0f0",
+      fontSize: "0.875rem",
+      fontFamily: "inherit"
+    }
+  });
+}
+function Textarea(_ref3) {
+  var value = _ref3.value,
+    _onChange2 = _ref3.onChange,
+    placeholder = _ref3.placeholder,
+    _ref3$rows = _ref3.rows,
+    rows = _ref3$rows === void 0 ? 3 : _ref3$rows;
+  return /*#__PURE__*/React.createElement("textarea", {
+    rows: rows,
+    value: value,
+    onChange: function onChange(e) {
+      return _onChange2(e.target.value);
+    },
+    placeholder: placeholder,
+    style: {
+      width: "100%",
+      boxSizing: "border-box",
+      padding: "10px 12px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.35)",
+      color: "#f0f0f0",
+      fontSize: "0.875rem",
+      fontFamily: "inherit",
+      resize: "vertical"
+    }
+  });
+}
+function MultiCheckbox(_ref4) {
+  var options = _ref4.options,
+    selected = _ref4.selected,
+    onChange = _ref4.onChange;
+  function toggle(val) {
+    onChange(selected.includes(val) ? selected.filter(function (v) {
+      return v !== val;
+    }) : [].concat(_toConsumableArray(selected), [val]));
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "8px"
+    }
+  }, options.map(function (o) {
+    return /*#__PURE__*/React.createElement("label", {
+      key: o,
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
+        cursor: "pointer",
+        padding: "5px 10px",
+        borderRadius: "8px",
+        border: "1px solid ".concat(selected.includes(o) ? "rgba(192,159,83,0.4)" : "rgba(255,255,255,0.1)"),
+        background: selected.includes(o) ? "rgba(192,159,83,0.12)" : "rgba(0,0,0,0.15)",
+        fontSize: "0.8125rem",
+        color: selected.includes(o) ? "#d4b87a" : "#b0b0b0",
+        userSelect: "none"
+      }
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "checkbox",
+      checked: selected.includes(o),
+      onChange: function onChange() {
+        return toggle(o);
+      },
+      style: {
+        display: "none"
+      }
+    }), o);
+  }));
+}
+function ROPAEntry() {
+  var _PROCESSING_PURPOSES$;
+  var _useParams = useParams(),
+    entryId = _useParams.entryId;
+  var history = useHistory();
+  var isNew = entryId === "new";
+  var _useState = useState(EMPTY_ENTRY),
+    _useState2 = _slicedToArray(_useState, 2),
+    entry = _useState2[0],
+    setEntry = _useState2[1];
+  var _useState3 = useState(!isNew),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    saving = _useState6[0],
+    setSaving = _useState6[1];
+  var _useState7 = useState(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    status = _useState8[0],
+    setStatus = _useState8[1];
+  var _useState9 = useState(""),
+    _useState0 = _slicedToArray(_useState9, 2),
+    newRecipient = _useState0[0],
+    setNewRecipient = _useState0[1];
+  var _useState1 = useState({
+      country: "",
+      mechanism: "Standard Contractual Clauses (SCCs)"
+    }),
+    _useState10 = _slicedToArray(_useState1, 2),
+    newTransfer = _useState10[0],
+    setNewTransfer = _useState10[1];
+  useEffect(function () {
+    if (isNew) return;
+    fetch("".concat(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.list.url, "?id=").concat(entryId), {
+      method: "GET",
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.list.headers
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      return data && setEntry(_objectSpread(_objectSpread({}, EMPTY_ENTRY), data));
+    })["catch"](function () {})["finally"](function () {
+      return setLoading(false);
+    });
+  }, [entryId, isNew]);
+  function set(key, value) {
+    setEntry(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, key, value));
+    });
+  }
+  function addRecipient() {
+    if (!newRecipient.trim()) return;
+    set("recipients", [].concat(_toConsumableArray(entry.recipients), [{
+      name: newRecipient.trim()
+    }]));
+    setNewRecipient("");
+  }
+  function removeRecipient(i) {
+    set("recipients", entry.recipients.filter(function (_, idx) {
+      return idx !== i;
+    }));
+  }
+  function addTransfer() {
+    if (!newTransfer.country.trim()) return;
+    set("thirdCountryTransfers", [].concat(_toConsumableArray(entry.thirdCountryTransfers), [_objectSpread({}, newTransfer)]));
+    setNewTransfer({
+      country: "",
+      mechanism: "Standard Contractual Clauses (SCCs)"
+    });
+  }
+  function removeTransfer(i) {
+    set("thirdCountryTransfers", entry.thirdCountryTransfers.filter(function (_, idx) {
+      return idx !== i;
+    }));
+  }
+  function save() {
+    if (!entry.activityName.trim()) {
+      setStatus("missing_name");
+      return;
+    }
+    setSaving(true);
+    setStatus(null);
+    var url = isNew ? _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.create.url : _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.update.url;
+    var method = isNew ? _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.create.method : _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.update.method;
+    var headers = isNew ? _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.create.headers : _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.update.headers;
+    fetch(url, {
+      method: method,
+      headers: headers,
+      body: JSON.stringify(_objectSpread(_objectSpread({}, entry), {}, {
+        id: isNew ? undefined : entryId,
+        updatedAt: new Date().toISOString()
+      }))
+    }).then(function (r) {
+      return r.json();
+    }).then(function () {
+      setStatus("saved");
+      if (isNew) setTimeout(function () {
+        return history.push("/settings/ropa");
+      }, 800);
+    })["catch"](function () {
+      return setStatus("error");
+    })["finally"](function () {
+      return setSaving(false);
+    });
+  }
+  var legalBasisOptions = _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.LEGAL_BASES[entry.framework] || _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.LEGAL_BASES.GDPR;
+  var purposeLabel = (_PROCESSING_PURPOSES$ = _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.PROCESSING_PURPOSES.find(function (p) {
+    return p.id === entry.purpose;
+  })) === null || _PROCESSING_PURPOSES$ === void 0 ? void 0 : _PROCESSING_PURPOSES$.label;
+  if (loading) {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      links: _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
+      title: "Settings"
+    }), /*#__PURE__*/React.createElement("main", {
+      className: "dashboard-content settings-subpage settings-subpage--wide"
+    }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      title: "Processing Activity"
+    }), /*#__PURE__*/React.createElement("p", {
+      className: "settings-subpage__empty"
+    }, "Loading\u2026")));
+  }
+  document.title = "".concat(isNew ? "New" : entry.activityName || "Edit", " Activity | RoPA | Intastellar Consents");
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    links: _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
+    title: "Settings"
+  }), /*#__PURE__*/React.createElement("main", {
+    className: "dashboard-content settings-subpage settings-subpage--wide"
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: isNew ? "New Processing Activity" : "Edit Processing Activity"
+  }), /*#__PURE__*/React.createElement(Link, {
+    to: "/settings/ropa",
+    className: "settings-subpage__back"
+  }, "\u2190 All activities"), status === "saved" && /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status"
+  }, "Activity saved."), status === "error" && /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status settings-subpage__status--error"
+  }, "Failed to save \u2014 please try again."), status === "missing_name" && /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__status settings-subpage__status--error"
+  }, "Activity name is required."), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__panel",
+    style: {
+      marginBottom: "16px"
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      margin: "0 0 18px",
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.09em",
+      color: "rgba(192,159,83,0.9)"
+    }
+  }, "Identity"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "14px"
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: "Activity name",
+    required: true
+  }, /*#__PURE__*/React.createElement(TextInput, {
+    value: entry.activityName,
+    onChange: function onChange(v) {
+      return set("activityName", v);
+    },
+    placeholder: "e.g. Google Analytics, Email marketing, Payment processing"
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: "Controller name"
+  }, /*#__PURE__*/React.createElement(TextInput, {
+    value: entry.controllerName,
+    onChange: function onChange(v) {
+      return set("controllerName", v);
+    },
+    placeholder: "Your company / organisation name"
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: "Controller contact"
+  }, /*#__PURE__*/React.createElement(TextInput, {
+    value: entry.controllerContact,
+    onChange: function onChange(v) {
+      return set("controllerContact", v);
+    },
+    placeholder: "privacy@yourcompany.com"
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: "DPO contact (optional)"
+  }, /*#__PURE__*/React.createElement(TextInput, {
+    value: entry.dpoContact,
+    onChange: function onChange(v) {
+      return set("dpoContact", v);
+    },
+    placeholder: "dpo@yourcompany.com"
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__panel",
+    style: {
+      marginBottom: "16px"
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      margin: "0 0 18px",
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.09em",
+      color: "rgba(192,159,83,0.9)"
+    }
+  }, "Purpose & Legal Basis"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "14px"
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: "Processing purpose"
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "settings-subpage__select",
+    style: {
+      width: "100%"
+    },
+    value: entry.purpose,
+    onChange: function onChange(e) {
+      return set("purpose", e.target.value);
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "\u2014 select \u2014"), _Functions_legalBasisDefinitions_js__WEBPACK_IMPORTED_MODULE_5__.PROCESSING_PURPOSES.map(function (p) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: p.id,
+      value: p.id
+    }, p.label);
+  }))), /*#__PURE__*/React.createElement(Field, {
+    label: "Applicable regulation"
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "settings-subpage__select",
+    style: {
+      width: "100%"
+    },
+    value: entry.framework,
+    onChange: function onChange(e) {
+      return set("framework", e.target.value);
+    }
+  }, _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_6__.FRAMEWORK_IDS.map(function (fw) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: fw,
+      value: fw
+    }, _Functions_jurisdictionEngine_js__WEBPACK_IMPORTED_MODULE_6__.FRAMEWORK_LABELS[fw] || fw);
+  }))), /*#__PURE__*/React.createElement(Field, {
+    label: "Legal basis"
+  }, /*#__PURE__*/React.createElement("select", {
+    className: "settings-subpage__select",
+    style: {
+      width: "100%"
+    },
+    value: entry.legalBasis,
+    onChange: function onChange(e) {
+      return set("legalBasis", e.target.value);
+    }
+  }, legalBasisOptions.map(function (b) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: b.id,
+      value: b.id
+    }, b.label);
+  }))))), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__panel",
+    style: {
+      marginBottom: "16px"
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      margin: "0 0 18px",
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.09em",
+      color: "rgba(192,159,83,0.9)"
+    }
+  }, "Data & Data Subjects"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "16px"
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: "Categories of data subjects"
+  }, /*#__PURE__*/React.createElement(MultiCheckbox, {
+    options: DATA_SUBJECT_CATEGORIES,
+    selected: entry.dataSubjectCategories,
+    onChange: function onChange(v) {
+      return set("dataSubjectCategories", v);
+    }
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: "Categories of personal data"
+  }, /*#__PURE__*/React.createElement(MultiCheckbox, {
+    options: DATA_CATEGORIES,
+    selected: entry.dataCategories,
+    onChange: function onChange(v) {
+      return set("dataCategories", v);
+    }
+  })), /*#__PURE__*/React.createElement(Field, {
+    label: "Retention period"
+  }, /*#__PURE__*/React.createElement(TextInput, {
+    value: entry.retentionPeriod,
+    onChange: function onChange(v) {
+      return set("retentionPeriod", v);
+    },
+    placeholder: "e.g. 2 years, 90 days after account closure"
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__panel",
+    style: {
+      marginBottom: "16px"
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      margin: "0 0 18px",
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.09em",
+      color: "rgba(192,159,83,0.9)"
+    }
+  }, "Recipients & Transfers"), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "16px"
+    }
+  }, /*#__PURE__*/React.createElement(Field, {
+    label: "Recipients / processors"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: "8px",
+      marginBottom: "8px"
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: newRecipient,
+    onChange: function onChange(e) {
+      return setNewRecipient(e.target.value);
+    },
+    onKeyDown: function onKeyDown(e) {
+      return e.key === "Enter" && addRecipient();
+    },
+    placeholder: "Processor or recipient name",
+    style: {
+      flex: 1,
+      padding: "9px 12px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.35)",
+      color: "#f0f0f0",
+      fontSize: "0.875rem",
+      fontFamily: "inherit"
+    }
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--primary",
+    onClick: addRecipient,
+    style: {
+      padding: "9px 14px",
+      fontSize: "0.8125rem"
+    }
+  }, "Add")), entry.recipients.length > 0 && /*#__PURE__*/React.createElement("ul", {
+    style: {
+      listStyle: "none",
+      margin: 0,
+      padding: 0,
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "6px"
+    }
+  }, entry.recipients.map(function (r, i) {
+    return /*#__PURE__*/React.createElement("li", {
+      key: i,
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
+        padding: "4px 10px",
+        borderRadius: "8px",
+        background: "rgba(255,255,255,0.06)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        fontSize: "0.8125rem",
+        color: "#e0e0e0"
+      }
+    }, r.name, /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: function onClick() {
+        return removeRecipient(i);
+      },
+      style: {
+        background: "none",
+        border: "none",
+        color: "#888",
+        cursor: "pointer",
+        padding: 0,
+        fontSize: "0.9rem",
+        lineHeight: 1
+      }
+    }, "\xD7"));
+  }))), /*#__PURE__*/React.createElement(Field, {
+    label: "Third-country transfers"
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: "8px",
+      marginBottom: "8px",
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    value: newTransfer.country,
+    onChange: function onChange(e) {
+      return setNewTransfer(function (t) {
+        return _objectSpread(_objectSpread({}, t), {}, {
+          country: e.target.value
+        });
+      });
+    },
+    placeholder: "Country (e.g. US, IN)",
+    style: {
+      flex: "0 0 100px",
+      padding: "9px 12px",
+      borderRadius: "10px",
+      border: "1px solid rgba(255,255,255,0.14)",
+      background: "rgba(0,0,0,0.35)",
+      color: "#f0f0f0",
+      fontSize: "0.875rem",
+      fontFamily: "inherit"
+    }
+  }), /*#__PURE__*/React.createElement("select", {
+    value: newTransfer.mechanism,
+    onChange: function onChange(e) {
+      return setNewTransfer(function (t) {
+        return _objectSpread(_objectSpread({}, t), {}, {
+          mechanism: e.target.value
+        });
+      });
+    },
+    className: "settings-subpage__select",
+    style: {
+      flex: 1,
+      minWidth: "160px"
+    }
+  }, TRANSFER_MECHANISMS.map(function (m) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: m,
+      value: m
+    }, m);
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--primary",
+    onClick: addTransfer,
+    style: {
+      padding: "9px 14px",
+      fontSize: "0.8125rem"
+    }
+  }, "Add")), entry.thirdCountryTransfers.length > 0 && /*#__PURE__*/React.createElement("ul", {
+    style: {
+      listStyle: "none",
+      margin: 0,
+      padding: 0,
+      display: "flex",
+      flexDirection: "column",
+      gap: "6px"
+    }
+  }, entry.thirdCountryTransfers.map(function (t, i) {
+    return /*#__PURE__*/React.createElement("li", {
+      key: i,
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        padding: "6px 12px",
+        borderRadius: "8px",
+        background: "rgba(255,255,255,0.05)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        fontSize: "0.8125rem"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontFamily: "ui-monospace, monospace",
+        color: "#c0a053",
+        fontWeight: 600
+      }
+    }, t.country), /*#__PURE__*/React.createElement("span", {
+      style: {
+        color: "#b0b0b0"
+      }
+    }, t.mechanism), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: function onClick() {
+        return removeTransfer(i);
+      },
+      style: {
+        marginLeft: "auto",
+        background: "none",
+        border: "none",
+        color: "#888",
+        cursor: "pointer",
+        fontSize: "0.9rem"
+      }
+    }, "\xD7"));
+  }))))), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__panel",
+    style: {
+      marginBottom: "24px"
+    }
+  }, /*#__PURE__*/React.createElement("h3", {
+    style: {
+      margin: "0 0 18px",
+      fontSize: "0.75rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.09em",
+      color: "rgba(192,159,83,0.9)"
+    }
+  }, "Security"), /*#__PURE__*/React.createElement(Field, {
+    label: "Security measures"
+  }, /*#__PURE__*/React.createElement(Textarea, {
+    value: entry.securityMeasures,
+    onChange: function onChange(v) {
+      return set("securityMeasures", v);
+    },
+    placeholder: "Describe technical and organisational measures (encryption, access controls, pseudonymisation, etc.)",
+    rows: 4
+  }))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-subpage__submit",
+    onClick: save,
+    disabled: saving
+  }, saving ? "Saving…" : isNew ? "Create activity" : "Save changes")));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/Settings/ROPA/index.js":
+/*!******************************************!*\
+  !*** ./src/Pages/Settings/ROPA/index.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ROPA)
+/* harmony export */ });
+/* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../API/api.js */ "./src/API/api.js");
+/* harmony import */ var _Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Components/Header/SideNav.js */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks/index.js */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect,
+  useCallback = _window$React.useCallback,
+  useContext = _window$React.useContext;
+var useHistory = window.ReactRouterDOM.useHistory;
+
+
+
+
+
+
+
+
+function ROPA() {
+  document.title = "Record of Processing Activities | Settings | Intastellar Consents";
+  var history = useHistory();
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_5__.DomainContext),
+    _useContext2 = _slicedToArray(_useContext, 1),
+    globalDomain = _useContext2[0];
+  var activeDomain = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_6__.isCombinedOrClearDomain)(globalDomain) ? null : globalDomain;
+  var _useState = useState([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    entries = _useState2[0],
+    setEntries = _useState2[1];
+  var _useState3 = useState(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    populating = _useState6[0],
+    setPopulating = _useState6[1];
+  var _useState7 = useState(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    exporting = _useState8[0],
+    setExporting = _useState8[1];
+  var load = useCallback(function () {
+    setLoading(true);
+    var url = activeDomain ? "".concat(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.list.url, "?domain=").concat(encodeURIComponent(activeDomain)) : _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.list.url;
+    fetch(url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.list.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.list.headers
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      return setEntries(Array.isArray(data) ? data : []);
+    })["catch"](function () {
+      return setEntries([]);
+    })["finally"](function () {
+      return setLoading(false);
+    });
+  }, [activeDomain]);
+  useEffect(function () {
+    load();
+  }, [load]);
+  function autoPopulate() {
+    setPopulating(true);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.autoPopulate.url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.autoPopulate.method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa.autoPopulate.headers,
+      body: JSON.stringify(activeDomain ? {
+        domain: activeDomain
+      } : {})
+    }).then(function (r) {
+      return r.json();
+    }).then(function (result) {
+      if (result.created > 0) load();
+    })["catch"](function () {})["finally"](function () {
+      return setPopulating(false);
+    });
+  }
+  function exportAll() {
+    setExporting(true);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa["export"].url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa["export"].method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa["export"].headers
+    }).then(function (r) {
+      return r.blob();
+    }).then(function (blob) {
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "ropa-export-".concat(new Date().toISOString().slice(0, 10), ".csv");
+      a.click();
+      URL.revokeObjectURL(url);
+    })["catch"](function () {})["finally"](function () {
+      return setExporting(false);
+    });
+  }
+  function deleteEntry(id) {
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa["delete"].url, {
+      method: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa["delete"].method,
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].ropa["delete"].headers,
+      body: JSON.stringify({
+        id: id
+      })
+    }).then(function () {
+      return load();
+    })["catch"](function () {});
+  }
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    links: _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
+    title: "Settings"
+  }), /*#__PURE__*/React.createElement("main", {
+    className: "dashboard-content settings-subpage settings-subpage--wide"
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Record of Processing Activities"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__intro"
+  }, "Maintain your Article 30 GDPR Record of Processing Activities. Each entry documents a processing activity \u2014 its purpose, legal basis, data categories, recipients, and transfer mechanisms. Use \"Auto-populate\" to seed entries from your pre-consent scan data."), /*#__PURE__*/React.createElement("div", {
+    className: "settings-subpage__toolbar"
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: "0.875rem",
+      color: "rgba(180,180,180,0.8)"
+    }
+  }, entries.length, " ", entries.length === 1 ? "activity" : "activities", entries.filter(function (e) {
+    return e.isDraft;
+  }).length > 0 && /*#__PURE__*/React.createElement("span", {
+    style: {
+      marginLeft: "10px",
+      color: "#d4b87a",
+      fontSize: "0.8125rem"
+    }
+  }, entries.filter(function (e) {
+    return e.isDraft;
+  }).length, " draft")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      gap: "10px",
+      flexWrap: "wrap"
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-subpage__submit",
+    onClick: autoPopulate,
+    disabled: populating,
+    style: {
+      background: "rgba(80,130,210,0.18)",
+      borderColor: "rgba(80,130,210,0.4)",
+      color: "#a8c4f0"
+    }
+  }, populating ? "Scanning…" : activeDomain ? "Auto-populate from ".concat(activeDomain) : "Auto-populate from all scans"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-subpage__submit",
+    onClick: exportAll,
+    disabled: exporting || entries.length === 0
+  }, exporting ? "Exporting…" : "Export CSV"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "settings-subpage__submit",
+    onClick: function onClick() {
+      return history.push("/settings/ropa/new");
+    }
+  }, "+ Add activity"))), loading ? /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__empty"
+  }, "Loading\u2026") : entries.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "settings-subpage__empty"
+  }, "No processing activities yet. Click \"Auto-populate from scan\" to import from your pre-consent data, or add one manually.") : /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "12px"
+    }
+  }, entries.map(function (entry) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: entry.id,
+      className: "settings-subpage__panel",
+      style: {
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "flex-start",
+        gap: "12px 20px"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        flex: "1 1 260px"
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      style: {
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        marginBottom: "4px",
+        flexWrap: "wrap"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontWeight: 600,
+        fontSize: "0.9375rem",
+        color: "#f2f2f2"
+      }
+    }, entry.activityName), entry.isDraft && /*#__PURE__*/React.createElement("span", {
+      style: {
+        padding: "2px 8px",
+        borderRadius: "5px",
+        fontSize: "0.65rem",
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
+        background: "rgba(192,159,83,0.15)",
+        border: "1px solid rgba(192,159,83,0.3)",
+        color: "#c0a053"
+      }
+    }, "Draft"), entry.domain ? /*#__PURE__*/React.createElement("span", {
+      style: {
+        padding: "2px 8px",
+        borderRadius: "5px",
+        fontSize: "0.65rem",
+        fontWeight: 600,
+        background: "rgba(80,130,210,0.12)",
+        border: "1px solid rgba(80,130,210,0.3)",
+        color: "#88b0e8",
+        fontFamily: "ui-monospace, monospace"
+      }
+    }, entry.domain) : /*#__PURE__*/React.createElement("span", {
+      style: {
+        padding: "2px 8px",
+        borderRadius: "5px",
+        fontSize: "0.65rem",
+        fontWeight: 600,
+        background: "rgba(255,255,255,0.05)",
+        border: "1px solid rgba(255,255,255,0.1)",
+        color: "rgba(160,160,160,0.7)"
+      }
+    }, "org-wide")), /*#__PURE__*/React.createElement("p", {
+      style: {
+        margin: 0,
+        fontSize: "0.8125rem",
+        color: "rgba(180,180,180,0.85)",
+        lineHeight: 1.45
+      }
+    }, entry.purpose && /*#__PURE__*/React.createElement("span", null, "Purpose: ", entry.purpose), entry.legalBasis && /*#__PURE__*/React.createElement("span", {
+      style: {
+        marginLeft: "12px"
+      }
+    }, "Legal basis: ", entry.legalBasis), entry.retentionPeriod && /*#__PURE__*/React.createElement("span", {
+      style: {
+        marginLeft: "12px"
+      }
+    }, "Retention: ", entry.retentionPeriod)), Array.isArray(entry.thirdCountryTransfers) && entry.thirdCountryTransfers.length > 0 && /*#__PURE__*/React.createElement("p", {
+      style: {
+        margin: "4px 0 0",
+        fontSize: "0.75rem",
+        color: "#d4b87a"
+      }
+    }, "Third-country transfers: ", entry.thirdCountryTransfers.map(function (t) {
+      return t.country;
+    }).join(", "))), /*#__PURE__*/React.createElement("div", {
+      style: {
+        flexShrink: 0,
+        display: "flex",
+        gap: "8px",
+        alignItems: "center"
+      }
+    }, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: "0.75rem",
+        color: "rgba(140,140,140,0.7)"
+      }
+    }, entry.updatedAt ? new Date(entry.updatedAt).toLocaleDateString() : entry.createdAt ? new Date(entry.createdAt).toLocaleDateString() : ""), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--primary",
+      style: {
+        padding: "7px 14px",
+        fontSize: "0.8125rem"
+      },
+      onClick: function onClick() {
+        return history.push("/settings/ropa/".concat(entry.id));
+      }
+    }, "Edit"), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "settings-blacklist-modal__btn settings-blacklist-modal__btn--danger",
+      style: {
+        padding: "7px 12px",
+        fontSize: "0.8125rem"
+      },
+      onClick: function onClick() {
+        return deleteEntry(entry.id);
+      }
+    }, "\xD7")));
+  }))));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Settings/Style.css":
 /*!**************************************!*\
   !*** ./src/Pages/Settings/Style.css ***!
@@ -59546,6 +63518,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
@@ -59562,6 +63535,7 @@ var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
   useCallback = _React.useCallback;
+
 
 
 
@@ -59640,7 +63614,7 @@ function ViewOrg() {
   }
   function canCreateOrganisationFromHere() {
     try {
-      var id = JSON.parse(localStorage.getItem("organisation")).id;
+      var id = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].getItem("organisation")).id;
       var r = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_3__["default"].getOrganisationAccessStatusForOrganisation(id);
       return r === "admin" || r === "super-admin";
     } catch (_unused) {
@@ -59670,7 +63644,7 @@ function ViewOrg() {
     })).then(function (re) {
       setPending(null);
       if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -59683,7 +63657,7 @@ function ViewOrg() {
         return;
       }
       try {
-        var raw = localStorage.getItem("organisation");
+        var raw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].getItem("organisation");
         if (raw) {
           var o = JSON.parse(raw);
           if (String(o.id) === String(modalOrg.id)) {
@@ -59707,7 +63681,7 @@ function ViewOrg() {
     })).then(function (re) {
       setPending(null);
       if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -59722,11 +63696,11 @@ function ViewOrg() {
         return;
       }
       try {
-        var raw = localStorage.getItem("organisation");
+        var raw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].getItem("organisation");
         if (raw) {
           var o = JSON.parse(raw);
           if (String(o.id) === String(modalOrg.id)) {
-            localStorage.removeItem("organisation");
+            _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].removeItem("organisation");
             window.location.href = "/settings";
             return;
           }
@@ -59882,6 +63856,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -59902,10 +63877,11 @@ var _React = React,
 
 
 
+
 var Link = window.ReactRouterDOM.Link;
 function getCurrentOrganisationId() {
   try {
-    var o = JSON.parse(localStorage.getItem("organisation"));
+    var o = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].getItem("organisation"));
     return (o === null || o === void 0 ? void 0 : o.id) != null ? String(o.id) : null;
   } catch (_unused) {
     return null;
@@ -60021,7 +63997,7 @@ function ViewUsers() {
     })).then(function (re) {
       setPending(null);
       if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -60052,7 +64028,7 @@ function ViewUsers() {
     })).then(function (re) {
       setPending(null);
       if (re === "Err_Login_Expired" || re === "Err_Token_Not_Found") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_9__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -60251,6 +64227,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var _Functions_domainVerification__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Functions/domainVerification */ "./src/Functions/domainVerification.js");
 /* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -60283,6 +64260,7 @@ var _React = React,
 
 
 
+
 var Link = window.ReactRouterDOM.Link;
 
 /**
@@ -60290,7 +64268,7 @@ var Link = window.ReactRouterDOM.Link;
  */
 function getCurrentOrgId() {
   try {
-    var orgRaw = localStorage.getItem("organisation");
+    var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_8__["default"].getItem("organisation");
     if (orgRaw) {
       var org = JSON.parse(orgRaw);
       return (org === null || org === void 0 ? void 0 : org.id) || null;
@@ -61504,6 +65482,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
 /* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
+
+
 
 
 
@@ -61519,36 +65501,12 @@ var SETTINGS_HUB_COPY = {
   "/settings/view-organisations": "Browse organisations, edit them, or create a new one from here.",
   "/settings/add-domain": "Connect a new site or hostname for the consent platform.",
   "/settings/view-domains": "Inspect domains linked to this organisation.",
-  "/settings/config-gdpr": "GDPR-related configuration for this workspace (when enabled).",
+  "/settings/config-gdpr": "Configure which regulations apply to your visitors and set the banner type per jurisdiction.",
+  "/settings/legal-basis": "Assign a legal basis to each processing purpose under each active regulation for audit and DSR responses.",
+  "/settings/ropa": "Maintain your Article 30 Record of Processing Activities. Auto-populate from pre-consent scan data.",
   "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting.",
   "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains."
 };
-function hasAgencySubscription() {
-  try {
-    // Allow access for Intastellar Solutions (org ID 1)
-    var orgRaw = localStorage.getItem("organisation");
-    if (orgRaw) {
-      var _org;
-      // Handle both JSON string and plain value formats
-      var org = orgRaw;
-      try {
-        org = JSON.parse(orgRaw);
-      } catch (_unused) {
-        /* not JSON, use raw value */
-      }
-      // Check for org ID 1 (compare as strings to handle both number and string)
-      if (((_org = org) === null || _org === void 0 ? void 0 : _org.id) != null && String(org.id) === "1") return true;
-    }
-    var sub = localStorage.getItem("subscription");
-    if (sub) {
-      var parsed = JSON.parse(sub);
-      return (parsed === null || parsed === void 0 ? void 0 : parsed.subscription) === "agency";
-    }
-  } catch (_unused2) {
-    /* ignore */
-  }
-  return false;
-}
 function userCanSeeSidebarLink(link) {
   var _link$view;
   if (!(link !== null && link !== void 0 && (_link$view = link.view) !== null && _link$view !== void 0 && _link$view.length)) return true;
@@ -61566,16 +65524,16 @@ function Settings() {
     return _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_2__.reportsLinks.filter(function (link) {
       if (!userCanSeeSidebarLink(link)) return false;
       if (link.path === "/settings/blacklist-ip" && !canOpenBlacklistRoute()) return false;
-      if (link.requiresAgency && !hasAgencySubscription()) return false;
+      if (link.requiresTier && !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_5__.canAccess)(link.requiresTier)) return false;
       return true;
     });
   }, []);
   var scopeLine = useMemo(function () {
     try {
-      var org = JSON.parse(localStorage.getItem("organisation"));
+      var org = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_6__["default"].getItem("organisation"));
       var name = org === null || org === void 0 ? void 0 : org.name;
       if (name) return name;
-    } catch (_unused3) {
+    } catch (_unused) {
       /* ignore */
     }
     return "Current organisation";
@@ -61700,6 +65658,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Filter_filterDatePresets_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../Components/Filter/filterDatePresets.js */ "./src/Components/Filter/filterDatePresets.js");
 /* harmony import */ var _components_AuditSnapshotCard_complianceRegions_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../../components/AuditSnapshotCard/complianceRegions.js */ "./src/components/AuditSnapshotCard/complianceRegions.js");
 /* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
@@ -61721,6 +65680,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+
 
 
 
@@ -62212,7 +66172,7 @@ function UserConsents(props) {
             _context.n = 4;
             break;
           }
-          localStorage.removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_18__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context.a(2);
         case 4:
@@ -63049,6 +67009,18 @@ var LABEL = [{
   fw: "PDPA",
   lon: 101.5,
   lat: 3.1
+}, {
+  fw: "APA",
+  lon: 134,
+  lat: -26
+}, {
+  fw: "PDPL",
+  lon: 45,
+  lat: 24
+}, {
+  fw: "PIPEDA",
+  lon: -96,
+  lat: 60
 }];
 var LABEL_COLOR = {
   observed: "#b5e8c8",
@@ -63059,13 +67031,28 @@ var LABEL_COLOR = {
 };
 var US_NUMERIC = 840;
 
-/** Country-level ISO numeric → framework. CCPA is not applied to the whole US (840); California is drawn from US states TopoJSON. */
+/**
+ * Country-level ISO numeric → framework.
+ * CCPA, CDPA, CPA, UCPA, CTDPA are all empty here — they are drawn from US states TopoJSON.
+ */
 var FRAMEWORK_BY_NUMERIC = {
   GDPR: new Set(_complianceRegions_js__WEBPACK_IMPORTED_MODULE_2__.EU_EEA_UK_NUMERIC),
-  CCPA: new Set(),
   LGPD: new Set([76]),
   POPIA: new Set([710]),
-  PDPA: new Set([760, 840])
+  PDPA: new Set([764, 702]),
+  // Thailand (764), Singapore (702)
+  APA: new Set([36]),
+  // Australia
+  PDPL: new Set([682]),
+  // Saudi Arabia
+  PIPEDA: new Set([124]),
+  // Canada (federal — LAW25 shares this territory)
+  // US state laws drawn from states TopoJSON:
+  CCPA: new Set(),
+  CDPA: new Set(),
+  CPA: new Set(),
+  UCPA: new Set(),
+  CTDPA: new Set()
 };
 function topoIdToNumeric(id) {
   if (id == null) return null;
@@ -63075,17 +67062,13 @@ function topoIdToNumeric(id) {
 function frameworkForNumeric(num) {
   if (num == null) return null;
   if (FRAMEWORK_BY_NUMERIC.GDPR.has(num)) return "GDPR";
-  if (FRAMEWORK_BY_NUMERIC.CCPA.has(num)) return "CCPA";
   if (FRAMEWORK_BY_NUMERIC.LGPD.has(num)) return "LGPD";
   if (FRAMEWORK_BY_NUMERIC.POPIA.has(num)) return "POPIA";
   if (FRAMEWORK_BY_NUMERIC.PDPA.has(num)) return "PDPA";
+  if (FRAMEWORK_BY_NUMERIC.APA.has(num)) return "APA";
+  if (FRAMEWORK_BY_NUMERIC.PDPL.has(num)) return "PDPL";
+  if (FRAMEWORK_BY_NUMERIC.PIPEDA.has(num)) return "PIPEDA";
   return null;
-}
-
-/** FIPS 06 — California (us-atlas states-10m). */
-function isCaliforniaStateTopoId(id) {
-  var s = String(id !== null && id !== void 0 ? id : "").padStart(2, "0");
-  return s === "06";
 }
 function fillForFrameworkStatus(st, inSample) {
   if (st === "observed") {
@@ -63133,7 +67116,7 @@ function clearGroup(g) {
  * @param {(fw: string) => void} [props.onSelectFramework] — GDPR / LGPD / CCPA / POPIA label clicks
  */
 function AuditComplianceWorldMap(_ref) {
-  var _regionStatus$GDPR, _regionStatus$LGPD, _regionStatus$CCPA, _regionStatus$POPIA, _regionStatus$PDPA;
+  var _regionStatus$GDPR, _regionStatus$LGPD, _regionStatus$CCPA, _regionStatus$CDPA, _regionStatus$CPA, _regionStatus$UCPA, _regionStatus$CTDPA, _regionStatus$POPIA, _regionStatus$PDPA, _regionStatus$APA, _regionStatus$PDPL, _regionStatus$PIPEDA, _regionStatus$LAW;
   var regionStatus = _ref.regionStatus,
     sampleCountryCodesKey = _ref.sampleCountryCodesKey,
     selectedCountryCode = _ref.selectedCountryCode,
@@ -63149,7 +67132,7 @@ function AuditComplianceWorldMap(_ref) {
   onSelectCountryRef.current = onSelectCountry;
   onSelectFrameworkRef.current = onSelectFramework;
   var selectedUpper = selectedCountryCode ? String(selectedCountryCode).toUpperCase() : null;
-  var paintKey = [regionStatus === null || regionStatus === void 0 || (_regionStatus$GDPR = regionStatus.GDPR) === null || _regionStatus$GDPR === void 0 ? void 0 : _regionStatus$GDPR.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$LGPD = regionStatus.LGPD) === null || _regionStatus$LGPD === void 0 ? void 0 : _regionStatus$LGPD.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$CCPA = regionStatus.CCPA) === null || _regionStatus$CCPA === void 0 ? void 0 : _regionStatus$CCPA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$POPIA = regionStatus.POPIA) === null || _regionStatus$POPIA === void 0 ? void 0 : _regionStatus$POPIA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$PDPA = regionStatus.PDPA) === null || _regionStatus$PDPA === void 0 ? void 0 : _regionStatus$PDPA.status, sampleCountryCodesKey, selectedUpper !== null && selectedUpper !== void 0 ? selectedUpper : ""].join("|");
+  var paintKey = [regionStatus === null || regionStatus === void 0 || (_regionStatus$GDPR = regionStatus.GDPR) === null || _regionStatus$GDPR === void 0 ? void 0 : _regionStatus$GDPR.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$LGPD = regionStatus.LGPD) === null || _regionStatus$LGPD === void 0 ? void 0 : _regionStatus$LGPD.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$CCPA = regionStatus.CCPA) === null || _regionStatus$CCPA === void 0 ? void 0 : _regionStatus$CCPA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$CDPA = regionStatus.CDPA) === null || _regionStatus$CDPA === void 0 ? void 0 : _regionStatus$CDPA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$CPA = regionStatus.CPA) === null || _regionStatus$CPA === void 0 ? void 0 : _regionStatus$CPA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$UCPA = regionStatus.UCPA) === null || _regionStatus$UCPA === void 0 ? void 0 : _regionStatus$UCPA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$CTDPA = regionStatus.CTDPA) === null || _regionStatus$CTDPA === void 0 ? void 0 : _regionStatus$CTDPA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$POPIA = regionStatus.POPIA) === null || _regionStatus$POPIA === void 0 ? void 0 : _regionStatus$POPIA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$PDPA = regionStatus.PDPA) === null || _regionStatus$PDPA === void 0 ? void 0 : _regionStatus$PDPA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$APA = regionStatus.APA) === null || _regionStatus$APA === void 0 ? void 0 : _regionStatus$APA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$PDPL = regionStatus.PDPL) === null || _regionStatus$PDPL === void 0 ? void 0 : _regionStatus$PDPL.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$PIPEDA = regionStatus.PIPEDA) === null || _regionStatus$PIPEDA === void 0 ? void 0 : _regionStatus$PIPEDA.status, regionStatus === null || regionStatus === void 0 || (_regionStatus$LAW = regionStatus.LAW25) === null || _regionStatus$LAW === void 0 ? void 0 : _regionStatus$LAW.status, sampleCountryCodesKey, selectedUpper !== null && selectedUpper !== void 0 ? selectedUpper : ""].join("|");
   function paintFromTopo(topo, statesTopo, sampleKey, selUpper) {
     var sampleAlpha2Set = new Set(sampleKey ? sampleKey.split(",").map(function (s) {
       return s.trim().toUpperCase();
@@ -63171,7 +67154,7 @@ function AuditComplianceWorldMap(_ref) {
     var _iterator = _createForOfIteratorHelper(features),
       _step;
     try {
-      var _loop = function _loop() {
+      var _loop2 = function _loop2() {
         var f = _step.value;
         var d = f.rings.map(_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_3__.ringToPathD).join(" ");
         if (!d.trim()) return 1; // continue
@@ -63190,10 +67173,10 @@ function AuditComplianceWorldMap(_ref) {
         var stroke = "rgba(8, 12, 18, 0.85)";
         var strokeW = "0.45";
         if (fw) {
-          var _o = fillForFrameworkStatus(st, inSample);
-          fill = _o.fill;
-          stroke = _o.stroke;
-          strokeW = _o.strokeW;
+          var o = fillForFrameworkStatus(st, inSample);
+          fill = o.fill;
+          stroke = o.stroke;
+          strokeW = o.strokeW;
         } else if (inSample) {
           fill = FILL.base;
           stroke = "rgba(192, 159, 83, 0.65)";
@@ -63227,7 +67210,7 @@ function AuditComplianceWorldMap(_ref) {
         });
       };
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
-        if (_loop()) continue;
+        if (_loop2()) continue;
       }
     } catch (err) {
       _iterator.e(err);
@@ -63242,57 +67225,97 @@ function AuditComplianceWorldMap(_ref) {
       landG.appendChild(path);
     }
     if (statesTopo) {
-      var stCa = stOf("CCPA");
-      var caFeatures = (0,_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_3__.topoToFeatures)(statesTopo, "states").filter(function (feat) {
-        return isCaliforniaStateTopoId(feat.id);
-      });
+      // Each entry maps a US state FIPS code to the framework it represents.
+      var US_STATE_LAYERS = [{
+        fips: "06",
+        fw: "CCPA",
+        cls: "audit-compliance-world-map__ccpa-california"
+      }, {
+        fips: "51",
+        fw: "CDPA",
+        cls: null
+      },
+      // Virginia
+      {
+        fips: "08",
+        fw: "CPA",
+        cls: null
+      },
+      // Colorado
+      {
+        fips: "49",
+        fw: "UCPA",
+        cls: null
+      },
+      // Utah
+      {
+        fips: "09",
+        fw: "CTDPA",
+        cls: null
+      } // Connecticut
+      ];
+      var allStateFeatures = (0,_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_3__.topoToFeatures)(statesTopo, "states");
       var isUSSelected = selUpper === "US";
-      var _iterator2 = _createForOfIteratorHelper(caFeatures),
-        _step2;
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var feat = _step2.value;
-          var dCa = feat.rings.map(_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_3__.ringToPathD).join(" ");
-          if (!dCa.trim()) continue;
-          var pCa = document.createElementNS(NS, "path");
-          pCa.setAttribute("d", dCa);
-          pCa.setAttribute("class", "audit-compliance-world-map__country audit-compliance-world-map__ccpa-california");
-          pCa.setAttribute("data-cc", "US");
-          pCa.setAttribute("data-subdivision", "US-CA");
-          var o = fillForFrameworkStatus(stCa, inSampleUS);
-          var fillCa = o.fill,
-            strokeCa = o.stroke,
-            strokeWCa = o.strokeW;
-          if (isUSSelected) {
-            strokeCa = "rgba(192, 159, 83, 0.98)";
-            strokeWCa = "2.4";
-            pCa.classList.add("audit-compliance-world-map__country--selected");
-          }
-          pCa.setAttribute("fill", fillCa);
-          pCa.setAttribute("stroke", strokeCa);
-          pCa.setAttribute("stroke-width", strokeWCa);
-          pCa.classList.add("audit-compliance-world-map__country--clickable");
-          pCa.addEventListener("click", function (e) {
-            var _onSelectCountryRef$c;
-            e.preventDefault();
-            e.stopPropagation();
-            (_onSelectCountryRef$c = onSelectCountryRef.current) === null || _onSelectCountryRef$c === void 0 || _onSelectCountryRef$c.call(onSelectCountryRef, function (prev) {
-              var p = prev ? String(prev).toUpperCase() : null;
-              return p === "US" ? null : "US";
+      var _loop = function _loop() {
+        var _US_STATE_LAYERS$_i = _US_STATE_LAYERS[_i2],
+          fips = _US_STATE_LAYERS$_i.fips,
+          fw = _US_STATE_LAYERS$_i.fw,
+          cls = _US_STATE_LAYERS$_i.cls;
+        var fwStatus = stOf(fw);
+        var stateFeats = allStateFeatures.filter(function (feat) {
+          var _feat$id;
+          return String((_feat$id = feat.id) !== null && _feat$id !== void 0 ? _feat$id : "").padStart(2, "0") === fips;
+        });
+        var _iterator2 = _createForOfIteratorHelper(stateFeats),
+          _step2;
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var feat = _step2.value;
+            var dSt = feat.rings.map(_World_worldTopoShared_js__WEBPACK_IMPORTED_MODULE_3__.ringToPathD).join(" ");
+            if (!dSt.trim()) continue;
+            var pSt = document.createElementNS(NS, "path");
+            pSt.setAttribute("d", dSt);
+            pSt.setAttribute("class", ["audit-compliance-world-map__country", cls].filter(Boolean).join(" "));
+            pSt.setAttribute("data-cc", "US");
+            pSt.setAttribute("data-subdivision", "US-".concat(fips));
+            var o = fillForFrameworkStatus(fwStatus, inSampleUS);
+            var fillSt = o.fill,
+              strokeSt = o.stroke,
+              strokeWSt = o.strokeW;
+            if (isUSSelected) {
+              strokeSt = "rgba(192, 159, 83, 0.98)";
+              strokeWSt = "2.4";
+              pSt.classList.add("audit-compliance-world-map__country--selected");
+            }
+            pSt.setAttribute("fill", fillSt);
+            pSt.setAttribute("stroke", strokeSt);
+            pSt.setAttribute("stroke-width", strokeWSt);
+            pSt.classList.add("audit-compliance-world-map__country--clickable");
+            pSt.addEventListener("click", function (e) {
+              var _onSelectCountryRef$c;
+              e.preventDefault();
+              e.stopPropagation();
+              (_onSelectCountryRef$c = onSelectCountryRef.current) === null || _onSelectCountryRef$c === void 0 || _onSelectCountryRef$c.call(onSelectCountryRef, function (prev) {
+                var pr = prev ? String(prev).toUpperCase() : null;
+                return pr === "US" ? null : "US";
+              });
             });
-          });
-          landG.appendChild(pCa);
+            landG.appendChild(pSt);
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
         }
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
+      };
+      for (var _i2 = 0, _US_STATE_LAYERS = US_STATE_LAYERS; _i2 < _US_STATE_LAYERS.length; _i2++) {
+        _loop();
       }
     }
     var _iterator3 = _createForOfIteratorHelper(LABEL),
       _step3;
     try {
-      var _loop2 = function _loop2() {
+      var _loop3 = function _loop3() {
         var _LABEL_COLOR$colorKey;
         var _step3$value = _step3.value,
           fw = _step3$value.fw,
@@ -63331,7 +67354,7 @@ function AuditComplianceWorldMap(_ref) {
         labelsG.appendChild(el);
       };
       for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-        _loop2();
+        _loop3();
       }
     } catch (err) {
       _iterator3.e(err);
@@ -63654,6 +67677,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _complianceRegions_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./complianceRegions.js */ "./src/components/AuditSnapshotCard/complianceRegions.js");
 /* harmony import */ var _AuditComplianceMiniMap_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./AuditComplianceMiniMap.js */ "./src/components/AuditSnapshotCard/AuditComplianceMiniMap.js");
 /* harmony import */ var _AuditSnapshotCard_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./AuditSnapshotCard.css */ "./src/components/AuditSnapshotCard/AuditSnapshotCard.css");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
@@ -63675,6 +67699,7 @@ var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
   useMemo = _React.useMemo;
+
 
 
 
@@ -63947,7 +67972,7 @@ function AuditSnapshotCard(props) {
                 _context.n = 6;
                 break;
               }
-              localStorage.removeItem("globals");
+              _Functions_storage_js__WEBPACK_IMPORTED_MODULE_8__["default"].removeItem("globals");
               window.location.href = "/login";
               return _context.a(2);
             case 6:
@@ -64093,7 +68118,7 @@ function AuditSnapshotCard(props) {
         return;
       }
       if (data === "Err_Login_Expired") {
-        localStorage.removeItem("globals");
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_8__["default"].removeItem("globals");
         window.location.href = "/login";
         return;
       }
@@ -64621,7 +68646,7 @@ var EU_EEA_UK_NUMERIC = [40,
 // Gibraltar
 833 // Isle of Man
 ];
-var FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "POPIA", "PDPA"];
+var FRAMEWORK_IDS = ["GDPR", "LGPD", "CCPA", "CDPA", "CPA", "UCPA", "CTDPA", "POPIA", "PDPA", "APA", "PDPL", "PIPEDA", "LAW25"];
 
 /**
  * Which frameworks a single audit row suggests (regulation_applied first, then country inference).
@@ -64636,10 +68661,21 @@ function frameworksForAuditRow(row) {
   if (reg.includes("GDPR")) out.add("GDPR");
   if (reg.includes("LGPD")) out.add("LGPD");
   if (reg.includes("CCPA") || reg.includes("CPRA")) out.add("CCPA");
+  if (reg.includes("CDPA")) out.add("CDPA");
+  if (reg.includes("CPA") && !reg.includes("CCPA") && !reg.includes("UCPA")) out.add("CPA");
+  if (reg.includes("UCPA")) out.add("UCPA");
+  if (reg.includes("CTDPA")) out.add("CTDPA");
   if (reg.includes("POPIA")) out.add("POPIA");
   if (reg.includes("PDPA")) out.add("PDPA");
+  if (reg.includes("APA")) out.add("APA");
+  if (reg.includes("PDPL")) out.add("PDPL");
+  if (reg.includes("PIPEDA")) out.add("PIPEDA");
+  if (reg.includes("LAW25") || reg.includes("LAW 25") || reg.includes("ACT 25")) out.add("LAW25");
   if (out.size > 0) return out;
-  if (cc === "BR") out.add("LGPD");else if (cc === "US") out.add("CCPA");else if (cc === "ZA") out.add("POPIA");else if (cc === "TH") out.add("PDPA");else if (EU_EEA_UK.has(cc)) out.add("GDPR");
+  if (cc === "BR") out.add("LGPD");else if (cc === "US") out.add("CCPA");else if (cc === "ZA") out.add("POPIA");else if (cc === "TH") out.add("PDPA");else if (cc === "AU") out.add("APA");else if (cc === "SA") out.add("PDPL");else if (cc === "CA") {
+    out.add("PIPEDA");
+    out.add("LAW25");
+  } else if (EU_EEA_UK.has(cc)) out.add("GDPR");
   return out;
 }
 
