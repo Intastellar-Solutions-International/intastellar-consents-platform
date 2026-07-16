@@ -39,6 +39,16 @@
       "maxDuration": 90,
       "regions": ["iad1"]
     },
+    "api/scan-domain-task-eu.js": {
+      "memory": 1536,
+      "maxDuration": 90,
+      "regions": ["fra1"]
+    },
+    "api/scan-domain-task-ap.js": {
+      "memory": 1536,
+      "maxDuration": 90,
+      "regions": ["sin1"]
+    },
     "api/cron-scan-domains.js": {
       "memory": 256,
       "maxDuration": 90

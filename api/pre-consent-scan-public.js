@@ -4,9 +4,15 @@
  * Public scan trigger — no authentication required.
  *
  * Responds 202 immediately, then delegates the actual Puppeteer scan to
- * /api/scan-domain-task (a separate Lambda invocation). This keeps Chromium
- * out of this function entirely, so an OOM in the scanner can never prevent
- * the 202 response from being delivered to the caller.
+ * a regional scan-domain-task function. This keeps Chromium out of this
+ * function entirely, so an OOM in the scanner can never prevent the 202
+ * response from being delivered to the caller.
+ *
+ * Body params:
+ *   domain    string  required  e.g. "example.com"
+ *   location  string  optional  "us" (default) | "eu" | "ap"
+ *                               Selects the region the Chromium scanner runs from:
+ *                               us = US East (Virginia), eu = EU (Frankfurt), ap = Asia Pacific (Singapore)
  *
  * Rate limits (enforced via DB):
  *   - 429 if a scan is already running (status = pending / in_progress)
@@ -35,6 +41,12 @@ const DOMAIN_RE = /^[a-z0-9]([a-z0-9.-]{0,251}[a-z0-9])?$/;
 const RESCAN_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const SCANNER_BASE = process.env.SCANNER_SELF_URL || "https://www.intastellarconsents.com";
 
+const SCAN_TASK_PATH = {
+    us: "/api/scan-domain-task",
+    eu: "/api/scan-domain-task-eu",
+    ap: "/api/scan-domain-task-ap",
+};
+
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
@@ -48,7 +60,8 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: "Method not allowed" });
     }
 
-    const rawDomain = ((req.body || {}).domain || "");
+    const { domain: rawDomain, location: rawLocation } = req.body || {};
+
     if (!rawDomain || typeof rawDomain !== "string") {
         return res.status(400).json({ error: "domain is required" });
     }
@@ -60,6 +73,10 @@ export default async function handler(req, res) {
     if (!DOMAIN_RE.test(cleanDomain) || cleanDomain.includes("..") || !cleanDomain.includes(".")) {
         return res.status(400).json({ error: "Invalid domain" });
     }
+
+    const location = (typeof rawLocation === "string" && SCAN_TASK_PATH[rawLocation.toLowerCase()])
+        ? rawLocation.toLowerCase()
+        : "us";
 
     const db = getPool();
 
@@ -84,9 +101,10 @@ export default async function handler(req, res) {
 
         if (latest.status === "pending" || latest.status === "in_progress") {
             return res.status(429).json({
-                domain:  cleanDomain,
-                status:  "scan_in_progress",
-                message: "A scan is already running for this domain. Try /api/cookie-banner in ~30 seconds.",
+                domain:   cleanDomain,
+                location,
+                status:   "scan_in_progress",
+                message:  "A scan is already running for this domain. Try /api/cookie-banner in ~30 seconds.",
             });
         }
 
@@ -94,6 +112,7 @@ export default async function handler(req, res) {
         if (latest.status === "completed" && ageMs < RESCAN_COOLDOWN_MS) {
             return res.status(200).json({
                 domain:     cleanDomain,
+                location,
                 status:     "recent_scan",
                 message:    "A recent scan already exists.",
                 scanned_at: latest.scanned_at,
@@ -103,14 +122,15 @@ export default async function handler(req, res) {
 
     // Respond 202 immediately — scan-domain-task creates its own in_progress row
     res.status(202).json({
-        domain:  cleanDomain,
-        status:  "scan_queued",
-        message: `Scan started. Results will be available at /api/cookie-banner?domain=${cleanDomain} in ~30 seconds.`,
+        domain:   cleanDomain,
+        location,
+        status:   "scan_queued",
+        message:  `Scan started from ${location.toUpperCase()}. Results will be available at /api/cookie-banner?domain=${cleanDomain} in ~30 seconds.`,
     });
 
-    // Delegate to scan-domain-task (separate Lambda — keeps Chromium out of this process)
+    // Delegate to the regional scan-domain-task (separate Lambda — keeps Chromium out of this process)
     try {
-        await fetch(`${SCANNER_BASE}/api/scan-domain-task`, {
+        await fetch(`${SCANNER_BASE}${SCAN_TASK_PATH[location]}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
