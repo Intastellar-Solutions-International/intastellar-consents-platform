@@ -16,23 +16,23 @@
     },
     "api/pre-consent-scan.js": {
       "memory": 1536,
-      "maxDuration": 60
+      "maxDuration": 90
     },
     "api/pre-consent-scan-public.js": {
       "memory": 1536,
-      "maxDuration": 60
+      "maxDuration": 90
     },
     "api/cookie-banner.js": {
       "memory": 1536,
-      "maxDuration": 60
+      "maxDuration": 90
     },
     "api/cookie-banner-scan.js": {
       "memory": 1536,
-      "maxDuration": 60
+      "maxDuration": 90
     },
     "api/scan-domain-task.js": {
       "memory": 1536,
-      "maxDuration": 60
+      "maxDuration": 90
     },
     "api/cron-scan-domains.js": {
       "memory": 256,

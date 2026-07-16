@@ -682,6 +682,44 @@ export function categoryFromCookieName(name) {
     return null;
 }
 
+// ── First-party cookie → vendor attribution ───────────────────────────────────
+// Used when a cookie is set on the first-party domain (so domain-matching can't
+// identify the vendor) but the name is well-known enough to attribute it.
+const COOKIE_VENDOR_HINTS = [
+    { prefix: "_ga",          service: "Google Analytics"       },
+    { prefix: "_gac_",        service: "Google Ads"             },
+    { prefix: "_gcl_",        service: "Google Ads"             },
+    { exact:  "_fbp",         service: "Facebook / Meta Pixel"  },
+    { exact:  "_fbc",         service: "Facebook / Meta Pixel"  },
+    { prefix: "_uetsid",      service: "Microsoft Advertising"  },
+    { prefix: "_uetvid",      service: "Microsoft Advertising"  },
+    { exact:  "MUID",         service: "Microsoft Advertising"  },
+    { exact:  "MSFPC",        service: "Microsoft Advertising"  },
+    { exact:  "MR",           service: "Microsoft Advertising"  },
+    { exact:  "SRM_B",        service: "Microsoft Advertising"  },
+    { exact:  "ANONCHK",      service: "Microsoft Clarity"      },
+    { exact:  "SM",           service: "Microsoft Clarity"      },
+    { exact:  "_clck",        service: "Microsoft Clarity"      },
+    { exact:  "_clsk",        service: "Microsoft Clarity"      },
+    { prefix: "_hj",          service: "Hotjar"                 },
+    { exact:  "_ttp",         service: "TikTok Pixel"           },
+    { exact:  "hubspotutk",   service: "HubSpot"                },
+    { exact:  "__hstc",       service: "HubSpot"                },
+    { exact:  "__hssc",       service: "HubSpot"                },
+    { exact:  "__hssrc",      service: "HubSpot"                },
+    { exact:  "__kla_id",     service: "Klaviyo"                },
+    { prefix: "_pin_",        service: "Pinterest"              },
+    { exact:  "muc_ads",      service: "Twitter / X Pixel"      },
+];
+
+export function vendorFromCookieName(name) {
+    for (const p of COOKIE_VENDOR_HINTS) {
+        if (p.exact  && name === p.exact)          return p.service;
+        if (p.prefix && name.startsWith(p.prefix)) return p.service;
+    }
+    return null;
+}
+
 // ── Cookie descriptions ───────────────────────────────────────────────────────
 export const COOKIE_META = [
     // YouTube
@@ -768,12 +806,16 @@ export const COOKIE_META = [
     { prefix: "tp.",                    description: "Trustpilot cookie — used for review widget functionality and fraud prevention." },
     // Reddit
     { exact:  "reddaid",                description: "Reddit Ads cookie — identifies a visitor for Reddit advertising attribution." },
+    // DoubleClick / Google Ads
+    { exact:  "IDE",                    description: "DoubleClick ad targeting cookie — identifies a user's browser for ad personalisation and conversion tracking by Google. Expires after 13 months." },
     // Microsoft Advertising / Clarity
     { exact:  "MUID",                   description: "Microsoft unique identifier — tracks users across Microsoft sites for advertising. Expires after 1 year." },
     { exact:  "MR",                     description: "Microsoft redirect cookie — tracks ad click redirects for Bing Ads conversion measurement. Expires after 7 days." },
     { exact:  "SRM_B",                  description: "Bing remarketing cookie — identifies visitors for Bing Ads audience targeting and retargeting. Expires after 1 year." },
     { exact:  "ANONCHK",               description: "Microsoft Clarity anonymous check cookie — verifies that cookie-based session tracking is supported in the browser. Session cookie." },
     { exact:  "SM",                     description: "Microsoft Clarity session mapping cookie — links anonymous session data across page views for session replay. Session cookie." },
+    { prefix: "_uetsid",               description: "Microsoft UET session cookie — tracks the current browsing session for Bing Ads Universal Event Tracking. Expires after 24 hours." },
+    { prefix: "_uetvid",               description: "Microsoft UET visitor cookie — assigns a unique visitor ID for Bing Ads conversion and audience tracking. Expires after 13 months." },
     // Intercom
     { prefix: "intercom-",              description: "Intercom messenger cookie — stores visitor identity and session state for the chat widget." },
     // Pinterest
@@ -949,7 +991,7 @@ export async function scanDomain(domain) {
         });
 
         try {
-            await page.goto(`https://${domain}`, { waitUntil: "networkidle2", timeout: 25000 });
+            await page.goto(`https://${domain}`, { waitUntil: "networkidle2", timeout: 22000 });
         } catch (e) {
             if (!e.message.includes("timeout") && !e.message.includes("Navigation")) throw e;
         }
@@ -958,7 +1000,7 @@ export async function scanDomain(domain) {
         // flip to "granted" and analytics cookies (GA etc.) are actually written.
         // We poll until the function exists (banner JS not yet parsed) or time out.
         const clicked = await new Promise(resolve => {
-            const deadline = Date.now() + 6000;
+            const deadline = Date.now() + 5000;
             const interval = setInterval(async () => {
                 try {
                     const found = await page.evaluate(() => {
@@ -975,11 +1017,11 @@ export async function scanDomain(domain) {
         });
 
         if (clicked) {
-            // GA4 with GCM v2 often only writes _ga / _ga_* on a page load where
-            // consent is already granted from the start. Reload so GA initialises
-            // with the IntastellarConsentSolution cookie already present.
+            // GA4 with GCM v2 only writes _ga / _ga_* on a page load where consent is
+            // already granted from the start. Reload so GA initialises with the
+            // IntastellarConsentSolution cookie already present and sets its cookies.
             try {
-                await page.goto(`https://${domain}`, { waitUntil: "networkidle2", timeout: 25000 });
+                await page.goto(`https://${domain}`, { waitUntil: "networkidle2", timeout: 22000 });
             } catch (e) {
                 if (!e.message.includes("timeout") && !e.message.includes("Navigation")) throw e;
             }
@@ -1051,6 +1093,7 @@ export async function scanDomain(domain) {
                 expires:     c.expires !== -1 ? c.expires : null,
                 size:        c.size,
                 bannerCategory,
+                vendor:      matchedVendor?.service || vendorFromCookieName(c.name) || null,
                 description: describeCookie(c.name) || null,
             };
         });
