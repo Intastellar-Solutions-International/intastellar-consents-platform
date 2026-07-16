@@ -287,7 +287,8 @@ export default function CompliancePage() {
                 ["Name", "Domain", "Party", "Lifetime", "HttpOnly", "Secure", "SameSite"],
                 ...items.map(c => {
                     const isThird = !c.domain.replace(/^\./, "").endsWith(baseDomain);
-                    return [c.name, c.domain, isThird ? "3rd party" : "1st party", c.session ? "Session" : "Persistent", c.httpOnly ? "Yes" : "No", c.secure ? "Yes" : "No", c.sameSite || ""];
+                    const lifetime = c.session ? "Session" : c.expires ? new Date(c.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Persistent";
+                    return [c.name, c.domain, isThird ? "3rd party" : "1st party", lifetime, c.httpOnly ? "Yes" : "No", c.secure ? "Yes" : "No", c.sameSite || ""];
                 }),
             ];
             downloadCSV(rows, `pre-consent-cookies-${scanDomain}.csv`);
@@ -779,7 +780,11 @@ export default function CompliancePage() {
                                                             {isThird ? "3rd party" : "1st party"}
                                                         </span>
                                                         <span className={"compliance-cookies__row-lifetime" + (c.session ? " --session" : " --persistent")}>
-                                                            {c.session ? "Session" : "Persistent"}
+                                                            {c.session
+                                                                ? "Session"
+                                                                : c.expires
+                                                                    ? new Date(c.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+                                                                    : "Persistent"}
                                                         </span>
                                                         {c.bannerCategory && (() => {
                                                             const bm = BANNER_CATEGORY_META[c.bannerCategory];

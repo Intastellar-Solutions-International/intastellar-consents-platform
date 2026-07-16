@@ -130,7 +130,10 @@
                 html += '<td>' + esc(c.name) + '</td>';
                 html += '<td>' + esc(c.domain) + '</td>';
                 html += '<td>' + esc(provider) + '</td>';
-                html += '<td>' + (c.session ? L.session : L.persistent) + '</td>';
+                var lifetime = c.session
+                    ? L.session
+                    : (c.expires ? new Date(c.expires * 1000).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : L.persistent);
+                html += '<td>' + esc(lifetime) + '</td>';
                 html += '<td>' + esc(c.description || '') + '</td>';
                 html += '</tr>';
             });
