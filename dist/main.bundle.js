@@ -51090,8 +51090,8 @@ function CompliancePage() {
     setCookieOverrides(local);
 
     // Fetch from server and merge (server wins — syncs across sessions/browsers)
-    if (!id || !((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) !== null && _API$id !== void 0 && (_API$id = _API$id.gdpr) !== null && _API$id !== void 0 && _API$id.cookieOverrides)) return;
-    var cfg = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].gdpr.cookieOverrides.get;
+    if (!id || !((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) !== null && _API$id !== void 0 && _API$id.cookieOverrides)) return;
+    var cfg = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].cookieOverrides.get;
     fetch("".concat(cfg.url, "?domain=").concat(encodeURIComponent(d)), {
       method: cfg.method,
       headers: cfg.headers
@@ -51154,8 +51154,8 @@ function CompliancePage() {
       } catch (_unused5) {}
 
       // Persist to server (fire-and-forget)
-      if (id && (_API$id2 = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) !== null && _API$id2 !== void 0 && (_API$id2 = _API$id2.gdpr) !== null && _API$id2 !== void 0 && _API$id2.cookieOverrides) {
-        var cfg = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].gdpr.cookieOverrides.save;
+      if (id && (_API$id2 = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) !== null && _API$id2 !== void 0 && _API$id2.cookieOverrides) {
+        var cfg = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id].cookieOverrides.save;
         fetch(cfg.url, {
           method: cfg.method,
           headers: cfg.headers,

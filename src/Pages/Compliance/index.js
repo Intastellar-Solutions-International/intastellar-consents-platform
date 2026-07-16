@@ -274,8 +274,8 @@ export default function CompliancePage() {
         setCookieOverrides(local);
 
         // Fetch from server and merge (server wins — syncs across sessions/browsers)
-        if (!id || !API[id]?.gdpr?.cookieOverrides) return;
-        const cfg = API[id].gdpr.cookieOverrides.get;
+        if (!id || !API[id]?.cookieOverrides) return;
+        const cfg = API[id].cookieOverrides.get;
         fetch(`${cfg.url}?domain=${encodeURIComponent(d)}`, { method: cfg.method, headers: cfg.headers })
             .then(r => r.ok ? r.json() : null)
             .then(data => {
@@ -324,8 +324,8 @@ export default function CompliancePage() {
             try { localStorage.setItem(`cookieOverrides_${d}`, JSON.stringify(next)); } catch {}
 
             // Persist to server (fire-and-forget)
-            if (id && API[id]?.gdpr?.cookieOverrides) {
-                const cfg = API[id].gdpr.cookieOverrides.save;
+            if (id && API[id]?.cookieOverrides) {
+                const cfg = API[id].cookieOverrides.save;
                 fetch(cfg.url, {
                     method: cfg.method,
                     headers: cfg.headers,
