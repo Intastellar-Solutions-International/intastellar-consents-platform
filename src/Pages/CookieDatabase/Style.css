@@ -1,0 +1,249 @@
+.cdb-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+}
+
+.cdb-tab {
+    padding: 7px 18px;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.cdb-tab.--active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #f2f2f2;
+}
+
+.cdb-tab:hover:not(.--active) {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.cdb-table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cdb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.cdb-table th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    white-space: nowrap;
+}
+
+.cdb-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.82);
+    vertical-align: top;
+}
+
+.cdb-table tr:last-child td {
+    border-bottom: none;
+}
+
+.cdb-table tr:hover td {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.cdb-name {
+    font-family: monospace;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #c8d8ff;
+    white-space: nowrap;
+}
+
+.cdb-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.cdb-badge.--analytics  { background: rgba(80,130,210,0.2); border: 1px solid rgba(80,130,210,0.35); color: #88b0e8; }
+.cdb-badge.--marketing  { background: rgba(220,80,80,0.2);  border: 1px solid rgba(220,80,80,0.35);  color: #f0a8a0; }
+.cdb-badge.--necessary  { background: rgba(80,180,100,0.2); border: 1px solid rgba(80,180,100,0.35); color: #7dd590; }
+.cdb-badge.--functional { background: rgba(192,159,83,0.2); border: 1px solid rgba(192,159,83,0.35); color: #d4b87a; }
+.cdb-badge.--security   { background: rgba(160,80,220,0.2); border: 1px solid rgba(160,80,220,0.35); color: #c88afa; }
+.cdb-badge.--pending    { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.45); }
+
+.cdb-source-tag {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.45);
+    white-space: nowrap;
+}
+
+.cdb-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 5px 8px;
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    width: 100%;
+    min-width: 90px;
+    outline: none;
+}
+
+.cdb-input:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cdb-select {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 5px 8px;
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.cdb-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.cdb-btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.cdb-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.cdb-btn.--promote {
+    background: rgba(80, 200, 120, 0.2);
+    border: 1px solid rgba(80, 200, 120, 0.4);
+    color: #7dd590;
+}
+
+.cdb-btn.--promote:hover:not(:disabled) {
+    background: rgba(80, 200, 120, 0.32);
+}
+
+.cdb-btn.--dismiss {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.cdb-btn.--dismiss:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.cdb-btn.--delete {
+    background: rgba(220, 80, 80, 0.12);
+    border: 1px solid rgba(220, 80, 80, 0.3);
+    color: #f0a8a0;
+}
+
+.cdb-btn.--delete:hover:not(:disabled) {
+    background: rgba(220, 80, 80, 0.22);
+}
+
+.cdb-count {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    margin-left: 6px;
+}
+
+.cdb-empty {
+    padding: 40px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.875rem;
+}
+
+.cdb-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: rgba(30, 38, 46, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #f2f2f2;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    z-index: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+}
+
+.cdb-filter-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.cdb-filter-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    outline: none;
+    min-width: 200px;
+}
+
+.cdb-filter-input:focus {
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.cdb-times-seen {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    font-variant-numeric: tabular-nums;
+}
+
+.cdb-desc-cell {
+    max-width: 260px;
+    font-size: 0.775rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.4;
+}

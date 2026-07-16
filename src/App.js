@@ -45,6 +45,7 @@ import ROPA from "./Pages/Settings/ROPA";
 import ROPAEntry from "./Pages/Settings/ROPA/ROPAEntry";
 import DSR from "./Pages/DSR";
 import DSRDetail from "./Pages/DSR/DSRDetail";
+import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
 import { canAccess } from "./Functions/tier.js";
@@ -425,6 +426,11 @@ export default function App() {
                                         <Route path="/experiments/:experimentId">
                                             <ErrorBoundary>
                                                 <Experiments />
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/cookie-database" exact>
+                                            <ErrorBoundary>
+                                                {Number(getOrg()?.id) === 1 ? <CookieDatabase /> : <p style={{ padding: "40px", color: "#999" }}>Admin access required.</p>}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/api" render={() => null} />

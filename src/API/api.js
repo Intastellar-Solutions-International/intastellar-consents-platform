@@ -536,6 +536,18 @@ const API = {
             headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
         },
     },
+    cookieDiscoveries: {
+        get: {
+            url: `${ScannerHost}/api/admin-cookie-discoveries`,
+            method: "GET",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+        action: {
+            url: `${ScannerHost}/api/admin-cookie-discoveries`,
+            method: "POST",
+            headers: { "Authorization": Authentication.getToken(), "Organisation": Authentication.getOrganisation(), "Content-Type": "application/json" }
+        },
+    },
     ropa: {
         list: {
             url: `${ScannerHost}/api/ropa`,
