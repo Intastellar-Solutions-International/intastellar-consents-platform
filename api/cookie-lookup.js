@@ -216,7 +216,7 @@ export default async function handler(req, res) {
 
     const cookies = [...verifiedList, ...definitions, ...filteredDiscovered];
 
-    res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=3600");
+    res.setHeader("Cache-Control", "public, s-maxage=30, stale-while-revalidate=60");
     return res.json({
         total:      cookies.length,
         verified:   verifiedList.length,
