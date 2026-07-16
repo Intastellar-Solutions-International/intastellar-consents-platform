@@ -209,6 +209,83 @@ export default async function handler(req, res) {
             }
         }
 
+        // Batch promote — accepts optional items array from frontend (with user edits merged in)
+        if (action === "batch_promote") {
+            const { items } = req.body ?? {};
+
+            // If frontend sent explicit items (with user edits), use those
+            // Otherwise fall back to DB enriched values
+            let candidates;
+            if (Array.isArray(items) && items.length) {
+                candidates = items;
+            } else {
+                const { rows } = await db.query(`
+                    SELECT name, enriched_vendor AS vendor, enriched_category AS category,
+                           enriched_description AS description
+                      FROM cookie_discoveries
+                     WHERE status = 'pending'
+                       AND (enriched_vendor IS NOT NULL OR enriched_category IS NOT NULL)
+                `);
+                candidates = rows;
+            }
+
+            let promoted = 0;
+            for (const row of candidates) {
+                if (!row.name) continue;
+                await db.query(`
+                    INSERT INTO cookie_definitions
+                        (name, is_prefix, vendor, category, description, promoted_by_org)
+                    VALUES ($1, $2, $3, $4, $5, 1)
+                    ON CONFLICT (name) DO UPDATE SET
+                        is_prefix   = EXCLUDED.is_prefix,
+                        vendor      = EXCLUDED.vendor,
+                        category    = EXCLUDED.category,
+                        description = EXCLUDED.description,
+                        promoted_at = NOW()
+                `, [row.name, !!row.is_prefix, row.vendor || null,
+                    row.category || null, row.description || null]);
+
+                await db.query(
+                    `UPDATE cookie_discoveries SET status = 'promoted' WHERE name = $1`,
+                    [row.name]
+                );
+                promoted++;
+            }
+
+            console.log(`[admin-cookie-discoveries] batch_promote: ${promoted} cookies promoted`);
+            return res.json({ ok: true, action: "batch_promote", promoted });
+        }
+
+        // Batch dismiss all discoveries that have no useful data (from DB or frontend)
+        if (action === "batch_dismiss_empty") {
+            const { names } = req.body ?? {};
+
+            let dismissed = 0;
+            if (Array.isArray(names) && names.length) {
+                // Frontend tells us exactly which names to dismiss
+                for (const n of names) {
+                    await db.query(
+                        `UPDATE cookie_discoveries SET status = 'dismissed' WHERE name = $1 AND status = 'pending'`,
+                        [n]
+                    );
+                    dismissed++;
+                }
+            } else {
+                const { rows } = await db.query(`
+                    UPDATE cookie_discoveries
+                       SET status = 'dismissed'
+                     WHERE status = 'pending'
+                       AND enriched_vendor   IS NULL
+                       AND enriched_category IS NULL
+                    RETURNING name
+                `);
+                dismissed = rows.length;
+            }
+
+            console.log(`[admin-cookie-discoveries] batch_dismiss_empty: ${dismissed} cookies dismissed`);
+            return res.json({ ok: true, action: "batch_dismiss_empty", dismissed });
+        }
+
         if (!name) {
             return res.status(400).json({ error: "name is required" });
         }
@@ -251,55 +328,6 @@ export default async function handler(req, res) {
                 [name]
             );
             return res.json({ ok: true, action: "dismissed", name });
-        }
-
-        // Batch promote all discoveries that have enriched vendor or category
-        if (action === "batch_promote") {
-            const { rows: candidates } = await db.query(`
-                SELECT name, enriched_vendor, enriched_category, enriched_description
-                  FROM cookie_discoveries
-                 WHERE status = 'pending'
-                   AND (enriched_vendor IS NOT NULL OR enriched_category IS NOT NULL)
-            `);
-
-            let promoted = 0;
-            for (const row of candidates) {
-                await db.query(`
-                    INSERT INTO cookie_definitions
-                        (name, is_prefix, vendor, category, description, promoted_by_org)
-                    VALUES ($1, false, $2, $3, $4, 1)
-                    ON CONFLICT (name) DO UPDATE SET
-                        vendor      = EXCLUDED.vendor,
-                        category    = EXCLUDED.category,
-                        description = EXCLUDED.description,
-                        promoted_at = NOW()
-                `, [row.name, row.enriched_vendor || null,
-                    row.enriched_category || null, row.enriched_description || null]);
-
-                await db.query(
-                    `UPDATE cookie_discoveries SET status = 'promoted' WHERE name = $1`,
-                    [row.name]
-                );
-                promoted++;
-            }
-
-            console.log(`[admin-cookie-discoveries] batch_promote: ${promoted} cookies promoted`);
-            return res.json({ ok: true, action: "batch_promote", promoted });
-        }
-
-        // Batch dismiss all discoveries that have no enriched data at all
-        if (action === "batch_dismiss_empty") {
-            const { rows } = await db.query(`
-                UPDATE cookie_discoveries
-                   SET status = 'dismissed'
-                 WHERE status = 'pending'
-                   AND enriched_vendor   IS NULL
-                   AND enriched_category IS NULL
-                RETURNING name
-            `);
-
-            console.log(`[admin-cookie-discoveries] batch_dismiss_empty: ${rows.length} cookies dismissed`);
-            return res.json({ ok: true, action: "batch_dismiss_empty", dismissed: rows.length });
         }
 
         // Delete a promoted definition (reverts to discoverable again)

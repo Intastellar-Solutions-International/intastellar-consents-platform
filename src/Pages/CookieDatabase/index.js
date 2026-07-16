@@ -24,10 +24,38 @@ function Toast({ message, onDone }) {
     return <div className="cdb-toast">{message}</div>;
 }
 
-function DiscoveriesTab({ discoveries, onAction }) {
+function DiscoveriesTab({ discoveries, onAction, onBatchAction }) {
     const [filter, setFilter] = useState("");
     const [busy, setBusy] = useState({});
     const [edits, setEdits] = useState({});
+
+    function mergedRow(row) {
+        const e = edits[row.name] || {};
+        return {
+            name:        row.name,
+            is_prefix:   e.is_prefix   ?? false,
+            vendor:      e.vendor      ?? row.enriched_vendor      ?? null,
+            category:    e.category    ?? row.enriched_category    ?? null,
+            description: e.description ?? row.enriched_description ?? null,
+        };
+    }
+
+    function hasData(row) {
+        const m = mergedRow(row);
+        return !!(m.vendor || m.category);
+    }
+
+    function batchPromote() {
+        const items = discoveries.filter(hasData).map(mergedRow);
+        onBatchAction("batch_promote", { items },
+            `Promote ${items.length} cookie${items.length !== 1 ? "s" : ""} with vendor or category?`);
+    }
+
+    function batchDismissEmpty() {
+        const names = discoveries.filter(d => !hasData(d)).map(d => d.name);
+        onBatchAction("batch_dismiss_empty", { names },
+            `Dismiss ${names.length} cookie${names.length !== 1 ? "s" : ""} with no data?`);
+    }
 
     const filtered = discoveries.filter(d =>
         !filter || d.name.toLowerCase().includes(filter.toLowerCase())
@@ -73,6 +101,14 @@ function DiscoveriesTab({ discoveries, onAction }) {
                     onChange={e => setFilter(e.target.value)}
                 />
                 <span className="cdb-count">{filtered.length} cookie{filtered.length !== 1 ? "s" : ""}</span>
+                <div style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
+                    <button className="cdb-btn --promote" onClick={batchPromote}>
+                        Promote all with data ({discoveries.filter(hasData).length})
+                    </button>
+                    <button className="cdb-btn --dismiss" onClick={batchDismissEmpty}>
+                        Dismiss all without data ({discoveries.filter(d => !hasData(d)).length})
+                    </button>
+                </div>
             </div>
 
             <div className="cdb-table-wrap">
@@ -294,19 +330,19 @@ export default function CookieDatabase() {
         }
     }
 
-    async function runBatchAction(action, confirmMsg) {
+    async function runBatchAction(action, body, confirmMsg) {
         if (!window.confirm(confirmMsg)) return;
         try {
             const res = await fetch(API.cookieDiscoveries.action.url, {
                 method: "POST",
                 headers: API.cookieDiscoveries.action.headers,
-                body: JSON.stringify({ action }),
+                body: JSON.stringify({ action, ...body }),
             });
             const data = await res.json();
             if (!res.ok) {
                 setToast(data.error || "Action failed.");
             } else if (action === "batch_promote") {
-                setToast(`Promoted ${data.promoted} cookies with enriched data.`);
+                setToast(`Promoted ${data.promoted} cookies.`);
                 load();
             } else if (action === "batch_dismiss_empty") {
                 setToast(`Dismissed ${data.dismissed} cookies with no data.`);
@@ -357,47 +393,27 @@ export default function CookieDatabase() {
                 </div>
             </StickyPageTitle>
             <main className="dashboard-content">
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
-                    <div className="cdb-tabs" style={{ marginBottom: 0 }}>
-                        <button
-                            className={`cdb-tab${tab === "discoveries" ? " --active" : ""}`}
-                            onClick={() => setTab("discoveries")}
-                        >
-                            Discovered
-                            <span className="cdb-count">{discoveries.length}</span>
-                        </button>
-                        <button
-                            className={`cdb-tab${tab === "definitions" ? " --active" : ""}`}
-                            onClick={() => setTab("definitions")}
-                        >
-                            Promoted
-                            <span className="cdb-count">{definitions.length}</span>
-                        </button>
-                    </div>
-                    {tab === "discoveries" && (
-                        <div style={{ display: "flex", gap: "8px" }}>
-                            <button
-                                className="cdb-btn --promote"
-                                onClick={() => runBatchAction("batch_promote",
-                                    `Promote all ${discoveries.filter(d => d.enriched_vendor || d.enriched_category).length} cookies that have enriched vendor or category?`)}
-                            >
-                                Promote all with data
-                            </button>
-                            <button
-                                className="cdb-btn --dismiss"
-                                onClick={() => runBatchAction("batch_dismiss_empty",
-                                    `Dismiss all ${discoveries.filter(d => !d.enriched_vendor && !d.enriched_category).length} cookies with no enriched data?`)}
-                            >
-                                Dismiss all without data
-                            </button>
-                        </div>
-                    )}
+                <div className="cdb-tabs">
+                    <button
+                        className={`cdb-tab${tab === "discoveries" ? " --active" : ""}`}
+                        onClick={() => setTab("discoveries")}
+                    >
+                        Discovered
+                        <span className="cdb-count">{discoveries.length}</span>
+                    </button>
+                    <button
+                        className={`cdb-tab${tab === "definitions" ? " --active" : ""}`}
+                        onClick={() => setTab("definitions")}
+                    >
+                        Promoted
+                        <span className="cdb-count">{definitions.length}</span>
+                    </button>
                 </div>
 
                 {loading ? (
                     <div className="cdb-empty">Loading…</div>
                 ) : tab === "discoveries" ? (
-                    <DiscoveriesTab discoveries={discoveries} onAction={onAction} />
+                    <DiscoveriesTab discoveries={discoveries} onAction={onAction} onBatchAction={runBatchAction} />
                 ) : (
                     <DefinitionsTab definitions={definitions} onAction={onAction} />
                 )}
