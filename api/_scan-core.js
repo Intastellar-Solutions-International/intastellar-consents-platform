@@ -40,6 +40,8 @@ export const TRACKERS = [
     { domains: ["datadoghq.com", "browser-intake-datadoghq.com"],   service: "Datadog",             category: "analytics"    },
     { domains: ["mc.yandex.ru", "mc.yandex.com", "yandex.ru"],      service: "Yandex Metrica",      category: "analytics"    },
     { domains: ["luckyorange.com", "luckyorange.net"],               service: "Lucky Orange",        category: "analytics"    },
+    { domains: ["chartbeat.com", "chartbeat.net", "static.chartbeat.com"], service: "Chartbeat",   category: "analytics"    },
+    { domains: ["woopra.com", "static.woopra.com"],                  service: "Woopra",             category: "analytics"    },
     { domains: ["inspectlet.com"],                                   service: "Inspectlet",          category: "analytics"    },
     { domains: ["bugsnag.com"],                                      service: "Bugsnag",             category: "analytics"    },
     { domains: ["rollbar.com"],                                      service: "Rollbar",             category: "analytics"    },
@@ -192,7 +194,7 @@ export const DATA_COUNTRIES = {
     "Wistia": "US", "Optimizely": "US", "AB Tasty": "FR",
     "Kameleoon": "FR", "VWO": "US",
     "PostHog": "US", "Datadog": "US", "Yandex Metrica": "RU",
-    "Lucky Orange": "US", "Inspectlet": "US", "Bugsnag": "GB", "Rollbar": "US",
+    "Lucky Orange": "US", "Chartbeat": "US", "Woopra": "US", "GitHub": "US", "Inspectlet": "US", "Bugsnag": "GB", "Rollbar": "US",
     "Jetpack / WP.com Stats": "US", "Zoho PageSense": "US",
     // Advertising
     "Facebook / Meta Pixel": "US", "Google Ads": "US",
@@ -292,7 +294,7 @@ export const DATA_REGIONS = {
     "Google Reviews":      "non-eu",
     // Analytics (new)
     "PostHog": "non-eu", "Datadog": "non-eu", "Yandex Metrica": "non-eu",
-    "Lucky Orange": "non-eu", "Inspectlet": "non-eu", "Bugsnag": "non-eu",
+    "Lucky Orange": "non-eu", "Chartbeat": "non-eu", "Woopra": "non-eu", "GitHub": "non-eu", "Inspectlet": "non-eu", "Bugsnag": "non-eu",
     "Rollbar": "non-eu", "Jetpack / WP.com Stats": "non-eu", "Zoho PageSense": "non-eu",
     // Fingerprinting
     "FingerprintJS": "non-eu", "SEON": "eu",
@@ -360,6 +362,9 @@ export const VENDOR_META = {
     "Datadog":            { description: "Cloud monitoring and analytics platform", privacyUrl: "https://www.datadoghq.com/legal/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
     "Yandex Metrica":     { description: "Web analytics service by Yandex with session replay", privacyUrl: "https://yandex.com/legal/privacy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
     "Lucky Orange":       { description: "Conversion optimisation with heatmaps and session recordings", privacyUrl: "https://www.luckyorange.com/privacy.php", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Chartbeat":          { description: "Real-time content analytics platform for publishers and media companies", privacyUrl: "https://chartbeat.com/privacy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Woopra":             { description: "Customer analytics platform tracking user journeys across website and app touchpoints", privacyUrl: "https://www.woopra.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "GitHub":             { description: "Software development and version control platform; sets analytics cookies on github.com", privacyUrl: "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "Bugsnag":            { description: "Application error monitoring and crash reporting", privacyUrl: "https://smartbear.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "Rollbar":            { description: "Real-time error tracking and debugging platform", privacyUrl: "https://rollbar.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
     "Jetpack / WP.com Stats": { description: "WordPress.com site statistics and performance tools", privacyUrl: "https://automattic.com/privacy/", legalBasis: "legitimate_interest", transferMechanism: "EU-US Data Privacy Framework" },
@@ -826,6 +831,33 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "s_nr",              service: "Adobe Analytics"     },
     { exact:  "geo",               service: "Apple"               },
     { exact:  "mk_epub",           service: "Apple"               },
+    { prefix: "_dc_gtm_",          service: "Google Tag Manager"  },
+    { exact:  "__utmt",            service: "Google Analytics"    },
+    { exact:  "__utmv",            service: "Google Analytics"    },
+    { exact:  "__utmd",            service: "Google Analytics"    },
+    { exact:  "OTZ",              service: "Google Analytics"    },
+    { exact:  "vuid",              service: "Vimeo"               },
+    { prefix: "_pk_id",            service: "Matomo"              },
+    { prefix: "_pk_ses",           service: "Matomo"              },
+    { prefix: "_pk_ref",           service: "Matomo"              },
+    { prefix: "_pk_cvar",          service: "Matomo"              },
+    { prefix: "AMCV_",             service: "Adobe Analytics"     },
+    { prefix: "AMCVS_",            service: "Adobe Analytics"     },
+    { prefix: "ajs_",              service: "Segment"             },
+    { prefix: "mp_",               service: "Mixpanel"            },
+    { exact:  "fs_uid",            service: "FullStory"           },
+    { prefix: "fs_",               service: "FullStory"           },
+    { prefix: "_hp2_",             service: "Heap"                },
+    { prefix: "_hp2id",            service: "Heap"                },
+    { prefix: "_ym_",              service: "Yandex Metrica"      },
+    { prefix: "mf_",               service: "Mouseflow"           },
+    { prefix: "SL_",               service: "Smartlook"           },
+    { exact:  "_lo_uid",           service: "Lucky Orange"        },
+    { exact:  "_lo_v",             service: "Lucky Orange"        },
+    { prefix: "__chartbeat",       service: "Chartbeat"           },
+    { exact:  "cpu_bucket",        service: "Chartbeat"           },
+    { exact:  "wooTracker",        service: "Woopra"              },
+    { exact:  "_octo",             service: "GitHub"              },
     { exact:  "IntastellarConsentSolution", service: "Intastellar Consents" },
 ];
 
@@ -860,11 +892,16 @@ export const COOKIE_META = [
     { prefix: "_gcl_aw",               description: "Google Ads click ID — stores the Google Click Identifier (GCLID) for conversion tracking." },
     { prefix: "_gcl_dc",               description: "Google DoubleClick click ID — stores the DCLID for display ad conversion tracking." },
     { prefix: "_gcl_",                 description: "Google conversion linker cookie — associates ad clicks with on-site actions for attribution." },
+    { prefix: "_dc_gtm_",              description: "Google Tag Manager container throttle cookie — limits the firing rate of a specific GTM container tag. Expires after 1 minute." },
     // Old Google Analytics (ga.js / urchin)
     { exact:  "__utma",                 description: "Google Analytics legacy cookie — tracks unique visitors and session count. Expires after 2 years." },
     { exact:  "__utmb",                 description: "Google Analytics legacy session cookie — tracks session start time. Expires after 30 minutes." },
     { exact:  "__utmc",                 description: "Google Analytics legacy session end cookie — used to determine whether to start a new session." },
     { exact:  "__utmz",                 description: "Google Analytics legacy referral cookie — stores traffic source and campaign data. Expires after 6 months." },
+    { exact:  "__utmt",                 description: "Google Analytics legacy throttle cookie — limits the request rate to Google Analytics. Expires after 10 minutes." },
+    { exact:  "__utmv",                 description: "Google Analytics legacy custom variable cookie — stores visitor-level custom segmentation data. Expires after 2 years." },
+    { exact:  "__utmd",                 description: "Google Analytics legacy domain cookie — stores domain information used for cross-domain tracking configuration." },
+    { exact:  "OTZ",                    description: "Google personalisation cookie — used for aggregated analysis of website visits to Google services. Expires after 1 month." },
     // Hotjar
     { exact:  "_hjid",                  description: "Hotjar user ID cookie — assigns a unique ID to a visitor to track across sessions. Expires after 1 year." },
     { prefix: "_hjSession_",            description: "Hotjar current session data — stores session attributes including whether the user is in a recording sample." },
@@ -902,6 +939,7 @@ export const COOKIE_META = [
     { exact:  "_cq_suid",              description: "Contentsquare session user ID — assigns a unique ID to each visitor session for heatmap and session replay analysis." },
     { exact:  "_cq_session",           description: "Contentsquare session cookie — tracks the current visitor session for digital experience analytics. Expires after 30 minutes." },
     { exact:  "_cq_s",                 description: "Contentsquare segment cookie — stores visitor segment data for digital experience analytics and personalisation." },
+    { prefix: "_cq_",                  description: "Contentsquare analytics cookie — used for digital experience analytics, session recording and user journey analysis." },
     // Impact affiliate
     { exact:  "IR_PI",                 description: "Impact page impression cookie — tracks page views for Impact's affiliate and partnership attribution platform." },
     { exact:  "IR_gbd",               description: "Impact global browser data — stores browser information for Impact's affiliate and partnership conversion tracking." },
@@ -997,6 +1035,42 @@ export const COOKIE_META = [
     // Apple
     { exact:  "geo",                     description: "Apple geo-routing cookie — stores the visitor's detected country code to redirect to the correct regional Apple Store. Session cookie." },
     { exact:  "mk_epub",                 description: "Apple marketing attribution cookie — tracks which marketing campaign directed the visitor to Apple.com for campaign performance measurement." },
+    // Vimeo
+    { exact:  "vuid",                  description: "Vimeo user ID cookie — assigns a unique identifier to a visitor for video analytics and content personalisation. Expires after 2 years." },
+    // Matomo / Piwik
+    { prefix: "_pk_id",                description: "Matomo visitor ID cookie — stores a unique visitor identifier for open-source analytics. Expires after 13 months." },
+    { prefix: "_pk_ses",               description: "Matomo session cookie — identifies whether this is a new or returning session. Expires after 30 minutes." },
+    { prefix: "_pk_ref",               description: "Matomo referrer cookie — stores the attribution referral source for the current session. Expires after 6 months." },
+    { prefix: "_pk_cvar",              description: "Matomo custom variable cookie — stores visitor-level custom segmentation variables. Expires after 2 years." },
+    // Adobe Marketing Cloud
+    { prefix: "AMCV_",                 description: "Adobe Marketing Cloud visitor ID — stores a unique visitor identifier for the Adobe Marketing Cloud suite. Expires after 2 years." },
+    { prefix: "AMCVS_",                description: "Adobe Marketing Cloud session — identifies the current visitor session within the Adobe Marketing Cloud suite. Session cookie." },
+    // Segment
+    { prefix: "ajs_",                  description: "Segment Analytics.js cookie — stores an anonymous user ID and session data for Segment's customer data platform." },
+    // Mixpanel
+    { prefix: "mp_",                   description: "Mixpanel analytics cookie — stores a distinct visitor ID and event properties for product analytics tracking." },
+    // FullStory
+    { exact:  "fs_uid",                description: "FullStory user ID — stores a unique identifier for session recording and digital experience analytics. Expires after 1 year." },
+    { prefix: "fs_",                   description: "FullStory session cookie — associates page views with a specific session recording in FullStory." },
+    // Heap
+    { prefix: "_hp2_",                 description: "Heap analytics cookie — tracks user events and interactions automatically for product analytics. Expires after 13 months." },
+    { prefix: "_hp2id",                description: "Heap visitor ID — stores a unique visitor identifier for Heap's automatic event capture analytics." },
+    // Yandex Metrica
+    { prefix: "_ym_",                  description: "Yandex Metrica cookie — stores visitor ID, session data and ad-blocker status for Yandex's web analytics platform." },
+    // Mouseflow
+    { prefix: "mf_",                   description: "Mouseflow session cookie — associates page views and interactions with a specific Mouseflow session recording." },
+    // Smartlook
+    { prefix: "SL_",                   description: "Smartlook session cookie — stores session data for Smartlook's session recording and event analytics platform." },
+    // Lucky Orange
+    { exact:  "_lo_uid",               description: "Lucky Orange user ID — assigns a persistent unique identifier to a visitor for heatmaps and session recordings. Expires after 1 year." },
+    { exact:  "_lo_v",                 description: "Lucky Orange visit counter — records the number of times a visitor has been to the site. Expires after 1 year." },
+    // Chartbeat
+    { prefix: "__chartbeat",           description: "Chartbeat analytics cookie — tracks real-time visitor engagement, page performance and content metrics for publishers." },
+    { exact:  "cpu_bucket",            description: "Chartbeat performance bucket — segments visitors by device CPU capability for content performance analysis." },
+    // Woopra
+    { exact:  "wooTracker",            description: "Woopra visitor tracker — stores a unique visitor identifier for Woopra's customer analytics and journey tracking platform." },
+    // GitHub
+    { exact:  "_octo",                 description: "GitHub analytics cookie — stores a unique visitor ID used for GitHub's internal session and usage analytics. Expires after 1 year." },
     // Consent management
     { exact:  "IntastellarConsentSolution", description: "Intastellar Consents record — stores the visitor's consent choices for this website. Expires after 3 months." },
     { prefix: "OptanonConsent",        description: "OneTrust consent record — stores the visitor's cookie category consent choices." },
