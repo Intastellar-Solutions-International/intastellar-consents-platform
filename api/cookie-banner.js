@@ -433,7 +433,8 @@ async function loadOverrides(db, domain) {
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    // Include Cache-Control so fetch({ cache: 'no-cache' }) doesn't trigger a preflight failure in Safari
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Cache-Control");
     res.setHeader("Access-Control-Max-Age", "86400");
 
     if (req.method === "OPTIONS") return res.status(204).end();
@@ -482,6 +483,7 @@ export default async function handler(req, res) {
         );
 
         if (pending.length) {
+            res.setHeader("Cache-Control", "no-store");
             return res.status(202).json({
                 domain,
                 status:  "scan_in_progress",
@@ -506,6 +508,7 @@ export default async function handler(req, res) {
         }
 
         if (error) {
+            res.setHeader("Cache-Control", "no-store");
             return res.status(503).json({
                 domain,
                 status:  "scan_failed",
@@ -524,6 +527,7 @@ export default async function handler(req, res) {
 
     } catch (err) {
         console.error("[cookie-banner] error:", err.message);
+        res.setHeader("Cache-Control", "no-store");
         return res.status(500).json({ error: "Internal server error" });
     }
 }
