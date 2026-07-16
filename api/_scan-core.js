@@ -62,13 +62,24 @@ export const TRACKERS = [
     { domains: ["rubiconproject.com"],                            service: "Magnite (Rubicon)",     category: "advertising"    },
     { domains: ["pubmatic.com"],                                  service: "PubMatic",              category: "advertising"    },
     { domains: ["openx.net", "openx.com"],                       service: "OpenX",                 category: "advertising"    },
-    { domains: ["hs-analytics.net", "hs-scripts.com", "hubspot.com", "hubspot.net", "hsadspixel.net", "hubspotlinks.com", "leadin.com", "hscta.net", "hsleadflows.net"], service: "HubSpot", category: "advertising" },
+    { domains: ["hs-analytics.net", "hs-scripts.com", "hubspot.com", "hubspot.net", "hsadspixel.net", "hubspotlinks.com", "leadin.com", "hscta.net", "hsleadflows.net", "try-hubspot.com", "hubspotusercontent-na1.net", "hubspotfeedback.com"], service: "HubSpot", category: "advertising" },
     { domains: ["pardot.com"],                                    service: "Salesforce Pardot",     category: "advertising"    },
     { domains: ["scorecardresearch.com"],                         service: "Comscore",              category: "advertising"    },
     { domains: ["adnxs.com", "xandr.com"],                       service: "Xandr / AppNexus",      category: "advertising"    },
     { domains: ["zemanta.com"],                                   service: "Zemanta",               category: "advertising"    },
     { domains: ["adform.net"],                                    service: "Adform",                category: "advertising"    },
     { domains: ["capterra.com", "capterra.co.uk", "capterra.fr", "capterra.de", "capterra.es", "capterra.it", "capterra.com.au", "capterra.ca"], service: "Capterra", category: "advertising" },
+    { domains: ["trkn.us", "barometric.com"],                                                                     service: "Barometric",    category: "advertising"    },
+    { domains: ["tapad.com"],                                                                                       service: "Tapad",         category: "advertising"    },
+    { domains: ["mountain.com", "px.mountain.com", "dx.mountain.com", "gs.mountain.com"],                          service: "Mountain",       category: "advertising"    },
+    { domains: ["greencolumnart.com"],                                                                              service: "LiveRamp",       category: "advertising"    },
+    { domains: ["pdst.fm", "cdn.pdst.fm"],                                                                         service: "Podscribe",      category: "analytics"      },
+    { domains: ["veritonic.com", "veritonicmetrics.com"],                                                           service: "Veritonic",      category: "analytics"      },
+    { domains: ["impactradius-event.com", "impact.com", "sjv.io"],                                                  service: "Impact",         category: "advertising"    },
+    { domains: ["byspotify.com", "pixels.spotify.com"],                                                             service: "Spotify Ads",    category: "advertising"    },
+    { domains: ["tvsquared.com"],                                                                                   service: "TVSquared",      category: "analytics"      },
+    { domains: ["s10h.io", "ssqt.io"],                                                                             service: "Sojern",         category: "advertising"    },
+    { domains: ["contentsquare.net", "contentsquare.com"],                                                          service: "Contentsquare",  category: "analytics"      },
     { domains: ["ct.pinterest.com", "pinimg.com", "pinterest.com"], service: "Pinterest",          category: "advertising"    },
     { domains: ["alb.reddit.com", "redd.it", "redditstatic.com"], service: "Reddit Ads",           category: "advertising"    },
     { domains: ["list-manage.com", "chimpstatic.com", "mailchimp.com", "mailchimpapp.com"], service: "Mailchimp", category: "advertising" },
@@ -191,7 +202,9 @@ export const DATA_COUNTRIES = {
     "The Trade Desk": "US", "Magnite (Rubicon)": "US", "PubMatic": "US",
     "OpenX": "US", "HubSpot": "US", "Salesforce Pardot": "US",
     "Comscore": "US", "Xandr / AppNexus": "US", "Zemanta": "US",
-    "Adform": "DK", "Capterra": "US", "Pinterest": "US",
+    "Adform": "DK", "Capterra": "US", "Barometric": "US", "Tapad": "US", "Mountain": "US",
+    "LiveRamp": "US", "Podscribe": "US", "Veritonic": "US", "Impact": "US",
+    "Spotify Ads": "US", "TVSquared": "US", "Sojern": "US", "Contentsquare": "FR", "Pinterest": "US",
     "Reddit Ads": "US", "Mailchimp": "US", "Klaviyo": "US", "Omnisend": "US",
     "G2": "US", "Yahoo Advertising": "US", "Adobe Marketo": "US",
     "ActiveCampaign": "US", "Brevo (Sendinblue)": "FR", "MailerLite": "US",
@@ -256,6 +269,9 @@ export const DATA_REGIONS = {
     "Salesforce Pardot":      "non-eu", "Comscore":               "non-eu",
     "Xandr / AppNexus":       "non-eu", "Zemanta":                "non-eu",
     "Adform":                 "eu",     "Capterra":               "non-eu",
+    "Barometric": "non-eu", "Tapad": "non-eu", "Mountain": "non-eu", "LiveRamp": "non-eu",
+    "Podscribe": "non-eu", "Veritonic": "non-eu", "Impact": "non-eu",
+    "Spotify Ads": "non-eu", "TVSquared": "non-eu", "Sojern": "non-eu", "Contentsquare": "eu",
     "Pinterest":              "non-eu", "Reddit Ads":             "non-eu",
     "Mailchimp":              "non-eu", "Klaviyo":                "non-eu", "Omnisend": "non-eu",
     "G2":                     "non-eu", "Yahoo Advertising":      "non-eu",
@@ -379,6 +395,17 @@ export const VENDOR_META = {
     "Taboola":            { description: "Content recommendation and native advertising network", privacyUrl: "https://www.taboola.com/privacy-policy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
     "Criteo":             { description: "Retargeting and performance display advertising platform", privacyUrl: "https://www.criteo.com/privacy/", legalBasis: "consent", transferMechanism: "EEA" },
     "The Trade Desk":     { description: "Demand-side programmatic advertising platform", privacyUrl: "https://www.thetradedesk.com/us/privacy", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+        "Barometric":    { description: "Cross-device programmatic advertising and attribution platform", privacyUrl: "https://barometric.com/privacy-policy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Tapad":         { description: "Cross-device advertising identity resolution platform", privacyUrl: "https://www.tapad.com/privacy-policy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Mountain":      { description: "Programmatic advertising demand-side platform", privacyUrl: "https://mountain.com/privacy-policy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "LiveRamp":      { description: "Data connectivity and identity resolution platform", privacyUrl: "https://liveramp.com/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Podscribe":     { description: "Podcast attribution and analytics measurement platform", privacyUrl: "https://podscribe.com/privacy", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Veritonic":     { description: "Audio analytics and advertising effectiveness measurement platform", privacyUrl: "https://www.veritonic.com/privacy-policy", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Impact":        { description: "Partnership and affiliate marketing automation platform", privacyUrl: "https://impact.com/privacy-policy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
+    "Spotify Ads":   { description: "Digital audio and podcast advertising platform by Spotify", privacyUrl: "https://www.spotify.com/legal/privacy-policy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "TVSquared":     { description: "Cross-media TV and streaming advertising measurement platform (now Innovid)", privacyUrl: "https://www.innovid.com/privacy-policy/", legalBasis: "legitimate_interest", transferMechanism: "Standard Contractual Clauses" },
+    "Sojern":        { description: "Travel intent data and programmatic advertising platform", privacyUrl: "https://www.sojern.com/privacy/", legalBasis: "consent", transferMechanism: "Standard Contractual Clauses" },
+    "Contentsquare": { description: "Digital experience analytics, session recording and heatmap platform", privacyUrl: "https://contentsquare.com/privacy-center/privacy-notice/", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
     "Adform":             { description: "European ad tech platform for programmatic advertising", privacyUrl: "https://site.adform.com/privacy-center/overview/", legalBasis: "consent", transferMechanism: "EEA" },
     "Xandr / AppNexus":   { description: "Programmatic advertising marketplace by Microsoft", privacyUrl: "https://www.xandr.com/privacy/", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
     "Amazon Advertising": { description: "Advertising solutions and DSP by Amazon", privacyUrl: "https://www.amazon.com/gp/help/customer/display.html?nodeId=468496", legalBasis: "consent", transferMechanism: "EU-US Data Privacy Framework" },
@@ -502,6 +529,31 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "bscookie",          bannerCategory: "marketing"  },
     { exact:  "ar_debug",          bannerCategory: "marketing"  },
     { exact:  "AnalyticsSyncHistory", bannerCategory: "analytics" },
+    // Barometric cross-device
+    { prefix: "barometric",          bannerCategory: "marketing"  },
+    // Tapad cross-device
+    { prefix: "TapAd_",             bannerCategory: "marketing"  },
+    // LiveRamp cross-device
+    { exact:  "cg_uuid",            bannerCategory: "marketing"  },
+    // HubSpot CRM / experimentation
+    { exact:  "brwsr",              bannerCategory: "marketing"  },
+    { exact:  "irld",               bannerCategory: "marketing"  },
+    { exact:  "laboratory-anonymous-id", bannerCategory: "analytics" },
+    { exact:  "_switch_session_id", bannerCategory: "functional" },
+    // Google GTM first-party analytics
+    { exact:  "FPAU",               bannerCategory: "analytics"  },
+    // Twitter/X Pixel
+    { exact:  "_twpid",             bannerCategory: "marketing"  },
+    // Podscribe podcast attribution
+    { prefix: "__pdst",             bannerCategory: "analytics"  },
+    // TVSquared cross-media measurement
+    { prefix: "_tq_id",             bannerCategory: "analytics"  },
+    // Contentsquare session analytics
+    { prefix: "_cq_",               bannerCategory: "analytics"  },
+    // Impact affiliate tracking
+    { prefix: "IR_",                bannerCategory: "marketing"  },
+    // Cloudflare user rate limiting
+    { exact:  "_cfuvid",            bannerCategory: "security"   },
     // Hotjar
     { prefix: "_hj",              bannerCategory: "analytics"  },
     // Microsoft Clarity
@@ -741,6 +793,20 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "cf_clearance",          service: "Cloudflare"              },
     { prefix: "__cf",                   service: "Cloudflare"              },
     { prefix: "_vcrr_",                service: "Vercel"                  },
+    { prefix: "barometric",        service: "Barometric"          },
+    { prefix: "TapAd_",            service: "Tapad"               },
+    { exact:  "cg_uuid",           service: "LiveRamp"            },
+    { exact:  "brwsr",             service: "HubSpot"             },
+    { exact:  "irld",              service: "HubSpot"             },
+    { exact:  "laboratory-anonymous-id", service: "HubSpot"      },
+    { exact:  "_switch_session_id",service: "HubSpot"             },
+    { exact:  "FPAU",              service: "Google Analytics"    },
+    { exact:  "_twpid",            service: "Twitter / X Pixel"   },
+    { prefix: "__pdst",            service: "Podscribe"           },
+    { prefix: "_tq_id",            service: "TVSquared"           },
+    { prefix: "_cq_",              service: "Contentsquare"       },
+    { prefix: "IR_",               service: "Impact"              },
+    { exact:  "_cfuvid",           service: "Cloudflare"          },
     { exact:  "IntastellarConsentSolution", service: "Intastellar Consents" },
 ];
 
@@ -791,6 +857,41 @@ export const COOKIE_META = [
     // Facebook / Meta
     { exact:  "_fbp",                   description: "Facebook Pixel browser ID — identifies browsers for ad delivery and conversion measurement. Expires after 3 months." },
     { exact:  "_fbc",                   description: "Facebook click ID — stores the fbclid URL parameter from a Facebook ad click. Expires after 3 months." },
+    // Barometric
+    { exact:  "barometric[cuid]",      description: "Barometric cross-device ID — stores a unique identifier for cross-device ad targeting and programmatic advertising attribution." },
+    // Tapad
+    { exact:  "TapAd_TS",              description: "Tapad sync timestamp — records when Tapad's cross-device identity graph was last synchronised for this browser." },
+    { exact:  "TapAd_DID",             description: "Tapad device ID — stores a unique device identifier for cross-device ad targeting and frequency capping across Tapad's network." },
+    { exact:  "TapAd_3WAY_SYNCS",      description: "Tapad sync counter — tracks the number of three-way cookie sync operations performed for cross-device identity resolution." },
+    // LiveRamp
+    { exact:  "cg_uuid",               description: "Cross-device advertising UUID — stores a unique identifier used for cross-site audience targeting and ad personalisation." },
+    // HubSpot
+    { exact:  "brwsr",                 description: "HubSpot browser ID — identifies the visitor's browser for marketing analytics and retargeting on HubSpot-owned domains." },
+    { exact:  "irld",                  description: "HubSpot redirect ID — records inbound link clicks and campaign attribution on HubSpot landing pages." },
+    { exact:  "laboratory-anonymous-id", description: "HubSpot experiment ID — assigns an anonymous identifier for HubSpot's internal A/B testing and feature experimentation platform." },
+    { exact:  "_switch_session_id",    description: "HubSpot portal switch session — tracks the active session when switching between HubSpot portals. Expires after 6 months." },
+    // Google GTM first-party
+    { exact:  "FPAU",                  description: "Google first-party analytics URL — set by Google Tag Manager's first-party mode to collect analytics without third-party cookies." },
+    // Twitter / X
+    { exact:  "_twpid",                description: "Twitter/X pixel ID — identifies the visitor for Twitter/X advertising attribution and retargeting. Expires after 2 years." },
+    // Podscribe
+    { prefix: "__pdst",                description: "Podscribe attribution cookie — tracks user activity for podcast advertising attribution and cross-channel reach measurement." },
+    // TVSquared
+    { prefix: "_tq_id",                description: "TVSquared pixel ID — stores a viewer identifier for cross-media TV and streaming advertising measurement." },
+    // Contentsquare
+    { exact:  "_cq_duid",              description: "Contentsquare device ID — stores a unique device identifier for session recording and user journey analysis." },
+    { exact:  "_cq_suid",              description: "Contentsquare session user ID — assigns a unique ID to each visitor session for heatmap and session replay analysis." },
+    { exact:  "_cq_session",           description: "Contentsquare session cookie — tracks the current visitor session for digital experience analytics. Expires after 30 minutes." },
+    { exact:  "_cq_s",                 description: "Contentsquare segment cookie — stores visitor segment data for digital experience analytics and personalisation." },
+    // Impact affiliate
+    { exact:  "IR_PI",                 description: "Impact page impression cookie — tracks page views for Impact's affiliate and partnership attribution platform." },
+    { exact:  "IR_gbd",               description: "Impact global browser data — stores browser information for Impact's affiliate and partnership conversion tracking." },
+    { prefix: "IR_",                   description: "Impact affiliate tracking cookie — used by Impact's partnership platform to attribute conversions to affiliate partners." },
+    // Cloudflare
+    { exact:  "_cfuvid",              description: "Cloudflare rate limiting cookie — identifies users to apply per-user rate limiting for specific requests. Session cookie." },
+    // Mountain DSP
+    { exact:  "guid",                  description: "Advertising network user ID — stores a persistent unique identifier for ad targeting and frequency capping across the ad network." },
+    { exact:  "tt",                    description: "Advertising pixel tracker — used to track ad impressions and measure campaign performance." },
     // HubSpot
     { exact:  "hubspotutk",             description: "HubSpot visitor token — tracks a visitor's identity across visits and form submissions. Expires after 13 months." },
     { exact:  "__hstc",                 description: "HubSpot tracking cookie — stores subdomain, initial referrer, first and last visit timestamps. Expires after 13 months." },
