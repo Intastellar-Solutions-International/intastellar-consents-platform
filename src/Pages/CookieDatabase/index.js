@@ -252,6 +252,7 @@ export default function CookieDatabase() {
     const [discoveries, setDiscoveries] = useState([]);
     const [definitions, setDefinitions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [backfilling, setBackfilling] = useState(false);
     const [toast, setToast] = useState(null);
 
     const load = useCallback(() => {
@@ -270,6 +271,28 @@ export default function CookieDatabase() {
     }, []);
 
     useEffect(() => { load(); }, []);
+
+    async function runBackfill() {
+        setBackfilling(true);
+        try {
+            const res = await fetch(API.cookieDiscoveries.action.url, {
+                method: "POST",
+                headers: API.cookieDiscoveries.action.headers,
+                body: JSON.stringify({ action: "backfill" }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setToast(data.error || "Backfill failed.");
+            } else {
+                setToast(`Backfill complete — ${data.scansProcessed} scans, ${data.cookiesUpserted} cookies indexed.`);
+                load();
+            }
+        } catch {
+            setToast("Network error during backfill.");
+        } finally {
+            setBackfilling(false);
+        }
+    }
 
     async function onAction(action, body) {
         try {
@@ -298,7 +321,17 @@ export default function CookieDatabase() {
     return (
         <>
             <StickyPageTitle>
-                <h1>Cookie Database</h1>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <h1>Cookie Database</h1>
+                    <button
+                        className="cdb-btn --promote"
+                        style={{ fontSize: "0.8rem", padding: "6px 14px" }}
+                        disabled={backfilling}
+                        onClick={runBackfill}
+                    >
+                        {backfilling ? "Backfilling…" : "Backfill from scan history"}
+                    </button>
+                </div>
             </StickyPageTitle>
             <main className="dashboard-content">
                 <div className="cdb-tabs">

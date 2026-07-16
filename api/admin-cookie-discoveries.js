@@ -20,6 +20,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
+import { describeCookie, vendorFromCookieName, categoryFromCookieName } from "./_scan-core.js";
 
 let pool;
 function getPool() {
@@ -137,8 +138,79 @@ export default async function handler(req, res) {
     // ── POST — actions ─────────────────────────────────────────────────────────
     if (req.method === "POST") {
         const { action, name } = req.body ?? {};
-        if (!action || !name) {
-            return res.status(400).json({ error: "action and name are required" });
+        if (!action) {
+            return res.status(400).json({ error: "action is required" });
+        }
+
+        // Backfill cookie_discoveries from historical pre_consent_scans
+        if (action === "backfill") {
+            try {
+                const { rows: scans } = await db.query(`
+                    SELECT domain, cookies
+                      FROM pre_consent_scans
+                     WHERE status = 'completed'
+                       AND cookies IS NOT NULL
+                       AND jsonb_array_length(cookies::jsonb) > 0
+                     ORDER BY scanned_at DESC
+                `);
+
+                let scansProcessed = 0;
+                let cookiesUpserted = 0;
+
+                for (const scan of scans) {
+                    const cookies = Array.isArray(scan.cookies) ? scan.cookies : [];
+                    const unknown = cookies.filter(c =>
+                        c.name &&
+                        typeof c.name === "string" &&
+                        c.name.length <= 100 &&
+                        !describeCookie(c.name)
+                    );
+                    if (!unknown.length) continue;
+
+                    for (const c of unknown) {
+                        const hasVendor   = !!vendorFromCookieName(c.name);
+                        const hasCategory = !!categoryFromCookieName(c.name);
+                        const cookieDomain = c.domain ? c.domain.replace(/^\./, "") : null;
+
+                        await db.query(`
+                            INSERT INTO cookie_discoveries
+                                (name, example_sites, cookie_domains, has_vendor, has_category)
+                            VALUES ($1, ARRAY[$2::text], $3, $4, $5)
+                            ON CONFLICT (name) DO UPDATE SET
+                                times_seen     = cookie_discoveries.times_seen + 1,
+                                last_seen_at   = NOW(),
+                                has_vendor     = $4 OR cookie_discoveries.has_vendor,
+                                has_category   = $5 OR cookie_discoveries.has_category,
+                                example_sites  = CASE
+                                    WHEN $2 = ANY(cookie_discoveries.example_sites)              THEN cookie_discoveries.example_sites
+                                    WHEN array_length(cookie_discoveries.example_sites, 1) >= 10 THEN cookie_discoveries.example_sites
+                                    ELSE array_append(cookie_discoveries.example_sites, $2::text)
+                                END,
+                                cookie_domains = CASE
+                                    WHEN $6 IS NULL                                               THEN cookie_discoveries.cookie_domains
+                                    WHEN $6 = ANY(cookie_discoveries.cookie_domains)              THEN cookie_discoveries.cookie_domains
+                                    WHEN array_length(cookie_discoveries.cookie_domains, 1) >= 10 THEN cookie_discoveries.cookie_domains
+                                    ELSE array_append(cookie_discoveries.cookie_domains, $6::text)
+                                END
+                        `, [c.name, scan.domain,
+                            cookieDomain ? `{${cookieDomain}}` : '{}',
+                            hasVendor, hasCategory, cookieDomain]);
+
+                        cookiesUpserted++;
+                    }
+                    scansProcessed++;
+                }
+
+                console.log(`[admin-cookie-discoveries] backfill: ${scansProcessed} scans, ${cookiesUpserted} cookie upserts`);
+                return res.json({ ok: true, action: "backfill", scansProcessed, cookiesUpserted });
+            } catch (err) {
+                console.error("[admin-cookie-discoveries] backfill error:", err.message);
+                return res.status(500).json({ error: "Backfill failed: " + err.message });
+            }
+        }
+
+        if (!name) {
+            return res.status(400).json({ error: "name is required" });
         }
 
         // Promote discovery → cookie_definitions
