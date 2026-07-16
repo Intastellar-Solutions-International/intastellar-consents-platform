@@ -1068,3 +1068,119 @@
     min-width: 52px;
     text-align: center;
 }
+
+/* ── Embed modal ─────────────────────────────────────────────────────────────── */
+.compliance-embed-modal__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.compliance-embed-modal {
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 28px 28px 24px;
+    width: 100%;
+    max-width: 560px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.compliance-embed-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.compliance-embed-modal__title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.compliance-embed-modal__close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.15s ease;
+}
+
+.compliance-embed-modal__close:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.compliance-embed-modal__desc {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 16px;
+    line-height: 1.55;
+}
+
+.compliance-embed-modal__desc strong {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 600;
+}
+
+.compliance-embed-modal__code {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.75);
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin: 0 0 16px;
+    line-height: 1.6;
+}
+
+.compliance-embed-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+}
+
+.compliance-embed-modal__copy-btn {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.compliance-embed-modal__copy-btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.compliance-embed-modal__hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.28);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.compliance-embed-modal__hint code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 1px 5px;
+    border-radius: 4px;
+}

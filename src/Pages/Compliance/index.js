@@ -104,6 +104,8 @@ export default function CompliancePage() {
     const [expandedTransfer, setExpandedTransfer] = useState(null);
     const [scanHistory, setScanHistory] = useState([]);
     const [copyTableCopied, setCopyTableCopied] = useState(false);
+    const [showEmbedModal, setShowEmbedModal] = useState(false);
+    const [embedSnippetCopied, setEmbedSnippetCopied] = useState(false);
 
     const domainsForApi = useMemo(
         () => (handle ? handle : currentDomain) || "combined view",
@@ -289,6 +291,16 @@ export default function CompliancePage() {
             ];
             downloadCSV(rows, `pre-consent-cookies-${scanDomain}.csv`);
         }
+    };
+
+    const embedDomain = handle || currentDomain || "";
+    const embedSnippet = `<div data-intastellar-cookies data-domain="${embedDomain}"></div>\n<script src="https://www.intastellarconsents.com/cookie-table.js" defer><\/script>`;
+
+    const copyEmbedSnippet = () => {
+        navigator.clipboard.writeText(embedSnippet).then(() => {
+            setEmbedSnippetCopied(true);
+            setTimeout(() => setEmbedSnippetCopied(false), 2000);
+        });
     };
 
     const copyCookieTable = () => {
@@ -731,6 +743,13 @@ export default function CompliancePage() {
                                             <button
                                                 type="button"
                                                 className="compliance-transfers__export-btn"
+                                                onClick={() => setShowEmbedModal(true)}
+                                            >
+                                                Embed on website
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="compliance-transfers__export-btn"
                                                 onClick={copyCookieTable}
                                             >
                                                 {copyTableCopied ? "Copied!" : "Copy cookie table"}
@@ -825,6 +844,39 @@ export default function CompliancePage() {
 
             </div>{/* end compliance-bottom-grid */}
             </div>
+
+            {/* ── Embed modal ── */}
+            {showEmbedModal && (
+                <div className="compliance-embed-modal__overlay" onClick={() => setShowEmbedModal(false)}>
+                    <div className="compliance-embed-modal" onClick={e => e.stopPropagation()}>
+                        <div className="compliance-embed-modal__header">
+                            <h3 className="compliance-embed-modal__title">Embed cookie table</h3>
+                            <button
+                                type="button"
+                                className="compliance-embed-modal__close"
+                                onClick={() => setShowEmbedModal(false)}
+                                aria-label="Close"
+                            >✕</button>
+                        </div>
+                        <p className="compliance-embed-modal__desc">
+                            Paste these two lines into your privacy or cookie policy page. The table will always show the latest scan results for <strong>{embedDomain}</strong>.
+                        </p>
+                        <pre className="compliance-embed-modal__code">{embedSnippet}</pre>
+                        <div className="compliance-embed-modal__actions">
+                            <button
+                                type="button"
+                                className="compliance-embed-modal__copy-btn"
+                                onClick={copyEmbedSnippet}
+                            >
+                                {embedSnippetCopied ? "Copied!" : "Copy snippet"}
+                            </button>
+                        </div>
+                        <p className="compliance-embed-modal__hint">
+                            Optional: add <code>data-lang="de"</code> to the div for German labels.
+                        </p>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
