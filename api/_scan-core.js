@@ -686,9 +686,9 @@ export function categoryFromCookieName(name) {
 // Used when a cookie is set on the first-party domain (so domain-matching can't
 // identify the vendor) but the name is well-known enough to attribute it.
 const COOKIE_VENDOR_HINTS = [
-    { prefix: "_ga",          service: "Google Analytics"       },
     { prefix: "_gac_",        service: "Google Ads"             },
     { prefix: "_gcl_",        service: "Google Ads"             },
+    { prefix: "_ga",          service: "Google Analytics"       },
     { exact:  "_fbp",         service: "Facebook / Meta Pixel"  },
     { exact:  "_fbc",         service: "Facebook / Meta Pixel"  },
     { prefix: "_uetsid",      service: "Microsoft Advertising"  },
