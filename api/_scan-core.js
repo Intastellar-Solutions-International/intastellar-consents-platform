@@ -668,6 +668,7 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "_iub_cs-",         bannerCategory: "necessary"  }, // iubenda consent
     { exact:  "didomi_token",     bannerCategory: "necessary"  }, // Didomi consent
     { prefix: "didomi_",          bannerCategory: "necessary"  }, // Didomi (other)
+    { exact:  "IntastellarConsentSolution", bannerCategory: "necessary" }, // Intastellar Consents record
 ];
 
 export function categoryFromCookieName(name) {
