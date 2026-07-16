@@ -36,9 +36,6 @@ function getPool() {
     return pool;
 }
 
-    return null;
-}
-
 const BANNER_CATEGORY = {
     advertising:    "marketing",
     fingerprinting: "marketing",
@@ -51,13 +48,6 @@ const BANNER_CATEGORY = {
 };
 
 const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "functional"];
-
-// Maps cookie name patterns to the vendor service they belong to.
-// Used to associate first-party-set cookies (e.g. _ga on .example.com) back
-// to the correct third-party vendor.
-
-    return null;
-}
 
 // Shared data-processing: turns raw transfers + cookies arrays into the
 // grouped categories object the banner consumes.
