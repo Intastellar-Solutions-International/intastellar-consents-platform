@@ -499,12 +499,15 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "UserMatchHistory", bannerCategory: "marketing"  },
     { exact:  "lidc",             bannerCategory: "marketing"  },
     { exact:  "bcookie",          bannerCategory: "marketing"  },
-    { exact:  "bscookie",         bannerCategory: "marketing"  },
+    { exact:  "bscookie",          bannerCategory: "marketing"  },
+    { exact:  "ar_debug",          bannerCategory: "marketing"  },
+    { exact:  "AnalyticsSyncHistory", bannerCategory: "analytics" },
     // Hotjar
     { prefix: "_hj",              bannerCategory: "analytics"  },
     // Microsoft Clarity
     { exact:  "_clck",            bannerCategory: "analytics"  },
     { exact:  "_clsk",            bannerCategory: "analytics"  },
+    { exact:  "CLID",             bannerCategory: "analytics"  },
     // TikTok
     { exact:  "_ttp",             bannerCategory: "marketing"  },
     // Twitter / X
@@ -527,6 +530,8 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "reddit_session",   bannerCategory: "marketing"  },
     // Klaviyo
     { exact:  "__kla_id",         bannerCategory: "marketing"  },
+    // Omnisend
+    { exact:  "omnisendSessionID", bannerCategory: "marketing"  },
     // Stripe (payment / functional)
     { prefix: "__stripe_",        bannerCategory: "functional" },
     // Wistia video analytics
@@ -771,9 +776,12 @@ export const COOKIE_META = [
     { exact:  "bcookie",                description: "LinkedIn browser ID cookie — identifies a browser instance for LinkedIn features. Expires after 1 year." },
     { exact:  "bscookie",               description: "LinkedIn secure browser ID — same purpose as bcookie but set with Secure flag. Expires after 1 year." },
     { exact:  "li_gc",                  description: "LinkedIn consent cookie — stores the visitor's consent choice for LinkedIn cookies." },
+    { exact:  "ar_debug",              description: "LinkedIn Ads debug cookie — used by LinkedIn Insight Tag to debug ad conversion tracking. Session cookie." },
+    { exact:  "AnalyticsSyncHistory",  description: "LinkedIn analytics sync history — records the last time LinkedIn analytics data was synchronised with visitor activity. Expires after 1 month." },
     // Microsoft Clarity
     { exact:  "_clck",                  description: "Microsoft Clarity user ID — persists the Clarity user ID and preferences. Expires after 1 year." },
     { exact:  "_clsk",                  description: "Microsoft Clarity session key — connects multiple page views within a single session. Expires after 24 hours." },
+    { exact:  "CLID",                   description: "Microsoft Clarity client ID — stores a unique visitor identifier used for heatmaps and session replay. Expires after 1 year." },
     // TikTok
     { exact:  "_ttp",                   description: "TikTok Pixel tracking ID — stores a visitor's browser ID for ad performance measurement. Expires after 13 months." },
     // Twitter / X
@@ -798,6 +806,8 @@ export const COOKIE_META = [
     { prefix: "__cf",                   description: "Cloudflare security cookie — used for DDoS protection and bot detection." },
     // Klaviyo
     { exact:  "__kla_id",               description: "Klaviyo visitor ID — tracks website visitors for email marketing attribution. Expires after 2 years." },
+    // Omnisend
+    { exact:  "omnisendSessionID",      description: "Omnisend session cookie — identifies the current visitor session for Omnisend email marketing automation and attribution. Session cookie." },
     // Amplitude
     { prefix: "amplitude_",             description: "Amplitude analytics cookie — stores device ID and session data for product analytics." },
     // Wistia
