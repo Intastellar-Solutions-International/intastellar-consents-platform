@@ -302,6 +302,10 @@ const COOKIE_VENDOR_PATTERNS = [
     { prefix: "__stripe_",          service: "Stripe"                  },
     { prefix: "_wijs",              service: "Wistia"                  },
     { prefix: "tp.",                service: "Trustpilot"              },
+    { exact:  "__cf_bm",                    service: "Cloudflare"            },
+    { exact:  "cf_clearance",              service: "Cloudflare"            },
+    { prefix: "__cf",                      service: "Cloudflare"            },
+    { exact:  "li_gc",                     service: "LinkedIn Insight Tag"  },
     { exact:  "IntastellarConsentSolution", service: "Intastellar Consents" },
     { prefix: "_vcrr_",                    service: "Vercel"                },
 ];
@@ -373,6 +377,8 @@ function buildCategories(domain, transfers, rawCookies) {
         };
 
         const cookieService = vendorServiceForCookie(c.name);
+        enriched.provider = cookieService || null;
+
         // Exact service name match, then brand-family fallback (e.g. "Google Ads" cookie
         // on a site where only "Google Analytics" was detected — both are Google).
         const owningVendor = domainVendor

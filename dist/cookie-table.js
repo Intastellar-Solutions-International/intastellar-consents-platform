@@ -143,6 +143,7 @@
                         }
                     });
                 }
+                if (!provider) provider = c.provider || '';
                 html += '<tr>';
                 html += '<td>' + esc(c.name) + '</td>';
                 html += '<td>' + esc(c.domains.join(', ')) + '</td>';
