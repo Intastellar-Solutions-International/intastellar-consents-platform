@@ -16,23 +16,28 @@
     },
     "api/pre-consent-scan.js": {
       "memory": 1536,
-      "maxDuration": 90
+      "maxDuration": 90,
+      "regions": ["iad1"]
     },
     "api/pre-consent-scan-public.js": {
       "memory": 1536,
-      "maxDuration": 90
+      "maxDuration": 90,
+      "regions": ["iad1"]
     },
     "api/cookie-banner.js": {
       "memory": 1536,
-      "maxDuration": 90
+      "maxDuration": 90,
+      "regions": ["iad1"]
     },
     "api/cookie-banner-scan.js": {
       "memory": 1536,
-      "maxDuration": 90
+      "maxDuration": 90,
+      "regions": ["iad1"]
     },
     "api/scan-domain-task.js": {
       "memory": 1536,
-      "maxDuration": 90
+      "maxDuration": 90,
+      "regions": ["iad1"]
     },
     "api/cron-scan-domains.js": {
       "memory": 256,

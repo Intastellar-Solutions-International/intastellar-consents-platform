@@ -45,6 +45,7 @@
             error:      'Could not load the cookie list. Please try again later.',
             noCookies:  'No cookies detected for this category.',
             updated:    'Last updated:',
+            noData:     'No cookies were detected for this domain. The website may restrict cookies before consent is given.',
             intro: [
                 'We use cookies and similar tracking technologies to track the activity on our Service and hold certain information.',
                 'Cookies are files with a small amount of data which may include an anonymous unique identifier. Cookies are sent to your browser from a website and stored on your device. Other tracking technologies are also used such as beacons, tags and scripts to collect and track information and to improve and analyse our Service.',
@@ -77,6 +78,7 @@
             error:      'Cookie-Liste konnte nicht geladen werden. Bitte später erneut versuchen.',
             noCookies:  'Keine Cookies für diese Kategorie erkannt.',
             updated:    'Zuletzt aktualisiert:',
+            noData:     'Für diese Domain wurden keine Cookies erkannt. Die Website schränkt Cookies möglicherweise vor der Einwilligung ein.',
             intro: [
                 'Wir verwenden Cookies und ähnliche Tracking-Technologien, um die Aktivität auf unserem Dienst zu verfolgen und bestimmte Informationen zu speichern.',
                 'Cookies sind Dateien mit einer kleinen Datenmenge, die einen anonymen eindeutigen Bezeichner enthalten können. Cookies werden von einer Website an Ihren Browser gesendet und auf Ihrem Gerät gespeichert. Es werden auch andere Tracking-Technologien wie Beacons, Tags und Skripte eingesetzt, um Informationen zu erfassen und zu verfolgen sowie unseren Dienst zu verbessern und zu analysieren.',
@@ -126,6 +128,7 @@
             error:      'Cookie-listen kunne ikke indlæses. Prøv igen senere.',
             noCookies:  'Ingen cookies registreret for denne kategori.',
             updated:    'Senest opdateret:',
+            noData:     'Der blev ikke registreret nogen cookies for dette domæne. Webstedet kan begrænse cookies, før der gives samtykke.',
             intro: [
                 'Vi bruger cookies og lignende sporingsteknologier til at spore aktiviteten på vores tjeneste og opbevare visse oplysninger.',
                 'Cookies er filer med en lille mængde data, som kan indeholde en anonym unik identifikator. Cookies sendes til din browser fra et websted og gemmes på din enhed. Andre sporingsteknologier anvendes også, såsom beacons, tags og scripts, til at indsamle og spore information og til at forbedre og analysere vores tjeneste.',
@@ -175,6 +178,7 @@
             error:      'Kunne ikke laste inn cookie-listen. Prøv igjen senere.',
             noCookies:  'Ingen informasjonskapsler oppdaget for denne kategorien.',
             updated:    'Sist oppdatert:',
+            noData:     'Ingen informasjonskapsler ble oppdaget for dette domenet. Nettstedet kan begrense informasjonskapsler før samtykke gis.',
             intro: [
                 'Vi bruker informasjonskapsler og lignende sporingsteknologier for å spore aktiviteten på tjenesten vår og lagre viss informasjon.',
                 'Informasjonskapsler er filer med en liten mengde data, som kan inneholde en anonym unik identifikator. Informasjonskapsler sendes til nettleseren din fra et nettsted og lagres på enheten din. Andre sporingsteknologier brukes også, som beacons, tagger og skript, for å samle inn og spore informasjon og for å forbedre og analysere tjenesten vår.',
@@ -224,6 +228,7 @@
             error:      'Kunde inte ladda cookie-listan. Försök igen senare.',
             noCookies:  'Inga cookies hittades för denna kategori.',
             updated:    'Senast uppdaterad:',
+            noData:     'Inga cookies hittades för den här domänen. Webbplatsen kan begränsa cookies innan samtycke ges.',
             intro: [
                 'Vi använder kakor och liknande spårningstekniker för att spåra aktiviteten på vår tjänst och lagra viss information.',
                 'Kakor är filer med en liten mängd data som kan innehålla en anonym unik identifierare. Kakor skickas till din webbläsare från en webbplats och lagras på din enhet. Andra spårningstekniker används även, som beacons, taggar och skript, för att samla in och spåra information och för att förbättra och analysera vår tjänst.',
@@ -273,6 +278,7 @@
             error:      'Nie udało się załadować listy plików cookie. Spróbuj ponownie później.',
             noCookies:  'Nie wykryto plików cookie dla tej kategorii.',
             updated:    'Ostatnia aktualizacja:',
+            noData:     'Nie wykryto plików cookie dla tej domeny. Witryna może ograniczać pliki cookie przed udzieleniem zgody.',
             intro: [
                 'Używamy plików cookie i podobnych technologii śledzenia do monitorowania aktywności w naszym Serwisie i przechowywania określonych informacji.',
                 'Pliki cookie to pliki zawierające niewielką ilość danych, które mogą obejmować anonimowy unikalny identyfikator. Pliki cookie są wysyłane do przeglądarki użytkownika ze strony internetowej i przechowywane na jego urządzeniu. Stosowane są również inne technologie śledzenia, takie jak sygnały nawigacyjne, tagi i skrypty, do gromadzenia i śledzenia informacji oraz ulepszania i analizowania naszego Serwisu.',
@@ -322,6 +328,7 @@
             error:      'De cookielijst kon niet worden geladen. Probeer het later opnieuw.',
             noCookies:  'Geen cookies gedetecteerd voor deze categorie.',
             updated:    'Laatst bijgewerkt:',
+            noData:     'Er zijn geen cookies gedetecteerd voor dit domein. De website kan cookies beperken voordat toestemming wordt gegeven.',
             intro: [
                 'Wij gebruiken cookies en vergelijkbare trackingtechnologieën om de activiteit op onze Service bij te houden en bepaalde informatie op te slaan.',
                 'Cookies zijn bestanden met een kleine hoeveelheid data, die een anonieme unieke identifier kunnen bevatten. Cookies worden vanuit een website naar uw browser gestuurd en op uw apparaat opgeslagen. Ook andere trackingtechnologieën worden gebruikt, zoals beacons, tags en scripts, om informatie te verzamelen en bij te houden, en om onze Service te verbeteren en te analyseren.',
@@ -371,6 +378,7 @@
             error:      'Kon nie die koeklys laai nie. Probeer asseblief later weer.',
             noCookies:  'Geen koekies bespeur vir hierdie kategorie nie.',
             updated:    'Laas opgedateer:',
+            noData:     'Geen koekies is vir hierdie domein bespeur nie. Die webwerf kan koekies beperk voordat toestemming gegee word.',
             intro: [
                 'Ons gebruik koekies en soortgelyke naspoortegnologieë om aktiwiteit op ons Diens na te spoor en sekere inligting te stoor.',
                 "Koekies is lêers met 'n klein hoeveelheid data wat 'n anonieme unieke identifiseerder kan bevat. Koekies word van 'n webwerf na u blaaier gestuur en op u toestel gestoor. Ander naspoortegnologieë soos bakens, etikette en skrifte word ook gebruik om inligting te versamel en na te spoor, en om ons Diens te verbeter en te ontleed.",
@@ -420,6 +428,7 @@
             error:      'Impossible de charger la liste des cookies. Veuillez réessayer plus tard.',
             noCookies:  'Aucun cookie détecté pour cette catégorie.',
             updated:    'Dernière mise à jour :',
+            noData:     "Aucun cookie n’a été détecté pour ce domaine. Le site peut restreindre les cookies avant l’obtention du consentement.",
             intro: [
                 'Nous utilisons des cookies et des technologies de suivi similaires pour surveiller l’activité sur notre Service et conserver certaines informations.',
                 'Les cookies sont des fichiers contenant une petite quantité de données, pouvant inclure un identifiant unique anonyme. Les cookies sont envoyés à votre navigateur depuis un site web et stockés sur votre appareil. D’autres technologies de suivi sont également utilisées, telles que les balises, les tags et les scripts, pour collecter et suivre des informations et pour améliorer et analyser notre Service.',
@@ -469,6 +478,7 @@
             error:      'No se pudo cargar la lista de cookies. Inténtelo de nuevo más tarde.',
             noCookies:  'No se detectaron cookies para esta categoría.',
             updated:    'Última actualización:',
+            noData:     'No se detectaron cookies para este dominio. El sitio web puede restringir las cookies antes de obtener el consentimiento.',
             intro: [
                 'Utilizamos cookies y tecnologías de seguimiento similares para rastrear la actividad en nuestro Servicio y almacenar cierta información.',
                 'Las cookies son archivos con una pequeña cantidad de datos que pueden incluir un identificador único anónimo. Las cookies se envían a su navegador desde un sitio web y se almacenan en su dispositivo. También se utilizan otras tecnologías de seguimiento, como balizas, etiquetas y scripts, para recopilar y rastrear información y para mejorar y analizar nuestro Servicio.',
@@ -518,6 +528,7 @@
             error:      'Não foi possível carregar a lista de cookies. Tente novamente mais tarde.',
             noCookies:  'Nenhum cookie detetado para esta categoria.',
             updated:    'Última atualização:',
+            noData:     'Não foram detetados cookies para este domínio. O website pode restringir cookies antes de ser dado o consentimento.',
             intro: [
                 'Utilizamos cookies e tecnologias de rastreio semelhantes para acompanhar a atividade no nosso Serviço e armazenar determinadas informações.',
                 'Os cookies são ficheiros com uma pequena quantidade de dados que podem incluir um identificador único anónimo. Os cookies são enviados para o seu browser a partir de um website e armazenados no seu dispositivo. Outras tecnologias de rastreio também são utilizadas, como beacons, tags e scripts, para recolher e acompanhar informações e para melhorar e analisar o nosso Serviço.',
@@ -663,6 +674,14 @@
 
             html += '</tbody></table></div></div>';
         });
+
+        var hasAnyCookies = CAT_ORDER.some(function (cat) {
+            var g = cats[cat];
+            return g && g.cookies && g.cookies.length;
+        });
+        if (!hasAnyCookies) {
+            html += '<p class="ics-ct-msg">' + esc(L.noData || 'No cookies were detected for this domain.') + '</p>';
+        }
 
         if (scannedAt) {
             var d = new Date(scannedAt);
