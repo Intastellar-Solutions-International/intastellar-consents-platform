@@ -947,21 +947,29 @@ export async function scanDomain(domain) {
             if (!e.message.includes("timeout") && !e.message.includes("Navigation")) throw e;
         }
 
-        // If Intastellar Consents is present, click "Accept All" so GCM v2 signals
+        // If Intastellar Consents is present, call IntaAcceptAll() so GCM v2 signals
         // flip to "granted" and analytics cookies (GA etc.) are actually written.
-        try {
-            await page.waitForSelector(
-                "#intastellarCookieSettings--acceptAll, .intastellarCookieSettings--acceptAll",
-                { timeout: 6000, visible: true }
-            );
-            await page.click(
-                "#intastellarCookieSettings--acceptAll, .intastellarCookieSettings--acceptAll"
-            );
+        // We poll until the function exists (banner JS not yet parsed) or time out.
+        const clicked = await new Promise(resolve => {
+            const deadline = Date.now() + 6000;
+            const interval = setInterval(async () => {
+                try {
+                    const found = await page.evaluate(() => {
+                        if (typeof IntaAcceptAll === "function") {
+                            IntaAcceptAll();
+                            return true;
+                        }
+                        return false;
+                    });
+                    if (found) { clearInterval(interval); resolve(true); return; }
+                } catch {}
+                if (Date.now() >= deadline) { clearInterval(interval); resolve(false); }
+            }, 300);
+        });
+
+        if (clicked) {
             // Give post-consent scripts (GA4, GTM, etc.) time to fire and write cookies.
-            // page.waitForNetworkIdle() requires puppeteer ≥14; use setTimeout for compat.
             await new Promise(r => setTimeout(r, 3000));
-        } catch {
-            // Banner not present — site uses a different CMP or no banner at all.
         }
 
         const { cookies: rawCookies } = await cdpClient.send("Network.getAllCookies");
