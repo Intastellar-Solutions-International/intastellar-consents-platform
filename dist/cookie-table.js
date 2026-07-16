@@ -410,7 +410,8 @@
             '.ics-ct-group{margin-bottom:28px}',
             '.ics-ct-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#888;margin-bottom:4px}',
             '.ics-ct-group-desc{font-size:13px;color:#6b7280;margin:0 0 10px}',
-            '.ics-ct-table{width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden}',
+            '.ics-ct-table-wrap{border:1px solid #e5e7eb;border-radius:6px;overflow:hidden}',
+            '.ics-ct-table{width:100%;border-collapse:collapse;background: transparent;}',
             '.ics-ct-table th,.ics-ct-table td{text-align:left;padding:9px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top}',
             '.ics-ct-table th{background:#f9fafb;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.04em}',
             '.ics-ct-table tr:last-child td{border-bottom:none}',
@@ -429,6 +430,16 @@
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;');
+    }
+
+    function lookupCookieDesc(name, cd) {
+        if (!cd) return null;
+        for (var i = 0; i < cd.length; i++) {
+            var entry = cd[i];
+            if (entry.e && name === entry.e) return entry.d;
+            if (entry.p && name.indexOf(entry.p) === 0) return entry.d;
+        }
+        return null;
     }
 
     function renderCategories(container, data, L) {
@@ -450,7 +461,7 @@
             html += '<div class="ics-ct-group">';
             html += '<div class="ics-ct-group-label">' + esc(L[cat] || cat) + ' (' + grouped.length + ')</div>';
             if (desc) html += '<p class="ics-ct-group-desc">' + esc(desc) + '</p>';
-            html += '<table class="ics-ct-table"><thead><tr>';
+            html += '<div class="ics-ct-table-wrap"><table class="ics-ct-table"><thead><tr>';
             html += '<th>' + esc(L.colName) + '</th>';
             html += '<th>' + esc(L.colDomain) + '</th>';
             html += '<th>' + esc(L.colProvider) + '</th>';
@@ -476,11 +487,11 @@
                     ? L.session
                     : (c.expires ? new Date(c.expires * 1000).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : L.persistent);
                 html += '<td>' + esc(lifetime) + '</td>';
-                html += '<td>' + esc(c.description || '') + '</td>';
+                html += '<td>' + esc(lookupCookieDesc(c.name, L.cookieDesc) || c.description || '') + '</td>';
                 html += '</tr>';
             });
 
-            html += '</tbody></table></div>';
+            html += '</tbody></table></div></div>';
         });
 
         if (scannedAt) {
@@ -494,6 +505,8 @@
     }
 
     function loadContainer(container) {
+        if (container.getAttribute('data-ics-init')) return;
+        container.setAttribute('data-ics-init', '1');
         var domain = (container.getAttribute('data-domain') || '').trim();
         var lang   = (container.getAttribute('data-lang')   || 'en').trim().toLowerCase();
         var L = LABELS[lang] || LABELS.en;
@@ -530,6 +543,13 @@
         var containers = document.querySelectorAll('[data-intastellar-cookies]');
         for (var i = 0; i < containers.length; i++) {
             loadContainer(containers[i]);
+        }
+        // Catch containers injected after script load (SPA routing, CMS lazy rendering)
+        if (typeof MutationObserver !== 'undefined') {
+            new MutationObserver(function () {
+                var late = document.querySelectorAll('[data-intastellar-cookies]:not([data-ics-init])');
+                for (var i = 0; i < late.length; i++) loadContainer(late[i]);
+            }).observe(document.documentElement, { childList: true, subtree: true });
         }
     }
 
