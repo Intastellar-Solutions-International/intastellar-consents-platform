@@ -253,6 +253,55 @@ export default async function handler(req, res) {
             return res.json({ ok: true, action: "dismissed", name });
         }
 
+        // Batch promote all discoveries that have enriched vendor or category
+        if (action === "batch_promote") {
+            const { rows: candidates } = await db.query(`
+                SELECT name, enriched_vendor, enriched_category, enriched_description
+                  FROM cookie_discoveries
+                 WHERE status = 'pending'
+                   AND (enriched_vendor IS NOT NULL OR enriched_category IS NOT NULL)
+            `);
+
+            let promoted = 0;
+            for (const row of candidates) {
+                await db.query(`
+                    INSERT INTO cookie_definitions
+                        (name, is_prefix, vendor, category, description, promoted_by_org)
+                    VALUES ($1, false, $2, $3, $4, 1)
+                    ON CONFLICT (name) DO UPDATE SET
+                        vendor      = EXCLUDED.vendor,
+                        category    = EXCLUDED.category,
+                        description = EXCLUDED.description,
+                        promoted_at = NOW()
+                `, [row.name, row.enriched_vendor || null,
+                    row.enriched_category || null, row.enriched_description || null]);
+
+                await db.query(
+                    `UPDATE cookie_discoveries SET status = 'promoted' WHERE name = $1`,
+                    [row.name]
+                );
+                promoted++;
+            }
+
+            console.log(`[admin-cookie-discoveries] batch_promote: ${promoted} cookies promoted`);
+            return res.json({ ok: true, action: "batch_promote", promoted });
+        }
+
+        // Batch dismiss all discoveries that have no enriched data at all
+        if (action === "batch_dismiss_empty") {
+            const { rows } = await db.query(`
+                UPDATE cookie_discoveries
+                   SET status = 'dismissed'
+                 WHERE status = 'pending'
+                   AND enriched_vendor   IS NULL
+                   AND enriched_category IS NULL
+                RETURNING name
+            `);
+
+            console.log(`[admin-cookie-discoveries] batch_dismiss_empty: ${rows.length} cookies dismissed`);
+            return res.json({ ok: true, action: "batch_dismiss_empty", dismissed: rows.length });
+        }
+
         // Delete a promoted definition (reverts to discoverable again)
         if (action === "delete_definition") {
             await db.query(`DELETE FROM cookie_definitions WHERE name = $1`, [name]);

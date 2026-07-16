@@ -294,6 +294,29 @@ export default function CookieDatabase() {
         }
     }
 
+    async function runBatchAction(action, confirmMsg) {
+        if (!window.confirm(confirmMsg)) return;
+        try {
+            const res = await fetch(API.cookieDiscoveries.action.url, {
+                method: "POST",
+                headers: API.cookieDiscoveries.action.headers,
+                body: JSON.stringify({ action }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setToast(data.error || "Action failed.");
+            } else if (action === "batch_promote") {
+                setToast(`Promoted ${data.promoted} cookies with enriched data.`);
+                load();
+            } else if (action === "batch_dismiss_empty") {
+                setToast(`Dismissed ${data.dismissed} cookies with no data.`);
+                load();
+            }
+        } catch {
+            setToast("Network error.");
+        }
+    }
+
     async function onAction(action, body) {
         try {
             const res = await fetch(API.cookieDiscoveries.action.url, {
@@ -334,21 +357,41 @@ export default function CookieDatabase() {
                 </div>
             </StickyPageTitle>
             <main className="dashboard-content">
-                <div className="cdb-tabs">
-                    <button
-                        className={`cdb-tab${tab === "discoveries" ? " --active" : ""}`}
-                        onClick={() => setTab("discoveries")}
-                    >
-                        Discovered
-                        <span className="cdb-count">{discoveries.length}</span>
-                    </button>
-                    <button
-                        className={`cdb-tab${tab === "definitions" ? " --active" : ""}`}
-                        onClick={() => setTab("definitions")}
-                    >
-                        Promoted
-                        <span className="cdb-count">{definitions.length}</span>
-                    </button>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+                    <div className="cdb-tabs" style={{ marginBottom: 0 }}>
+                        <button
+                            className={`cdb-tab${tab === "discoveries" ? " --active" : ""}`}
+                            onClick={() => setTab("discoveries")}
+                        >
+                            Discovered
+                            <span className="cdb-count">{discoveries.length}</span>
+                        </button>
+                        <button
+                            className={`cdb-tab${tab === "definitions" ? " --active" : ""}`}
+                            onClick={() => setTab("definitions")}
+                        >
+                            Promoted
+                            <span className="cdb-count">{definitions.length}</span>
+                        </button>
+                    </div>
+                    {tab === "discoveries" && (
+                        <div style={{ display: "flex", gap: "8px" }}>
+                            <button
+                                className="cdb-btn --promote"
+                                onClick={() => runBatchAction("batch_promote",
+                                    `Promote all ${discoveries.filter(d => d.enriched_vendor || d.enriched_category).length} cookies that have enriched vendor or category?`)}
+                            >
+                                Promote all with data
+                            </button>
+                            <button
+                                className="cdb-btn --dismiss"
+                                onClick={() => runBatchAction("batch_dismiss_empty",
+                                    `Dismiss all ${discoveries.filter(d => !d.enriched_vendor && !d.enriched_category).length} cookies with no enriched data?`)}
+                            >
+                                Dismiss all without data
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {loading ? (
