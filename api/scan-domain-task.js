@@ -14,7 +14,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { scanDomain } from "./_scan-core.js";
+import { scanDomain, describeCookie, vendorFromCookieName, categoryFromCookieName } from "./_scan-core.js";
 
 let pool;
 function getPool() {
@@ -26,6 +26,52 @@ function getPool() {
         });
     }
     return pool;
+}
+
+async function recordDiscoveries(db, scannedSite, cookies) {
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS cookie_discoveries (
+            name             TEXT        PRIMARY KEY,
+            times_seen       INTEGER     NOT NULL DEFAULT 1,
+            first_seen_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            last_seen_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            example_sites    TEXT[]      NOT NULL DEFAULT '{}',
+            has_description  BOOLEAN     NOT NULL DEFAULT FALSE,
+            has_vendor       BOOLEAN     NOT NULL DEFAULT FALSE,
+            has_category     BOOLEAN     NOT NULL DEFAULT FALSE
+        )
+    `);
+
+    // Only record cookies missing a description — these are gaps in our static DB
+    const unknown = cookies.filter(c =>
+        c.name &&
+        c.name.length <= 100 &&
+        !describeCookie(c.name)
+    );
+    if (!unknown.length) return;
+
+    for (const c of unknown) {
+        const hasVendor   = !!vendorFromCookieName(c.name);
+        const hasCategory = !!categoryFromCookieName(c.name);
+        await db.query(`
+            INSERT INTO cookie_discoveries
+                (name, example_sites, has_vendor, has_category)
+            VALUES ($1, ARRAY[$2::text], $3, $4)
+            ON CONFLICT (name) DO UPDATE SET
+                times_seen      = cookie_discoveries.times_seen + 1,
+                last_seen_at    = NOW(),
+                has_description = FALSE,
+                has_vendor      = $3 OR cookie_discoveries.has_vendor,
+                has_category    = $4 OR cookie_discoveries.has_category,
+                example_sites   = CASE
+                    WHEN $2 = ANY(cookie_discoveries.example_sites)         THEN cookie_discoveries.example_sites
+                    WHEN array_length(cookie_discoveries.example_sites, 1) >= 10 THEN cookie_discoveries.example_sites
+                    ELSE array_append(cookie_discoveries.example_sites, $2::text)
+                END
+        `, [c.name, scannedSite, hasVendor, hasCategory]);
+    }
+
+    console.log(`[scan-domain-task] recorded ${unknown.length} cookie discoveries from ${scannedSite}`);
 }
 
 export default async function handler(req, res) {
@@ -136,6 +182,13 @@ export default async function handler(req, res) {
     }
 
     console.log(`[scan-domain-task] done ${domain} — ${status} in ${durationMs}ms, ${transfers.length} transfers, ${cookies.length} cookies`);
+
+    // Record unknown cookies for the discovery database
+    if (!error && cookies.length) {
+        recordDiscoveries(db, domain, cookies).catch(err =>
+            console.error(`[scan-domain-task] discovery recording failed for ${domain}:`, err.message)
+        );
+    }
 
     return res.status(200).json({
         domain,
