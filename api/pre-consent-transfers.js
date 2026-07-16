@@ -53,8 +53,8 @@ const COOKIE_NAME_PATTERNS = [
     { exact:  "personalization_id", bannerCategory: "marketing" },
     { prefix: "amplitude_",       bannerCategory: "analytics"  },
     { prefix: "intercom-",        bannerCategory: "functional" },
-    { prefix: "__cf",             bannerCategory: "functional" },
-    { exact:  "cf_clearance",     bannerCategory: "functional" },
+    { prefix: "__cf",             bannerCategory: "necessary"  },
+    { exact:  "cf_clearance",     bannerCategory: "necessary"  },
     // Pinterest
     { prefix: "_pin_",            bannerCategory: "marketing"  },
     { prefix: "_pinterest_",      bannerCategory: "marketing"  },
@@ -101,11 +101,11 @@ function enrichWithBannerCategory(transfers, cookies, domain) {
         const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
         const isFirstParty  = cookieRoot === domainRoot;
         const matchedVendor = enrichedTransfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);
+        const nameCategory  = categoryFromCookieName(c.name);
         return {
             ...c,
-            bannerCategory: matchedVendor
-                ? matchedVendor.bannerCategory
-                : categoryFromCookieName(c.name)
+            bannerCategory: nameCategory
+                ?? (matchedVendor ? matchedVendor.bannerCategory : null)
                 ?? (isFirstParty ? "necessary" : "functional"),
         };
     });

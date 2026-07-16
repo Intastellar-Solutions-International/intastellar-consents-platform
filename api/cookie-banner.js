@@ -85,8 +85,8 @@ const COOKIE_NAME_PATTERNS = [
     { exact:  "personalization_id", bannerCategory: "marketing" },
     { prefix: "amplitude_",       bannerCategory: "analytics"  },
     { prefix: "intercom-",        bannerCategory: "functional" },
-    { prefix: "__cf",             bannerCategory: "functional" },
-    { exact:  "cf_clearance",     bannerCategory: "functional" },
+    { prefix: "__cf",             bannerCategory: "necessary"  },
+    { exact:  "cf_clearance",     bannerCategory: "necessary"  },
     // Pinterest
     { prefix: "_pin_",            bannerCategory: "marketing"  },
     { prefix: "_pinterest_",      bannerCategory: "marketing"  },
@@ -352,9 +352,10 @@ function buildCategories(domain, transfers, rawCookies) {
         const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
         const isFirstParty  = cookieRoot === domainRoot;
         const domainVendor  = vendorByRoot.get(cookieRoot);
+        const nameCategory  = categoryFromCookieName(c.name);
         const bannerCategory = c.bannerCategory
+            || nameCategory
             || (domainVendor ? domainVendor.bannerCategory : null)
-            || categoryFromCookieName(c.name)
             || (isFirstParty ? "necessary" : "functional");
 
         const enriched = {
