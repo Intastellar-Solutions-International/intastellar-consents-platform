@@ -69,6 +69,22 @@
 
     var CAT_ORDER = ['necessary', 'security', 'analytics', 'marketing', 'functional'];
 
+    function groupCookiesByName(rawCookies) {
+        var map = {};
+        rawCookies.forEach(function (c) {
+            if (!map[c.name]) {
+                map[c.name] = Object.assign({}, c, { domains: [c.domain] });
+            } else {
+                var g = map[c.name];
+                if (g.domains.indexOf(c.domain) === -1) g.domains.push(c.domain);
+                if (!g.session && c.expires && (!g.expires || c.expires > g.expires)) {
+                    g.expires = c.expires;
+                }
+            }
+        });
+        return Object.values(map);
+    }
+
     function injectStyles() {
         if (document.getElementById(STYLE_ID)) return;
         var el = document.createElement('style');
@@ -107,8 +123,9 @@
             var group = cats[cat];
             if (!group || !group.cookies || !group.cookies.length) return;
 
+            var grouped = groupCookiesByName(group.cookies);
             html += '<div class="ics-ct-group">';
-            html += '<div class="ics-ct-group-label">' + esc(L[cat] || cat) + ' (' + group.cookies.length + ')</div>';
+            html += '<div class="ics-ct-group-label">' + esc(L[cat] || cat) + ' (' + grouped.length + ')</div>';
             html += '<table class="ics-ct-table"><thead><tr>';
             html += '<th>' + L.colName + '</th>';
             html += '<th>' + L.colDomain + '</th>';
@@ -117,7 +134,7 @@
             html += '<th>' + L.colDescription + '</th>';
             html += '</tr></thead><tbody>';
 
-            group.cookies.forEach(function (c) {
+            grouped.forEach(function (c) {
                 var provider = '';
                 if (group.vendors) {
                     group.vendors.forEach(function (v) {
@@ -128,7 +145,7 @@
                 }
                 html += '<tr>';
                 html += '<td>' + esc(c.name) + '</td>';
-                html += '<td>' + esc(c.domain) + '</td>';
+                html += '<td>' + esc(c.domains.join(', ')) + '</td>';
                 html += '<td>' + esc(provider) + '</td>';
                 var lifetime = c.session
                     ? L.session

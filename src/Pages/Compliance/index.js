@@ -52,6 +52,22 @@ const RESOURCE_LABELS = {
 const RISK_ORDER = { high: 0, medium: 1, low: 2, none: 3 };
 const CAT_ORDER  = { fingerprinting: 0, advertising: 1, analytics: 2, social: 3, functional: 4, cdn: 5, cmp: 6, "third-party": 7 };
 
+function groupCookiesByName(rawCookies) {
+    const map = new Map();
+    for (const c of rawCookies) {
+        if (!map.has(c.name)) {
+            map.set(c.name, { ...c, domains: [c.domain] });
+        } else {
+            const g = map.get(c.name);
+            if (!g.domains.includes(c.domain)) g.domains.push(c.domain);
+            if (!g.session && c.expires && (!g.expires || c.expires > g.expires)) {
+                g.expires = c.expires;
+            }
+        }
+    }
+    return [...map.values()];
+}
+
 
 export default function CompliancePage() {
     const { id, handle } = useParams();
@@ -306,13 +322,16 @@ export default function CompliancePage() {
     };
 
     const copyCookieTable = () => {
-        const items = preConsentTransfers?.pre_consent_cookies || [];
         const baseDomain = (handle || currentDomain || "").replace(/^www\./, "");
+        const items = groupCookiesByName(preConsentTransfers?.pre_consent_cookies || []);
         const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const rows = items.map(c => {
-            const isThird = !c.domain.replace(/^\./, "").endsWith(baseDomain);
+            const hasThird = c.domains.some(d => !d.replace(/^\./, "").endsWith(baseDomain));
+            const hasFirst = c.domains.some(d =>  d.replace(/^\./, "").endsWith(baseDomain));
+            const party = hasThird && hasFirst ? "Mixed" : hasThird ? "3rd party" : "1st party";
             const bm = c.bannerCategory ? (BANNER_CATEGORY_META[c.bannerCategory]?.label || c.bannerCategory) : "";
-            return `<tr><td>${esc(c.name)}</td><td>${esc(c.domain)}</td><td>${isThird ? "3rd party" : "1st party"}</td><td>${c.session ? "Session" : "Persistent"}</td><td>${esc(bm)}</td><td>${esc(c.description || "")}</td></tr>`;
+            const lifetime = c.session ? "Session" : c.expires ? new Date(c.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Persistent";
+            return `<tr><td>${esc(c.name)}</td><td>${esc(c.domains.join(", "))}</td><td>${party}</td><td>${esc(lifetime)}</td><td>${esc(bm)}</td><td>${esc(c.description || "")}</td></tr>`;
         }).join("");
         const html = `<table><thead><tr><th>Cookie name</th><th>Domain</th><th>Party</th><th>Lifetime</th><th>Category</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table>`;
         navigator.clipboard.writeText(html).then(() => {
@@ -705,17 +724,18 @@ export default function CompliancePage() {
                             {activeTab === "cookies" && !scanLoading && (() => {
                                 const domain  = (handle || currentDomain || "").replace(/^www\./, "");
                                 const csq = searchQuery.toLowerCase();
-                                const cookies = (preConsentTransfers?.pre_consent_cookies || [])
-                                    .filter(c => !csq ||
-                                        (c.name || "").toLowerCase().includes(csq) ||
-                                        (c.domain || "").toLowerCase().includes(csq)
-                                    );
                                 const allCookies = preConsentTransfers?.pre_consent_cookies || [];
                                 if (!allCookies.length) return (
                                     <div className="compliance-transfers__empty compliance-transfers__empty--clean">
                                         <span className="compliance-transfers__empty-icon" aria-hidden>✓</span>
                                         <span>No cookies set before consent in the last scan.</span>
                                     </div>
+                                );
+                                const cookies = groupCookiesByName(
+                                    allCookies.filter(c => !csq ||
+                                        (c.name || "").toLowerCase().includes(csq) ||
+                                        (c.domain || "").toLowerCase().includes(csq)
+                                    )
                                 );
                                 const totalCookiePages = Math.ceil(cookies.length / PAGE_SIZE);
                                 const cookieSlice = cookies.slice(cookiePage * PAGE_SIZE, (cookiePage + 1) * PAGE_SIZE);
@@ -766,18 +786,21 @@ export default function CompliancePage() {
                                         </div>
                                         <div className="compliance-cookies__list">
                                             {cookieSlice.map((c, i) => {
-                                                const isThird = !c.domain.replace(/^\./, "").endsWith(domain);
+                                                const hasThird = c.domains.some(d => !d.replace(/^\./, "").endsWith(domain));
+                                                const hasFirst = c.domains.some(d =>  d.replace(/^\./, "").endsWith(domain));
+                                                const partyLabel = hasThird && hasFirst ? "Mixed" : hasThird ? "3rd party" : "1st party";
+                                                const partyMod   = hasThird ? " --third" : " --first";
                                                 return (
-                                                    <div key={c.name + c.domain + i} className="compliance-cookies__row">
+                                                    <div key={c.name + i} className="compliance-cookies__row">
                                                         <div className="compliance-cookies__row-main">
                                                             <span className="compliance-cookies__row-name">{c.name}</span>
-                                                            <span className="compliance-cookies__row-domain">{c.domain}</span>
+                                                            <span className="compliance-cookies__row-domain">{c.domains.join(", ")}</span>
                                                             {c.description && (
                                                                 <span className="compliance-cookies__row-desc">{c.description}</span>
                                                             )}
                                                         </div>
-                                                        <span className={"compliance-cookies__row-party" + (isThird ? " --third" : " --first")}>
-                                                            {isThird ? "3rd party" : "1st party"}
+                                                        <span className={"compliance-cookies__row-party" + partyMod}>
+                                                            {partyLabel}
                                                         </span>
                                                         <span className={"compliance-cookies__row-lifetime" + (c.session ? " --session" : " --persistent")}>
                                                             {c.session
