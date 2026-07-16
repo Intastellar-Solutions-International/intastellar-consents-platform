@@ -123,6 +123,9 @@ export default function CompliancePage() {
     const [copyTableCopied, setCopyTableCopied] = useState(false);
     const [showEmbedModal, setShowEmbedModal] = useState(false);
     const [embedSnippetCopied, setEmbedSnippetCopied] = useState(false);
+    const [cookieOverrides, setCookieOverrides] = useState({});
+    const [editingCookie, setEditingCookie] = useState(null);
+    const [editDraft, setEditDraft] = useState({ vendor: "", description: "", bannerCategory: "" });
 
     const domainsForApi = useMemo(
         () => (handle ? handle : currentDomain) || "combined view",
@@ -260,6 +263,15 @@ export default function CompliancePage() {
     }, [handle, currentDomain]);
 
     useEffect(() => {
+        const d = handle || currentDomain || "";
+        if (!d || d === "combined view") { setCookieOverrides({}); return; }
+        try {
+            const stored = JSON.parse(localStorage.getItem(`cookieOverrides_${d}`) || "{}");
+            setCookieOverrides(stored && typeof stored === "object" ? stored : {});
+        } catch { setCookieOverrides({}); }
+    }, [handle, currentDomain]);
+
+    useEffect(() => {
         if (!preConsentTransfers?.scanned_at) return;
         const domain = handle || currentDomain;
         if (!domain || domain === "combined view") return;
@@ -285,6 +297,15 @@ export default function CompliancePage() {
         a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
+    }
+
+    function saveCookieOverride(cookieName, draft) {
+        const d = handle || currentDomain || "";
+        setCookieOverrides(prev => {
+            const next = { ...prev, [cookieName]: { ...prev[cookieName], ...draft } };
+            try { localStorage.setItem(`cookieOverrides_${d}`, JSON.stringify(next)); } catch {}
+            return next;
+        });
     }
 
     const exportCSV = () => {
@@ -326,14 +347,15 @@ export default function CompliancePage() {
         const items = groupCookiesByName(preConsentTransfers?.pre_consent_cookies || []);
         const esc = s => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         const rows = items.map(c => {
-            const hasThird = c.domains.some(d => !d.replace(/^\./, "").endsWith(baseDomain));
-            const hasFirst = c.domains.some(d =>  d.replace(/^\./, "").endsWith(baseDomain));
+            const eff = { ...c, ...(cookieOverrides[c.name] || {}) };
+            const hasThird = eff.domains.some(d => !d.replace(/^\./, "").endsWith(baseDomain));
+            const hasFirst = eff.domains.some(d =>  d.replace(/^\./, "").endsWith(baseDomain));
             const party = hasThird && hasFirst ? "Mixed" : hasThird ? "3rd party" : "1st party";
-            const bm = c.bannerCategory ? (BANNER_CATEGORY_META[c.bannerCategory]?.label || c.bannerCategory) : "";
-            const lifetime = c.session ? "Session" : c.expires ? new Date(c.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Persistent";
-            return `<tr><td>${esc(c.name)}</td><td>${esc(c.domains.join(", "))}</td><td>${party}</td><td>${esc(lifetime)}</td><td>${esc(bm)}</td><td>${esc(c.description || "")}</td></tr>`;
+            const bm = eff.bannerCategory ? (BANNER_CATEGORY_META[eff.bannerCategory]?.label || eff.bannerCategory) : "";
+            const lifetime = eff.session ? "Session" : eff.expires ? new Date(eff.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Persistent";
+            return `<tr><td>${esc(eff.name)}</td><td>${esc(eff.domains.join(", "))}</td><td>${party}</td><td>${esc(lifetime)}</td><td>${esc(bm)}</td><td>${esc(eff.vendor || "")}</td><td>${esc(eff.description || "")}</td></tr>`;
         }).join("");
-        const html = `<table><thead><tr><th>Cookie name</th><th>Domain</th><th>Party</th><th>Lifetime</th><th>Category</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table>`;
+        const html = `<table><thead><tr><th>Cookie name</th><th>Domain</th><th>Party</th><th>Lifetime</th><th>Category</th><th>Vendor</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table>`;
         navigator.clipboard.writeText(html).then(() => {
             setCopyTableCopied(true);
             setTimeout(() => setCopyTableCopied(false), 2000);
@@ -790,40 +812,123 @@ export default function CompliancePage() {
                                                 const hasFirst = c.domains.some(d =>  d.replace(/^\./, "").endsWith(domain));
                                                 const partyLabel = hasThird && hasFirst ? "Mixed" : hasThird ? "3rd party" : "1st party";
                                                 const partyMod   = hasThird ? " --third" : " --first";
+                                                const eff = { ...c, ...(cookieOverrides[c.name] || {}) };
+                                                const isUnknown = !eff.bannerCategory;
+                                                const lifetime = eff.session
+                                                    ? "Session"
+                                                    : eff.expires
+                                                        ? new Date(eff.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+                                                        : "Persistent";
                                                 return (
-                                                    <div key={c.name + i} className="compliance-cookies__row">
-                                                        <div className="compliance-cookies__row-main">
-                                                            <span className="compliance-cookies__row-name">{c.name}</span>
-                                                            <span className="compliance-cookies__row-domain">{c.domains.join(", ")}</span>
-                                                            {c.description && (
-                                                                <span className="compliance-cookies__row-desc">{c.description}</span>
+                                                    <div key={c.name + i} className="compliance-cookies__row-wrap">
+                                                        <div className={"compliance-cookies__row" + (isUnknown ? " --unknown" : "")}>
+                                                            <div className="compliance-cookies__row-main">
+                                                                <span className="compliance-cookies__row-name">{eff.name}</span>
+                                                                {eff.vendor && <span className="compliance-cookies__row-vendor">{eff.vendor}</span>}
+                                                                <span className="compliance-cookies__row-domain">{eff.domains.join(", ")}</span>
+                                                                {eff.description && (
+                                                                    <span className="compliance-cookies__row-desc">{eff.description}</span>
+                                                                )}
+                                                            </div>
+                                                            <span className={"compliance-cookies__row-party" + partyMod}>
+                                                                {partyLabel}
+                                                            </span>
+                                                            <span className={"compliance-cookies__row-lifetime" + (eff.session ? " --session" : " --persistent")}>
+                                                                {lifetime}
+                                                            </span>
+                                                            {eff.bannerCategory ? (() => {
+                                                                const bm = BANNER_CATEGORY_META[eff.bannerCategory];
+                                                                return (
+                                                                    <span className="compliance-banner-cat" style={{ "--bc-color": bm?.color || "#909090" }}>
+                                                                        {bm?.label || eff.bannerCategory}
+                                                                    </span>
+                                                                );
+                                                            })() : (
+                                                                <span className="compliance-cookies__unknown-badge">Unknown</span>
+                                                            )}
+                                                            <div className="compliance-cookies__flags">
+                                                                {eff.httpOnly && <span className="compliance-cookies__flag">HttpOnly</span>}
+                                                                {eff.secure   && <span className="compliance-cookies__flag">Secure</span>}
+                                                                {eff.sameSite && eff.sameSite !== "None" && (
+                                                                    <span className="compliance-cookies__flag">Same{eff.sameSite}</span>
+                                                                )}
+                                                            </div>
+                                                            {(isUnknown || cookieOverrides[c.name]) && (
+                                                                <button
+                                                                    type="button"
+                                                                    className={"compliance-cookies__edit-btn" + (editingCookie === eff.name ? " --active" : "")}
+                                                                    onClick={e => {
+                                                                        e.stopPropagation();
+                                                                        if (editingCookie === eff.name) {
+                                                                            setEditingCookie(null);
+                                                                        } else {
+                                                                            setEditDraft({
+                                                                                vendor: cookieOverrides[eff.name]?.vendor ?? eff.vendor ?? "",
+                                                                                description: cookieOverrides[eff.name]?.description ?? eff.description ?? "",
+                                                                                bannerCategory: cookieOverrides[eff.name]?.bannerCategory ?? eff.bannerCategory ?? "",
+                                                                            });
+                                                                            setEditingCookie(eff.name);
+                                                                        }
+                                                                    }}
+                                                                    aria-label={isUnknown ? "Classify this cookie" : "Edit classification"}
+                                                                    title={isUnknown ? "Classify this cookie" : "Edit classification"}
+                                                                >✎</button>
                                                             )}
                                                         </div>
-                                                        <span className={"compliance-cookies__row-party" + partyMod}>
-                                                            {partyLabel}
-                                                        </span>
-                                                        <span className={"compliance-cookies__row-lifetime" + (c.session ? " --session" : " --persistent")}>
-                                                            {c.session
-                                                                ? "Session"
-                                                                : c.expires
-                                                                    ? new Date(c.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
-                                                                    : "Persistent"}
-                                                        </span>
-                                                        {c.bannerCategory && (() => {
-                                                            const bm = BANNER_CATEGORY_META[c.bannerCategory];
-                                                            return (
-                                                                <span className="compliance-banner-cat" style={{ "--bc-color": bm?.color || "#909090" }}>
-                                                                    {bm?.label || c.bannerCategory}
-                                                                </span>
-                                                            );
-                                                        })()}
-                                                        <div className="compliance-cookies__flags">
-                                                            {c.httpOnly && <span className="compliance-cookies__flag">HttpOnly</span>}
-                                                            {c.secure   && <span className="compliance-cookies__flag">Secure</span>}
-                                                            {c.sameSite && c.sameSite !== "None" && (
-                                                                <span className="compliance-cookies__flag">Same{c.sameSite}</span>
-                                                            )}
-                                                        </div>
+                                                        {editingCookie === eff.name && (
+                                                            <div className="compliance-cookies__edit-panel">
+                                                                <div className="compliance-cookies__edit-fields">
+                                                                    <div className="compliance-cookies__edit-field">
+                                                                        <label className="compliance-cookies__edit-label">Category</label>
+                                                                        <select
+                                                                            className="compliance-cookies__edit-select"
+                                                                            value={editDraft.bannerCategory}
+                                                                            onChange={e => setEditDraft(d => ({ ...d, bannerCategory: e.target.value }))}
+                                                                        >
+                                                                            <option value="">— Unknown —</option>
+                                                                            {Object.entries(BANNER_CATEGORY_META).map(([k, v]) => (
+                                                                                <option key={k} value={k}>{v.label}</option>
+                                                                            ))}
+                                                                        </select>
+                                                                    </div>
+                                                                    <div className="compliance-cookies__edit-field">
+                                                                        <label className="compliance-cookies__edit-label">Vendor</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            className="compliance-cookies__edit-input"
+                                                                            placeholder="e.g. Google LLC"
+                                                                            value={editDraft.vendor}
+                                                                            onChange={e => setEditDraft(d => ({ ...d, vendor: e.target.value }))}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="compliance-cookies__edit-field compliance-cookies__edit-field--wide">
+                                                                        <label className="compliance-cookies__edit-label">Description</label>
+                                                                        <input
+                                                                            type="text"
+                                                                            className="compliance-cookies__edit-input"
+                                                                            placeholder="What does this cookie do?"
+                                                                            value={editDraft.description}
+                                                                            onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="compliance-cookies__edit-actions">
+                                                                    <button
+                                                                        type="button"
+                                                                        className="compliance-cookies__edit-save"
+                                                                        onClick={() => {
+                                                                            saveCookieOverride(eff.name, editDraft);
+                                                                            setEditingCookie(null);
+                                                                        }}
+                                                                    >Save</button>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="compliance-cookies__edit-cancel"
+                                                                        onClick={() => setEditingCookie(null)}
+                                                                    >Cancel</button>
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 );
                                             })}
