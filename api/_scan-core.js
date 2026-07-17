@@ -1216,8 +1216,10 @@ export async function scanDomain(domain) {
         page.on("request", (req) => {
             try {
                 const type = req.resourceType();
-                if (type === "image" || type === "media") {
-                    req.continue().catch(() => {});
+                // Abort heavy assets — they cannot set cookies and are the primary
+                // cause of OOM crashes on image-heavy sites (Shopify, WooCommerce, etc.)
+                if (type === "image" || type === "media" || type === "font") {
+                    req.abort().catch(() => {});
                     return;
                 }
                 const u = new URL(req.url());
