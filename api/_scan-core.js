@@ -132,7 +132,7 @@ export const TRACKERS = [
     { domains: ["assets.calendly.com", "calendly.com"],          service: "Calendly",              category: "functional"     },
     { domains: ["youtube.com", "youtube-nocookie.com", "ytimg.com", "youtu.be"], service: "YouTube", category: "functional"  },
     { domains: ["player.vimeo.com", "vimeo.com", "vimeocdn.com"], service: "Vimeo",               category: "functional"     },
-    { domains: ["js.stripe.com", "stripe.com", "stripe.network"], service: "Stripe",              category: "functional"     },
+    { domains: ["js.stripe.com", "stripe.com", "stripe.network", "stripecdn.com"], service: "Stripe",              category: "functional"     },
     { domains: ["paypalobjects.com", "paypal.com"],               service: "PayPal",               category: "functional"     },
     { domains: ["recaptcha.net", "www.google.com/recaptcha"],    service: "Google reCAPTCHA",      category: "functional"     },
     { domains: ["cdn.weglot.com", "weglot.com"],                  service: "Weglot SAS",            category: "functional"     },
