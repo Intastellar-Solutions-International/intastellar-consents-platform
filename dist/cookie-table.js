@@ -1003,6 +1003,12 @@
         container.innerHTML = html;
     }
 
+    function originMatchesDomain(pageHost, dataDomain) {
+        var allowed = dataDomain.replace(/^\./, '').toLowerCase();
+        var host = pageHost.toLowerCase();
+        return host === allowed || (host.length > allowed.length + 1 && host.slice(-(allowed.length + 1)) === '.' + allowed);
+    }
+
     function loadContainer(container) {
         if (container.getAttribute('data-ics-init')) return;
         container.setAttribute('data-ics-init', '1');
@@ -1012,6 +1018,13 @@
 
         if (!domain) {
             container.innerHTML = '<p class="ics-ct-msg ics-ct-err">data-domain attribute is required.</p>';
+            return;
+        }
+
+        if (!originMatchesDomain(window.location.hostname, domain)) {
+            if (typeof console !== 'undefined' && console.warn) {
+                console.warn('[Intastellar Cookie Table] Blocked: page origin (' + window.location.hostname + ') does not match data-domain="' + domain + '".');
+            }
             return;
         }
 
