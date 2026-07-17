@@ -56,9 +56,12 @@
             colTransfer:       'Transfer basis',
             manageHeading:     'Managing your cookie preferences',
             managePara:        "You can withdraw or change your cookie consent at any time using the cookie settings panel on this website. Most web browsers also allow you to control cookies through their settings; refer to your browser's help documentation for details.",
+            manageBrowserLabel: "You can also manage cookies directly through your browser settings:",
             controllerHeading: 'Data controller',
             controllerText:    'This website is operated by',
             controllerContact: 'For privacy-related enquiries, please contact us at',
+            changesHeading:     "Changes to this cookie policy",
+            changesPara:        "We may update this cookie policy from time to time to reflect changes in technology, law, or our data practices. When we make changes, we will update the date at the top of this page. We encourage you to review this policy periodically.",
             intro: [
                 'We use cookies and similar tracking technologies to track the activity on our Service and hold certain information.',
                 'Cookies are files with a small amount of data which may include an anonymous unique identifier. Cookies are sent to your browser from a website and stored on your device. Other tracking technologies are also used such as beacons, tags and scripts to collect and track information and to improve and analyse our Service.',
@@ -102,9 +105,12 @@
             colTransfer:       'Übermittlungsgrundlage',
             manageHeading:     'Ihre Cookie-Einstellungen verwalten',
             managePara:        'Sie können Ihre Cookie-Einwilligung jederzeit über das Cookie-Einstellungspanel auf dieser Website widerrufen oder ändern. Die meisten Webbrowser ermöglichen auch die Steuerung von Cookies über die Browsereinstellungen; weitere Informationen entnehmen Sie bitte der Hilfedokumentation Ihres Browsers.',
+            manageBrowserLabel: "Sie können Cookies auch direkt über die Einstellungen Ihres Browsers verwalten:",
             controllerHeading: 'Verantwortlicher',
             controllerText:    'Diese Website wird betrieben von',
             controllerContact: 'Bei datenschutzbezogenen Anfragen wenden Sie sich bitte an',
+            changesHeading:     "Änderungen dieser Cookie-Richtlinie",
+            changesPara:        "Wir können diese Cookie-Richtlinie von Zeit zu Zeit aktualisieren, um Änderungen in der Technologie, im Recht oder unseren Datenpraktiken widerzuspiegeln. Bei Änderungen aktualisieren wir das Datum oben auf dieser Seite. Wir empfehlen Ihnen, diese Richtlinie regelmäßig zu überprüfen.",
             intro: [
                 'Wir verwenden Cookies und ähnliche Tracking-Technologien, um die Aktivität auf unserem Dienst zu verfolgen und bestimmte Informationen zu speichern.',
                 'Cookies sind Dateien mit einer kleinen Datenmenge, die einen anonymen eindeutigen Bezeichner enthalten können. Cookies werden von einer Website an Ihren Browser gesendet und auf Ihrem Gerät gespeichert. Es werden auch andere Tracking-Technologien wie Beacons, Tags und Skripte eingesetzt, um Informationen zu erfassen und zu verfolgen sowie unseren Dienst zu verbessern und zu analysieren.',
@@ -196,9 +202,12 @@
             colTransfer:       'Overførselsgrundlag',
             manageHeading:     'Administrér dine cookiepræferencer',
             managePara:        'Du kan til enhver tid trække eller ændre dit cookiesamtykke via cookieindstillingspanelet på dette websted. De fleste webbrowsere giver dig også mulighed for at styre cookies via browserindstillingerne; se din browsers hjælpedokumentation for detaljer.',
+            manageBrowserLabel: "Du kan også styre cookies direkte via browserindstillingerne:",
             controllerHeading: 'Dataansvarlig',
             controllerText:    'Dette websted drives af',
             controllerContact: 'Ved spørgsmål vedrørende databeskyttelse bedes du kontakte',
+            changesHeading:     "Ændringer i denne cookiepolitik",
+            changesPara:        "Vi kan opdatere denne cookiepolitik fra tid til anden for at afspejle ændringer i teknologi, lovgivning eller vores datapraksis. Når vi foretager ændringer, opdaterer vi datoen øverst på denne side. Vi opfordrer dig til at gennemgå denne politik regelmæssigt.",
             intro: [
                 'Vi bruger cookies og lignende sporingsteknologier til at spore aktiviteten på vores tjeneste og opbevare visse oplysninger.',
                 'Cookies er filer med en lille mængde data, som kan indeholde en anonym unik identifikator. Cookies sendes til din browser fra et websted og gemmes på din enhed. Andre sporingsteknologier anvendes også, såsom beacons, tags og scripts, til at indsamle og spore information og til at forbedre og analysere vores tjeneste.',
@@ -290,9 +299,12 @@
             colTransfer:       'Overføringsgrunnlag',
             manageHeading:     'Administrer dine informasjonskapselinnstillinger',
             managePara:        'Du kan når som helst trekke tilbake eller endre ditt samtykke til informasjonskapsler via innstillingspanelet på dette nettstedet. De fleste nettlesere lar deg også kontrollere informasjonskapsler via nettleserinnstillingene; se nettleserens hjelpedokumentasjon for detaljer.',
+            manageBrowserLabel: "Du kan også kontrollere informasjonskapsler direkte via nettleserinnstillingene:",
             controllerHeading: 'Behandlingsansvarlig',
             controllerText:    'Dette nettstedet drives av',
             controllerContact: 'For henvendelser om personvern, kontakt oss på',
+            changesHeading:     "Endringer i disse retningslinjene for informasjonskapsler",
+            changesPara:        "Vi kan oppdatere disse retningslinjene for informasjonskapsler fra tid til annen for å gjenspeile endringer i teknologi, lovgivning eller vår datapraksis. Når vi gjør endringer, oppdaterer vi datoen øverst på denne siden. Vi oppfordrer deg til å gjennomgå disse retningslinjene regelmessig.",
             intro: [
                 'Vi bruker informasjonskapsler og lignende sporingsteknologier for å spore aktiviteten på tjenesten vår og lagre viss informasjon.',
                 'Informasjonskapsler er filer med en liten mengde data, som kan inneholde en anonym unik identifikator. Informasjonskapsler sendes til nettleseren din fra et nettsted og lagres på enheten din. Andre sporingsteknologier brukes også, som beacons, tagger og skript, for å samle inn og spore informasjon og for å forbedre og analysere tjenesten vår.',
@@ -384,9 +396,12 @@
             colTransfer:       'Överföringsgrund',
             manageHeading:     'Hantera dina cookieinställningar',
             managePara:        'Du kan när som helst återkalla eller ändra ditt cookiesamtycke via cookieinställningspanelen på denna webbplats. De flesta webbläsare ger dig också möjlighet att kontrollera cookies via webbläsarinställningarna; se din webbläsares hjälpdokumentation för mer information.',
+            manageBrowserLabel: "Du kan också kontrollera cookies direkt via webbläsarinställningarna:",
             controllerHeading: 'Personuppgiftsansvarig',
             controllerText:    'Denna webbplats drivs av',
             controllerContact: 'Vid frågor om integritet, kontakta oss på',
+            changesHeading:     "Ändringar i denna cookiepolicy",
+            changesPara:        "Vi kan uppdatera denna cookiepolicy från tid till annan för att återspegla förändringar i teknik, lag eller vår datapraxis. När vi gör ändringar uppdaterar vi datumet högst upp på denna sida. Vi uppmuntrar dig att granska denna policy regelbundet.",
             intro: [
                 'Vi använder kakor och liknande spårningstekniker för att spåra aktiviteten på vår tjänst och lagra viss information.',
                 'Kakor är filer med en liten mängd data som kan innehålla en anonym unik identifierare. Kakor skickas till din webbläsare från en webbplats och lagras på din enhet. Andra spårningstekniker används även, som beacons, taggar och skript, för att samla in och spåra information och för att förbättra och analysera vår tjänst.',
@@ -478,9 +493,12 @@
             colTransfer:       'Podstawa transferu',
             manageHeading:     'Zarządzanie preferencjami plików cookie',
             managePara:        'Możesz wycofać lub zmienić zgodę na pliki cookie w dowolnym momencie, korzystając z panelu ustawień plików cookie na tej stronie. Większość przeglądarek internetowych umożliwia również kontrolowanie plików cookie za pomocą ustawień przeglądarki; szczegółowe informacje można znaleźć w dokumentacji pomocy przeglądarki.',
+            manageBrowserLabel: "Możesz również kontrolować pliki cookie bezpośrednio w ustawieniach przeglądarki:",
             controllerHeading: 'Administrator danych',
             controllerText:    'Ta witryna jest obsługiwana przez',
             controllerContact: 'W sprawach związanych z ochroną prywatności prosimy o kontakt',
+            changesHeading:     "Zmiany w tej polityce cookies",
+            changesPara:        "Możemy od czasu do czasu aktualizować tę politykę cookies, aby odzwierciedlić zmiany w technologii, prawie lub naszych praktykach dotyczących danych. Gdy wprowadzamy zmiany, aktualizujemy datę u góry tej strony. Zachęcamy do okresowego przeglądania tej polityki.",
             intro: [
                 'Używamy plików cookie i podobnych technologii śledzenia do monitorowania aktywności w naszym Serwisie i przechowywania określonych informacji.',
                 'Pliki cookie to pliki zawierające niewielką ilość danych, które mogą obejmować anonimowy unikalny identyfikator. Pliki cookie są wysyłane do przeglądarki użytkownika ze strony internetowej i przechowywane na jego urządzeniu. Stosowane są również inne technologie śledzenia, takie jak sygnały nawigacyjne, tagi i skrypty, do gromadzenia i śledzenia informacji oraz ulepszania i analizowania naszego Serwisu.',
@@ -572,9 +590,12 @@
             colTransfer:       'Overdrachtsgrondslag',
             manageHeading:     'Uw cookievoorkeuren beheren',
             managePara:        'U kunt uw cookietoestemming op elk moment intrekken of wijzigen via het cookievoorkeurenpaneel op deze website. De meeste webbrowsers bieden ook de mogelijkheid om cookies te beheren via de browserinstellingen; raadpleeg de helpdocumentatie van uw browser voor meer informatie.',
+            manageBrowserLabel: "U kunt cookies ook rechtstreeks beheren via de browserinstellingen:",
             controllerHeading: 'Verwerkingsverantwoordelijke',
             controllerText:    'Deze website wordt beheerd door',
             controllerContact: 'Voor privacygerelateerde vragen kunt u contact met ons opnemen via',
+            changesHeading:     "Wijzigingen in dit cookiebeleid",
+            changesPara:        "We kunnen dit cookiebeleid van tijd tot tijd bijwerken om wijzigingen in technologie, wetgeving of onze gegevenspraktijken te weerspiegelen. Wanneer we wijzigingen aanbrengen, werken we de datum bovenaan deze pagina bij. We moedigen u aan dit beleid regelmatig te bekijken.",
             intro: [
                 'Wij gebruiken cookies en vergelijkbare trackingtechnologieën om de activiteit op onze Service bij te houden en bepaalde informatie op te slaan.',
                 'Cookies zijn bestanden met een kleine hoeveelheid data, die een anonieme unieke identifier kunnen bevatten. Cookies worden vanuit een website naar uw browser gestuurd en op uw apparaat opgeslagen. Ook andere trackingtechnologieën worden gebruikt, zoals beacons, tags en scripts, om informatie te verzamelen en bij te houden, en om onze Service te verbeteren en te analyseren.',
@@ -666,9 +687,12 @@
             colTransfer:       'Oordragsbasis',
             manageHeading:     'Bestuur u koekievoorkeuse',
             managePara:        'U kan u koekietoestemming te eniger tyd terugtrek of verander deur die koekieinstellingspaneel op hierdie webwerf te gebruik. Die meeste webblaaiers laat u ook toe om koekies deur die blaaier-instellings te beheer; raadpleeg u blaaier se hulpdokumentasie vir besonderhede.',
+            manageBrowserLabel: "U kan ook koekies direk beheer deur u blaaier-instellings:",
             controllerHeading: 'Data-verantwoordelike',
             controllerText:    'Hierdie webwerf word bedryf deur',
             controllerContact: 'Vir privaatheidsnavrae, kontak ons by',
+            changesHeading:     "Wysigings aan hierdie koekie-beleid",
+            changesPara:        "Ons kan hierdie koekie-beleid van tyd tot tyd opdateer om veranderinge in tegnologie, wetgewing of ons datapraktyke te weerspieël. Wanneer ons veranderinge maak, werk ons die datum bo-aan hierdie bladsy op. Ons moedig u aan om hierdie beleid gereeld te hersien.",
             intro: [
                 'Ons gebruik koekies en soortgelyke naspoortegnologieë om aktiwiteit op ons Diens na te spoor en sekere inligting te stoor.',
                 "Koekies is lêers met 'n klein hoeveelheid data wat 'n anonieme unieke identifiseerder kan bevat. Koekies word van 'n webwerf na u blaaier gestuur en op u toestel gestoor. Ander naspoortegnologieë soos bakens, etikette en skrifte word ook gebruik om inligting te versamel en na te spoor, en om ons Diens te verbeter en te ontleed.",
@@ -760,9 +784,12 @@
             colTransfer:       'Base du transfert',
             manageHeading:     'Gérer vos préférences en matière de cookies',
             managePara:        "Vous pouvez retirer ou modifier votre consentement aux cookies à tout moment via le panneau de paramètres des cookies sur ce site web. La plupart des navigateurs web vous permettent également de gérer les cookies via les paramètres du navigateur ; consultez la documentation d'aide de votre navigateur pour plus de détails.",
+            manageBrowserLabel: "Vous pouvez également contrôler les cookies directement via les paramètres de votre navigateur :",
             controllerHeading: 'Responsable du traitement',
             controllerText:    'Ce site web est exploité par',
             controllerContact: 'Pour toute demande relative à la protection des données, veuillez nous contacter à',
+            changesHeading:     "Modifications de cette politique en matière de cookies",
+            changesPara:        "Nous pouvons mettre à jour cette politique en matière de cookies de temps à autre pour refléter les évolutions technologiques, juridiques ou de nos pratiques en matière de données. Lorsque nous apportons des modifications, nous mettons à jour la date en haut de cette page. Nous vous encourageons à consulter cette politique régulièrement.",
             intro: [
                 'Nous utilisons des cookies et des technologies de suivi similaires pour surveiller l’activité sur notre Service et conserver certaines informations.',
                 'Les cookies sont des fichiers contenant une petite quantité de données, pouvant inclure un identifiant unique anonyme. Les cookies sont envoyés à votre navigateur depuis un site web et stockés sur votre appareil. D’autres technologies de suivi sont également utilisées, telles que les balises, les tags et les scripts, pour collecter et suivre des informations et pour améliorer et analyser notre Service.',
@@ -854,9 +881,12 @@
             colTransfer:       'Base de la transferencia',
             manageHeading:     'Gestionar sus preferencias de cookies',
             managePara:        'Puede retirar o cambiar su consentimiento de cookies en cualquier momento utilizando el panel de configuración de cookies en este sitio web. La mayoría de los navegadores web también le permiten controlar las cookies a través de la configuración del navegador; consulte la documentación de ayuda de su navegador para obtener más detalles.',
+            manageBrowserLabel: "También puede controlar las cookies directamente a través de la configuración de su navegador:",
             controllerHeading: 'Responsable del tratamiento',
             controllerText:    'Este sitio web es operado por',
             controllerContact: 'Para consultas relacionadas con la privacidad, contáctenos en',
+            changesHeading:     "Cambios en esta política de cookies",
+            changesPara:        "Podemos actualizar esta política de cookies de vez en cuando para reflejar cambios en la tecnología, la legislación o nuestras prácticas de datos. Cuando realizamos cambios, actualizamos la fecha en la parte superior de esta página. Le recomendamos que revise esta política periódicamente.",
             intro: [
                 'Utilizamos cookies y tecnologías de seguimiento similares para rastrear la actividad en nuestro Servicio y almacenar cierta información.',
                 'Las cookies son archivos con una pequeña cantidad de datos que pueden incluir un identificador único anónimo. Las cookies se envían a su navegador desde un sitio web y se almacenan en su dispositivo. También se utilizan otras tecnologías de seguimiento, como balizas, etiquetas y scripts, para recopilar y rastrear información y para mejorar y analizar nuestro Servicio.',
@@ -948,9 +978,12 @@
             colTransfer:       'Base de transferência',
             manageHeading:     'Gerir as suas preferências de cookies',
             managePara:        'Pode retirar ou alterar o seu consentimento de cookies a qualquer momento utilizando o painel de definições de cookies neste website. A maioria dos browsers também lhe permite controlar os cookies através das definições do browser; consulte a documentação de ajuda do seu browser para mais detalhes.',
+            manageBrowserLabel: "Também pode controlar os cookies diretamente através das definições do seu browser:",
             controllerHeading: 'Responsável pelo tratamento',
             controllerText:    'Este website é operado por',
             controllerContact: 'Para questões relacionadas com a privacidade, contacte-nos em',
+            changesHeading:     "Alterações a esta política de cookies",
+            changesPara:        "Podemos atualizar esta política de cookies periodicamente para refletir alterações na tecnologia, legislação ou nas nossas práticas de dados. Quando fazemos alterações, atualizamos a data no topo desta página. Encorajamos a rever esta política periodicamente.",
             intro: [
                 'Utilizamos cookies e tecnologias de rastreio semelhantes para acompanhar a atividade no nosso Serviço e armazenar determinadas informações.',
                 'Os cookies são ficheiros com uma pequena quantidade de dados que podem incluir um identificador único anónimo. Os cookies são enviados para o seu browser a partir de um website e armazenados no seu dispositivo. Outras tecnologias de rastreio também são utilizadas, como beacons, tags e scripts, para recolher e acompanhar informações e para melhorar e analisar o nosso Serviço.',
@@ -1058,6 +1091,8 @@
             '.ics-ct-link:hover{text-decoration:underline}',
             '.ics-ct-h1{font-size:26px;font-weight:700;color:#111827;margin:0 0 6px;line-height:1.2}',
             '.ics-ct-h2{font-size:16px;font-weight:600;color:#111827;margin:36px 0 10px;padding-top:28px;border-top:2px solid #e5e7eb;line-height:1.3}',
+            '.ics-ct-browser-list{margin:4px 0 12px 20px;padding:0;list-style:disc}',
+            '.ics-ct-browser-list li{font-size:14px;color:#374151;margin-bottom:3px}',
         ].join('');
         (document.head || document.documentElement).appendChild(el);
     }
@@ -1200,7 +1235,15 @@
 
         // Section: Managing preferences
         html += '<div class="ics-ct-h2">' + esc(L.manageHeading || 'Managing your cookie preferences') + '</div>';
-        html += '<p class="ics-ct-intro">' + esc(L.managePara || "You can withdraw or change your cookie consent at any time using the cookie settings panel on this website. Most web browsers also allow you to control cookies through their settings.") + '</p>';
+        html += '<p class="ics-ct-intro">' + esc(L.managePara || 'You can withdraw or change your cookie consent at any time using the cookie settings panel on this website.') + '</p>';
+        html += '<p class="ics-ct-intro">' + esc(L.manageBrowserLabel || 'You can also manage cookies directly through your browser settings:') + '</p>';
+        html += '<ul class="ics-ct-browser-list">';
+        html += '<li><a class="ics-ct-link" href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">Chrome</a></li>';
+        html += '<li><a class="ics-ct-link" href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer" target="_blank" rel="noopener noreferrer">Firefox</a></li>';
+        html += '<li><a class="ics-ct-link" href="https://support.apple.com/guide/safari/manage-cookies-sfri11471/mac" target="_blank" rel="noopener noreferrer">Safari</a></li>';
+        html += '<li><a class="ics-ct-link" href="https://support.microsoft.com/en-us/windows/delete-and-manage-cookies-168dab11-0753-043d-7c16-ede5947fc64d" target="_blank" rel="noopener noreferrer">Microsoft Edge</a></li>';
+        html += '<li><a class="ics-ct-link" href="https://help.opera.com/en/latest/web-preferences/#cookies" target="_blank" rel="noopener noreferrer">Opera</a></li>';
+        html += '</ul>';
 
         // Section: Data controller
         if (controller) {
@@ -1212,6 +1255,10 @@
             }
             html += '<p class="ics-ct-intro">' + ctrlHtml + '</p>';
         }
+
+        // Section: Changes to this policy
+        html += '<div class="ics-ct-h2">' + esc(L.changesHeading || 'Changes to this cookie policy') + '</div>';
+        html += '<p class="ics-ct-intro">' + esc(L.changesPara || 'We may update this cookie policy from time to time to reflect changes in technology, law, or our data practices. When we make changes, we will update the date at the top of this page. We encourage you to review this policy periodically.') + '</p>';
 
         html += '</div>';
         container.innerHTML = html;
