@@ -183,7 +183,7 @@ export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Cache-Control, Authorization, X-Requested-With, Accept, Origin");
-    res.setHeader("Access-Control-Max-Age", "86400");
+    res.setHeader("Access-Control-Max-Age", "300");
 
     if (req.method === "OPTIONS") return res.status(204).end();
 

@@ -1036,7 +1036,7 @@
         var apiBase = (container.getAttribute('data-api-base') || '').trim() || (BASE + '/api/cookie-banner');
         var url = apiBase + (apiBase.indexOf('?') === -1 ? '?' : '&') + 'domain=' + encodeURIComponent(domain);
 
-        fetch(url, { mode: 'cors', credentials: 'omit', cache: 'no-store' })
+        fetch(url, { mode: 'cors', credentials: 'omit' })
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 if (data.status === 'scan_in_progress' || data.status === 'scan_queued') {
