@@ -45,7 +45,13 @@
             error:      'Could not load the cookie list. Please try again later.',
             noCookies:  'No cookies detected for this category.',
             updated:    'Last updated:',
-            noData:     'No cookies were detected for this domain. The website may restrict cookies before consent is given.',
+            noData:          'No cookies were detected for this domain. The website may restrict cookies before consent is given.',
+            servicesHeading: 'Third-party services',
+            servicesIntro:   'The following third-party services may access or process personal data when you visit this website.',
+            colService:      'Service',
+            colPurpose:      'Purpose',
+            colCountry:      'Country',
+            colTransfer:     'Transfer basis',
             intro: [
                 'We use cookies and similar tracking technologies to track the activity on our Service and hold certain information.',
                 'Cookies are files with a small amount of data which may include an anonymous unique identifier. Cookies are sent to your browser from a website and stored on your device. Other tracking technologies are also used such as beacons, tags and scripts to collect and track information and to improve and analyse our Service.',
@@ -911,6 +917,8 @@
             '.ics-ct-meta{font-size:12px;color:#9ca3af;margin-top:12px}',
             '.ics-ct-msg{font-size:13px;padding:12px 0;color:#9ca3af}',
             '.ics-ct-err{color:#dc2626}',
+            '.ics-ct-link{color:#6366f1;text-decoration:none}',
+            '.ics-ct-link:hover{text-decoration:underline}',
         ].join('');
         (document.head || document.documentElement).appendChild(el);
     }
@@ -931,6 +939,47 @@
             if (entry.p && name.indexOf(entry.p) === 0) return entry.d;
         }
         return null;
+    }
+
+    function renderVendorTable(data, L) {
+        var cats = data.categories || {};
+        var seen = {};
+        var vendors = [];
+        CAT_ORDER.forEach(function (cat) {
+            var group = cats[cat];
+            if (!group || !group.vendors) return;
+            group.vendors.forEach(function (v) {
+                if (seen[v.service]) return;
+                seen[v.service] = true;
+                vendors.push(v);
+            });
+        });
+        if (!vendors.length) return '';
+
+        var html = '<div class="ics-ct-group" style="margin-top:32px">';
+        html += '<div class="ics-ct-group-label">' + esc(L.servicesHeading || 'Third-party services') + ' (' + vendors.length + ')</div>';
+        html += '<p class="ics-ct-group-desc">' + esc(L.servicesIntro || 'The following third-party services may access or process personal data when you visit this website.') + '</p>';
+        html += '<div class="ics-ct-table-wrap"><table class="ics-ct-table"><thead><tr>';
+        html += '<th>' + esc(L.colService  || 'Service')        + '</th>';
+        html += '<th>' + esc(L.colPurpose  || 'Purpose')        + '</th>';
+        html += '<th>' + esc(L.colCountry  || 'Country')        + '</th>';
+        html += '<th>' + esc(L.colTransfer || 'Transfer basis') + '</th>';
+        html += '</tr></thead><tbody>';
+        vendors.forEach(function (v) {
+            var catLabel = L[v.bannerCategory] || v.bannerCategory || '';
+            html += '<tr>';
+            if (v.privacyUrl) {
+                html += '<td><a class="ics-ct-link" href="' + esc(v.privacyUrl) + '" target="_blank" rel="noopener noreferrer">' + esc(v.service) + '</a></td>';
+            } else {
+                html += '<td>' + esc(v.service) + '</td>';
+            }
+            html += '<td>' + esc(catLabel)                          + '</td>';
+            html += '<td>' + esc(v.dataCountry      || '—')    + '</td>';
+            html += '<td>' + esc(v.transferMechanism || '—')   + '</td>';
+            html += '</tr>';
+        });
+        html += '</tbody></table></div></div>';
+        return html;
     }
 
     function renderCategories(container, data, L) {
@@ -992,6 +1041,8 @@
         if (!hasAnyCookies) {
             html += '<p class="ics-ct-msg">' + esc(L.noData || 'No cookies were detected for this domain.') + '</p>';
         }
+
+        html += renderVendorTable(data, L);
 
         if (scannedAt) {
             var d = new Date(scannedAt);
