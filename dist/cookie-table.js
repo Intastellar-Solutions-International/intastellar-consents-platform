@@ -51,7 +51,12 @@
             colService:      'Service',
             colPurpose:      'Purpose',
             colCountry:      'Country',
-            colTransfer:     'Transfer basis',
+            colTransfer:       'Transfer basis',
+            manageHeading:     'Managing your cookie preferences',
+            managePara:        "You can withdraw or change your cookie consent at any time using the cookie settings panel on this website. Most web browsers also allow you to control cookies through their settings; refer to your browser's help documentation for details.",
+            controllerHeading: 'Data controller',
+            controllerText:    'This website is operated by',
+            controllerContact: 'For privacy-related enquiries, please contact us at',
             intro: [
                 'We use cookies and similar tracking technologies to track the activity on our Service and hold certain information.',
                 'Cookies are files with a small amount of data which may include an anonymous unique identifier. Cookies are sent to your browser from a website and stored on your device. Other tracking technologies are also used such as beacons, tags and scripts to collect and track information and to improve and analyse our Service.',
@@ -84,7 +89,18 @@
             error:      'Cookie-Liste konnte nicht geladen werden. Bitte später erneut versuchen.',
             noCookies:  'Keine Cookies für diese Kategorie erkannt.',
             updated:    'Zuletzt aktualisiert:',
-            noData:     'Für diese Domain wurden keine Cookies erkannt. Die Website schränkt Cookies möglicherweise vor der Einwilligung ein.',
+            noData:            'Für diese Domain wurden keine Cookies erkannt. Die Website schränkt Cookies möglicherweise vor der Einwilligung ein.',
+            servicesHeading:   'Drittanbieter',
+            servicesIntro:     'Die folgenden Drittanbieter können auf personenbezogene Daten zugreifen oder diese verarbeiten, wenn Sie diese Website besuchen.',
+            colService:        'Dienst',
+            colPurpose:        'Zweck',
+            colCountry:        'Land',
+            colTransfer:       'Übermittlungsgrundlage',
+            manageHeading:     'Ihre Cookie-Einstellungen verwalten',
+            managePara:        'Sie können Ihre Cookie-Einwilligung jederzeit über das Cookie-Einstellungspanel auf dieser Website widerrufen oder ändern. Die meisten Webbrowser ermöglichen auch die Steuerung von Cookies über die Browsereinstellungen; weitere Informationen entnehmen Sie bitte der Hilfedokumentation Ihres Browsers.',
+            controllerHeading: 'Verantwortlicher',
+            controllerText:    'Diese Website wird betrieben von',
+            controllerContact: 'Bei datenschutzbezogenen Anfragen wenden Sie sich bitte an',
             intro: [
                 'Wir verwenden Cookies und ähnliche Tracking-Technologien, um die Aktivität auf unserem Dienst zu verfolgen und bestimmte Informationen zu speichern.',
                 'Cookies sind Dateien mit einer kleinen Datenmenge, die einen anonymen eindeutigen Bezeichner enthalten können. Cookies werden von einer Website an Ihren Browser gesendet und auf Ihrem Gerät gespeichert. Es werden auch andere Tracking-Technologien wie Beacons, Tags und Skripte eingesetzt, um Informationen zu erfassen und zu verfolgen sowie unseren Dienst zu verbessern und zu analysieren.',
@@ -165,7 +181,18 @@
             error:      'Cookie-listen kunne ikke indlæses. Prøv igen senere.',
             noCookies:  'Ingen cookies registreret for denne kategori.',
             updated:    'Senest opdateret:',
-            noData:     'Der blev ikke registreret nogen cookies for dette domæne. Webstedet kan begrænse cookies, før der gives samtykke.',
+            noData:            'Der blev ikke registreret nogen cookies for dette domæne. Webstedet kan begrænse cookies, før der gives samtykke.',
+            servicesHeading:   'Tredjepartstjenester',
+            servicesIntro:     'Følgende tredjepartstjenester kan tilgå eller behandle personoplysninger, når du besøger dette websted.',
+            colService:        'Tjeneste',
+            colPurpose:        'Formål',
+            colCountry:        'Land',
+            colTransfer:       'Overførselsgrundlag',
+            manageHeading:     'Administrér dine cookiepræferencer',
+            managePara:        'Du kan til enhver tid trække eller ændre dit cookiesamtykke via cookieindstillingspanelet på dette websted. De fleste webbrowsere giver dig også mulighed for at styre cookies via browserindstillingerne; se din browsers hjælpedokumentation for detaljer.',
+            controllerHeading: 'Dataansvarlig',
+            controllerText:    'Dette websted drives af',
+            controllerContact: 'Ved spørgsmål vedrørende databeskyttelse bedes du kontakte',
             intro: [
                 'Vi bruger cookies og lignende sporingsteknologier til at spore aktiviteten på vores tjeneste og opbevare visse oplysninger.',
                 'Cookies er filer med en lille mængde data, som kan indeholde en anonym unik identifikator. Cookies sendes til din browser fra et websted og gemmes på din enhed. Andre sporingsteknologier anvendes også, såsom beacons, tags og scripts, til at indsamle og spore information og til at forbedre og analysere vores tjeneste.',
@@ -246,7 +273,18 @@
             error:      'Kunne ikke laste inn cookie-listen. Prøv igjen senere.',
             noCookies:  'Ingen informasjonskapsler oppdaget for denne kategorien.',
             updated:    'Sist oppdatert:',
-            noData:     'Ingen informasjonskapsler ble oppdaget for dette domenet. Nettstedet kan begrense informasjonskapsler før samtykke gis.',
+            noData:            'Ingen informasjonskapsler ble oppdaget for dette domenet. Nettstedet kan begrense informasjonskapsler før samtykke gis.',
+            servicesHeading:   'Tredjepartstjenester',
+            servicesIntro:     'Følgende tredjepartstjenester kan få tilgang til eller behandle personopplysninger når du besøker dette nettstedet.',
+            colService:        'Tjeneste',
+            colPurpose:        'Formål',
+            colCountry:        'Land',
+            colTransfer:       'Overføringsgrunnlag',
+            manageHeading:     'Administrer dine informasjonskapselinnstillinger',
+            managePara:        'Du kan når som helst trekke tilbake eller endre ditt samtykke til informasjonskapsler via innstillingspanelet på dette nettstedet. De fleste nettlesere lar deg også kontrollere informasjonskapsler via nettleserinnstillingene; se nettleserens hjelpedokumentasjon for detaljer.',
+            controllerHeading: 'Behandlingsansvarlig',
+            controllerText:    'Dette nettstedet drives av',
+            controllerContact: 'For henvendelser om personvern, kontakt oss på',
             intro: [
                 'Vi bruker informasjonskapsler og lignende sporingsteknologier for å spore aktiviteten på tjenesten vår og lagre viss informasjon.',
                 'Informasjonskapsler er filer med en liten mengde data, som kan inneholde en anonym unik identifikator. Informasjonskapsler sendes til nettleseren din fra et nettsted og lagres på enheten din. Andre sporingsteknologier brukes også, som beacons, tagger og skript, for å samle inn og spore informasjon og for å forbedre og analysere tjenesten vår.',
@@ -327,7 +365,18 @@
             error:      'Kunde inte ladda cookie-listan. Försök igen senare.',
             noCookies:  'Inga cookies hittades för denna kategori.',
             updated:    'Senast uppdaterad:',
-            noData:     'Inga cookies hittades för den här domänen. Webbplatsen kan begränsa cookies innan samtycke ges.',
+            noData:            'Inga cookies hittades för den här domänen. Webbplatsen kan begränsa cookies innan samtycke ges.',
+            servicesHeading:   'Tredjepartstjänster',
+            servicesIntro:     'Följande tredjepartstjänster kan komma åt eller behandla personuppgifter när du besöker denna webbplats.',
+            colService:        'Tjänst',
+            colPurpose:        'Syfte',
+            colCountry:        'Land',
+            colTransfer:       'Överföringsgrund',
+            manageHeading:     'Hantera dina cookieinställningar',
+            managePara:        'Du kan när som helst återkalla eller ändra ditt cookiesamtycke via cookieinställningspanelen på denna webbplats. De flesta webbläsare ger dig också möjlighet att kontrollera cookies via webbläsarinställningarna; se din webbläsares hjälpdokumentation för mer information.',
+            controllerHeading: 'Personuppgiftsansvarig',
+            controllerText:    'Denna webbplats drivs av',
+            controllerContact: 'Vid frågor om integritet, kontakta oss på',
             intro: [
                 'Vi använder kakor och liknande spårningstekniker för att spåra aktiviteten på vår tjänst och lagra viss information.',
                 'Kakor är filer med en liten mängd data som kan innehålla en anonym unik identifierare. Kakor skickas till din webbläsare från en webbplats och lagras på din enhet. Andra spårningstekniker används även, som beacons, taggar och skript, för att samla in och spåra information och för att förbättra och analysera vår tjänst.',
@@ -408,7 +457,18 @@
             error:      'Nie udało się załadować listy plików cookie. Spróbuj ponownie później.',
             noCookies:  'Nie wykryto plików cookie dla tej kategorii.',
             updated:    'Ostatnia aktualizacja:',
-            noData:     'Nie wykryto plików cookie dla tej domeny. Witryna może ograniczać pliki cookie przed udzieleniem zgody.',
+            noData:            'Nie wykryto plików cookie dla tej domeny. Witryna może ograniczać pliki cookie przed udzieleniem zgody.',
+            servicesHeading:   'Usługi stron trzecich',
+            servicesIntro:     'Następujące usługi stron trzecich mogą uzyskać dostęp do danych osobowych lub je przetwarzać podczas odwiedzania tej witryny.',
+            colService:        'Usługa',
+            colPurpose:        'Cel',
+            colCountry:        'Kraj',
+            colTransfer:       'Podstawa transferu',
+            manageHeading:     'Zarządzanie preferencjami plików cookie',
+            managePara:        'Możesz wycofać lub zmienić zgodę na pliki cookie w dowolnym momencie, korzystając z panelu ustawień plików cookie na tej stronie. Większość przeglądarek internetowych umożliwia również kontrolowanie plików cookie za pomocą ustawień przeglądarki; szczegółowe informacje można znaleźć w dokumentacji pomocy przeglądarki.',
+            controllerHeading: 'Administrator danych',
+            controllerText:    'Ta witryna jest obsługiwana przez',
+            controllerContact: 'W sprawach związanych z ochroną prywatności prosimy o kontakt',
             intro: [
                 'Używamy plików cookie i podobnych technologii śledzenia do monitorowania aktywności w naszym Serwisie i przechowywania określonych informacji.',
                 'Pliki cookie to pliki zawierające niewielką ilość danych, które mogą obejmować anonimowy unikalny identyfikator. Pliki cookie są wysyłane do przeglądarki użytkownika ze strony internetowej i przechowywane na jego urządzeniu. Stosowane są również inne technologie śledzenia, takie jak sygnały nawigacyjne, tagi i skrypty, do gromadzenia i śledzenia informacji oraz ulepszania i analizowania naszego Serwisu.',
@@ -489,7 +549,18 @@
             error:      'De cookielijst kon niet worden geladen. Probeer het later opnieuw.',
             noCookies:  'Geen cookies gedetecteerd voor deze categorie.',
             updated:    'Laatst bijgewerkt:',
-            noData:     'Er zijn geen cookies gedetecteerd voor dit domein. De website kan cookies beperken voordat toestemming wordt gegeven.',
+            noData:            'Er zijn geen cookies gedetecteerd voor dit domein. De website kan cookies beperken voordat toestemming wordt gegeven.',
+            servicesHeading:   'Diensten van derden',
+            servicesIntro:     'De volgende diensten van derden kunnen persoonlijke gegevens verwerken wanneer u deze website bezoekt.',
+            colService:        'Dienst',
+            colPurpose:        'Doel',
+            colCountry:        'Land',
+            colTransfer:       'Overdrachtsgrondslag',
+            manageHeading:     'Uw cookievoorkeuren beheren',
+            managePara:        'U kunt uw cookietoestemming op elk moment intrekken of wijzigen via het cookievoorkeurenpaneel op deze website. De meeste webbrowsers bieden ook de mogelijkheid om cookies te beheren via de browserinstellingen; raadpleeg de helpdocumentatie van uw browser voor meer informatie.',
+            controllerHeading: 'Verwerkingsverantwoordelijke',
+            controllerText:    'Deze website wordt beheerd door',
+            controllerContact: 'Voor privacygerelateerde vragen kunt u contact met ons opnemen via',
             intro: [
                 'Wij gebruiken cookies en vergelijkbare trackingtechnologieën om de activiteit op onze Service bij te houden en bepaalde informatie op te slaan.',
                 'Cookies zijn bestanden met een kleine hoeveelheid data, die een anonieme unieke identifier kunnen bevatten. Cookies worden vanuit een website naar uw browser gestuurd en op uw apparaat opgeslagen. Ook andere trackingtechnologieën worden gebruikt, zoals beacons, tags en scripts, om informatie te verzamelen en bij te houden, en om onze Service te verbeteren en te analyseren.',
@@ -570,7 +641,18 @@
             error:      'Kon nie die koeklys laai nie. Probeer asseblief later weer.',
             noCookies:  'Geen koekies bespeur vir hierdie kategorie nie.',
             updated:    'Laas opgedateer:',
-            noData:     'Geen koekies is vir hierdie domein bespeur nie. Die webwerf kan koekies beperk voordat toestemming gegee word.',
+            noData:            'Geen koekies is vir hierdie domein bespeur nie. Die webwerf kan koekies beperk voordat toestemming gegee word.',
+            servicesHeading:   'Derdeparty-dienste',
+            servicesIntro:     'Die volgende derdeparty-dienste kan persoonlike data toegang tot kry of verwerk wanneer u hierdie webwerf besoek.',
+            colService:        'Diens',
+            colPurpose:        'Doel',
+            colCountry:        'Land',
+            colTransfer:       'Oordragsbasis',
+            manageHeading:     'Bestuur u koekievoorkeuse',
+            managePara:        'U kan u koekietoestemming te eniger tyd terugtrek of verander deur die koekieinstellingspaneel op hierdie webwerf te gebruik. Die meeste webblaaiers laat u ook toe om koekies deur die blaaier-instellings te beheer; raadpleeg u blaaier se hulpdokumentasie vir besonderhede.',
+            controllerHeading: 'Data-verantwoordelike',
+            controllerText:    'Hierdie webwerf word bedryf deur',
+            controllerContact: 'Vir privaatheidsnavrae, kontak ons by',
             intro: [
                 'Ons gebruik koekies en soortgelyke naspoortegnologieë om aktiwiteit op ons Diens na te spoor en sekere inligting te stoor.',
                 "Koekies is lêers met 'n klein hoeveelheid data wat 'n anonieme unieke identifiseerder kan bevat. Koekies word van 'n webwerf na u blaaier gestuur en op u toestel gestoor. Ander naspoortegnologieë soos bakens, etikette en skrifte word ook gebruik om inligting te versamel en na te spoor, en om ons Diens te verbeter en te ontleed.",
@@ -651,7 +733,18 @@
             error:      'Impossible de charger la liste des cookies. Veuillez réessayer plus tard.',
             noCookies:  'Aucun cookie détecté pour cette catégorie.',
             updated:    'Dernière mise à jour :',
-            noData:     "Aucun cookie n’a été détecté pour ce domaine. Le site peut restreindre les cookies avant l’obtention du consentement.",
+            noData:            "Aucun cookie n’a été détecté pour ce domaine. Le site peut restreindre les cookies avant l’obtention du consentement.",
+            servicesHeading:   ‘Services tiers’,
+            servicesIntro:     ‘Les services tiers suivants peuvent accéder à des données personnelles ou les traiter lorsque vous visitez ce site web.’,
+            colService:        ‘Service’,
+            colPurpose:        ‘Finalité’,
+            colCountry:        ‘Pays’,
+            colTransfer:       ‘Base du transfert’,
+            manageHeading:     ‘Gérer vos préférences en matière de cookies’,
+            managePara:        "Vous pouvez retirer ou modifier votre consentement aux cookies à tout moment via le panneau de paramètres des cookies sur ce site web. La plupart des navigateurs web vous permettent également de gérer les cookies via les paramètres du navigateur ; consultez la documentation d’aide de votre navigateur pour plus de détails.",
+            controllerHeading: ‘Responsable du traitement’,
+            controllerText:    ‘Ce site web est exploité par’,
+            controllerContact: ‘Pour toute demande relative à la protection des données, veuillez nous contacter à’,
             intro: [
                 'Nous utilisons des cookies et des technologies de suivi similaires pour surveiller l’activité sur notre Service et conserver certaines informations.',
                 'Les cookies sont des fichiers contenant une petite quantité de données, pouvant inclure un identifiant unique anonyme. Les cookies sont envoyés à votre navigateur depuis un site web et stockés sur votre appareil. D’autres technologies de suivi sont également utilisées, telles que les balises, les tags et les scripts, pour collecter et suivre des informations et pour améliorer et analyser notre Service.',
@@ -732,7 +825,18 @@
             error:      'No se pudo cargar la lista de cookies. Inténtelo de nuevo más tarde.',
             noCookies:  'No se detectaron cookies para esta categoría.',
             updated:    'Última actualización:',
-            noData:     'No se detectaron cookies para este dominio. El sitio web puede restringir las cookies antes de obtener el consentimiento.',
+            noData:            'No se detectaron cookies para este dominio. El sitio web puede restringir las cookies antes de obtener el consentimiento.',
+            servicesHeading:   'Servicios de terceros',
+            servicesIntro:     'Los siguientes servicios de terceros pueden acceder o procesar datos personales cuando visita este sitio web.',
+            colService:        'Servicio',
+            colPurpose:        'Finalidad',
+            colCountry:        'País',
+            colTransfer:       'Base de la transferencia',
+            manageHeading:     'Gestionar sus preferencias de cookies',
+            managePara:        'Puede retirar o cambiar su consentimiento de cookies en cualquier momento utilizando el panel de configuración de cookies en este sitio web. La mayoría de los navegadores web también le permiten controlar las cookies a través de la configuración del navegador; consulte la documentación de ayuda de su navegador para obtener más detalles.',
+            controllerHeading: 'Responsable del tratamiento',
+            controllerText:    'Este sitio web es operado por',
+            controllerContact: 'Para consultas relacionadas con la privacidad, contáctenos en',
             intro: [
                 'Utilizamos cookies y tecnologías de seguimiento similares para rastrear la actividad en nuestro Servicio y almacenar cierta información.',
                 'Las cookies son archivos con una pequeña cantidad de datos que pueden incluir un identificador único anónimo. Las cookies se envían a su navegador desde un sitio web y se almacenan en su dispositivo. También se utilizan otras tecnologías de seguimiento, como balizas, etiquetas y scripts, para recopilar y rastrear información y para mejorar y analizar nuestro Servicio.',
@@ -813,7 +917,18 @@
             error:      'Não foi possível carregar a lista de cookies. Tente novamente mais tarde.',
             noCookies:  'Nenhum cookie detetado para esta categoria.',
             updated:    'Última atualização:',
-            noData:     'Não foram detetados cookies para este domínio. O website pode restringir cookies antes de ser dado o consentimento.',
+            noData:            'Não foram detetados cookies para este domínio. O website pode restringir cookies antes de ser dado o consentimento.',
+            servicesHeading:   'Serviços de terceiros',
+            servicesIntro:     'Os seguintes serviços de terceiros podem aceder ou processar dados pessoais quando visita este website.',
+            colService:        'Serviço',
+            colPurpose:        'Finalidade',
+            colCountry:        'País',
+            colTransfer:       'Base de transferência',
+            manageHeading:     'Gerir as suas preferências de cookies',
+            managePara:        'Pode retirar ou alterar o seu consentimento de cookies a qualquer momento utilizando o painel de definições de cookies neste website. A maioria dos browsers também lhe permite controlar os cookies através das definições do browser; consulte a documentação de ajuda do seu browser para mais detalhes.',
+            controllerHeading: 'Responsável pelo tratamento',
+            controllerText:    'Este website é operado por',
+            controllerContact: 'Para questões relacionadas com a privacidade, contacte-nos em',
             intro: [
                 'Utilizamos cookies e tecnologias de rastreio semelhantes para acompanhar a atividade no nosso Serviço e armazenar determinadas informações.',
                 'Os cookies são ficheiros com uma pequena quantidade de dados que podem incluir um identificador único anónimo. Os cookies são enviados para o seu browser a partir de um website e armazenados no seu dispositivo. Outras tecnologias de rastreio também são utilizadas, como beacons, tags e scripts, para recolher e acompanhar informações e para melhorar e analisar o nosso Serviço.',
@@ -982,7 +1097,7 @@
         return html;
     }
 
-    function renderCategories(container, data, L) {
+    function renderCategories(container, data, L, controller, contact) {
         var cats = data.categories || {};
         var scannedAt = data.scanned_at;
         var html = '<div class="ics-ct">';
@@ -1044,6 +1159,23 @@
 
         html += renderVendorTable(data, L);
 
+        html += '<div class="ics-ct-group" style="margin-top:32px">';
+        html += '<div class="ics-ct-group-label">' + esc(L.manageHeading || 'Managing your cookie preferences') + '</div>';
+        html += '<p class="ics-ct-intro">' + esc(L.managePara || "You can withdraw or change your cookie consent at any time using the cookie settings panel on this website. Most web browsers also allow you to control cookies through their settings.") + '</p>';
+        html += '</div>';
+
+        if (controller) {
+            var safeContact = contact && contact.indexOf('@') > 0 ? contact : '';
+            html += '<div class="ics-ct-group">';
+            html += '<div class="ics-ct-group-label">' + esc(L.controllerHeading || 'Data controller') + '</div>';
+            var ctrlHtml = esc(L.controllerText || 'This website is operated by') + ' <strong>' + esc(controller) + '</strong>.';
+            if (safeContact) {
+                ctrlHtml += ' ' + esc(L.controllerContact || 'For privacy-related enquiries, please contact us at') + ' <a class="ics-ct-link" href="mailto:' + esc(safeContact) + '">' + esc(safeContact) + '</a>.';
+            }
+            html += '<p class="ics-ct-intro">' + ctrlHtml + '</p>';
+            html += '</div>';
+        }
+
         if (scannedAt) {
             var d = new Date(scannedAt);
             var formatted = isNaN(d.getTime()) ? scannedAt : d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
@@ -1063,8 +1195,10 @@
     function loadContainer(container) {
         if (container.getAttribute('data-ics-init')) return;
         container.setAttribute('data-ics-init', '1');
-        var domain = (container.getAttribute('data-domain') || '').trim();
-        var lang   = (container.getAttribute('data-lang')   || 'en').trim().toLowerCase();
+        var domain     = (container.getAttribute('data-domain')     || '').trim();
+        var lang       = (container.getAttribute('data-lang')       || 'en').trim().toLowerCase();
+        var controller = (container.getAttribute('data-controller') || '').trim();
+        var contact    = (container.getAttribute('data-contact')    || '').trim();
         var L = LABELS[lang] || LABELS.en;
 
         if (!domain) {
@@ -1098,7 +1232,7 @@
                     container.innerHTML = '<p class="ics-ct-msg ics-ct-err">' + esc(L.error) + '</p>';
                     return;
                 }
-                renderCategories(container, data, L);
+                renderCategories(container, data, L, controller, contact);
             })
             .catch(function () {
                 container.innerHTML = '<p class="ics-ct-msg ics-ct-err">' + esc(L.error) + '</p>';
