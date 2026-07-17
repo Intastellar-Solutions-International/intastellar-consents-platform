@@ -725,6 +725,17 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "theme",                bannerCategory: "functional" },
     { exact:  "font_size",            bannerCategory: "functional" },
     { exact:  "sidebar",              bannerCategory: "functional" },
+    // VWO (Visual Website Optimizer) A/B testing & experimentation
+    { exact:  "_vwo_consent",         bannerCategory: "necessary"  }, // consent record
+    { exact:  "_vis_opt_test_cookie", bannerCategory: "necessary"  }, // browser cookie-support test
+    { exact:  "_vis_opt_out",         bannerCategory: "necessary"  }, // visitor opt-out flag
+    { exact:  "_vwo_uuid",            bannerCategory: "analytics"  }, // persistent visitor ID
+    { exact:  "_vwo_uuid_v2",         bannerCategory: "analytics"  }, // visitor ID v2
+    { exact:  "_vwo_ds",              bannerCategory: "analytics"  }, // visitor segment data
+    { exact:  "_vwo_sn",              bannerCategory: "analytics"  }, // session number
+    { prefix: "_vis_opt_exp_",        bannerCategory: "analytics"  }, // per-experiment assignment/goal
+    { prefix: "_vwo_",                bannerCategory: "analytics"  }, // all other VWO cookies
+    { prefix: "_vis_opt_",            bannerCategory: "analytics"  }, // all other _vis_opt_ cookies
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
     { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
@@ -979,12 +990,17 @@ export const COOKIE_META = [
     // Pinterest
     { prefix: "_pin_",                  description: "Pinterest tracking cookie — identifies visitors from Pinterest for ad conversion measurement." },
     { prefix: "_pinterest_",            description: "Pinterest session cookie — tracks Pinterest-referred sessions for analytics." },
-    // VWO
-    { exact:  "_vwo_consent",           description: "VWO consent record — stores the visitor's consent decision for VWO tracking. Expires after 1 year." },
-    { exact:  "_vwo_uuid",              description: "VWO visitor ID — assigns a unique ID to each visitor for experiment assignment. Expires after 1 year." },
-    { exact:  "_vwo_uuid_v2",           description: "VWO visitor ID v2 — updated unique visitor identifier for A/B test assignment. Expires after 1 year." },
-    { prefix: "_vwo_",                  description: "VWO tracking cookie — used for A/B testing, personalisation and conversion optimisation." },
-    { prefix: "_vis_opt_",              description: "VWO optimisation cookie — stores experiment variant assignment and visitor targeting data." },
+    // VWO (Visual Website Optimizer)
+    { exact:  "_vwo_consent",           description: "VWO consent record — stores the visitor's consent choice for VWO tracking. Expires after 1 year." },
+    { exact:  "_vwo_uuid",              description: "VWO visitor ID — a persistent unique identifier assigned to each visitor so VWO can consistently allocate them to the same A/B test variant across sessions. Expires after 1 year." },
+    { exact:  "_vwo_uuid_v2",           description: "VWO visitor ID v2 — second-generation persistent visitor identifier used for A/B experiment assignment and cross-session analytics. Replaces _vwo_uuid on newer VWO installations. Expires after 1 year." },
+    { exact:  "_vwo_ds",                description: "VWO visitor segment data — stores visitor-level attributes and segment membership that VWO uses to allocate visitors to targeted experiment variants. Typically a session or short-lived cookie." },
+    { exact:  "_vwo_sn",                description: "VWO session number — tracks how many sessions the visitor has started, used for session-based experiment targeting and analysis. Session cookie." },
+    { exact:  "_vis_opt_test_cookie",   description: "VWO browser test cookie — a temporary cookie that verifies the visitor's browser can accept cookies before VWO initialises its experiments. Expires after 1 day." },
+    { exact:  "_vis_opt_out",           description: "VWO opt-out cookie — records that the visitor has opted out of VWO A/B testing and will be excluded from all experiments. Persists for up to 10 years." },
+    { prefix: "_vis_opt_exp_",          description: "VWO experiment state cookie — stores the variant this visitor was assigned to in a specific experiment, and tracks whether conversion goals have been achieved." },
+    { prefix: "_vwo_",                  description: "VWO analytics cookie — used by Visual Website Optimiser for A/B testing, personalisation and conversion rate optimisation." },
+    { prefix: "_vis_opt_",              description: "VWO experiment tracking cookie — stores visitor assignment data and experiment state for Visual Website Optimiser." },
     // Stripe
     { exact:  "__stripe_mid",           description: "Stripe fraud prevention cookie — identifies the browser for fraud detection purposes. Expires after 1 year." },
     { exact:  "__stripe_sid",           description: "Stripe session cookie — short-lived session identifier used during payment flows. Expires after 30 minutes." },
