@@ -1273,6 +1273,41 @@ export async function scanDomain(domain) {
             await new Promise(r => setTimeout(r, 2000));
         }
 
+        // ── Subpage crawl ─────────────────────────────────────────────────────
+        // Visit a sample of internal pages so cookies only set on subpages are
+        // captured (e.g. analytics fired on product pages, checkout entry, etc.)
+        const pageOrigin = new URL(page.url()).origin;
+        const subpageLinks = await page.evaluate((origin) => {
+            const seen = new Set([location.pathname.replace(/\/+$/, "") || "/"]);
+            const out  = [];
+            for (const a of document.querySelectorAll("a[href]")) {
+                try {
+                    const url  = new URL(a.href, location.href);
+                    if (url.origin !== origin) continue;
+                    const path = url.pathname.replace(/\/+$/, "") || "/";
+                    if (seen.has(path)) continue;
+                    seen.add(path);
+                    out.push(url.origin + path);
+                    if (out.length >= 20) break;
+                } catch {}
+            }
+            return out;
+        }, pageOrigin).catch(() => []);
+
+        const skipSubpath = /\/(login|logout|signup|register|cart|checkout|account|admin|api|auth|oauth|dashboard)\b/i;
+        const skipSubext  = /\.(pdf|jpg|jpeg|png|gif|webp|svg|css|js|woff2?|ico|zip|xml|json|mp4|mp3|wav)(\?|$)/i;
+        const toVisit = subpageLinks
+            .filter(u => !skipSubpath.test(u) && !skipSubext.test(u))
+            .slice(0, 4);
+
+        for (const url of toVisit) {
+            try {
+                await page.goto(url, { waitUntil: "networkidle2", timeout: 12000 });
+                await new Promise(r => setTimeout(r, 800));
+            } catch {}
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
         const { cookies: rawCookies } = await cdpClient.send("Network.getAllCookies");
         await browser.close();
 
