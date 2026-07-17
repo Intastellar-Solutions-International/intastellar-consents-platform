@@ -46,6 +46,8 @@
             noCookies:  'No cookies detected for this category.',
             updated:    'Last updated:',
             noData:          'No cookies were detected for this domain. The website may restrict cookies before consent is given.',
+            title:           'Cookie Policy',
+            cookiesHeading:  'Cookies we use',
             servicesHeading: 'Third-party services',
             servicesIntro:   'The following third-party services may access or process personal data when you visit this website.',
             colService:      'Service',
@@ -90,6 +92,8 @@
             noCookies:  'Keine Cookies für diese Kategorie erkannt.',
             updated:    'Zuletzt aktualisiert:',
             noData:            'Für diese Domain wurden keine Cookies erkannt. Die Website schränkt Cookies möglicherweise vor der Einwilligung ein.',
+            title:             'Cookie-Richtlinie',
+            cookiesHeading:    'Cookies, die wir verwenden',
             servicesHeading:   'Drittanbieter',
             servicesIntro:     'Die folgenden Drittanbieter können auf personenbezogene Daten zugreifen oder diese verarbeiten, wenn Sie diese Website besuchen.',
             colService:        'Dienst',
@@ -182,6 +186,8 @@
             noCookies:  'Ingen cookies registreret for denne kategori.',
             updated:    'Senest opdateret:',
             noData:            'Der blev ikke registreret nogen cookies for dette domæne. Webstedet kan begrænse cookies, før der gives samtykke.',
+            title:             'Cookiepolitik',
+            cookiesHeading:    'Cookies vi bruger',
             servicesHeading:   'Tredjepartstjenester',
             servicesIntro:     'Følgende tredjepartstjenester kan tilgå eller behandle personoplysninger, når du besøger dette websted.',
             colService:        'Tjeneste',
@@ -274,6 +280,8 @@
             noCookies:  'Ingen informasjonskapsler oppdaget for denne kategorien.',
             updated:    'Sist oppdatert:',
             noData:            'Ingen informasjonskapsler ble oppdaget for dette domenet. Nettstedet kan begrense informasjonskapsler før samtykke gis.',
+            title:             'Retningslinjer for informasjonskapsler',
+            cookiesHeading:    'Informasjonskapsler vi bruker',
             servicesHeading:   'Tredjepartstjenester',
             servicesIntro:     'Følgende tredjepartstjenester kan få tilgang til eller behandle personopplysninger når du besøker dette nettstedet.',
             colService:        'Tjeneste',
@@ -366,6 +374,8 @@
             noCookies:  'Inga cookies hittades för denna kategori.',
             updated:    'Senast uppdaterad:',
             noData:            'Inga cookies hittades för den här domänen. Webbplatsen kan begränsa cookies innan samtycke ges.',
+            title:             'Cookiepolicy',
+            cookiesHeading:    'Cookies vi använder',
             servicesHeading:   'Tredjepartstjänster',
             servicesIntro:     'Följande tredjepartstjänster kan komma åt eller behandla personuppgifter när du besöker denna webbplats.',
             colService:        'Tjänst',
@@ -458,6 +468,8 @@
             noCookies:  'Nie wykryto plików cookie dla tej kategorii.',
             updated:    'Ostatnia aktualizacja:',
             noData:            'Nie wykryto plików cookie dla tej domeny. Witryna może ograniczać pliki cookie przed udzieleniem zgody.',
+            title:             'Polityka cookies',
+            cookiesHeading:    'Pliki cookie, których używamy',
             servicesHeading:   'Usługi stron trzecich',
             servicesIntro:     'Następujące usługi stron trzecich mogą uzyskać dostęp do danych osobowych lub je przetwarzać podczas odwiedzania tej witryny.',
             colService:        'Usługa',
@@ -550,6 +562,8 @@
             noCookies:  'Geen cookies gedetecteerd voor deze categorie.',
             updated:    'Laatst bijgewerkt:',
             noData:            'Er zijn geen cookies gedetecteerd voor dit domein. De website kan cookies beperken voordat toestemming wordt gegeven.',
+            title:             'Cookiebeleid',
+            cookiesHeading:    'Cookies die we gebruiken',
             servicesHeading:   'Diensten van derden',
             servicesIntro:     'De volgende diensten van derden kunnen persoonlijke gegevens verwerken wanneer u deze website bezoekt.',
             colService:        'Dienst',
@@ -642,6 +656,8 @@
             noCookies:  'Geen koekies bespeur vir hierdie kategorie nie.',
             updated:    'Laas opgedateer:',
             noData:            'Geen koekies is vir hierdie domein bespeur nie. Die webwerf kan koekies beperk voordat toestemming gegee word.',
+            title:             'Koekie-beleid',
+            cookiesHeading:    'Koekies wat ons gebruik',
             servicesHeading:   'Derdeparty-dienste',
             servicesIntro:     'Die volgende derdeparty-dienste kan persoonlike data toegang tot kry of verwerk wanneer u hierdie webwerf besoek.',
             colService:        'Diens',
@@ -734,6 +750,8 @@
             noCookies:  'Aucun cookie détecté pour cette catégorie.',
             updated:    'Dernière mise à jour :',
             noData:            "Aucun cookie n’a été détecté pour ce domaine. Le site peut restreindre les cookies avant l’obtention du consentement.",
+            title:             'Politique en matière de cookies',
+            cookiesHeading:    'Cookies que nous utilisons',
             servicesHeading:   'Services tiers',
             servicesIntro:     'Les services tiers suivants peuvent accéder à des données personnelles ou les traiter lorsque vous visitez ce site web.',
             colService:        'Service',
@@ -826,6 +844,8 @@
             noCookies:  'No se detectaron cookies para esta categoría.',
             updated:    'Última actualización:',
             noData:            'No se detectaron cookies para este dominio. El sitio web puede restringir las cookies antes de obtener el consentimiento.',
+            title:             'Política de cookies',
+            cookiesHeading:    'Cookies que utilizamos',
             servicesHeading:   'Servicios de terceros',
             servicesIntro:     'Los siguientes servicios de terceros pueden acceder o procesar datos personales cuando visita este sitio web.',
             colService:        'Servicio',
@@ -918,6 +938,8 @@
             noCookies:  'Nenhum cookie detetado para esta categoria.',
             updated:    'Última atualização:',
             noData:            'Não foram detetados cookies para este domínio. O website pode restringir cookies antes de ser dado o consentimento.',
+            title:             'Política de cookies',
+            cookiesHeading:    'Cookies que utilizamos',
             servicesHeading:   'Serviços de terceiros',
             servicesIntro:     'Os seguintes serviços de terceiros podem aceder ou processar dados pessoais quando visita este website.',
             colService:        'Serviço',
@@ -1034,6 +1056,8 @@
             '.ics-ct-err{color:#dc2626}',
             '.ics-ct-link{color:#6366f1;text-decoration:none}',
             '.ics-ct-link:hover{text-decoration:underline}',
+            '.ics-ct-h1{font-size:26px;font-weight:700;color:#111827;margin:0 0 6px;line-height:1.2}',
+            '.ics-ct-h2{font-size:16px;font-weight:600;color:#111827;margin:36px 0 10px;padding-top:28px;border-top:2px solid #e5e7eb;line-height:1.3}',
         ].join('');
         (document.head || document.documentElement).appendChild(el);
     }
@@ -1071,9 +1095,7 @@
         });
         if (!vendors.length) return '';
 
-        var html = '<div class="ics-ct-group" style="margin-top:32px">';
-        html += '<div class="ics-ct-group-label">' + esc(L.servicesHeading || 'Third-party services') + ' (' + vendors.length + ')</div>';
-        html += '<p class="ics-ct-group-desc">' + esc(L.servicesIntro || 'The following third-party services may access or process personal data when you visit this website.') + '</p>';
+        var html = '<p class="ics-ct-intro">' + esc(L.servicesIntro || 'The following third-party services may access or process personal data when you visit this website.') + '</p>';
         html += '<div class="ics-ct-table-wrap"><table class="ics-ct-table"><thead><tr>';
         html += '<th>' + esc(L.colService  || 'Service')        + '</th>';
         html += '<th>' + esc(L.colPurpose  || 'Purpose')        + '</th>';
@@ -1093,7 +1115,7 @@
             html += '<td>' + esc(v.transferMechanism || '—')   + '</td>';
             html += '</tr>';
         });
-        html += '</tbody></table></div></div>';
+        html += '</tbody></table></div>';
         return html;
     }
 
@@ -1102,10 +1124,22 @@
         var scannedAt = data.scanned_at;
         var html = '<div class="ics-ct">';
 
+        // Title + last updated
+        html += '<div class="ics-ct-h1">' + esc(L.title || 'Cookie Policy') + '</div>';
+        if (scannedAt) {
+            var d = new Date(scannedAt);
+            var formatted = isNaN(d.getTime()) ? scannedAt : d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+            html += '<p class="ics-ct-meta" style="margin-bottom:20px">' + esc(L.updated) + ' ' + esc(formatted) + '</p>';
+        }
+
+        // Intro paragraphs
         var introParas = Array.isArray(L.intro) ? L.intro : [L.intro];
         introParas.forEach(function (para) {
             html += '<p class="ics-ct-intro">' + esc(para) + '</p>';
         });
+
+        // Section: Cookies we use
+        html += '<div class="ics-ct-h2">' + esc(L.cookiesHeading || 'Cookies we use') + '</div>';
 
         CAT_ORDER.forEach(function (cat) {
             var group = cats[cat];
@@ -1157,29 +1191,26 @@
             html += '<p class="ics-ct-msg">' + esc(L.noData || 'No cookies were detected for this domain.') + '</p>';
         }
 
-        html += renderVendorTable(data, L);
+        // Section: Third-party services (only if vendors exist)
+        var vendorHtml = renderVendorTable(data, L);
+        if (vendorHtml) {
+            html += '<div class="ics-ct-h2">' + esc(L.servicesHeading || 'Third-party services') + '</div>';
+            html += vendorHtml;
+        }
 
-        html += '<div class="ics-ct-group" style="margin-top:32px">';
-        html += '<div class="ics-ct-group-label">' + esc(L.manageHeading || 'Managing your cookie preferences') + '</div>';
+        // Section: Managing preferences
+        html += '<div class="ics-ct-h2">' + esc(L.manageHeading || 'Managing your cookie preferences') + '</div>';
         html += '<p class="ics-ct-intro">' + esc(L.managePara || "You can withdraw or change your cookie consent at any time using the cookie settings panel on this website. Most web browsers also allow you to control cookies through their settings.") + '</p>';
-        html += '</div>';
 
+        // Section: Data controller
         if (controller) {
             var safeContact = contact && contact.indexOf('@') > 0 ? contact : '';
-            html += '<div class="ics-ct-group">';
-            html += '<div class="ics-ct-group-label">' + esc(L.controllerHeading || 'Data controller') + '</div>';
+            html += '<div class="ics-ct-h2">' + esc(L.controllerHeading || 'Data controller') + '</div>';
             var ctrlHtml = esc(L.controllerText || 'This website is operated by') + ' <strong>' + esc(controller) + '</strong>.';
             if (safeContact) {
                 ctrlHtml += ' ' + esc(L.controllerContact || 'For privacy-related enquiries, please contact us at') + ' <a class="ics-ct-link" href="mailto:' + esc(safeContact) + '">' + esc(safeContact) + '</a>.';
             }
             html += '<p class="ics-ct-intro">' + ctrlHtml + '</p>';
-            html += '</div>';
-        }
-
-        if (scannedAt) {
-            var d = new Date(scannedAt);
-            var formatted = isNaN(d.getTime()) ? scannedAt : d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
-            html += '<p class="ics-ct-meta">' + esc(L.updated) + ' ' + esc(formatted) + '</p>';
         }
 
         html += '</div>';
