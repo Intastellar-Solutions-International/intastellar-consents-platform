@@ -1159,22 +1159,20 @@
         var scannedAt = data.scanned_at;
         var html = '<div class="ics-ct">';
 
-        // Title + last updated
-        html += '<div class="ics-ct-h1">' + esc(L.title || 'Cookie Policy') + '</div>';
-        if (scannedAt) {
-            var d = new Date(scannedAt);
-            var formatted = isNaN(d.getTime()) ? scannedAt : d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
-            html += '<p class="ics-ct-meta" style="margin-bottom:20px">' + esc(L.updated) + ' ' + esc(formatted) + '</p>';
+        if (controller) {
+            // Full policy mode: title + date at top, then intro
+            html += '<div class="ics-ct-h1">' + esc(L.title || 'Cookie Policy') + '</div>';
+            if (scannedAt) {
+                var d = new Date(scannedAt);
+                var formatted = isNaN(d.getTime()) ? scannedAt : d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+                html += '<p class="ics-ct-meta" style="margin-bottom:20px">' + esc(L.updated) + ' ' + esc(formatted) + '</p>';
+            }
+            var introParas = Array.isArray(L.intro) ? L.intro : [L.intro];
+            introParas.forEach(function (para) {
+                html += '<p class="ics-ct-intro">' + esc(para) + '</p>';
+            });
+            html += '<div class="ics-ct-h2">' + esc(L.cookiesHeading || 'Cookies we use') + '</div>';
         }
-
-        // Intro paragraphs
-        var introParas = Array.isArray(L.intro) ? L.intro : [L.intro];
-        introParas.forEach(function (para) {
-            html += '<p class="ics-ct-intro">' + esc(para) + '</p>';
-        });
-
-        // Section: Cookies we use
-        html += '<div class="ics-ct-h2">' + esc(L.cookiesHeading || 'Cookies we use') + '</div>';
 
         CAT_ORDER.forEach(function (cat) {
             var group = cats[cat];
@@ -1226,27 +1224,27 @@
             html += '<p class="ics-ct-msg">' + esc(L.noData || 'No cookies were detected for this domain.') + '</p>';
         }
 
-        // Section: Third-party services (only if vendors exist)
-        var vendorHtml = renderVendorTable(data, L);
-        if (vendorHtml) {
-            html += '<div class="ics-ct-h2">' + esc(L.servicesHeading || 'Third-party services') + '</div>';
-            html += vendorHtml;
-        }
-
-        // Section: Managing preferences
-        html += '<div class="ics-ct-h2">' + esc(L.manageHeading || 'Managing your cookie preferences') + '</div>';
-        html += '<p class="ics-ct-intro">' + esc(L.managePara || 'You can withdraw or change your cookie consent at any time using the cookie settings panel on this website.') + '</p>';
-        html += '<p class="ics-ct-intro">' + esc(L.manageBrowserLabel || 'You can also manage cookies directly through your browser settings:') + '</p>';
-        html += '<ul class="ics-ct-browser-list">';
-        html += '<li><a class="ics-ct-link" href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">Chrome</a></li>';
-        html += '<li><a class="ics-ct-link" href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer" target="_blank" rel="noopener noreferrer">Firefox</a></li>';
-        html += '<li><a class="ics-ct-link" href="https://support.apple.com/guide/safari/manage-cookies-sfri11471/mac" target="_blank" rel="noopener noreferrer">Safari</a></li>';
-        html += '<li><a class="ics-ct-link" href="https://support.microsoft.com/en-us/windows/delete-and-manage-cookies-168dab11-0753-043d-7c16-ede5947fc64d" target="_blank" rel="noopener noreferrer">Microsoft Edge</a></li>';
-        html += '<li><a class="ics-ct-link" href="https://help.opera.com/en/latest/web-preferences/#cookies" target="_blank" rel="noopener noreferrer">Opera</a></li>';
-        html += '</ul>';
-
-        // Section: Data controller
         if (controller) {
+            // Section: Third-party services (only if vendors exist)
+            var vendorHtml = renderVendorTable(data, L);
+            if (vendorHtml) {
+                html += '<div class="ics-ct-h2">' + esc(L.servicesHeading || 'Third-party services') + '</div>';
+                html += vendorHtml;
+            }
+
+            // Section: Managing preferences
+            html += '<div class="ics-ct-h2">' + esc(L.manageHeading || 'Managing your cookie preferences') + '</div>';
+            html += '<p class="ics-ct-intro">' + esc(L.managePara || 'You can withdraw or change your cookie consent at any time using the cookie settings panel on this website.') + '</p>';
+            html += '<p class="ics-ct-intro">' + esc(L.manageBrowserLabel || 'You can also manage cookies directly through your browser settings:') + '</p>';
+            html += '<ul class="ics-ct-browser-list">';
+            html += '<li><a class="ics-ct-link" href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">Chrome</a></li>';
+            html += '<li><a class="ics-ct-link" href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer" target="_blank" rel="noopener noreferrer">Firefox</a></li>';
+            html += '<li><a class="ics-ct-link" href="https://support.apple.com/guide/safari/manage-cookies-sfri11471/mac" target="_blank" rel="noopener noreferrer">Safari</a></li>';
+            html += '<li><a class="ics-ct-link" href="https://support.microsoft.com/en-us/windows/delete-and-manage-cookies-168dab11-0753-043d-7c16-ede5947fc64d" target="_blank" rel="noopener noreferrer">Microsoft Edge</a></li>';
+            html += '<li><a class="ics-ct-link" href="https://help.opera.com/en/latest/web-preferences/#cookies" target="_blank" rel="noopener noreferrer">Opera</a></li>';
+            html += '</ul>';
+
+            // Section: Data controller
             var safeContact = contact && contact.indexOf('@') > 0 ? contact : '';
             html += '<div class="ics-ct-h2">' + esc(L.controllerHeading || 'Data controller') + '</div>';
             var ctrlHtml = esc(L.controllerText || 'This website is operated by') + ' <strong>' + esc(controller) + '</strong>.';
@@ -1254,11 +1252,18 @@
                 ctrlHtml += ' ' + esc(L.controllerContact || 'For privacy-related enquiries, please contact us at') + ' <a class="ics-ct-link" href="mailto:' + esc(safeContact) + '">' + esc(safeContact) + '</a>.';
             }
             html += '<p class="ics-ct-intro">' + ctrlHtml + '</p>';
-        }
 
-        // Section: Changes to this policy
-        html += '<div class="ics-ct-h2">' + esc(L.changesHeading || 'Changes to this cookie policy') + '</div>';
-        html += '<p class="ics-ct-intro">' + esc(L.changesPara || 'We may update this cookie policy from time to time to reflect changes in technology, law, or our data practices. When we make changes, we will update the date at the top of this page. We encourage you to review this policy periodically.') + '</p>';
+            // Section: Changes to this policy
+            html += '<div class="ics-ct-h2">' + esc(L.changesHeading || 'Changes to this cookie policy') + '</div>';
+            html += '<p class="ics-ct-intro">' + esc(L.changesPara || 'We may update this cookie policy from time to time to reflect changes in technology, law, or our data practices. When we make changes, we will update the date at the top of this page. We encourage you to review this policy periodically.') + '</p>';
+        } else {
+            // Basic mode: just show the last-updated date at the bottom
+            if (scannedAt) {
+                var d = new Date(scannedAt);
+                var formatted = isNaN(d.getTime()) ? scannedAt : d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+                html += '<p class="ics-ct-meta">' + esc(L.updated) + ' ' + esc(formatted) + '</p>';
+            }
+        }
 
         html += '</div>';
         container.innerHTML = html;
