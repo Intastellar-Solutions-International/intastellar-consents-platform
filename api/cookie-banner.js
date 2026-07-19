@@ -36,6 +36,31 @@ function getPool() {
     return pool;
 }
 
+let tableReady = false;
+async function ensureTable(db) {
+    if (tableReady) return;
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS pre_consent_scans (
+            id                SERIAL          PRIMARY KEY,
+            domain            VARCHAR(255)    NOT NULL,
+            organisation_id   INTEGER         DEFAULT NULL,
+            workspace_id      INTEGER         DEFAULT NULL,
+            scanned_at        TIMESTAMP       NOT NULL DEFAULT NOW(),
+            scan_duration_ms  INTEGER         DEFAULT NULL,
+            status            VARCHAR(20)     NOT NULL DEFAULT 'completed'
+                                  CHECK (status IN ('pending', 'in_progress', 'completed', 'failed')),
+            transfers         JSONB           DEFAULT NULL,
+            cookies           JSONB           DEFAULT NULL,
+            error_message     TEXT            DEFAULT NULL,
+            created_at        TIMESTAMP       NOT NULL DEFAULT NOW()
+        )
+    `);
+    await db.query(
+        `CREATE INDEX IF NOT EXISTS idx_pcs_domain_status ON pre_consent_scans (domain, status)`
+    );
+    tableReady = true;
+}
+
 const BANNER_CATEGORY = {
     advertising:    "marketing",
     fingerprinting: "marketing",
@@ -179,6 +204,49 @@ async function loadOverrides(db, domain) {
     }
 }
 
+async function runBackgroundScan(domain, db) {
+    // Skip if a scan is already running for this domain
+    const { rows: active } = await db.query(
+        `SELECT id FROM pre_consent_scans
+          WHERE domain = $1 AND status IN ('pending', 'in_progress')
+          LIMIT 1`,
+        [domain]
+    );
+    if (active.length) return;
+
+    // Insert an in_progress sentinel to block duplicate concurrent scans
+    let scanId = null;
+    try {
+        const { rows } = await db.query(
+            `INSERT INTO pre_consent_scans
+                 (domain, organisation_id, scanned_at, status, transfers, cookies)
+              VALUES ($1, NULL, NOW(), 'in_progress', '[]', '[]') RETURNING id`,
+            [domain]
+        );
+        scanId = rows[0].id;
+    } catch (err) {
+        console.error("[cookie-banner] bg-scan insert failed:", err.message);
+        return;
+    }
+
+    const { transfers, cookies: rawCookies, durationMs, error } = await scanDomain(domain);
+    const finalStatus = error ? "failed" : "completed";
+    const finalAt     = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+    try {
+        await db.query(
+            `UPDATE pre_consent_scans
+                SET status = $2, scanned_at = $3, scan_duration_ms = $4,
+                    transfers = $5, cookies = $6, error_message = $7
+              WHERE id = $1`,
+            [scanId, finalStatus, finalAt, durationMs,
+             JSON.stringify(transfers), JSON.stringify(rawCookies), error || null]
+        );
+    } catch (err) {
+        console.error("[cookie-banner] bg-scan update failed:", err.message);
+    }
+}
+
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -201,6 +269,9 @@ export default async function handler(req, res) {
     try {
         const db = getPool();
 
+        // Auto-create the table if this is a fresh database deployment
+        await ensureTable(db);
+
         // Happy path — completed scan already exists
         const { rows } = await db.query(
             `SELECT domain, scanned_at, transfers, cookies
@@ -218,17 +289,23 @@ export default async function handler(req, res) {
                 loadDefinitions(db),
             ]);
             res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=600");
-            return res.json({
+            res.json({
                 domain:     row.domain,
                 scanned_at: row.scanned_at,
                 categories: buildCategories(row.domain, row.transfers, row.cookies, overrides, definitions),
             });
+            // Refresh the scan in the background so the next request always gets current data.
+            // Vercel keeps the function alive until this handler's Promise resolves.
+            await runBackgroundScan(domain, db).catch(err =>
+                console.error("[cookie-banner] bg-scan error:", err.message)
+            );
+            return;
         }
 
         // A scan is already running — tell the banner to retry shortly
         const { rows: pending } = await db.query(
             `SELECT id FROM pre_consent_scans
-              WHERE domain = $1 AND status = 'pending'
+              WHERE domain = $1 AND status IN ('pending', 'in_progress')
               LIMIT 1`,
             [domain]
         );
