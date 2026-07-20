@@ -22,7 +22,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { scanDomain, BANNER_CATEGORY, categoryFromCookieName } from "./_scan-core.js";
+import { scanDomain, BANNER_CATEGORY, categoryFromCookieName, describeCookie, vendorFromCookieName } from "./_scan-core.js";
 
 let pool;
 function getPool() {
@@ -62,7 +62,7 @@ async function ensureTable(db) {
 }
 
 const SCAN_MAX_AGE_DAYS = 7;
-const BANNER_CATEGORIES = ["necessary", "analytics", "marketing", "functional"];
+const BANNER_CATEGORIES = ["necessary", "security", "analytics", "marketing", "functional"];
 
 export default async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -215,10 +215,12 @@ function buildResponse(row, domain) {
         const cookieRoot    = (c.domain || "").replace(/^\./, "").split(".").slice(-2).join(".");
         const isFirstParty  = cookieRoot === domainRoot;
         const matchedVendor = vendors.find(v => v.host.split(".").slice(-2).join(".") === cookieRoot);
-        const bannerCategory = c.bannerCategory
+        const nameCategory  = categoryFromCookieName(c.name);
+        const bannerCategory = nameCategory
             || (matchedVendor ? matchedVendor.bannerCategory : null)
-            || categoryFromCookieName(c.name)
+            || c.bannerCategory
             || (isFirstParty ? "necessary" : "functional");
+        const provider = vendorFromCookieName(c.name) || null;
         return {
             name:           c.name,
             domain:         c.domain,
@@ -228,6 +230,8 @@ function buildResponse(row, domain) {
             secure:         c.secure,
             sameSite:       c.sameSite,
             bannerCategory,
+            description:    c.description || describeCookie(c.name) || null,
+            provider,
         };
     });
 

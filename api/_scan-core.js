@@ -495,7 +495,8 @@ export const BANNER_CATEGORY = {
 // so e.g. _ga set on the scanned domain is correctly classified as analytics.
 export const COOKIE_NAME_PATTERNS = [
     // Google Analytics (current)
-    { prefix: "_ga",              bannerCategory: "analytics"  }, // _ga, _ga_XXXXX, _gid, _gat
+    { prefix: "_ga",              bannerCategory: "analytics"  }, // _ga, _ga_XXXXX, _gat
+    { exact:  "_gid",             bannerCategory: "analytics"  },
     { prefix: "_dc_gtm_",         bannerCategory: "analytics"  }, // Google Tag Manager container
     // Google Analytics (legacy __utm*)
     { exact:  "__utma",           bannerCategory: "analytics"  },
