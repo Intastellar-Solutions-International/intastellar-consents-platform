@@ -548,6 +548,7 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "li_gc",                bannerCategory: "necessary"  },
     // Shopify
     { exact:  "_shopify_s",           bannerCategory: "necessary"  },
+    { exact:  "_shopify_y",           bannerCategory: "analytics"  },
     { exact:  "_y",                   bannerCategory: "analytics"  },
     { exact:  "_merchant_marketing",  bannerCategory: "marketing"  },
     { exact:  "_merchant_essential",  bannerCategory: "necessary"  },
@@ -572,6 +573,7 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "FPAU",               bannerCategory: "analytics"  },
     { exact:  "FPID",               bannerCategory: "analytics"  },
     { exact:  "FPLC",               bannerCategory: "analytics"  },
+    { exact:  "FPGSID",             bannerCategory: "marketing"  },
     // Twitter/X Pixel
     { exact:  "_twpid",             bannerCategory: "marketing"  },
     // Podscribe podcast attribution
@@ -622,6 +624,7 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "tp.",              bannerCategory: "marketing"  },
     // Vimeo
     { exact:  "vuid",             bannerCategory: "analytics"  }, // Vimeo user ID for analytics
+    { prefix: "v:a:",             bannerCategory: "functional" }, // Vimeo embed session/auth
     // Matomo / Piwik (often self-hosted, appears first-party)
     { prefix: "_pk_id",           bannerCategory: "analytics"  }, // Matomo visitor ID
     { prefix: "_pk_ses",          bannerCategory: "analytics"  }, // Matomo session cookie
@@ -749,6 +752,7 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "_vwo_consent",         bannerCategory: "necessary"  }, // consent record
     { exact:  "_vis_opt_test_cookie", bannerCategory: "necessary"  }, // browser cookie-support test
     { exact:  "_vis_opt_out",         bannerCategory: "necessary"  }, // visitor opt-out flag
+    { exact:  "_vis_opt",             bannerCategory: "analytics"  }, // VWO initialisation cookie
     { exact:  "_vwo_uuid",            bannerCategory: "analytics"  }, // persistent visitor ID
     { exact:  "_vwo_uuid_v2",         bannerCategory: "analytics"  }, // visitor ID v2
     { exact:  "_vwo_ds",              bannerCategory: "analytics"  }, // visitor segment data
@@ -858,6 +862,7 @@ export const COOKIE_VENDOR_HINTS = [
     { prefix: "_pinterest_",            service: "Pinterest"               },
     { exact:  "_vwo_consent",           service: "VWO"                     },
     { prefix: "_vwo_",                  service: "VWO"                     },
+    { exact:  "_vis_opt",               service: "VWO"                     },
     { prefix: "_vis_opt_",              service: "VWO"                     },
     { exact:  "__kla_id",              service: "Klaviyo"                 },
     { exact:  "omnisendSessionID",      service: "Omnisend"                },
@@ -878,6 +883,7 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "laboratory-anonymous-id", service: "HubSpot"      },
     { exact:  "_switch_session_id",service: "HubSpot"             },
     { exact:  "FPAU",              service: "Google Analytics"    },
+    { exact:  "FPGSID",           service: "Google Ads"          },
     { exact:  "_twpid",            service: "Twitter / X Pixel"   },
     { prefix: "__pdst",            service: "Podscribe"           },
     { prefix: "_tq_id",            service: "TVSquared"           },
@@ -905,6 +911,7 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "FPID",              service: "Google Tag Manager"  },
     { exact:  "FPLC",              service: "Google Tag Manager"  },
     { exact:  "_shopify_s",        service: "Shopify"             },
+    { exact:  "_shopify_y",        service: "Shopify"             },
     { exact:  "_y",                service: "Shopify"             },
     { exact:  "_merchant_marketing", service: "Shopify"           },
     { exact:  "_merchant_essential", service: "Shopify"           },
@@ -920,6 +927,7 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "tt",                service: "Mountain"            },
     { exact:  "OTZ",              service: "Google Analytics"    },
     { exact:  "vuid",              service: "Vimeo"               },
+    { prefix: "v:a:",             service: "Vimeo"               },
     { prefix: "_pk_id",            service: "Matomo"              },
     { prefix: "_pk_ses",           service: "Matomo"              },
     { prefix: "_pk_ref",           service: "Matomo"              },
@@ -1105,6 +1113,7 @@ export const COOKIE_META = [
     { exact:  "_switch_session_id",    description: "HubSpot portal switch session — tracks the active session when switching between HubSpot portals. Expires after 6 months." },
     // Google GTM first-party
     { exact:  "FPAU",                  description: "Google first-party analytics URL — set by Google Tag Manager's first-party mode to collect analytics without third-party cookies." },
+    { exact:  "FPGSID",               description: "Google first-party session ID for advertising — set by Google Ads to identify and correlate browsing sessions across Google's advertising infrastructure for conversion measurement. Expires at end of session." },
     { exact:  "FPID",                  description: "Google first-party ID — set by Google Tag Manager's server-side tagging container to identify visitors without relying on third-party cookies. Expires after 2 years." },
     { exact:  "FPLC",                  description: "Google first-party landing cookie — short-lived companion to FPID that carries the first-party click ID for the current browsing session. Session cookie." },
     // Twitter / X
@@ -1169,6 +1178,7 @@ export const COOKIE_META = [
     { exact:  "_vwo_sn",                description: "VWO session number — tracks how many sessions the visitor has started, used for session-based experiment targeting and analysis. Session cookie." },
     { exact:  "_vis_opt_test_cookie",   description: "VWO browser test cookie — a temporary cookie that verifies the visitor's browser can accept cookies before VWO initialises its experiments. Expires after 1 day." },
     { exact:  "_vis_opt_out",           description: "VWO opt-out cookie — records that the visitor has opted out of VWO A/B testing and will be excluded from all experiments. Persists for up to 10 years." },
+    { exact:  "_vis_opt",              description: "VWO initialisation cookie — set during VWO script initialisation to mark that the VWO tracking library has loaded and is ready to assign visitors to experiments." },
     { prefix: "_vis_opt_exp_",          description: "VWO experiment state cookie — stores the variant this visitor was assigned to in a specific experiment, and tracks whether conversion goals have been achieved." },
     { prefix: "_vwo_",                  description: "VWO analytics cookie — used by Visual Website Optimiser for A/B testing, personalisation and conversion rate optimisation." },
     { prefix: "_vis_opt_",              description: "VWO experiment tracking cookie — stores visitor assignment data and experiment state for Visual Website Optimiser." },
@@ -1291,6 +1301,7 @@ export const COOKIE_META = [
     { exact:  "mk_epub",                 description: "Apple marketing attribution cookie — tracks which marketing campaign directed the visitor to Apple.com for campaign performance measurement." },
     // Vimeo
     { exact:  "vuid",                  description: "Vimeo user ID cookie — assigns a unique identifier to a visitor for video analytics and content personalisation. Expires after 2 years." },
+    { prefix: "v:a:",                  description: "Vimeo embed authentication cookie — stores a session or authentication token for the Vimeo embedded player, enabling features such as private video playback and cross-session continuity. The suffix identifies the account context." },
     // Matomo / Piwik
     { prefix: "_pk_id",                description: "Matomo visitor ID cookie — stores a unique visitor identifier for open-source analytics. Expires after 13 months." },
     { prefix: "_pk_ses",               description: "Matomo session cookie — identifies whether this is a new or returning session. Expires after 30 minutes." },
@@ -1363,6 +1374,7 @@ export const COOKIE_META = [
     { exact:  "sidebar",               description: "Sidebar state cookie — stores whether the visitor has expanded or collapsed the navigation sidebar." },
     // Shopify
     { exact:  "_shopify_s",            description: "Shopify session token — maintains the visitor's authenticated session during storefront browsing and checkout. Session cookie." },
+    { exact:  "_shopify_y",            description: "Shopify analytics visitor cookie — assigns a unique identifier to track visits and behaviour across a Shopify storefront for analytics purposes. Expires after 1 year." },
     { exact:  "_y",                    description: "Shopify analytics visitor cookie — assigns a unique identifier to track visits and behaviour across the storefront. Expires after 1 year." },
     { exact:  "_merchant_marketing",   description: "Shopify merchant marketing cookie — stores marketing attribution data used to identify the traffic source that led to a purchase on a Shopify-hosted storefront." },
     { exact:  "_merchant_essential",   description: "Shopify merchant essential cookie — stores data required for core storefront and checkout functionality such as cart state and session continuity." },
