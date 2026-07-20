@@ -803,6 +803,8 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "didomi_token",     bannerCategory: "necessary"  }, // Didomi consent
     { prefix: "didomi_",          bannerCategory: "necessary"  }, // Didomi (other)
     { exact:  "IntastellarConsentSolution", bannerCategory: "necessary" }, // Intastellar Consents record
+    // ASP.NET Core framework cookies
+    { prefix: ".AspNetCore.",              bannerCategory: "necessary"  },
 ];
 
 export function categoryFromCookieName(name) {
@@ -1378,6 +1380,10 @@ export const COOKIE_META = [
     { prefix: "euconsent",             description: "IAB TCF consent string — stores the encoded vendor consent record under the IAB Transparency & Consent Framework." },
     { prefix: "uc_",                   description: "Usercentrics consent cookie — stores the visitor's consent settings." },
     { exact:  "CookieInformationConsent", description: "Cookie Information consent record — stores the visitor's consent choices, timestamp, website UUID, consent URL, domain, user ID, approved consent categories, and user agent string." },
+    { prefix: "GDPR",                    description: "GDPR consent record — stores the visitor's cookie consent choices and timestamps. Used by various consent management platforms as a generic consent storage cookie." },
+    { prefix: "_iub_cs-",                description: "iubenda consent cookie — records the visitor's cookie consent choices and the timestamp of each decision as managed by the iubenda consent management platform. Expires after 1 year." },
+    { exact:  "didomi_token",            description: "Didomi consent token — stores the visitor's full consent record (accepted vendors and purposes) for the Didomi consent management platform. Expires after 6 months." },
+    { prefix: "didomi_",                 description: "Didomi consent cookie — used by the Didomi consent management platform to synchronise and persist the visitor's consent preferences across sessions." },
 ];
 
 export function describeCookie(name) {

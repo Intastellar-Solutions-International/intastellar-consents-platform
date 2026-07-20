@@ -136,7 +136,7 @@ async function loadDiscoveries(db, excludeNames) {
                     source:           "discovered",
                     vendor:           vendor   ?? null,
                     category:         category ?? null,
-                    description:      null,
+                    description:      describeCookie(r.name) ?? null,
                     dataCountry:      vendor ? (DATA_COUNTRIES[vendor] ?? null) : null,
                     dataRegion:       vendor ? (DATA_REGIONS[vendor]   ?? null) : null,
                     privacyUrl:       vendorInfo?.privacyUrl        ?? null,

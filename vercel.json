@@ -21,6 +21,10 @@
     {
       "path": "/api/cron-enrich-discoveries",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron-cleanup-scans",
+      "schedule": "30 3 * * *"
     }
   ],
   "functions": {
@@ -77,6 +81,10 @@
     },
     "api/admin-cookie-discoveries.js": {
       "memory": 256,
+      "maxDuration": 10
+    },
+    "api/cron-cleanup-scans.js": {
+      "memory": 128,
       "maxDuration": 10
     }
   }
