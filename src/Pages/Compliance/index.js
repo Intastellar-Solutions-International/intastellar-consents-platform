@@ -52,6 +52,20 @@ const RESOURCE_LABELS = {
 const RISK_ORDER = { high: 0, medium: 1, low: 2, none: 3 };
 const CAT_ORDER  = { fingerprinting: 0, advertising: 1, analytics: 2, social: 3, functional: 4, cdn: 5, cmp: 6, "third-party": 7 };
 
+function formatCookieDuration(expiresUnixSec, scannedAtIso) {
+    const baseSec = scannedAtIso
+        ? Math.floor(new Date(scannedAtIso).getTime() / 1000)
+        : Math.floor(Date.now() / 1000);
+    const secs = expiresUnixSec - baseSec;
+    if (secs <= 0) return "Persistent";
+    const m = 60, h = 3600, d = 86400, mo = 2592000, y = 31536000;
+    if (secs < h)  { const v = Math.round(secs / m);  return v + (v === 1 ? " minute"  : " minutes");  }
+    if (secs < d)  { const v = Math.round(secs / h);  return v + (v === 1 ? " hour"    : " hours");     }
+    if (secs < mo) { const v = Math.round(secs / d);  return v + (v === 1 ? " day"     : " days");      }
+    if (secs < y)  { const v = Math.round(secs / mo); return v + (v === 1 ? " month"   : " months");    }
+    const v = Math.round(secs / y); return v + (v === 1 ? " year" : " years");
+}
+
 function groupCookiesByName(rawCookies) {
     const map = new Map();
     for (const c of rawCookies) {
@@ -353,7 +367,7 @@ export default function CompliancePage() {
                 ["Name", "Domain", "Party", "Lifetime", "HttpOnly", "Secure", "SameSite"],
                 ...items.map(c => {
                     const isThird = !c.domain.replace(/^\./, "").endsWith(baseDomain);
-                    const lifetime = c.session ? "Session" : c.expires ? new Date(c.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Persistent";
+                    const lifetime = c.session ? "Session" : c.expires ? formatCookieDuration(c.expires, preConsentTransfers.scanned_at) : "Persistent";
                     return [c.name, c.domain, isThird ? "3rd party" : "1st party", lifetime, c.httpOnly ? "Yes" : "No", c.secure ? "Yes" : "No", c.sameSite || ""];
                 }),
             ];
@@ -381,7 +395,7 @@ export default function CompliancePage() {
             const hasFirst = eff.domains.some(d =>  d.replace(/^\./, "").endsWith(baseDomain));
             const party = hasThird && hasFirst ? "Mixed" : hasThird ? "3rd party" : "1st party";
             const bm = eff.bannerCategory ? (BANNER_CATEGORY_META[eff.bannerCategory]?.label || eff.bannerCategory) : "";
-            const lifetime = eff.session ? "Session" : eff.expires ? new Date(eff.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Persistent";
+            const lifetime = eff.session ? "Session" : eff.expires ? formatCookieDuration(eff.expires, preConsentTransfers.scanned_at) : "Persistent";
             return `<tr><td>${esc(eff.name)}</td><td>${esc(eff.domains.join(", "))}</td><td>${party}</td><td>${esc(lifetime)}</td><td>${esc(bm)}</td><td>${esc(eff.vendor || "")}</td><td>${esc(eff.description || "")}</td></tr>`;
         }).join("");
         const html = `<table><thead><tr><th>Cookie name</th><th>Domain</th><th>Party</th><th>Lifetime</th><th>Category</th><th>Vendor</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table>`;
@@ -846,7 +860,7 @@ export default function CompliancePage() {
                                                 const lifetime = eff.session
                                                     ? "Session"
                                                     : eff.expires
-                                                        ? new Date(eff.expires * 1000).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+                                                        ? formatCookieDuration(eff.expires, preConsentTransfers?.scanned_at)
                                                         : "Persistent";
                                                 return (
                                                     <div key={c.name + i} className="compliance-cookies__row-wrap">

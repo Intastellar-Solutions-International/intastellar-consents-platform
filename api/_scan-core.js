@@ -50,7 +50,8 @@ export const TRACKERS = [
 
     // Advertising
     { domains: ["connect.facebook.net", "graph.facebook.com", "www.facebook.com", "facebook.com", "fbcdn.net"], service: "Facebook / Meta Pixel", category: "advertising"    },
-    { domains: ["googleadservices.com", "doubleclick.net", "googlesyndication.com", "google.com/pagead"], service: "Google Ads", category: "advertising" },
+    { domains: ["googleadservices.com", "googlesyndication.com", "google.com/pagead"], service: "Google Ads", category: "advertising" },
+    { domains: ["doubleclick.net"],                                 service: "Google Marketing Platform", category: "advertising" },
     { domains: ["ads.linkedin.com", "snap.licdn.com"],           service: "LinkedIn Insight Tag",  category: "advertising"    },
     { domains: ["analytics.twitter.com", "static.ads-twitter.com", "ads.twitter.com"], service: "Twitter / X Pixel", category: "advertising" },
     { domains: ["tr.snapchat.com", "sc-static.net"],             service: "Snapchat Pixel",        category: "advertising"    },
@@ -755,6 +756,38 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "_vis_opt_exp_",        bannerCategory: "analytics"  }, // per-experiment assignment/goal
     { prefix: "_vwo_",                bannerCategory: "analytics"  }, // all other VWO cookies
     { prefix: "_vis_opt_",            bannerCategory: "analytics"  }, // all other _vis_opt_ cookies
+    // ASP.NET Core framework cookies (more-specific prefixes first)
+    { prefix: ".AspNetCore.Antiforgery.",          bannerCategory: "necessary"  },
+    { prefix: ".AspNetCore.Correlation.",          bannerCategory: "necessary"  },
+    { prefix: ".AspNetCore.OpenIdConnect.Nonce.",  bannerCategory: "necessary"  },
+    { exact:  ".AspNetCore.Session",               bannerCategory: "necessary"  },
+    { prefix: ".AspNetCore.Identity.",             bannerCategory: "functional" },
+    { prefix: ".AspNetCore.",                      bannerCategory: "necessary"  },
+    // Auth0 identity platform
+    { exact:  "auth0",                             bannerCategory: "functional" },
+    { exact:  "auth0_compat",                      bannerCategory: "functional" },
+    { exact:  "_legacy_auth0",                     bannerCategory: "functional" },
+    { exact:  "_legacy_auth0_compat",              bannerCategory: "functional" },
+    { exact:  "did",                               bannerCategory: "functional" },
+    { exact:  "did_compat",                        bannerCategory: "functional" },
+    { exact:  "auth0_user_lang",                   bannerCategory: "functional" },
+    { prefix: "_a0_nonce_",                        bannerCategory: "necessary"  },
+    { prefix: "com.auth0.auth.",                   bannerCategory: "necessary"  },
+    // Microsoft Azure load balancing
+    { exact:  "ARRAffinity",                       bannerCategory: "necessary"  },
+    { exact:  "ARRAffinitySameSite",               bannerCategory: "necessary"  },
+    // Server-side session cookies
+    { exact:  "PHPSESSID",            bannerCategory: "necessary"  },
+    { exact:  "JSESSIONID",           bannerCategory: "necessary"  },
+    { exact:  "ASP.NET_SessionId",    bannerCategory: "necessary"  },
+    // CSRF protection
+    { exact:  "XSRF-TOKEN",           bannerCategory: "necessary"  },
+    { exact:  "csrf_token",           bannerCategory: "necessary"  },
+    // WordPress
+    { prefix: "wordpress_",           bannerCategory: "functional" },
+    { prefix: "wp-settings-",         bannerCategory: "functional" },
+    { exact:  "wordpress_test_cookie", bannerCategory: "necessary" },
+    { exact:  "comment_author",       bannerCategory: "functional" },
     // Consent management platforms (necessary)
     { prefix: "OptanonConsent",   bannerCategory: "necessary"  },
     { exact:  "OptanonAlertBoxClosed", bannerCategory: "necessary" },
@@ -765,7 +798,7 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "euconsent",        bannerCategory: "necessary"  },
     { prefix: "GDPR",             bannerCategory: "necessary"  },
     { prefix: "uc_",              bannerCategory: "necessary"  }, // Usercentrics
-    { prefix: "CI_",              bannerCategory: "necessary"  }, // Cookie Information
+    { exact:  "CookieInformationConsent", bannerCategory: "necessary"  }, // Cookie Information
     { prefix: "_iub_cs-",         bannerCategory: "necessary"  }, // iubenda consent
     { exact:  "didomi_token",     bannerCategory: "necessary"  }, // Didomi consent
     { prefix: "didomi_",          bannerCategory: "necessary"  }, // Didomi (other)
@@ -966,6 +999,39 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "tz",                   service: "GitHub"                 },
     { exact:  "color_mode",           service: "GitHub"                 },
     { exact:  "dotcom_user",          service: "GitHub"                 },
+    // ASP.NET Core
+    { prefix: ".AspNetCore.",         service: "ASP.NET Core"           },
+    // Auth0
+    { exact:  "auth0",               service: "Auth0"                  },
+    { exact:  "auth0_compat",        service: "Auth0"                  },
+    { exact:  "_legacy_auth0",       service: "Auth0"                  },
+    { exact:  "_legacy_auth0_compat", service: "Auth0"                 },
+    { exact:  "did",                 service: "Auth0"                  },
+    { exact:  "did_compat",          service: "Auth0"                  },
+    { exact:  "auth0_user_lang",     service: "Auth0"                  },
+    { prefix: "_a0_nonce_",          service: "Auth0"                  },
+    { prefix: "com.auth0.auth.",     service: "Auth0"                  },
+    // Microsoft Azure
+    { exact:  "ARRAffinity",         service: "Microsoft Azure"        },
+    { exact:  "ARRAffinitySameSite", service: "Microsoft Azure"        },
+    // WordPress
+    { prefix: "wordpress_",          service: "WordPress"              },
+    { prefix: "wp-settings-",        service: "WordPress"              },
+    { exact:  "wordpress_test_cookie", service: "WordPress"            },
+    { exact:  "comment_author",      service: "WordPress"              },
+    // Consent management platforms
+    { prefix: "OptanonConsent",      service: "OneTrust"               },
+    { exact:  "OptanonAlertBoxClosed", service: "OneTrust"             },
+    { prefix: "CookieConsent",       service: "Cookiebot"              },
+    { prefix: "cookieyes",           service: "CookieYes"              },
+    { prefix: "cc_cookie",           service: "Cookie Consent"         },
+    { prefix: "cmplz_",             service: "Complianz"              },
+    { prefix: "euconsent",           service: "IAB TCF"                },
+    { prefix: "uc_",                service: "Usercentrics"           },
+    { exact:  "CookieInformationConsent", service: "Cookie Information" },
+    { prefix: "_iub_cs-",           service: "iubenda"                },
+    { exact:  "didomi_token",        service: "Didomi"                 },
+    { prefix: "didomi_",            service: "Didomi"                 },
 ];
 
 export function vendorFromCookieName(name) {
@@ -1181,6 +1247,26 @@ export const COOKIE_META = [
     { prefix: "_vcrr_",                description: "Vercel edge routing cookie — stores routing metadata so Vercel's edge network consistently routes requests for this visitor to the correct origin. Session cookie." },
     // Pinterest
     { exact:  "_pin_unauth",            description: "Pinterest anonymous tracking cookie — identifies anonymous visitors for ad measurement." },
+    // ASP.NET Core
+    { prefix: ".AspNetCore.Antiforgery.",         description: "ASP.NET Core anti-forgery token — prevents cross-site request forgery attacks by validating that requests originate from the same site. Session cookie." },
+    { prefix: ".AspNetCore.Correlation.",         description: "ASP.NET Core OAuth correlation cookie — links the OAuth/OIDC authorisation request to the callback response to prevent CSRF during the authentication flow. Expires after 15 minutes." },
+    { prefix: ".AspNetCore.OpenIdConnect.Nonce.", description: "ASP.NET Core OIDC nonce cookie — stores a one-time value used to validate the ID token returned by the OpenID Connect provider. Expires after 15 minutes." },
+    { exact:  ".AspNetCore.Session",              description: "ASP.NET Core session cookie — maintains the server-side session state for the current user. Session cookie." },
+    { prefix: ".AspNetCore.Identity.",            description: "ASP.NET Core Identity authentication cookie — maintains the user's authenticated session after login, as managed by ASP.NET Core Identity." },
+    { prefix: ".AspNetCore.",                     description: "ASP.NET Core framework cookie — used internally by ASP.NET Core for session management, anti-forgery protection, or authentication flows." },
+    // Auth0
+    { exact:  "auth0",                description: "Auth0 session cookie — maintains the user's authenticated session within Auth0's identity platform." },
+    { exact:  "auth0_compat",         description: "Auth0 session compatibility cookie — a SameSite-compatible version of the Auth0 session cookie for browsers that do not support SameSite=None." },
+    { exact:  "_legacy_auth0",        description: "Auth0 legacy session cookie — an older-format session cookie maintained by Auth0 for backwards compatibility with legacy browsers." },
+    { exact:  "_legacy_auth0_compat", description: "Auth0 legacy compatibility session cookie — a SameSite-compatible version of the legacy Auth0 session cookie." },
+    { exact:  "did",                  description: "Auth0 device ID cookie — stores a unique device identifier used by Auth0's anomaly detection engine to recognise returning devices. Expires after 1 year." },
+    { exact:  "did_compat",           description: "Auth0 device ID compatibility cookie — a SameSite-compatible version of the Auth0 device ID cookie for browsers that do not support SameSite=None. Expires after 1 year." },
+    { exact:  "auth0_user_lang",      description: "Auth0 user language preference — stores the user's language choice for the Auth0 login and consent pages." },
+    { prefix: "_a0_nonce_",           description: "Auth0 OIDC nonce cookie — stores a one-time value used to protect against replay attacks during an Auth0 authentication flow. Session cookie." },
+    { prefix: "com.auth0.auth.",      description: "Auth0 transaction cookie — stores the state of an ongoing Auth0 authentication transaction so it can be resumed after the callback redirect. Session cookie." },
+    // Microsoft Azure
+    { exact:  "ARRAffinity",          description: "Azure Application Request Routing affinity cookie — routes requests from a specific user to the same backend server instance in a load-balanced Azure App Service deployment. Session cookie." },
+    { exact:  "ARRAffinitySameSite",  description: "Azure ARR affinity SameSite cookie — a SameSite-compatible version of ARRAffinity for cross-site request routing in Azure App Service. Session cookie." },
     // Common server-side session cookies
     { exact:  "PHPSESSID",             description: "PHP session cookie — maintains a server-side session for the current user. Session cookie." },
     { exact:  "JSESSIONID",            description: "Java session cookie — maintains a server-side session for Java/Spring applications. Session cookie." },
@@ -1291,6 +1377,7 @@ export const COOKIE_META = [
     { prefix: "cmplz_",               description: "Complianz consent cookie — stores the visitor's GDPR consent choices for this website." },
     { prefix: "euconsent",             description: "IAB TCF consent string — stores the encoded vendor consent record under the IAB Transparency & Consent Framework." },
     { prefix: "uc_",                   description: "Usercentrics consent cookie — stores the visitor's consent settings." },
+    { exact:  "CookieInformationConsent", description: "Cookie Information consent record — stores the visitor's consent choices, timestamp, website UUID, consent URL, domain, user ID, approved consent categories, and user agent string." },
 ];
 
 export function describeCookie(name) {

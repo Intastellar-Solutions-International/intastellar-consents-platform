@@ -1050,6 +1050,20 @@
 
     var CAT_ORDER = ['necessary', 'security', 'analytics', 'marketing', 'functional'];
 
+    function formatCookieDuration(expiresUnixSec, scannedAtIso) {
+        var baseSec = scannedAtIso
+            ? Math.floor(new Date(scannedAtIso).getTime() / 1000)
+            : Math.floor(Date.now() / 1000);
+        var secs = expiresUnixSec - baseSec;
+        if (secs <= 0) return null;
+        var m = 60, h = 3600, d = 86400, mo = 2592000, y = 31536000, v;
+        if (secs < h)  { v = Math.round(secs / m);  return v + (v === 1 ? ' minute'  : ' minutes');  }
+        if (secs < d)  { v = Math.round(secs / h);  return v + (v === 1 ? ' hour'    : ' hours');    }
+        if (secs < mo) { v = Math.round(secs / d);  return v + (v === 1 ? ' day'     : ' days');     }
+        if (secs < y)  { v = Math.round(secs / mo); return v + (v === 1 ? ' month'   : ' months');   }
+        v = Math.round(secs / y); return v + (v === 1 ? ' year' : ' years');
+    }
+
     function groupCookiesByName(rawCookies) {
         var map = {};
         rawCookies.forEach(function (c) {
@@ -1207,7 +1221,7 @@
                 html += '<td>' + esc(provider) + '</td>';
                 var lifetime = c.session
                     ? L.session
-                    : (c.expires ? new Date(c.expires * 1000).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : L.persistent);
+                    : (c.expires ? (formatCookieDuration(c.expires, scannedAt) || L.persistent) : L.persistent);
                 html += '<td>' + esc(lifetime) + '</td>';
                 html += '<td>' + esc(lookupCookieDesc(c.name, L.cookieDesc) || c.description || '') + '</td>';
                 html += '</tr>';
