@@ -12,9 +12,16 @@
  * awaits the response before moving to the next batch).
  */
 
+import { createHash } from "crypto";
 import pkg from "pg";
 const { Pool } = pkg;
 import { scanDomain, describeCookie, vendorFromCookieName, categoryFromCookieName } from "./_scan-core.js";
+
+function fingerprint(transfers, cookies) {
+    const t = transfers.map(x => x.host).sort();
+    const c = cookies.map(x => x.name).sort();
+    return createHash("sha1").update(JSON.stringify({ t, c })).digest("hex");
+}
 
 let pool;
 function getPool() {
@@ -163,8 +170,41 @@ export default async function handler(req, res) {
     const status    = error ? "failed" : "completed";
     const scannedAt = new Date().toISOString().slice(0, 19).replace("T", " ");
 
+    // Change detection — skip write when cookie/transfer list is identical to last scan
+    let unchanged = false;
+    if (!error) {
+        try {
+            const { rows: prev } = await db.query(
+                `SELECT id, transfers, cookies
+                   FROM pre_consent_scans
+                  WHERE domain = $1 AND status = 'completed'
+                  ORDER BY scanned_at DESC
+                  LIMIT 1`,
+                [domain]
+            );
+            if (prev.length) {
+                const newFp  = fingerprint(transfers, cookies);
+                const prevFp = fingerprint(prev[0].transfers || [], prev[0].cookies || []);
+                if (newFp === prevFp) {
+                    unchanged = true;
+                    // Touch scanned_at on the previous row so the freshness check treats it as just-scanned
+                    await db.query(
+                        `UPDATE pre_consent_scans SET scanned_at = NOW() WHERE id = $1`,
+                        [prev[0].id]
+                    );
+                    // Remove the in_progress sentinel — nothing changed
+                    if (rowId !== null) {
+                        await db.query(`DELETE FROM pre_consent_scans WHERE id = $1`, [rowId]);
+                    }
+                }
+            }
+        } catch (chkErr) {
+            console.warn(`[scan-domain-task] change-check failed for ${domain}, will write anyway:`, chkErr.message);
+        }
+    }
+
     // Persist result — update the sentinel row if we have its id, else insert fresh
-    try {
+    if (!unchanged) try {
         if (rowId !== null) {
             await db.query(
                 `UPDATE pre_consent_scans
@@ -194,10 +234,11 @@ export default async function handler(req, res) {
         console.error(`[scan-domain-task] persist failed for ${domain}:`, dbErr.message);
     }
 
-    console.log(`[scan-domain-task] done ${domain} — ${status} in ${durationMs}ms, ${transfers.length} transfers, ${cookies.length} cookies`);
+    const finalStatus = unchanged ? "unchanged" : status;
+    console.log(`[scan-domain-task] done ${domain} — ${finalStatus} in ${durationMs}ms, ${transfers.length} transfers, ${cookies.length} cookies`);
 
-    // Record unknown cookies for the discovery database
-    if (!error && cookies.length) {
+    // Record unknown cookies for the discovery database (only on actual changes)
+    if (!error && !unchanged && cookies.length) {
         recordDiscoveries(db, domain, cookies).catch(err =>
             console.error(`[scan-domain-task] discovery recording failed for ${domain}:`, err.message)
         );
@@ -205,7 +246,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
         domain,
-        status,
+        status: finalStatus,
         transfers: transfers.length,
         cookies:   cookies.length,
         durationMs,

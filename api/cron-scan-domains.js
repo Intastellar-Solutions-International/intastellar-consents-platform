@@ -42,7 +42,7 @@ function getPool() {
     return pool;
 }
 
-const FRESHNESS_DAYS = parseInt(process.env.SCAN_FRESHNESS_DAYS || "7", 10);
+const FRESHNESS_DAYS = parseInt(process.env.SCAN_FRESHNESS_DAYS || "1", 10);
 const CONCURRENCY    = parseInt(process.env.SCAN_CONCURRENCY    || "10", 10);
 
 export default async function handler(req, res) {
