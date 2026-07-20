@@ -548,6 +548,9 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "TapAd_",             bannerCategory: "marketing"  },
     // LiveRamp cross-device
     { exact:  "cg_uuid",            bannerCategory: "marketing"  },
+    // Mountain DSP
+    { exact:  "guid",               bannerCategory: "marketing"  },
+    { exact:  "tt",                 bannerCategory: "marketing"  },
     // HubSpot CRM / experimentation
     { exact:  "brwsr",              bannerCategory: "marketing"  },
     { exact:  "irld",               bannerCategory: "marketing"  },
@@ -856,6 +859,8 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "__utmt",            service: "Google Analytics"    },
     { exact:  "__utmv",            service: "Google Analytics"    },
     { exact:  "__utmd",            service: "Google Analytics"    },
+    { exact:  "guid",              service: "Mountain"            },
+    { exact:  "tt",                service: "Mountain"            },
     { exact:  "OTZ",              service: "Google Analytics"    },
     { exact:  "vuid",              service: "Vimeo"               },
     { prefix: "_pk_id",            service: "Matomo"              },
