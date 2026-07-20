@@ -58,6 +58,10 @@ async function ensureTable(db) {
     await db.query(
         `CREATE INDEX IF NOT EXISTS idx_pcs_domain_status ON pre_consent_scans (domain, status)`
     );
+    // Drop NOT NULL on organisation_id if the table was created with the old schema
+    await db.query(
+        `ALTER TABLE pre_consent_scans ALTER COLUMN organisation_id DROP NOT NULL`
+    );
     tableReady = true;
 }
 
