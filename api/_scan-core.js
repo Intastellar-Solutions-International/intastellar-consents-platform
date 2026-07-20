@@ -542,6 +542,15 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "bscookie",          bannerCategory: "marketing"  },
     { exact:  "ar_debug",          bannerCategory: "marketing"  },
     { exact:  "AnalyticsSyncHistory", bannerCategory: "analytics" },
+    { exact:  "li_fat_id_s",          bannerCategory: "marketing"  },
+    // Shopify
+    { exact:  "_shopify_s",           bannerCategory: "necessary"  },
+    { exact:  "_y",                   bannerCategory: "analytics"  },
+    { exact:  "_merchant_marketing",  bannerCategory: "marketing"  },
+    { exact:  "_merchant_essential",  bannerCategory: "necessary"  },
+    { prefix: "_shopify_essential_",  bannerCategory: "necessary"  },
+    // Montonio
+    { exact:  "mto_pvs",             bannerCategory: "analytics"  },
     // Barometric cross-device
     { prefix: "barometric",          bannerCategory: "marketing"  },
     // Tapad cross-device
@@ -558,6 +567,8 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "_switch_session_id", bannerCategory: "functional" },
     // Google GTM first-party analytics
     { exact:  "FPAU",               bannerCategory: "analytics"  },
+    { exact:  "FPID",               bannerCategory: "analytics"  },
+    { exact:  "FPLC",               bannerCategory: "analytics"  },
     // Twitter/X Pixel
     { exact:  "_twpid",             bannerCategory: "marketing"  },
     // Podscribe podcast attribution
@@ -791,6 +802,7 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "li_gc",                  service: "LinkedIn Insight Tag"    },
     { exact:  "ar_debug",               service: "LinkedIn Insight Tag"    },
     { exact:  "AnalyticsSyncHistory",   service: "LinkedIn Insight Tag"    },
+    { exact:  "li_fat_id_s",            service: "LinkedIn Insight Tag"    },
     { exact:  "_clck",                  service: "Microsoft Clarity"       },
     { exact:  "_clsk",                  service: "Microsoft Clarity"       },
     { exact:  "CLID",                   service: "Microsoft Clarity"       },
@@ -853,6 +865,14 @@ export const COOKIE_VENDOR_HINTS = [
     { prefix: "__Secure-1PAPISID", service: "Google"              },
     { prefix: "__Secure-1PSID",    service: "Google"              },
     { prefix: "_dc_gtm_",          service: "Google Tag Manager"  },
+    { exact:  "FPID",              service: "Google Tag Manager"  },
+    { exact:  "FPLC",              service: "Google Tag Manager"  },
+    { exact:  "_shopify_s",        service: "Shopify"             },
+    { exact:  "_y",                service: "Shopify"             },
+    { exact:  "_merchant_marketing", service: "Shopify"           },
+    { exact:  "_merchant_essential", service: "Shopify"           },
+    { prefix: "_shopify_essential_", service: "Shopify"           },
+    { exact:  "mto_pvs",           service: "Montonio"            },
     { exact:  "__utma",            service: "Google Analytics"    },
     { exact:  "__utmb",            service: "Google Analytics"    },
     { exact:  "__utmc",            service: "Google Analytics"    },
@@ -954,6 +974,8 @@ export const COOKIE_META = [
     { exact:  "_switch_session_id",    description: "HubSpot portal switch session — tracks the active session when switching between HubSpot portals. Expires after 6 months." },
     // Google GTM first-party
     { exact:  "FPAU",                  description: "Google first-party analytics URL — set by Google Tag Manager's first-party mode to collect analytics without third-party cookies." },
+    { exact:  "FPID",                  description: "Google first-party ID — set by Google Tag Manager's server-side tagging container to identify visitors without relying on third-party cookies. Expires after 2 years." },
+    { exact:  "FPLC",                  description: "Google first-party landing cookie — short-lived companion to FPID that carries the first-party click ID for the current browsing session. Session cookie." },
     // Twitter / X
     { exact:  "_twpid",                description: "Twitter/X pixel ID — identifies the visitor for Twitter/X advertising attribution and retargeting. Expires after 2 years." },
     // Podscribe
@@ -989,6 +1011,7 @@ export const COOKIE_META = [
     { exact:  "li_gc",                  description: "LinkedIn consent cookie — stores the visitor's consent choice for LinkedIn cookies." },
     { exact:  "ar_debug",              description: "LinkedIn Ads debug cookie — used by LinkedIn Insight Tag to debug ad conversion tracking. Session cookie." },
     { exact:  "AnalyticsSyncHistory",  description: "LinkedIn analytics sync history — records the last time LinkedIn analytics data was synchronised with visitor activity. Expires after 1 month." },
+    { exact:  "li_fat_id_s",           description: "LinkedIn first-party ad tracking ID (server-side) — server-set variant of li_fat_id used to attribute conversions to LinkedIn ad campaigns in environments where third-party cookies are restricted." },
     // Microsoft Clarity
     { exact:  "_clck",                  description: "Microsoft Clarity user ID — persists the Clarity user ID and preferences. Expires after 1 year." },
     { exact:  "_clsk",                  description: "Microsoft Clarity session key — connects multiple page views within a single session. Expires after 24 hours." },
@@ -1102,6 +1125,14 @@ export const COOKIE_META = [
     { exact:  "wooTracker",            description: "Woopra visitor tracker — stores a unique visitor identifier for Woopra's customer analytics and journey tracking platform." },
     // GitHub
     { exact:  "_octo",                 description: "GitHub analytics cookie — stores a unique visitor ID used for GitHub's internal session and usage analytics. Expires after 1 year." },
+    // Shopify
+    { exact:  "_shopify_s",            description: "Shopify session token — maintains the visitor's authenticated session during storefront browsing and checkout. Session cookie." },
+    { exact:  "_y",                    description: "Shopify analytics visitor cookie — assigns a unique identifier to track visits and behaviour across the storefront. Expires after 1 year." },
+    { exact:  "_merchant_marketing",   description: "Shopify merchant marketing cookie — stores marketing attribution data used to identify the traffic source that led to a purchase on a Shopify-hosted storefront." },
+    { exact:  "_merchant_essential",   description: "Shopify merchant essential cookie — stores data required for core storefront and checkout functionality such as cart state and session continuity." },
+    { prefix: "_shopify_essential_",   description: "Shopify essential cookie — stores data required for core Shopify storefront and checkout functionality including cart contents and session state." },
+    // Montonio
+    { exact:  "mto_pvs",               description: "Montonio page visit session cookie — tracks page views within a session for Montonio's embedded payment and checkout analytics." },
     // Consent management
     { exact:  "IntastellarConsentSolution", description: "Intastellar Consents record — stores the visitor's consent choices for this website. Expires after 3 months." },
     { prefix: "OptanonConsent",        description: "OneTrust consent record — stores the visitor's cookie category consent choices." },
