@@ -498,6 +498,9 @@ export const COOKIE_NAME_PATTERNS = [
     { prefix: "_ga",              bannerCategory: "analytics"  }, // _ga, _ga_XXXXX, _gid, _gat
     { prefix: "_dc_gtm_",         bannerCategory: "analytics"  }, // Google Tag Manager container
     // Google Analytics (legacy __utm*)
+    { exact:  "__utma",           bannerCategory: "analytics"  },
+    { exact:  "__utmb",           bannerCategory: "analytics"  },
+    { exact:  "__utmc",           bannerCategory: "analytics"  },
     { exact:  "__utmz",           bannerCategory: "analytics"  },
     { exact:  "__utmt",           bannerCategory: "analytics"  },
     { exact:  "__utmv",           bannerCategory: "analytics"  },
@@ -847,6 +850,9 @@ export const COOKIE_VENDOR_HINTS = [
     { prefix: "__Secure-1PAPISID", service: "Google"              },
     { prefix: "__Secure-1PSID",    service: "Google"              },
     { prefix: "_dc_gtm_",          service: "Google Tag Manager"  },
+    { exact:  "__utma",            service: "Google Analytics"    },
+    { exact:  "__utmb",            service: "Google Analytics"    },
+    { exact:  "__utmc",            service: "Google Analytics"    },
     { exact:  "__utmt",            service: "Google Analytics"    },
     { exact:  "__utmv",            service: "Google Analytics"    },
     { exact:  "__utmd",            service: "Google Analytics"    },
