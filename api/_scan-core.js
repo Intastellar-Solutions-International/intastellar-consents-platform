@@ -544,6 +544,7 @@ export const COOKIE_NAME_PATTERNS = [
     { exact:  "ar_debug",          bannerCategory: "marketing"  },
     { exact:  "AnalyticsSyncHistory", bannerCategory: "analytics" },
     { exact:  "li_fat_id_s",          bannerCategory: "marketing"  },
+    { exact:  "li_gc",                bannerCategory: "necessary"  },
     // Shopify
     { exact:  "_shopify_s",           bannerCategory: "necessary"  },
     { exact:  "_y",                   bannerCategory: "analytics"  },
@@ -906,6 +907,65 @@ export const COOKIE_VENDOR_HINTS = [
     { exact:  "wooTracker",        service: "Woopra"              },
     { exact:  "_octo",             service: "GitHub"              },
     { exact:  "IntastellarConsentSolution", service: "Intastellar Consents" },
+    // Google Ads / DoubleClick / account
+    { exact:  "NID",                  service: "Google"                 },
+    { exact:  "DSID",                 service: "Google"                 },
+    { exact:  "1P_JAR",               service: "Google"                 },
+    { exact:  "__gads",               service: "Google"                 },
+    { exact:  "__gpi",                service: "Google"                 },
+    { exact:  "ANID",                 service: "Google"                 },
+    { exact:  "test_cookie",          service: "Google"                 },
+    { exact:  "CONSENT",              service: "Google"                 },
+    { exact:  "SID",                  service: "Google"                 },
+    { exact:  "HSID",                 service: "Google"                 },
+    { exact:  "SSID",                 service: "Google"                 },
+    { exact:  "APISID",               service: "Google"                 },
+    { exact:  "SAPISID",              service: "Google"                 },
+    { exact:  "__Secure-ENID",        service: "Google"                 },
+    // Reddit
+    { exact:  "reddit_session",       service: "Reddit"                 },
+    // Chat widgets
+    { prefix: "crisp-client",         service: "Crisp"                  },
+    { prefix: "drift_",               service: "Drift"                  },
+    { prefix: "driftt_",              service: "Drift"                  },
+    { exact:  "__zlcmid",             service: "Zendesk"                },
+    { prefix: "freshworks",           service: "Freshworks"             },
+    // Adobe Target / Audience Manager
+    { exact:  "mbox",                 service: "Adobe Target"           },
+    { prefix: "mboxSession",          service: "Adobe Target"           },
+    { exact:  "at_check",             service: "Adobe Target"           },
+    { exact:  "demdex",               service: "Adobe Audience Manager" },
+    { exact:  "dpm",                  service: "Adobe Audience Manager" },
+    // Yandex
+    { exact:  "yabs-sid",             service: "Yandex Metrica"         },
+    // Snapchat
+    { exact:  "_scid",                service: "Snapchat Pixel"         },
+    { exact:  "_sctr",                service: "Snapchat Pixel"         },
+    // Twitter / X (extended)
+    { exact:  "ct0",                  service: "Twitter / X"            },
+    { exact:  "twid",                 service: "Twitter / X"            },
+    { prefix: "guest_id",             service: "Twitter / X"            },
+    // Criteo
+    { exact:  "cto_bundle",           service: "Criteo"                 },
+    { exact:  "cto_tld_test",         service: "Criteo"                 },
+    // Taboola
+    { exact:  "t_gid",                service: "Taboola"                },
+    { prefix: "taboola_",             service: "Taboola"                },
+    // Outbrain
+    { exact:  "obuid",                service: "Outbrain"               },
+    // Quora
+    { exact:  "_qca",                 service: "Quora Pixel"            },
+    // Pardot / Salesforce Marketing Cloud
+    { prefix: "visitor_id",           service: "Pardot"                 },
+    { prefix: "lpv",                  service: "Pardot"                 },
+    { exact:  "pardot",               service: "Pardot"                 },
+    // Braze
+    { prefix: "__braze_",             service: "Braze"                  },
+    // GitHub preference cookies
+    { exact:  "preferred_color_mode", service: "GitHub"                 },
+    { exact:  "tz",                   service: "GitHub"                 },
+    { exact:  "color_mode",           service: "GitHub"                 },
+    { exact:  "dotcom_user",          service: "GitHub"                 },
 ];
 
 export function vendorFromCookieName(name) {
@@ -962,10 +1022,12 @@ export const COOKIE_META = [
     { exact:  "_fbc",                   description: "Facebook click ID — stores the fbclid URL parameter from a Facebook ad click. Expires after 3 months." },
     // Barometric
     { exact:  "barometric[cuid]",      description: "Barometric cross-device ID — stores a unique identifier for cross-device ad targeting and programmatic advertising attribution." },
+    { prefix: "barometric",            description: "Barometric advertising cookie — stores a unique identifier for cross-device ad targeting and programmatic advertising attribution via Barometric's platform." },
     // Tapad
     { exact:  "TapAd_TS",              description: "Tapad sync timestamp — records when Tapad's cross-device identity graph was last synchronised for this browser." },
     { exact:  "TapAd_DID",             description: "Tapad device ID — stores a unique device identifier for cross-device ad targeting and frequency capping across Tapad's network." },
     { exact:  "TapAd_3WAY_SYNCS",      description: "Tapad sync counter — tracks the number of three-way cookie sync operations performed for cross-device identity resolution." },
+    { prefix: "TapAd_",                description: "Tapad cross-device cookie — stores a unique device identifier for Tapad's cross-device identity graph, used for ad targeting and frequency capping across connected devices." },
     // LiveRamp
     { exact:  "cg_uuid",               description: "Cross-device advertising UUID — stores a unique identifier used for cross-site audience targeting and ad personalisation." },
     // HubSpot
@@ -1022,6 +1084,12 @@ export const COOKIE_META = [
     // Twitter / X
     { exact:  "muc_ads",                description: "Twitter/X ad measurement cookie — measures ad performance for logged-out users. Expires after 2 years." },
     { exact:  "personalization_id",     description: "Twitter/X personalisation cookie — links activity on the website to the Twitter/X platform for ad targeting. Expires after 2 years." },
+    { exact:  "ct0",                    description: "Twitter/X CSRF and session tracking token — a cross-site request forgery protection token also used to associate browsing activity with a Twitter/X account. Expires after 1 year." },
+    { exact:  "twid",                   description: "Twitter/X user ID — stores the authenticated user's Twitter/X ID to maintain sign-in state and enable cross-site personalisation. Expires after 5 years." },
+    { prefix: "guest_id",               description: "Twitter/X guest ID — assigns a temporary identifier to anonymous visitors for ad targeting and frequency capping across Twitter/X's ad network partners. Expires after 2 years." },
+    // Snapchat Pixel
+    { exact:  "_scid",                  description: "Snapchat Pixel click ID — stores a unique visitor identifier for Snapchat ad conversion measurement and audience matching. Expires after 13 months." },
+    { exact:  "_sctr",                  description: "Snapchat tracking cookie — stores a timestamp and hashed identifier for Snapchat Pixel's conversion and retargeting measurement. Expires after 13 months." },
     // Pinterest
     { prefix: "_pin_",                  description: "Pinterest tracking cookie — identifies visitors from Pinterest for ad conversion measurement." },
     { prefix: "_pinterest_",            description: "Pinterest session cookie — tracks Pinterest-referred sessions for analytics." },
@@ -1054,10 +1122,41 @@ export const COOKIE_META = [
     { prefix: "_wijs",                  description: "Wistia video analytics cookie — tracks video engagement and viewer behaviour." },
     // Trustpilot
     { prefix: "tp.",                    description: "Trustpilot cookie — used for review widget functionality and fraud prevention." },
+    // Criteo
+    { exact:  "cto_bundle",             description: "Criteo advertising bundle — stores a hashed visitor identifier used by Criteo's retargeting platform to serve personalised ads across its partner network. Expires after 13 months." },
+    { exact:  "cto_tld_test",           description: "Criteo TLD test cookie — a temporary cookie Criteo uses to determine the top-level domain where its tracking cookie can be set. Session cookie." },
+    // Taboola
+    { exact:  "t_gid",                  description: "Taboola global visitor ID — stores a unique identifier for Taboola's content recommendation and native advertising network. Expires after 13 months." },
+    { prefix: "taboola_",               description: "Taboola session cookie — stores session data and visitor state for Taboola's content recommendation and advertising platform." },
+    // Outbrain
+    { exact:  "obuid",                  description: "Outbrain user ID — stores a unique identifier for Outbrain's native content recommendation and advertising network. Expires after 6 months." },
+    // Quora
+    { exact:  "_qca",                   description: "Quora Pixel audience cookie — stores a hashed visitor identifier for Quora's conversion tracking and audience targeting. Expires after 13 months." },
+    // Pardot / Salesforce Marketing Cloud
+    { prefix: "visitor_id",             description: "Pardot visitor tracking cookie — stores a unique visitor ID for Pardot's B2B marketing automation platform to track prospect activity across visits. Expires after 10 years." },
+    { prefix: "lpv",                    description: "Pardot page view tracking cookie — records page view activity for Pardot's lead scoring and engagement tracking. Session cookie." },
+    { exact:  "pardot",                 description: "Pardot session cookie — maintains the visitor's session within Pardot's marketing automation platform for lead tracking. Session cookie." },
+    // Braze
+    { prefix: "__braze_",               description: "Braze engagement cookie — stores visitor identifiers and attributes used by Braze's customer engagement platform for targeted messaging and lifecycle campaigns." },
     // Reddit
     { exact:  "reddaid",                description: "Reddit Ads cookie — identifies a visitor for Reddit advertising attribution." },
-    // DoubleClick / Google Ads
+    { exact:  "reddit_session",         description: "Reddit session cookie — maintains the authenticated session for a signed-in Reddit user. Session cookie." },
+    // DoubleClick / Google Ads / account
     { exact:  "IDE",                    description: "DoubleClick ad targeting cookie — identifies a user's browser for ad personalisation and conversion tracking by Google. Expires after 13 months." },
+    { exact:  "NID",                    description: "Google ad personalisation cookie — stores a unique ID used to build a profile of the user's interests and show relevant Google ads. Expires after 6 months." },
+    { exact:  "DSID",                   description: "Google DoubleClick signed-in user ID — links the browser to a signed-in Google account for ad targeting and frequency capping across Google's ad network. Expires after 14 days." },
+    { exact:  "1P_JAR",                 description: "Google ad targeting cookie — collects statistics on site usage and combines information from multiple Google services to display targeted ads. Expires after 1 month." },
+    { exact:  "__gads",                 description: "Google Ad Manager publisher cookie — set on the first-party domain to store ad preferences and help Google manage ad frequency capping. Expires after 13 months." },
+    { exact:  "__gpi",                  description: "Google Publisher Identity cookie — stores a unique identifier that Google uses to manage ad frequency and improve ad measurement for Google Ad Manager publishers. Expires after 13 months." },
+    { exact:  "ANID",                   description: "Google Ads ID cookie — stores a unique advertising identifier used for personalised ad delivery for users outside the EU/EEA. Expires after 13 months." },
+    { exact:  "test_cookie",            description: "DoubleClick cookie support test — a short-lived cookie set by Google to verify the browser accepts third-party cookies before serving ads. Session cookie." },
+    { exact:  "CONSENT",                description: "Google consent preferences cookie — stores the user's consent choice for Google's cookies and personalised services. Expires after 2 years." },
+    { exact:  "SID",                    description: "Google account session cookie — maintains the authenticated session for a signed-in Google account. Expires after 2 years." },
+    { exact:  "HSID",                   description: "Google account security cookie — stores an encrypted record of the user's Google account ID to prevent session hijacking. Expires after 2 years." },
+    { exact:  "SSID",                   description: "Google account secure session cookie — works with HSID to authenticate signed-in Google users and protect against CSRF attacks. Expires after 2 years." },
+    { exact:  "APISID",                 description: "Google API authentication cookie — used to personalise Google Ads on third-party sites for signed-in users. Expires after 2 years." },
+    { exact:  "SAPISID",                description: "Google secure API session ID — identifies signed-in Google users via HTTPS for personalised advertising on third-party sites. Expires after 2 years." },
+    { exact:  "__Secure-ENID",          description: "Google encrypted account ID — stores an encrypted identifier linking a browser to a signed-in Google account for ad personalisation and security checks. Expires after 13 months." },
     // Microsoft Advertising / Clarity
     { exact:  "MUID",                   description: "Microsoft unique identifier — tracks users across Microsoft sites for advertising. Expires after 1 year." },
     { exact:  "MR",                     description: "Microsoft redirect cookie — tracks ad click redirects for Bing Ads conversion measurement. Expires after 7 days." },
@@ -1066,8 +1165,20 @@ export const COOKIE_META = [
     { exact:  "SM",                     description: "Microsoft Clarity session mapping cookie — links anonymous session data across page views for session replay. Session cookie." },
     { prefix: "_uetsid",               description: "Microsoft UET session cookie — tracks the current browsing session for Bing Ads Universal Event Tracking. Expires after 24 hours." },
     { prefix: "_uetvid",               description: "Microsoft UET visitor cookie — assigns a unique visitor ID for Bing Ads conversion and audience tracking. Expires after 13 months." },
+    { exact:  "MSFPC",                 description: "Microsoft First Party Cookie — stores a unique identifier used by Microsoft Advertising to track ad performance and conversion events across Microsoft properties. Expires after 1 year." },
     // Intercom
     { prefix: "intercom-",              description: "Intercom messenger cookie — stores visitor identity and session state for the chat widget." },
+    // Crisp
+    { prefix: "crisp-client",          description: "Crisp chat session cookie — stores visitor identity and conversation history for Crisp's live chat widget. Expires after 6 months." },
+    // Drift
+    { prefix: "drift_",                description: "Drift chat cookie — stores visitor identity and conversation state for the Drift live chat and conversational marketing widget." },
+    { prefix: "driftt_",               description: "Drift chat cookie — stores visitor identity and conversation state for the Drift live chat widget (alternate prefix)." },
+    // Zendesk
+    { exact:  "__zlcmid",              description: "Zendesk live chat ID — assigns a unique identifier to a visitor for Zendesk's live chat widget. Expires after 1 year." },
+    // Freshworks
+    { prefix: "freshworks",            description: "Freshworks cookie — stores visitor identity and session data for Freshdesk or Freshchat customer support and live chat widgets." },
+    // Vercel
+    { prefix: "_vcrr_",                description: "Vercel edge routing cookie — stores routing metadata so Vercel's edge network consistently routes requests for this visitor to the correct origin. Session cookie." },
     // Pinterest
     { exact:  "_pin_unauth",            description: "Pinterest anonymous tracking cookie — identifies anonymous visitors for ad measurement." },
     // Common server-side session cookies
@@ -1100,6 +1211,12 @@ export const COOKIE_META = [
     // Adobe Marketing Cloud
     { prefix: "AMCV_",                 description: "Adobe Marketing Cloud visitor ID — stores a unique visitor identifier for the Adobe Marketing Cloud suite. Expires after 2 years." },
     { prefix: "AMCVS_",                description: "Adobe Marketing Cloud session — identifies the current visitor session within the Adobe Marketing Cloud suite. Session cookie." },
+    // Adobe Target / Audience Manager
+    { exact:  "mbox",                  description: "Adobe Target session cookie — identifies the current visitor session for A/B testing and content personalisation via Adobe Target. Session cookie." },
+    { prefix: "mboxSession",           description: "Adobe Target session ID — stores a session identifier for Adobe Target's A/B testing and personalisation engine. Session cookie." },
+    { exact:  "at_check",              description: "Adobe Target cookie support test — a temporary cookie that verifies the visitor's browser accepts cookies before Adobe Target initialises. Session cookie." },
+    { exact:  "demdex",                description: "Adobe Audience Manager user ID — stores a unique identifier set by Adobe Audience Manager to recognise visitors across third-party domains for audience segmentation. Expires after 6 months." },
+    { exact:  "dpm",                   description: "Adobe Audience Manager DPM cookie — used for data provider matching and audience profile synchronisation within Adobe Audience Manager. Session cookie." },
     // Segment
     { prefix: "ajs_",                  description: "Segment Analytics.js cookie — stores an anonymous user ID and session data for Segment's customer data platform." },
     // Mixpanel
@@ -1112,6 +1229,7 @@ export const COOKIE_META = [
     { prefix: "_hp2id",                description: "Heap visitor ID — stores a unique visitor identifier for Heap's automatic event capture analytics." },
     // Yandex Metrica
     { prefix: "_ym_",                  description: "Yandex Metrica cookie — stores visitor ID, session data and ad-blocker status for Yandex's web analytics platform." },
+    { exact:  "yabs-sid",              description: "Yandex advertising session ID — stores a unique session identifier for Yandex's advertising network to measure ad interactions during a browsing session. Session cookie." },
     // Mouseflow
     { prefix: "mf_",                   description: "Mouseflow session cookie — associates page views and interactions with a specific Mouseflow session recording." },
     // Smartlook
@@ -1126,6 +1244,35 @@ export const COOKIE_META = [
     { exact:  "wooTracker",            description: "Woopra visitor tracker — stores a unique visitor identifier for Woopra's customer analytics and journey tracking platform." },
     // GitHub
     { exact:  "_octo",                 description: "GitHub analytics cookie — stores a unique visitor ID used for GitHub's internal session and usage analytics. Expires after 1 year." },
+    { exact:  "preferred_color_mode",  description: "GitHub colour theme preference — stores the user's chosen colour theme (light, dark, or system) on GitHub. Expires after 1 year." },
+    { exact:  "tz",                    description: "GitHub timezone preference — stores the visitor's timezone for displaying localised timestamps on GitHub. Session cookie." },
+    { exact:  "color_mode",            description: "GitHub colour mode settings — stores extended colour mode configuration including contrast and light/dark preferences. Expires after 1 year." },
+    { exact:  "dotcom_user",           description: "GitHub signed-in username — remembers the last signed-in GitHub username to pre-fill the login form. Expires after 1 year." },
+    // Generic first-party preference cookies (set by many platforms)
+    { exact:  "timezone",              description: "Timezone preference cookie — stores the visitor's selected or detected timezone for localised date and time display." },
+    { exact:  "language",              description: "Language preference cookie — stores the visitor's selected display language for localised content." },
+    { exact:  "lang",                  description: "Language preference cookie — stores the visitor's selected display language for localised content." },
+    { exact:  "locale",                description: "Locale preference cookie — stores the visitor's language and regional format settings for localised content." },
+    { exact:  "region",                description: "Region preference cookie — stores the visitor's selected geographic region for localised content delivery." },
+    { exact:  "country",               description: "Country preference cookie — stores the visitor's detected or selected country for localised content and pricing." },
+    { exact:  "country_code",          description: "Country code preference cookie — stores the visitor's two-letter country code for localised content delivery." },
+    { exact:  "currency",              description: "Currency preference cookie — stores the visitor's selected display currency." },
+    { exact:  "market",                description: "Market preference cookie — stores the visitor's selected market or territory for localised content and pricing." },
+    { exact:  "geo_country",           description: "Geo-detected country cookie — stores the visitor's country as detected from their IP address for localised content." },
+    { exact:  "user_lang",             description: "User language preference cookie — stores the visitor's selected display language." },
+    { exact:  "user_locale",           description: "User locale preference cookie — stores the visitor's language and regional format preferences." },
+    { exact:  "user_region",           description: "User region preference cookie — stores the visitor's selected geographic region." },
+    { exact:  "user_country",          description: "User country preference cookie — stores the visitor's detected or selected country." },
+    { exact:  "preferred_language",    description: "Preferred language cookie — stores the visitor's selected display language for localised content." },
+    { exact:  "site_language",         description: "Site language preference cookie — stores the visitor's selected website display language." },
+    { exact:  "selected_language",     description: "Selected language cookie — stores the visitor's chosen display language." },
+    { exact:  "display_currency",      description: "Display currency preference cookie — stores the visitor's selected currency for price display." },
+    { exact:  "price_currency",        description: "Price currency preference cookie — stores the visitor's selected currency for price display." },
+    { exact:  "dark_mode",             description: "Dark mode preference cookie — stores the visitor's dark or light display mode preference." },
+    { exact:  "color_scheme",          description: "Colour scheme preference cookie — stores the visitor's preferred interface colour scheme." },
+    { exact:  "theme",                 description: "Theme preference cookie — stores the visitor's selected interface theme." },
+    { exact:  "font_size",             description: "Font size preference cookie — stores the visitor's preferred text size setting." },
+    { exact:  "sidebar",               description: "Sidebar state cookie — stores whether the visitor has expanded or collapsed the navigation sidebar." },
     // Shopify
     { exact:  "_shopify_s",            description: "Shopify session token — maintains the visitor's authenticated session during storefront browsing and checkout. Session cookie." },
     { exact:  "_y",                    description: "Shopify analytics visitor cookie — assigns a unique identifier to track visits and behaviour across the storefront. Expires after 1 year." },
