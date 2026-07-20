@@ -19,6 +19,8 @@
 import pkg from "pg";
 const { Pool } = pkg;
 
+import { vendorFromCookieName, VENDOR_META } from "./_scan-core.js";
+
 const BANNER_CATEGORY = {
     advertising:    "marketing",
     fingerprinting: "marketing",
@@ -102,11 +104,17 @@ function enrichWithBannerCategory(transfers, cookies, domain) {
         const isFirstParty  = cookieRoot === domainRoot;
         const matchedVendor = enrichedTransfers.find(t => t.host.split(".").slice(-2).join(".") === cookieRoot);
         const nameCategory  = categoryFromCookieName(c.name);
+        const vendor        = vendorFromCookieName(c.name) || (matchedVendor?.service) || null;
+        const privacyUrl    = (vendor && VENDOR_META[vendor]?.privacyUrl)
+                           || (matchedVendor && VENDOR_META[matchedVendor.service]?.privacyUrl)
+                           || null;
         return {
             ...c,
             bannerCategory: nameCategory
                 ?? (matchedVendor ? matchedVendor.bannerCategory : null)
                 ?? (isFirstParty ? "necessary" : "functional"),
+            vendor,
+            privacyUrl,
         };
     });
     return { enrichedTransfers, enrichedCookies };

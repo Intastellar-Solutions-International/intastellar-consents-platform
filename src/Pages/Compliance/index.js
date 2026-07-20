@@ -396,7 +396,10 @@ export default function CompliancePage() {
             const party = hasThird && hasFirst ? "Mixed" : hasThird ? "3rd party" : "1st party";
             const bm = eff.bannerCategory ? (BANNER_CATEGORY_META[eff.bannerCategory]?.label || eff.bannerCategory) : "";
             const lifetime = eff.session ? "Session" : eff.expires ? formatCookieDuration(eff.expires, preConsentTransfers.scanned_at) : "Persistent";
-            return `<tr><td>${esc(eff.name)}</td><td>${esc(eff.domains.join(", "))}</td><td>${party}</td><td>${esc(lifetime)}</td><td>${esc(bm)}</td><td>${esc(eff.vendor || "")}</td><td>${esc(eff.description || "")}</td></tr>`;
+            const vendorCell = eff.vendor
+                ? (eff.privacyUrl ? `<a href="${esc(eff.privacyUrl)}" target="_blank" rel="noopener noreferrer">${esc(eff.vendor)}</a>` : esc(eff.vendor))
+                : "";
+            return `<tr><td>${esc(eff.name)}</td><td>${esc(eff.domains.join(", "))}</td><td>${party}</td><td>${esc(lifetime)}</td><td>${esc(bm)}</td><td>${vendorCell}</td><td>${esc(eff.description || "")}</td></tr>`;
         }).join("");
         const html = `<table><thead><tr><th>Cookie name</th><th>Domain</th><th>Party</th><th>Lifetime</th><th>Category</th><th>Vendor</th><th>Description</th></tr></thead><tbody>${rows}</tbody></table>`;
         navigator.clipboard.writeText(html).then(() => {
@@ -867,7 +870,11 @@ export default function CompliancePage() {
                                                         <div className={"compliance-cookies__row" + (isUnknown ? " --unknown" : "")}>
                                                             <div className="compliance-cookies__row-main">
                                                                 <span className="compliance-cookies__row-name">{eff.name}</span>
-                                                                {eff.vendor && <span className="compliance-cookies__row-vendor">{eff.vendor}</span>}
+                                                                {eff.vendor && (
+                                                    eff.privacyUrl
+                                                        ? <a href={eff.privacyUrl} target="_blank" rel="noopener noreferrer" className="compliance-cookies__row-vendor">{eff.vendor}</a>
+                                                        : <span className="compliance-cookies__row-vendor">{eff.vendor}</span>
+                                                )}
                                                                 <span className="compliance-cookies__row-domain">{eff.domains.join(", ")}</span>
                                                                 {eff.description && (
                                                                     <span className="compliance-cookies__row-desc">{eff.description}</span>

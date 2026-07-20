@@ -22,7 +22,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { scanDomain, describeCookie, categoryFromCookieName, vendorFromCookieName } from "./_scan-core.js";
+import { scanDomain, describeCookie, categoryFromCookieName, vendorFromCookieName, VENDOR_META } from "./_scan-core.js";
 
 let pool;
 function getPool() {
@@ -154,6 +154,10 @@ function buildCategories(domain, transfers, rawCookies, overrides = {}, definiti
                     v.service.split(" ")[0] === cookieService.split(" ")[0])
                 : null);
         if (owningVendor) owningVendor.cookies.push(enriched);
+
+        enriched.privacyUrl = owningVendor?.privacyUrl
+            || VENDOR_META[enriched.provider]?.privacyUrl
+            || null;
 
         return enriched;
     });

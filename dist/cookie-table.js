@@ -1211,10 +1211,12 @@
 
             grouped.forEach(function (c) {
                 var provider = '';
+                var privacyUrl = c.privacyUrl || '';
                 if (group.vendors) {
                     group.vendors.forEach(function (v) {
                         if (v.cookies && v.cookies.some(function (vc) { return vc.name === c.name; })) {
                             provider = v.service || '';
+                            if (!privacyUrl) privacyUrl = v.privacyUrl || '';
                         }
                     });
                 }
@@ -1222,7 +1224,13 @@
                 html += '<tr>';
                 html += '<td>' + esc(c.name) + '</td>';
                 html += '<td>' + esc(c.domains.join(', ')) + '</td>';
-                html += '<td>' + esc(provider) + '</td>';
+                html += '<td>';
+                if (provider && privacyUrl) {
+                    html += '<a class="ics-ct-link" href="' + esc(privacyUrl) + '" target="_blank" rel="noopener noreferrer">' + esc(provider) + '</a>';
+                } else {
+                    html += esc(provider);
+                }
+                html += '</td>';
                 var lifetime = c.session
                     ? L.session
                     : (c.expires ? (formatCookieDuration(c.expires, scannedAt) || L.persistent) : L.persistent);
