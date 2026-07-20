@@ -1102,7 +1102,7 @@
             '.ics-ct-table tr:last-child td{border-bottom:none}',
             '.ics-ct-table td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#111;word-break:break-all}',
             '.ics-ct-table td{font-size:13px;color:#374151}',
-            '.ics-ct-meta{font-size:12px;color:#9ca3af;margin-top:12px}',
+            '.ics-ct-meta{font-size:12px !important;color:#9ca3af !important;margin-top:12px !important}',
             '.ics-ct-msg{font-size:13px;padding:12px 0;color:#9ca3af}',
             '.ics-ct-err{color:#dc2626}',
             '.ics-ct-link{color:var(--ics-accent,#6366f1);text-decoration:none}',
