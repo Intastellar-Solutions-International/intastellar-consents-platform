@@ -1085,26 +1085,30 @@
         var el = document.createElement('style');
         el.id = STYLE_ID;
         el.textContent = [
-            '.ics-ct{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;color:inherit;line-height:1.5}',
+            '.ics-ct{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;color:inherit;line-height:1.5;--ics-accent:#6366f1}',
             '.ics-ct-intro{font-size:14px;color:#374151;line-height:1.6;margin-top:0;margin-bottom:8px}',
             '.ics-ct-intro:last-of-type{margin-bottom:24px}',
             '.ics-ct-group{margin-bottom:28px}',
             '.ics-ct-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#888;margin-bottom:4px}',
             '.ics-ct-group-desc{font-size:13px;color:#6b7280;margin:0 0 10px}',
-            '.ics-ct-table-wrap{border:1px solid #e5e7eb;border-radius:6px;overflow:hidden}',
-            '.ics-ct-table{width:100%;border-collapse:collapse;background: transparent;}',
+            /* overflow:clip prevents the scroll-container side-effect of overflow:hidden,
+               letting sticky work relative to the page; overflow-x:auto keeps horizontal
+               scrollability on narrow viewports. Falls back to overflow:visible on old
+               browsers where sticky also degrades safely. */
+            '.ics-ct-table-wrap{border:1px solid #e5e7eb;border-radius:6px;overflow:clip;overflow-x:auto}',
+            '.ics-ct-table{width:100%;border-collapse:collapse;background:transparent}',
             '.ics-ct-table th,.ics-ct-table td{text-align:left;padding:9px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top}',
-            '.ics-ct-table th{background:#f9fafb;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.04em}',
+            '.ics-ct-table th{background:#f9fafb;font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0;z-index:2;box-shadow:0 1px 0 0 #e5e7eb}',
             '.ics-ct-table tr:last-child td{border-bottom:none}',
             '.ics-ct-table td:first-child{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#111;word-break:break-all}',
             '.ics-ct-table td{font-size:13px;color:#374151}',
             '.ics-ct-meta{font-size:12px;color:#9ca3af;margin-top:12px}',
             '.ics-ct-msg{font-size:13px;padding:12px 0;color:#9ca3af}',
             '.ics-ct-err{color:#dc2626}',
-            '.ics-ct-link{color:#6366f1;text-decoration:none}',
+            '.ics-ct-link{color:var(--ics-accent,#6366f1);text-decoration:none}',
             '.ics-ct-link:hover{text-decoration:underline}',
             '.ics-ct-h1{font-size:26px;font-weight:700;color:#111827;margin:0 0 6px;line-height:1.2}',
-            '.ics-ct-h2{font-size:16px;font-weight:600;color:#111827;margin:36px 0 10px;padding-top:28px;border-top:2px solid #e5e7eb;line-height:1.3}',
+            '.ics-ct-h2{font-size:16px;font-weight:600;color:#111827;margin:36px 0 10px;padding-top:28px;border-top:2px solid var(--ics-accent,#e5e7eb);line-height:1.3}',
             '.ics-ct-browser-list{margin:4px 0 12px 20px;padding:0;list-style:disc}',
             '.ics-ct-browser-list li{font-size:14px;color:#374151;margin-bottom:3px}',
         ].join('');
@@ -1301,6 +1305,13 @@
         if (!domain) {
             container.innerHTML = '<p class="ics-ct-msg ics-ct-err">data-domain attribute is required.</p>';
             return;
+        }
+
+        // Apply brand accent color from window.INTA.settings.color if present
+        var accentColor = (window.INTA && window.INTA.settings && typeof window.INTA.settings.color === 'string')
+            ? window.INTA.settings.color.trim() : '';
+        if (accentColor && /^#[0-9a-fA-F]{3,6}$/.test(accentColor)) {
+            container.style.setProperty('--ics-accent', accentColor);
         }
 
         if (!originMatchesDomain(window.location.hostname, domain)) {
