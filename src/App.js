@@ -46,6 +46,7 @@ import ROPA from "./Pages/Settings/ROPA";
 import ROPAEntry from "./Pages/Settings/ROPA/ROPAEntry";
 import DSR from "./Pages/DSR";
 import DSRDetail from "./Pages/DSR/DSRDetail";
+import AdConnectionsSettings from "./Pages/Settings/AdConnections";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -407,6 +408,11 @@ export default function App() {
                                                     if (!canAccess('agency-pro')) return <TierGate minTier="agency-pro" featureName="Client Workspaces" fullPage />;
                                                     return isAdminRole ? <Workspaces /> : <p style={{ padding: "40px", color: "#999" }}>Admin access required.</p>;
                                                 })()}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/ad-connections" exact>
+                                            <ErrorBoundary>
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Connections" fullPage /> : <AdConnectionsSettings />}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/plans" exact>

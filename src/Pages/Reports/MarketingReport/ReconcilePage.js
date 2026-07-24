@@ -15,7 +15,6 @@ import {
     isCombinedOrClearDomain,
 } from "../../../Functions/domainPathSegments.js";
 import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
-import AdConnectionManager from "./AdConnectionManager.js";
 import appStorage from "../../../Functions/storage.js";
 
 const useParams = window.ReactRouterDOM.useParams;
@@ -101,17 +100,10 @@ export default function ReconcilePage() {
         [listDomainLabel]
     );
 
-    // Auth for ad-connections / ad-data-fetch endpoints
-    const authToken = useMemo(() => Authentication.getToken(), []);
-    const orgId     = useMemo(() => Authentication.getOrganisation(), []);
-
     const [rows, setRows] = useState([]);
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    // Bump to force panel re-mount after an external import (updates localStorage then re-mounts)
-    const [panelKey, setPanelKey] = useState(0);
 
     const endpoint = API[id]?.marketingAttribution;
 
@@ -200,32 +192,6 @@ export default function ReconcilePage() {
 
     const channelAnalyticsPath = reportsPath(id, listDomainLabel, "/marketing");
 
-    // Write imported ad data to localStorage under the same key the panel uses,
-    // then bump panelKey to force a re-mount so the panel picks it up.
-    function handleAdImport(platformId, data) {
-        if (!data || !listDomainLabel) return;
-        const domainKey = listDomainLabel;
-        const scopeKey = selectedChannel ? `channel:${selectedChannel}` : "overview";
-        const storageKey = `marketing-reconciliation-inputs:${String(domainKey).slice(0, 120)}:${String(scopeKey).slice(0, 120)}`;
-        try {
-            const existing = JSON.parse(localStorage.getItem(storageKey) || "null") || {};
-            const updated = {
-                ...existing,
-                platform: platformId,
-                byPlatform: {
-                    ...(existing.byPlatform || {}),
-                    [platformId]: {
-                        adClicks: data.clicks != null ? String(Math.round(data.clicks)) : "",
-                        spend: data.spend != null ? String(Number(data.spend).toFixed(2)) : "",
-                    },
-                },
-            };
-            if (data.currency) updated.currency = data.currency;
-            localStorage.setItem(storageKey, JSON.stringify(updated));
-        } catch { /* private-mode / quota */ }
-        setPanelKey(k => k + 1);
-    }
-
     // Domain gate — reconciliation must be scoped to a specific domain
     const noDomain = isCombinedOrClearDomain(listDomainLabel);
 
@@ -271,17 +237,10 @@ export default function ReconcilePage() {
                         </div>
                     ) : (
                         <>
-                            {/* Ad platform connections */}
-                            {authToken && orgId && (
-                                <AdConnectionManager
-                                    domain={listDomainLabel}
-                                    orgId={orgId}
-                                    authToken={authToken}
-                                    fromDate={toYmd(fromDate)}
-                                    toDate={toYmd(toDate)}
-                                    onImport={handleAdImport}
-                                />
-                            )}
+                            {/* Connect hint */}
+                            <div className="reconcile-connect-hint">
+                                <a href="/settings/ad-connections">Connect ad platforms</a> to auto-import clicks &amp; spend.
+                            </div>
 
                             {/* Reconciliation panel */}
                             {error ? (
@@ -313,7 +272,6 @@ export default function ReconcilePage() {
                                     ) : null}
 
                                     <MarketingReconciliationPanel
-                                        key={panelKey}
                                         scopeLabel={selectedChannel || "all channels"}
                                         scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
                                         domainKey={listDomainLabel}
@@ -323,6 +281,8 @@ export default function ReconcilePage() {
                                         scopeRows={selectedChannel ? drilldownRows : rows}
                                         fromDate={toYmd(fromDate)}
                                         toDate={toYmd(toDate)}
+                                        orgId={Authentication.getOrganisation()}
+                                        authToken={Authentication.getToken()}
                                     />
                                 </>
                             )}

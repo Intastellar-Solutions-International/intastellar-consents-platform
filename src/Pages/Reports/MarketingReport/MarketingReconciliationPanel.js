@@ -662,6 +662,139 @@ function ProjectionTable({ numConsents, numVisible, spend, currency }) {
     );
 }
 
+/* ─── DB row → snapshot shape ────────────────────────────────────────────── */
+
+function dbRowToSnapshot(row) {
+    return {
+        id: row.id,
+        savedAt: row.saved_at,
+        scopeLabel: row.scope_label,
+        scopeKey: row.scope_key,
+        platform: row.platform,
+        platformLabel: row.platform_label,
+        metric: row.metric,
+        adClicks: row.ad_clicks,
+        spend: row.spend ?? "",
+        currency: row.currency ?? "",
+        costPerVisible: row.cost_per_visible ?? "",
+        consents: row.consents,
+        visibleConsents: row.visible_consents,
+        invisibleConsents: row.invisible_consents,
+        bannerReachPct: row.banner_reach_pct ?? "",
+        visibleSharePct: row.visible_share_pct ?? "",
+        invisibleSharePct: row.invisible_share_pct ?? "",
+        visibilityOfConsentsPct: row.visibility_of_consents_pct ?? "",
+        sourceFilterActive: row.source_filter_active ?? false,
+        sourcePattern: row.source_pattern ?? "",
+        matchedSources: row.matched_sources ?? "",
+        scopeConsents: row.scope_consents ?? "",
+        coverageOfScopePct: row.coverage_of_scope_pct ?? "",
+        fromDate: row.from_date ?? "",
+        toDate: row.to_date ?? "",
+    };
+}
+
+/* ─── FunnelFlow ─────────────────────────────────────────────────────────── */
+
+function FunnelFlow({ clicks, consents, visible, invisible, platform, visibleSharePct, bannerReachPct, invisibleSharePct, hasClicks }) {
+    if (!hasClicks) return null;
+    const bannerPct = bannerReachPct != null ? `${formatPct(bannerReachPct)} reach` : null;
+    const visPct    = visibleSharePct  != null ? `${formatPct(visibleSharePct)} of ${platform.metric}` : null;
+    const gapPct    = invisibleSharePct != null ? `${formatPct(invisibleSharePct)} gap` : null;
+
+    return (
+        <div className="recon-funnel">
+            <div className="recon-funnel__step recon-funnel__step--reported">
+                <div className="recon-funnel__num">{formatInt(clicks)}</div>
+                <div className="recon-funnel__label">Reported {platform.metric}</div>
+            </div>
+            <div className="recon-funnel__arrow">
+                <div className="recon-funnel__arrow-pct">{bannerPct}</div>
+                <div className="recon-funnel__arrow-line">↓</div>
+            </div>
+            <div className="recon-funnel__step recon-funnel__step--consents">
+                <div className="recon-funnel__num">{formatInt(consents)}</div>
+                <div className="recon-funnel__label">Banner consents</div>
+            </div>
+            <div className="recon-funnel__arrow">
+                <div className="recon-funnel__arrow-pct">{visPct}</div>
+                <div className="recon-funnel__arrow-line">↓</div>
+            </div>
+            <div className="recon-funnel__step recon-funnel__step--visible">
+                <div className="recon-funnel__num">{formatInt(visible)}</div>
+                <div className="recon-funnel__label">Visible in analytics</div>
+            </div>
+            {invisible > 0 && (
+                <div className="recon-funnel__gap">
+                    <span className="recon-funnel__gap-num">{formatInt(invisible)}</span>
+                    <span className="recon-funnel__gap-label"> invisible{gapPct ? ` · ${gapPct}` : ""}</span>
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ─── VisibilityGauge ────────────────────────────────────────────────────── */
+
+function VisibilityGauge({ pct, costPerVisible, costPerClick, currency }) {
+    if (pct == null) return null;
+
+    const R = 70, CX = 90, CY = 90, SW = 14;
+    const startAngle = Math.PI * 0.75;
+    const endAngle   = Math.PI * 2.25;
+    const arcAngle   = startAngle + ((Math.min(100, Math.max(0, pct)) / 100)) * (endAngle - startAngle);
+
+    function polarToXY(angle, r) {
+        return { x: CX + r * Math.cos(angle), y: CY + r * Math.sin(angle) };
+    }
+    function arc(a1, a2, r) {
+        const s = polarToXY(a1, r), e = polarToXY(a2, r);
+        const large = (a2 - a1) > Math.PI ? 1 : 0;
+        return `M ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y}`;
+    }
+
+    const gaugeColor = pct >= 70 ? "#4cde8c" : pct >= 50 ? "#f5a623" : "#e05050";
+    const W = 180, H = 160;
+
+    return (
+        <div className="recon-gauge">
+            <svg viewBox={`0 0 ${W} ${H}`} className="recon-gauge__svg" role="img"
+                 aria-label={`Visibility: ${formatPct(pct)}`}>
+                {/* Background track */}
+                <path d={arc(startAngle, endAngle, R)} fill="none"
+                    stroke="rgba(255,255,255,0.08)" strokeWidth={SW} strokeLinecap="round" />
+                {/* Filled arc */}
+                {pct > 0 && (
+                    <path d={arc(startAngle, arcAngle, R)} fill="none"
+                        stroke={gaugeColor} strokeWidth={SW} strokeLinecap="round" opacity="0.88" />
+                )}
+                {/* Center text */}
+                <text x={CX} y={CY - 8} textAnchor="middle" fontSize="28" fontWeight="700"
+                    fill={gaugeColor}>{Math.round(pct)}%</text>
+                <text x={CX} y={CY + 14} textAnchor="middle" fontSize="11" fill="rgba(200,200,210,0.7)">
+                    visibility
+                </text>
+                {/* Scale labels */}
+                <text x={polarToXY(startAngle, R + 18).x} y={polarToXY(startAngle, R + 18).y + 4}
+                    textAnchor="middle" fontSize="9" fill="rgba(180,180,190,0.5)">0%</text>
+                <text x={polarToXY(endAngle, R + 18).x} y={polarToXY(endAngle, R + 18).y + 4}
+                    textAnchor="middle" fontSize="9" fill="rgba(180,180,190,0.5)">100%</text>
+            </svg>
+            {costPerVisible != null && (
+                <div className="recon-gauge__cost">
+                    <span className="recon-gauge__cost-label">Cost / visible consent</span>
+                    <span className="recon-gauge__cost-val">{formatMoney(costPerVisible, currency)}</span>
+                    {costPerClick != null && (
+                        <span className="recon-gauge__cost-sub">
+                            vs {formatMoney(costPerClick, currency)} /{" "}click
+                        </span>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+
 export default function MarketingReconciliationPanel({
     scopeLabel,
     scopeKey,
@@ -672,6 +805,8 @@ export default function MarketingReconciliationPanel({
     scopeRows,
     fromDate,
     toDate,
+    orgId,
+    authToken,
 }) {
     const inputsKeyValue = inputsKey(domainKey, scopeKey);
     const snapshotsKeyValue = snapshotsKey(domainKey);
@@ -695,8 +830,25 @@ export default function MarketingReconciliationPanel({
     }, [inputsKeyValue, domainKey, scopeKey]);
 
     useEffect(() => {
-        setSnapshots(loadSnapshots(domainKey));
-    }, [snapshotsKeyValue, domainKey]);
+        // Load from localStorage immediately for instant render
+        const local = loadSnapshots(domainKey);
+        setSnapshots(local);
+        // Then fetch from DB and merge (DB wins for anything it has)
+        if (authToken && orgId && domainKey && domainKey !== "combined view") {
+            fetch(`/api/ad-snapshots?domain=${encodeURIComponent(domainKey)}`, {
+                headers: { Authorization: authToken, Organisation: String(orgId) }
+            }).then(r => r.ok ? r.json() : null)
+              .then(data => {
+                  if (!data?.snapshots?.length) return;
+                  const dbIds = new Set(data.snapshots.map(s => s.id));
+                  const localOnly = local.filter(s => !dbIds.has(s.id));
+                  const merged = [...data.snapshots.map(dbRowToSnapshot), ...localOnly]
+                      .sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt));
+                  setSnapshots(merged);
+              })
+              .catch(() => {/* keep local */});
+        }
+    }, [snapshotsKeyValue, domainKey, authToken, orgId]);
 
     useEffect(() => {
         if (!loaded) return;
@@ -966,6 +1118,18 @@ export default function MarketingReconciliationPanel({
         setSnapshots((prev) => [snapshot, ...prev]);
         setSnapshotsExpanded(true);
         setSavedFlash(true);
+        // Also persist to DB
+        if (authToken && orgId && domainKey && domainKey !== "combined view") {
+            fetch('/api/ad-snapshots', {
+                method: 'POST',
+                headers: {
+                    Authorization: authToken,
+                    Organisation: String(orgId),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ domain: domainKey, snapshot }),
+            }).catch(() => {/* localStorage fallback already done */});
+        }
     }, [
         hasClicks,
         hasSpend,
@@ -990,19 +1154,36 @@ export default function MarketingReconciliationPanel({
         coverageOfScopePct,
         fromDate,
         toDate,
+        authToken,
+        orgId,
+        domainKey,
     ]);
 
     const handleDeleteSnapshot = useCallback((id) => {
         setSnapshots((prev) => prev.filter((s) => s.id !== id));
-    }, []);
+        if (authToken && orgId) {
+            fetch(`/api/ad-snapshots?id=${encodeURIComponent(id)}`, {
+                method: 'DELETE',
+                headers: { Authorization: authToken, Organisation: String(orgId) }
+            }).catch(() => {});
+        }
+    }, [authToken, orgId]);
 
     const handleClearSnapshots = useCallback(() => {
         if (snapshots.length === 0) return;
         const ok = window.confirm(
             `Remove all ${snapshots.length} reconciliation snapshot${snapshots.length === 1 ? "" : "s"} for this property? This cannot be undone.`
         );
-        if (ok) setSnapshots([]);
-    }, [snapshots.length]);
+        if (ok) {
+            setSnapshots([]);
+            if (authToken && orgId && domainKey) {
+                fetch(`/api/ad-snapshots?domain=${encodeURIComponent(domainKey)}&all=1`, {
+                    method: 'DELETE',
+                    headers: { Authorization: authToken, Organisation: String(orgId) }
+                }).catch(() => {});
+            }
+        }
+    }, [snapshots.length, authToken, orgId, domainKey]);
 
     const handleExportSnapshots = useCallback(() => {
         if (snapshots.length === 0) return;
@@ -1017,110 +1198,43 @@ export default function MarketingReconciliationPanel({
     }, [snapshots, domainKey]);
 
     return (
-        <section
-            className="marketing-reconciliation"
-            aria-labelledby="marketing-reconciliation-h"
-        >
-            <header className="marketing-reconciliation__header">
-                <h2
-                    id="marketing-reconciliation-h"
-                    className="marketing-report-section__title"
-                >
-                    Reconcile with your ad platform
-                </h2>
-                <p className="marketing-report-section__hint">
-                    Drop in the click / session count you see in your ad platform for the same window
-                    and we'll line it up against the consents we logged — so you can tell at a glance
-                    how much of your paid traffic will actually land in your analytics tools. Numbers
-                    are remembered per platform on this device, and you can save a snapshot to keep a
-                    history.
-                </p>
-            </header>
-
-            <div className="marketing-reconciliation__inputs">
-                <label className="marketing-reconciliation__field">
-                    <span className="marketing-reconciliation__field-label">Platform</span>
-                    <select
-                        value={inputs.platform}
-                        onChange={handlePlatformChange}
-                        className="marketing-reconciliation__select"
-                    >
-                        {PLATFORMS.map((p) => (
-                            <option key={p.id} value={p.id}>
-                                {p.label}
-                            </option>
-                        ))}
+        <section className="marketing-reconciliation" aria-labelledby="marketing-reconciliation-h">
+            {/* ── Inputs bar ─────────────────────────────────────────────── */}
+            <div className="recon-inputs-bar">
+                <label className="recon-inputs-bar__field">
+                    <span className="recon-inputs-bar__label">Platform</span>
+                    <select value={inputs.platform} onChange={handlePlatformChange}
+                        className="marketing-reconciliation__select">
+                        {PLATFORMS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
                     </select>
                 </label>
 
-                <label className="marketing-reconciliation__field">
-                    <span className="marketing-reconciliation__field-label">
-                        {selectedPlatform.label} {selectedPlatform.metric} for this period
-                    </span>
-                    <input
-                        type="number"
-                        inputMode="numeric"
-                        min="0"
-                        step="1"
-                        placeholder="e.g. 5000"
-                        value={currentValues.adClicks}
-                        onChange={updatePlatformValue("adClicks")}
-                        className="marketing-reconciliation__input"
-                        aria-label={`${selectedPlatform.label} ${selectedPlatform.metric}`}
-                    />
+                <label className="recon-inputs-bar__field recon-inputs-bar__field--wide">
+                    <span className="recon-inputs-bar__label">{selectedPlatform.metric}</span>
+                    <input type="number" inputMode="numeric" min="0" step="1" placeholder="e.g. 5 000"
+                        value={currentValues.adClicks} onChange={updatePlatformValue("adClicks")}
+                        className="marketing-reconciliation__input" />
                 </label>
-
-                <label className="marketing-reconciliation__field">
-                    <span className="marketing-reconciliation__field-label">
-                        Ad spend for this period (optional)
-                    </span>
+                <label className="recon-inputs-bar__field recon-inputs-bar__field--wide">
+                    <span className="recon-inputs-bar__label">Spend (optional)</span>
                     <div className="marketing-reconciliation__money">
-                        <input
-                            type="number"
-                            inputMode="decimal"
-                            min="0"
-                            step="0.01"
-                            placeholder="e.g. 2340"
-                            value={currentValues.spend}
-                            onChange={updatePlatformValue("spend")}
-                            className="marketing-reconciliation__input marketing-reconciliation__input--money"
-                            aria-label="Ad spend"
-                        />
-                        <select
-                            value={inputs.currency}
-                            onChange={handleCurrencyChange}
-                            className="marketing-reconciliation__select marketing-reconciliation__select--currency"
-                            aria-label="Currency"
-                        >
-                            {CURRENCIES.map((c) => (
-                                <option key={c.id} value={c.id}>
-                                    {c.id}
-                                </option>
-                            ))}
+                        <input type="number" inputMode="decimal" min="0" step="0.01" placeholder="e.g. 2 400"
+                            value={currentValues.spend} onChange={updatePlatformValue("spend")}
+                            className="marketing-reconciliation__input marketing-reconciliation__input--money" />
+                        <select value={inputs.currency} onChange={handleCurrencyChange}
+                            className="marketing-reconciliation__select marketing-reconciliation__select--currency">
+                            {CURRENCIES.map(c => <option key={c.id} value={c.id}>{c.id}</option>)}
                         </select>
                     </div>
                 </label>
-
-                <div className="marketing-reconciliation__actions">
-                    <button
-                        type="button"
-                        className="marketing-reconciliation__save"
-                        onClick={handleSaveSnapshot}
-                        disabled={!hasClicks}
-                        title={
-                            hasClicks
-                                ? "Save the current reconciliation as a snapshot"
-                                : `Enter ${selectedPlatform.metric} first`
-                        }
-                    >
+                <div className="recon-inputs-bar__actions">
+                    <button type="button" className="marketing-reconciliation__save"
+                        onClick={handleSaveSnapshot} disabled={!hasClicks}
+                        title={hasClicks ? "Save snapshot" : `Enter ${selectedPlatform.metric} first`}>
                         {savedFlash ? "Saved ✓" : "Save snapshot"}
                     </button>
-                    <button
-                        type="button"
-                        className="marketing-reconciliation__clear"
-                        onClick={handleClear}
-                    >
-                        Clear inputs
+                    <button type="button" className="marketing-reconciliation__clear" onClick={handleClear}>
+                        Clear
                     </button>
                 </div>
             </div>
@@ -1200,114 +1314,39 @@ export default function MarketingReconciliationPanel({
                 </div>
             )}
 
-            {hasClicks ? (
-                <div className="marketing-reconciliation__results">
-                    <ResultCard
-                        tone="neutral"
-                        title="Banner reach"
-                        headline={`${formatInt(numConsents)} consent events`}
-                        detail={`From ${scopeSentence}, that's ${formatPct(
-                            bannerReachPct
-                        )} of your ${formatInt(clicksNum)} reported ${selectedPlatform.metric}.`}
-                        subDetail={
-                            bannerOverage > 0
-                                ? `We logged ${formatInt(
-                                      bannerOverage
-                                  )} more consents than you reported ${selectedPlatform.metric} — likely multi-session visitors, remarketing, or pre-consented returns.`
-                                : null
-                        }
-                    />
-                    <ResultCard
-                        tone="good"
-                        title="Will reach your analytics"
-                        headline={`${formatInt(numVisible)} consents`}
-                        detail={
-                            visibilityOfConsentsPct != null && visibleSharePct != null
-                                ? `${formatPct(
-                                      visibilityOfConsentsPct
-                                  )} of consents, ${formatShareOfReportedPct(
-                                      visibleSharePct
-                                  )} of your ${selectedPlatform.metric}. These will appear in GA4 / Ads Manager / Meta pixel.`
-                                : null
-                        }
-                    />
-                    <ResultCard
-                        tone="warn"
-                        title="Invisible gap"
-                        headline={`${formatInt(numInvisible)} visits`}
-                        detail={
-                            invisibleSharePct == null
-                                ? null
-                                : numConsents > clicksNum
-                                  ? `${formatInt(
-                                        numInvisible
-                                    )} of your ${formatInt(
-                                        numConsents
-                                    )} attributed consents won't reach ${selectedPlatform.label}. We saw more consent traffic than the ${clicksNum.toLocaleString("de-DE")} ${selectedPlatform.metric} you reported, so the gap can't be expressed as a clean share of ${selectedPlatform.metric}.`
-                                  : `${formatPct(
-                                        invisibleSharePct
-                                    )} of your ${selectedPlatform.metric} will be missing from ${selectedPlatform.label}'s conversion tracking.`
-                        }
-                    />
-                    {hasSpend ? (
-                        <ResultCard
-                            tone="neutral"
-                            title="Cost per visible consent"
-                            headline={
-                                costPerVisible != null
-                                    ? formatMoney(costPerVisible, inputs.currency)
-                                    : "—"
-                            }
-                            detail={
-                                costPerVisible != null
-                                    ? `${formatMoney(
-                                          spendNum,
-                                          inputs.currency
-                                      )} ÷ ${formatInt(
-                                          numVisible
-                                      )} analytics-visible consents.`
-                                    : "Need at least one visible consent to compute."
-                            }
-                            subDetail={
-                                visibilityCostMultiplier != null
-                                    ? `Your reported cost per ${selectedPlatform.metric}: ${formatMoney(
-                                          costPerClick,
-                                          inputs.currency
-                                      )}. Visibility gap multiplies your effective cost by ${visibilityCostMultiplier.toLocaleString(
-                                          "de-DE",
-                                          { maximumFractionDigits: 2 }
-                                      )}×.`
-                                    : null
-                            }
-                        />
-                    ) : null}
-                </div>
-            ) : (
+            {/* ── Main visualisation ──────────────────────────────────────── */}
+            <div className="recon-main">
+                <FunnelFlow
+                    clicks={clicksNum} consents={numConsents}
+                    visible={numVisible} invisible={numInvisible}
+                    platform={selectedPlatform}
+                    bannerReachPct={bannerReachPct}
+                    visibleSharePct={visibleSharePct}
+                    invisibleSharePct={invisibleSharePct}
+                    hasClicks={hasClicks}
+                />
+                <VisibilityGauge
+                    pct={visibilityOfConsentsPct}
+                    costPerVisible={costPerVisible}
+                    costPerClick={costPerClick}
+                    currency={inputs.currency}
+                />
+            </div>
+
+            {/* ── Empty state ─────────────────────────────────────────────── */}
+            {!hasClicks && (
                 <div className="marketing-reconciliation__empty">
-                    <p>
-                        Enter your {selectedPlatform.metric} count from{" "}
-                        <strong>{selectedPlatform.label}</strong> above to see the reconciliation.
-                        Use the same date range as the header filter so the numbers line up.
-                    </p>
+                    <p>Enter your {selectedPlatform.metric} count from <strong>{selectedPlatform.label}</strong> above to see the reconciliation.</p>
+                    <p>Use the same date range as the header filter so the numbers line up.</p>
                 </div>
             )}
 
-            {comparisonRows.length >= 2 ? (
-                <ComparisonTable rows={comparisonRows} currency={inputs.currency} />
-            ) : null}
-
+            {/* ── Trend + comparison + projection ─────────────────────────── */}
+            {comparisonRows.length >= 2 ? <ComparisonTable rows={comparisonRows} currency={inputs.currency} /> : null}
             {hasSpend && hasClicks && numVisible > 0 ? (
-                <ProjectionTable
-                    numConsents={numConsents}
-                    numVisible={numVisible}
-                    spend={spendNum}
-                    currency={inputs.currency}
-                />
+                <ProjectionTable numConsents={numConsents} numVisible={numVisible} spend={spendNum} currency={inputs.currency} />
             ) : null}
-
-            {snapshots.length >= 3 ? (
-                <TrendChart snapshots={snapshots} />
-            ) : null}
+            {snapshots.length >= 1 ? <TrendChart snapshots={snapshots} /> : null}
 
             <div className="marketing-reconciliation__snapshots">
                 <div className="marketing-reconciliation__snapshots-bar">

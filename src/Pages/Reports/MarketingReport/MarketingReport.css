@@ -2152,3 +2152,177 @@
     background: rgba(200, 80, 60, 0.1);
     color: rgba(220, 160, 145, 0.9);
 }
+
+/* ── Inputs bar ────────────────────────────────────────────── */
+.recon-inputs-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    margin-bottom: 4px;
+}
+.recon-inputs-bar__field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.recon-inputs-bar__field--wide {
+    flex: 1;
+    min-width: 130px;
+}
+.recon-inputs-bar__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(160,165,175,0.85);
+}
+.recon-inputs-bar__actions {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+/* ── Funnel + Gauge layout ─────────────────────────────────── */
+.recon-main {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin: 20px 0 28px;
+    flex-wrap: wrap;
+}
+
+/* ── Funnel ────────────────────────────────────────────────── */
+.recon-funnel {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 20px 16px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.025);
+}
+.recon-funnel__step {
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+    padding: 12px 16px;
+    border-radius: 10px;
+}
+.recon-funnel__step--reported {
+    background: rgba(120,160,220,0.1);
+    border: 1px solid rgba(120,160,220,0.2);
+}
+.recon-funnel__step--consents {
+    background: rgba(100,200,160,0.08);
+    border: 1px solid rgba(100,200,160,0.2);
+}
+.recon-funnel__step--visible {
+    background: rgba(80,200,120,0.12);
+    border: 1px solid rgba(80,200,120,0.25);
+}
+.recon-funnel__num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: rgba(235,235,245,0.95);
+}
+.recon-funnel__label {
+    font-size: 0.75rem;
+    color: rgba(170,175,185,0.85);
+}
+.recon-funnel__arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 0;
+}
+.recon-funnel__arrow-pct {
+    font-size: 0.7rem;
+    color: rgba(150,155,165,0.8);
+}
+.recon-funnel__arrow-line {
+    font-size: 1.1rem;
+    color: rgba(150,155,165,0.5);
+}
+.recon-funnel__gap {
+    margin-top: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: rgba(220,80,60,0.08);
+    border: 1px solid rgba(220,80,60,0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+}
+.recon-funnel__gap-num {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(240,140,120,0.9);
+}
+.recon-funnel__gap-label {
+    font-size: 0.72rem;
+    color: rgba(200,130,110,0.8);
+}
+
+/* ── Gauge ─────────────────────────────────────────────────── */
+.recon-gauge {
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.025);
+}
+.recon-gauge__svg {
+    width: 180px;
+    height: 160px;
+    display: block;
+}
+.recon-gauge__cost {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.recon-gauge__cost-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(150,155,165,0.7);
+}
+.recon-gauge__cost-val {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: rgba(235,235,245,0.95);
+}
+.recon-gauge__cost-sub {
+    font-size: 0.72rem;
+    color: rgba(150,155,165,0.7);
+}
+
+/* ── Connect hint ──────────────────────────────────────────── */
+.reconcile-connect-hint {
+    font-size: 0.78rem;
+    color: rgba(140,160,190,0.8);
+    margin-bottom: 16px;
+}
+.reconcile-connect-hint a {
+    color: rgba(100,170,255,0.9);
+    text-decoration: none;
+}
+.reconcile-connect-hint a:hover {
+    text-decoration: underline;
+}

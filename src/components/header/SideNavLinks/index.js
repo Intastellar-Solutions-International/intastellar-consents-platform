@@ -38,6 +38,12 @@ export const reportsLinks = [
         requiresTier: 'growth',
     },
     {
+        name: "Ad Connections",
+        path: "/settings/ad-connections",
+        view: ["admin", "super-admin", "manager"],
+        requiresTier: 'growth',
+    },
+    {
         name: "Blacklist IP",
         path: "/settings/blacklist-ip",
         view: ["admin", "super-admin", "manager"]

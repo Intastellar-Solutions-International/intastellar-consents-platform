@@ -30285,7 +30285,181 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.marketing-report-page {
     background: rgba(200, 80, 60, 0.1);
     color: rgba(220, 160, 145, 0.9);
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Reports/MarketingReport/MarketingReport.css"],"names":[],"mappings":"AAAA;IACI,oBAAoB;AACxB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,yBAAyB;AAC7B;;AAEA;;IAEI,SAAS;IACT,gBAAgB;IAChB,mBAAmB;IACnB,iBAAiB;IACjB,+BAA+B;AACnC;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,+BAA+B;AACnC;;AAEA;IACI,mBAAmB;IACnB,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,uFAAuF;AAC3F;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,+BAA+B;AACnC;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,gBAAgB;IAChB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,oBAAoB;IACpB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,SAAS;IACT,UAAU;IACV,gBAAgB;IAChB,aAAa;IACb,SAAS;AACb;;AAEA;IACI,SAAS;IACT,4BAA4B;IAC5B,mBAAmB;IACnB,+BAA+B;IAC/B,2CAA2C;IAC3C,sBAAsB;AAC1B;;AAEA;IACI,2CAA2C;AAC/C;;AAEA;IACI,2CAA2C;AAC/C;;AAEA;IACI,2CAA2C;AAC/C;;AAEA;IACI,4CAA4C;AAChD;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;IAChC,kBAAkB;AACtB;;AAEA;IACI,SAAS;IACT,oBAAoB;IACpB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,mBAAmB;IACnB,kBAAkB;IAClB,mBAAmB;IACnB,0CAA0C;IAC1C,oCAAoC;IACpC,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,4DAA4D;IAC5D,SAAS;IACT,mBAAmB;AACvB;;AAEA;IACI,kBAAkB;IAClB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;AACnC;;AAEA;IACI,cAAc;IACd,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,8BAA8B;IAC9B,kBAAkB;AACtB;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,gBAAgB;IAChB,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,kCAAkC;IAClC,cAAc;AAClB;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,8BAA8B;IAC9B,SAAS;IACT,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,SAAS;AACb;;AAEA;IACI,cAAc;IACd,cAAc;AAClB;;AAEA;IACI,cAAc;IACd,SAAS;IACT,iBAAiB;IACjB,kBAAkB;IAClB,0CAA0C;IAC1C,mCAAmC;IACnC,gCAAgC;IAChC,oBAAoB;IACpB,gBAAgB;IAChB,eAAe;AACnB;;AAEA;IACI,oCAAoC;IACpC,qCAAqC;AACzC;;AAEA;IACI,iBAAiB;IACjB,kBAAkB;IAClB,+BAA+B;IAC/B,iBAAiB;AACrB;;AAEA;IACI,SAAS;IACT,iBAAiB;IACjB,kBAAkB;IAClB,2CAA2C;IAC3C,qCAAqC;IACrC,gCAAgC;IAChC,kBAAkB;IAClB,gBAAgB;IAChB,eAAe;AACnB;;AAEA;IACI,oCAAoC;IACpC,uCAAuC;AAC3C;;AAEA;IACI,sCAAsC;IACtC,oCAAoC;IACpC,gCAAgC;AACpC;;AAEA;IACI,oCAAoC;IACpC,sCAAsC;AAC1C;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,mBAAmB;IACnB,2CAA2C;IAC3C,+BAA+B;AACnC;;AAEA;IACI,WAAW;IACX,yBAAyB;IACzB,oBAAoB;AACxB;;AAEA;;IAEI,kBAAkB;IAClB,gBAAgB;IAChB,kDAAkD;AACtD;;AAEA;IACI,gBAAgB;IAChB,+BAA+B;IAC/B,mBAAmB;IACnB,+BAA+B;AACnC;;AAEA;IACI,gCAAgC;IAChC,kCAAkC;AACtC;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,qCAAqC;AACzC;;AAEA;IACI,eAAe;AACnB;;AAEA;IACI,oCAAoC;AACxC;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,oDAAoD;AACxD;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,SAAS;AACb;;AAEA;IACI,OAAO;IACP,YAAY;AAChB;;AAEA;IACI,cAAc;IACd,iBAAiB;IACjB,+BAA+B;AACnC;;AAEA;IACI,kBAAkB;IAClB,4BAA4B;IAC5B,gCAAgC;AACpC;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;IACjB,mBAAmB;IACnB,4BAA4B;IAC5B,kCAAkC;IAClC,iBAAiB;AACrB;;AAEA;IACI,iBAAiB;IACjB,mBAAmB;IACnB,iBAAiB;AACrB;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,mBAAmB;IACnB,sBAAsB;IACtB,4BAA4B;AAChC;;AAEA;IACI,SAAS;IACT,mBAAmB;IACnB,iBAAiB;AACrB;;AAEA;IACI,iBAAiB;AACrB;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,WAAW;IACX,2BAA2B;AAC/B;;AAEA;;IAEI,yBAAyB;AAC7B;;AAEA;IACI,YAAY;AAChB;;AAEA;IACI,cAAc;IACd,SAAS;IACT,gBAAgB;IAChB,kBAAkB;IAClB,2CAA2C;IAC3C,8BAA8B;IAC9B,gCAAgC;IAChC,kBAAkB;IAClB,gBAAgB;IAChB,kCAAkC;IAClC,sBAAsB;IACtB,gBAAgB;IAChB,eAAe;AACnB;;AAEA;IACI,sCAAsC;IACtC,gCAAgC;IAChC,mCAAmC;AACvC;;AAEA;IACI,sCAAsC;IACtC,gCAAgC;IAChC,oCAAoC;AACxC;;AAEA;IACI,kBAAkB;IAClB,kBAAkB;IAClB,mBAAmB;IACnB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,2CAA2C;IAC3C,kCAAkC;IAClC,gCAAgC;IAChC,mBAAmB;IACnB,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,kBAAkB;IAClB,+BAA+B;IAC/B,kBAAkB;IAClB,gBAAgB;IAChB,+BAA+B;AACnC;;AAEA;IACI,mBAAmB;IACnB,uBAAuB;IACvB,mBAAmB;IACnB,2CAA2C;IAC3C,8BAA8B;AAClC;;AAEA;IACI,oBAAoB;IACpB,sCAAsC;AAC1C;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,SAAS;IACT,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,+BAA+B;AACnC;;AAEA;IACI,kBAAkB;IAClB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,4DAA4D;IAC5D,SAAS;IACT,kBAAkB;AACtB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,+BAA+B;AACnC;;AAEA;IACI,WAAW;IACX,yBAAyB;IACzB,kBAAkB;AACtB;;AAEA;;IAEI,gBAAgB;IAChB,gBAAgB;IAChB,kDAAkD;IAClD,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,+BAA+B;IAC/B,8BAA8B;AAClC;;AAEA;IACI,sBAAsB;IACtB,4BAA4B;IAC5B,gCAAgC;AACpC;;AAEA;IACI,iBAAiB;IACjB,mBAAmB;IACnB,kCAAkC;AACtC;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;IACjB,+BAA+B;IAC/B,kCAAkC;AACtC;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,oBAAoB;IACpB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,kBAAkB;IAClB,kBAAkB;IAClB,2CAA2C;IAC3C,kCAAkC;IAClC,oBAAoB;IACpB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,cAAc;IACd,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,iBAAiB;AACrB;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,qBAAqB;IACrB,QAAQ;AACZ;;AAEA;IACI,uBAAuB;AAC3B;;AAEA;IACI,kCAAkC;AACtC;;AAEA;IACI,kBAAkB;IAClB,iBAAiB;IACjB,kCAAkC;AACtC;;AAEA;IACI,gBAAgB;IAChB,sBAAsB;AAC1B;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,+BAA+B;AACnC;;AAEA;IACI,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;;;;;;;EAOE;AACF;IACI,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,SAAS;AACb;;AAEA;IACI,gDAAgD;AACpD;;AAEA;IACI,gDAAgD;AACpD;;AAEA;IACI;QACI,gDAAgD;IACpD;AACJ;;AAEA;IACI;;QAEI,0BAA0B;IAC9B;AACJ;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,iBAAiB;IACjB,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C,yFAAyF;AAC7F;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI;QACI,mBAAmB;IACvB;AACJ;;AAEA;IACI;QACI,mBAAmB;IACvB;AACJ;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gBAAgB;IAChB,+BAA+B;AACnC;;AAEA;IACI,OAAO;IACP,iBAAiB;IACjB,kBAAkB;AACtB;;AAEA;;;EAGE;AACF;IACI,YAAY;IACZ,iBAAiB;AACrB;;AAEA;IACI,WAAW;IACX,iBAAiB;AACrB;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,mBAAmB;IACnB,qCAAqC;IACrC,2CAA2C;AAC/C;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,iBAAiB;AACrB;;AAEA;;IAEI,iBAAiB;AACrB;;AAEA;;;;;;;EAOE;;AAEF;IACI,kBAAkB;IAClB,uBAAuB;IACvB,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;IAChC,yFAAyF;IACzF,0CAA0C;IAC1C,+CAA+C;IAC/C,mBAAmB;AACvB;;AAEA;IACI,6BAA6B;IAC7B,gBAAgB;AACpB;;AAEA;IACI,sCAAsC;IACtC,yFAAyF;AAC7F;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,6BAA6B;AACjC;;AAEA;;;;;;EAME;;AAEF;IACI,oCAAoC;IACpC,mDAAmD;AACvD;;AAEA;;IAEI,oCAAoC;AACxC;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,gBAAgB;IAChB,gBAAgB;IAChB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;IAChC,oCAAoC;IACpC,0CAA0C;IAC1C,oBAAoB;IACpB,sBAAsB;IACtB,mBAAmB;AACvB;;AAEA;;;;;;;EAOE;;AAEF;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,uBAAuB;IACvB,aAAa;IACb,gBAAgB;IAChB,sBAAsB;IACtB,+CAA+C;AACnD;;AAEA;IACI,iBAAiB;IACjB,iBAAiB;IACjB,oBAAoB;IACpB,gCAAgC;IAChC,qCAAqC;IACrC,2CAA2C;IAC3C,kBAAkB;IAClB,eAAe;IACf,4EAA4E;AAChF;;AAEA;IACI,sCAAsC;IACtC,gCAAgC;IAChC,oCAAoC;AACxC;;AAEA;IACI,0CAA0C;IAC1C,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,QAAQ;IACR,gBAAgB;IAChB,SAAS;IACT,UAAU;AACd;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,iBAAiB;IACjB,oBAAoB;IACpB,gCAAgC;IAChC,uBAAuB;IACvB,6BAA6B;IAC7B,kBAAkB;IAClB,eAAe;IACf,4EAA4E;AAChF;;AAEA;IACI,qCAAqC;IACrC,gCAAgC;AACpC;;AAEA;IACI,0CAA0C;IAC1C,mBAAmB;AACvB;;AAEA;;IAEI,6BAA6B;IAC7B,gGAAgG;IAChG,sCAAsC;IACtC,gBAAgB;IAChB,eAAe;AACnB;;AAEA;IACI,gBAAgB;IAChB,+BAA+B;IAC/B,yBAAyB;IACzB,iBAAiB;AACrB;;AAEA;IACI,gBAAgB;IAChB,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,kBAAkB;AACtB;;AAEA;IACI,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI;QACI,gBAAgB;QAChB,aAAa;QACb,iBAAiB;QACjB,gBAAgB;IACpB;AACJ;;AAEA;;;;;;;;EAQE;;AAEF;IACI,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,0CAA0C;IAC1C;;;;KAIC;AACL;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,yCAAyC;IACzC,cAAc;IACd,gBAAgB;IAChB,kBAAkB;AACtB;;AAEA;IACI;QACI,8BAA8B;IAClC;AACJ;;AAEA;IACI;QACI,0BAA0B;IAC9B;AACJ;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;IACR,YAAY;AAChB;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;;IAEI,WAAW;IACX,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,gCAAgC;IAChC,+BAA+B;IAC/B,2CAA2C;IAC3C,kBAAkB;IAClB,aAAa;IACb;;6BAEyB;AAC7B;;AAEA;;IAEI,qCAAqC;IACrC,+BAA+B;AACnC;;AAEA;IACI,aAAa;IACb,QAAQ;IACR,YAAY;AAChB;;AAEA;IACI,OAAO;IACP,YAAY;AAChB;;AAEA;IACI,cAAc;IACd,WAAW;AACf;;AAEA;IACI,aAAa;IACb,yBAAyB;IACzB,qBAAqB;AACzB;;AAEA;IACI,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,gCAAgC;IAChC,uBAAuB;IACvB,2CAA2C;IAC3C,kBAAkB;IAClB,eAAe;IACf;;wBAEoB;AACxB;;AAEA;IACI,qCAAqC;IACrC,gCAAgC;AACpC;;AAEA;IACI,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,kBAAkB;IAClB,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;IAChC,2CAA2C;IAC3C,mBAAmB;IACnB,+BAA+B;AACnC;;AAEA;IACI,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;;;EAGE;AACF;IACI,aAAa;IACb,2DAA2D;IAC3D,SAAS;IACT,eAAe;AACnB;;AAEA;IACI,uBAAuB;IACvB,mBAAmB;IACnB,2CAA2C;IAC3C,sCAAsC;AAC1C;;AAEA;IACI,uCAAuC;IACvC;;;;KAIC;AACL;;AAEA;IACI,sCAAsC;IACtC;;;;KAIC;AACL;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,eAAe;IACf,iBAAiB;IACjB,gBAAgB;IAChB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gBAAgB;IAChB,+BAA+B;AACnC;;AAEA;IACI,eAAe;IACf,gBAAgB;IAChB,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,+CAA+C;AACnD;;AAEA;;;;;;;EAOE;;AAEF;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;IACR,oBAAoB;AACxB;;AAEA;IACI;QACI,mBAAmB;QACnB,qBAAqB;QACrB,yBAAyB;IAC7B;AACJ;;AAEA;IACI,iBAAiB;IACjB,kBAAkB;IAClB,gBAAgB;IAChB,oBAAoB;IACpB,6BAA6B;IAC7B,6DAA6D;IAC7D,yCAAyC;IACzC,kBAAkB;IAClB,eAAe;IACf;;;0BAGsB;AAC1B;;AAEA;IACI,2BAA2B;IAC3B,mDAAmD;AACvD;;AAEA;IACI,mBAAmB;IACnB,aAAa;AACjB;;AAEA;IACI,gBAAgB;IAChB,iBAAiB;IACjB,+CAA+C;AACnD;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,SAAS;IACT,eAAe;AACnB;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,QAAQ;IACR,yBAAyB;IACzB,iBAAiB;IACjB,kBAAkB;IAClB,gBAAgB;IAChB,oBAAoB;IACpB,gCAAgC;IAChC,uBAAuB;IACvB,6BAA6B;IAC7B,kBAAkB;IAClB,eAAe;IACf,iCAAiC;AACrC;;AAEA;IACI,qCAAqC;AACzC;;AAEA;IACI,oBAAoB;IACpB,eAAe;IACf,YAAY;IACZ,cAAc;IACd,mBAAmB;IACnB,uBAAuB;IACvB,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,oCAAoC;IACpC,0CAA0C;IAC1C,oBAAoB;AACxB;;AAEA;IACI,oBAAoB;IACpB,QAAQ;AACZ;;AAEA;;IAEI,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,gCAAgC;IAChC,qCAAqC;IACrC,2CAA2C;IAC3C,kBAAkB;IAClB,eAAe;IACf;;;6BAGyB;AAC7B;;AAEA;IACI,sCAAsC;IACtC,gCAAgC;AACpC;;AAEA;IACI,uCAAuC;IACvC,gCAAgC;AACpC;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,kBAAkB;IAClB,iBAAiB;IACjB,+BAA+B;IAC/B,4CAA4C;IAC5C,mBAAmB;IACnB,8BAA8B;AAClC;;AAEA;IACI,gCAAgC;IAChC,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,WAAW;IACX,yBAAyB;IACzB,kBAAkB;IAClB,gCAAgC;AACpC;;AAEA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,iBAAiB;IACjB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;IAChC,qCAAqC;IACrC,kDAAkD;IAClD,mBAAmB;AACvB;;AAEA;IACI,iBAAiB;IACjB,kDAAkD;IAClD,mBAAmB;AACvB;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,sCAAsC;AAC1C;;AAEA;IACI,iBAAiB;IACjB,kCAAkC;IAClC,mBAAmB;AACvB;;AAEA;;IAEI,gCAAgC;IAChC,kBAAkB;AACtB;;AAEA;IACI,gBAAgB;IAChB,eAAe;IACf,cAAc;IACd,oBAAoB;IACpB,+BAA+B;IAC/B,uBAAuB;IACvB,6BAA6B;IAC7B,kBAAkB;IAClB,eAAe;IACf;;;6BAGyB;AAC7B;;AAEA;IACI,gCAAgC;IAChC,uCAAuC;IACvC,qCAAqC;AACzC;;AAEA;;;;;;;;;EASE;AACF;IACI,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;AACpC;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,gBAAgB;IAChB,gBAAgB;IAChB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;IAChC,oCAAoC;IACpC,0CAA0C;IAC1C,oBAAoB;IACpB,sBAAsB;IACtB,mBAAmB;AACvB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,oCAAoC;IACpC,oDAAoD;AACxD;;AAEA;IACI,oCAAoC;AACxC;;AAEA;;;;;;;EAOE;;AAEF;IACI,gBAAgB;IAChB,kBAAkB;IAClB,kBAAkB;IAClB,iBAAiB;IACjB,gCAAgC;IAChC,+BAA+B;IAC/B,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,SAAS;AACb;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,gCAAgC;IAChC,mCAAmC;IACnC,0CAA0C;IAC1C,kBAAkB;AACtB;;AAEA;IACI,gCAAgC;IAChC;;;;KAIC;IACD,sCAAsC;AAC1C;;AAEA;;;;;;;;;EASE;;AAEF;IACI,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB;;;;KAIC;IACD,2CAA2C;AAC/C;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,SAAS;IACT,eAAe;IACf,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,iBAAiB;IACjB,+BAA+B;IAC/B,gBAAgB;AACpB;;AAEA;IACI,aAAa;IACb,SAAS;IACT,gBAAgB;IAChB,SAAS;IACT,UAAU;AACd;;AAEA;IACI,kBAAkB;IAClB,4BAA4B;IAC5B,sCAAsC;IACtC,2CAA2C;IAC3C,mBAAmB;IACnB,sBAAsB;AAC1B;;AAEA;IACI,0CAA0C;IAC1C;;;;KAIC;AACL;;AAEA;IACI,2CAA2C;IAC3C;;;;KAIC;AACL;;AAEA;IACI,4CAA4C;IAC5C;;;;KAIC;AACL;;AAEA;IACI,2CAA2C;AAC/C;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,SAAS;IACT,kBAAkB;AACtB;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,gBAAgB;IAChB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,oBAAoB;IACpB,8BAA8B;IAC9B,gBAAgB;AACpB;;AAEA;IACI,gCAAgC;IAChC,mCAAmC;AACvC;;AAEA;IACI,gCAAgC;IAChC,oCAAoC;AACxC;;AAEA;IACI,gCAAgC;IAChC,qCAAqC;AACzC;;AAEA;IACI,gCAAgC;IAChC,qCAAqC;AACzC;;AAEA;IACI,SAAS;IACT,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,iBAAiB;AACrB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,eAAe;IACf,mBAAmB;IACnB,aAAa;AACjB;;AAEA;IACI,oBAAoB;IACpB,mBAAmB;IACnB,iBAAiB;IACjB,kBAAkB;IAClB,gBAAgB;IAChB,6BAA6B;IAC7B;;;;KAIC;IACD,kBAAkB;IAClB,qBAAqB;IACrB,mDAAmD;AACvD;;AAEA;;IAEI,wBAAwB;IACxB,qBAAqB;AACzB;;AAEA;IACI,4CAA4C;IAC5C,mBAAmB;AACvB;;AAEA;IACI,iBAAiB;IACjB,kBAAkB;IAClB,oBAAoB;IACpB,gCAAgC;IAChC,uBAAuB;IACvB,2CAA2C;IAC3C,kBAAkB;IAClB,eAAe;IACf,4EAA4E;AAChF;;AAEA;;IAEI,uCAAuC;IACvC,gCAAgC;IAChC,qCAAqC;AACzC;;AAEA;IACI,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,eAAe;IACf,yBAAyB;IACzB,iBAAiB;IACjB,gCAAgC;IAChC,4BAA4B;AAChC;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,eAAe;IACf,mBAAmB;IACnB,iBAAiB;AACrB;;AAEA;IACI,gBAAgB;IAChB,kBAAkB;IAClB,gCAAgC;IAChC,qCAAqC;IACrC,2CAA2C;IAC3C,kBAAkB;AACtB;;AAEA;IACI;QACI,iBAAiB;IACrB;AACJ;;AAEA,4EAA4E;AAC5E;IACI,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,kBAAkB;IAClB,cAAc;IACd,qCAAqC;IACrC,0CAA0C;IAC1C,mBAAmB;AACvB;;AAEA;IACI,SAAS;IACT,gCAAgC;IAChC,iBAAiB;AACrB;;AAEA;IACI,mBAAmB;IACnB,kBAAkB;IAClB,gBAAgB;IAChB,cAAc;IACd,qBAAqB;AACzB;;AAEA;IACI,0BAA0B;AAC9B;;AAEA,4EAA4E;AAC5E;IACI,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,cAAc;IACd,qBAAqB;AACzB;;AAEA;IACI,0BAA0B;AAC9B;;AAEA,6EAA6E;AAC7E;IACI,kBAAkB;IAClB,gBAAgB;IAChB,+BAA+B;IAC/B,eAAe;AACnB;;AAEA;IACI,kBAAkB;IAClB,gCAAgC;IAChC,gBAAgB;IAChB,gBAAgB;AACpB;;AAEA,6EAA6E;AAC7E;IACI,gBAAgB;IAChB,kBAAkB;IAClB,qCAAqC;IACrC,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,WAAW;IACX,yBAAyB;IACzB,kBAAkB;AACtB;;AAEA;;IAEI,iBAAiB;IACjB,gBAAgB;IAChB,kDAAkD;IAClD,mBAAmB;AACvB;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,yBAAyB;IACzB,sBAAsB;AAC1B;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,iBAAiB;AACrB;;AAEA;IACI,qBAAqB;IACrB,UAAU;IACV,WAAW;IACX,kBAAkB;IAClB,iBAAiB;IACjB,sBAAsB;IACtB,cAAc;AAClB;;AAEA;IACI,cAAc;IACd,gBAAgB;AACpB;;AAEA;IACI,cAAc;IACd,gBAAgB;AACpB;;AAEA,6EAA6E;AAC7E;IACI,gBAAgB;IAChB,kBAAkB;IAClB,qCAAqC;IACrC,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,WAAW;IACX,yBAAyB;IACzB,kBAAkB;AACtB;;AAEA;;IAEI,iBAAiB;IACjB,gBAAgB;IAChB,kDAAkD;AACtD;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,yBAAyB;IACzB,sBAAsB;AAC1B;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,iBAAiB;AACrB;;AAEA;IACI,gCAAgC;IAChC,kBAAkB;AACtB;;AAEA,6EAA6E;AAC7E;IACI,gBAAgB;IAChB,kBAAkB;IAClB,qCAAqC;IACrC,2CAA2C;IAC3C,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,eAAe;IACf,cAAc;IACd,mBAAmB;AACvB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;IACR,kBAAkB;IAClB,+BAA+B;AACnC;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,cAAc;AAClB;;AAEA;IACI,cAAc;IACd,WAAW;IACX,YAAY;IACZ,iBAAiB;AACrB;;AAEA,gFAAgF;;AAEhF;IACI,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,uBAAuB;IACvB,SAAS;IACT,kBAAkB;IAClB,cAAc;IACd,mBAAmB;IACnB,6CAA6C;IAC7C,oCAAoC;IACpC,kBAAkB;AACtB;;AAEA;IACI,eAAe;IACf,aAAa;AACjB;;AAEA;IACI,SAAS;IACT,iBAAiB;IACjB,gBAAgB;IAChB,+BAA+B;AACnC;;AAEA;IACI,SAAS;IACT,gBAAgB;IAChB,mBAAmB;IACnB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA,iFAAiF;;AAEjF;IACI,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;IACnB,2CAA2C;IAC3C,kCAAkC;AACtC;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;AACpC;;AAEA;IACI,SAAS;IACT,iBAAiB;IACjB,gBAAgB;IAChB,gCAAgC;AACpC;;AAEA;IACI,iBAAiB;IACjB,+BAA+B;IAC/B,SAAS;AACb;;AAEA;IACI,gBAAgB;IAChB,iBAAiB;IACjB,kBAAkB;IAClB,iBAAiB;IACjB,oCAAoC;IACpC,0CAA0C;IAC1C,gCAAgC;AACpC;;AAEA;IACI,kCAAkC;IAClC,qCAAqC;IACrC,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;;AAEA,iFAAiF;;AAEjF;IACI,aAAa;IACb,mBAAmB;IACnB,SAAS;IACT,kBAAkB;IAClB,mBAAmB;IACnB,2CAA2C;IAC3C,qCAAqC;IACrC,8BAA8B;AAClC;;AAEA;IACI,qCAAqC;IACrC,mCAAmC;AACvC;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,kBAAkB;IAClB,gBAAgB;IAChB,WAAW;IACX,cAAc;IACd,uBAAuB;AAC3B;;AAEA;IACI,OAAO;IACP,YAAY;IACZ,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;;AAEA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,gCAAgC;IAChC,mBAAmB;IACnB,gBAAgB;IAChB,uBAAuB;AAC3B;;AAEA;IACI,kBAAkB;IAClB,gCAAgC;AACpC;;AAEA;IACI,gCAAgC;AACpC;;AAEA;IACI,aAAa;IACb,QAAQ;IACR,cAAc;AAClB;;AAEA;IACI,iBAAiB;IACjB,kBAAkB;IAClB,kBAAkB;IAClB,gBAAgB;IAChB,eAAe;IACf,6BAA6B;IAC7B,2CAA2C;AAC/C;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,oCAAoC;IACpC,sCAAsC;IACtC,gCAAgC;AACpC;;AAEA;IACI,oCAAoC;AACxC;;AAEA;IACI,oCAAoC;IACpC,qCAAqC;IACrC,gCAAgC;AACpC;;AAEA;IACI,oCAAoC;AACxC;;AAEA;IACI,uBAAuB;IACvB,sCAAsC;IACtC,gCAAgC;AACpC;;AAEA;IACI,kCAAkC;IAClC,+BAA+B;AACnC","sourcesContent":[".marketing-report-page {\n    padding-bottom: 48px;\n}\n\n.marketing-report-hero {\n    margin: 0 0 20px;\n}\n\n.marketing-report-hero h1 {\n    margin: 0 0 8px;\n    font-size: 1.35rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.marketing-report-hero p,\n.marketing-report-hero__lede {\n    margin: 0;\n    max-width: 52rem;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(200, 200, 205, 0.9);\n}\n\n.marketing-report-section {\n    margin-bottom: 28px;\n}\n\n.marketing-report-section__title {\n    margin: 0 0 6px;\n    font-size: 0.78rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.92);\n}\n\n.marketing-report-section__hint {\n    margin: 0 0 14px;\n    max-width: 44rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n}\n\n.marketing-highlights {\n    margin-bottom: 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 55%);\n}\n\n.marketing-highlights__h2 {\n    margin-bottom: 10px;\n}\n\n.marketing-highlights__eyebrow {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-highlights__headline {\n    margin: 0 0 8px;\n    font-size: 1.2rem;\n    font-weight: 600;\n    line-height: 1.35;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-highlights__sub {\n    margin: 0 0 16px;\n    max-width: 44rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(185, 185, 192, 0.92);\n}\n\n.marketing-highlights__list {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n    display: grid;\n    gap: 10px;\n}\n\n.marketing-highlights__item {\n    margin: 0;\n    padding: 12px 14px 12px 16px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    border-left-width: 3px;\n}\n\n.marketing-highlights__item--spotlight {\n    border-left-color: rgba(192, 159, 83, 0.95);\n}\n\n.marketing-highlights__item--win {\n    border-left-color: rgba(110, 185, 130, 0.9);\n}\n\n.marketing-highlights__item--watch {\n    border-left-color: rgba(220, 145, 115, 0.9);\n}\n\n.marketing-highlights__item--data {\n    border-left-color: rgba(140, 155, 190, 0.75);\n}\n\n.marketing-highlights__item-title {\n    display: block;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    color: rgba(210, 205, 195, 0.95);\n    margin-bottom: 6px;\n}\n\n.marketing-highlights__item-body {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(225, 225, 228, 0.94);\n}\n\n.marketing-report-banner {\n    margin-bottom: 20px;\n    padding: 12px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.28);\n    background: rgba(192, 159, 83, 0.08);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.marketing-report-summary {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));\n    gap: 12px;\n    margin-bottom: 22px;\n}\n\n.marketing-report-kpi {\n    padding: 14px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.marketing-report-kpi__label {\n    display: block;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n    margin-bottom: 6px;\n}\n\n.marketing-report-kpi__hint {\n    margin: 6px 0 0;\n    font-size: 0.7rem;\n    line-height: 1.4;\n    color: rgba(155, 155, 165, 0.95);\n    font-weight: 400;\n}\n\n.marketing-report-kpi__value {\n    font-size: 1.15rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: #f4f4f4;\n}\n\n.marketing-report-toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    margin-bottom: 12px;\n}\n\n.marketing-report-toolbar__left {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n}\n\n.marketing-report-toolbar__placeholder {\n    flex: 0 0 auto;\n    min-width: 1px;\n}\n\n.marketing-report-back {\n    flex: 0 0 auto;\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.1);\n    color: rgba(230, 220, 195, 0.98);\n    font-size: 0.8125rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-back:hover {\n    background: rgba(192, 159, 83, 0.18);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.marketing-report-toolbar__meta {\n    margin-left: auto;\n    font-size: 0.78rem;\n    color: rgba(180, 180, 188, 0.9);\n    text-align: right;\n}\n\n.marketing-report-export {\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(230, 230, 232, 0.96);\n    font-size: 0.78rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-export:hover {\n    background: rgba(255, 255, 255, 0.1);\n    border-color: rgba(255, 255, 255, 0.22);\n}\n\n.marketing-report-export--secondary {\n    border-color: rgba(192, 159, 83, 0.22);\n    background: rgba(192, 159, 83, 0.06);\n    color: rgba(230, 220, 200, 0.95);\n}\n\n.marketing-report-export--secondary:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.marketing-report-drill-title {\n    margin: 0 0 12px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-report-table-wrap {\n    overflow-x: auto;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n}\n\n.marketing-report-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.8125rem;\n}\n\n.marketing-report-table th,\n.marketing-report-table td {\n    padding: 10px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.92);\n    white-space: nowrap;\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.marketing-report-table td {\n    color: rgba(230, 230, 232, 0.95);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-report-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.marketing-report-table__row--clickable {\n    cursor: pointer;\n}\n\n.marketing-report-table__row--clickable:hover td {\n    background: rgba(192, 159, 83, 0.07);\n}\n\n.marketing-report-table__row--clickable:focus {\n    outline: none;\n}\n\n.marketing-report-table__row--clickable:focus-visible td:first-child {\n    box-shadow: inset 3px 0 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.marketing-report-channel-cell {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 10px;\n}\n\n.marketing-report-channel-cell__label {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-report-channel-cell__chevron {\n    flex-shrink: 0;\n    font-size: 0.9rem;\n    color: rgba(192, 159, 83, 0.75);\n}\n\n.marketing-report-table__empty-row {\n    text-align: center;\n    font-variant-numeric: normal;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-table--with-choices {\n    font-size: 0.78rem;\n}\n\n.marketing-report-table__col-choice {\n    min-width: 6.75rem;\n    max-width: 9.5rem;\n    white-space: normal;\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    line-height: 1.35;\n}\n\n.marketing-report-table th.marketing-report-table__col-choice {\n    text-align: right;\n    white-space: normal;\n    line-height: 1.25;\n}\n\n.marketing-report-footnote {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.92);\n}\n\n.marketing-report-table__col-channel {\n    min-width: 10.5rem;\n    max-width: 14rem;\n    white-space: normal;\n}\n\n.marketing-report-table__col-campaign {\n    min-width: 12rem;\n    max-width: 28rem;\n    white-space: normal;\n    word-break: break-word;\n    font-variant-numeric: normal;\n}\n\n.marketing-report-table__col-num {\n    width: 1%;\n    white-space: nowrap;\n    text-align: right;\n}\n\n.marketing-report-table th.marketing-report-table__col-num {\n    text-align: right;\n}\n\n.marketing-report-th-inner {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    width: 100%;\n    justify-content: flex-start;\n}\n\n.marketing-report-table th.marketing-report-table__col-num .marketing-report-th-inner,\n.marketing-report-table th.marketing-report-table__col-choice .marketing-report-th-inner {\n    justify-content: flex-end;\n}\n\n.marketing-report-th-label {\n    min-width: 0;\n}\n\n.marketing-report-col-sort {\n    flex-shrink: 0;\n    margin: 0;\n    padding: 2px 6px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.2);\n    color: rgba(175, 175, 185, 0.95);\n    font-size: 0.65rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: 0.02em;\n    line-height: 1.2;\n    cursor: pointer;\n}\n\n.marketing-report-col-sort:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    color: rgba(235, 228, 210, 0.98);\n    background: rgba(192, 159, 83, 0.1);\n}\n\n.marketing-report-col-sort--active {\n    border-color: rgba(192, 159, 83, 0.55);\n    color: rgba(240, 232, 210, 0.98);\n    background: rgba(192, 159, 83, 0.14);\n}\n\n.marketing-report-empty {\n    padding: 28px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-error {\n    padding: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 120, 120, 0.35);\n    background: rgba(80, 20, 20, 0.25);\n    color: rgba(255, 200, 200, 0.95);\n    font-size: 0.875rem;\n    margin-bottom: 16px;\n}\n\n.marketing-report-code {\n    margin-top: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    font-size: 0.72rem;\n    overflow-x: auto;\n    color: rgba(220, 220, 225, 0.9);\n}\n\n.marketing-context {\n    margin-bottom: 18px;\n    padding: 14px 16px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context--empty {\n    border-style: dashed;\n    border-color: rgba(255, 255, 255, 0.1);\n}\n\n.marketing-context__title {\n    margin: 0 0 6px;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-context__lede {\n    margin: 0 0 14px;\n    max-width: 48rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.92);\n}\n\n.marketing-context__empty-note {\n    margin: 0;\n    max-width: 48rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-context__empty-note code {\n    font-size: 0.72rem;\n    color: rgba(210, 195, 160, 0.95);\n}\n\n.marketing-context__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));\n    gap: 16px;\n    align-items: start;\n}\n\n.marketing-context__block-title {\n    margin: 0 0 8px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-context__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.72rem;\n}\n\n.marketing-context__table th,\n.marketing-context__table td {\n    padding: 6px 8px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: top;\n}\n\n.marketing-context__table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.85);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context__label {\n    word-break: break-word;\n    font-variant-numeric: normal;\n    color: rgba(230, 230, 232, 0.95);\n}\n\n.marketing-context__num {\n    text-align: right;\n    white-space: nowrap;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-context__split {\n    font-size: 0.68rem;\n    line-height: 1.35;\n    color: rgba(195, 195, 200, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-compare-banner {\n    margin: 12px 0 0;\n    max-width: 52rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(210, 200, 175, 0.95);\n}\n\n.marketing-report-compare-warning {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    padding: 10px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(220, 150, 100, 0.35);\n    background: rgba(60, 30, 15, 0.35);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(255, 210, 185, 0.96);\n}\n\n.marketing-report-kpi__compare {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.72rem;\n    font-weight: 500;\n    line-height: 1.35;\n}\n\n.marketing-report-cell-stack {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-end;\n    gap: 3px;\n}\n\n.marketing-report-table__col-campaign .marketing-report-cell-stack {\n    align-items: flex-start;\n}\n\n.marketing-report-cell-stack__primary {\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-cell-stack__compare {\n    font-size: 0.68rem;\n    line-height: 1.25;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-delta {\n    font-weight: 600;\n    letter-spacing: 0.01em;\n}\n\n.marketing-report-delta--up {\n    color: rgba(130, 205, 155, 0.95);\n}\n\n.marketing-report-delta--down {\n    color: rgba(235, 145, 125, 0.95);\n}\n\n.marketing-report-delta--flat {\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-report-delta--new {\n    font-weight: 500;\n    color: rgba(160, 185, 220, 0.92);\n}\n\n/*\n * Marketing dashboard chart strip.\n *\n * The overview view shows two cards side-by-side (choice mix donut +\n * channels bar). The channel drill-down shows five cards: a wide one for\n * \"top campaigns\" and four half-width for mix, acceptance %, countries,\n * and paths. On narrow screens everything collapses to a single column.\n */\n.marketing-charts {\n    margin-bottom: 28px;\n}\n\n.marketing-charts__grid {\n    display: grid;\n    gap: 16px;\n}\n\n.marketing-charts__grid--two-up {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n}\n\n.marketing-charts__grid--three-up {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__grid--three-up {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__grid--two-up,\n    .marketing-charts__grid--three-up {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-charts__card {\n    display: flex;\n    flex-direction: column;\n    min-height: 280px;\n    padding: 14px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.18);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.06) 0%, rgba(0, 0, 0, 0.22) 60%);\n}\n\n.marketing-charts__card--wide {\n    grid-column: span 2;\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__card--wide {\n        grid-column: span 2;\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__card--wide {\n        grid-column: span 1;\n    }\n}\n\n.marketing-charts__card-header {\n    margin-bottom: 8px;\n}\n\n.marketing-charts__card-title {\n    margin: 0 0 4px;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(245, 243, 238, 0.96);\n}\n\n.marketing-charts__card-sub {\n    margin: 0;\n    font-size: 0.74rem;\n    line-height: 1.4;\n    color: rgba(170, 170, 180, 0.9);\n}\n\n.marketing-charts__card-body {\n    flex: 1;\n    min-height: 220px;\n    position: relative;\n}\n\n/*\n * AnyChart's pie/bar containers need an explicit height; the inner chart\n * renders into a block element inside <div class=\"chart\">.\n */\n.marketing-charts__card-body .widget {\n    height: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__card-body .chart {\n    width: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__empty {\n    margin: 0;\n    padding: 18px 14px;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.88);\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px dashed rgba(192, 159, 83, 0.24);\n}\n\n.marketing-charts__card--timeseries {\n    margin-top: 0;\n}\n\n.marketing-charts__card-body--tall {\n    min-height: 350px;\n}\n\n.marketing-charts__card-body--tall .widget,\n.marketing-charts__card-body--tall .chart {\n    min-height: 350px;\n}\n\n/*\n * --- Visibility reframe --------------------------------------------------\n *\n * The \"analytics-invisible traffic\" narrative and supporting cues.\n * Color palette stays in the platform gold/amber family so the warning\n * reads as \"pay attention\" rather than \"something is broken\" — this is a\n * product-level insight, not an error state.\n */\n\n.marketing-report-visibility-narrative {\n    margin: 4px 0 16px;\n    padding: 12px 14px 13px;\n    max-width: 62rem;\n    font-size: 0.85rem;\n    line-height: 1.55;\n    color: rgba(240, 230, 205, 0.95);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.25) 65%);\n    border: 1px solid rgba(210, 165, 80, 0.28);\n    border-left: 3px solid rgba(210, 165, 80, 0.82);\n    border-radius: 10px;\n}\n\n.marketing-report-visibility-narrative strong {\n    color: rgba(255, 235, 195, 1);\n    font-weight: 600;\n}\n\n.marketing-report-kpi--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.24) 60%);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__label {\n    color: rgba(235, 205, 145, 0.92);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__value {\n    color: rgba(255, 235, 195, 1);\n}\n\n/*\n * Per-row \"analytics blind spot\" highlight.\n *\n * A faint amber tint + a thick leading border drawn via a box-shadow\n * inset so it doesn't shift row layout. The badge sits next to the\n * campaign / channel name in lowercase to read as a label, not a button.\n */\n\n.marketing-report-table__row--blind-spot {\n    background: rgba(210, 165, 80, 0.06);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.6);\n}\n\n.marketing-report-table__row--blind-spot.marketing-report-table__row--clickable:hover,\n.marketing-report-table__row--blind-spot:hover {\n    background: rgba(210, 165, 80, 0.12);\n}\n\n.marketing-report-blind-spot-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 2px 8px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n/*\n * --- Channels table pagination -----------------------------------------\n *\n * Compact pager shown under the overview table so the list never grows\n * past ten rows. Prev/Next buttons sit to either side of the numbered\n * pages; ellipsis gaps compress long page lists. Meta text reports the\n * window so totals stay visible without the user opening the CSV export.\n */\n\n.marketing-report-pagination {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: center;\n    gap: 6px 10px;\n    margin-top: 14px;\n    padding: 18px 8px 14px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-pagination__btn {\n    padding: 7px 12px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-report-pagination__btn:hover:not(:disabled) {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.08);\n}\n\n.marketing-report-pagination__btn:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__btn:disabled {\n    opacity: 0.38;\n    cursor: not-allowed;\n}\n\n.marketing-report-pagination__pages {\n    display: flex;\n    gap: 4px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-report-pagination__page {\n    min-width: 34px;\n    padding: 7px 10px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.88);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 7px;\n    cursor: pointer;\n    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;\n}\n\n.marketing-report-pagination__page:hover {\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-report-pagination__page:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__page--active,\n.marketing-report-pagination__page--active:hover {\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, rgba(216, 181, 106, 0.96) 0%, rgba(184, 141, 60, 0.96) 100%);\n    border-color: rgba(192, 159, 83, 0.65);\n    font-weight: 600;\n    cursor: default;\n}\n\n.marketing-report-pagination__gap {\n    padding: 7px 2px;\n    color: rgba(160, 160, 170, 0.7);\n    -webkit-user-select: none;\n    user-select: none;\n}\n\n.marketing-report-pagination__meta {\n    flex-basis: 100%;\n    margin-top: 2px;\n    font-size: 0.76rem;\n    line-height: 1.4;\n    color: rgba(180, 180, 190, 0.86);\n    text-align: center;\n}\n\n.marketing-report-pagination__meta strong {\n    color: rgba(230, 230, 235, 0.95);\n    font-weight: 600;\n}\n\n@media (min-width: 720px) {\n    .marketing-report-pagination__meta {\n        flex-basis: auto;\n        margin-top: 0;\n        margin-left: 12px;\n        text-align: left;\n    }\n}\n\n/*\n * --- Ad-platform reconciliation panel ----------------------------------\n *\n * Sits between the KPI grid and the chart strip. Inputs stack responsively;\n * result cards flow in a 3–4 column grid on wide screens, collapsing to a\n * single column on phones. The \"good\" and \"warn\" tones match the rest of\n * the dashboard's palette (green accents for visibility, gold/amber for the\n * invisible-gap card).\n */\n\n.marketing-reconciliation {\n    margin: 0 0 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(\n        155deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n}\n\n.marketing-reconciliation__header {\n    margin-bottom: 14px;\n}\n\n.marketing-reconciliation__inputs {\n    display: grid;\n    grid-template-columns: 1.2fr 1fr 1fr auto;\n    gap: 12px 14px;\n    align-items: end;\n    margin-bottom: 8px;\n}\n\n@media (max-width: 900px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n\n@media (max-width: 540px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-reconciliation__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__field-label {\n    font-size: 0.74rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.86);\n}\n\n.marketing-reconciliation__input,\n.marketing-reconciliation__select {\n    width: 100%;\n    padding: 9px 11px;\n    font-size: 0.88rem;\n    font-family: inherit;\n    color: rgba(245, 243, 238, 0.98);\n    background: rgba(0, 0, 0, 0.28);\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 8px;\n    outline: none;\n    transition:\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__input:focus,\n.marketing-reconciliation__select:focus {\n    border-color: rgba(192, 159, 83, 0.6);\n    background: rgba(0, 0, 0, 0.38);\n}\n\n.marketing-reconciliation__money {\n    display: flex;\n    gap: 6px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__input--money {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-reconciliation__select--currency {\n    flex: 0 0 auto;\n    width: 88px;\n}\n\n.marketing-reconciliation__actions {\n    display: flex;\n    justify-content: flex-end;\n    align-items: flex-end;\n}\n\n.marketing-reconciliation__clear {\n    padding: 9px 14px;\n    font-size: 0.82rem;\n    font-family: inherit;\n    color: rgba(215, 215, 220, 0.94);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.18);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease;\n}\n\n.marketing-reconciliation__clear:hover {\n    border-color: rgba(210, 165, 80, 0.5);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__window-hint {\n    margin: 2px 0 16px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(160, 160, 170, 0.88);\n}\n\n.marketing-reconciliation__empty {\n    padding: 18px 16px;\n    font-size: 0.88rem;\n    line-height: 1.55;\n    color: rgba(185, 185, 195, 0.92);\n    border: 1px dashed rgba(192, 159, 83, 0.28);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.marketing-reconciliation__empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n/*\n * Result grid: 4-up on wide desktops (three reconciliation cards + cost\n * card when spend is entered), graceful fallback to 2-up and 1-up.\n */\n.marketing-reconciliation__results {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\n    gap: 12px;\n    margin-top: 4px;\n}\n\n.marketing-reconciliation__result {\n    padding: 14px 14px 15px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.035);\n}\n\n.marketing-reconciliation__result--good {\n    border-color: rgba(140, 200, 130, 0.35);\n    background: linear-gradient(\n        155deg,\n        rgba(140, 200, 130, 0.12) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.14) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result-title {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.92);\n}\n\n.marketing-reconciliation__result--good .marketing-reconciliation__result-title {\n    color: rgba(175, 220, 165, 0.95);\n}\n\n.marketing-reconciliation__result--warn .marketing-reconciliation__result-title {\n    color: rgba(235, 200, 140, 0.95);\n}\n\n.marketing-reconciliation__result-headline {\n    margin: 0 0 6px;\n    font-size: 1.3rem;\n    font-weight: 600;\n    line-height: 1.25;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-reconciliation__result-detail {\n    margin: 0;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(195, 195, 205, 0.9);\n}\n\n.marketing-reconciliation__result-sub {\n    margin: 8px 0 0;\n    padding-top: 8px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.86);\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n/*\n * --- Reconciliation: save / snapshots --------------------------------\n *\n * The save button shares the actions slot with \"Clear inputs\" and gets\n * the gold accent treatment so it reads as the primary CTA. The\n * snapshots list is a collapsible details-style block with a compact\n * table — wide enough to be useful, narrow enough not to dominate.\n */\n\n.marketing-reconciliation__actions {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n    align-items: stretch;\n}\n\n@media (min-width: 901px) {\n    .marketing-reconciliation__actions {\n        flex-direction: row;\n        align-items: flex-end;\n        justify-content: flex-end;\n    }\n}\n\n.marketing-reconciliation__save {\n    padding: 9px 16px;\n    font-size: 0.84rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, #d8b56a 0%, #b88d3c 100%);\n    border: 1px solid rgba(192, 159, 83, 0.7);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        transform 80ms ease,\n        box-shadow 120ms ease,\n        opacity 120ms ease;\n}\n\n.marketing-reconciliation__save:hover:not(:disabled) {\n    transform: translateY(-1px);\n    box-shadow: 0 6px 14px -8px rgba(210, 165, 80, 0.6);\n}\n\n.marketing-reconciliation__save:disabled {\n    cursor: not-allowed;\n    opacity: 0.45;\n}\n\n.marketing-reconciliation__snapshots {\n    margin-top: 22px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.07);\n}\n\n.marketing-reconciliation__snapshots-bar {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n\n.marketing-reconciliation__snapshots-toggle {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 7px 10px 7px 6px;\n    margin-left: -6px;\n    font-size: 0.86rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(235, 233, 228, 0.96);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 8px;\n    cursor: pointer;\n    transition: background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-toggle:hover {\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-reconciliation__snapshots-count {\n    display: inline-flex;\n    min-width: 22px;\n    height: 22px;\n    padding: 0 7px;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.74rem;\n    font-weight: 600;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n}\n\n.marketing-reconciliation__snapshots-actions {\n    display: inline-flex;\n    gap: 8px;\n}\n\n.marketing-reconciliation__snapshots-export,\n.marketing-reconciliation__snapshots-clear {\n    padding: 7px 12px;\n    font-size: 0.78rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-export:hover {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__snapshots-clear:hover {\n    border-color: rgba(220, 110, 110, 0.55);\n    color: rgba(245, 175, 175, 0.98);\n}\n\n.marketing-reconciliation__snapshots-empty {\n    margin: 14px 0 0;\n    padding: 14px 14px;\n    font-size: 0.84rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.9);\n    border: 1px dashed rgba(255, 255, 255, 0.12);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.1);\n}\n\n.marketing-reconciliation__snapshots-empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n.marketing-reconciliation__snapshots-table-wrap {\n    margin-top: 14px;\n    overflow-x: auto;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__snapshots-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n    color: rgba(225, 225, 230, 0.94);\n}\n\n.marketing-reconciliation__snapshots-table thead th {\n    padding: 9px 10px;\n    text-align: left;\n    font-size: 0.7rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(180, 180, 190, 0.92);\n    background: rgba(255, 255, 255, 0.03);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-table tbody td {\n    padding: 9px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    vertical-align: top;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:hover {\n    background: rgba(255, 255, 255, 0.025);\n}\n\n.marketing-reconciliation__snapshots-table .num {\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-metric,\n.marketing-reconciliation__snapshots-sub {\n    color: rgba(160, 160, 170, 0.86);\n    font-size: 0.74rem;\n}\n\n.marketing-reconciliation__snapshots-delete {\n    padding: 2px 8px;\n    font-size: 1rem;\n    line-height: 1;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.7);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 6px;\n    cursor: pointer;\n    transition:\n        color 120ms ease,\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-delete:hover {\n    color: rgba(245, 175, 175, 0.98);\n    border-color: rgba(220, 110, 110, 0.45);\n    background: rgba(220, 110, 110, 0.08);\n}\n\n/*\n * --- Reconciliation: over-count & caption ----------------------------\n *\n * \"Over-count\" = the scope's attributed consents exceed the reported\n * clicks/sessions from the ad platform (multi-session visits, pre-\n * consented returns, UTM-tagged URLs shared beyond the ad). The row is\n * lightly tinted amber, the Reported cell carries a compact badge, and\n * the in-cell share label is capped at \"100%+\" so the math stays\n * readable.\n */\n.marketing-reconciliation__snapshots-caption {\n    margin: 0 0 10px;\n    font-size: 0.78rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.86);\n}\n\n.marketing-reconciliation__over-count-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 1px 7px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__over-count-badge--inline {\n    margin: 0 4px;\n}\n\n.marketing-reconciliation__snapshots-row--overcount {\n    background: rgba(210, 165, 80, 0.05);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.45);\n}\n\n.marketing-reconciliation__snapshots-row--overcount:hover {\n    background: rgba(210, 165, 80, 0.09);\n}\n\n/*\n * --- Reconciliation: platform filter note ----------------------------\n *\n * The filter note sits between the inputs and the result cards. When\n * the filter is active and matched, it shows the coverage + matched\n * utm_source values. When active and empty, it swaps to a warn tone\n * prompting the user to fix their UTM tagging or switch to \"Other\".\n */\n\n.marketing-reconciliation__filter-note {\n    margin: 0 0 14px;\n    padding: 10px 14px;\n    font-size: 0.82rem;\n    line-height: 1.55;\n    color: rgba(215, 215, 220, 0.92);\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__filter-note p {\n    margin: 0;\n}\n\n.marketing-reconciliation__filter-note code {\n    padding: 1px 6px;\n    font-size: 0.78rem;\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.1);\n    border: 1px solid rgba(210, 165, 80, 0.25);\n    border-radius: 5px;\n}\n\n.marketing-reconciliation__filter-note--empty {\n    color: rgba(245, 210, 170, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 130, 80, 0.15) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n    border-color: rgba(220, 140, 90, 0.45);\n}\n\n/*\n * --- Suggestions strip ------------------------------------------------\n *\n * Sits between the KPI grid and the reconciliation panel. Visually quieter\n * than the KPI cards (no large numbers) so it reads as a *next move*\n * footnote, not as another metric. Severity is encoded in (1) a chip in\n * the card head, (2) a coloured left border, and (3) a faint background\n * tint — three independent cues so colour-blind readers still see the\n * priority distinction.\n */\n\n.marketing-suggestions {\n    margin: 0 0 28px;\n    padding: 16px 18px 18px;\n    border-radius: 14px;\n    background: linear-gradient(\n        155deg,\n        rgba(255, 255, 255, 0.03) 0%,\n        rgba(255, 255, 255, 0.01) 100%\n    );\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-suggestions__head {\n    margin: 0 0 12px;\n}\n\n.marketing-suggestions__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.95);\n}\n\n.marketing-suggestions__hint {\n    margin: 4px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n    max-width: 56rem;\n}\n\n.marketing-suggestions__list {\n    display: grid;\n    gap: 10px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-suggestions__card {\n    position: relative;\n    padding: 14px 16px 14px 18px;\n    background: rgba(255, 255, 255, 0.025);\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    border-radius: 10px;\n    border-left-width: 3px;\n}\n\n.marketing-suggestions__card--critical {\n    border-left-color: rgba(232, 95, 95, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(232, 95, 95, 0.08) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--high {\n    border-left-color: rgba(210, 165, 80, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.07) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--medium {\n    border-left-color: rgba(130, 175, 220, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(130, 175, 220, 0.05) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--low {\n    border-left-color: rgba(160, 160, 170, 0.6);\n}\n\n.marketing-suggestions__card-head {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 6px;\n}\n\n.marketing-suggestions__severity {\n    display: inline-flex;\n    align-items: center;\n    padding: 2px 8px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    border-radius: 999px;\n    border: 1px solid currentColor;\n    line-height: 1.4;\n}\n\n.marketing-suggestions__severity--critical {\n    color: rgba(255, 180, 180, 0.95);\n    background: rgba(232, 95, 95, 0.12);\n}\n\n.marketing-suggestions__severity--high {\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.14);\n}\n\n.marketing-suggestions__severity--medium {\n    color: rgba(190, 220, 245, 0.95);\n    background: rgba(130, 175, 220, 0.12);\n}\n\n.marketing-suggestions__severity--low {\n    color: rgba(200, 200, 210, 0.85);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__card-title {\n    margin: 0;\n    font-size: 0.92rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.96);\n    line-height: 1.35;\n}\n\n.marketing-suggestions__card-body {\n    margin: 0 0 10px;\n    font-size: 0.84rem;\n    line-height: 1.5;\n    color: rgba(200, 200, 210, 0.92);\n}\n\n.marketing-suggestions__card-actions {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 8px 12px;\n}\n\n.marketing-suggestions__cta {\n    display: inline-flex;\n    align-items: center;\n    padding: 7px 14px;\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(216, 181, 106, 0.96) 0%,\n        rgba(184, 141, 60, 0.96) 100%\n    );\n    border-radius: 7px;\n    text-decoration: none;\n    transition: filter 120ms ease, transform 120ms ease;\n}\n\n.marketing-suggestions__cta:hover,\n.marketing-suggestions__cta:focus-visible {\n    filter: brightness(1.07);\n    text-decoration: none;\n}\n\n.marketing-suggestions__cta:focus-visible {\n    outline: 2px solid rgba(255, 225, 170, 0.85);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__snooze {\n    padding: 6px 10px;\n    font-size: 0.76rem;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.86);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-suggestions__snooze:hover,\n.marketing-suggestions__snooze:focus-visible {\n    border-color: rgba(255, 255, 255, 0.32);\n    color: rgba(240, 240, 245, 0.96);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__snooze:focus-visible {\n    outline: 2px solid rgba(160, 160, 170, 0.6);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__evidence {\n    margin-top: 10px;\n    font-size: 0.76rem;\n    color: rgba(160, 160, 170, 0.9);\n}\n\n.marketing-suggestions__evidence summary {\n    cursor: pointer;\n    -webkit-user-select: none;\n    user-select: none;\n    color: rgba(180, 180, 190, 0.86);\n    transition: color 120ms ease;\n}\n\n.marketing-suggestions__evidence summary:hover {\n    color: rgba(220, 220, 230, 0.96);\n}\n\n.marketing-suggestions__evidence ul {\n    margin: 8px 0 0;\n    padding: 0 0 0 18px;\n    line-height: 1.55;\n}\n\n.marketing-suggestions__evidence code {\n    padding: 1px 6px;\n    font-size: 0.74rem;\n    color: rgba(220, 220, 230, 0.92);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 4px;\n}\n\n@media (min-width: 720px) {\n    .marketing-suggestions__card-head {\n        flex-wrap: nowrap;\n    }\n}\n\n/* ── Ad Reconciliation CTA (in Channel Analytics) ─────────────────────── */\n.marketing-reconciliation-cta {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    padding: 18px 24px;\n    margin: 32px 0;\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation-cta__text {\n    margin: 0;\n    color: rgba(220, 220, 230, 0.75);\n    font-size: 0.9rem;\n}\n\n.marketing-reconciliation-cta__link {\n    white-space: nowrap;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-cta__link:hover {\n    text-decoration: underline;\n}\n\n/* ── Reconcile page channel filter ────────────────────────────────────── */\n.marketing-reconciliation-page__channel-filter {\n    margin-bottom: 24px;\n}\n\n.marketing-reconciliation-page__channel-label {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    font-size: 0.88rem;\n    color: rgba(220, 220, 230, 0.8);\n}\n\n.marketing-reconciliation-page__back-link {\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-page__back-link:hover {\n    text-decoration: underline;\n}\n\n/* ── Shared section headers ────────────────────────────────────────────── */\n.marketing-reconciliation__section-title {\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(220, 220, 230, 0.9);\n    margin: 0 0 4px;\n}\n\n.marketing-reconciliation__section-hint {\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.55);\n    margin: 0 0 16px;\n    line-height: 1.5;\n}\n\n/* ── Platform comparison table ─────────────────────────────────────────── */\n.marketing-reconciliation__comparison {\n    margin: 28px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__comparison-wrap {\n    overflow-x: auto;\n}\n\n.marketing-reconciliation__comparison-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__comparison-table th,\n.marketing-reconciliation__comparison-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__comparison-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__comparison-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__comparison-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__comparison-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__comparison-dot {\n    display: inline-block;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    margin-right: 8px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__comparison-good {\n    color: #4caf7d;\n    font-weight: 600;\n}\n\n.marketing-reconciliation__comparison-warn {\n    color: #f5a623;\n    font-weight: 600;\n}\n\n/* ── Visibility improvement projection ─────────────────────────────────── */\n.marketing-reconciliation__projection {\n    margin: 20px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__projection-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__projection-table th,\n.marketing-reconciliation__projection-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-reconciliation__projection-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__projection-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__projection-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__projection-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__projection-row--current td {\n    color: rgba(200, 200, 210, 0.55);\n    font-style: italic;\n}\n\n/* ── Visibility trend chart ────────────────────────────────────────────── */\n.marketing-reconciliation__trend {\n    margin: 20px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__trend-legend {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 12px 20px;\n    margin-bottom: 12px;\n}\n\n.marketing-reconciliation__trend-legend-item {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.8);\n}\n\n.marketing-reconciliation__trend-legend-dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__trend-svg {\n    display: block;\n    width: 100%;\n    height: auto;\n    overflow: visible;\n}\n\n/* ── Domain gate ──────────────────────────────────────────────────────────── */\n\n.reconcile-domain-gate {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 56px 24px;\n    margin: 24px 0;\n    border-radius: 16px;\n    border: 1.5px dashed rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.04);\n    text-align: center;\n}\n\n.reconcile-domain-gate__icon {\n    font-size: 2rem;\n    opacity: 0.55;\n}\n\n.reconcile-domain-gate__heading {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: rgba(240, 235, 220, 0.9);\n}\n\n.reconcile-domain-gate__body {\n    margin: 0;\n    max-width: 36rem;\n    font-size: 0.875rem;\n    line-height: 1.6;\n    color: rgba(180, 175, 165, 0.85);\n}\n\n/* ── Ad Connection Manager ─────────────────────────────────────────────────── */\n\n.ad-connection-manager {\n    margin: 0 0 32px;\n    padding: 20px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(100, 180, 255, 0.15);\n    background: rgba(30, 50, 80, 0.18);\n}\n\n.ad-connection-manager__header {\n    margin-bottom: 14px;\n}\n\n.ad-connection-manager__title {\n    margin: 0 0 6px;\n    font-size: 0.82rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(130, 185, 255, 0.85);\n}\n\n.ad-connection-manager__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(160, 165, 175, 0.85);\n}\n\n.ad-connection-manager__loading {\n    font-size: 0.8rem;\n    color: rgba(160, 165, 175, 0.7);\n    margin: 0;\n}\n\n.ad-connection-manager__status {\n    margin: 0 0 12px;\n    padding: 8px 12px;\n    border-radius: 8px;\n    font-size: 0.8rem;\n    background: rgba(60, 200, 100, 0.12);\n    border: 1px solid rgba(60, 200, 100, 0.25);\n    color: rgba(160, 230, 160, 0.95);\n}\n\n.ad-connection-manager__status--error {\n    background: rgba(220, 80, 60, 0.1);\n    border-color: rgba(220, 80, 60, 0.25);\n    color: rgba(255, 160, 140, 0.95);\n}\n\n.ad-connection-manager__list {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n/* ── Individual connection card ────────────────────────────────────────────── */\n\n.ad-connection-card {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.03);\n    transition: border-color 0.15s;\n}\n\n.ad-connection-card--connected {\n    border-color: rgba(60, 180, 255, 0.2);\n    background: rgba(30, 80, 140, 0.12);\n}\n\n.ad-connection-card__icon {\n    width: 34px;\n    height: 34px;\n    border-radius: 8px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.75rem;\n    font-weight: 700;\n    color: #fff;\n    flex-shrink: 0;\n    letter-spacing: -0.02em;\n}\n\n.ad-connection-card__info {\n    flex: 1;\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n\n.ad-connection-card__name {\n    font-size: 0.84rem;\n    font-weight: 500;\n    color: rgba(220, 220, 228, 0.95);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.ad-connection-card__meta {\n    font-size: 0.75rem;\n    color: rgba(120, 200, 120, 0.85);\n}\n\n.ad-connection-card__meta--dim {\n    color: rgba(140, 140, 150, 0.65);\n}\n\n.ad-connection-card__actions {\n    display: flex;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.ad-connection-card__btn {\n    padding: 5px 12px;\n    border-radius: 6px;\n    font-size: 0.77rem;\n    font-weight: 500;\n    cursor: pointer;\n    border: 1px solid transparent;\n    transition: background 0.15s, opacity 0.15s;\n}\n\n.ad-connection-card__btn:disabled {\n    opacity: 0.55;\n    cursor: not-allowed;\n}\n\n.ad-connection-card__btn--connect {\n    background: rgba(60, 140, 255, 0.18);\n    border-color: rgba(60, 140, 255, 0.35);\n    color: rgba(130, 185, 255, 0.95);\n}\n\n.ad-connection-card__btn--connect:not(:disabled):hover {\n    background: rgba(60, 140, 255, 0.28);\n}\n\n.ad-connection-card__btn--import {\n    background: rgba(60, 200, 100, 0.14);\n    border-color: rgba(60, 200, 100, 0.3);\n    color: rgba(130, 220, 150, 0.95);\n}\n\n.ad-connection-card__btn--import:not(:disabled):hover {\n    background: rgba(60, 200, 100, 0.24);\n}\n\n.ad-connection-card__btn--disconnect {\n    background: transparent;\n    border-color: rgba(200, 100, 80, 0.25);\n    color: rgba(200, 140, 130, 0.75);\n}\n\n.ad-connection-card__btn--disconnect:hover {\n    background: rgba(200, 80, 60, 0.1);\n    color: rgba(220, 160, 145, 0.9);\n}\n"],"sourceRoot":""}]);
+
+/* ── Inputs bar ────────────────────────────────────────────── */
+.recon-inputs-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    margin-bottom: 4px;
+}
+.recon-inputs-bar__field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.recon-inputs-bar__field--wide {
+    flex: 1;
+    min-width: 130px;
+}
+.recon-inputs-bar__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(160,165,175,0.85);
+}
+.recon-inputs-bar__actions {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+/* ── Funnel + Gauge layout ─────────────────────────────────── */
+.recon-main {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin: 20px 0 28px;
+    flex-wrap: wrap;
+}
+
+/* ── Funnel ────────────────────────────────────────────────── */
+.recon-funnel {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 20px 16px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.025);
+}
+.recon-funnel__step {
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+    padding: 12px 16px;
+    border-radius: 10px;
+}
+.recon-funnel__step--reported {
+    background: rgba(120,160,220,0.1);
+    border: 1px solid rgba(120,160,220,0.2);
+}
+.recon-funnel__step--consents {
+    background: rgba(100,200,160,0.08);
+    border: 1px solid rgba(100,200,160,0.2);
+}
+.recon-funnel__step--visible {
+    background: rgba(80,200,120,0.12);
+    border: 1px solid rgba(80,200,120,0.25);
+}
+.recon-funnel__num {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: rgba(235,235,245,0.95);
+}
+.recon-funnel__label {
+    font-size: 0.75rem;
+    color: rgba(170,175,185,0.85);
+}
+.recon-funnel__arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 0;
+}
+.recon-funnel__arrow-pct {
+    font-size: 0.7rem;
+    color: rgba(150,155,165,0.8);
+}
+.recon-funnel__arrow-line {
+    font-size: 1.1rem;
+    color: rgba(150,155,165,0.5);
+}
+.recon-funnel__gap {
+    margin-top: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: rgba(220,80,60,0.08);
+    border: 1px solid rgba(220,80,60,0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+}
+.recon-funnel__gap-num {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(240,140,120,0.9);
+}
+.recon-funnel__gap-label {
+    font-size: 0.72rem;
+    color: rgba(200,130,110,0.8);
+}
+
+/* ── Gauge ─────────────────────────────────────────────────── */
+.recon-gauge {
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.025);
+}
+.recon-gauge__svg {
+    width: 180px;
+    height: 160px;
+    display: block;
+}
+.recon-gauge__cost {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.recon-gauge__cost-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(150,155,165,0.7);
+}
+.recon-gauge__cost-val {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: rgba(235,235,245,0.95);
+}
+.recon-gauge__cost-sub {
+    font-size: 0.72rem;
+    color: rgba(150,155,165,0.7);
+}
+
+/* ── Connect hint ──────────────────────────────────────────── */
+.reconcile-connect-hint {
+    font-size: 0.78rem;
+    color: rgba(140,160,190,0.8);
+    margin-bottom: 16px;
+}
+.reconcile-connect-hint a {
+    color: rgba(100,170,255,0.9);
+    text-decoration: none;
+}
+.reconcile-connect-hint a:hover {
+    text-decoration: underline;
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/Reports/MarketingReport/MarketingReport.css"],"names":[],"mappings":"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BAAgB;IAChB,cAAc;IACd,kBAAkB;IAClB,6BAA6B;AACjC;AACA;IACI,kBAAkB;IAClB,6BAA6B;AACjC;AACA;IACI,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,QAAQ;IACR,cAAc;AAClB;AACA;IACI,iBAAiB;IACjB,4BAA4B;AAChC;AACA;IACI,iBAAiB;IACjB,4BAA4B;AAChC;AACA;IACI,gBAAgB;IAChB,iBAAiB;IACjB,kBAAkB;IAClB,gCAAgC;IAChC,qCAAqC;IACrC,kBAAkB;IAClB,WAAW;IACX,gBAAgB;AACpB;AACA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,4BAA4B;AAChC;AACA;IACI,kBAAkB;IAClB,4BAA4B;AAChC;;AAEA,iEAAiE;AACjE;IACI,gBAAgB;IAChB,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,SAAS;IACT,kBAAkB;IAClB,mBAAmB;IACnB,wCAAwC;IACxC,mCAAmC;AACvC;AACA;IACI,YAAY;IACZ,aAAa;IACb,cAAc;AAClB;AACA;IACI,kBAAkB;IAClB,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;AACA;IACI,kBAAkB;IAClB,yBAAyB;IACzB,sBAAsB;IACtB,4BAA4B;AAChC;AACA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,6BAA6B;AACjC;AACA;IACI,kBAAkB;IAClB,4BAA4B;AAChC;;AAEA,iEAAiE;AACjE;IACI,kBAAkB;IAClB,4BAA4B;IAC5B,mBAAmB;AACvB;AACA;IACI,4BAA4B;IAC5B,qBAAqB;AACzB;AACA;IACI,0BAA0B;AAC9B","sourcesContent":[".marketing-report-page {\n    padding-bottom: 48px;\n}\n\n.marketing-report-hero {\n    margin: 0 0 20px;\n}\n\n.marketing-report-hero h1 {\n    margin: 0 0 8px;\n    font-size: 1.35rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.marketing-report-hero p,\n.marketing-report-hero__lede {\n    margin: 0;\n    max-width: 52rem;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(200, 200, 205, 0.9);\n}\n\n.marketing-report-section {\n    margin-bottom: 28px;\n}\n\n.marketing-report-section__title {\n    margin: 0 0 6px;\n    font-size: 0.78rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.92);\n}\n\n.marketing-report-section__hint {\n    margin: 0 0 14px;\n    max-width: 44rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n}\n\n.marketing-highlights {\n    margin-bottom: 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 55%);\n}\n\n.marketing-highlights__h2 {\n    margin-bottom: 10px;\n}\n\n.marketing-highlights__eyebrow {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-highlights__headline {\n    margin: 0 0 8px;\n    font-size: 1.2rem;\n    font-weight: 600;\n    line-height: 1.35;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-highlights__sub {\n    margin: 0 0 16px;\n    max-width: 44rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(185, 185, 192, 0.92);\n}\n\n.marketing-highlights__list {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n    display: grid;\n    gap: 10px;\n}\n\n.marketing-highlights__item {\n    margin: 0;\n    padding: 12px 14px 12px 16px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    border-left-width: 3px;\n}\n\n.marketing-highlights__item--spotlight {\n    border-left-color: rgba(192, 159, 83, 0.95);\n}\n\n.marketing-highlights__item--win {\n    border-left-color: rgba(110, 185, 130, 0.9);\n}\n\n.marketing-highlights__item--watch {\n    border-left-color: rgba(220, 145, 115, 0.9);\n}\n\n.marketing-highlights__item--data {\n    border-left-color: rgba(140, 155, 190, 0.75);\n}\n\n.marketing-highlights__item-title {\n    display: block;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    color: rgba(210, 205, 195, 0.95);\n    margin-bottom: 6px;\n}\n\n.marketing-highlights__item-body {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(225, 225, 228, 0.94);\n}\n\n.marketing-report-banner {\n    margin-bottom: 20px;\n    padding: 12px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.28);\n    background: rgba(192, 159, 83, 0.08);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.marketing-report-summary {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));\n    gap: 12px;\n    margin-bottom: 22px;\n}\n\n.marketing-report-kpi {\n    padding: 14px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.marketing-report-kpi__label {\n    display: block;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n    margin-bottom: 6px;\n}\n\n.marketing-report-kpi__hint {\n    margin: 6px 0 0;\n    font-size: 0.7rem;\n    line-height: 1.4;\n    color: rgba(155, 155, 165, 0.95);\n    font-weight: 400;\n}\n\n.marketing-report-kpi__value {\n    font-size: 1.15rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: #f4f4f4;\n}\n\n.marketing-report-toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    margin-bottom: 12px;\n}\n\n.marketing-report-toolbar__left {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n}\n\n.marketing-report-toolbar__placeholder {\n    flex: 0 0 auto;\n    min-width: 1px;\n}\n\n.marketing-report-back {\n    flex: 0 0 auto;\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.1);\n    color: rgba(230, 220, 195, 0.98);\n    font-size: 0.8125rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-back:hover {\n    background: rgba(192, 159, 83, 0.18);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.marketing-report-toolbar__meta {\n    margin-left: auto;\n    font-size: 0.78rem;\n    color: rgba(180, 180, 188, 0.9);\n    text-align: right;\n}\n\n.marketing-report-export {\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(230, 230, 232, 0.96);\n    font-size: 0.78rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-export:hover {\n    background: rgba(255, 255, 255, 0.1);\n    border-color: rgba(255, 255, 255, 0.22);\n}\n\n.marketing-report-export--secondary {\n    border-color: rgba(192, 159, 83, 0.22);\n    background: rgba(192, 159, 83, 0.06);\n    color: rgba(230, 220, 200, 0.95);\n}\n\n.marketing-report-export--secondary:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.marketing-report-drill-title {\n    margin: 0 0 12px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-report-table-wrap {\n    overflow-x: auto;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n}\n\n.marketing-report-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.8125rem;\n}\n\n.marketing-report-table th,\n.marketing-report-table td {\n    padding: 10px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.92);\n    white-space: nowrap;\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.marketing-report-table td {\n    color: rgba(230, 230, 232, 0.95);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-report-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.marketing-report-table__row--clickable {\n    cursor: pointer;\n}\n\n.marketing-report-table__row--clickable:hover td {\n    background: rgba(192, 159, 83, 0.07);\n}\n\n.marketing-report-table__row--clickable:focus {\n    outline: none;\n}\n\n.marketing-report-table__row--clickable:focus-visible td:first-child {\n    box-shadow: inset 3px 0 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.marketing-report-channel-cell {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 10px;\n}\n\n.marketing-report-channel-cell__label {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-report-channel-cell__chevron {\n    flex-shrink: 0;\n    font-size: 0.9rem;\n    color: rgba(192, 159, 83, 0.75);\n}\n\n.marketing-report-table__empty-row {\n    text-align: center;\n    font-variant-numeric: normal;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-table--with-choices {\n    font-size: 0.78rem;\n}\n\n.marketing-report-table__col-choice {\n    min-width: 6.75rem;\n    max-width: 9.5rem;\n    white-space: normal;\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    line-height: 1.35;\n}\n\n.marketing-report-table th.marketing-report-table__col-choice {\n    text-align: right;\n    white-space: normal;\n    line-height: 1.25;\n}\n\n.marketing-report-footnote {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.92);\n}\n\n.marketing-report-table__col-channel {\n    min-width: 10.5rem;\n    max-width: 14rem;\n    white-space: normal;\n}\n\n.marketing-report-table__col-campaign {\n    min-width: 12rem;\n    max-width: 28rem;\n    white-space: normal;\n    word-break: break-word;\n    font-variant-numeric: normal;\n}\n\n.marketing-report-table__col-num {\n    width: 1%;\n    white-space: nowrap;\n    text-align: right;\n}\n\n.marketing-report-table th.marketing-report-table__col-num {\n    text-align: right;\n}\n\n.marketing-report-th-inner {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    width: 100%;\n    justify-content: flex-start;\n}\n\n.marketing-report-table th.marketing-report-table__col-num .marketing-report-th-inner,\n.marketing-report-table th.marketing-report-table__col-choice .marketing-report-th-inner {\n    justify-content: flex-end;\n}\n\n.marketing-report-th-label {\n    min-width: 0;\n}\n\n.marketing-report-col-sort {\n    flex-shrink: 0;\n    margin: 0;\n    padding: 2px 6px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.2);\n    color: rgba(175, 175, 185, 0.95);\n    font-size: 0.65rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: 0.02em;\n    line-height: 1.2;\n    cursor: pointer;\n}\n\n.marketing-report-col-sort:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    color: rgba(235, 228, 210, 0.98);\n    background: rgba(192, 159, 83, 0.1);\n}\n\n.marketing-report-col-sort--active {\n    border-color: rgba(192, 159, 83, 0.55);\n    color: rgba(240, 232, 210, 0.98);\n    background: rgba(192, 159, 83, 0.14);\n}\n\n.marketing-report-empty {\n    padding: 28px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-error {\n    padding: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 120, 120, 0.35);\n    background: rgba(80, 20, 20, 0.25);\n    color: rgba(255, 200, 200, 0.95);\n    font-size: 0.875rem;\n    margin-bottom: 16px;\n}\n\n.marketing-report-code {\n    margin-top: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    font-size: 0.72rem;\n    overflow-x: auto;\n    color: rgba(220, 220, 225, 0.9);\n}\n\n.marketing-context {\n    margin-bottom: 18px;\n    padding: 14px 16px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context--empty {\n    border-style: dashed;\n    border-color: rgba(255, 255, 255, 0.1);\n}\n\n.marketing-context__title {\n    margin: 0 0 6px;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-context__lede {\n    margin: 0 0 14px;\n    max-width: 48rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.92);\n}\n\n.marketing-context__empty-note {\n    margin: 0;\n    max-width: 48rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-context__empty-note code {\n    font-size: 0.72rem;\n    color: rgba(210, 195, 160, 0.95);\n}\n\n.marketing-context__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));\n    gap: 16px;\n    align-items: start;\n}\n\n.marketing-context__block-title {\n    margin: 0 0 8px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-context__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.72rem;\n}\n\n.marketing-context__table th,\n.marketing-context__table td {\n    padding: 6px 8px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: top;\n}\n\n.marketing-context__table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.85);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context__label {\n    word-break: break-word;\n    font-variant-numeric: normal;\n    color: rgba(230, 230, 232, 0.95);\n}\n\n.marketing-context__num {\n    text-align: right;\n    white-space: nowrap;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-context__split {\n    font-size: 0.68rem;\n    line-height: 1.35;\n    color: rgba(195, 195, 200, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-compare-banner {\n    margin: 12px 0 0;\n    max-width: 52rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(210, 200, 175, 0.95);\n}\n\n.marketing-report-compare-warning {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    padding: 10px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(220, 150, 100, 0.35);\n    background: rgba(60, 30, 15, 0.35);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(255, 210, 185, 0.96);\n}\n\n.marketing-report-kpi__compare {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.72rem;\n    font-weight: 500;\n    line-height: 1.35;\n}\n\n.marketing-report-cell-stack {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-end;\n    gap: 3px;\n}\n\n.marketing-report-table__col-campaign .marketing-report-cell-stack {\n    align-items: flex-start;\n}\n\n.marketing-report-cell-stack__primary {\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-cell-stack__compare {\n    font-size: 0.68rem;\n    line-height: 1.25;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-delta {\n    font-weight: 600;\n    letter-spacing: 0.01em;\n}\n\n.marketing-report-delta--up {\n    color: rgba(130, 205, 155, 0.95);\n}\n\n.marketing-report-delta--down {\n    color: rgba(235, 145, 125, 0.95);\n}\n\n.marketing-report-delta--flat {\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-report-delta--new {\n    font-weight: 500;\n    color: rgba(160, 185, 220, 0.92);\n}\n\n/*\n * Marketing dashboard chart strip.\n *\n * The overview view shows two cards side-by-side (choice mix donut +\n * channels bar). The channel drill-down shows five cards: a wide one for\n * \"top campaigns\" and four half-width for mix, acceptance %, countries,\n * and paths. On narrow screens everything collapses to a single column.\n */\n.marketing-charts {\n    margin-bottom: 28px;\n}\n\n.marketing-charts__grid {\n    display: grid;\n    gap: 16px;\n}\n\n.marketing-charts__grid--two-up {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n}\n\n.marketing-charts__grid--three-up {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__grid--three-up {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__grid--two-up,\n    .marketing-charts__grid--three-up {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-charts__card {\n    display: flex;\n    flex-direction: column;\n    min-height: 280px;\n    padding: 14px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.18);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.06) 0%, rgba(0, 0, 0, 0.22) 60%);\n}\n\n.marketing-charts__card--wide {\n    grid-column: span 2;\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__card--wide {\n        grid-column: span 2;\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__card--wide {\n        grid-column: span 1;\n    }\n}\n\n.marketing-charts__card-header {\n    margin-bottom: 8px;\n}\n\n.marketing-charts__card-title {\n    margin: 0 0 4px;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(245, 243, 238, 0.96);\n}\n\n.marketing-charts__card-sub {\n    margin: 0;\n    font-size: 0.74rem;\n    line-height: 1.4;\n    color: rgba(170, 170, 180, 0.9);\n}\n\n.marketing-charts__card-body {\n    flex: 1;\n    min-height: 220px;\n    position: relative;\n}\n\n/*\n * AnyChart's pie/bar containers need an explicit height; the inner chart\n * renders into a block element inside <div class=\"chart\">.\n */\n.marketing-charts__card-body .widget {\n    height: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__card-body .chart {\n    width: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__empty {\n    margin: 0;\n    padding: 18px 14px;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.88);\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px dashed rgba(192, 159, 83, 0.24);\n}\n\n.marketing-charts__card--timeseries {\n    margin-top: 0;\n}\n\n.marketing-charts__card-body--tall {\n    min-height: 350px;\n}\n\n.marketing-charts__card-body--tall .widget,\n.marketing-charts__card-body--tall .chart {\n    min-height: 350px;\n}\n\n/*\n * --- Visibility reframe --------------------------------------------------\n *\n * The \"analytics-invisible traffic\" narrative and supporting cues.\n * Color palette stays in the platform gold/amber family so the warning\n * reads as \"pay attention\" rather than \"something is broken\" — this is a\n * product-level insight, not an error state.\n */\n\n.marketing-report-visibility-narrative {\n    margin: 4px 0 16px;\n    padding: 12px 14px 13px;\n    max-width: 62rem;\n    font-size: 0.85rem;\n    line-height: 1.55;\n    color: rgba(240, 230, 205, 0.95);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.25) 65%);\n    border: 1px solid rgba(210, 165, 80, 0.28);\n    border-left: 3px solid rgba(210, 165, 80, 0.82);\n    border-radius: 10px;\n}\n\n.marketing-report-visibility-narrative strong {\n    color: rgba(255, 235, 195, 1);\n    font-weight: 600;\n}\n\n.marketing-report-kpi--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.24) 60%);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__label {\n    color: rgba(235, 205, 145, 0.92);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__value {\n    color: rgba(255, 235, 195, 1);\n}\n\n/*\n * Per-row \"analytics blind spot\" highlight.\n *\n * A faint amber tint + a thick leading border drawn via a box-shadow\n * inset so it doesn't shift row layout. The badge sits next to the\n * campaign / channel name in lowercase to read as a label, not a button.\n */\n\n.marketing-report-table__row--blind-spot {\n    background: rgba(210, 165, 80, 0.06);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.6);\n}\n\n.marketing-report-table__row--blind-spot.marketing-report-table__row--clickable:hover,\n.marketing-report-table__row--blind-spot:hover {\n    background: rgba(210, 165, 80, 0.12);\n}\n\n.marketing-report-blind-spot-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 2px 8px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n/*\n * --- Channels table pagination -----------------------------------------\n *\n * Compact pager shown under the overview table so the list never grows\n * past ten rows. Prev/Next buttons sit to either side of the numbered\n * pages; ellipsis gaps compress long page lists. Meta text reports the\n * window so totals stay visible without the user opening the CSV export.\n */\n\n.marketing-report-pagination {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: center;\n    gap: 6px 10px;\n    margin-top: 14px;\n    padding: 18px 8px 14px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-pagination__btn {\n    padding: 7px 12px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-report-pagination__btn:hover:not(:disabled) {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.08);\n}\n\n.marketing-report-pagination__btn:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__btn:disabled {\n    opacity: 0.38;\n    cursor: not-allowed;\n}\n\n.marketing-report-pagination__pages {\n    display: flex;\n    gap: 4px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-report-pagination__page {\n    min-width: 34px;\n    padding: 7px 10px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.88);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 7px;\n    cursor: pointer;\n    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;\n}\n\n.marketing-report-pagination__page:hover {\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-report-pagination__page:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__page--active,\n.marketing-report-pagination__page--active:hover {\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, rgba(216, 181, 106, 0.96) 0%, rgba(184, 141, 60, 0.96) 100%);\n    border-color: rgba(192, 159, 83, 0.65);\n    font-weight: 600;\n    cursor: default;\n}\n\n.marketing-report-pagination__gap {\n    padding: 7px 2px;\n    color: rgba(160, 160, 170, 0.7);\n    -webkit-user-select: none;\n    user-select: none;\n}\n\n.marketing-report-pagination__meta {\n    flex-basis: 100%;\n    margin-top: 2px;\n    font-size: 0.76rem;\n    line-height: 1.4;\n    color: rgba(180, 180, 190, 0.86);\n    text-align: center;\n}\n\n.marketing-report-pagination__meta strong {\n    color: rgba(230, 230, 235, 0.95);\n    font-weight: 600;\n}\n\n@media (min-width: 720px) {\n    .marketing-report-pagination__meta {\n        flex-basis: auto;\n        margin-top: 0;\n        margin-left: 12px;\n        text-align: left;\n    }\n}\n\n/*\n * --- Ad-platform reconciliation panel ----------------------------------\n *\n * Sits between the KPI grid and the chart strip. Inputs stack responsively;\n * result cards flow in a 3–4 column grid on wide screens, collapsing to a\n * single column on phones. The \"good\" and \"warn\" tones match the rest of\n * the dashboard's palette (green accents for visibility, gold/amber for the\n * invisible-gap card).\n */\n\n.marketing-reconciliation {\n    margin: 0 0 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(\n        155deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n}\n\n.marketing-reconciliation__header {\n    margin-bottom: 14px;\n}\n\n.marketing-reconciliation__inputs {\n    display: grid;\n    grid-template-columns: 1.2fr 1fr 1fr auto;\n    gap: 12px 14px;\n    align-items: end;\n    margin-bottom: 8px;\n}\n\n@media (max-width: 900px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n\n@media (max-width: 540px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-reconciliation__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__field-label {\n    font-size: 0.74rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.86);\n}\n\n.marketing-reconciliation__input,\n.marketing-reconciliation__select {\n    width: 100%;\n    padding: 9px 11px;\n    font-size: 0.88rem;\n    font-family: inherit;\n    color: rgba(245, 243, 238, 0.98);\n    background: rgba(0, 0, 0, 0.28);\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 8px;\n    outline: none;\n    transition:\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__input:focus,\n.marketing-reconciliation__select:focus {\n    border-color: rgba(192, 159, 83, 0.6);\n    background: rgba(0, 0, 0, 0.38);\n}\n\n.marketing-reconciliation__money {\n    display: flex;\n    gap: 6px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__input--money {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-reconciliation__select--currency {\n    flex: 0 0 auto;\n    width: 88px;\n}\n\n.marketing-reconciliation__actions {\n    display: flex;\n    justify-content: flex-end;\n    align-items: flex-end;\n}\n\n.marketing-reconciliation__clear {\n    padding: 9px 14px;\n    font-size: 0.82rem;\n    font-family: inherit;\n    color: rgba(215, 215, 220, 0.94);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.18);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease;\n}\n\n.marketing-reconciliation__clear:hover {\n    border-color: rgba(210, 165, 80, 0.5);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__window-hint {\n    margin: 2px 0 16px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(160, 160, 170, 0.88);\n}\n\n.marketing-reconciliation__empty {\n    padding: 18px 16px;\n    font-size: 0.88rem;\n    line-height: 1.55;\n    color: rgba(185, 185, 195, 0.92);\n    border: 1px dashed rgba(192, 159, 83, 0.28);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.marketing-reconciliation__empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n/*\n * Result grid: 4-up on wide desktops (three reconciliation cards + cost\n * card when spend is entered), graceful fallback to 2-up and 1-up.\n */\n.marketing-reconciliation__results {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\n    gap: 12px;\n    margin-top: 4px;\n}\n\n.marketing-reconciliation__result {\n    padding: 14px 14px 15px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.035);\n}\n\n.marketing-reconciliation__result--good {\n    border-color: rgba(140, 200, 130, 0.35);\n    background: linear-gradient(\n        155deg,\n        rgba(140, 200, 130, 0.12) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.14) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result-title {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.92);\n}\n\n.marketing-reconciliation__result--good .marketing-reconciliation__result-title {\n    color: rgba(175, 220, 165, 0.95);\n}\n\n.marketing-reconciliation__result--warn .marketing-reconciliation__result-title {\n    color: rgba(235, 200, 140, 0.95);\n}\n\n.marketing-reconciliation__result-headline {\n    margin: 0 0 6px;\n    font-size: 1.3rem;\n    font-weight: 600;\n    line-height: 1.25;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-reconciliation__result-detail {\n    margin: 0;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(195, 195, 205, 0.9);\n}\n\n.marketing-reconciliation__result-sub {\n    margin: 8px 0 0;\n    padding-top: 8px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.86);\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n/*\n * --- Reconciliation: save / snapshots --------------------------------\n *\n * The save button shares the actions slot with \"Clear inputs\" and gets\n * the gold accent treatment so it reads as the primary CTA. The\n * snapshots list is a collapsible details-style block with a compact\n * table — wide enough to be useful, narrow enough not to dominate.\n */\n\n.marketing-reconciliation__actions {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n    align-items: stretch;\n}\n\n@media (min-width: 901px) {\n    .marketing-reconciliation__actions {\n        flex-direction: row;\n        align-items: flex-end;\n        justify-content: flex-end;\n    }\n}\n\n.marketing-reconciliation__save {\n    padding: 9px 16px;\n    font-size: 0.84rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, #d8b56a 0%, #b88d3c 100%);\n    border: 1px solid rgba(192, 159, 83, 0.7);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        transform 80ms ease,\n        box-shadow 120ms ease,\n        opacity 120ms ease;\n}\n\n.marketing-reconciliation__save:hover:not(:disabled) {\n    transform: translateY(-1px);\n    box-shadow: 0 6px 14px -8px rgba(210, 165, 80, 0.6);\n}\n\n.marketing-reconciliation__save:disabled {\n    cursor: not-allowed;\n    opacity: 0.45;\n}\n\n.marketing-reconciliation__snapshots {\n    margin-top: 22px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.07);\n}\n\n.marketing-reconciliation__snapshots-bar {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n\n.marketing-reconciliation__snapshots-toggle {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 7px 10px 7px 6px;\n    margin-left: -6px;\n    font-size: 0.86rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(235, 233, 228, 0.96);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 8px;\n    cursor: pointer;\n    transition: background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-toggle:hover {\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-reconciliation__snapshots-count {\n    display: inline-flex;\n    min-width: 22px;\n    height: 22px;\n    padding: 0 7px;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.74rem;\n    font-weight: 600;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n}\n\n.marketing-reconciliation__snapshots-actions {\n    display: inline-flex;\n    gap: 8px;\n}\n\n.marketing-reconciliation__snapshots-export,\n.marketing-reconciliation__snapshots-clear {\n    padding: 7px 12px;\n    font-size: 0.78rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-export:hover {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__snapshots-clear:hover {\n    border-color: rgba(220, 110, 110, 0.55);\n    color: rgba(245, 175, 175, 0.98);\n}\n\n.marketing-reconciliation__snapshots-empty {\n    margin: 14px 0 0;\n    padding: 14px 14px;\n    font-size: 0.84rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.9);\n    border: 1px dashed rgba(255, 255, 255, 0.12);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.1);\n}\n\n.marketing-reconciliation__snapshots-empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n.marketing-reconciliation__snapshots-table-wrap {\n    margin-top: 14px;\n    overflow-x: auto;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__snapshots-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n    color: rgba(225, 225, 230, 0.94);\n}\n\n.marketing-reconciliation__snapshots-table thead th {\n    padding: 9px 10px;\n    text-align: left;\n    font-size: 0.7rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(180, 180, 190, 0.92);\n    background: rgba(255, 255, 255, 0.03);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-table tbody td {\n    padding: 9px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    vertical-align: top;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:hover {\n    background: rgba(255, 255, 255, 0.025);\n}\n\n.marketing-reconciliation__snapshots-table .num {\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-metric,\n.marketing-reconciliation__snapshots-sub {\n    color: rgba(160, 160, 170, 0.86);\n    font-size: 0.74rem;\n}\n\n.marketing-reconciliation__snapshots-delete {\n    padding: 2px 8px;\n    font-size: 1rem;\n    line-height: 1;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.7);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 6px;\n    cursor: pointer;\n    transition:\n        color 120ms ease,\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-delete:hover {\n    color: rgba(245, 175, 175, 0.98);\n    border-color: rgba(220, 110, 110, 0.45);\n    background: rgba(220, 110, 110, 0.08);\n}\n\n/*\n * --- Reconciliation: over-count & caption ----------------------------\n *\n * \"Over-count\" = the scope's attributed consents exceed the reported\n * clicks/sessions from the ad platform (multi-session visits, pre-\n * consented returns, UTM-tagged URLs shared beyond the ad). The row is\n * lightly tinted amber, the Reported cell carries a compact badge, and\n * the in-cell share label is capped at \"100%+\" so the math stays\n * readable.\n */\n.marketing-reconciliation__snapshots-caption {\n    margin: 0 0 10px;\n    font-size: 0.78rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.86);\n}\n\n.marketing-reconciliation__over-count-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 1px 7px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__over-count-badge--inline {\n    margin: 0 4px;\n}\n\n.marketing-reconciliation__snapshots-row--overcount {\n    background: rgba(210, 165, 80, 0.05);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.45);\n}\n\n.marketing-reconciliation__snapshots-row--overcount:hover {\n    background: rgba(210, 165, 80, 0.09);\n}\n\n/*\n * --- Reconciliation: platform filter note ----------------------------\n *\n * The filter note sits between the inputs and the result cards. When\n * the filter is active and matched, it shows the coverage + matched\n * utm_source values. When active and empty, it swaps to a warn tone\n * prompting the user to fix their UTM tagging or switch to \"Other\".\n */\n\n.marketing-reconciliation__filter-note {\n    margin: 0 0 14px;\n    padding: 10px 14px;\n    font-size: 0.82rem;\n    line-height: 1.55;\n    color: rgba(215, 215, 220, 0.92);\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__filter-note p {\n    margin: 0;\n}\n\n.marketing-reconciliation__filter-note code {\n    padding: 1px 6px;\n    font-size: 0.78rem;\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.1);\n    border: 1px solid rgba(210, 165, 80, 0.25);\n    border-radius: 5px;\n}\n\n.marketing-reconciliation__filter-note--empty {\n    color: rgba(245, 210, 170, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 130, 80, 0.15) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n    border-color: rgba(220, 140, 90, 0.45);\n}\n\n/*\n * --- Suggestions strip ------------------------------------------------\n *\n * Sits between the KPI grid and the reconciliation panel. Visually quieter\n * than the KPI cards (no large numbers) so it reads as a *next move*\n * footnote, not as another metric. Severity is encoded in (1) a chip in\n * the card head, (2) a coloured left border, and (3) a faint background\n * tint — three independent cues so colour-blind readers still see the\n * priority distinction.\n */\n\n.marketing-suggestions {\n    margin: 0 0 28px;\n    padding: 16px 18px 18px;\n    border-radius: 14px;\n    background: linear-gradient(\n        155deg,\n        rgba(255, 255, 255, 0.03) 0%,\n        rgba(255, 255, 255, 0.01) 100%\n    );\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-suggestions__head {\n    margin: 0 0 12px;\n}\n\n.marketing-suggestions__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.95);\n}\n\n.marketing-suggestions__hint {\n    margin: 4px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n    max-width: 56rem;\n}\n\n.marketing-suggestions__list {\n    display: grid;\n    gap: 10px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-suggestions__card {\n    position: relative;\n    padding: 14px 16px 14px 18px;\n    background: rgba(255, 255, 255, 0.025);\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    border-radius: 10px;\n    border-left-width: 3px;\n}\n\n.marketing-suggestions__card--critical {\n    border-left-color: rgba(232, 95, 95, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(232, 95, 95, 0.08) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--high {\n    border-left-color: rgba(210, 165, 80, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.07) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--medium {\n    border-left-color: rgba(130, 175, 220, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(130, 175, 220, 0.05) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--low {\n    border-left-color: rgba(160, 160, 170, 0.6);\n}\n\n.marketing-suggestions__card-head {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 6px;\n}\n\n.marketing-suggestions__severity {\n    display: inline-flex;\n    align-items: center;\n    padding: 2px 8px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    border-radius: 999px;\n    border: 1px solid currentColor;\n    line-height: 1.4;\n}\n\n.marketing-suggestions__severity--critical {\n    color: rgba(255, 180, 180, 0.95);\n    background: rgba(232, 95, 95, 0.12);\n}\n\n.marketing-suggestions__severity--high {\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.14);\n}\n\n.marketing-suggestions__severity--medium {\n    color: rgba(190, 220, 245, 0.95);\n    background: rgba(130, 175, 220, 0.12);\n}\n\n.marketing-suggestions__severity--low {\n    color: rgba(200, 200, 210, 0.85);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__card-title {\n    margin: 0;\n    font-size: 0.92rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.96);\n    line-height: 1.35;\n}\n\n.marketing-suggestions__card-body {\n    margin: 0 0 10px;\n    font-size: 0.84rem;\n    line-height: 1.5;\n    color: rgba(200, 200, 210, 0.92);\n}\n\n.marketing-suggestions__card-actions {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 8px 12px;\n}\n\n.marketing-suggestions__cta {\n    display: inline-flex;\n    align-items: center;\n    padding: 7px 14px;\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(216, 181, 106, 0.96) 0%,\n        rgba(184, 141, 60, 0.96) 100%\n    );\n    border-radius: 7px;\n    text-decoration: none;\n    transition: filter 120ms ease, transform 120ms ease;\n}\n\n.marketing-suggestions__cta:hover,\n.marketing-suggestions__cta:focus-visible {\n    filter: brightness(1.07);\n    text-decoration: none;\n}\n\n.marketing-suggestions__cta:focus-visible {\n    outline: 2px solid rgba(255, 225, 170, 0.85);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__snooze {\n    padding: 6px 10px;\n    font-size: 0.76rem;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.86);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-suggestions__snooze:hover,\n.marketing-suggestions__snooze:focus-visible {\n    border-color: rgba(255, 255, 255, 0.32);\n    color: rgba(240, 240, 245, 0.96);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__snooze:focus-visible {\n    outline: 2px solid rgba(160, 160, 170, 0.6);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__evidence {\n    margin-top: 10px;\n    font-size: 0.76rem;\n    color: rgba(160, 160, 170, 0.9);\n}\n\n.marketing-suggestions__evidence summary {\n    cursor: pointer;\n    -webkit-user-select: none;\n    user-select: none;\n    color: rgba(180, 180, 190, 0.86);\n    transition: color 120ms ease;\n}\n\n.marketing-suggestions__evidence summary:hover {\n    color: rgba(220, 220, 230, 0.96);\n}\n\n.marketing-suggestions__evidence ul {\n    margin: 8px 0 0;\n    padding: 0 0 0 18px;\n    line-height: 1.55;\n}\n\n.marketing-suggestions__evidence code {\n    padding: 1px 6px;\n    font-size: 0.74rem;\n    color: rgba(220, 220, 230, 0.92);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 4px;\n}\n\n@media (min-width: 720px) {\n    .marketing-suggestions__card-head {\n        flex-wrap: nowrap;\n    }\n}\n\n/* ── Ad Reconciliation CTA (in Channel Analytics) ─────────────────────── */\n.marketing-reconciliation-cta {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    padding: 18px 24px;\n    margin: 32px 0;\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation-cta__text {\n    margin: 0;\n    color: rgba(220, 220, 230, 0.75);\n    font-size: 0.9rem;\n}\n\n.marketing-reconciliation-cta__link {\n    white-space: nowrap;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-cta__link:hover {\n    text-decoration: underline;\n}\n\n/* ── Reconcile page channel filter ────────────────────────────────────── */\n.marketing-reconciliation-page__channel-filter {\n    margin-bottom: 24px;\n}\n\n.marketing-reconciliation-page__channel-label {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    font-size: 0.88rem;\n    color: rgba(220, 220, 230, 0.8);\n}\n\n.marketing-reconciliation-page__back-link {\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-page__back-link:hover {\n    text-decoration: underline;\n}\n\n/* ── Shared section headers ────────────────────────────────────────────── */\n.marketing-reconciliation__section-title {\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(220, 220, 230, 0.9);\n    margin: 0 0 4px;\n}\n\n.marketing-reconciliation__section-hint {\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.55);\n    margin: 0 0 16px;\n    line-height: 1.5;\n}\n\n/* ── Platform comparison table ─────────────────────────────────────────── */\n.marketing-reconciliation__comparison {\n    margin: 28px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__comparison-wrap {\n    overflow-x: auto;\n}\n\n.marketing-reconciliation__comparison-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__comparison-table th,\n.marketing-reconciliation__comparison-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__comparison-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__comparison-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__comparison-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__comparison-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__comparison-dot {\n    display: inline-block;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    margin-right: 8px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__comparison-good {\n    color: #4caf7d;\n    font-weight: 600;\n}\n\n.marketing-reconciliation__comparison-warn {\n    color: #f5a623;\n    font-weight: 600;\n}\n\n/* ── Visibility improvement projection ─────────────────────────────────── */\n.marketing-reconciliation__projection {\n    margin: 20px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__projection-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__projection-table th,\n.marketing-reconciliation__projection-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-reconciliation__projection-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__projection-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__projection-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__projection-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__projection-row--current td {\n    color: rgba(200, 200, 210, 0.55);\n    font-style: italic;\n}\n\n/* ── Visibility trend chart ────────────────────────────────────────────── */\n.marketing-reconciliation__trend {\n    margin: 20px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__trend-legend {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 12px 20px;\n    margin-bottom: 12px;\n}\n\n.marketing-reconciliation__trend-legend-item {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.8);\n}\n\n.marketing-reconciliation__trend-legend-dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__trend-svg {\n    display: block;\n    width: 100%;\n    height: auto;\n    overflow: visible;\n}\n\n/* ── Domain gate ──────────────────────────────────────────────────────────── */\n\n.reconcile-domain-gate {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 56px 24px;\n    margin: 24px 0;\n    border-radius: 16px;\n    border: 1.5px dashed rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.04);\n    text-align: center;\n}\n\n.reconcile-domain-gate__icon {\n    font-size: 2rem;\n    opacity: 0.55;\n}\n\n.reconcile-domain-gate__heading {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: rgba(240, 235, 220, 0.9);\n}\n\n.reconcile-domain-gate__body {\n    margin: 0;\n    max-width: 36rem;\n    font-size: 0.875rem;\n    line-height: 1.6;\n    color: rgba(180, 175, 165, 0.85);\n}\n\n/* ── Ad Connection Manager ─────────────────────────────────────────────────── */\n\n.ad-connection-manager {\n    margin: 0 0 32px;\n    padding: 20px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(100, 180, 255, 0.15);\n    background: rgba(30, 50, 80, 0.18);\n}\n\n.ad-connection-manager__header {\n    margin-bottom: 14px;\n}\n\n.ad-connection-manager__title {\n    margin: 0 0 6px;\n    font-size: 0.82rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(130, 185, 255, 0.85);\n}\n\n.ad-connection-manager__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(160, 165, 175, 0.85);\n}\n\n.ad-connection-manager__loading {\n    font-size: 0.8rem;\n    color: rgba(160, 165, 175, 0.7);\n    margin: 0;\n}\n\n.ad-connection-manager__status {\n    margin: 0 0 12px;\n    padding: 8px 12px;\n    border-radius: 8px;\n    font-size: 0.8rem;\n    background: rgba(60, 200, 100, 0.12);\n    border: 1px solid rgba(60, 200, 100, 0.25);\n    color: rgba(160, 230, 160, 0.95);\n}\n\n.ad-connection-manager__status--error {\n    background: rgba(220, 80, 60, 0.1);\n    border-color: rgba(220, 80, 60, 0.25);\n    color: rgba(255, 160, 140, 0.95);\n}\n\n.ad-connection-manager__list {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n/* ── Individual connection card ────────────────────────────────────────────── */\n\n.ad-connection-card {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.03);\n    transition: border-color 0.15s;\n}\n\n.ad-connection-card--connected {\n    border-color: rgba(60, 180, 255, 0.2);\n    background: rgba(30, 80, 140, 0.12);\n}\n\n.ad-connection-card__icon {\n    width: 34px;\n    height: 34px;\n    border-radius: 8px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.75rem;\n    font-weight: 700;\n    color: #fff;\n    flex-shrink: 0;\n    letter-spacing: -0.02em;\n}\n\n.ad-connection-card__info {\n    flex: 1;\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n\n.ad-connection-card__name {\n    font-size: 0.84rem;\n    font-weight: 500;\n    color: rgba(220, 220, 228, 0.95);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.ad-connection-card__meta {\n    font-size: 0.75rem;\n    color: rgba(120, 200, 120, 0.85);\n}\n\n.ad-connection-card__meta--dim {\n    color: rgba(140, 140, 150, 0.65);\n}\n\n.ad-connection-card__actions {\n    display: flex;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.ad-connection-card__btn {\n    padding: 5px 12px;\n    border-radius: 6px;\n    font-size: 0.77rem;\n    font-weight: 500;\n    cursor: pointer;\n    border: 1px solid transparent;\n    transition: background 0.15s, opacity 0.15s;\n}\n\n.ad-connection-card__btn:disabled {\n    opacity: 0.55;\n    cursor: not-allowed;\n}\n\n.ad-connection-card__btn--connect {\n    background: rgba(60, 140, 255, 0.18);\n    border-color: rgba(60, 140, 255, 0.35);\n    color: rgba(130, 185, 255, 0.95);\n}\n\n.ad-connection-card__btn--connect:not(:disabled):hover {\n    background: rgba(60, 140, 255, 0.28);\n}\n\n.ad-connection-card__btn--import {\n    background: rgba(60, 200, 100, 0.14);\n    border-color: rgba(60, 200, 100, 0.3);\n    color: rgba(130, 220, 150, 0.95);\n}\n\n.ad-connection-card__btn--import:not(:disabled):hover {\n    background: rgba(60, 200, 100, 0.24);\n}\n\n.ad-connection-card__btn--disconnect {\n    background: transparent;\n    border-color: rgba(200, 100, 80, 0.25);\n    color: rgba(200, 140, 130, 0.75);\n}\n\n.ad-connection-card__btn--disconnect:hover {\n    background: rgba(200, 80, 60, 0.1);\n    color: rgba(220, 160, 145, 0.9);\n}\n\n/* ── Inputs bar ────────────────────────────────────────────── */\n.recon-inputs-bar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: flex-end;\n    gap: 14px;\n    padding: 16px 18px;\n    border-radius: 12px;\n    border: 1px solid rgba(255,255,255,0.08);\n    background: rgba(255,255,255,0.03);\n    margin-bottom: 4px;\n}\n.recon-inputs-bar__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n.recon-inputs-bar__field--wide {\n    flex: 1;\n    min-width: 130px;\n}\n.recon-inputs-bar__label {\n    font-size: 0.72rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(160,165,175,0.85);\n}\n.recon-inputs-bar__actions {\n    display: flex;\n    gap: 8px;\n    align-items: flex-end;\n}\n\n/* ── Funnel + Gauge layout ─────────────────────────────────── */\n.recon-main {\n    display: flex;\n    gap: 24px;\n    align-items: flex-start;\n    margin: 20px 0 28px;\n    flex-wrap: wrap;\n}\n\n/* ── Funnel ────────────────────────────────────────────────── */\n.recon-funnel {\n    flex: 1;\n    min-width: 220px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 0;\n    padding: 20px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.08);\n    background: rgba(255,255,255,0.025);\n}\n.recon-funnel__step {\n    width: 100%;\n    max-width: 200px;\n    text-align: center;\n    padding: 12px 16px;\n    border-radius: 10px;\n}\n.recon-funnel__step--reported {\n    background: rgba(120,160,220,0.1);\n    border: 1px solid rgba(120,160,220,0.2);\n}\n.recon-funnel__step--consents {\n    background: rgba(100,200,160,0.08);\n    border: 1px solid rgba(100,200,160,0.2);\n}\n.recon-funnel__step--visible {\n    background: rgba(80,200,120,0.12);\n    border: 1px solid rgba(80,200,120,0.25);\n}\n.recon-funnel__num {\n    font-size: 1.6rem;\n    font-weight: 700;\n    line-height: 1;\n    margin-bottom: 4px;\n    color: rgba(235,235,245,0.95);\n}\n.recon-funnel__label {\n    font-size: 0.75rem;\n    color: rgba(170,175,185,0.85);\n}\n.recon-funnel__arrow {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 2px;\n    padding: 6px 0;\n}\n.recon-funnel__arrow-pct {\n    font-size: 0.7rem;\n    color: rgba(150,155,165,0.8);\n}\n.recon-funnel__arrow-line {\n    font-size: 1.1rem;\n    color: rgba(150,155,165,0.5);\n}\n.recon-funnel__gap {\n    margin-top: 12px;\n    padding: 8px 14px;\n    border-radius: 8px;\n    background: rgba(220,80,60,0.08);\n    border: 1px solid rgba(220,80,60,0.2);\n    text-align: center;\n    width: 100%;\n    max-width: 200px;\n}\n.recon-funnel__gap-num {\n    font-size: 1.1rem;\n    font-weight: 700;\n    color: rgba(240,140,120,0.9);\n}\n.recon-funnel__gap-label {\n    font-size: 0.72rem;\n    color: rgba(200,130,110,0.8);\n}\n\n/* ── Gauge ─────────────────────────────────────────────────── */\n.recon-gauge {\n    min-width: 200px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 12px;\n    padding: 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.08);\n    background: rgba(255,255,255,0.025);\n}\n.recon-gauge__svg {\n    width: 180px;\n    height: 160px;\n    display: block;\n}\n.recon-gauge__cost {\n    text-align: center;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n.recon-gauge__cost-label {\n    font-size: 0.72rem;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(150,155,165,0.7);\n}\n.recon-gauge__cost-val {\n    font-size: 1.2rem;\n    font-weight: 700;\n    color: rgba(235,235,245,0.95);\n}\n.recon-gauge__cost-sub {\n    font-size: 0.72rem;\n    color: rgba(150,155,165,0.7);\n}\n\n/* ── Connect hint ──────────────────────────────────────────── */\n.reconcile-connect-hint {\n    font-size: 0.78rem;\n    color: rgba(140,160,190,0.8);\n    margin-bottom: 16px;\n}\n.reconcile-connect-hint a {\n    color: rgba(100,170,255,0.9);\n    text-decoration: none;\n}\n.reconcile-connect-hint a:hover {\n    text-decoration: underline;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -37895,17 +38069,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./Pages/Settings/ROPA/ROPAEntry */ "./src/Pages/Settings/ROPA/ROPAEntry.js");
 /* harmony import */ var _Pages_DSR__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./Pages/DSR */ "./src/Pages/DSR/index.js");
 /* harmony import */ var _Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./Pages/DSR/DSRDetail */ "./src/Pages/DSR/DSRDetail.js");
-/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
-/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
-/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
-/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./Pages/Settings/AdConnections */ "./src/Pages/Settings/AdConnections/index.js");
+/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
+/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
+/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -37971,7 +38147,7 @@ var Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
-var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("organisation"));
+var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("organisation"));
 var AllOrg = createContext(null);
 var DomainContext = createContext(null);
 var WorkspaceContext = createContext([null, function () {}]);
@@ -37980,7 +38156,7 @@ function App() {
     _useState2 = _slicedToArray(_useState, 2),
     dashboardView = _useState2[0],
     setDashboardView = _useState2[1];
-  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("organisation") : null),
+  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("organisation") : null),
     _useState4 = _slicedToArray(_useState3, 2),
     organisation = _useState4[0],
     setOrganisation = _useState4[1];
@@ -38012,7 +38188,7 @@ function App() {
     domainError = _useState12[0],
     setDomainError = _useState12[1];
   var _useState13 = useState(function () {
-      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("subscription");
+      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("subscription");
       if (cached) {
         try {
           return JSON.parse(cached);
@@ -38033,14 +38209,14 @@ function App() {
     setId = _useState16[1];
   var navigate = window.ReactRouterDOM.useHistory();
   useEffect(function () {
-    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("globals");
+    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("globals");
     var path = window.location.pathname;
     var isApiRoute = path === "/api" || path.startsWith("/api/");
     if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
       window.location.replace("/login");
     }
   }, []);
-  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("globals") != null) {
+  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("globals") != null) {
     var _getOrg2;
     var path = window.location.pathname;
     // Only redirect if id is present and not already on dashboard
@@ -38058,7 +38234,7 @@ function App() {
         organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
@@ -38066,15 +38242,15 @@ function App() {
       });
       (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.headers, JSON.stringify({
         user: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId(),
-        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
+        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
         setSubscriptionStatus(data);
-        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].setItem("subscription", JSON.stringify(data));
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].setItem("subscription", JSON.stringify(data));
       });
       if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
         (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.headers).then(function (data) {
@@ -38117,7 +38293,7 @@ function App() {
         });
       }
     }, []);
-    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
+    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
     var isDevOrg = Number(orgId) === 1;
     var hasNoSubscription = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" || typeof (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.message) === "string" && subscriptionStatus.message.includes("Subscription not found");
     var subscriptionLoading = !isDevOrg && !hasNoSubscription && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
@@ -38146,7 +38322,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -38159,7 +38335,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -38180,11 +38356,11 @@ function App() {
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
@@ -38193,7 +38369,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -38202,7 +38378,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -38211,7 +38387,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -38220,7 +38396,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -38229,28 +38405,28 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport_ReconcilePage__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -38259,7 +38435,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -38268,7 +38444,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -38277,7 +38453,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -38286,7 +38462,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -38295,7 +38471,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -38304,7 +38480,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
@@ -38312,7 +38488,7 @@ function App() {
         path: "/dashboard"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
-        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
+        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/login",
         exact: true
@@ -38320,56 +38496,56 @@ function App() {
         path: "/auth-login"
       }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/config-gdpr"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "starter",
         featureName: "Jurisdiction Configuration",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_42__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/legal-basis"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "growth",
         featureName: "Legal Basis Tracking",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_43__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa/:entryId"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_45__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_44__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr/:requestId",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR__WEBPACK_IMPORTED_MODULE_46__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/blacklist-ip"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org) {
-        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("organisation");
+        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("organisation");
         var org = null;
         try {
           org = JSON.parse(orgRaw);
         } catch (_unused4) {/* ignore */}
         var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
-        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
           minTier: "agency-pro",
           featureName: "Client Workspaces",
           fullPage: true
@@ -38381,17 +38557,24 @@ function App() {
           }
         }, "Admin access required.");
       }())), /*#__PURE__*/React.createElement(Route, {
+        path: "/settings/ad-connections",
+        exact: true
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+        minTier: "growth",
+        featureName: "Ad Connections",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/plans",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
         minTier: "growth",
         featureName: "Portfolio Benchmark",
         fullPage: true
@@ -38406,7 +38589,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/cookie-database",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_48__["default"], null) : /*#__PURE__*/React.createElement("p", {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_49__["default"], null) : /*#__PURE__*/React.createElement("p", {
         style: {
           padding: "40px",
           color: "#999"
@@ -38425,7 +38608,7 @@ function App() {
       }, /*#__PURE__*/React.createElement("img", {
         src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
         className: "crawlerPage-logo"
-      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_50__["default"], null)));
+      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_51__["default"], null)));
     }
   } else {
     return /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
@@ -44810,6 +44993,11 @@ var reportsLinks = [{
 }, {
   name: "RoPA Builder",
   path: "/settings/ropa",
+  view: ["admin", "super-admin", "manager"],
+  requiresTier: 'growth'
+}, {
+  name: "Ad Connections",
+  path: "/settings/ad-connections",
   view: ["admin", "super-admin", "manager"],
   requiresTier: 'growth'
 }, {
@@ -60845,16 +61033,194 @@ function ProjectionTable(_ref6) {
     }, "\u2212", formatPct(saving, 0)));
   }))));
 }
-function MarketingReconciliationPanel(_ref7) {
-  var scopeLabel = _ref7.scopeLabel,
-    scopeKey = _ref7.scopeKey,
-    domainKey = _ref7.domainKey,
+
+/* ─── DB row → snapshot shape ────────────────────────────────────────────── */
+
+function dbRowToSnapshot(row) {
+  var _row$spend, _row$currency, _row$cost_per_visible, _row$banner_reach_pct, _row$visible_share_pc, _row$invisible_share_, _row$visibility_of_co, _row$source_filter_ac, _row$source_pattern, _row$matched_sources, _row$scope_consents, _row$coverage_of_scop, _row$from_date, _row$to_date;
+  return {
+    id: row.id,
+    savedAt: row.saved_at,
+    scopeLabel: row.scope_label,
+    scopeKey: row.scope_key,
+    platform: row.platform,
+    platformLabel: row.platform_label,
+    metric: row.metric,
+    adClicks: row.ad_clicks,
+    spend: (_row$spend = row.spend) !== null && _row$spend !== void 0 ? _row$spend : "",
+    currency: (_row$currency = row.currency) !== null && _row$currency !== void 0 ? _row$currency : "",
+    costPerVisible: (_row$cost_per_visible = row.cost_per_visible) !== null && _row$cost_per_visible !== void 0 ? _row$cost_per_visible : "",
+    consents: row.consents,
+    visibleConsents: row.visible_consents,
+    invisibleConsents: row.invisible_consents,
+    bannerReachPct: (_row$banner_reach_pct = row.banner_reach_pct) !== null && _row$banner_reach_pct !== void 0 ? _row$banner_reach_pct : "",
+    visibleSharePct: (_row$visible_share_pc = row.visible_share_pct) !== null && _row$visible_share_pc !== void 0 ? _row$visible_share_pc : "",
+    invisibleSharePct: (_row$invisible_share_ = row.invisible_share_pct) !== null && _row$invisible_share_ !== void 0 ? _row$invisible_share_ : "",
+    visibilityOfConsentsPct: (_row$visibility_of_co = row.visibility_of_consents_pct) !== null && _row$visibility_of_co !== void 0 ? _row$visibility_of_co : "",
+    sourceFilterActive: (_row$source_filter_ac = row.source_filter_active) !== null && _row$source_filter_ac !== void 0 ? _row$source_filter_ac : false,
+    sourcePattern: (_row$source_pattern = row.source_pattern) !== null && _row$source_pattern !== void 0 ? _row$source_pattern : "",
+    matchedSources: (_row$matched_sources = row.matched_sources) !== null && _row$matched_sources !== void 0 ? _row$matched_sources : "",
+    scopeConsents: (_row$scope_consents = row.scope_consents) !== null && _row$scope_consents !== void 0 ? _row$scope_consents : "",
+    coverageOfScopePct: (_row$coverage_of_scop = row.coverage_of_scope_pct) !== null && _row$coverage_of_scop !== void 0 ? _row$coverage_of_scop : "",
+    fromDate: (_row$from_date = row.from_date) !== null && _row$from_date !== void 0 ? _row$from_date : "",
+    toDate: (_row$to_date = row.to_date) !== null && _row$to_date !== void 0 ? _row$to_date : ""
+  };
+}
+
+/* ─── FunnelFlow ─────────────────────────────────────────────────────────── */
+
+function FunnelFlow(_ref7) {
+  var clicks = _ref7.clicks,
     consents = _ref7.consents,
-    visibleConsents = _ref7.visibleConsents,
-    invisibleConsents = _ref7.invisibleConsents,
-    scopeRows = _ref7.scopeRows,
-    fromDate = _ref7.fromDate,
-    toDate = _ref7.toDate;
+    visible = _ref7.visible,
+    invisible = _ref7.invisible,
+    platform = _ref7.platform,
+    visibleSharePct = _ref7.visibleSharePct,
+    bannerReachPct = _ref7.bannerReachPct,
+    invisibleSharePct = _ref7.invisibleSharePct,
+    hasClicks = _ref7.hasClicks;
+  if (!hasClicks) return null;
+  var bannerPct = bannerReachPct != null ? "".concat(formatPct(bannerReachPct), " reach") : null;
+  var visPct = visibleSharePct != null ? "".concat(formatPct(visibleSharePct), " of ").concat(platform.metric) : null;
+  var gapPct = invisibleSharePct != null ? "".concat(formatPct(invisibleSharePct), " gap") : null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__step recon-funnel__step--reported"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__num"
+  }, formatInt(clicks)), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__label"
+  }, "Reported ", platform.metric)), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__arrow"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__arrow-pct"
+  }, bannerPct), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__arrow-line"
+  }, "\u2193")), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__step recon-funnel__step--consents"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__num"
+  }, formatInt(consents)), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__label"
+  }, "Banner consents")), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__arrow"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__arrow-pct"
+  }, visPct), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__arrow-line"
+  }, "\u2193")), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__step recon-funnel__step--visible"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__num"
+  }, formatInt(visible)), /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__label"
+  }, "Visible in analytics")), invisible > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "recon-funnel__gap"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "recon-funnel__gap-num"
+  }, formatInt(invisible)), /*#__PURE__*/React.createElement("span", {
+    className: "recon-funnel__gap-label"
+  }, " invisible", gapPct ? " \xB7 ".concat(gapPct) : "")));
+}
+
+/* ─── VisibilityGauge ────────────────────────────────────────────────────── */
+
+function VisibilityGauge(_ref8) {
+  var pct = _ref8.pct,
+    costPerVisible = _ref8.costPerVisible,
+    costPerClick = _ref8.costPerClick,
+    currency = _ref8.currency;
+  if (pct == null) return null;
+  var R = 70,
+    CX = 90,
+    CY = 90,
+    SW = 14;
+  var startAngle = Math.PI * 0.75;
+  var endAngle = Math.PI * 2.25;
+  var arcAngle = startAngle + Math.min(100, Math.max(0, pct)) / 100 * (endAngle - startAngle);
+  function polarToXY(angle, r) {
+    return {
+      x: CX + r * Math.cos(angle),
+      y: CY + r * Math.sin(angle)
+    };
+  }
+  function arc(a1, a2, r) {
+    var s = polarToXY(a1, r),
+      e = polarToXY(a2, r);
+    var large = a2 - a1 > Math.PI ? 1 : 0;
+    return "M ".concat(s.x, " ").concat(s.y, " A ").concat(r, " ").concat(r, " 0 ").concat(large, " 1 ").concat(e.x, " ").concat(e.y);
+  }
+  var gaugeColor = pct >= 70 ? "#4cde8c" : pct >= 50 ? "#f5a623" : "#e05050";
+  var W = 180,
+    H = 160;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "recon-gauge"
+  }, /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 ".concat(W, " ").concat(H),
+    className: "recon-gauge__svg",
+    role: "img",
+    "aria-label": "Visibility: ".concat(formatPct(pct))
+  }, /*#__PURE__*/React.createElement("path", {
+    d: arc(startAngle, endAngle, R),
+    fill: "none",
+    stroke: "rgba(255,255,255,0.08)",
+    strokeWidth: SW,
+    strokeLinecap: "round"
+  }), pct > 0 && /*#__PURE__*/React.createElement("path", {
+    d: arc(startAngle, arcAngle, R),
+    fill: "none",
+    stroke: gaugeColor,
+    strokeWidth: SW,
+    strokeLinecap: "round",
+    opacity: "0.88"
+  }), /*#__PURE__*/React.createElement("text", {
+    x: CX,
+    y: CY - 8,
+    textAnchor: "middle",
+    fontSize: "28",
+    fontWeight: "700",
+    fill: gaugeColor
+  }, Math.round(pct), "%"), /*#__PURE__*/React.createElement("text", {
+    x: CX,
+    y: CY + 14,
+    textAnchor: "middle",
+    fontSize: "11",
+    fill: "rgba(200,200,210,0.7)"
+  }, "visibility"), /*#__PURE__*/React.createElement("text", {
+    x: polarToXY(startAngle, R + 18).x,
+    y: polarToXY(startAngle, R + 18).y + 4,
+    textAnchor: "middle",
+    fontSize: "9",
+    fill: "rgba(180,180,190,0.5)"
+  }, "0%"), /*#__PURE__*/React.createElement("text", {
+    x: polarToXY(endAngle, R + 18).x,
+    y: polarToXY(endAngle, R + 18).y + 4,
+    textAnchor: "middle",
+    fontSize: "9",
+    fill: "rgba(180,180,190,0.5)"
+  }, "100%")), costPerVisible != null && /*#__PURE__*/React.createElement("div", {
+    className: "recon-gauge__cost"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "recon-gauge__cost-label"
+  }, "Cost / visible consent"), /*#__PURE__*/React.createElement("span", {
+    className: "recon-gauge__cost-val"
+  }, formatMoney(costPerVisible, currency)), costPerClick != null && /*#__PURE__*/React.createElement("span", {
+    className: "recon-gauge__cost-sub"
+  }, "vs ", formatMoney(costPerClick, currency), " /", " ", "click")));
+}
+function MarketingReconciliationPanel(_ref9) {
+  var scopeLabel = _ref9.scopeLabel,
+    scopeKey = _ref9.scopeKey,
+    domainKey = _ref9.domainKey,
+    consents = _ref9.consents,
+    visibleConsents = _ref9.visibleConsents,
+    invisibleConsents = _ref9.invisibleConsents,
+    scopeRows = _ref9.scopeRows,
+    fromDate = _ref9.fromDate,
+    toDate = _ref9.toDate,
+    orgId = _ref9.orgId,
+    authToken = _ref9.authToken;
   var inputsKeyValue = inputsKey(domainKey, scopeKey);
   var snapshotsKeyValue = snapshotsKey(domainKey);
   var _useState = useState(function () {
@@ -60894,8 +61260,34 @@ function MarketingReconciliationPanel(_ref7) {
     setLoaded(true);
   }, [inputsKeyValue, domainKey, scopeKey]);
   useEffect(function () {
-    setSnapshots(loadSnapshots(domainKey));
-  }, [snapshotsKeyValue, domainKey]);
+    // Load from localStorage immediately for instant render
+    var local = loadSnapshots(domainKey);
+    setSnapshots(local);
+    // Then fetch from DB and merge (DB wins for anything it has)
+    if (authToken && orgId && domainKey && domainKey !== "combined view") {
+      fetch("/api/ad-snapshots?domain=".concat(encodeURIComponent(domainKey)), {
+        headers: {
+          Authorization: authToken,
+          Organisation: String(orgId)
+        }
+      }).then(function (r) {
+        return r.ok ? r.json() : null;
+      }).then(function (data) {
+        var _data$snapshots;
+        if (!(data !== null && data !== void 0 && (_data$snapshots = data.snapshots) !== null && _data$snapshots !== void 0 && _data$snapshots.length)) return;
+        var dbIds = new Set(data.snapshots.map(function (s) {
+          return s.id;
+        }));
+        var localOnly = local.filter(function (s) {
+          return !dbIds.has(s.id);
+        });
+        var merged = [].concat(_toConsumableArray(data.snapshots.map(dbRowToSnapshot)), _toConsumableArray(localOnly)).sort(function (a, b) {
+          return new Date(b.savedAt) - new Date(a.savedAt);
+        });
+        setSnapshots(merged);
+      })["catch"](function () {/* keep local */});
+    }
+  }, [snapshotsKeyValue, domainKey, authToken, orgId]);
   useEffect(function () {
     if (!loaded) return;
     writeStored(inputsKeyValue, inputs);
@@ -61154,19 +61546,54 @@ function MarketingReconciliationPanel(_ref7) {
     });
     setSnapshotsExpanded(true);
     setSavedFlash(true);
-  }, [hasClicks, hasSpend, scopeLabel, scopeKey, selectedPlatform, selectedCurrency, clicksNum, spendNum, costPerVisible, numConsents, numVisible, numInvisible, bannerReachRaw, visibleSharePct, invisibleSharePct, visibilityOfConsentsPct, filterActive, pattern, platformStats.matchedSources, scopeConsents, coverageOfScopePct, fromDate, toDate]);
+    // Also persist to DB
+    if (authToken && orgId && domainKey && domainKey !== "combined view") {
+      fetch('/api/ad-snapshots', {
+        method: 'POST',
+        headers: {
+          Authorization: authToken,
+          Organisation: String(orgId),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          domain: domainKey,
+          snapshot: snapshot
+        })
+      })["catch"](function () {/* localStorage fallback already done */});
+    }
+  }, [hasClicks, hasSpend, scopeLabel, scopeKey, selectedPlatform, selectedCurrency, clicksNum, spendNum, costPerVisible, numConsents, numVisible, numInvisible, bannerReachRaw, visibleSharePct, invisibleSharePct, visibilityOfConsentsPct, filterActive, pattern, platformStats.matchedSources, scopeConsents, coverageOfScopePct, fromDate, toDate, authToken, orgId, domainKey]);
   var handleDeleteSnapshot = useCallback(function (id) {
     setSnapshots(function (prev) {
       return prev.filter(function (s) {
         return s.id !== id;
       });
     });
-  }, []);
+    if (authToken && orgId) {
+      fetch("/api/ad-snapshots?id=".concat(encodeURIComponent(id)), {
+        method: 'DELETE',
+        headers: {
+          Authorization: authToken,
+          Organisation: String(orgId)
+        }
+      })["catch"](function () {});
+    }
+  }, [authToken, orgId]);
   var handleClearSnapshots = useCallback(function () {
     if (snapshots.length === 0) return;
     var ok = window.confirm("Remove all ".concat(snapshots.length, " reconciliation snapshot").concat(snapshots.length === 1 ? "" : "s", " for this property? This cannot be undone."));
-    if (ok) setSnapshots([]);
-  }, [snapshots.length]);
+    if (ok) {
+      setSnapshots([]);
+      if (authToken && orgId && domainKey) {
+        fetch("/api/ad-snapshots?domain=".concat(encodeURIComponent(domainKey), "&all=1"), {
+          method: 'DELETE',
+          headers: {
+            Authorization: authToken,
+            Organisation: String(orgId)
+          }
+        })["catch"](function () {});
+      }
+    }
+  }, [snapshots.length, authToken, orgId, domainKey]);
   var handleExportSnapshots = useCallback(function () {
     if (snapshots.length === 0) return;
     var safeDomain = String(domainKey || "report").replace(/[^\w\-]+/g, "_").slice(0, 60);
@@ -61176,19 +61603,12 @@ function MarketingReconciliationPanel(_ref7) {
   return /*#__PURE__*/React.createElement("section", {
     className: "marketing-reconciliation",
     "aria-labelledby": "marketing-reconciliation-h"
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "marketing-reconciliation__header"
-  }, /*#__PURE__*/React.createElement("h2", {
-    id: "marketing-reconciliation-h",
-    className: "marketing-report-section__title"
-  }, "Reconcile with your ad platform"), /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-section__hint"
-  }, "Drop in the click / session count you see in your ad platform for the same window and we'll line it up against the consents we logged \u2014 so you can tell at a glance how much of your paid traffic will actually land in your analytics tools. Numbers are remembered per platform on this device, and you can save a snapshot to keep a history.")), /*#__PURE__*/React.createElement("div", {
-    className: "marketing-reconciliation__inputs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "recon-inputs-bar"
   }, /*#__PURE__*/React.createElement("label", {
-    className: "marketing-reconciliation__field"
+    className: "recon-inputs-bar__field"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "marketing-reconciliation__field-label"
+    className: "recon-inputs-bar__label"
   }, "Platform"), /*#__PURE__*/React.createElement("select", {
     value: inputs.platform,
     onChange: handlePlatformChange,
@@ -61199,58 +61619,55 @@ function MarketingReconciliationPanel(_ref7) {
       value: p.id
     }, p.label);
   }))), /*#__PURE__*/React.createElement("label", {
-    className: "marketing-reconciliation__field"
+    className: "recon-inputs-bar__field recon-inputs-bar__field--wide"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "marketing-reconciliation__field-label"
-  }, selectedPlatform.label, " ", selectedPlatform.metric, " for this period"), /*#__PURE__*/React.createElement("input", {
+    className: "recon-inputs-bar__label"
+  }, selectedPlatform.metric), /*#__PURE__*/React.createElement("input", {
     type: "number",
     inputMode: "numeric",
     min: "0",
     step: "1",
-    placeholder: "e.g. 5000",
+    placeholder: "e.g. 5 000",
     value: currentValues.adClicks,
     onChange: updatePlatformValue("adClicks"),
-    className: "marketing-reconciliation__input",
-    "aria-label": "".concat(selectedPlatform.label, " ").concat(selectedPlatform.metric)
+    className: "marketing-reconciliation__input"
   })), /*#__PURE__*/React.createElement("label", {
-    className: "marketing-reconciliation__field"
+    className: "recon-inputs-bar__field recon-inputs-bar__field--wide"
   }, /*#__PURE__*/React.createElement("span", {
-    className: "marketing-reconciliation__field-label"
-  }, "Ad spend for this period (optional)"), /*#__PURE__*/React.createElement("div", {
+    className: "recon-inputs-bar__label"
+  }, "Spend (optional)"), /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__money"
   }, /*#__PURE__*/React.createElement("input", {
     type: "number",
     inputMode: "decimal",
     min: "0",
     step: "0.01",
-    placeholder: "e.g. 2340",
+    placeholder: "e.g. 2 400",
     value: currentValues.spend,
     onChange: updatePlatformValue("spend"),
-    className: "marketing-reconciliation__input marketing-reconciliation__input--money",
-    "aria-label": "Ad spend"
+    className: "marketing-reconciliation__input marketing-reconciliation__input--money"
   }), /*#__PURE__*/React.createElement("select", {
     value: inputs.currency,
     onChange: handleCurrencyChange,
-    className: "marketing-reconciliation__select marketing-reconciliation__select--currency",
-    "aria-label": "Currency"
+    className: "marketing-reconciliation__select marketing-reconciliation__select--currency"
   }, CURRENCIES.map(function (c) {
     return /*#__PURE__*/React.createElement("option", {
       key: c.id,
       value: c.id
     }, c.id);
   })))), /*#__PURE__*/React.createElement("div", {
-    className: "marketing-reconciliation__actions"
+    className: "recon-inputs-bar__actions"
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     className: "marketing-reconciliation__save",
     onClick: handleSaveSnapshot,
     disabled: !hasClicks,
-    title: hasClicks ? "Save the current reconciliation as a snapshot" : "Enter ".concat(selectedPlatform.metric, " first")
+    title: hasClicks ? "Save snapshot" : "Enter ".concat(selectedPlatform.metric, " first")
   }, savedFlash ? "Saved ✓" : "Save snapshot"), /*#__PURE__*/React.createElement("button", {
     type: "button",
     className: "marketing-reconciliation__clear",
     onClick: handleClear
-  }, "Clear inputs"))), /*#__PURE__*/React.createElement("p", {
+  }, "Clear"))), /*#__PURE__*/React.createElement("p", {
     className: "marketing-reconciliation__window-hint"
   }, windowHint), filterActive ? noMatchedRows ? /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__filter-note marketing-reconciliation__filter-note--empty",
@@ -61261,35 +61678,26 @@ function MarketingReconciliationPanel(_ref7) {
   }, /*#__PURE__*/React.createElement("p", null, "Filtered to ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " traffic:", " ", /*#__PURE__*/React.createElement("strong", null, formatInt(numConsents)), " of", " ", /*#__PURE__*/React.createElement("strong", null, formatInt(scopeConsents)), " scope consents", coverageOfScopePct != null ? /*#__PURE__*/React.createElement(React.Fragment, null, " ", "(", formatPct(coverageOfScopePct), " coverage)") : null, ".", platformStats.matchedSources.length > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, " ", "Matched ", /*#__PURE__*/React.createElement("code", null, "utm_source"), ":", " ", /*#__PURE__*/React.createElement("code", null, platformStats.matchedSources.slice(0, 6).join(", "), platformStats.matchedSources.length > 6 ? ", +".concat(platformStats.matchedSources.length - 6, " more") : ""), ".") : null)) : /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__filter-note",
     role: "status"
-  }, /*#__PURE__*/React.createElement("p", null, selectedPlatform.id === "ga4" ? "GA4 sits downstream of every ad source, so we don't filter by utm_source — the consent totals below are the whole scope." : "Reconciling against the full scope. Pick a specific ad platform above to narrow consents to that platform's utm_source.", " ", "Scope total: ", /*#__PURE__*/React.createElement("strong", null, formatInt(scopeConsents)), " consents.")), hasClicks ? /*#__PURE__*/React.createElement("div", {
-    className: "marketing-reconciliation__results"
-  }, /*#__PURE__*/React.createElement(ResultCard, {
-    tone: "neutral",
-    title: "Banner reach",
-    headline: "".concat(formatInt(numConsents), " consent events"),
-    detail: "From ".concat(scopeSentence, ", that's ").concat(formatPct(bannerReachPct), " of your ").concat(formatInt(clicksNum), " reported ").concat(selectedPlatform.metric, "."),
-    subDetail: bannerOverage > 0 ? "We logged ".concat(formatInt(bannerOverage), " more consents than you reported ").concat(selectedPlatform.metric, " \u2014 likely multi-session visitors, remarketing, or pre-consented returns.") : null
-  }), /*#__PURE__*/React.createElement(ResultCard, {
-    tone: "good",
-    title: "Will reach your analytics",
-    headline: "".concat(formatInt(numVisible), " consents"),
-    detail: visibilityOfConsentsPct != null && visibleSharePct != null ? "".concat(formatPct(visibilityOfConsentsPct), " of consents, ").concat(formatShareOfReportedPct(visibleSharePct), " of your ").concat(selectedPlatform.metric, ". These will appear in GA4 / Ads Manager / Meta pixel.") : null
-  }), /*#__PURE__*/React.createElement(ResultCard, {
-    tone: "warn",
-    title: "Invisible gap",
-    headline: "".concat(formatInt(numInvisible), " visits"),
-    detail: invisibleSharePct == null ? null : numConsents > clicksNum ? "".concat(formatInt(numInvisible), " of your ").concat(formatInt(numConsents), " attributed consents won't reach ").concat(selectedPlatform.label, ". We saw more consent traffic than the ").concat(clicksNum.toLocaleString("de-DE"), " ").concat(selectedPlatform.metric, " you reported, so the gap can't be expressed as a clean share of ").concat(selectedPlatform.metric, ".") : "".concat(formatPct(invisibleSharePct), " of your ").concat(selectedPlatform.metric, " will be missing from ").concat(selectedPlatform.label, "'s conversion tracking.")
-  }), hasSpend ? /*#__PURE__*/React.createElement(ResultCard, {
-    tone: "neutral",
-    title: "Cost per visible consent",
-    headline: costPerVisible != null ? formatMoney(costPerVisible, inputs.currency) : "—",
-    detail: costPerVisible != null ? "".concat(formatMoney(spendNum, inputs.currency), " \xF7 ").concat(formatInt(numVisible), " analytics-visible consents.") : "Need at least one visible consent to compute.",
-    subDetail: visibilityCostMultiplier != null ? "Your reported cost per ".concat(selectedPlatform.metric, ": ").concat(formatMoney(costPerClick, inputs.currency), ". Visibility gap multiplies your effective cost by ").concat(visibilityCostMultiplier.toLocaleString("de-DE", {
-      maximumFractionDigits: 2
-    }), "\xD7.") : null
-  }) : null) : /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("p", null, selectedPlatform.id === "ga4" ? "GA4 sits downstream of every ad source, so we don't filter by utm_source — the consent totals below are the whole scope." : "Reconciling against the full scope. Pick a specific ad platform above to narrow consents to that platform's utm_source.", " ", "Scope total: ", /*#__PURE__*/React.createElement("strong", null, formatInt(scopeConsents)), " consents.")), /*#__PURE__*/React.createElement("div", {
+    className: "recon-main"
+  }, /*#__PURE__*/React.createElement(FunnelFlow, {
+    clicks: clicksNum,
+    consents: numConsents,
+    visible: numVisible,
+    invisible: numInvisible,
+    platform: selectedPlatform,
+    bannerReachPct: bannerReachPct,
+    visibleSharePct: visibleSharePct,
+    invisibleSharePct: invisibleSharePct,
+    hasClicks: hasClicks
+  }), /*#__PURE__*/React.createElement(VisibilityGauge, {
+    pct: visibilityOfConsentsPct,
+    costPerVisible: costPerVisible,
+    costPerClick: costPerClick,
+    currency: inputs.currency
+  })), !hasClicks && /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__empty"
-  }, /*#__PURE__*/React.createElement("p", null, "Enter your ", selectedPlatform.metric, " count from", " ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " above to see the reconciliation. Use the same date range as the header filter so the numbers line up.")), comparisonRows.length >= 2 ? /*#__PURE__*/React.createElement(ComparisonTable, {
+  }, /*#__PURE__*/React.createElement("p", null, "Enter your ", selectedPlatform.metric, " count from ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " above to see the reconciliation."), /*#__PURE__*/React.createElement("p", null, "Use the same date range as the header filter so the numbers line up.")), comparisonRows.length >= 2 ? /*#__PURE__*/React.createElement(ComparisonTable, {
     rows: comparisonRows,
     currency: inputs.currency
   }) : null, hasSpend && hasClicks && numVisible > 0 ? /*#__PURE__*/React.createElement(ProjectionTable, {
@@ -61297,7 +61705,7 @@ function MarketingReconciliationPanel(_ref7) {
     numVisible: numVisible,
     spend: spendNum,
     currency: inputs.currency
-  }) : null, snapshots.length >= 3 ? /*#__PURE__*/React.createElement(TrendChart, {
+  }) : null, snapshots.length >= 1 ? /*#__PURE__*/React.createElement(TrendChart, {
     snapshots: snapshots
   }) : null, /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__snapshots"
@@ -61658,8 +62066,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MarketingReport_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./MarketingReport.css */ "./src/Pages/Reports/MarketingReport/MarketingReport.css");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
 /* harmony import */ var _MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MarketingReconciliationPanel.js */ "./src/Pages/Reports/MarketingReport/MarketingReconciliationPanel.js");
-/* harmony import */ var _AdConnectionManager_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./AdConnectionManager.js */ "./src/Pages/Reports/MarketingReport/AdConnectionManager.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
@@ -61686,7 +62093,6 @@ var _React = React,
   useMemo = _React.useMemo,
   useContext = _React.useContext,
   useCallback = _React.useCallback;
-
 
 
 
@@ -61797,14 +62203,6 @@ function ReconcilePage() {
   var domainsApiHeader = useMemo(function () {
     return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.toDomainsApiHeader)(listDomainLabel);
   }, [listDomainLabel]);
-
-  // Auth for ad-connections / ad-data-fetch endpoints
-  var authToken = useMemo(function () {
-    return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getToken();
-  }, []);
-  var orgId = useMemo(function () {
-    return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getOrganisation();
-  }, []);
   var _useState1 = useState([]),
     _useState10 = _slicedToArray(_useState1, 2),
     rows = _useState10[0],
@@ -61821,12 +62219,6 @@ function ReconcilePage() {
     _useState16 = _slicedToArray(_useState15, 2),
     error = _useState16[0],
     setError = _useState16[1];
-
-  // Bump to force panel re-mount after an external import (updates localStorage then re-mounts)
-  var _useState17 = useState(0),
-    _useState18 = _slicedToArray(_useState17, 2),
-    panelKey = _useState18[0],
-    setPanelKey = _useState18[1];
   var endpoint = (_API$id = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id]) === null || _API$id === void 0 ? void 0 : _API$id.marketingAttribution;
   var fetchData = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
     var headers, res, text, json, _json, _t, _t2;
@@ -61884,7 +62276,7 @@ function ReconcilePage() {
             _context.n = 8;
             break;
           }
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context.a(2);
         case 8:
@@ -61947,30 +62339,6 @@ function ReconcilePage() {
   var invisibleConsents = Math.max(0, visibilityScopeTotal - measurementReadyCount);
   var channelAnalyticsPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.reportsPath)(id, listDomainLabel, "/marketing");
 
-  // Write imported ad data to localStorage under the same key the panel uses,
-  // then bump panelKey to force a re-mount so the panel picks it up.
-  function handleAdImport(platformId, data) {
-    if (!data || !listDomainLabel) return;
-    var domainKey = listDomainLabel;
-    var scopeKey = selectedChannel ? "channel:".concat(selectedChannel) : "overview";
-    var storageKey = "marketing-reconciliation-inputs:".concat(String(domainKey).slice(0, 120), ":").concat(String(scopeKey).slice(0, 120));
-    try {
-      var existing = JSON.parse(localStorage.getItem(storageKey) || "null") || {};
-      var updated = _objectSpread(_objectSpread({}, existing), {}, {
-        platform: platformId,
-        byPlatform: _objectSpread(_objectSpread({}, existing.byPlatform || {}), {}, _defineProperty({}, platformId, {
-          adClicks: data.clicks != null ? String(Math.round(data.clicks)) : "",
-          spend: data.spend != null ? String(Number(data.spend).toFixed(2)) : ""
-        }))
-      });
-      if (data.currency) updated.currency = data.currency;
-      localStorage.setItem(storageKey, JSON.stringify(updated));
-    } catch (_unused4) {/* private-mode / quota */}
-    setPanelKey(function (k) {
-      return k + 1;
-    });
-  }
-
   // Domain gate — reconciliation must be scoped to a specific domain
   var noDomain = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.isCombinedOrClearDomain)(listDomainLabel);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_0__["default"], {
@@ -62009,14 +62377,11 @@ function ReconcilePage() {
     className: "reconcile-domain-gate__heading"
   }, "Select a domain first"), /*#__PURE__*/React.createElement("p", {
     className: "reconcile-domain-gate__body"
-  }, "Ad Reconciliation is domain-specific \u2014 each ad account connection and reconciliation snapshot belongs to a single domain. Select a domain from the dropdown in the page header to continue.")) : /*#__PURE__*/React.createElement(React.Fragment, null, authToken && orgId && /*#__PURE__*/React.createElement(_AdConnectionManager_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
-    domain: listDomainLabel,
-    orgId: orgId,
-    authToken: authToken,
-    fromDate: toYmd(fromDate),
-    toDate: toYmd(toDate),
-    onImport: handleAdImport
-  }), error ? /*#__PURE__*/React.createElement("p", {
+  }, "Ad Reconciliation is domain-specific \u2014 each ad account connection and reconciliation snapshot belongs to a single domain. Select a domain from the dropdown in the page header to continue.")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "reconcile-connect-hint"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: "/settings/ad-connections"
+  }, "Connect ad platforms"), " to auto-import clicks & spend."), error ? /*#__PURE__*/React.createElement("p", {
     className: "marketing-report-error"
   }, error) : loading ? /*#__PURE__*/React.createElement("p", {
     className: "marketing-report-loading"
@@ -62040,7 +62405,6 @@ function ReconcilePage() {
       value: ch
     }, ch);
   })))) : null, /*#__PURE__*/React.createElement(_MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
-    key: panelKey,
     scopeLabel: selectedChannel || "all channels",
     scopeKey: selectedChannel ? "channel:".concat(selectedChannel) : "overview",
     domainKey: listDomainLabel,
@@ -62049,7 +62413,9 @@ function ReconcilePage() {
     invisibleConsents: invisibleConsents,
     scopeRows: selectedChannel ? drilldownRows : rows,
     fromDate: toYmd(fromDate),
-    toDate: toYmd(toDate)
+    toDate: toYmd(toDate),
+    orgId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getOrganisation(),
+    authToken: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getToken()
   }))))));
 }
 
@@ -65255,6 +65621,177 @@ function UserAgents() {
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content"
   }, /*#__PURE__*/React.createElement("h1", null, "Reports - User agents")));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/Settings/AdConnections/index.js":
+/*!***************************************************!*\
+  !*** ./src/Pages/Settings/AdConnections/index.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AdConnectionsSettings)
+/* harmony export */ });
+/* harmony import */ var _Reports_MarketingReport_AdConnectionManager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Reports/MarketingReport/AdConnectionManager.js */ "./src/Pages/Reports/MarketingReport/AdConnectionManager.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+
+
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useContext = _React.useContext;
+
+function AdConnectionsSettings() {
+  document.title = "Ad Connections | Settings | Intastellar Consents";
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_6__.DomainContext),
+    _useContext2 = _slicedToArray(_useContext, 1),
+    currentDomain = _useContext2[0];
+  var _useState = useState([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    domains = _useState2[0],
+    setDomains = _useState2[1];
+  var _useState3 = useState(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    domainsLoading = _useState4[0],
+    setDomainsLoading = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    domainsError = _useState6[0],
+    setDomainsError = _useState6[1];
+  var _useState7 = useState(""),
+    _useState8 = _slicedToArray(_useState7, 2),
+    selectedDomain = _useState8[0],
+    setSelectedDomain = _useState8[1];
+  var authToken = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken();
+  var orgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation();
+  useEffect(function () {
+    var _API$gdpr;
+    var ep = (_API$gdpr = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"].gdpr) === null || _API$gdpr === void 0 ? void 0 : _API$gdpr.getDomainsUrl;
+    if (!(ep !== null && ep !== void 0 && ep.url)) {
+      setDomainsLoading(false);
+      setDomainsError(true);
+      return;
+    }
+    fetch(ep.url, {
+      method: ep.method || "GET",
+      headers: ep.headers || {}
+    }).then(function (r) {
+      return r.ok ? r.json() : Promise.reject(r.status);
+    }).then(function (data) {
+      var raw = Array.isArray(data) ? data : Array.isArray(data === null || data === void 0 ? void 0 : data.data) ? data.data : [];
+      var filtered = raw.map(function (item) {
+        return typeof item === "string" ? item : (item === null || item === void 0 ? void 0 : item.domain) || "";
+      }).filter(function (d) {
+        return d && d !== "combined view";
+      });
+      setDomains(filtered);
+      // Default: prefer the context domain if valid, else first from list
+      var ctx = typeof currentDomain === "string" && currentDomain !== "combined view" ? currentDomain : null;
+      setSelectedDomain(ctx && filtered.includes(ctx) ? ctx : filtered[0] || "");
+    })["catch"](function () {
+      setDomainsError(true);
+    })["finally"](function () {
+      setDomainsLoading(false);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_4__.reportsLinks,
+    title: "Settings"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1"
+    }
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Ad Connections"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-content"
+  }, /*#__PURE__*/React.createElement("header", {
+    style: {
+      marginBottom: "24px"
+    }
+  }, /*#__PURE__*/React.createElement("h1", {
+    style: {
+      fontSize: "1.5rem",
+      fontWeight: 700,
+      marginBottom: "6px"
+    }
+  }, "Ad Connections"), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: "rgba(180,185,200,0.8)",
+      fontSize: "0.9rem"
+    }
+  }, "Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import clicks and spend for each domain. Connections are per-domain.")), domainsLoading ? /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: "rgba(180,185,200,0.7)"
+    }
+  }, "Loading domains\u2026") : domainsError || domains.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: "rgba(180,185,200,0.7)"
+    }
+  }, "No domains found for this organisation. Add a domain in Settings \u2192 Add new Domain first.") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("label", {
+    style: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "6px",
+      marginBottom: "20px",
+      maxWidth: "360px"
+    }
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: "0.75rem",
+      fontWeight: 600,
+      textTransform: "uppercase",
+      letterSpacing: "0.05em",
+      color: "rgba(160,165,175,0.85)"
+    }
+  }, "Domain"), /*#__PURE__*/React.createElement("select", {
+    value: selectedDomain,
+    onChange: function onChange(e) {
+      return setSelectedDomain(e.target.value);
+    },
+    className: "marketing-reconciliation__select",
+    style: {
+      maxWidth: "360px"
+    }
+  }, domains.map(function (d) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: d,
+      value: d
+    }, d);
+  }))), selectedDomain ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+    style: {
+      fontSize: "0.8rem",
+      color: "rgba(160,165,175,0.75)",
+      marginBottom: "16px"
+    }
+  }, "Managing connections for ", /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: "rgba(220,225,235,0.9)"
+    }
+  }, selectedDomain)), /*#__PURE__*/React.createElement(_Reports_MarketingReport_AdConnectionManager_js__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    domain: selectedDomain,
+    orgId: orgId,
+    authToken: authToken
+  })) : null))));
 }
 
 /***/ }),
@@ -69923,6 +70460,7 @@ var SETTINGS_HUB_COPY = {
   "/settings/config-gdpr": "Configure which regulations apply to your visitors and set the banner type per jurisdiction.",
   "/settings/legal-basis": "Assign a legal basis to each processing purpose under each active regulation for audit and DSR responses.",
   "/settings/ropa": "Maintain your Article 30 Record of Processing Activities. Auto-populate from pre-consent scan data.",
+  "/settings/ad-connections": "Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import clicks and spend for each domain.",
   "/settings/blacklist-ip": "Exclude specific IP addresses from analytics and reporting.",
   "/settings/workspaces": "Manage client workspaces for your agency. Create and organize client domains."
 };
