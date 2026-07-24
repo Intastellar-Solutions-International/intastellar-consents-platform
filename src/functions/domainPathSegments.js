@@ -82,6 +82,7 @@ export function reportsPath(platformId, domainUnicode, leaf) {
 export function getReportsUrlLeaf(pathname) {
     if (pathname.includes("/audit-report")) return "/audit-report";
     if (pathname.includes("/user-consents")) return "/user-consents";
+    if (pathname.includes("/reconcile")) return "/reconcile";
     if (pathname.includes("/marketing")) return "/marketing";
     if (pathname.includes("/compliance")) return "/compliance";
     return "";

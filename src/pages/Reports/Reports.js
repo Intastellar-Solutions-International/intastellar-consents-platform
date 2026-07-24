@@ -32,6 +32,11 @@ export const reportsLinks = [
         requiresTier: 'growth',
     },
     {
+        name: "Ad Reconciliation",
+        path: "/reports/reconcile",
+        requiresTier: 'growth',
+    },
+    {
         name: "Compliance overview",
         path: "/reports/compliance",
         requiresTier: 'starter',
