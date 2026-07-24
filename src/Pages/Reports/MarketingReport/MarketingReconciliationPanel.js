@@ -1618,11 +1618,6 @@ export default function MarketingReconciliationPanel({
             : scopeLabel
         : "this view";
 
-    const windowHint =
-        fromDate && toDate
-            ? `Use the same date range as the header filter (${fromDate} → ${toDate}).`
-            : "Use the same date range as the header filter.";
-
     const handleSaveSnapshot = useCallback(() => {
         if (!hasClicks) return;
         const snapshot = {

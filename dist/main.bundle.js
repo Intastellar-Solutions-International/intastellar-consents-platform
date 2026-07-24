@@ -62912,7 +62912,6 @@ function MarketingReconciliationPanel(_ref13) {
     }));
   }, [hasClicks, hasSpend, visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct, costPerVisible, numConsents, numVisible, spendNum, inputs.currency, darkTrafficStats, selectedPlatform, filterActive]);
   var scopeSentence = scopeLabel ? scopeKey && scopeKey.startsWith("channel:") ? "this channel (".concat(scopeLabel, ")") : scopeLabel : "this view";
-  var windowHint = fromDate && toDate ? "Use the same date range as the header filter (".concat(fromDate, " \u2192 ").concat(toDate, ").") : "Use the same date range as the header filter.";
   var handleSaveSnapshot = useCallback(function () {
     if (!hasClicks) return;
     var snapshot = {
