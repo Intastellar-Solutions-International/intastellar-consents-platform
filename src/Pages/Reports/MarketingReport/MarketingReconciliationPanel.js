@@ -795,6 +795,154 @@ function VisibilityGauge({ pct, costPerVisible, costPerClick, currency }) {
     );
 }
 
+/* ─── computeInsights ────────────────────────────────────────────────────── */
+
+function computeInsights({
+    hasClicks, hasSpend,
+    visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
+    costPerVisible, numConsents, numVisible, spendNum, currency,
+    darkTrafficPct, darkConsents, darkTrafficTotal,
+    selectedPlatform, filterActive,
+}) {
+    const ins = [];
+
+    // 1. UTM dark traffic (scope-level, always shown when significant)
+    if (darkTrafficPct != null && darkTrafficTotal >= 20) {
+        if (darkTrafficPct > 50) {
+            ins.push({
+                type: "critical",
+                title: `${formatPct(darkTrafficPct, 0)} of traffic is untagged`,
+                body: `${formatInt(darkConsents)} of ${formatInt(darkTrafficTotal)} consents have no utm_source and can't be attributed to any platform or campaign. This level of dark traffic means your ROAS figures are based on a fraction of actual conversions. Review UTM tagging across all channels — especially brand, direct, and email campaigns.`,
+            });
+        } else if (darkTrafficPct > 25) {
+            ins.push({
+                type: "warning",
+                title: `${formatPct(darkTrafficPct, 0)} untagged traffic`,
+                body: `${formatInt(darkConsents)} consents have no utm_source. Some dark traffic is expected (direct, bookmarks) but above 25% usually signals incomplete UTM tagging on campaigns or landing pages. Use a UTM builder and audit your campaign links.`,
+            });
+        }
+    }
+
+    // 2. Analytics visibility vs 65% benchmark
+    if (hasClicks && visibilityOfConsentsPct != null) {
+        if (visibilityOfConsentsPct < 40) {
+            ins.push({
+                type: "critical",
+                title: `Only ${formatPct(visibilityOfConsentsPct, 0)} analytics visibility`,
+                body: `Fewer than 4 in 10 consents from this campaign appear in your analytics tools — well below the typical 65–75% range. At this level your reported ROAS is likely 2–3× overstated. Check banner placement on ad landing pages, review your consent category setup, and consider A/B testing the banner UX.`,
+            });
+        } else if (visibilityOfConsentsPct < 65) {
+            ins.push({
+                type: "warning",
+                title: `Below-benchmark visibility (${formatPct(visibilityOfConsentsPct, 0)})`,
+                body: `Typical analytics visibility sits at 65–75%. Closing the gap increases measurable reach without extra spend. The projection table below shows the exact cost reduction you'd see at each target visibility rate.`,
+            });
+        } else if (visibilityOfConsentsPct >= 80) {
+            ins.push({
+                type: "good",
+                title: `Strong visibility (${formatPct(visibilityOfConsentsPct, 0)})`,
+                body: `Well above the 65% benchmark — the large majority of campaign traffic is measurable. Your analytics data is a reliable reflection of actual performance.`,
+            });
+        } else {
+            ins.push({
+                type: "good",
+                title: `Good visibility (${formatPct(visibilityOfConsentsPct, 0)})`,
+                body: `Above the 65% industry benchmark. Aim for 75–80% to further reduce cost per measurable event.`,
+            });
+        }
+    }
+
+    // 3. Cost saving opportunity (only when visibility has headroom)
+    if (hasSpend && visibilityOfConsentsPct != null && visibilityOfConsentsPct < 80
+        && numConsents > 0 && costPerVisible != null && spendNum > 0) {
+        const targetPct = 75;
+        const projVisible = Math.round((targetPct / 100) * numConsents);
+        const projCost = spendNum / Math.max(1, projVisible);
+        const saving = ((costPerVisible - projCost) / costPerVisible) * 100;
+        if (saving > 8) {
+            ins.push({
+                type: "opportunity",
+                title: `${formatPct(saving, 0)} cost saving at 75% visibility`,
+                body: `Your current cost per analytics-visible consent is ${formatMoney(costPerVisible, currency)}. At 75% visibility with the same spend it falls to ${formatMoney(projCost, currency)} — a ${formatPct(saving, 0)} reduction. Improving banner opt-in rates is often the highest-leverage action available without increasing budget.`,
+            });
+        }
+    }
+
+    // 4. Low banner reach
+    if (hasClicks && bannerReachPct != null && bannerReachPct < 50) {
+        ins.push({
+            type: "warning",
+            title: `Low banner reach (${formatPct(bannerReachPct, 0)})`,
+            body: `Fewer than half of reported ${selectedPlatform.metric} triggered a consent banner interaction. Verify that your banner script loads correctly on all ad landing pages, isn't blocked by ad-blockers or page caching, and that cross-domain clicks aren't dropping the consent session.`,
+        });
+    }
+
+    // 5. Low platform UTM match
+    if (filterActive && coverageOfScopePct != null && coverageOfScopePct < 15 && hasClicks) {
+        ins.push({
+            type: "warning",
+            title: `Low UTM match for ${selectedPlatform.label}`,
+            body: `Only ${formatPct(coverageOfScopePct, 0)} of scope consents match ${selectedPlatform.label}'s utm_source pattern. Either this platform drives very little traffic in this channel, or campaign URLs are missing the correct utm_source tag (expected: ${(PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).slice(0, 3).join(", ")}).`,
+        });
+    }
+
+    // Return up to 4 insights, sorted critical → warning → opportunity → good
+    const ORDER = { critical: 0, warning: 1, opportunity: 2, good: 3 };
+    return ins.sort((a, b) => (ORDER[a.type] ?? 4) - (ORDER[b.type] ?? 4)).slice(0, 4);
+}
+
+/* ─── UtmHealthBar ────────────────────────────────────────────────────────── */
+
+function UtmHealthBar({ darkTrafficPct, darkConsents, darkTrafficTotal }) {
+    if (darkTrafficPct == null || darkTrafficTotal < 20) return null;
+    const taggedPct = 100 - darkTrafficPct;
+    const tone = taggedPct >= 80 ? "good" : taggedPct >= 55 ? "warn" : "bad";
+    return (
+        <div className={`utm-health utm-health--${tone}`} title={`${formatInt(darkConsents)} of ${formatInt(darkTrafficTotal)} consents have no utm_source`}>
+            <span className="utm-health__label">UTM attribution</span>
+            <div className="utm-health__track">
+                <div className="utm-health__fill" style={{ width: `${Math.max(2, taggedPct)}%` }} />
+            </div>
+            <span className="utm-health__stats">
+                <strong>{formatPct(taggedPct, 0)}</strong> attributed
+                <span className="utm-health__dark"> · {formatPct(darkTrafficPct, 0)} untagged ({formatInt(darkConsents)})</span>
+            </span>
+        </div>
+    );
+}
+
+/* ─── InsightsPanel ───────────────────────────────────────────────────────── */
+
+const INSIGHT_ICONS = { critical: "⚠", warning: "◉", opportunity: "↗", good: "✓" };
+
+function InsightsPanel({ insights }) {
+    if (!insights || insights.length === 0) return null;
+    return (
+        <div className="recon-insights">
+            <h3 className="recon-insights__heading">Insights</h3>
+            <div className="recon-insights__list">
+                {insights.map((ins, i) => (
+                    <div key={i} className={`recon-insight recon-insight--${ins.type}`}>
+                        <span className="recon-insight__icon" aria-hidden="true">
+                            {INSIGHT_ICONS[ins.type] || "●"}
+                        </span>
+                        <div className="recon-insight__content">
+                            <p className="recon-insight__title">{ins.title}</p>
+                            <p className="recon-insight__body">{ins.body}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+const SYNC_SHORT_LABEL = {
+    google_ads: "Google Ads", meta_ads: "Meta", linkedin_ads: "LinkedIn",
+    microsoft_ads: "Microsoft Ads", tiktok_ads: "TikTok", pinterest_ads: "Pinterest",
+    twitter_ads: "X / Twitter", ga4: "GA4",
+};
+
 export default function MarketingReconciliationPanel({
     scopeLabel,
     scopeKey,
@@ -816,6 +964,9 @@ export default function MarketingReconciliationPanel({
     const [loaded, setLoaded] = useState(false);
     const [snapshotsExpanded, setSnapshotsExpanded] = useState(false);
     const [savedFlash, setSavedFlash] = useState(false);
+    const [connections, setConnections] = useState([]);
+    const [syncing, setSyncing] = useState(false);
+    const [syncMsg, setSyncMsg] = useState(null);
 
     /*
      * Load inputs whenever scope changes; load snapshots whenever
@@ -868,6 +1019,52 @@ export default function MarketingReconciliationPanel({
         const t = window.setTimeout(() => setSavedFlash(false), 2200);
         return () => window.clearTimeout(t);
     }, [savedFlash]);
+
+    // Keep an up-to-date list of which platforms have active connections for this domain
+    useEffect(() => {
+        if (!authToken || !orgId || !domainKey || domainKey === "combined view") return;
+        fetch(`/api/ad-connections?domain=${encodeURIComponent(domainKey)}`, {
+            headers: { Authorization: authToken, Organisation: String(orgId) },
+        })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { if (data?.connections) setConnections(data.connections); })
+            .catch(() => {});
+    }, [authToken, orgId, domainKey]);
+
+    const handleSync = useCallback(async () => {
+        if (!fromDate || !toDate || !authToken || !orgId || !domainKey) return;
+        setSyncing(true);
+        setSyncMsg(null);
+        try {
+            const resp = await fetch(
+                `/api/ad-data-fetch?platform=${inputs.platform}&domain=${encodeURIComponent(domainKey)}&fromDate=${fromDate}&toDate=${toDate}`,
+                { headers: { Authorization: authToken, Organisation: String(orgId) } }
+            );
+            const data = await resp.json();
+            if (!resp.ok) {
+                setSyncMsg({ text: data.error || "Sync failed.", error: true });
+                return;
+            }
+            const clicks = data.clicks != null ? String(Math.round(data.clicks)) : "";
+            const spend  = data.spend  != null ? String(Number(data.spend).toFixed(2)) : "";
+            setInputs(prev => ({
+                ...prev,
+                ...(data.currency ? { currency: data.currency } : {}),
+                byPlatform: {
+                    ...prev.byPlatform,
+                    [prev.platform]: { adClicks: clicks, spend },
+                },
+            }));
+            const shortLabel = SYNC_SHORT_LABEL[inputs.platform] || inputs.platform;
+            const platformMetric = PLATFORMS.find(p => p.id === inputs.platform)?.metric || "clicks";
+            setSyncMsg({ text: `Synced from ${shortLabel}: ${clicks} ${platformMetric}${spend ? `, ${data.currency || ""} ${spend} spend` : ""}.`, error: false });
+            setTimeout(() => setSyncMsg(null), 8000);
+        } catch (err) {
+            setSyncMsg({ text: err.message, error: true });
+        } finally {
+            setSyncing(false);
+        }
+    }, [inputs.platform, fromDate, toDate, authToken, orgId, domainKey]);
 
     const selectedPlatform = useMemo(
         () => platformOrFallback(inputs.platform),
@@ -1035,6 +1232,29 @@ export default function MarketingReconciliationPanel({
         return [...seen].sort((a, b) => a.localeCompare(b));
     }, [noMatchedRows, scopeRows]);
 
+    // UTM dark traffic — consents with no attributable utm_source
+    const darkTrafficStats = useMemo(() => {
+        const rows = Array.isArray(scopeRows) ? scopeRows : [];
+        if (rows.length === 0) return null;
+        const DARK_VALUES = new Set(["", "—", "(none)", "(not set)", "undefined", "null"]);
+        let total = 0, dark = 0;
+        for (const r of rows) {
+            const c = Number(r.consents) || 0;
+            total += c;
+            const src = canonUtmSource(r.utmSource || "");
+            if (!src || DARK_VALUES.has(r.utmSource?.toLowerCase?.() || "")) dark += c;
+        }
+        if (total === 0) return null;
+        return { darkTrafficPct: (dark / total) * 100, darkConsents: dark, darkTrafficTotal: total };
+    }, [scopeRows]);
+
+    // Connected platform IDs for this domain
+    const connectedPlatforms = useMemo(
+        () => new Set(connections.map(c => c.platform)),
+        [connections]
+    );
+    const isConnected = connectedPlatforms.has(inputs.platform);
+
     const clicksNum = Math.max(0, Number(currentValues.adClicks) || 0);
     const spendNum = Math.max(0, Number(currentValues.spend) || 0);
     const hasClicks = clicksNum > 0;
@@ -1061,6 +1281,19 @@ export default function MarketingReconciliationPanel({
         costPerVisible != null && costPerClick != null && costPerClick > 0
             ? costPerVisible / costPerClick
             : null;
+
+    const insights = useMemo(() => computeInsights({
+        hasClicks, hasSpend,
+        visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
+        costPerVisible, numConsents, numVisible, spendNum,
+        currency: inputs.currency,
+        ...(darkTrafficStats || {}),
+        selectedPlatform, filterActive,
+    }), [
+        hasClicks, hasSpend, visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
+        costPerVisible, numConsents, numVisible, spendNum, inputs.currency,
+        darkTrafficStats, selectedPlatform, filterActive,
+    ]);
 
     const scopeSentence = scopeLabel
         ? scopeKey && scopeKey.startsWith("channel:")
@@ -1228,6 +1461,17 @@ export default function MarketingReconciliationPanel({
                     </div>
                 </label>
                 <div className="recon-inputs-bar__actions">
+                    {isConnected && fromDate && toDate && (
+                        <button
+                            type="button"
+                            className="recon-sync-btn"
+                            onClick={handleSync}
+                            disabled={syncing}
+                            title={`Auto-import ${fromDate} → ${toDate} from ${SYNC_SHORT_LABEL[inputs.platform] || inputs.platform}`}
+                        >
+                            {syncing ? "Syncing…" : `↓ Sync ${SYNC_SHORT_LABEL[inputs.platform] || "platform"}`}
+                        </button>
+                    )}
                     <button type="button" className="marketing-reconciliation__save"
                         onClick={handleSaveSnapshot} disabled={!hasClicks}
                         title={hasClicks ? "Save snapshot" : `Enter ${selectedPlatform.metric} first`}>
@@ -1238,6 +1482,20 @@ export default function MarketingReconciliationPanel({
                     </button>
                 </div>
             </div>
+
+            {syncMsg && (
+                <p className={`recon-sync-msg${syncMsg.error ? " recon-sync-msg--error" : ""}`} role="status">
+                    {syncMsg.text}
+                    {!isConnected && !syncMsg.error && (
+                        <> · <a href="/settings/ad-connections" className="recon-sync-msg__link">Manage connections</a></>
+                    )}
+                </p>
+            )}
+            {!isConnected && !syncing && fromDate && toDate && authToken && orgId && (
+                <p className="recon-sync-hint">
+                    <a href="/settings/ad-connections">Connect {SYNC_SHORT_LABEL[inputs.platform] || "this platform"}</a> to auto-import {selectedPlatform.metric} and spend for this date range.
+                </p>
+            )}
 
             <p className="marketing-reconciliation__window-hint">{windowHint}</p>
 
@@ -1314,6 +1572,15 @@ export default function MarketingReconciliationPanel({
                 </div>
             )}
 
+            {/* ── UTM attribution health ──────────────────────────────────── */}
+            {darkTrafficStats && (
+                <UtmHealthBar
+                    darkTrafficPct={darkTrafficStats.darkTrafficPct}
+                    darkConsents={darkTrafficStats.darkConsents}
+                    darkTrafficTotal={darkTrafficStats.darkTrafficTotal}
+                />
+            )}
+
             {/* ── Main visualisation ──────────────────────────────────────── */}
             <div className="recon-main">
                 <FunnelFlow
@@ -1332,6 +1599,9 @@ export default function MarketingReconciliationPanel({
                     currency={inputs.currency}
                 />
             </div>
+
+            {/* ── Insights panel ───────────────────────────────────────────── */}
+            <InsightsPanel insights={insights} />
 
             {/* ── Empty state ─────────────────────────────────────────────── */}
             {!hasClicks && (
