@@ -795,6 +795,323 @@ function VisibilityGauge({ pct, costPerVisible, costPerClick, currency }) {
     );
 }
 
+/* ─── UtmSourcesChart ────────────────────────────────────────────────────── */
+
+function UtmSourcesChart({ scopeRows }) {
+    const data = useMemo(() => {
+        if (!Array.isArray(scopeRows) || scopeRows.length === 0) return [];
+        const map = {};
+        for (const r of scopeRows) {
+            const key = (String(r.utmSource || "").trim()) || "(untagged)";
+            if (!map[key]) map[key] = { source: key, consents: 0, visible: 0 };
+            map[key].consents += Number(r.consents) || 0;
+            map[key].visible  += Number(r.acceptAll) || 0;
+        }
+        return Object.values(map)
+            .filter(d => d.consents > 0)
+            .sort((a, b) => b.consents - a.consents)
+            .slice(0, 10)
+            .map(d => ({
+                ...d,
+                invisible:     Math.max(0, d.consents - d.visible),
+                visibilityPct: d.consents > 0 ? (d.visible / d.consents) * 100 : 0,
+            }));
+    }, [scopeRows]);
+
+    if (data.length < 2) return null;
+
+    const maxVal   = Math.max(...data.map(d => d.consents), 1);
+    const ROW_H    = 30;
+    const LABEL_W  = 148;
+    const BAR_AREA = 340;
+    const PCT_W    = 52;
+    const PAD_X    = 12;
+    const H_HEAD   = 22;
+    const W        = LABEL_W + PAD_X + BAR_AREA + PAD_X + PCT_W;
+    const H        = H_HEAD + data.length * ROW_H + 8;
+
+    return (
+        <div className="recon-chart-section">
+            <h3 className="marketing-reconciliation__section-title">Traffic sources</h3>
+            <p className="marketing-reconciliation__section-hint">
+                Consent volume by utm_source — green = analytics-visible, amber = consented but not measurable.
+            </p>
+            <div className="recon-chart-scroll">
+                <svg viewBox={`0 0 ${W} ${H}`} className="recon-bar-chart"
+                     role="img" aria-label="Consent breakdown by UTM source">
+                    {/* Column headers */}
+                    <text x={LABEL_W + PAD_X} y={14} fontSize="9" fontWeight="600"
+                          fill="rgba(150,165,190,0.6)">CONSENTS</text>
+                    <text x={LABEL_W + PAD_X + BAR_AREA + PAD_X} y={14} fontSize="9" fontWeight="600"
+                          fill="rgba(150,165,190,0.6)">VIS.</text>
+
+                    {data.map((d, i) => {
+                        const y    = H_HEAD + i * ROW_H + 2;
+                        const barH = ROW_H - 8;
+                        const x0   = LABEL_W + PAD_X;
+                        const visW = (d.visible  / maxVal) * BAR_AREA;
+                        const invW = (d.invisible / maxVal) * BAR_AREA;
+                        const pctColor = d.visibilityPct >= 65 ? "#86efac" : d.visibilityPct >= 40 ? "#fcd34d" : "#fca5a5";
+                        const srcLabel = d.source.length > 20 ? d.source.slice(0, 19) + "…" : d.source;
+                        return (
+                            <g key={d.source}>
+                                <text x={LABEL_W - 6} y={y + barH / 2 + 1} textAnchor="end"
+                                      fontSize="11" fill="rgba(185,195,215,0.88)" dominantBaseline="middle">
+                                    {srcLabel}
+                                </text>
+                                {/* Track */}
+                                <rect x={x0} y={y} width={BAR_AREA} height={barH}
+                                      rx="3" fill="rgba(255,255,255,0.04)" />
+                                {/* Visible segment */}
+                                {visW > 0 && (
+                                    <rect x={x0} y={y} width={visW} height={barH} rx="3" fill="rgba(74,222,128,0.72)">
+                                        <title>{d.source}: {formatInt(d.visible)} visible consents</title>
+                                    </rect>
+                                )}
+                                {/* Invisible segment */}
+                                {invW > 0 && (
+                                    <rect x={x0 + visW} y={y} width={invW} height={barH} rx="3" fill="rgba(245,158,11,0.52)">
+                                        <title>{d.source}: {formatInt(d.invisible)} not measurable</title>
+                                    </rect>
+                                )}
+                                {/* Visibility % */}
+                                <text x={x0 + BAR_AREA + PAD_X} y={y + barH / 2 + 1}
+                                      fontSize="11" fontWeight="700" fill={pctColor} dominantBaseline="middle">
+                                    {formatPct(d.visibilityPct, 0)}
+                                </text>
+                            </g>
+                        );
+                    })}
+                </svg>
+                <div className="recon-chart-legend">
+                    <span><span className="recon-legend-dot" style={{ background: "rgba(74,222,128,0.72)" }} />Visible in analytics</span>
+                    <span><span className="recon-legend-dot" style={{ background: "rgba(245,158,11,0.52)" }} />Consented, not measurable</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+/* ─── PlatformBarsChart ──────────────────────────────────────────────────── */
+
+function PlatformBarsChart({ rows, currency }) {
+    if (!rows || rows.length < 2) return null;
+
+    const maxConsents = Math.max(...rows.map(r => r.consents), 1);
+    const ROW_H   = 56;
+    const LABEL_W = 130;
+    const BAR_AREA = 330;
+    const PCT_W   = 54;
+    const PAD_X   = 12;
+    const H_HEAD  = 22;
+    const W       = LABEL_W + PAD_X + BAR_AREA + PAD_X + PCT_W;
+    const H       = H_HEAD + rows.length * ROW_H + 8;
+
+    return (
+        <div className="recon-chart-section">
+            <h3 className="marketing-reconciliation__section-title">Platform comparison</h3>
+            <p className="marketing-reconciliation__section-hint">
+                Visible vs. not-measurable consents per platform — bar width = consent volume.
+            </p>
+            <div className="recon-chart-scroll">
+                <svg viewBox={`0 0 ${W} ${H}`} className="recon-bar-chart"
+                     role="img" aria-label="Platform consent comparison">
+                    <text x={LABEL_W + PAD_X} y={14} fontSize="9" fontWeight="600"
+                          fill="rgba(150,165,190,0.6)">CONSENTS</text>
+                    <text x={LABEL_W + PAD_X + BAR_AREA + PAD_X} y={14} fontSize="9" fontWeight="600"
+                          fill="rgba(150,165,190,0.6)">VIS.</text>
+
+                    {rows.map((r, i) => {
+                        const y      = H_HEAD + i * ROW_H + 2;
+                        const barH   = 22;
+                        const x0     = LABEL_W + PAD_X;
+                        const visW   = r.consents > 0 ? (r.visible  / maxConsents) * BAR_AREA : 0;
+                        const invW   = r.consents > 0 ? (r.invisible / maxConsents) * BAR_AREA : 0;
+                        const dotColor  = PLATFORM_COLORS[r.platform.id] || "#888";
+                        const pctColor  = r.visibilityPct >= 65 ? "#86efac" : r.visibilityPct >= 40 ? "#fcd34d" : "#fca5a5";
+                        const shortName = r.platform.label.replace(" (Facebook / Instagram)", "").replace(" Ads", "");
+                        return (
+                            <g key={r.platform.id}>
+                                {/* Dot + label */}
+                                <circle cx={8} cy={y + barH / 2} r="5" fill={dotColor} />
+                                <text x={20} y={y + barH / 2 + 1} fontSize="11" fontWeight="600"
+                                      fill="rgba(190,200,220,0.9)" dominantBaseline="middle">
+                                    {shortName}
+                                </text>
+                                {/* Track */}
+                                <rect x={x0} y={y} width={BAR_AREA} height={barH}
+                                      rx="4" fill="rgba(255,255,255,0.04)" />
+                                {visW > 0 && (
+                                    <rect x={x0} y={y} width={visW} height={barH} rx="4" fill="rgba(74,222,128,0.72)">
+                                        <title>{r.platform.label}: {formatInt(r.visible)} visible</title>
+                                    </rect>
+                                )}
+                                {invW > 0 && (
+                                    <rect x={x0 + visW} y={y} width={invW} height={barH} rx="4" fill="rgba(245,158,11,0.52)">
+                                        <title>{r.platform.label}: {formatInt(r.invisible)} not measurable</title>
+                                    </rect>
+                                )}
+                                {/* Visibility % */}
+                                <text x={x0 + BAR_AREA + PAD_X} y={y + barH / 2 + 1}
+                                      fontSize="12" fontWeight="700" fill={pctColor} dominantBaseline="middle">
+                                    {r.visibilityPct != null ? formatPct(r.visibilityPct, 0) : "—"}
+                                </text>
+                                {/* Sub-line: reported + cost */}
+                                <text x={x0} y={y + barH + 13} fontSize="9" fill="rgba(130,145,170,0.65)">
+                                    {formatInt(r.clicks)} reported · {formatInt(r.visible)} visible
+                                    {r.costPerVisible != null ? ` · ${formatMoney(r.costPerVisible, currency)} / visible` : ""}
+                                </text>
+                            </g>
+                        );
+                    })}
+                </svg>
+                <div className="recon-chart-legend">
+                    <span><span className="recon-legend-dot" style={{ background: "rgba(74,222,128,0.72)" }} />Visible in analytics</span>
+                    <span><span className="recon-legend-dot" style={{ background: "rgba(245,158,11,0.52)" }} />Consented, not measurable</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+/* ─── SnapshotComboChart ─────────────────────────────────────────────────── */
+
+function SnapshotComboChart({ snapshots }) {
+    const data = useMemo(() => {
+        return snapshots
+            .filter(s => Number(s.adClicks) > 0 && s.visibilityOfConsentsPct !== "" && s.visibilityOfConsentsPct != null)
+            .slice(0, 24)
+            .sort((a, b) => new Date(a.savedAt) - new Date(b.savedAt))
+            .map(s => ({
+                date:          new Date(s.savedAt).getTime(),
+                clicks:        Number(s.adClicks) || 0,
+                consents:      Number(s.consents)  || 0,
+                visible:       Number(s.visibleConsents) || 0,
+                visPct:        Number(s.visibilityOfConsentsPct),
+                platform:      s.platform,
+                platformLabel: s.platformLabel || s.platform,
+                color:         PLATFORM_COLORS[s.platform] || "#888",
+            }));
+    }, [snapshots]);
+
+    if (data.length < 2) return null;
+
+    const W   = 620, H = 230;
+    const PAD = { top: 20, right: 56, bottom: 46, left: 56 };
+    const plotW = W - PAD.left - PAD.right;
+    const plotH = H - PAD.top  - PAD.bottom;
+
+    const maxClicks  = Math.max(...data.map(d => d.clicks), 1);
+    const barW       = Math.max(6, Math.min(36, (plotW / data.length) * 0.65));
+    const toX        = i   => PAD.left + ((i + 0.5) / data.length) * plotW;
+    const toYClicks  = v   => PAD.top  + plotH - (v / maxClicks) * plotH;
+    const toYPct     = pct => PAD.top  + plotH - (Math.min(100, Math.max(0, pct)) / 100) * plotH;
+
+    const linePoints = data.map((d, i) => `${toX(i)},${toYPct(d.visPct)}`).join(" ");
+
+    function fmtDate(ts) {
+        return new Date(ts).toLocaleDateString("de-DE", { month: "short", day: "numeric" });
+    }
+
+    // Show every Nth x-label to avoid clutter
+    const xStep = Math.ceil(data.length / 7);
+
+    return (
+        <div className="marketing-reconciliation__trend">
+            <h3 className="marketing-reconciliation__section-title">Performance over time</h3>
+            <p className="marketing-reconciliation__section-hint">
+                Reported clicks per snapshot (bars) and analytics visibility % (line). Save snapshots regularly to extend this chart.
+            </p>
+            <svg viewBox={`0 0 ${W} ${H}`} className="marketing-reconciliation__trend-svg"
+                 role="img" aria-label="Snapshot performance over time">
+
+                {/* Grid + right-axis % labels */}
+                {[0, 25, 50, 75, 100].map(pct => (
+                    <g key={pct}>
+                        <line x1={PAD.left} y1={toYPct(pct)} x2={W - PAD.right} y2={toYPct(pct)}
+                              stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                        <text x={W - PAD.right + 5} y={toYPct(pct) + 4}
+                              fontSize="9" fill="rgba(160,175,200,0.5)">{pct}%</text>
+                    </g>
+                ))}
+
+                {/* Left-axis clicks labels */}
+                {[0, 0.5, 1].map((f, i) => (
+                    <text key={i} x={PAD.left - 6} y={PAD.top + plotH - f * plotH + 4}
+                          textAnchor="end" fontSize="9" fill="rgba(160,175,200,0.5)">
+                        {formatInt(maxClicks * f)}
+                    </text>
+                ))}
+
+                {/* Click bars (colored by platform) */}
+                {data.map((d, i) => {
+                    const x   = toX(i) - barW / 2;
+                    const top = toYClicks(d.clicks);
+                    const ht  = PAD.top + plotH - top;
+                    return (
+                        <rect key={i} x={x} y={top} width={barW} height={ht}
+                              rx="2" fill={d.color} opacity="0.35">
+                            <title>{d.platformLabel} · {fmtDate(d.date)}: {formatInt(d.clicks)} {PLATFORM_BY_ID[d.platform]?.metric || "clicks"}, {formatPct(d.visPct)} visibility</title>
+                        </rect>
+                    );
+                })}
+
+                {/* Visibility % line */}
+                <polyline points={linePoints} fill="none"
+                          stroke="rgba(240,245,255,0.85)" strokeWidth="2" strokeLinejoin="round" />
+
+                {/* Data-point dots, colored by threshold */}
+                {data.map((d, i) => {
+                    const dotColor = d.visPct >= 65 ? "#4ade80" : d.visPct >= 40 ? "#f59e0b" : "#f87171";
+                    return (
+                        <circle key={i} cx={toX(i)} cy={toYPct(d.visPct)} r="4.5"
+                                fill={dotColor} stroke="rgba(0,0,0,0.55)" strokeWidth="1.5">
+                            <title>{d.platformLabel} · {fmtDate(d.date)}: {formatPct(d.visPct)} visibility</title>
+                        </circle>
+                    );
+                })}
+
+                {/* X axis date labels */}
+                {data.filter((_, i) => i % xStep === 0).map(d => (
+                    <text key={d.date} x={toX(data.indexOf(d))} y={H - PAD.bottom + 14}
+                          textAnchor="middle" fontSize="9" fill="rgba(160,175,200,0.55)">
+                        {fmtDate(d.date)}
+                    </text>
+                ))}
+
+                {/* Axis labels */}
+                <text x={PAD.left - 38} y={PAD.top + plotH / 2} textAnchor="middle"
+                      fontSize="9" fill="rgba(150,165,190,0.5)"
+                      transform={`rotate(-90,${PAD.left - 38},${PAD.top + plotH / 2})`}>
+                    Clicks
+                </text>
+                <text x={W - PAD.right + 40} y={PAD.top + plotH / 2} textAnchor="middle"
+                      fontSize="9" fill="rgba(150,165,190,0.5)"
+                      transform={`rotate(90,${W - PAD.right + 40},${PAD.top + plotH / 2})`}>
+                    Visibility %
+                </text>
+            </svg>
+
+            {/* Legend */}
+            <div className="recon-chart-legend">
+                {[...new Set(data.map(d => d.platform))].map(pid => (
+                    <span key={pid}>
+                        <span className="recon-legend-dot" style={{ background: PLATFORM_COLORS[pid] || "#888", opacity: 0.7 }} />
+                        {(PLATFORM_BY_ID[pid] || {}).label || pid}
+                    </span>
+                ))}
+                <span style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                    <span style={{ display: "inline-block", width: "18px", height: "2px", background: "rgba(240,245,255,0.85)", verticalAlign: "middle" }} />
+                    Visibility %
+                </span>
+                <span><span className="recon-legend-dot" style={{ background: "#4ade80" }} />≥65%</span>
+                <span><span className="recon-legend-dot" style={{ background: "#f59e0b" }} />40–65%</span>
+                <span><span className="recon-legend-dot" style={{ background: "#f87171" }} />&lt;40%</span>
+            </div>
+        </div>
+    );
+}
+
 /* ─── computeInsights ────────────────────────────────────────────────────── */
 
 function computeInsights({
@@ -1611,12 +1928,13 @@ export default function MarketingReconciliationPanel({
                 </div>
             )}
 
-            {/* ── Trend + comparison + projection ─────────────────────────── */}
-            {comparisonRows.length >= 2 ? <ComparisonTable rows={comparisonRows} currency={inputs.currency} /> : null}
+            {/* ── Charts ──────────────────────────────────────────────────── */}
+            <UtmSourcesChart scopeRows={scopeRows} />
+            {comparisonRows.length >= 2 ? <PlatformBarsChart rows={comparisonRows} currency={inputs.currency} /> : null}
             {hasSpend && hasClicks && numVisible > 0 ? (
                 <ProjectionTable numConsents={numConsents} numVisible={numVisible} spend={spendNum} currency={inputs.currency} />
             ) : null}
-            {snapshots.length >= 1 ? <TrendChart snapshots={snapshots} /> : null}
+            {snapshots.length >= 2 ? <SnapshotComboChart snapshots={snapshots} /> : null}
 
             <div className="marketing-reconciliation__snapshots">
                 <div className="marketing-reconciliation__snapshots-bar">

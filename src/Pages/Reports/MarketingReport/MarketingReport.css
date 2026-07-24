@@ -2705,3 +2705,41 @@
     margin: 0;
     line-height: 1.55;
 }
+
+/* ── Chart sections ─────────────────────────────────────────────────────── */
+.recon-chart-section {
+    margin: 20px 0;
+}
+
+.recon-chart-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.recon-bar-chart {
+    display: block;
+    width: 100%;
+    max-width: 620px;
+    height: auto;
+    overflow: visible;
+}
+
+.recon-chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 10px;
+    font-size: 0.78rem;
+    color: rgba(160,175,200,0.75);
+    align-items: center;
+}
+
+.recon-legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
