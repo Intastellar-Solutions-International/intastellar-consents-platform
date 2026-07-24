@@ -44996,10 +44996,6 @@ var reportsLinks = [{
   view: ["admin", "super-admin", "manager"],
   requiresTier: 'growth'
 }, {
-  name: "Ad Connections",
-  path: "/settings/ad-connections",
-  view: ["admin", "super-admin", "manager"]
-}, {
   name: "Blacklist IP",
   path: "/settings/blacklist-ip",
   view: ["admin", "super-admin", "manager"]
@@ -59612,7 +59608,7 @@ function AdConnectionManager(_ref) {
   }
   function _handleConnect() {
     _handleConnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(platformId) {
-      var returnPath, resp, data, _t2;
+      var returnPath, resp, data, _AD_PLATFORMS$find2, label, _t2;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.p = _context2.n) {
           case 0:
@@ -59632,27 +59628,38 @@ function AdConnectionManager(_ref) {
             return resp.json();
           case 3:
             data = _context2.v;
-            if (resp.ok) {
+            if (!data.missingConfig) {
               _context2.n = 4;
+              break;
+            }
+            label = ((_AD_PLATFORMS$find2 = AD_PLATFORMS.find(function (x) {
+              return x.id === platformId;
+            })) === null || _AD_PLATFORMS$find2 === void 0 ? void 0 : _AD_PLATFORMS$find2.label) || platformId;
+            setStatus("".concat(label, " OAuth credentials are not yet configured. Add the required environment variables in Vercel (e.g. GOOGLE_ADS_CLIENT_ID, OAUTH_REDIRECT_URI) to enable this connection."), true);
+            setConnecting(null);
+            return _context2.a(2);
+          case 4:
+            if (resp.ok) {
+              _context2.n = 5;
               break;
             }
             setStatus(data.error || "Could not start connection.", true);
             setConnecting(null);
             return _context2.a(2);
-          case 4:
+          case 5:
             // Full-page redirect — the callback will bring the user back
             window.location.href = data.authUrl;
-            _context2.n = 6;
+            _context2.n = 7;
             break;
-          case 5:
-            _context2.p = 5;
+          case 6:
+            _context2.p = 6;
             _t2 = _context2.v;
             setStatus(_t2.message, true);
             setConnecting(null);
-          case 6:
+          case 7:
             return _context2.a(2);
         }
-      }, _callee2, null, [[1, 5]]);
+      }, _callee2, null, [[1, 6]]);
     }));
     return _handleConnect.apply(this, arguments);
   }
@@ -59661,14 +59668,14 @@ function AdConnectionManager(_ref) {
   }
   function _handleDisconnect() {
     _handleDisconnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(platformId) {
-      var _AD_PLATFORMS$find2;
+      var _AD_PLATFORMS$find3;
       var label, _t3;
       return _regenerator().w(function (_context3) {
         while (1) switch (_context3.p = _context3.n) {
           case 0:
-            label = ((_AD_PLATFORMS$find2 = AD_PLATFORMS.find(function (p) {
+            label = ((_AD_PLATFORMS$find3 = AD_PLATFORMS.find(function (p) {
               return p.id === platformId;
-            })) === null || _AD_PLATFORMS$find2 === void 0 ? void 0 : _AD_PLATFORMS$find2.label) || platformId;
+            })) === null || _AD_PLATFORMS$find3 === void 0 ? void 0 : _AD_PLATFORMS$find3.label) || platformId;
             if (window.confirm("Disconnect ".concat(label, "?\nThis removes the connection from this domain. You can reconnect at any time."))) {
               _context3.n = 1;
               break;
@@ -59709,7 +59716,7 @@ function AdConnectionManager(_ref) {
   }
   function _handleImport() {
     _handleImport = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(platformId) {
-      var _AD_PLATFORMS$find3, _data$clicks, resp, data, label, _t4;
+      var _AD_PLATFORMS$find4, _data$clicks, resp, data, label, _t4;
       return _regenerator().w(function (_context4) {
         while (1) switch (_context4.p = _context4.n) {
           case 0:
@@ -59742,9 +59749,9 @@ function AdConnectionManager(_ref) {
             setStatus(data.error || "Import failed.", true);
             return _context4.a(2);
           case 5:
-            label = ((_AD_PLATFORMS$find3 = AD_PLATFORMS.find(function (p) {
+            label = ((_AD_PLATFORMS$find4 = AD_PLATFORMS.find(function (p) {
               return p.id === platformId;
-            })) === null || _AD_PLATFORMS$find3 === void 0 ? void 0 : _AD_PLATFORMS$find3.label) || platformId;
+            })) === null || _AD_PLATFORMS$find4 === void 0 ? void 0 : _AD_PLATFORMS$find4.label) || platformId;
             onImport === null || onImport === void 0 || onImport(platformId, data);
             setStatus("Imported from ".concat(label, ": ").concat(((_data$clicks = data.clicks) === null || _data$clicks === void 0 ? void 0 : _data$clicks.toLocaleString()) || 0, " clicks").concat(data.spend ? ", ".concat(data.currency || "", " ").concat(Number(data.spend).toFixed(2), " spend") : "", "."));
             _context4.n = 7;
@@ -65658,16 +65665,33 @@ var _React = React,
   useEffect = _React.useEffect,
   useContext = _React.useContext;
 
+function readCachedDomains() {
+  try {
+    var raw = localStorage.getItem("domains");
+    if (!raw) return [];
+    var parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(function (d) {
+      return d && typeof d === "string" && d !== "combined view";
+    });
+  } catch (_unused) {
+    return [];
+  }
+}
 function AdConnectionsSettings() {
   document.title = "Ad Connections | Settings | Intastellar Consents";
   var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_6__.DomainContext),
     _useContext2 = _slicedToArray(_useContext, 1),
     currentDomain = _useContext2[0];
-  var _useState = useState([]),
+  var _useState = useState(function () {
+      return readCachedDomains();
+    }),
     _useState2 = _slicedToArray(_useState, 2),
     domains = _useState2[0],
     setDomains = _useState2[1];
-  var _useState3 = useState(true),
+  var _useState3 = useState(function () {
+      return readCachedDomains().length === 0;
+    }),
     _useState4 = _slicedToArray(_useState3, 2),
     domainsLoading = _useState4[0],
     setDomainsLoading = _useState4[1];
@@ -65679,39 +65703,64 @@ function AdConnectionsSettings() {
     _useState8 = _slicedToArray(_useState7, 2),
     selectedDomain = _useState8[0],
     setSelectedDomain = _useState8[1];
+
+  // Always read fresh — avoids stale closure from module-level API headers
   var authToken = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken();
   var orgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation();
   useEffect(function () {
     var _API$gdpr;
-    var ep = (_API$gdpr = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"].gdpr) === null || _API$gdpr === void 0 ? void 0 : _API$gdpr.getDomainsUrl;
+    // If localStorage already has domains, use them and just set the selected domain
+    var cached = readCachedDomains();
+    if (cached.length > 0) {
+      var ctx = typeof currentDomain === "string" && currentDomain !== "combined view" ? currentDomain : null;
+      setSelectedDomain(ctx && cached.includes(ctx) ? ctx : cached[0]);
+      setDomainsLoading(false);
+      return;
+    }
+
+    // Otherwise fetch from the same endpoint the header uses
+    var ep = (_API$gdpr = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"].gdpr) === null || _API$gdpr === void 0 ? void 0 : _API$gdpr.getDomains;
     if (!(ep !== null && ep !== void 0 && ep.url)) {
       setDomainsLoading(false);
       setDomainsError(true);
       return;
     }
+    var token = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken();
+    var org = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation();
     fetch(ep.url, {
       method: ep.method || "GET",
-      headers: ep.headers || {}
+      headers: {
+        "Authorization": token || "",
+        "Organisation": org != null ? String(org) : "",
+        "Content-Type": "application/json"
+      }
     }).then(function (r) {
       return r.ok ? r.json() : Promise.reject(r.status);
     }).then(function (data) {
       var raw = Array.isArray(data) ? data : Array.isArray(data === null || data === void 0 ? void 0 : data.data) ? data.data : [];
-      var filtered = raw.map(function (item) {
-        return typeof item === "string" ? item : (item === null || item === void 0 ? void 0 : item.domain) || "";
+      var strings = raw.map(function (item) {
+        return typeof item === "string" ? item : (item === null || item === void 0 ? void 0 : item.domain) || (item === null || item === void 0 ? void 0 : item.host) || "";
       }).filter(function (d) {
         return d && d !== "combined view";
       });
-      setDomains(filtered);
-      // Default: prefer the context domain if valid, else first from list
-      var ctx = typeof currentDomain === "string" && currentDomain !== "combined view" ? currentDomain : null;
-      setSelectedDomain(ctx && filtered.includes(ctx) ? ctx : filtered[0] || "");
+      if (strings.length === 0) {
+        setDomainsError(true);
+      } else {
+        applyDomains(strings);
+      }
     })["catch"](function () {
-      setDomainsError(true);
+      return setDomainsError(true);
     })["finally"](function () {
-      setDomainsLoading(false);
+      return setDomainsLoading(false);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  function applyDomains(list) {
+    setDomains(list);
+    var ctx = typeof currentDomain === "string" && currentDomain !== "combined view" ? currentDomain : null;
+    setSelectedDomain(ctx && list.includes(ctx) ? ctx : list[0] || "");
+  }
+  var notLoggedIn = !authToken || !orgId;
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_2__["default"], {
     links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_4__.reportsLinks,
     title: "Settings"
@@ -65738,7 +65787,12 @@ function AdConnectionsSettings() {
       color: "rgba(180,185,200,0.8)",
       fontSize: "0.9rem"
     }
-  }, "Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import clicks and spend for each domain. Connections are per-domain.")), domainsLoading ? /*#__PURE__*/React.createElement("p", {
+  }, "Connect Google Ads, Meta, LinkedIn, and Microsoft Ads to auto-import clicks and spend for each domain. Connections are per-domain.")), notLoggedIn ? /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: "rgba(230,80,80,0.9)",
+      fontSize: "0.9rem"
+    }
+  }, "Session not found. Please reload the page or log in again.") : domainsLoading ? /*#__PURE__*/React.createElement("p", {
     style: {
       color: "rgba(180,185,200,0.7)"
     }
@@ -76129,6 +76183,11 @@ var createRoot = window.ReactDOM.createRoot;
 var container = document.getElementById('app');
 var root = createRoot(container); // createRoot(container!) if you use TypeScript
 root.render(/*#__PURE__*/React.createElement(_src_App_js__WEBPACK_IMPORTED_MODULE_0__["default"], null));
+})();
+
+/******/ })()
+;
+//# sourceMappingURL=main.bundle.js.map_WEBPACK_IMPORTED_MODULE_0__["default"], null));
 })();
 
 /******/ })()
