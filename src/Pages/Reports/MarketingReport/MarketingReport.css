@@ -1781,3 +1781,170 @@
 .marketing-reconciliation-page__back-link:hover {
     text-decoration: underline;
 }
+
+/* ── Shared section headers ────────────────────────────────────────────── */
+.marketing-reconciliation__section-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(220, 220, 230, 0.9);
+    margin: 0 0 4px;
+}
+
+.marketing-reconciliation__section-hint {
+    font-size: 0.82rem;
+    color: rgba(200, 200, 210, 0.55);
+    margin: 0 0 16px;
+    line-height: 1.5;
+}
+
+/* ── Platform comparison table ─────────────────────────────────────────── */
+.marketing-reconciliation__comparison {
+    margin: 28px 0 0;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.marketing-reconciliation__comparison-wrap {
+    overflow-x: auto;
+}
+
+.marketing-reconciliation__comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+}
+
+.marketing-reconciliation__comparison-table th,
+.marketing-reconciliation__comparison-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+}
+
+.marketing-reconciliation__comparison-table th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(200, 200, 210, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.marketing-reconciliation__comparison-table td {
+    color: rgba(220, 220, 230, 0.85);
+}
+
+.marketing-reconciliation__comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+.marketing-reconciliation__comparison-table .num {
+    text-align: right;
+}
+
+.marketing-reconciliation__comparison-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.marketing-reconciliation__comparison-good {
+    color: #4caf7d;
+    font-weight: 600;
+}
+
+.marketing-reconciliation__comparison-warn {
+    color: #f5a623;
+    font-weight: 600;
+}
+
+/* ── Visibility improvement projection ─────────────────────────────────── */
+.marketing-reconciliation__projection {
+    margin: 20px 0 0;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.marketing-reconciliation__projection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+}
+
+.marketing-reconciliation__projection-table th,
+.marketing-reconciliation__projection-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.marketing-reconciliation__projection-table th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(200, 200, 210, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.marketing-reconciliation__projection-table td {
+    color: rgba(220, 220, 230, 0.85);
+}
+
+.marketing-reconciliation__projection-table tr:last-child td {
+    border-bottom: none;
+}
+
+.marketing-reconciliation__projection-table .num {
+    text-align: right;
+}
+
+.marketing-reconciliation__projection-row--current td {
+    color: rgba(200, 200, 210, 0.55);
+    font-style: italic;
+}
+
+/* ── Visibility trend chart ────────────────────────────────────────────── */
+.marketing-reconciliation__trend {
+    margin: 20px 0 0;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.marketing-reconciliation__trend-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin-bottom: 12px;
+}
+
+.marketing-reconciliation__trend-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: rgba(200, 200, 210, 0.8);
+}
+
+.marketing-reconciliation__trend-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.marketing-reconciliation__trend-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}

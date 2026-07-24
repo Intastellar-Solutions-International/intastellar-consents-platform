@@ -53,6 +53,38 @@ const PLATFORM_BY_ID = PLATFORMS.reduce((acc, p) => {
     return acc;
 }, {});
 
+const PLATFORM_COLORS = {
+    google_ads:    "#4285f4",
+    meta_ads:      "#1877f2",
+    linkedin_ads:  "#0a66c2",
+    microsoft_ads: "#00a4ef",
+    tiktok_ads:    "#ee1d52",
+    pinterest_ads: "#e60023",
+    twitter_ads:   "#1da1f2",
+    ga4:           "#e37400",
+    other:         "#888888",
+};
+
+/*
+ * Run the same utm_source filter used by platformStats, but for an
+ * arbitrary platformId rather than the currently-selected one.
+ * Used by the comparison table to show all platforms side-by-side.
+ */
+function computeStatsForPlatform(platformId, scopeRows, fallbackConsents, fallbackVisible, fallbackInvisible) {
+    const pattern = platformPattern(platformId);
+    if (!pattern) {
+        return { consents: fallbackConsents, visible: fallbackVisible, invisible: fallbackInvisible };
+    }
+    const rowsArr = Array.isArray(scopeRows) ? scopeRows : [];
+    let consents = 0, visible = 0;
+    for (const r of rowsArr) {
+        if (!rowMatchesPlatform(r, pattern)) continue;
+        consents += Number(r.consents) || 0;
+        visible  += Number(r.acceptAll) || 0;
+    }
+    return { consents, visible, invisible: Math.max(0, consents - visible) };
+}
+
 /*
  * Per-platform utm_source matchers.
  *
@@ -397,6 +429,239 @@ function ResultCard({ tone = "neutral", title, headline, detail, subDetail }) {
     );
 }
 
+/* ─── Trend chart ───────────────────────────────────────────────────────── */
+
+function TrendChart({ snapshots }) {
+    const lines = useMemo(() => {
+        const byPlatform = {};
+        for (const s of snapshots) {
+            if (s.visibilityOfConsentsPct === "" || s.visibilityOfConsentsPct == null) continue;
+            const pid = s.platform;
+            if (!byPlatform[pid]) byPlatform[pid] = [];
+            byPlatform[pid].push({
+                date:  new Date(s.savedAt).getTime(),
+                pct:   Number(s.visibilityOfConsentsPct),
+                scope: s.scopeLabel || "",
+            });
+        }
+        return Object.entries(byPlatform)
+            .map(([pid, pts]) => ({
+                pid,
+                label: (PLATFORM_BY_ID[pid] || {}).label || pid,
+                color: PLATFORM_COLORS[pid] || "#888",
+                pts:   pts.sort((a, b) => a.date - b.date),
+            }))
+            .filter(l => l.pts.length >= 1);
+    }, [snapshots]);
+
+    if (lines.length === 0) return null;
+
+    const W = 600, H = 180;
+    const PAD = { top: 16, right: 16, bottom: 36, left: 44 };
+    const plotW = W - PAD.left - PAD.right;
+    const plotH = H - PAD.top  - PAD.bottom;
+
+    const allDates  = lines.flatMap(l => l.pts.map(p => p.date));
+    const minDate   = Math.min(...allDates);
+    const maxDate   = Math.max(...allDates);
+    const dateRange = maxDate - minDate || 1;
+
+    const toX = d   => PAD.left + ((d - minDate) / dateRange) * plotW;
+    const toY = pct => PAD.top  + plotH - (Math.min(100, Math.max(0, pct)) / 100) * plotH;
+
+    const yTicks = [0, 25, 50, 75, 100];
+    const uniqueDates = [...new Set(allDates)].sort((a, b) => a - b);
+    const xTicks = uniqueDates.length > 7
+        ? uniqueDates.filter((_, i) => i % Math.ceil(uniqueDates.length / 6) === 0)
+        : uniqueDates;
+
+    function fmtDate(ts) {
+        return new Date(ts).toLocaleDateString("de-DE", { month: "short", day: "numeric" });
+    }
+
+    return (
+        <div className="marketing-reconciliation__trend">
+            <h3 className="marketing-reconciliation__section-title">Visibility trend</h3>
+            <p className="marketing-reconciliation__section-hint">
+                Analytics-visible consents as a share of all consents recorded, over time.
+                Save snapshots regularly to grow this chart.
+            </p>
+            <div className="marketing-reconciliation__trend-legend">
+                {lines.map(l => (
+                    <span key={l.pid} className="marketing-reconciliation__trend-legend-item">
+                        <span className="marketing-reconciliation__trend-legend-dot"
+                            style={{ background: l.color }} />
+                        {l.label}
+                    </span>
+                ))}
+            </div>
+            <svg viewBox={`0 0 ${W} ${H}`} className="marketing-reconciliation__trend-svg"
+                role="img" aria-label="Visibility % over time">
+                {yTicks.map(pct => (
+                    <g key={pct}>
+                        <line x1={PAD.left} y1={toY(pct)} x2={W - PAD.right} y2={toY(pct)}
+                            stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+                        <text x={PAD.left - 6} y={toY(pct) + 4} textAnchor="end"
+                            fontSize="10" fill="rgba(200,200,210,0.5)">{pct}%</text>
+                    </g>
+                ))}
+                {xTicks.map(ts => (
+                    <text key={ts} x={toX(ts)} y={H - PAD.bottom + 14} textAnchor="middle"
+                        fontSize="10" fill="rgba(200,200,210,0.5)">{fmtDate(ts)}</text>
+                ))}
+                {lines.map(l => (
+                    <g key={l.pid}>
+                        {l.pts.length >= 2 && (
+                            <polyline
+                                points={l.pts.map(p => `${toX(p.date)},${toY(p.pct)}`).join(" ")}
+                                fill="none" stroke={l.color} strokeWidth="2"
+                                strokeLinejoin="round" opacity="0.85"
+                            />
+                        )}
+                        {l.pts.map((p, i) => (
+                            <circle key={i} cx={toX(p.date)} cy={toY(p.pct)} r="4"
+                                fill={l.color} stroke="rgba(0,0,0,0.5)" strokeWidth="1.5">
+                                <title>{l.label} · {fmtDate(p.date)}: {formatPct(p.pct)}{p.scope ? ` (${p.scope})` : ""}</title>
+                            </circle>
+                        ))}
+                    </g>
+                ))}
+            </svg>
+        </div>
+    );
+}
+
+/* ─── Platform comparison table ─────────────────────────────────────────── */
+
+function ComparisonTable({ rows, currency }) {
+    if (rows.length < 2) return null;
+    const hasSpend = rows.some(r => r.spend > 0);
+    return (
+        <div className="marketing-reconciliation__comparison">
+            <h3 className="marketing-reconciliation__section-title">Platform comparison</h3>
+            <p className="marketing-reconciliation__section-hint">
+                Every platform where you've entered data, reconciled against this scope's consent data side-by-side.
+            </p>
+            <div className="marketing-reconciliation__comparison-wrap">
+                <table className="marketing-reconciliation__comparison-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Platform</th>
+                            <th scope="col" className="num">Reported</th>
+                            <th scope="col" className="num">Consents</th>
+                            <th scope="col" className="num">Visible</th>
+                            <th scope="col" className="num">Gap</th>
+                            <th scope="col" className="num">Visibility</th>
+                            {hasSpend ? <th scope="col" className="num">Cost / visible</th> : null}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows.map(r => {
+                            const visibilityClass =
+                                r.visibilityPct != null && r.visibilityPct >= 70
+                                    ? "marketing-reconciliation__comparison-good"
+                                    : r.visibilityPct != null && r.visibilityPct < 50
+                                      ? "marketing-reconciliation__comparison-warn"
+                                      : "";
+                            return (
+                                <tr key={r.platform.id}>
+                                    <td>
+                                        <span className="marketing-reconciliation__comparison-dot"
+                                            style={{ background: PLATFORM_COLORS[r.platform.id] || "#888" }} />
+                                        {r.platform.label}
+                                    </td>
+                                    <td className="num">{formatInt(r.clicks)}</td>
+                                    <td className="num">{formatInt(r.consents)}</td>
+                                    <td className="num">
+                                        {formatInt(r.visible)}
+                                        {r.visibleSharePct != null ? (
+                                            <span className="marketing-reconciliation__snapshots-sub">
+                                                {" "}({formatShareOfReportedPct(r.visibleSharePct)})
+                                            </span>
+                                        ) : null}
+                                    </td>
+                                    <td className="num">
+                                        {formatInt(r.invisible)}
+                                        {r.invisibleSharePct != null ? (
+                                            <span className="marketing-reconciliation__snapshots-sub">
+                                                {" "}({formatShareOfReportedPct(r.invisibleSharePct)})
+                                            </span>
+                                        ) : null}
+                                    </td>
+                                    <td className={`num ${visibilityClass}`}>
+                                        {r.visibilityPct != null ? formatPct(r.visibilityPct) : "—"}
+                                    </td>
+                                    {hasSpend ? (
+                                        <td className="num">
+                                            {r.costPerVisible != null
+                                                ? formatMoney(r.costPerVisible, currency)
+                                                : "—"}
+                                        </td>
+                                    ) : null}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}
+
+/* ─── Visibility improvement projection ─────────────────────────────────── */
+
+function ProjectionTable({ numConsents, numVisible, spend, currency }) {
+    if (!spend || spend <= 0 || numConsents <= 0 || numVisible <= 0) return null;
+    const currentPct = (numVisible / numConsents) * 100;
+    const targets    = [60, 75, 90, 100].filter(t => t > currentPct + 2);
+    if (!targets.length) return null;
+
+    const currentCost = spend / numVisible;
+
+    return (
+        <div className="marketing-reconciliation__projection">
+            <h3 className="marketing-reconciliation__section-title">What improved visibility would cost</h3>
+            <p className="marketing-reconciliation__section-hint">
+                If more visitors consented, your effective cost per analytics-visible consent would fall.
+                Assumes the same spend and same total consent volume; only the visibility rate changes.
+            </p>
+            <table className="marketing-reconciliation__projection-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Visibility rate</th>
+                        <th scope="col" className="num">Visible consents</th>
+                        <th scope="col" className="num">Cost per visible</th>
+                        <th scope="col" className="num">vs. today</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr className="marketing-reconciliation__projection-row--current">
+                        <td>Today ({formatPct(currentPct)})</td>
+                        <td className="num">{formatInt(numVisible)}</td>
+                        <td className="num">{formatMoney(currentCost, currency)}</td>
+                        <td className="num">—</td>
+                    </tr>
+                    {targets.map(targetPct => {
+                        const projVisible = Math.round((targetPct / 100) * numConsents);
+                        const projCost    = spend / Math.max(1, projVisible);
+                        const saving      = ((currentCost - projCost) / currentCost) * 100;
+                        return (
+                            <tr key={targetPct}>
+                                <td>{targetPct}%</td>
+                                <td className="num">{formatInt(projVisible)}</td>
+                                <td className="num">{formatMoney(projCost, currency)}</td>
+                                <td className="num marketing-reconciliation__comparison-good">
+                                    −{formatPct(saving, 0)}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
 export default function MarketingReconciliationPanel({
     scopeLabel,
     scopeKey,
@@ -575,6 +840,37 @@ export default function MarketingReconciliationPanel({
             : null;
     const hasScopeRows = Array.isArray(scopeRows) && scopeRows.length > 0;
     const noMatchedRows = filterActive && hasScopeRows && numConsents === 0;
+
+    // All platforms with entered data, each with their own filtered consent stats.
+    // Powers the side-by-side comparison table.
+    const comparisonRows = useMemo(() => {
+        const byPlatform = inputs.byPlatform || {};
+        return PLATFORMS
+            .map(p => {
+                const vals   = byPlatform[p.id];
+                const clicks = Number(vals?.adClicks) || 0;
+                if (!clicks) return null;
+                const spend  = Number(vals?.spend) || 0;
+                const stats  = computeStatsForPlatform(p.id, scopeRows, scopeConsents, scopeVisible, scopeInvisible);
+                const visibleSharePct   = (stats.visible   / clicks) * 100;
+                const invisibleSharePct = (stats.invisible / clicks) * 100;
+                const visibilityPct     = stats.consents > 0 ? (stats.visible / stats.consents) * 100 : null;
+                const costPerVisible    = spend > 0 && stats.visible > 0 ? spend / stats.visible : null;
+                return {
+                    platform: p,
+                    clicks,
+                    spend,
+                    consents:        stats.consents,
+                    visible:         stats.visible,
+                    invisible:       stats.invisible,
+                    visibleSharePct,
+                    invisibleSharePct,
+                    visibilityPct,
+                    costPerVisible,
+                };
+            })
+            .filter(Boolean);
+    }, [inputs.byPlatform, scopeRows, scopeConsents, scopeVisible, scopeInvisible]);
 
     // All utm_source values actually present in scope — surfaced when no platform match is found
     const actualScopeSources = useMemo(() => {
@@ -995,6 +1291,23 @@ export default function MarketingReconciliationPanel({
                     </p>
                 </div>
             )}
+
+            {comparisonRows.length >= 2 ? (
+                <ComparisonTable rows={comparisonRows} currency={inputs.currency} />
+            ) : null}
+
+            {hasSpend && hasClicks && numVisible > 0 ? (
+                <ProjectionTable
+                    numConsents={numConsents}
+                    numVisible={numVisible}
+                    spend={spendNum}
+                    currency={inputs.currency}
+                />
+            ) : null}
+
+            {snapshots.length >= 3 ? (
+                <TrendChart snapshots={snapshots} />
+            ) : null}
 
             <div className="marketing-reconciliation__snapshots">
                 <div className="marketing-reconciliation__snapshots-bar">
