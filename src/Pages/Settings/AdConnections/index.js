@@ -8,49 +8,89 @@ import API from "../../../API/api";
 const { useState, useEffect, useContext } = React;
 import { DomainContext } from "../../../App.js";
 
+function readCachedDomains() {
+    try {
+        const raw = localStorage.getItem("domains");
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter(d => d && typeof d === "string" && d !== "combined view");
+    } catch {
+        return [];
+    }
+}
+
 export default function AdConnectionsSettings() {
     document.title = "Ad Connections | Settings | Intastellar Consents";
 
     const [currentDomain] = useContext(DomainContext);
 
-    const [domains, setDomains] = useState([]);
-    const [domainsLoading, setDomainsLoading] = useState(true);
+    const [domains, setDomains] = useState(() => readCachedDomains());
+    const [domainsLoading, setDomainsLoading] = useState(() => readCachedDomains().length === 0);
     const [domainsError, setDomainsError] = useState(false);
     const [selectedDomain, setSelectedDomain] = useState("");
 
+    // Always read fresh — avoids stale closure from module-level API headers
     const authToken = Authentication.getToken();
     const orgId = Authentication.getOrganisation();
 
     useEffect(() => {
-        const ep = API.gdpr?.getDomainsUrl;
+        // If localStorage already has domains, use them and just set the selected domain
+        const cached = readCachedDomains();
+        if (cached.length > 0) {
+            const ctx = typeof currentDomain === "string" && currentDomain !== "combined view"
+                ? currentDomain : null;
+            setSelectedDomain(ctx && cached.includes(ctx) ? ctx : cached[0]);
+            setDomainsLoading(false);
+            return;
+        }
+
+        // Otherwise fetch from the same endpoint the header uses
+        const ep = API.gdpr?.getDomains;
         if (!ep?.url) {
             setDomainsLoading(false);
             setDomainsError(true);
             return;
         }
-        fetch(ep.url, { method: ep.method || "GET", headers: ep.headers || {} })
+
+        const token = Authentication.getToken();
+        const org = Authentication.getOrganisation();
+
+        fetch(ep.url, {
+            method: ep.method || "GET",
+            headers: {
+                "Authorization": token || "",
+                "Organisation": org != null ? String(org) : "",
+                "Content-Type": "application/json",
+            },
+        })
             .then(r => r.ok ? r.json() : Promise.reject(r.status))
             .then(data => {
                 const raw = Array.isArray(data) ? data
                     : Array.isArray(data?.data) ? data.data
                     : [];
-                const filtered = raw
-                    .map(item => (typeof item === "string" ? item : item?.domain || ""))
+                const strings = raw
+                    .map(item => (typeof item === "string" ? item : (item?.domain || item?.host || "")))
                     .filter(d => d && d !== "combined view");
-                setDomains(filtered);
-                // Default: prefer the context domain if valid, else first from list
-                const ctx = typeof currentDomain === "string" && currentDomain !== "combined view"
-                    ? currentDomain : null;
-                setSelectedDomain(ctx && filtered.includes(ctx) ? ctx : (filtered[0] || ""));
+                if (strings.length === 0) {
+                    setDomainsError(true);
+                } else {
+                    applyDomains(strings);
+                }
             })
-            .catch(() => {
-                setDomainsError(true);
-            })
-            .finally(() => {
-                setDomainsLoading(false);
-            });
+            .catch(() => setDomainsError(true))
+            .finally(() => setDomainsLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    function applyDomains(list) {
+        setDomains(list);
+        const ctx = typeof currentDomain === "string" && currentDomain !== "combined view"
+            ? currentDomain : null;
+        setSelectedDomain(ctx && list.includes(ctx) ? ctx : (list[0] || ""));
+    }
+
+    const notLoggedIn = !authToken || !orgId;
 
     return (
         <>
@@ -68,7 +108,11 @@ export default function AdConnectionsSettings() {
                         </p>
                     </header>
 
-                    {domainsLoading ? (
+                    {notLoggedIn ? (
+                        <p style={{ color: "rgba(230,80,80,0.9)", fontSize: "0.9rem" }}>
+                            Session not found. Please reload the page or log in again.
+                        </p>
+                    ) : domainsLoading ? (
                         <p style={{ color: "rgba(180,185,200,0.7)" }}>Loading domains…</p>
                     ) : domainsError || domains.length === 0 ? (
                         <p style={{ color: "rgba(180,185,200,0.7)" }}>

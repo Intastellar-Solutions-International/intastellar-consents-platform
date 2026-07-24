@@ -78,6 +78,12 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                 { headers: { Authorization: authToken, Organisation: String(orgId) } }
             );
             const data = await resp.json();
+            if (data.missingConfig) {
+                const label = AD_PLATFORMS.find(x => x.id === platformId)?.label || platformId;
+                setStatus(`${label} OAuth credentials are not yet configured. Add the required environment variables in Vercel (e.g. GOOGLE_ADS_CLIENT_ID, OAUTH_REDIRECT_URI) to enable this connection.`, true);
+                setConnecting(null);
+                return;
+            }
             if (!resp.ok) {
                 setStatus(data.error || "Could not start connection.", true);
                 setConnecting(null);
