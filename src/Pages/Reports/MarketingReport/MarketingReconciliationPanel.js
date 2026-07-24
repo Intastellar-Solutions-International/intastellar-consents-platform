@@ -576,6 +576,17 @@ export default function MarketingReconciliationPanel({
     const hasScopeRows = Array.isArray(scopeRows) && scopeRows.length > 0;
     const noMatchedRows = filterActive && hasScopeRows && numConsents === 0;
 
+    // All utm_source values actually present in scope — surfaced when no platform match is found
+    const actualScopeSources = useMemo(() => {
+        if (!noMatchedRows || !Array.isArray(scopeRows)) return [];
+        const seen = new Set();
+        for (const r of scopeRows) {
+            const s = r && r.utmSource;
+            if (s && s !== "—" && s !== "(none)" && s !== "(not set)") seen.add(String(s));
+        }
+        return [...seen].sort((a, b) => a.localeCompare(b));
+    }, [noMatchedRows, scopeRows]);
+
     const clicksNum = Math.max(0, Number(currentValues.adClicks) || 0);
     const spendNum = Math.max(0, Number(currentValues.spend) || 0);
     const hasClicks = clicksNum > 0;
@@ -828,13 +839,30 @@ export default function MarketingReconciliationPanel({
                     >
                         <p>
                             No traffic tagged as <strong>{selectedPlatform.label}</strong> in {scopeSentence}.
-                            We match canonical <code>utm_source</code> values like{" "}
-                            <code>{(PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).join(", ") || "—"}</code>
-                            . Either your campaigns aren't UTM-tagged with a recognised source, or the
-                            traffic lives in a different channel — switch to{" "}
-                            <strong>Other / custom</strong> to reconcile against the scope total
-                            instead, or adjust your UTM tagging.
+                            We match <code>utm_source</code> values like{" "}
+                            <code>{(PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).join(", ") || "—"}</code>.
                         </p>
+                        {actualScopeSources.length > 0 ? (
+                            <p>
+                                Sources we <em>do</em> see in this scope:{" "}
+                                <code>
+                                    {actualScopeSources.slice(0, 10).join(", ")}
+                                    {actualScopeSources.length > 10
+                                        ? ` +${actualScopeSources.length - 10} more`
+                                        : ""}
+                                </code>
+                                . If your campaign uses one of these, switch to{" "}
+                                <strong>Other / custom</strong> to reconcile against the full scope,
+                                or update your UTM tags to a recognised source name.
+                            </p>
+                        ) : (
+                            <p>
+                                No <code>utm_source</code> values found in this scope at all —
+                                either the traffic isn't UTM-tagged, or it lives in a different
+                                channel. Switch to <strong>Other / custom</strong> to reconcile
+                                against the scope total instead.
+                            </p>
+                        )}
                     </div>
                 ) : (
                     <div className="marketing-reconciliation__filter-note" role="status">
