@@ -1948,3 +1948,207 @@
     height: auto;
     overflow: visible;
 }
+
+/* ── Domain gate ──────────────────────────────────────────────────────────── */
+
+.reconcile-domain-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 56px 24px;
+    margin: 24px 0;
+    border-radius: 16px;
+    border: 1.5px dashed rgba(192, 159, 83, 0.35);
+    background: rgba(192, 159, 83, 0.04);
+    text-align: center;
+}
+
+.reconcile-domain-gate__icon {
+    font-size: 2rem;
+    opacity: 0.55;
+}
+
+.reconcile-domain-gate__heading {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(240, 235, 220, 0.9);
+}
+
+.reconcile-domain-gate__body {
+    margin: 0;
+    max-width: 36rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: rgba(180, 175, 165, 0.85);
+}
+
+/* ── Ad Connection Manager ─────────────────────────────────────────────────── */
+
+.ad-connection-manager {
+    margin: 0 0 32px;
+    padding: 20px 22px 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(100, 180, 255, 0.15);
+    background: rgba(30, 50, 80, 0.18);
+}
+
+.ad-connection-manager__header {
+    margin-bottom: 14px;
+}
+
+.ad-connection-manager__title {
+    margin: 0 0 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(130, 185, 255, 0.85);
+}
+
+.ad-connection-manager__hint {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: rgba(160, 165, 175, 0.85);
+}
+
+.ad-connection-manager__loading {
+    font-size: 0.8rem;
+    color: rgba(160, 165, 175, 0.7);
+    margin: 0;
+}
+
+.ad-connection-manager__status {
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    background: rgba(60, 200, 100, 0.12);
+    border: 1px solid rgba(60, 200, 100, 0.25);
+    color: rgba(160, 230, 160, 0.95);
+}
+
+.ad-connection-manager__status--error {
+    background: rgba(220, 80, 60, 0.1);
+    border-color: rgba(220, 80, 60, 0.25);
+    color: rgba(255, 160, 140, 0.95);
+}
+
+.ad-connection-manager__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ── Individual connection card ────────────────────────────────────────────── */
+
+.ad-connection-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.03);
+    transition: border-color 0.15s;
+}
+
+.ad-connection-card--connected {
+    border-color: rgba(60, 180, 255, 0.2);
+    background: rgba(30, 80, 140, 0.12);
+}
+
+.ad-connection-card__icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+}
+
+.ad-connection-card__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ad-connection-card__name {
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: rgba(220, 220, 228, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ad-connection-card__meta {
+    font-size: 0.75rem;
+    color: rgba(120, 200, 120, 0.85);
+}
+
+.ad-connection-card__meta--dim {
+    color: rgba(140, 140, 150, 0.65);
+}
+
+.ad-connection-card__actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.ad-connection-card__btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.77rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s, opacity 0.15s;
+}
+
+.ad-connection-card__btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.ad-connection-card__btn--connect {
+    background: rgba(60, 140, 255, 0.18);
+    border-color: rgba(60, 140, 255, 0.35);
+    color: rgba(130, 185, 255, 0.95);
+}
+
+.ad-connection-card__btn--connect:not(:disabled):hover {
+    background: rgba(60, 140, 255, 0.28);
+}
+
+.ad-connection-card__btn--import {
+    background: rgba(60, 200, 100, 0.14);
+    border-color: rgba(60, 200, 100, 0.3);
+    color: rgba(130, 220, 150, 0.95);
+}
+
+.ad-connection-card__btn--import:not(:disabled):hover {
+    background: rgba(60, 200, 100, 0.24);
+}
+
+.ad-connection-card__btn--disconnect {
+    background: transparent;
+    border-color: rgba(200, 100, 80, 0.25);
+    color: rgba(200, 140, 130, 0.75);
+}
+
+.ad-connection-card__btn--disconnect:hover {
+    background: rgba(200, 80, 60, 0.1);
+    color: rgba(220, 160, 145, 0.9);
+}

@@ -25023,6 +25023,281 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js!./src/Pages/CookieDatabase/Style.css":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./src/Pages/CookieDatabase/Style.css ***!
+  \**********************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.cdb-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+}
+
+.cdb-tab {
+    padding: 7px 18px;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.cdb-tab.--active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #f2f2f2;
+}
+
+.cdb-tab:hover:not(.--active) {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.cdb-table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cdb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.cdb-table th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    white-space: nowrap;
+}
+
+.cdb-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.82);
+    vertical-align: top;
+}
+
+.cdb-table tr:last-child td {
+    border-bottom: none;
+}
+
+.cdb-table tr:hover td {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.cdb-name {
+    font-family: monospace;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #c8d8ff;
+    white-space: nowrap;
+}
+
+.cdb-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.cdb-badge.--analytics  { background: rgba(80,130,210,0.2); border: 1px solid rgba(80,130,210,0.35); color: #88b0e8; }
+.cdb-badge.--marketing  { background: rgba(220,80,80,0.2);  border: 1px solid rgba(220,80,80,0.35);  color: #f0a8a0; }
+.cdb-badge.--necessary  { background: rgba(80,180,100,0.2); border: 1px solid rgba(80,180,100,0.35); color: #7dd590; }
+.cdb-badge.--functional { background: rgba(192,159,83,0.2); border: 1px solid rgba(192,159,83,0.35); color: #d4b87a; }
+.cdb-badge.--security   { background: rgba(160,80,220,0.2); border: 1px solid rgba(160,80,220,0.35); color: #c88afa; }
+.cdb-badge.--pending    { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.45); }
+
+.cdb-source-tag {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.45);
+    white-space: nowrap;
+}
+
+.cdb-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 5px 8px;
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    width: 100%;
+    min-width: 90px;
+    outline: none;
+}
+
+.cdb-input:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cdb-select {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 5px 8px;
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.cdb-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.cdb-btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.cdb-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.cdb-btn.--promote {
+    background: rgba(80, 200, 120, 0.2);
+    border: 1px solid rgba(80, 200, 120, 0.4);
+    color: #7dd590;
+}
+
+.cdb-btn.--promote:hover:not(:disabled) {
+    background: rgba(80, 200, 120, 0.32);
+}
+
+.cdb-btn.--dismiss {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.cdb-btn.--dismiss:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.cdb-btn.--delete {
+    background: rgba(220, 80, 80, 0.12);
+    border: 1px solid rgba(220, 80, 80, 0.3);
+    color: #f0a8a0;
+}
+
+.cdb-btn.--delete:hover:not(:disabled) {
+    background: rgba(220, 80, 80, 0.22);
+}
+
+.cdb-count {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    margin-left: 6px;
+}
+
+.cdb-empty {
+    padding: 40px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.875rem;
+}
+
+.cdb-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: rgba(30, 38, 46, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: #f2f2f2;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    z-index: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+}
+
+.cdb-filter-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.cdb-filter-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    outline: none;
+    min-width: 200px;
+}
+
+.cdb-filter-input:focus {
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.cdb-times-seen {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    font-variant-numeric: tabular-nums;
+}
+
+.cdb-desc-cell {
+    max-width: 260px;
+    font-size: 0.775rem;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.4;
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/CookieDatabase/Style.css"],"names":[],"mappings":"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","sourcesContent":[".cdb-tabs {\n    display: flex;\n    gap: 4px;\n    margin-bottom: 20px;\n}\n\n.cdb-tab {\n    padding: 7px 18px;\n    border-radius: 8px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.5);\n    cursor: pointer;\n    transition: all 0.15s;\n}\n\n.cdb-tab.--active {\n    background: rgba(255, 255, 255, 0.08);\n    border-color: rgba(255, 255, 255, 0.2);\n    color: #f2f2f2;\n}\n\n.cdb-tab:hover:not(.--active) {\n    color: rgba(255, 255, 255, 0.75);\n}\n\n.cdb-table-wrap {\n    overflow-x: auto;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.cdb-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.8rem;\n}\n\n.cdb-table th {\n    padding: 10px 12px;\n    text-align: left;\n    font-size: 0.7rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(255, 255, 255, 0.4);\n    background: rgba(255, 255, 255, 0.03);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.07);\n    white-space: nowrap;\n}\n\n.cdb-table td {\n    padding: 9px 12px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.82);\n    vertical-align: top;\n}\n\n.cdb-table tr:last-child td {\n    border-bottom: none;\n}\n\n.cdb-table tr:hover td {\n    background: rgba(255, 255, 255, 0.025);\n}\n\n.cdb-name {\n    font-family: monospace;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8d8ff;\n    white-space: nowrap;\n}\n\n.cdb-badge {\n    display: inline-flex;\n    align-items: center;\n    padding: 2px 8px;\n    border-radius: 5px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    white-space: nowrap;\n}\n\n.cdb-badge.--analytics  { background: rgba(80,130,210,0.2); border: 1px solid rgba(80,130,210,0.35); color: #88b0e8; }\n.cdb-badge.--marketing  { background: rgba(220,80,80,0.2);  border: 1px solid rgba(220,80,80,0.35);  color: #f0a8a0; }\n.cdb-badge.--necessary  { background: rgba(80,180,100,0.2); border: 1px solid rgba(80,180,100,0.35); color: #7dd590; }\n.cdb-badge.--functional { background: rgba(192,159,83,0.2); border: 1px solid rgba(192,159,83,0.35); color: #d4b87a; }\n.cdb-badge.--security   { background: rgba(160,80,220,0.2); border: 1px solid rgba(160,80,220,0.35); color: #c88afa; }\n.cdb-badge.--pending    { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.45); }\n\n.cdb-source-tag {\n    font-size: 0.65rem;\n    padding: 2px 6px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.1);\n    color: rgba(255,255,255,0.45);\n    white-space: nowrap;\n}\n\n.cdb-input {\n    background: rgba(255, 255, 255, 0.06);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 6px;\n    padding: 5px 8px;\n    color: #f2f2f2;\n    font-size: 0.8rem;\n    width: 100%;\n    min-width: 90px;\n    outline: none;\n}\n\n.cdb-input:focus {\n    border-color: rgba(255, 255, 255, 0.3);\n}\n\n.cdb-select {\n    background: rgba(255, 255, 255, 0.06);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 6px;\n    padding: 5px 8px;\n    color: #f2f2f2;\n    font-size: 0.8rem;\n    outline: none;\n    cursor: pointer;\n}\n\n.cdb-actions {\n    display: flex;\n    gap: 6px;\n    align-items: center;\n    white-space: nowrap;\n}\n\n.cdb-btn {\n    padding: 5px 12px;\n    border-radius: 6px;\n    font-size: 0.75rem;\n    font-weight: 600;\n    border: none;\n    cursor: pointer;\n    transition: opacity 0.15s;\n}\n\n.cdb-btn:disabled {\n    opacity: 0.4;\n    cursor: not-allowed;\n}\n\n.cdb-btn.--promote {\n    background: rgba(80, 200, 120, 0.2);\n    border: 1px solid rgba(80, 200, 120, 0.4);\n    color: #7dd590;\n}\n\n.cdb-btn.--promote:hover:not(:disabled) {\n    background: rgba(80, 200, 120, 0.32);\n}\n\n.cdb-btn.--dismiss {\n    background: rgba(255, 255, 255, 0.05);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.45);\n}\n\n.cdb-btn.--dismiss:hover:not(:disabled) {\n    background: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.7);\n}\n\n.cdb-btn.--delete {\n    background: rgba(220, 80, 80, 0.12);\n    border: 1px solid rgba(220, 80, 80, 0.3);\n    color: #f0a8a0;\n}\n\n.cdb-btn.--delete:hover:not(:disabled) {\n    background: rgba(220, 80, 80, 0.22);\n}\n\n.cdb-count {\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.35);\n    margin-left: 6px;\n}\n\n.cdb-empty {\n    padding: 40px;\n    text-align: center;\n    color: rgba(255, 255, 255, 0.3);\n    font-size: 0.875rem;\n}\n\n.cdb-toast {\n    position: fixed;\n    bottom: 24px;\n    right: 24px;\n    padding: 10px 18px;\n    border-radius: 8px;\n    background: rgba(30, 38, 46, 0.96);\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    color: #f2f2f2;\n    font-size: 0.8125rem;\n    font-weight: 500;\n    z-index: 500;\n    box-shadow: 0 8px 32px rgba(0,0,0,0.4);\n    backdrop-filter: blur(8px);\n}\n\n.cdb-filter-row {\n    display: flex;\n    gap: 8px;\n    align-items: center;\n    margin-bottom: 14px;\n    flex-wrap: wrap;\n}\n\n.cdb-filter-input {\n    background: rgba(255, 255, 255, 0.06);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 6px;\n    padding: 6px 10px;\n    color: #f2f2f2;\n    font-size: 0.8rem;\n    outline: none;\n    min-width: 200px;\n}\n\n.cdb-filter-input:focus {\n    border-color: rgba(255, 255, 255, 0.28);\n}\n\n.cdb-times-seen {\n    font-size: 0.75rem;\n    color: rgba(255,255,255,0.5);\n    font-variant-numeric: tabular-nums;\n}\n\n.cdb-desc-cell {\n    max-width: 260px;\n    font-size: 0.775rem;\n    color: rgba(255,255,255,0.6);\n    line-height: 1.4;\n}\n"],"sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./src/Pages/Countries/Style.css":
 /*!*****************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./src/Pages/Countries/Style.css ***!
@@ -29587,7 +29862,430 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.marketing-report-page {
         flex-wrap: nowrap;
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Reports/MarketingReport/MarketingReport.css"],"names":[],"mappings":"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","sourcesContent":[".marketing-report-page {\n    padding-bottom: 48px;\n}\n\n.marketing-report-hero {\n    margin: 0 0 20px;\n}\n\n.marketing-report-hero h1 {\n    margin: 0 0 8px;\n    font-size: 1.35rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.marketing-report-hero p,\n.marketing-report-hero__lede {\n    margin: 0;\n    max-width: 52rem;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(200, 200, 205, 0.9);\n}\n\n.marketing-report-section {\n    margin-bottom: 28px;\n}\n\n.marketing-report-section__title {\n    margin: 0 0 6px;\n    font-size: 0.78rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.92);\n}\n\n.marketing-report-section__hint {\n    margin: 0 0 14px;\n    max-width: 44rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n}\n\n.marketing-highlights {\n    margin-bottom: 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 55%);\n}\n\n.marketing-highlights__h2 {\n    margin-bottom: 10px;\n}\n\n.marketing-highlights__eyebrow {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-highlights__headline {\n    margin: 0 0 8px;\n    font-size: 1.2rem;\n    font-weight: 600;\n    line-height: 1.35;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-highlights__sub {\n    margin: 0 0 16px;\n    max-width: 44rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(185, 185, 192, 0.92);\n}\n\n.marketing-highlights__list {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n    display: grid;\n    gap: 10px;\n}\n\n.marketing-highlights__item {\n    margin: 0;\n    padding: 12px 14px 12px 16px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    border-left-width: 3px;\n}\n\n.marketing-highlights__item--spotlight {\n    border-left-color: rgba(192, 159, 83, 0.95);\n}\n\n.marketing-highlights__item--win {\n    border-left-color: rgba(110, 185, 130, 0.9);\n}\n\n.marketing-highlights__item--watch {\n    border-left-color: rgba(220, 145, 115, 0.9);\n}\n\n.marketing-highlights__item--data {\n    border-left-color: rgba(140, 155, 190, 0.75);\n}\n\n.marketing-highlights__item-title {\n    display: block;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    color: rgba(210, 205, 195, 0.95);\n    margin-bottom: 6px;\n}\n\n.marketing-highlights__item-body {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(225, 225, 228, 0.94);\n}\n\n.marketing-report-banner {\n    margin-bottom: 20px;\n    padding: 12px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.28);\n    background: rgba(192, 159, 83, 0.08);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.marketing-report-summary {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));\n    gap: 12px;\n    margin-bottom: 22px;\n}\n\n.marketing-report-kpi {\n    padding: 14px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.marketing-report-kpi__label {\n    display: block;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n    margin-bottom: 6px;\n}\n\n.marketing-report-kpi__hint {\n    margin: 6px 0 0;\n    font-size: 0.7rem;\n    line-height: 1.4;\n    color: rgba(155, 155, 165, 0.95);\n    font-weight: 400;\n}\n\n.marketing-report-kpi__value {\n    font-size: 1.15rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: #f4f4f4;\n}\n\n.marketing-report-toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    margin-bottom: 12px;\n}\n\n.marketing-report-toolbar__left {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n}\n\n.marketing-report-toolbar__placeholder {\n    flex: 0 0 auto;\n    min-width: 1px;\n}\n\n.marketing-report-back {\n    flex: 0 0 auto;\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.1);\n    color: rgba(230, 220, 195, 0.98);\n    font-size: 0.8125rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-back:hover {\n    background: rgba(192, 159, 83, 0.18);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.marketing-report-toolbar__meta {\n    margin-left: auto;\n    font-size: 0.78rem;\n    color: rgba(180, 180, 188, 0.9);\n    text-align: right;\n}\n\n.marketing-report-export {\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(230, 230, 232, 0.96);\n    font-size: 0.78rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-export:hover {\n    background: rgba(255, 255, 255, 0.1);\n    border-color: rgba(255, 255, 255, 0.22);\n}\n\n.marketing-report-export--secondary {\n    border-color: rgba(192, 159, 83, 0.22);\n    background: rgba(192, 159, 83, 0.06);\n    color: rgba(230, 220, 200, 0.95);\n}\n\n.marketing-report-export--secondary:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.marketing-report-drill-title {\n    margin: 0 0 12px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-report-table-wrap {\n    overflow-x: auto;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n}\n\n.marketing-report-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.8125rem;\n}\n\n.marketing-report-table th,\n.marketing-report-table td {\n    padding: 10px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.92);\n    white-space: nowrap;\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.marketing-report-table td {\n    color: rgba(230, 230, 232, 0.95);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-report-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.marketing-report-table__row--clickable {\n    cursor: pointer;\n}\n\n.marketing-report-table__row--clickable:hover td {\n    background: rgba(192, 159, 83, 0.07);\n}\n\n.marketing-report-table__row--clickable:focus {\n    outline: none;\n}\n\n.marketing-report-table__row--clickable:focus-visible td:first-child {\n    box-shadow: inset 3px 0 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.marketing-report-channel-cell {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 10px;\n}\n\n.marketing-report-channel-cell__label {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-report-channel-cell__chevron {\n    flex-shrink: 0;\n    font-size: 0.9rem;\n    color: rgba(192, 159, 83, 0.75);\n}\n\n.marketing-report-table__empty-row {\n    text-align: center;\n    font-variant-numeric: normal;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-table--with-choices {\n    font-size: 0.78rem;\n}\n\n.marketing-report-table__col-choice {\n    min-width: 6.75rem;\n    max-width: 9.5rem;\n    white-space: normal;\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    line-height: 1.35;\n}\n\n.marketing-report-table th.marketing-report-table__col-choice {\n    text-align: right;\n    white-space: normal;\n    line-height: 1.25;\n}\n\n.marketing-report-footnote {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.92);\n}\n\n.marketing-report-table__col-channel {\n    min-width: 10.5rem;\n    max-width: 14rem;\n    white-space: normal;\n}\n\n.marketing-report-table__col-campaign {\n    min-width: 12rem;\n    max-width: 28rem;\n    white-space: normal;\n    word-break: break-word;\n    font-variant-numeric: normal;\n}\n\n.marketing-report-table__col-num {\n    width: 1%;\n    white-space: nowrap;\n    text-align: right;\n}\n\n.marketing-report-table th.marketing-report-table__col-num {\n    text-align: right;\n}\n\n.marketing-report-th-inner {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    width: 100%;\n    justify-content: flex-start;\n}\n\n.marketing-report-table th.marketing-report-table__col-num .marketing-report-th-inner,\n.marketing-report-table th.marketing-report-table__col-choice .marketing-report-th-inner {\n    justify-content: flex-end;\n}\n\n.marketing-report-th-label {\n    min-width: 0;\n}\n\n.marketing-report-col-sort {\n    flex-shrink: 0;\n    margin: 0;\n    padding: 2px 6px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.2);\n    color: rgba(175, 175, 185, 0.95);\n    font-size: 0.65rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: 0.02em;\n    line-height: 1.2;\n    cursor: pointer;\n}\n\n.marketing-report-col-sort:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    color: rgba(235, 228, 210, 0.98);\n    background: rgba(192, 159, 83, 0.1);\n}\n\n.marketing-report-col-sort--active {\n    border-color: rgba(192, 159, 83, 0.55);\n    color: rgba(240, 232, 210, 0.98);\n    background: rgba(192, 159, 83, 0.14);\n}\n\n.marketing-report-empty {\n    padding: 28px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-error {\n    padding: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 120, 120, 0.35);\n    background: rgba(80, 20, 20, 0.25);\n    color: rgba(255, 200, 200, 0.95);\n    font-size: 0.875rem;\n    margin-bottom: 16px;\n}\n\n.marketing-report-code {\n    margin-top: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    font-size: 0.72rem;\n    overflow-x: auto;\n    color: rgba(220, 220, 225, 0.9);\n}\n\n.marketing-context {\n    margin-bottom: 18px;\n    padding: 14px 16px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context--empty {\n    border-style: dashed;\n    border-color: rgba(255, 255, 255, 0.1);\n}\n\n.marketing-context__title {\n    margin: 0 0 6px;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-context__lede {\n    margin: 0 0 14px;\n    max-width: 48rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.92);\n}\n\n.marketing-context__empty-note {\n    margin: 0;\n    max-width: 48rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-context__empty-note code {\n    font-size: 0.72rem;\n    color: rgba(210, 195, 160, 0.95);\n}\n\n.marketing-context__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));\n    gap: 16px;\n    align-items: start;\n}\n\n.marketing-context__block-title {\n    margin: 0 0 8px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-context__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.72rem;\n}\n\n.marketing-context__table th,\n.marketing-context__table td {\n    padding: 6px 8px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: top;\n}\n\n.marketing-context__table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.85);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context__label {\n    word-break: break-word;\n    font-variant-numeric: normal;\n    color: rgba(230, 230, 232, 0.95);\n}\n\n.marketing-context__num {\n    text-align: right;\n    white-space: nowrap;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-context__split {\n    font-size: 0.68rem;\n    line-height: 1.35;\n    color: rgba(195, 195, 200, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-compare-banner {\n    margin: 12px 0 0;\n    max-width: 52rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(210, 200, 175, 0.95);\n}\n\n.marketing-report-compare-warning {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    padding: 10px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(220, 150, 100, 0.35);\n    background: rgba(60, 30, 15, 0.35);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(255, 210, 185, 0.96);\n}\n\n.marketing-report-kpi__compare {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.72rem;\n    font-weight: 500;\n    line-height: 1.35;\n}\n\n.marketing-report-cell-stack {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-end;\n    gap: 3px;\n}\n\n.marketing-report-table__col-campaign .marketing-report-cell-stack {\n    align-items: flex-start;\n}\n\n.marketing-report-cell-stack__primary {\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-cell-stack__compare {\n    font-size: 0.68rem;\n    line-height: 1.25;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-delta {\n    font-weight: 600;\n    letter-spacing: 0.01em;\n}\n\n.marketing-report-delta--up {\n    color: rgba(130, 205, 155, 0.95);\n}\n\n.marketing-report-delta--down {\n    color: rgba(235, 145, 125, 0.95);\n}\n\n.marketing-report-delta--flat {\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-report-delta--new {\n    font-weight: 500;\n    color: rgba(160, 185, 220, 0.92);\n}\n\n/*\n * Marketing dashboard chart strip.\n *\n * The overview view shows two cards side-by-side (choice mix donut +\n * channels bar). The channel drill-down shows five cards: a wide one for\n * \"top campaigns\" and four half-width for mix, acceptance %, countries,\n * and paths. On narrow screens everything collapses to a single column.\n */\n.marketing-charts {\n    margin-bottom: 28px;\n}\n\n.marketing-charts__grid {\n    display: grid;\n    gap: 16px;\n}\n\n.marketing-charts__grid--two-up {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n}\n\n.marketing-charts__grid--three-up {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__grid--three-up {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__grid--two-up,\n    .marketing-charts__grid--three-up {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-charts__card {\n    display: flex;\n    flex-direction: column;\n    min-height: 280px;\n    padding: 14px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.18);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.06) 0%, rgba(0, 0, 0, 0.22) 60%);\n}\n\n.marketing-charts__card--wide {\n    grid-column: span 2;\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__card--wide {\n        grid-column: span 2;\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__card--wide {\n        grid-column: span 1;\n    }\n}\n\n.marketing-charts__card-header {\n    margin-bottom: 8px;\n}\n\n.marketing-charts__card-title {\n    margin: 0 0 4px;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(245, 243, 238, 0.96);\n}\n\n.marketing-charts__card-sub {\n    margin: 0;\n    font-size: 0.74rem;\n    line-height: 1.4;\n    color: rgba(170, 170, 180, 0.9);\n}\n\n.marketing-charts__card-body {\n    flex: 1;\n    min-height: 220px;\n    position: relative;\n}\n\n/*\n * AnyChart's pie/bar containers need an explicit height; the inner chart\n * renders into a block element inside <div class=\"chart\">.\n */\n.marketing-charts__card-body .widget {\n    height: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__card-body .chart {\n    width: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__empty {\n    margin: 0;\n    padding: 18px 14px;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.88);\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px dashed rgba(192, 159, 83, 0.24);\n}\n\n.marketing-charts__card--timeseries {\n    margin-top: 0;\n}\n\n.marketing-charts__card-body--tall {\n    min-height: 350px;\n}\n\n.marketing-charts__card-body--tall .widget,\n.marketing-charts__card-body--tall .chart {\n    min-height: 350px;\n}\n\n/*\n * --- Visibility reframe --------------------------------------------------\n *\n * The \"analytics-invisible traffic\" narrative and supporting cues.\n * Color palette stays in the platform gold/amber family so the warning\n * reads as \"pay attention\" rather than \"something is broken\" — this is a\n * product-level insight, not an error state.\n */\n\n.marketing-report-visibility-narrative {\n    margin: 4px 0 16px;\n    padding: 12px 14px 13px;\n    max-width: 62rem;\n    font-size: 0.85rem;\n    line-height: 1.55;\n    color: rgba(240, 230, 205, 0.95);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.25) 65%);\n    border: 1px solid rgba(210, 165, 80, 0.28);\n    border-left: 3px solid rgba(210, 165, 80, 0.82);\n    border-radius: 10px;\n}\n\n.marketing-report-visibility-narrative strong {\n    color: rgba(255, 235, 195, 1);\n    font-weight: 600;\n}\n\n.marketing-report-kpi--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.24) 60%);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__label {\n    color: rgba(235, 205, 145, 0.92);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__value {\n    color: rgba(255, 235, 195, 1);\n}\n\n/*\n * Per-row \"analytics blind spot\" highlight.\n *\n * A faint amber tint + a thick leading border drawn via a box-shadow\n * inset so it doesn't shift row layout. The badge sits next to the\n * campaign / channel name in lowercase to read as a label, not a button.\n */\n\n.marketing-report-table__row--blind-spot {\n    background: rgba(210, 165, 80, 0.06);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.6);\n}\n\n.marketing-report-table__row--blind-spot.marketing-report-table__row--clickable:hover,\n.marketing-report-table__row--blind-spot:hover {\n    background: rgba(210, 165, 80, 0.12);\n}\n\n.marketing-report-blind-spot-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 2px 8px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n/*\n * --- Channels table pagination -----------------------------------------\n *\n * Compact pager shown under the overview table so the list never grows\n * past ten rows. Prev/Next buttons sit to either side of the numbered\n * pages; ellipsis gaps compress long page lists. Meta text reports the\n * window so totals stay visible without the user opening the CSV export.\n */\n\n.marketing-report-pagination {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: center;\n    gap: 6px 10px;\n    margin-top: 14px;\n    padding: 18px 8px 14px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-pagination__btn {\n    padding: 7px 12px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-report-pagination__btn:hover:not(:disabled) {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.08);\n}\n\n.marketing-report-pagination__btn:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__btn:disabled {\n    opacity: 0.38;\n    cursor: not-allowed;\n}\n\n.marketing-report-pagination__pages {\n    display: flex;\n    gap: 4px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-report-pagination__page {\n    min-width: 34px;\n    padding: 7px 10px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.88);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 7px;\n    cursor: pointer;\n    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;\n}\n\n.marketing-report-pagination__page:hover {\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-report-pagination__page:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__page--active,\n.marketing-report-pagination__page--active:hover {\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, rgba(216, 181, 106, 0.96) 0%, rgba(184, 141, 60, 0.96) 100%);\n    border-color: rgba(192, 159, 83, 0.65);\n    font-weight: 600;\n    cursor: default;\n}\n\n.marketing-report-pagination__gap {\n    padding: 7px 2px;\n    color: rgba(160, 160, 170, 0.7);\n    -webkit-user-select: none;\n    user-select: none;\n}\n\n.marketing-report-pagination__meta {\n    flex-basis: 100%;\n    margin-top: 2px;\n    font-size: 0.76rem;\n    line-height: 1.4;\n    color: rgba(180, 180, 190, 0.86);\n    text-align: center;\n}\n\n.marketing-report-pagination__meta strong {\n    color: rgba(230, 230, 235, 0.95);\n    font-weight: 600;\n}\n\n@media (min-width: 720px) {\n    .marketing-report-pagination__meta {\n        flex-basis: auto;\n        margin-top: 0;\n        margin-left: 12px;\n        text-align: left;\n    }\n}\n\n/*\n * --- Ad-platform reconciliation panel ----------------------------------\n *\n * Sits between the KPI grid and the chart strip. Inputs stack responsively;\n * result cards flow in a 3–4 column grid on wide screens, collapsing to a\n * single column on phones. The \"good\" and \"warn\" tones match the rest of\n * the dashboard's palette (green accents for visibility, gold/amber for the\n * invisible-gap card).\n */\n\n.marketing-reconciliation {\n    margin: 0 0 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(\n        155deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n}\n\n.marketing-reconciliation__header {\n    margin-bottom: 14px;\n}\n\n.marketing-reconciliation__inputs {\n    display: grid;\n    grid-template-columns: 1.2fr 1fr 1fr auto;\n    gap: 12px 14px;\n    align-items: end;\n    margin-bottom: 8px;\n}\n\n@media (max-width: 900px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n\n@media (max-width: 540px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-reconciliation__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__field-label {\n    font-size: 0.74rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.86);\n}\n\n.marketing-reconciliation__input,\n.marketing-reconciliation__select {\n    width: 100%;\n    padding: 9px 11px;\n    font-size: 0.88rem;\n    font-family: inherit;\n    color: rgba(245, 243, 238, 0.98);\n    background: rgba(0, 0, 0, 0.28);\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 8px;\n    outline: none;\n    transition:\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__input:focus,\n.marketing-reconciliation__select:focus {\n    border-color: rgba(192, 159, 83, 0.6);\n    background: rgba(0, 0, 0, 0.38);\n}\n\n.marketing-reconciliation__money {\n    display: flex;\n    gap: 6px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__input--money {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-reconciliation__select--currency {\n    flex: 0 0 auto;\n    width: 88px;\n}\n\n.marketing-reconciliation__actions {\n    display: flex;\n    justify-content: flex-end;\n    align-items: flex-end;\n}\n\n.marketing-reconciliation__clear {\n    padding: 9px 14px;\n    font-size: 0.82rem;\n    font-family: inherit;\n    color: rgba(215, 215, 220, 0.94);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.18);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease;\n}\n\n.marketing-reconciliation__clear:hover {\n    border-color: rgba(210, 165, 80, 0.5);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__window-hint {\n    margin: 2px 0 16px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(160, 160, 170, 0.88);\n}\n\n.marketing-reconciliation__empty {\n    padding: 18px 16px;\n    font-size: 0.88rem;\n    line-height: 1.55;\n    color: rgba(185, 185, 195, 0.92);\n    border: 1px dashed rgba(192, 159, 83, 0.28);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.marketing-reconciliation__empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n/*\n * Result grid: 4-up on wide desktops (three reconciliation cards + cost\n * card when spend is entered), graceful fallback to 2-up and 1-up.\n */\n.marketing-reconciliation__results {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\n    gap: 12px;\n    margin-top: 4px;\n}\n\n.marketing-reconciliation__result {\n    padding: 14px 14px 15px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.035);\n}\n\n.marketing-reconciliation__result--good {\n    border-color: rgba(140, 200, 130, 0.35);\n    background: linear-gradient(\n        155deg,\n        rgba(140, 200, 130, 0.12) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.14) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result-title {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.92);\n}\n\n.marketing-reconciliation__result--good .marketing-reconciliation__result-title {\n    color: rgba(175, 220, 165, 0.95);\n}\n\n.marketing-reconciliation__result--warn .marketing-reconciliation__result-title {\n    color: rgba(235, 200, 140, 0.95);\n}\n\n.marketing-reconciliation__result-headline {\n    margin: 0 0 6px;\n    font-size: 1.3rem;\n    font-weight: 600;\n    line-height: 1.25;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-reconciliation__result-detail {\n    margin: 0;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(195, 195, 205, 0.9);\n}\n\n.marketing-reconciliation__result-sub {\n    margin: 8px 0 0;\n    padding-top: 8px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.86);\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n/*\n * --- Reconciliation: save / snapshots --------------------------------\n *\n * The save button shares the actions slot with \"Clear inputs\" and gets\n * the gold accent treatment so it reads as the primary CTA. The\n * snapshots list is a collapsible details-style block with a compact\n * table — wide enough to be useful, narrow enough not to dominate.\n */\n\n.marketing-reconciliation__actions {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n    align-items: stretch;\n}\n\n@media (min-width: 901px) {\n    .marketing-reconciliation__actions {\n        flex-direction: row;\n        align-items: flex-end;\n        justify-content: flex-end;\n    }\n}\n\n.marketing-reconciliation__save {\n    padding: 9px 16px;\n    font-size: 0.84rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, #d8b56a 0%, #b88d3c 100%);\n    border: 1px solid rgba(192, 159, 83, 0.7);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        transform 80ms ease,\n        box-shadow 120ms ease,\n        opacity 120ms ease;\n}\n\n.marketing-reconciliation__save:hover:not(:disabled) {\n    transform: translateY(-1px);\n    box-shadow: 0 6px 14px -8px rgba(210, 165, 80, 0.6);\n}\n\n.marketing-reconciliation__save:disabled {\n    cursor: not-allowed;\n    opacity: 0.45;\n}\n\n.marketing-reconciliation__snapshots {\n    margin-top: 22px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.07);\n}\n\n.marketing-reconciliation__snapshots-bar {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n\n.marketing-reconciliation__snapshots-toggle {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 7px 10px 7px 6px;\n    margin-left: -6px;\n    font-size: 0.86rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(235, 233, 228, 0.96);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 8px;\n    cursor: pointer;\n    transition: background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-toggle:hover {\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-reconciliation__snapshots-count {\n    display: inline-flex;\n    min-width: 22px;\n    height: 22px;\n    padding: 0 7px;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.74rem;\n    font-weight: 600;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n}\n\n.marketing-reconciliation__snapshots-actions {\n    display: inline-flex;\n    gap: 8px;\n}\n\n.marketing-reconciliation__snapshots-export,\n.marketing-reconciliation__snapshots-clear {\n    padding: 7px 12px;\n    font-size: 0.78rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-export:hover {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__snapshots-clear:hover {\n    border-color: rgba(220, 110, 110, 0.55);\n    color: rgba(245, 175, 175, 0.98);\n}\n\n.marketing-reconciliation__snapshots-empty {\n    margin: 14px 0 0;\n    padding: 14px 14px;\n    font-size: 0.84rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.9);\n    border: 1px dashed rgba(255, 255, 255, 0.12);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.1);\n}\n\n.marketing-reconciliation__snapshots-empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n.marketing-reconciliation__snapshots-table-wrap {\n    margin-top: 14px;\n    overflow-x: auto;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__snapshots-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n    color: rgba(225, 225, 230, 0.94);\n}\n\n.marketing-reconciliation__snapshots-table thead th {\n    padding: 9px 10px;\n    text-align: left;\n    font-size: 0.7rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(180, 180, 190, 0.92);\n    background: rgba(255, 255, 255, 0.03);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-table tbody td {\n    padding: 9px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    vertical-align: top;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:hover {\n    background: rgba(255, 255, 255, 0.025);\n}\n\n.marketing-reconciliation__snapshots-table .num {\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-metric,\n.marketing-reconciliation__snapshots-sub {\n    color: rgba(160, 160, 170, 0.86);\n    font-size: 0.74rem;\n}\n\n.marketing-reconciliation__snapshots-delete {\n    padding: 2px 8px;\n    font-size: 1rem;\n    line-height: 1;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.7);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 6px;\n    cursor: pointer;\n    transition:\n        color 120ms ease,\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-delete:hover {\n    color: rgba(245, 175, 175, 0.98);\n    border-color: rgba(220, 110, 110, 0.45);\n    background: rgba(220, 110, 110, 0.08);\n}\n\n/*\n * --- Reconciliation: over-count & caption ----------------------------\n *\n * \"Over-count\" = the scope's attributed consents exceed the reported\n * clicks/sessions from the ad platform (multi-session visits, pre-\n * consented returns, UTM-tagged URLs shared beyond the ad). The row is\n * lightly tinted amber, the Reported cell carries a compact badge, and\n * the in-cell share label is capped at \"100%+\" so the math stays\n * readable.\n */\n.marketing-reconciliation__snapshots-caption {\n    margin: 0 0 10px;\n    font-size: 0.78rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.86);\n}\n\n.marketing-reconciliation__over-count-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 1px 7px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__over-count-badge--inline {\n    margin: 0 4px;\n}\n\n.marketing-reconciliation__snapshots-row--overcount {\n    background: rgba(210, 165, 80, 0.05);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.45);\n}\n\n.marketing-reconciliation__snapshots-row--overcount:hover {\n    background: rgba(210, 165, 80, 0.09);\n}\n\n/*\n * --- Reconciliation: platform filter note ----------------------------\n *\n * The filter note sits between the inputs and the result cards. When\n * the filter is active and matched, it shows the coverage + matched\n * utm_source values. When active and empty, it swaps to a warn tone\n * prompting the user to fix their UTM tagging or switch to \"Other\".\n */\n\n.marketing-reconciliation__filter-note {\n    margin: 0 0 14px;\n    padding: 10px 14px;\n    font-size: 0.82rem;\n    line-height: 1.55;\n    color: rgba(215, 215, 220, 0.92);\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__filter-note p {\n    margin: 0;\n}\n\n.marketing-reconciliation__filter-note code {\n    padding: 1px 6px;\n    font-size: 0.78rem;\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.1);\n    border: 1px solid rgba(210, 165, 80, 0.25);\n    border-radius: 5px;\n}\n\n.marketing-reconciliation__filter-note--empty {\n    color: rgba(245, 210, 170, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 130, 80, 0.15) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n    border-color: rgba(220, 140, 90, 0.45);\n}\n\n/*\n * --- Suggestions strip ------------------------------------------------\n *\n * Sits between the KPI grid and the reconciliation panel. Visually quieter\n * than the KPI cards (no large numbers) so it reads as a *next move*\n * footnote, not as another metric. Severity is encoded in (1) a chip in\n * the card head, (2) a coloured left border, and (3) a faint background\n * tint — three independent cues so colour-blind readers still see the\n * priority distinction.\n */\n\n.marketing-suggestions {\n    margin: 0 0 28px;\n    padding: 16px 18px 18px;\n    border-radius: 14px;\n    background: linear-gradient(\n        155deg,\n        rgba(255, 255, 255, 0.03) 0%,\n        rgba(255, 255, 255, 0.01) 100%\n    );\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-suggestions__head {\n    margin: 0 0 12px;\n}\n\n.marketing-suggestions__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.95);\n}\n\n.marketing-suggestions__hint {\n    margin: 4px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n    max-width: 56rem;\n}\n\n.marketing-suggestions__list {\n    display: grid;\n    gap: 10px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-suggestions__card {\n    position: relative;\n    padding: 14px 16px 14px 18px;\n    background: rgba(255, 255, 255, 0.025);\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    border-radius: 10px;\n    border-left-width: 3px;\n}\n\n.marketing-suggestions__card--critical {\n    border-left-color: rgba(232, 95, 95, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(232, 95, 95, 0.08) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--high {\n    border-left-color: rgba(210, 165, 80, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.07) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--medium {\n    border-left-color: rgba(130, 175, 220, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(130, 175, 220, 0.05) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--low {\n    border-left-color: rgba(160, 160, 170, 0.6);\n}\n\n.marketing-suggestions__card-head {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 6px;\n}\n\n.marketing-suggestions__severity {\n    display: inline-flex;\n    align-items: center;\n    padding: 2px 8px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    border-radius: 999px;\n    border: 1px solid currentColor;\n    line-height: 1.4;\n}\n\n.marketing-suggestions__severity--critical {\n    color: rgba(255, 180, 180, 0.95);\n    background: rgba(232, 95, 95, 0.12);\n}\n\n.marketing-suggestions__severity--high {\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.14);\n}\n\n.marketing-suggestions__severity--medium {\n    color: rgba(190, 220, 245, 0.95);\n    background: rgba(130, 175, 220, 0.12);\n}\n\n.marketing-suggestions__severity--low {\n    color: rgba(200, 200, 210, 0.85);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__card-title {\n    margin: 0;\n    font-size: 0.92rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.96);\n    line-height: 1.35;\n}\n\n.marketing-suggestions__card-body {\n    margin: 0 0 10px;\n    font-size: 0.84rem;\n    line-height: 1.5;\n    color: rgba(200, 200, 210, 0.92);\n}\n\n.marketing-suggestions__card-actions {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 8px 12px;\n}\n\n.marketing-suggestions__cta {\n    display: inline-flex;\n    align-items: center;\n    padding: 7px 14px;\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(216, 181, 106, 0.96) 0%,\n        rgba(184, 141, 60, 0.96) 100%\n    );\n    border-radius: 7px;\n    text-decoration: none;\n    transition: filter 120ms ease, transform 120ms ease;\n}\n\n.marketing-suggestions__cta:hover,\n.marketing-suggestions__cta:focus-visible {\n    filter: brightness(1.07);\n    text-decoration: none;\n}\n\n.marketing-suggestions__cta:focus-visible {\n    outline: 2px solid rgba(255, 225, 170, 0.85);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__snooze {\n    padding: 6px 10px;\n    font-size: 0.76rem;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.86);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-suggestions__snooze:hover,\n.marketing-suggestions__snooze:focus-visible {\n    border-color: rgba(255, 255, 255, 0.32);\n    color: rgba(240, 240, 245, 0.96);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__snooze:focus-visible {\n    outline: 2px solid rgba(160, 160, 170, 0.6);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__evidence {\n    margin-top: 10px;\n    font-size: 0.76rem;\n    color: rgba(160, 160, 170, 0.9);\n}\n\n.marketing-suggestions__evidence summary {\n    cursor: pointer;\n    -webkit-user-select: none;\n    user-select: none;\n    color: rgba(180, 180, 190, 0.86);\n    transition: color 120ms ease;\n}\n\n.marketing-suggestions__evidence summary:hover {\n    color: rgba(220, 220, 230, 0.96);\n}\n\n.marketing-suggestions__evidence ul {\n    margin: 8px 0 0;\n    padding: 0 0 0 18px;\n    line-height: 1.55;\n}\n\n.marketing-suggestions__evidence code {\n    padding: 1px 6px;\n    font-size: 0.74rem;\n    color: rgba(220, 220, 230, 0.92);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 4px;\n}\n\n@media (min-width: 720px) {\n    .marketing-suggestions__card-head {\n        flex-wrap: nowrap;\n    }\n}\n"],"sourceRoot":""}]);
+
+/* ── Ad Reconciliation CTA (in Channel Analytics) ─────────────────────── */
+.marketing-reconciliation-cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    margin: 32px 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.marketing-reconciliation-cta__text {
+    margin: 0;
+    color: rgba(220, 220, 230, 0.75);
+    font-size: 0.9rem;
+}
+
+.marketing-reconciliation-cta__link {
+    white-space: nowrap;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #7c9ff5;
+    text-decoration: none;
+}
+
+.marketing-reconciliation-cta__link:hover {
+    text-decoration: underline;
+}
+
+/* ── Reconcile page channel filter ────────────────────────────────────── */
+.marketing-reconciliation-page__channel-filter {
+    margin-bottom: 24px;
+}
+
+.marketing-reconciliation-page__channel-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.88rem;
+    color: rgba(220, 220, 230, 0.8);
+}
+
+.marketing-reconciliation-page__back-link {
+    color: #7c9ff5;
+    text-decoration: none;
+}
+
+.marketing-reconciliation-page__back-link:hover {
+    text-decoration: underline;
+}
+
+/* ── Shared section headers ────────────────────────────────────────────── */
+.marketing-reconciliation__section-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(220, 220, 230, 0.9);
+    margin: 0 0 4px;
+}
+
+.marketing-reconciliation__section-hint {
+    font-size: 0.82rem;
+    color: rgba(200, 200, 210, 0.55);
+    margin: 0 0 16px;
+    line-height: 1.5;
+}
+
+/* ── Platform comparison table ─────────────────────────────────────────── */
+.marketing-reconciliation__comparison {
+    margin: 28px 0 0;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.marketing-reconciliation__comparison-wrap {
+    overflow-x: auto;
+}
+
+.marketing-reconciliation__comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+}
+
+.marketing-reconciliation__comparison-table th,
+.marketing-reconciliation__comparison-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+}
+
+.marketing-reconciliation__comparison-table th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(200, 200, 210, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.marketing-reconciliation__comparison-table td {
+    color: rgba(220, 220, 230, 0.85);
+}
+
+.marketing-reconciliation__comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+.marketing-reconciliation__comparison-table .num {
+    text-align: right;
+}
+
+.marketing-reconciliation__comparison-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.marketing-reconciliation__comparison-good {
+    color: #4caf7d;
+    font-weight: 600;
+}
+
+.marketing-reconciliation__comparison-warn {
+    color: #f5a623;
+    font-weight: 600;
+}
+
+/* ── Visibility improvement projection ─────────────────────────────────── */
+.marketing-reconciliation__projection {
+    margin: 20px 0 0;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.marketing-reconciliation__projection-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+}
+
+.marketing-reconciliation__projection-table th,
+.marketing-reconciliation__projection-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.marketing-reconciliation__projection-table th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(200, 200, 210, 0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.marketing-reconciliation__projection-table td {
+    color: rgba(220, 220, 230, 0.85);
+}
+
+.marketing-reconciliation__projection-table tr:last-child td {
+    border-bottom: none;
+}
+
+.marketing-reconciliation__projection-table .num {
+    text-align: right;
+}
+
+.marketing-reconciliation__projection-row--current td {
+    color: rgba(200, 200, 210, 0.55);
+    font-style: italic;
+}
+
+/* ── Visibility trend chart ────────────────────────────────────────────── */
+.marketing-reconciliation__trend {
+    margin: 20px 0 0;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+.marketing-reconciliation__trend-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin-bottom: 12px;
+}
+
+.marketing-reconciliation__trend-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    color: rgba(200, 200, 210, 0.8);
+}
+
+.marketing-reconciliation__trend-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.marketing-reconciliation__trend-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+/* ── Domain gate ──────────────────────────────────────────────────────────── */
+
+.reconcile-domain-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 56px 24px;
+    margin: 24px 0;
+    border-radius: 16px;
+    border: 1.5px dashed rgba(192, 159, 83, 0.35);
+    background: rgba(192, 159, 83, 0.04);
+    text-align: center;
+}
+
+.reconcile-domain-gate__icon {
+    font-size: 2rem;
+    opacity: 0.55;
+}
+
+.reconcile-domain-gate__heading {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(240, 235, 220, 0.9);
+}
+
+.reconcile-domain-gate__body {
+    margin: 0;
+    max-width: 36rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: rgba(180, 175, 165, 0.85);
+}
+
+/* ── Ad Connection Manager ─────────────────────────────────────────────────── */
+
+.ad-connection-manager {
+    margin: 0 0 32px;
+    padding: 20px 22px 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(100, 180, 255, 0.15);
+    background: rgba(30, 50, 80, 0.18);
+}
+
+.ad-connection-manager__header {
+    margin-bottom: 14px;
+}
+
+.ad-connection-manager__title {
+    margin: 0 0 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(130, 185, 255, 0.85);
+}
+
+.ad-connection-manager__hint {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: rgba(160, 165, 175, 0.85);
+}
+
+.ad-connection-manager__loading {
+    font-size: 0.8rem;
+    color: rgba(160, 165, 175, 0.7);
+    margin: 0;
+}
+
+.ad-connection-manager__status {
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    background: rgba(60, 200, 100, 0.12);
+    border: 1px solid rgba(60, 200, 100, 0.25);
+    color: rgba(160, 230, 160, 0.95);
+}
+
+.ad-connection-manager__status--error {
+    background: rgba(220, 80, 60, 0.1);
+    border-color: rgba(220, 80, 60, 0.25);
+    color: rgba(255, 160, 140, 0.95);
+}
+
+.ad-connection-manager__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ── Individual connection card ────────────────────────────────────────────── */
+
+.ad-connection-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.03);
+    transition: border-color 0.15s;
+}
+
+.ad-connection-card--connected {
+    border-color: rgba(60, 180, 255, 0.2);
+    background: rgba(30, 80, 140, 0.12);
+}
+
+.ad-connection-card__icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    letter-spacing: -0.02em;
+}
+
+.ad-connection-card__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ad-connection-card__name {
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: rgba(220, 220, 228, 0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ad-connection-card__meta {
+    font-size: 0.75rem;
+    color: rgba(120, 200, 120, 0.85);
+}
+
+.ad-connection-card__meta--dim {
+    color: rgba(140, 140, 150, 0.65);
+}
+
+.ad-connection-card__actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.ad-connection-card__btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.77rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s, opacity 0.15s;
+}
+
+.ad-connection-card__btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.ad-connection-card__btn--connect {
+    background: rgba(60, 140, 255, 0.18);
+    border-color: rgba(60, 140, 255, 0.35);
+    color: rgba(130, 185, 255, 0.95);
+}
+
+.ad-connection-card__btn--connect:not(:disabled):hover {
+    background: rgba(60, 140, 255, 0.28);
+}
+
+.ad-connection-card__btn--import {
+    background: rgba(60, 200, 100, 0.14);
+    border-color: rgba(60, 200, 100, 0.3);
+    color: rgba(130, 220, 150, 0.95);
+}
+
+.ad-connection-card__btn--import:not(:disabled):hover {
+    background: rgba(60, 200, 100, 0.24);
+}
+
+.ad-connection-card__btn--disconnect {
+    background: transparent;
+    border-color: rgba(200, 100, 80, 0.25);
+    color: rgba(200, 140, 130, 0.75);
+}
+
+.ad-connection-card__btn--disconnect:hover {
+    background: rgba(200, 80, 60, 0.1);
+    color: rgba(220, 160, 145, 0.9);
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/Reports/MarketingReport/MarketingReport.css"],"names":[],"mappings":"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","sourcesContent":[".marketing-report-page {\n    padding-bottom: 48px;\n}\n\n.marketing-report-hero {\n    margin: 0 0 20px;\n}\n\n.marketing-report-hero h1 {\n    margin: 0 0 8px;\n    font-size: 1.35rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.marketing-report-hero p,\n.marketing-report-hero__lede {\n    margin: 0;\n    max-width: 52rem;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(200, 200, 205, 0.9);\n}\n\n.marketing-report-section {\n    margin-bottom: 28px;\n}\n\n.marketing-report-section__title {\n    margin: 0 0 6px;\n    font-size: 0.78rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.92);\n}\n\n.marketing-report-section__hint {\n    margin: 0 0 14px;\n    max-width: 44rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n}\n\n.marketing-highlights {\n    margin-bottom: 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 55%);\n}\n\n.marketing-highlights__h2 {\n    margin-bottom: 10px;\n}\n\n.marketing-highlights__eyebrow {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-highlights__headline {\n    margin: 0 0 8px;\n    font-size: 1.2rem;\n    font-weight: 600;\n    line-height: 1.35;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-highlights__sub {\n    margin: 0 0 16px;\n    max-width: 44rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(185, 185, 192, 0.92);\n}\n\n.marketing-highlights__list {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n    display: grid;\n    gap: 10px;\n}\n\n.marketing-highlights__item {\n    margin: 0;\n    padding: 12px 14px 12px 16px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    border-left-width: 3px;\n}\n\n.marketing-highlights__item--spotlight {\n    border-left-color: rgba(192, 159, 83, 0.95);\n}\n\n.marketing-highlights__item--win {\n    border-left-color: rgba(110, 185, 130, 0.9);\n}\n\n.marketing-highlights__item--watch {\n    border-left-color: rgba(220, 145, 115, 0.9);\n}\n\n.marketing-highlights__item--data {\n    border-left-color: rgba(140, 155, 190, 0.75);\n}\n\n.marketing-highlights__item-title {\n    display: block;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    color: rgba(210, 205, 195, 0.95);\n    margin-bottom: 6px;\n}\n\n.marketing-highlights__item-body {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(225, 225, 228, 0.94);\n}\n\n.marketing-report-banner {\n    margin-bottom: 20px;\n    padding: 12px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.28);\n    background: rgba(192, 159, 83, 0.08);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.marketing-report-summary {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));\n    gap: 12px;\n    margin-bottom: 22px;\n}\n\n.marketing-report-kpi {\n    padding: 14px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.marketing-report-kpi__label {\n    display: block;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n    margin-bottom: 6px;\n}\n\n.marketing-report-kpi__hint {\n    margin: 6px 0 0;\n    font-size: 0.7rem;\n    line-height: 1.4;\n    color: rgba(155, 155, 165, 0.95);\n    font-weight: 400;\n}\n\n.marketing-report-kpi__value {\n    font-size: 1.15rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: #f4f4f4;\n}\n\n.marketing-report-toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    margin-bottom: 12px;\n}\n\n.marketing-report-toolbar__left {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n}\n\n.marketing-report-toolbar__placeholder {\n    flex: 0 0 auto;\n    min-width: 1px;\n}\n\n.marketing-report-back {\n    flex: 0 0 auto;\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.1);\n    color: rgba(230, 220, 195, 0.98);\n    font-size: 0.8125rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-back:hover {\n    background: rgba(192, 159, 83, 0.18);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.marketing-report-toolbar__meta {\n    margin-left: auto;\n    font-size: 0.78rem;\n    color: rgba(180, 180, 188, 0.9);\n    text-align: right;\n}\n\n.marketing-report-export {\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(230, 230, 232, 0.96);\n    font-size: 0.78rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-export:hover {\n    background: rgba(255, 255, 255, 0.1);\n    border-color: rgba(255, 255, 255, 0.22);\n}\n\n.marketing-report-export--secondary {\n    border-color: rgba(192, 159, 83, 0.22);\n    background: rgba(192, 159, 83, 0.06);\n    color: rgba(230, 220, 200, 0.95);\n}\n\n.marketing-report-export--secondary:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.marketing-report-drill-title {\n    margin: 0 0 12px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-report-table-wrap {\n    overflow-x: auto;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n}\n\n.marketing-report-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.8125rem;\n}\n\n.marketing-report-table th,\n.marketing-report-table td {\n    padding: 10px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.92);\n    white-space: nowrap;\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.marketing-report-table td {\n    color: rgba(230, 230, 232, 0.95);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-report-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.marketing-report-table__row--clickable {\n    cursor: pointer;\n}\n\n.marketing-report-table__row--clickable:hover td {\n    background: rgba(192, 159, 83, 0.07);\n}\n\n.marketing-report-table__row--clickable:focus {\n    outline: none;\n}\n\n.marketing-report-table__row--clickable:focus-visible td:first-child {\n    box-shadow: inset 3px 0 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.marketing-report-channel-cell {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 10px;\n}\n\n.marketing-report-channel-cell__label {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-report-channel-cell__chevron {\n    flex-shrink: 0;\n    font-size: 0.9rem;\n    color: rgba(192, 159, 83, 0.75);\n}\n\n.marketing-report-table__empty-row {\n    text-align: center;\n    font-variant-numeric: normal;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-table--with-choices {\n    font-size: 0.78rem;\n}\n\n.marketing-report-table__col-choice {\n    min-width: 6.75rem;\n    max-width: 9.5rem;\n    white-space: normal;\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    line-height: 1.35;\n}\n\n.marketing-report-table th.marketing-report-table__col-choice {\n    text-align: right;\n    white-space: normal;\n    line-height: 1.25;\n}\n\n.marketing-report-footnote {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.92);\n}\n\n.marketing-report-table__col-channel {\n    min-width: 10.5rem;\n    max-width: 14rem;\n    white-space: normal;\n}\n\n.marketing-report-table__col-campaign {\n    min-width: 12rem;\n    max-width: 28rem;\n    white-space: normal;\n    word-break: break-word;\n    font-variant-numeric: normal;\n}\n\n.marketing-report-table__col-num {\n    width: 1%;\n    white-space: nowrap;\n    text-align: right;\n}\n\n.marketing-report-table th.marketing-report-table__col-num {\n    text-align: right;\n}\n\n.marketing-report-th-inner {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    width: 100%;\n    justify-content: flex-start;\n}\n\n.marketing-report-table th.marketing-report-table__col-num .marketing-report-th-inner,\n.marketing-report-table th.marketing-report-table__col-choice .marketing-report-th-inner {\n    justify-content: flex-end;\n}\n\n.marketing-report-th-label {\n    min-width: 0;\n}\n\n.marketing-report-col-sort {\n    flex-shrink: 0;\n    margin: 0;\n    padding: 2px 6px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.2);\n    color: rgba(175, 175, 185, 0.95);\n    font-size: 0.65rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: 0.02em;\n    line-height: 1.2;\n    cursor: pointer;\n}\n\n.marketing-report-col-sort:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    color: rgba(235, 228, 210, 0.98);\n    background: rgba(192, 159, 83, 0.1);\n}\n\n.marketing-report-col-sort--active {\n    border-color: rgba(192, 159, 83, 0.55);\n    color: rgba(240, 232, 210, 0.98);\n    background: rgba(192, 159, 83, 0.14);\n}\n\n.marketing-report-empty {\n    padding: 28px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-error {\n    padding: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 120, 120, 0.35);\n    background: rgba(80, 20, 20, 0.25);\n    color: rgba(255, 200, 200, 0.95);\n    font-size: 0.875rem;\n    margin-bottom: 16px;\n}\n\n.marketing-report-code {\n    margin-top: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    font-size: 0.72rem;\n    overflow-x: auto;\n    color: rgba(220, 220, 225, 0.9);\n}\n\n.marketing-context {\n    margin-bottom: 18px;\n    padding: 14px 16px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context--empty {\n    border-style: dashed;\n    border-color: rgba(255, 255, 255, 0.1);\n}\n\n.marketing-context__title {\n    margin: 0 0 6px;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-context__lede {\n    margin: 0 0 14px;\n    max-width: 48rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.92);\n}\n\n.marketing-context__empty-note {\n    margin: 0;\n    max-width: 48rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-context__empty-note code {\n    font-size: 0.72rem;\n    color: rgba(210, 195, 160, 0.95);\n}\n\n.marketing-context__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));\n    gap: 16px;\n    align-items: start;\n}\n\n.marketing-context__block-title {\n    margin: 0 0 8px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-context__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.72rem;\n}\n\n.marketing-context__table th,\n.marketing-context__table td {\n    padding: 6px 8px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: top;\n}\n\n.marketing-context__table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.85);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context__label {\n    word-break: break-word;\n    font-variant-numeric: normal;\n    color: rgba(230, 230, 232, 0.95);\n}\n\n.marketing-context__num {\n    text-align: right;\n    white-space: nowrap;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-context__split {\n    font-size: 0.68rem;\n    line-height: 1.35;\n    color: rgba(195, 195, 200, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-compare-banner {\n    margin: 12px 0 0;\n    max-width: 52rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(210, 200, 175, 0.95);\n}\n\n.marketing-report-compare-warning {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    padding: 10px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(220, 150, 100, 0.35);\n    background: rgba(60, 30, 15, 0.35);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(255, 210, 185, 0.96);\n}\n\n.marketing-report-kpi__compare {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.72rem;\n    font-weight: 500;\n    line-height: 1.35;\n}\n\n.marketing-report-cell-stack {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-end;\n    gap: 3px;\n}\n\n.marketing-report-table__col-campaign .marketing-report-cell-stack {\n    align-items: flex-start;\n}\n\n.marketing-report-cell-stack__primary {\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-cell-stack__compare {\n    font-size: 0.68rem;\n    line-height: 1.25;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-delta {\n    font-weight: 600;\n    letter-spacing: 0.01em;\n}\n\n.marketing-report-delta--up {\n    color: rgba(130, 205, 155, 0.95);\n}\n\n.marketing-report-delta--down {\n    color: rgba(235, 145, 125, 0.95);\n}\n\n.marketing-report-delta--flat {\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-report-delta--new {\n    font-weight: 500;\n    color: rgba(160, 185, 220, 0.92);\n}\n\n/*\n * Marketing dashboard chart strip.\n *\n * The overview view shows two cards side-by-side (choice mix donut +\n * channels bar). The channel drill-down shows five cards: a wide one for\n * \"top campaigns\" and four half-width for mix, acceptance %, countries,\n * and paths. On narrow screens everything collapses to a single column.\n */\n.marketing-charts {\n    margin-bottom: 28px;\n}\n\n.marketing-charts__grid {\n    display: grid;\n    gap: 16px;\n}\n\n.marketing-charts__grid--two-up {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n}\n\n.marketing-charts__grid--three-up {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__grid--three-up {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__grid--two-up,\n    .marketing-charts__grid--three-up {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-charts__card {\n    display: flex;\n    flex-direction: column;\n    min-height: 280px;\n    padding: 14px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.18);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.06) 0%, rgba(0, 0, 0, 0.22) 60%);\n}\n\n.marketing-charts__card--wide {\n    grid-column: span 2;\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__card--wide {\n        grid-column: span 2;\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__card--wide {\n        grid-column: span 1;\n    }\n}\n\n.marketing-charts__card-header {\n    margin-bottom: 8px;\n}\n\n.marketing-charts__card-title {\n    margin: 0 0 4px;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(245, 243, 238, 0.96);\n}\n\n.marketing-charts__card-sub {\n    margin: 0;\n    font-size: 0.74rem;\n    line-height: 1.4;\n    color: rgba(170, 170, 180, 0.9);\n}\n\n.marketing-charts__card-body {\n    flex: 1;\n    min-height: 220px;\n    position: relative;\n}\n\n/*\n * AnyChart's pie/bar containers need an explicit height; the inner chart\n * renders into a block element inside <div class=\"chart\">.\n */\n.marketing-charts__card-body .widget {\n    height: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__card-body .chart {\n    width: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__empty {\n    margin: 0;\n    padding: 18px 14px;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.88);\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px dashed rgba(192, 159, 83, 0.24);\n}\n\n.marketing-charts__card--timeseries {\n    margin-top: 0;\n}\n\n.marketing-charts__card-body--tall {\n    min-height: 350px;\n}\n\n.marketing-charts__card-body--tall .widget,\n.marketing-charts__card-body--tall .chart {\n    min-height: 350px;\n}\n\n/*\n * --- Visibility reframe --------------------------------------------------\n *\n * The \"analytics-invisible traffic\" narrative and supporting cues.\n * Color palette stays in the platform gold/amber family so the warning\n * reads as \"pay attention\" rather than \"something is broken\" — this is a\n * product-level insight, not an error state.\n */\n\n.marketing-report-visibility-narrative {\n    margin: 4px 0 16px;\n    padding: 12px 14px 13px;\n    max-width: 62rem;\n    font-size: 0.85rem;\n    line-height: 1.55;\n    color: rgba(240, 230, 205, 0.95);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.25) 65%);\n    border: 1px solid rgba(210, 165, 80, 0.28);\n    border-left: 3px solid rgba(210, 165, 80, 0.82);\n    border-radius: 10px;\n}\n\n.marketing-report-visibility-narrative strong {\n    color: rgba(255, 235, 195, 1);\n    font-weight: 600;\n}\n\n.marketing-report-kpi--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.24) 60%);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__label {\n    color: rgba(235, 205, 145, 0.92);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__value {\n    color: rgba(255, 235, 195, 1);\n}\n\n/*\n * Per-row \"analytics blind spot\" highlight.\n *\n * A faint amber tint + a thick leading border drawn via a box-shadow\n * inset so it doesn't shift row layout. The badge sits next to the\n * campaign / channel name in lowercase to read as a label, not a button.\n */\n\n.marketing-report-table__row--blind-spot {\n    background: rgba(210, 165, 80, 0.06);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.6);\n}\n\n.marketing-report-table__row--blind-spot.marketing-report-table__row--clickable:hover,\n.marketing-report-table__row--blind-spot:hover {\n    background: rgba(210, 165, 80, 0.12);\n}\n\n.marketing-report-blind-spot-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 2px 8px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n/*\n * --- Channels table pagination -----------------------------------------\n *\n * Compact pager shown under the overview table so the list never grows\n * past ten rows. Prev/Next buttons sit to either side of the numbered\n * pages; ellipsis gaps compress long page lists. Meta text reports the\n * window so totals stay visible without the user opening the CSV export.\n */\n\n.marketing-report-pagination {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: center;\n    gap: 6px 10px;\n    margin-top: 14px;\n    padding: 18px 8px 14px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-pagination__btn {\n    padding: 7px 12px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-report-pagination__btn:hover:not(:disabled) {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.08);\n}\n\n.marketing-report-pagination__btn:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__btn:disabled {\n    opacity: 0.38;\n    cursor: not-allowed;\n}\n\n.marketing-report-pagination__pages {\n    display: flex;\n    gap: 4px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-report-pagination__page {\n    min-width: 34px;\n    padding: 7px 10px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.88);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 7px;\n    cursor: pointer;\n    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;\n}\n\n.marketing-report-pagination__page:hover {\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-report-pagination__page:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__page--active,\n.marketing-report-pagination__page--active:hover {\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, rgba(216, 181, 106, 0.96) 0%, rgba(184, 141, 60, 0.96) 100%);\n    border-color: rgba(192, 159, 83, 0.65);\n    font-weight: 600;\n    cursor: default;\n}\n\n.marketing-report-pagination__gap {\n    padding: 7px 2px;\n    color: rgba(160, 160, 170, 0.7);\n    -webkit-user-select: none;\n    user-select: none;\n}\n\n.marketing-report-pagination__meta {\n    flex-basis: 100%;\n    margin-top: 2px;\n    font-size: 0.76rem;\n    line-height: 1.4;\n    color: rgba(180, 180, 190, 0.86);\n    text-align: center;\n}\n\n.marketing-report-pagination__meta strong {\n    color: rgba(230, 230, 235, 0.95);\n    font-weight: 600;\n}\n\n@media (min-width: 720px) {\n    .marketing-report-pagination__meta {\n        flex-basis: auto;\n        margin-top: 0;\n        margin-left: 12px;\n        text-align: left;\n    }\n}\n\n/*\n * --- Ad-platform reconciliation panel ----------------------------------\n *\n * Sits between the KPI grid and the chart strip. Inputs stack responsively;\n * result cards flow in a 3–4 column grid on wide screens, collapsing to a\n * single column on phones. The \"good\" and \"warn\" tones match the rest of\n * the dashboard's palette (green accents for visibility, gold/amber for the\n * invisible-gap card).\n */\n\n.marketing-reconciliation {\n    margin: 0 0 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(\n        155deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n}\n\n.marketing-reconciliation__header {\n    margin-bottom: 14px;\n}\n\n.marketing-reconciliation__inputs {\n    display: grid;\n    grid-template-columns: 1.2fr 1fr 1fr auto;\n    gap: 12px 14px;\n    align-items: end;\n    margin-bottom: 8px;\n}\n\n@media (max-width: 900px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n\n@media (max-width: 540px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-reconciliation__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__field-label {\n    font-size: 0.74rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.86);\n}\n\n.marketing-reconciliation__input,\n.marketing-reconciliation__select {\n    width: 100%;\n    padding: 9px 11px;\n    font-size: 0.88rem;\n    font-family: inherit;\n    color: rgba(245, 243, 238, 0.98);\n    background: rgba(0, 0, 0, 0.28);\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 8px;\n    outline: none;\n    transition:\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__input:focus,\n.marketing-reconciliation__select:focus {\n    border-color: rgba(192, 159, 83, 0.6);\n    background: rgba(0, 0, 0, 0.38);\n}\n\n.marketing-reconciliation__money {\n    display: flex;\n    gap: 6px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__input--money {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-reconciliation__select--currency {\n    flex: 0 0 auto;\n    width: 88px;\n}\n\n.marketing-reconciliation__actions {\n    display: flex;\n    justify-content: flex-end;\n    align-items: flex-end;\n}\n\n.marketing-reconciliation__clear {\n    padding: 9px 14px;\n    font-size: 0.82rem;\n    font-family: inherit;\n    color: rgba(215, 215, 220, 0.94);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.18);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease;\n}\n\n.marketing-reconciliation__clear:hover {\n    border-color: rgba(210, 165, 80, 0.5);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__window-hint {\n    margin: 2px 0 16px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(160, 160, 170, 0.88);\n}\n\n.marketing-reconciliation__empty {\n    padding: 18px 16px;\n    font-size: 0.88rem;\n    line-height: 1.55;\n    color: rgba(185, 185, 195, 0.92);\n    border: 1px dashed rgba(192, 159, 83, 0.28);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.marketing-reconciliation__empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n/*\n * Result grid: 4-up on wide desktops (three reconciliation cards + cost\n * card when spend is entered), graceful fallback to 2-up and 1-up.\n */\n.marketing-reconciliation__results {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\n    gap: 12px;\n    margin-top: 4px;\n}\n\n.marketing-reconciliation__result {\n    padding: 14px 14px 15px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.035);\n}\n\n.marketing-reconciliation__result--good {\n    border-color: rgba(140, 200, 130, 0.35);\n    background: linear-gradient(\n        155deg,\n        rgba(140, 200, 130, 0.12) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.14) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result-title {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.92);\n}\n\n.marketing-reconciliation__result--good .marketing-reconciliation__result-title {\n    color: rgba(175, 220, 165, 0.95);\n}\n\n.marketing-reconciliation__result--warn .marketing-reconciliation__result-title {\n    color: rgba(235, 200, 140, 0.95);\n}\n\n.marketing-reconciliation__result-headline {\n    margin: 0 0 6px;\n    font-size: 1.3rem;\n    font-weight: 600;\n    line-height: 1.25;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-reconciliation__result-detail {\n    margin: 0;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(195, 195, 205, 0.9);\n}\n\n.marketing-reconciliation__result-sub {\n    margin: 8px 0 0;\n    padding-top: 8px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.86);\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n/*\n * --- Reconciliation: save / snapshots --------------------------------\n *\n * The save button shares the actions slot with \"Clear inputs\" and gets\n * the gold accent treatment so it reads as the primary CTA. The\n * snapshots list is a collapsible details-style block with a compact\n * table — wide enough to be useful, narrow enough not to dominate.\n */\n\n.marketing-reconciliation__actions {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n    align-items: stretch;\n}\n\n@media (min-width: 901px) {\n    .marketing-reconciliation__actions {\n        flex-direction: row;\n        align-items: flex-end;\n        justify-content: flex-end;\n    }\n}\n\n.marketing-reconciliation__save {\n    padding: 9px 16px;\n    font-size: 0.84rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, #d8b56a 0%, #b88d3c 100%);\n    border: 1px solid rgba(192, 159, 83, 0.7);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        transform 80ms ease,\n        box-shadow 120ms ease,\n        opacity 120ms ease;\n}\n\n.marketing-reconciliation__save:hover:not(:disabled) {\n    transform: translateY(-1px);\n    box-shadow: 0 6px 14px -8px rgba(210, 165, 80, 0.6);\n}\n\n.marketing-reconciliation__save:disabled {\n    cursor: not-allowed;\n    opacity: 0.45;\n}\n\n.marketing-reconciliation__snapshots {\n    margin-top: 22px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.07);\n}\n\n.marketing-reconciliation__snapshots-bar {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n\n.marketing-reconciliation__snapshots-toggle {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 7px 10px 7px 6px;\n    margin-left: -6px;\n    font-size: 0.86rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(235, 233, 228, 0.96);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 8px;\n    cursor: pointer;\n    transition: background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-toggle:hover {\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-reconciliation__snapshots-count {\n    display: inline-flex;\n    min-width: 22px;\n    height: 22px;\n    padding: 0 7px;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.74rem;\n    font-weight: 600;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n}\n\n.marketing-reconciliation__snapshots-actions {\n    display: inline-flex;\n    gap: 8px;\n}\n\n.marketing-reconciliation__snapshots-export,\n.marketing-reconciliation__snapshots-clear {\n    padding: 7px 12px;\n    font-size: 0.78rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-export:hover {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__snapshots-clear:hover {\n    border-color: rgba(220, 110, 110, 0.55);\n    color: rgba(245, 175, 175, 0.98);\n}\n\n.marketing-reconciliation__snapshots-empty {\n    margin: 14px 0 0;\n    padding: 14px 14px;\n    font-size: 0.84rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.9);\n    border: 1px dashed rgba(255, 255, 255, 0.12);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.1);\n}\n\n.marketing-reconciliation__snapshots-empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n.marketing-reconciliation__snapshots-table-wrap {\n    margin-top: 14px;\n    overflow-x: auto;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__snapshots-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n    color: rgba(225, 225, 230, 0.94);\n}\n\n.marketing-reconciliation__snapshots-table thead th {\n    padding: 9px 10px;\n    text-align: left;\n    font-size: 0.7rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(180, 180, 190, 0.92);\n    background: rgba(255, 255, 255, 0.03);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-table tbody td {\n    padding: 9px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    vertical-align: top;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:hover {\n    background: rgba(255, 255, 255, 0.025);\n}\n\n.marketing-reconciliation__snapshots-table .num {\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-metric,\n.marketing-reconciliation__snapshots-sub {\n    color: rgba(160, 160, 170, 0.86);\n    font-size: 0.74rem;\n}\n\n.marketing-reconciliation__snapshots-delete {\n    padding: 2px 8px;\n    font-size: 1rem;\n    line-height: 1;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.7);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 6px;\n    cursor: pointer;\n    transition:\n        color 120ms ease,\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-delete:hover {\n    color: rgba(245, 175, 175, 0.98);\n    border-color: rgba(220, 110, 110, 0.45);\n    background: rgba(220, 110, 110, 0.08);\n}\n\n/*\n * --- Reconciliation: over-count & caption ----------------------------\n *\n * \"Over-count\" = the scope's attributed consents exceed the reported\n * clicks/sessions from the ad platform (multi-session visits, pre-\n * consented returns, UTM-tagged URLs shared beyond the ad). The row is\n * lightly tinted amber, the Reported cell carries a compact badge, and\n * the in-cell share label is capped at \"100%+\" so the math stays\n * readable.\n */\n.marketing-reconciliation__snapshots-caption {\n    margin: 0 0 10px;\n    font-size: 0.78rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.86);\n}\n\n.marketing-reconciliation__over-count-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 1px 7px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__over-count-badge--inline {\n    margin: 0 4px;\n}\n\n.marketing-reconciliation__snapshots-row--overcount {\n    background: rgba(210, 165, 80, 0.05);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.45);\n}\n\n.marketing-reconciliation__snapshots-row--overcount:hover {\n    background: rgba(210, 165, 80, 0.09);\n}\n\n/*\n * --- Reconciliation: platform filter note ----------------------------\n *\n * The filter note sits between the inputs and the result cards. When\n * the filter is active and matched, it shows the coverage + matched\n * utm_source values. When active and empty, it swaps to a warn tone\n * prompting the user to fix their UTM tagging or switch to \"Other\".\n */\n\n.marketing-reconciliation__filter-note {\n    margin: 0 0 14px;\n    padding: 10px 14px;\n    font-size: 0.82rem;\n    line-height: 1.55;\n    color: rgba(215, 215, 220, 0.92);\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__filter-note p {\n    margin: 0;\n}\n\n.marketing-reconciliation__filter-note code {\n    padding: 1px 6px;\n    font-size: 0.78rem;\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.1);\n    border: 1px solid rgba(210, 165, 80, 0.25);\n    border-radius: 5px;\n}\n\n.marketing-reconciliation__filter-note--empty {\n    color: rgba(245, 210, 170, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 130, 80, 0.15) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n    border-color: rgba(220, 140, 90, 0.45);\n}\n\n/*\n * --- Suggestions strip ------------------------------------------------\n *\n * Sits between the KPI grid and the reconciliation panel. Visually quieter\n * than the KPI cards (no large numbers) so it reads as a *next move*\n * footnote, not as another metric. Severity is encoded in (1) a chip in\n * the card head, (2) a coloured left border, and (3) a faint background\n * tint — three independent cues so colour-blind readers still see the\n * priority distinction.\n */\n\n.marketing-suggestions {\n    margin: 0 0 28px;\n    padding: 16px 18px 18px;\n    border-radius: 14px;\n    background: linear-gradient(\n        155deg,\n        rgba(255, 255, 255, 0.03) 0%,\n        rgba(255, 255, 255, 0.01) 100%\n    );\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-suggestions__head {\n    margin: 0 0 12px;\n}\n\n.marketing-suggestions__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.95);\n}\n\n.marketing-suggestions__hint {\n    margin: 4px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n    max-width: 56rem;\n}\n\n.marketing-suggestions__list {\n    display: grid;\n    gap: 10px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-suggestions__card {\n    position: relative;\n    padding: 14px 16px 14px 18px;\n    background: rgba(255, 255, 255, 0.025);\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    border-radius: 10px;\n    border-left-width: 3px;\n}\n\n.marketing-suggestions__card--critical {\n    border-left-color: rgba(232, 95, 95, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(232, 95, 95, 0.08) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--high {\n    border-left-color: rgba(210, 165, 80, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.07) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--medium {\n    border-left-color: rgba(130, 175, 220, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(130, 175, 220, 0.05) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--low {\n    border-left-color: rgba(160, 160, 170, 0.6);\n}\n\n.marketing-suggestions__card-head {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 6px;\n}\n\n.marketing-suggestions__severity {\n    display: inline-flex;\n    align-items: center;\n    padding: 2px 8px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    border-radius: 999px;\n    border: 1px solid currentColor;\n    line-height: 1.4;\n}\n\n.marketing-suggestions__severity--critical {\n    color: rgba(255, 180, 180, 0.95);\n    background: rgba(232, 95, 95, 0.12);\n}\n\n.marketing-suggestions__severity--high {\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.14);\n}\n\n.marketing-suggestions__severity--medium {\n    color: rgba(190, 220, 245, 0.95);\n    background: rgba(130, 175, 220, 0.12);\n}\n\n.marketing-suggestions__severity--low {\n    color: rgba(200, 200, 210, 0.85);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__card-title {\n    margin: 0;\n    font-size: 0.92rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.96);\n    line-height: 1.35;\n}\n\n.marketing-suggestions__card-body {\n    margin: 0 0 10px;\n    font-size: 0.84rem;\n    line-height: 1.5;\n    color: rgba(200, 200, 210, 0.92);\n}\n\n.marketing-suggestions__card-actions {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 8px 12px;\n}\n\n.marketing-suggestions__cta {\n    display: inline-flex;\n    align-items: center;\n    padding: 7px 14px;\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(216, 181, 106, 0.96) 0%,\n        rgba(184, 141, 60, 0.96) 100%\n    );\n    border-radius: 7px;\n    text-decoration: none;\n    transition: filter 120ms ease, transform 120ms ease;\n}\n\n.marketing-suggestions__cta:hover,\n.marketing-suggestions__cta:focus-visible {\n    filter: brightness(1.07);\n    text-decoration: none;\n}\n\n.marketing-suggestions__cta:focus-visible {\n    outline: 2px solid rgba(255, 225, 170, 0.85);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__snooze {\n    padding: 6px 10px;\n    font-size: 0.76rem;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.86);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-suggestions__snooze:hover,\n.marketing-suggestions__snooze:focus-visible {\n    border-color: rgba(255, 255, 255, 0.32);\n    color: rgba(240, 240, 245, 0.96);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__snooze:focus-visible {\n    outline: 2px solid rgba(160, 160, 170, 0.6);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__evidence {\n    margin-top: 10px;\n    font-size: 0.76rem;\n    color: rgba(160, 160, 170, 0.9);\n}\n\n.marketing-suggestions__evidence summary {\n    cursor: pointer;\n    -webkit-user-select: none;\n    user-select: none;\n    color: rgba(180, 180, 190, 0.86);\n    transition: color 120ms ease;\n}\n\n.marketing-suggestions__evidence summary:hover {\n    color: rgba(220, 220, 230, 0.96);\n}\n\n.marketing-suggestions__evidence ul {\n    margin: 8px 0 0;\n    padding: 0 0 0 18px;\n    line-height: 1.55;\n}\n\n.marketing-suggestions__evidence code {\n    padding: 1px 6px;\n    font-size: 0.74rem;\n    color: rgba(220, 220, 230, 0.92);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 4px;\n}\n\n@media (min-width: 720px) {\n    .marketing-suggestions__card-head {\n        flex-wrap: nowrap;\n    }\n}\n\n/* ── Ad Reconciliation CTA (in Channel Analytics) ─────────────────────── */\n.marketing-reconciliation-cta {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    padding: 18px 24px;\n    margin: 32px 0;\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation-cta__text {\n    margin: 0;\n    color: rgba(220, 220, 230, 0.75);\n    font-size: 0.9rem;\n}\n\n.marketing-reconciliation-cta__link {\n    white-space: nowrap;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-cta__link:hover {\n    text-decoration: underline;\n}\n\n/* ── Reconcile page channel filter ────────────────────────────────────── */\n.marketing-reconciliation-page__channel-filter {\n    margin-bottom: 24px;\n}\n\n.marketing-reconciliation-page__channel-label {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    font-size: 0.88rem;\n    color: rgba(220, 220, 230, 0.8);\n}\n\n.marketing-reconciliation-page__back-link {\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-page__back-link:hover {\n    text-decoration: underline;\n}\n\n/* ── Shared section headers ────────────────────────────────────────────── */\n.marketing-reconciliation__section-title {\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(220, 220, 230, 0.9);\n    margin: 0 0 4px;\n}\n\n.marketing-reconciliation__section-hint {\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.55);\n    margin: 0 0 16px;\n    line-height: 1.5;\n}\n\n/* ── Platform comparison table ─────────────────────────────────────────── */\n.marketing-reconciliation__comparison {\n    margin: 28px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__comparison-wrap {\n    overflow-x: auto;\n}\n\n.marketing-reconciliation__comparison-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__comparison-table th,\n.marketing-reconciliation__comparison-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__comparison-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__comparison-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__comparison-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__comparison-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__comparison-dot {\n    display: inline-block;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    margin-right: 8px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__comparison-good {\n    color: #4caf7d;\n    font-weight: 600;\n}\n\n.marketing-reconciliation__comparison-warn {\n    color: #f5a623;\n    font-weight: 600;\n}\n\n/* ── Visibility improvement projection ─────────────────────────────────── */\n.marketing-reconciliation__projection {\n    margin: 20px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__projection-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__projection-table th,\n.marketing-reconciliation__projection-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-reconciliation__projection-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__projection-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__projection-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__projection-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__projection-row--current td {\n    color: rgba(200, 200, 210, 0.55);\n    font-style: italic;\n}\n\n/* ── Visibility trend chart ────────────────────────────────────────────── */\n.marketing-reconciliation__trend {\n    margin: 20px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__trend-legend {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 12px 20px;\n    margin-bottom: 12px;\n}\n\n.marketing-reconciliation__trend-legend-item {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.8);\n}\n\n.marketing-reconciliation__trend-legend-dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__trend-svg {\n    display: block;\n    width: 100%;\n    height: auto;\n    overflow: visible;\n}\n\n/* ── Domain gate ──────────────────────────────────────────────────────────── */\n\n.reconcile-domain-gate {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 56px 24px;\n    margin: 24px 0;\n    border-radius: 16px;\n    border: 1.5px dashed rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.04);\n    text-align: center;\n}\n\n.reconcile-domain-gate__icon {\n    font-size: 2rem;\n    opacity: 0.55;\n}\n\n.reconcile-domain-gate__heading {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: rgba(240, 235, 220, 0.9);\n}\n\n.reconcile-domain-gate__body {\n    margin: 0;\n    max-width: 36rem;\n    font-size: 0.875rem;\n    line-height: 1.6;\n    color: rgba(180, 175, 165, 0.85);\n}\n\n/* ── Ad Connection Manager ─────────────────────────────────────────────────── */\n\n.ad-connection-manager {\n    margin: 0 0 32px;\n    padding: 20px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(100, 180, 255, 0.15);\n    background: rgba(30, 50, 80, 0.18);\n}\n\n.ad-connection-manager__header {\n    margin-bottom: 14px;\n}\n\n.ad-connection-manager__title {\n    margin: 0 0 6px;\n    font-size: 0.82rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(130, 185, 255, 0.85);\n}\n\n.ad-connection-manager__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(160, 165, 175, 0.85);\n}\n\n.ad-connection-manager__loading {\n    font-size: 0.8rem;\n    color: rgba(160, 165, 175, 0.7);\n    margin: 0;\n}\n\n.ad-connection-manager__status {\n    margin: 0 0 12px;\n    padding: 8px 12px;\n    border-radius: 8px;\n    font-size: 0.8rem;\n    background: rgba(60, 200, 100, 0.12);\n    border: 1px solid rgba(60, 200, 100, 0.25);\n    color: rgba(160, 230, 160, 0.95);\n}\n\n.ad-connection-manager__status--error {\n    background: rgba(220, 80, 60, 0.1);\n    border-color: rgba(220, 80, 60, 0.25);\n    color: rgba(255, 160, 140, 0.95);\n}\n\n.ad-connection-manager__list {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n/* ── Individual connection card ────────────────────────────────────────────── */\n\n.ad-connection-card {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.03);\n    transition: border-color 0.15s;\n}\n\n.ad-connection-card--connected {\n    border-color: rgba(60, 180, 255, 0.2);\n    background: rgba(30, 80, 140, 0.12);\n}\n\n.ad-connection-card__icon {\n    width: 34px;\n    height: 34px;\n    border-radius: 8px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.75rem;\n    font-weight: 700;\n    color: #fff;\n    flex-shrink: 0;\n    letter-spacing: -0.02em;\n}\n\n.ad-connection-card__info {\n    flex: 1;\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n\n.ad-connection-card__name {\n    font-size: 0.84rem;\n    font-weight: 500;\n    color: rgba(220, 220, 228, 0.95);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.ad-connection-card__meta {\n    font-size: 0.75rem;\n    color: rgba(120, 200, 120, 0.85);\n}\n\n.ad-connection-card__meta--dim {\n    color: rgba(140, 140, 150, 0.65);\n}\n\n.ad-connection-card__actions {\n    display: flex;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.ad-connection-card__btn {\n    padding: 5px 12px;\n    border-radius: 6px;\n    font-size: 0.77rem;\n    font-weight: 500;\n    cursor: pointer;\n    border: 1px solid transparent;\n    transition: background 0.15s, opacity 0.15s;\n}\n\n.ad-connection-card__btn:disabled {\n    opacity: 0.55;\n    cursor: not-allowed;\n}\n\n.ad-connection-card__btn--connect {\n    background: rgba(60, 140, 255, 0.18);\n    border-color: rgba(60, 140, 255, 0.35);\n    color: rgba(130, 185, 255, 0.95);\n}\n\n.ad-connection-card__btn--connect:not(:disabled):hover {\n    background: rgba(60, 140, 255, 0.28);\n}\n\n.ad-connection-card__btn--import {\n    background: rgba(60, 200, 100, 0.14);\n    border-color: rgba(60, 200, 100, 0.3);\n    color: rgba(130, 220, 150, 0.95);\n}\n\n.ad-connection-card__btn--import:not(:disabled):hover {\n    background: rgba(60, 200, 100, 0.24);\n}\n\n.ad-connection-card__btn--disconnect {\n    background: transparent;\n    border-color: rgba(200, 100, 80, 0.25);\n    color: rgba(200, 140, 130, 0.75);\n}\n\n.ad-connection-card__btn--disconnect:hover {\n    background: rgba(200, 80, 60, 0.1);\n    color: rgba(220, 160, 145, 0.9);\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -36907,7 +37605,7 @@ var API = {
       url: "https://api.github.com/repos/Intastellar-Solutions-International/intastellar-consents-platorm/issues",
       method: "POST",
       headers: {
-        "Authorization": "Bearer ".concat("MISSING_ENV_VAR".GITHUB_ISSUES_TOKEN),
+        "Authorization": "Bearer ".concat("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"),
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
         "Content-Type": "application/json"
@@ -36975,6 +37673,26 @@ var API = {
     },
     save: {
       url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.PrimaryHost, "/cmp/legal-basis-config"),
+      method: "POST",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    }
+  },
+  cookieDiscoveries: {
+    get: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/admin-cookie-discoveries"),
+      method: "GET",
+      headers: {
+        "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+        "Organisation": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation(),
+        "Content-Type": "application/json"
+      }
+    },
+    action: {
+      url: "".concat(_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/admin-cookie-discoveries"),
       method: "POST",
       headers: {
         "Authorization": _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
@@ -37167,25 +37885,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ./Pages/Experiments/Experiments */ "./src/Pages/Experiments/Experiments.js");
 /* harmony import */ var _Pages_Reports_AuditReport__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ./Pages/Reports/AuditReport */ "./src/Pages/Reports/AuditReport/index.js");
 /* harmony import */ var _Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ./Pages/Reports/MarketingReport */ "./src/Pages/Reports/MarketingReport/index.js");
-/* harmony import */ var _Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./Pages/Compliance */ "./src/Pages/Compliance/index.js");
-/* harmony import */ var _Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./Components/LoadingSpinner/LoadingSpinner */ "./src/Components/LoadingSpinner/LoadingSpinner.js");
-/* harmony import */ var _Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./Pages/Settings/Workspaces */ "./src/Pages/Settings/Workspaces/index.js");
-/* harmony import */ var _Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./Pages/Settings/Jurisdiction */ "./src/Pages/Settings/Jurisdiction/index.js");
-/* harmony import */ var _Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./Pages/Settings/LegalBasis */ "./src/Pages/Settings/LegalBasis/index.js");
-/* harmony import */ var _Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./Pages/Settings/ROPA */ "./src/Pages/Settings/ROPA/index.js");
-/* harmony import */ var _Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./Pages/Settings/ROPA/ROPAEntry */ "./src/Pages/Settings/ROPA/ROPAEntry.js");
-/* harmony import */ var _Pages_DSR__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./Pages/DSR */ "./src/Pages/DSR/index.js");
-/* harmony import */ var _Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./Pages/DSR/DSRDetail */ "./src/Pages/DSR/DSRDetail.js");
-/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
-/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
-/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _Pages_Reports_MarketingReport_ReconcilePage__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! ./Pages/Reports/MarketingReport/ReconcilePage */ "./src/Pages/Reports/MarketingReport/ReconcilePage.js");
+/* harmony import */ var _Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ./Pages/Compliance */ "./src/Pages/Compliance/index.js");
+/* harmony import */ var _Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ./Components/LoadingSpinner/LoadingSpinner */ "./src/Components/LoadingSpinner/LoadingSpinner.js");
+/* harmony import */ var _Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ./Pages/Settings/Workspaces */ "./src/Pages/Settings/Workspaces/index.js");
+/* harmony import */ var _Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ./Pages/Settings/Jurisdiction */ "./src/Pages/Settings/Jurisdiction/index.js");
+/* harmony import */ var _Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ./Pages/Settings/LegalBasis */ "./src/Pages/Settings/LegalBasis/index.js");
+/* harmony import */ var _Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./Pages/Settings/ROPA */ "./src/Pages/Settings/ROPA/index.js");
+/* harmony import */ var _Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./Pages/Settings/ROPA/ROPAEntry */ "./src/Pages/Settings/ROPA/ROPAEntry.js");
+/* harmony import */ var _Pages_DSR__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./Pages/DSR */ "./src/Pages/DSR/index.js");
+/* harmony import */ var _Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./Pages/DSR/DSRDetail */ "./src/Pages/DSR/DSRDetail.js");
+/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
+/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
+/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
 
 
 
@@ -37249,7 +37971,7 @@ var Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
-var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("organisation"));
+var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("organisation"));
 var AllOrg = createContext(null);
 var DomainContext = createContext(null);
 var WorkspaceContext = createContext([null, function () {}]);
@@ -37258,7 +37980,7 @@ function App() {
     _useState2 = _slicedToArray(_useState, 2),
     dashboardView = _useState2[0],
     setDashboardView = _useState2[1];
-  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("organisation") : null),
+  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("organisation") : null),
     _useState4 = _slicedToArray(_useState3, 2),
     organisation = _useState4[0],
     setOrganisation = _useState4[1];
@@ -37290,7 +38012,7 @@ function App() {
     domainError = _useState12[0],
     setDomainError = _useState12[1];
   var _useState13 = useState(function () {
-      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("subscription");
+      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("subscription");
       if (cached) {
         try {
           return JSON.parse(cached);
@@ -37311,14 +38033,14 @@ function App() {
     setId = _useState16[1];
   var navigate = window.ReactRouterDOM.useHistory();
   useEffect(function () {
-    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("globals");
+    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("globals");
     var path = window.location.pathname;
     var isApiRoute = path === "/api" || path.startsWith("/api/");
     if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
       window.location.replace("/login");
     }
   }, []);
-  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("globals") != null) {
+  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("globals") != null) {
     var _getOrg2;
     var path = window.location.pathname;
     // Only redirect if id is present and not already on dashboard
@@ -37336,7 +38058,7 @@ function App() {
         organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
@@ -37344,15 +38066,15 @@ function App() {
       });
       (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.headers, JSON.stringify({
         user: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId(),
-        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
+        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
         setSubscriptionStatus(data);
-        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].setItem("subscription", JSON.stringify(data));
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].setItem("subscription", JSON.stringify(data));
       });
       if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
         (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.headers).then(function (data) {
@@ -37395,7 +38117,7 @@ function App() {
         });
       }
     }, []);
-    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
+    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
     var isDevOrg = Number(orgId) === 1;
     var hasNoSubscription = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" || typeof (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.message) === "string" && subscriptionStatus.message.includes("Subscription not found");
     var subscriptionLoading = !isDevOrg && !hasNoSubscription && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
@@ -37406,7 +38128,7 @@ function App() {
         platforms: organisations
       }), /*#__PURE__*/React.createElement(_Components_BugReport_BugReport__WEBPACK_IMPORTED_MODULE_25__["default"], null));
     } else {
-      var _getOrg3, _getOrg4, _getOrg5, _getOrg6, _getOrg7, _getOrg8, _getOrg9, _JSON$parse, _getOrg0, _getOrg1, _getOrg10, _getOrg11;
+      var _getOrg3, _getOrg4, _getOrg5, _getOrg6, _getOrg7, _getOrg8, _getOrg9, _JSON$parse, _getOrg0, _getOrg1, _getOrg10, _getOrg11, _getOrg12;
       return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(OrganisationContext.Provider, {
         value: [organisation, setOrganisation]
       }, /*#__PURE__*/React.createElement(WorkspaceContext.Provider, {
@@ -37424,7 +38146,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -37437,7 +38159,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -37450,7 +38172,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Signup__WEBPACK_IMPORTED_MODULE_5__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/domains",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Domains_index_js__WEBPACK_IMPORTED_MODULE_10__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Domains_index_js__WEBPACK_IMPORTED_MODULE_10__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings__WEBPACK_IMPORTED_MODULE_11__["default"], {
@@ -37458,11 +38180,11 @@ function App() {
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
@@ -37471,7 +38193,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -37480,7 +38202,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -37489,7 +38211,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -37498,30 +38220,37 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "growth",
-        featureName: "Ad Platform Reconciliation",
+        featureName: "Channel Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
+        path: "/:id/reports/view/:handle/reconcile",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+        minTier: "growth",
+        featureName: "Ad Reconciliation",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport_ReconcilePage__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -37530,7 +38259,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -37539,7 +38268,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -37548,7 +38277,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -37557,7 +38286,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -37566,17 +38295,24 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "growth",
-        featureName: "Ad Platform Reconciliation",
+        featureName: "Channel Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport__WEBPACK_IMPORTED_MODULE_37__["default"], {
         organisations: organisations
       }))), /*#__PURE__*/React.createElement(Route, {
+        path: "/:id/reports/reconcile",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
+        minTier: "growth",
+        featureName: "Ad Reconciliation",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport_ReconcilePage__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/dashboard"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
-        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
+        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/login",
         exact: true
@@ -37584,61 +38320,61 @@ function App() {
         path: "/auth-login"
       }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/config-gdpr"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "starter",
         featureName: "Jurisdiction Configuration",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_41__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_42__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/legal-basis"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "growth",
         featureName: "Legal Basis Tracking",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_42__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_43__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa/:entryId"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_44__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_45__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_43__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_44__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr/:requestId",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_46__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR__WEBPACK_IMPORTED_MODULE_45__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR__WEBPACK_IMPORTED_MODULE_46__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/blacklist-ip"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org) {
-        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__["default"].getItem("organisation");
+        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__["default"].getItem("organisation");
         var org = null;
         try {
           org = JSON.parse(orgRaw);
         } catch (_unused4) {/* ignore */}
         var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
-        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
           minTier: "agency-pro",
           featureName: "Client Workspaces",
           fullPage: true
         });
-        return isAdminRole ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_40__["default"], null) : /*#__PURE__*/React.createElement("p", {
+        return isAdminRole ? /*#__PURE__*/React.createElement(_Pages_Settings_Workspaces__WEBPACK_IMPORTED_MODULE_41__["default"], null) : /*#__PURE__*/React.createElement("p", {
           style: {
             padding: "40px",
             color: "#999"
@@ -37649,13 +38385,13 @@ function App() {
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_50__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_39__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_49__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_47__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_51__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_49__["default"], {
         minTier: "growth",
         featureName: "Portfolio Benchmark",
         fullPage: true
@@ -37668,6 +38404,14 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/experiments/:experimentId"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/cookie-database",
+        exact: true
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_52__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_48__["default"], null) : /*#__PURE__*/React.createElement("p", {
+        style: {
+          padding: "40px",
+          color: "#999"
+        }
+      }, "Admin access required."))), /*#__PURE__*/React.createElement(Route, {
         path: "/api",
         render: function render() {
           return null;
@@ -37681,7 +38425,7 @@ function App() {
       }, /*#__PURE__*/React.createElement("img", {
         src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
         className: "crawlerPage-logo"
-      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_48__["default"], null)));
+      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_50__["default"], null)));
     }
   } else {
     return /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
@@ -43734,6 +44478,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icons_experiment_svg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./icons/experiment.svg */ "./src/Components/Header/icons/experiment.svg");
 /* harmony import */ var _icons_benchmark_svg__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./icons/benchmark.svg */ "./src/Components/Header/icons/benchmark.svg");
 /* harmony import */ var _icons_compliance_svg__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./icons/compliance.svg */ "./src/Components/Header/icons/compliance.svg");
+/* harmony import */ var _icons_cookies_svg__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./icons/cookies.svg */ "./src/Components/Header/icons/cookies.svg");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -43758,12 +44504,16 @@ var useContext = React.useContext;
 
 
 
+
+
 function Nav() {
+  var _getOrg;
   var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_2__.DomainContext),
     _useContext2 = _slicedToArray(_useContext, 1),
     currentDomain = _useContext2[0];
   var location = useLocation();
   var platform = localStorage.getItem("platform") || "gdpr";
+  var isAdminOrg = Number(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_15__.getOrg === null || _Functions_storage_js__WEBPACK_IMPORTED_MODULE_15__.getOrg === void 0 || (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_15__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id) === 1;
   var homePath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.dashboardPath)(platform, currentDomain);
   var reportsPathResolved = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.reportsPath)(platform, currentDomain, "");
   var compliancePath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.reportsPath)(platform, currentDomain, "/compliance");
@@ -43833,7 +44583,18 @@ function Nav() {
     className: "hiddenCollapsed"
   }, "A/B Testing")), /*#__PURE__*/React.createElement("section", {
     className: "navItems--bottom"
-  }, /*#__PURE__*/React.createElement(Link, {
+  }, isAdminOrg && /*#__PURE__*/React.createElement(Link, {
+    className: "navItems" + (path === "/cookie-database" ? " --active" : ""),
+    to: "/cookie-database"
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "dashboard-icons cookies",
+    style: {
+      backgroundImage: "url(".concat(_icons_cookies_svg__WEBPACK_IMPORTED_MODULE_14__["default"], ")")
+    },
+    "data-icon": _icons_cookies_svg__WEBPACK_IMPORTED_MODULE_14__["default"]
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "hiddenCollapsed"
+  }, "Cookie DB")), /*#__PURE__*/React.createElement(Link, {
     className: "navItems" + (path.indexOf("/settings") > -1 ? " --active" : ""),
     to: "/settings"
   }, /*#__PURE__*/React.createElement("i", {
@@ -44926,6 +45687,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "751c397a5dac2b15f01750b29745bdf8.svg");
+
+/***/ }),
+
+/***/ "./src/Components/Header/icons/cookies.svg":
+/*!*************************************************!*\
+  !*** ./src/Components/Header/icons/cookies.svg ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "6cf081ac1291b3b7903f1594f68e6f68.svg");
 
 /***/ }),
 
@@ -46219,7 +46994,7 @@ __webpack_require__.r(__webpack_exports__);
 var _React = React,
   useEffect = _React.useEffect,
   useRef = _React.useRef;
-var PUBLISHABLE_KEY =  false ? 0 : "MISSING_ENV_VAR".STRIPE_PUBLISHABLE_KEY_TEST;
+var PUBLISHABLE_KEY =  false ? 0 : "pk_test_cdjFXrTVnj1SdyYXzlTz95Sk";
 function getStripe() {
   if (window.Stripe) return Promise.resolve(window.Stripe(PUBLISHABLE_KEY));
   return new Promise(function (resolve) {
@@ -47912,6 +48687,7 @@ function reportsPath(platformId, domainUnicode, leaf) {
 function getReportsUrlLeaf(pathname) {
   if (pathname.includes("/audit-report")) return "/audit-report";
   if (pathname.includes("/user-consents")) return "/user-consents";
+  if (pathname.includes("/reconcile")) return "/reconcile";
   if (pathname.includes("/marketing")) return "/marketing";
   if (pathname.includes("/compliance")) return "/compliance";
   return "";
@@ -50782,6 +51558,34 @@ var CAT_ORDER = {
   cmp: 6,
   "third-party": 7
 };
+function formatCookieDuration(expiresUnixSec, scannedAtIso) {
+  var baseSec = scannedAtIso ? Math.floor(new Date(scannedAtIso).getTime() / 1000) : Math.floor(Date.now() / 1000);
+  var secs = expiresUnixSec - baseSec;
+  if (secs <= 0) return "Persistent";
+  var m = 60,
+    h = 3600,
+    d = 86400,
+    mo = 2592000,
+    y = 31536000;
+  if (secs < h) {
+    var _v = Math.round(secs / m);
+    return _v + (_v === 1 ? " minute" : " minutes");
+  }
+  if (secs < d) {
+    var _v2 = Math.round(secs / h);
+    return _v2 + (_v2 === 1 ? " hour" : " hours");
+  }
+  if (secs < mo) {
+    var _v3 = Math.round(secs / d);
+    return _v3 + (_v3 === 1 ? " day" : " days");
+  }
+  if (secs < y) {
+    var _v4 = Math.round(secs / mo);
+    return _v4 + (_v4 === 1 ? " month" : " months");
+  }
+  var v = Math.round(secs / y);
+  return v + (v === 1 ? " year" : " years");
+}
 function groupCookiesByName(rawCookies) {
   var map = new Map();
   var _iterator = _createForOfIteratorHelper(rawCookies),
@@ -51181,11 +51985,7 @@ function CompliancePage() {
       var baseDomain = (handle || currentDomain || "").replace(/^www\./, "");
       var _rows = [["Name", "Domain", "Party", "Lifetime", "HttpOnly", "Secure", "SameSite"]].concat(_toConsumableArray(_items.map(function (c) {
         var isThird = !c.domain.replace(/^\./, "").endsWith(baseDomain);
-        var lifetime = c.session ? "Session" : c.expires ? new Date(c.expires * 1000).toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "short",
-          year: "numeric"
-        }) : "Persistent";
+        var lifetime = c.session ? "Session" : c.expires ? formatCookieDuration(c.expires, preConsentTransfers.scanned_at) : "Persistent";
         return [c.name, c.domain, isThird ? "3rd party" : "1st party", lifetime, c.httpOnly ? "Yes" : "No", c.secure ? "Yes" : "No", c.sameSite || ""];
       })));
       downloadCSV(_rows, "pre-consent-cookies-".concat(scanDomain, ".csv"));
@@ -51218,12 +52018,9 @@ function CompliancePage() {
       });
       var party = hasThird && hasFirst ? "Mixed" : hasThird ? "3rd party" : "1st party";
       var bm = eff.bannerCategory ? ((_BANNER_CATEGORY_META = BANNER_CATEGORY_META[eff.bannerCategory]) === null || _BANNER_CATEGORY_META === void 0 ? void 0 : _BANNER_CATEGORY_META.label) || eff.bannerCategory : "";
-      var lifetime = eff.session ? "Session" : eff.expires ? new Date(eff.expires * 1000).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      }) : "Persistent";
-      return "<tr><td>".concat(esc(eff.name), "</td><td>").concat(esc(eff.domains.join(", ")), "</td><td>").concat(party, "</td><td>").concat(esc(lifetime), "</td><td>").concat(esc(bm), "</td><td>").concat(esc(eff.vendor || ""), "</td><td>").concat(esc(eff.description || ""), "</td></tr>");
+      var lifetime = eff.session ? "Session" : eff.expires ? formatCookieDuration(eff.expires, preConsentTransfers.scanned_at) : "Persistent";
+      var vendorCell = eff.vendor ? eff.privacyUrl ? "<a href=\"".concat(esc(eff.privacyUrl), "\" target=\"_blank\" rel=\"noopener noreferrer\">").concat(esc(eff.vendor), "</a>") : esc(eff.vendor) : "";
+      return "<tr><td>".concat(esc(eff.name), "</td><td>").concat(esc(eff.domains.join(", ")), "</td><td>").concat(party, "</td><td>").concat(esc(lifetime), "</td><td>").concat(esc(bm), "</td><td>").concat(vendorCell, "</td><td>").concat(esc(eff.description || ""), "</td></tr>");
     }).join("");
     var html = "<table><thead><tr><th>Cookie name</th><th>Domain</th><th>Party</th><th>Lifetime</th><th>Category</th><th>Vendor</th><th>Description</th></tr></thead><tbody>".concat(rows, "</tbody></table>");
     navigator.clipboard.writeText(html).then(function () {
@@ -51662,11 +52459,7 @@ function CompliancePage() {
       var partyMod = hasThird ? " --third" : " --first";
       var eff = _objectSpread(_objectSpread({}, c), cookieOverrides[c.name] || {});
       var isUnknown = !eff.bannerCategory;
-      var lifetime = eff.session ? "Session" : eff.expires ? new Date(eff.expires * 1000).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      }) : "Persistent";
+      var lifetime = eff.session ? "Session" : eff.expires ? formatCookieDuration(eff.expires, preConsentTransfers === null || preConsentTransfers === void 0 ? void 0 : preConsentTransfers.scanned_at) : "Persistent";
       return /*#__PURE__*/React.createElement("div", {
         key: c.name + i,
         className: "compliance-cookies__row-wrap"
@@ -51676,9 +52469,14 @@ function CompliancePage() {
         className: "compliance-cookies__row-main"
       }, /*#__PURE__*/React.createElement("span", {
         className: "compliance-cookies__row-name"
-      }, eff.name), eff.vendor && /*#__PURE__*/React.createElement("span", {
+      }, eff.name), eff.vendor && (eff.privacyUrl ? /*#__PURE__*/React.createElement("a", {
+        href: eff.privacyUrl,
+        target: "_blank",
+        rel: "noopener noreferrer",
         className: "compliance-cookies__row-vendor"
-      }, eff.vendor), /*#__PURE__*/React.createElement("span", {
+      }, eff.vendor) : /*#__PURE__*/React.createElement("span", {
+        className: "compliance-cookies__row-vendor"
+      }, eff.vendor)), /*#__PURE__*/React.createElement("span", {
         className: "compliance-cookies__row-domain"
       }, eff.domains.join(", ")), eff.description && /*#__PURE__*/React.createElement("span", {
         className: "compliance-cookies__row-desc"
@@ -51867,7 +52665,777 @@ function CompliancePage() {
     onClick: copyEmbedSnippet
   }, embedSnippetCopied ? "Copied!" : "Copy snippet")), /*#__PURE__*/React.createElement("p", {
     className: "compliance-embed-modal__hint"
-  }, "Optional: add ", /*#__PURE__*/React.createElement("code", null, "data-lang=\"de\""), " to the div for German labels."))));
+  }, "Optional: add ", /*#__PURE__*/React.createElement("code", null, "data-lang=\"de\""), " for translated labels. If visitors use an ad blocker, add ", /*#__PURE__*/React.createElement("code", null, "data-api-base=\"/your-proxy\""), " and proxy that path to ", /*#__PURE__*/React.createElement("code", null, "https://www.intastellarconsents.com/api/cookie-banner"), " on your server."))));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/CookieDatabase/Style.css":
+/*!********************************************!*\
+  !*** ./src/Pages/CookieDatabase/Style.css ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js!./Style.css */ "./node_modules/css-loader/dist/cjs.js!./src/Pages/CookieDatabase/Style.css");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_Style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/Pages/CookieDatabase/index.js":
+/*!*******************************************!*\
+  !*** ./src/Pages/CookieDatabase/index.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ CookieDatabase)
+/* harmony export */ });
+/* harmony import */ var _API_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../API/api.js */ "./src/API/api.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Style.css */ "./src/Pages/CookieDatabase/Style.css");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useCallback = _React.useCallback,
+  useRef = _React.useRef;
+var CATEGORIES = ["necessary", "analytics", "marketing", "functional", "security"];
+function CategoryBadge(_ref) {
+  var category = _ref.category;
+  var cat = (category || "").toLowerCase();
+  return /*#__PURE__*/React.createElement("span", {
+    className: "cdb-badge --".concat(CATEGORIES.includes(cat) ? cat : "pending")
+  }, category || "—");
+}
+function Toast(_ref2) {
+  var message = _ref2.message,
+    onDone = _ref2.onDone;
+  useEffect(function () {
+    var t = setTimeout(onDone, 2600);
+    return function () {
+      return clearTimeout(t);
+    };
+  }, [message]);
+  if (!message) return null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "cdb-toast"
+  }, message);
+}
+function DiscoveriesTab(_ref3) {
+  var discoveries = _ref3.discoveries,
+    onAction = _ref3.onAction,
+    onBatchAction = _ref3.onBatchAction;
+  var _useState = useState(""),
+    _useState2 = _slicedToArray(_useState, 2),
+    filter = _useState2[0],
+    setFilter = _useState2[1];
+  var _useState3 = useState({}),
+    _useState4 = _slicedToArray(_useState3, 2),
+    busy = _useState4[0],
+    setBusy = _useState4[1];
+  var _useState5 = useState({}),
+    _useState6 = _slicedToArray(_useState5, 2),
+    edits = _useState6[0],
+    setEdits = _useState6[1];
+  function mergedRow(row) {
+    var _e$is_prefix, _ref4, _e$vendor, _ref5, _e$category, _ref6, _e$description;
+    var e = edits[row.name] || {};
+    return {
+      name: row.name,
+      is_prefix: (_e$is_prefix = e.is_prefix) !== null && _e$is_prefix !== void 0 ? _e$is_prefix : false,
+      vendor: (_ref4 = (_e$vendor = e.vendor) !== null && _e$vendor !== void 0 ? _e$vendor : row.enriched_vendor) !== null && _ref4 !== void 0 ? _ref4 : null,
+      category: (_ref5 = (_e$category = e.category) !== null && _e$category !== void 0 ? _e$category : row.enriched_category) !== null && _ref5 !== void 0 ? _ref5 : null,
+      description: (_ref6 = (_e$description = e.description) !== null && _e$description !== void 0 ? _e$description : row.enriched_description) !== null && _ref6 !== void 0 ? _ref6 : null
+    };
+  }
+  function hasData(row) {
+    var m = mergedRow(row);
+    return !!(m.vendor || m.category);
+  }
+  function batchPromote() {
+    var items = discoveries.filter(hasData).map(mergedRow);
+    onBatchAction("batch_promote", {
+      items: items
+    }, "Promote ".concat(items.length, " cookie").concat(items.length !== 1 ? "s" : "", " with vendor or category?"));
+  }
+  function batchDismissEmpty() {
+    var names = discoveries.filter(function (d) {
+      return !hasData(d);
+    }).map(function (d) {
+      return d.name;
+    });
+    onBatchAction("batch_dismiss_empty", {
+      names: names
+    }, "Dismiss ".concat(names.length, " cookie").concat(names.length !== 1 ? "s" : "", " with no data?"));
+  }
+  var filtered = discoveries.filter(function (d) {
+    return !filter || d.name.toLowerCase().includes(filter.toLowerCase());
+  });
+  function edit(name, field, val) {
+    setEdits(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, name, _objectSpread(_objectSpread({}, prev[name] || {}), {}, _defineProperty({}, field, val))));
+    });
+  }
+  function getEdit(name, field) {
+    var _edits$name$field, _edits$name;
+    var fallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+    return (_edits$name$field = (_edits$name = edits[name]) === null || _edits$name === void 0 ? void 0 : _edits$name[field]) !== null && _edits$name$field !== void 0 ? _edits$name$field : fallback;
+  }
+  function promote(_x) {
+    return _promote.apply(this, arguments);
+  }
+  function _promote() {
+    _promote = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(row) {
+      var _e$is_prefix2, _ref7, _e$vendor2, _ref8, _e$category2, _ref9, _e$description2;
+      var e;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.n) {
+          case 0:
+            setBusy(function (b) {
+              return _objectSpread(_objectSpread({}, b), {}, _defineProperty({}, row.name, true));
+            });
+            e = edits[row.name] || {};
+            _context.n = 1;
+            return onAction("promote", {
+              name: row.name,
+              is_prefix: (_e$is_prefix2 = e.is_prefix) !== null && _e$is_prefix2 !== void 0 ? _e$is_prefix2 : false,
+              vendor: (_ref7 = (_e$vendor2 = e.vendor) !== null && _e$vendor2 !== void 0 ? _e$vendor2 : row.enriched_vendor) !== null && _ref7 !== void 0 ? _ref7 : "",
+              category: (_ref8 = (_e$category2 = e.category) !== null && _e$category2 !== void 0 ? _e$category2 : row.enriched_category) !== null && _ref8 !== void 0 ? _ref8 : "",
+              description: (_ref9 = (_e$description2 = e.description) !== null && _e$description2 !== void 0 ? _e$description2 : row.enriched_description) !== null && _ref9 !== void 0 ? _ref9 : ""
+            });
+          case 1:
+            setBusy(function (b) {
+              return _objectSpread(_objectSpread({}, b), {}, _defineProperty({}, row.name, false));
+            });
+          case 2:
+            return _context.a(2);
+        }
+      }, _callee);
+    }));
+    return _promote.apply(this, arguments);
+  }
+  function dismiss(_x2) {
+    return _dismiss.apply(this, arguments);
+  }
+  function _dismiss() {
+    _dismiss = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(row) {
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.n) {
+          case 0:
+            setBusy(function (b) {
+              return _objectSpread(_objectSpread({}, b), {}, _defineProperty({}, row.name, true));
+            });
+            _context2.n = 1;
+            return onAction("dismiss", {
+              name: row.name
+            });
+          case 1:
+            setBusy(function (b) {
+              return _objectSpread(_objectSpread({}, b), {}, _defineProperty({}, row.name, false));
+            });
+          case 2:
+            return _context2.a(2);
+        }
+      }, _callee2);
+    }));
+    return _dismiss.apply(this, arguments);
+  }
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "cdb-filter-row"
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "cdb-filter-input",
+    placeholder: "Filter by name\u2026",
+    value: filter,
+    onChange: function onChange(e) {
+      return setFilter(e.target.value);
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "cdb-count"
+  }, filtered.length, " cookie", filtered.length !== 1 ? "s" : ""), /*#__PURE__*/React.createElement("div", {
+    style: {
+      marginLeft: "auto",
+      display: "flex",
+      gap: "8px"
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "cdb-btn --promote",
+    onClick: batchPromote
+  }, "Promote all with data (", discoveries.filter(hasData).length, ")"), /*#__PURE__*/React.createElement("button", {
+    className: "cdb-btn --dismiss",
+    onClick: batchDismissEmpty
+  }, "Dismiss all without data (", discoveries.filter(function (d) {
+    return !hasData(d);
+  }).length, ")"))), /*#__PURE__*/React.createElement("div", {
+    className: "cdb-table-wrap"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "cdb-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Seen"), /*#__PURE__*/React.createElement("th", null, "Suggested vendor"), /*#__PURE__*/React.createElement("th", null, "Vendor (edit)"), /*#__PURE__*/React.createElement("th", null, "Category (edit)"), /*#__PURE__*/React.createElement("th", null, "Description (edit)"), /*#__PURE__*/React.createElement("th", null, "Prefix?"), /*#__PURE__*/React.createElement("th", null, "Source"), /*#__PURE__*/React.createElement("th", null, "Actions"))), /*#__PURE__*/React.createElement("tbody", null, filtered.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 9,
+    className: "cdb-empty"
+  }, "No pending cookie discoveries.")), filtered.map(function (row) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: row.name
+    }, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+      className: "cdb-name"
+    }, row.name)), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+      className: "cdb-times-seen"
+    }, row.times_seen, "\xD7")), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+      style: {
+        fontSize: "0.775rem",
+        color: "rgba(255,255,255,0.55)"
+      }
+    }, row.enriched_vendor || "—"), row.enriched_category && /*#__PURE__*/React.createElement(CategoryBadge, {
+      category: row.enriched_category
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+      className: "cdb-input",
+      style: {
+        minWidth: 110
+      },
+      placeholder: row.enriched_vendor || "Vendor",
+      value: getEdit(row.name, "vendor", row.enriched_vendor || ""),
+      onChange: function onChange(e) {
+        return edit(row.name, "vendor", e.target.value);
+      }
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("select", {
+      className: "cdb-select",
+      value: getEdit(row.name, "category", row.enriched_category || ""),
+      onChange: function onChange(e) {
+        return edit(row.name, "category", e.target.value);
+      }
+    }, /*#__PURE__*/React.createElement("option", {
+      value: ""
+    }, "\u2014"), CATEGORIES.map(function (c) {
+      return /*#__PURE__*/React.createElement("option", {
+        key: c,
+        value: c
+      }, c);
+    }))), /*#__PURE__*/React.createElement("td", {
+      className: "cdb-desc-cell"
+    }, /*#__PURE__*/React.createElement("input", {
+      className: "cdb-input",
+      style: {
+        minWidth: 200
+      },
+      placeholder: row.enriched_description || "Description…",
+      value: getEdit(row.name, "description", row.enriched_description || ""),
+      onChange: function onChange(e) {
+        return edit(row.name, "description", e.target.value);
+      }
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+      type: "checkbox",
+      checked: getEdit(row.name, "is_prefix", false),
+      onChange: function onChange(e) {
+        return edit(row.name, "is_prefix", e.target.checked);
+      }
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+      className: "cdb-source-tag"
+    }, row.enriched_source || "none")), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("div", {
+      className: "cdb-actions"
+    }, /*#__PURE__*/React.createElement("button", {
+      className: "cdb-btn --promote",
+      disabled: !!busy[row.name],
+      onClick: function onClick() {
+        return promote(row);
+      }
+    }, "Promote"), /*#__PURE__*/React.createElement("button", {
+      className: "cdb-btn --dismiss",
+      disabled: !!busy[row.name],
+      onClick: function onClick() {
+        return dismiss(row);
+      }
+    }, "Dismiss"))));
+  })))));
+}
+function DefinitionsTab(_ref0) {
+  var definitions = _ref0.definitions,
+    onAction = _ref0.onAction;
+  var _useState7 = useState(""),
+    _useState8 = _slicedToArray(_useState7, 2),
+    filter = _useState8[0],
+    setFilter = _useState8[1];
+  var _useState9 = useState({}),
+    _useState0 = _slicedToArray(_useState9, 2),
+    busy = _useState0[0],
+    setBusy = _useState0[1];
+  var _useState1 = useState({}),
+    _useState10 = _slicedToArray(_useState1, 2),
+    edits = _useState10[0],
+    setEdits = _useState10[1];
+  var _useState11 = useState({}),
+    _useState12 = _slicedToArray(_useState11, 2),
+    dirty = _useState12[0],
+    setDirty = _useState12[1];
+  var filtered = definitions.filter(function (d) {
+    return !filter || d.name.toLowerCase().includes(filter.toLowerCase());
+  });
+  function edit(name, field, val) {
+    setEdits(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, name, _objectSpread(_objectSpread({}, prev[name] || {}), {}, _defineProperty({}, field, val))));
+    });
+    setDirty(function (prev) {
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, name, true));
+    });
+  }
+  function getEdit(name, field) {
+    var _edits$name$field2, _edits$name2;
+    var fallback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
+    return (_edits$name$field2 = (_edits$name2 = edits[name]) === null || _edits$name2 === void 0 ? void 0 : _edits$name2[field]) !== null && _edits$name$field2 !== void 0 ? _edits$name$field2 : fallback;
+  }
+  function save(_x3) {
+    return _save.apply(this, arguments);
+  }
+  function _save() {
+    _save = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(row) {
+      var _ref1, _e$is_prefix3, _ref10, _e$vendor3, _ref11, _e$category3, _ref12, _e$description3;
+      var e;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.n) {
+          case 0:
+            setBusy(function (b) {
+              return _objectSpread(_objectSpread({}, b), {}, _defineProperty({}, row.name, true));
+            });
+            e = edits[row.name] || {};
+            _context3.n = 1;
+            return onAction("promote", {
+              name: row.name,
+              is_prefix: (_ref1 = (_e$is_prefix3 = e.is_prefix) !== null && _e$is_prefix3 !== void 0 ? _e$is_prefix3 : row.is_prefix) !== null && _ref1 !== void 0 ? _ref1 : false,
+              vendor: (_ref10 = (_e$vendor3 = e.vendor) !== null && _e$vendor3 !== void 0 ? _e$vendor3 : row.vendor) !== null && _ref10 !== void 0 ? _ref10 : "",
+              category: (_ref11 = (_e$category3 = e.category) !== null && _e$category3 !== void 0 ? _e$category3 : row.category) !== null && _ref11 !== void 0 ? _ref11 : "",
+              description: (_ref12 = (_e$description3 = e.description) !== null && _e$description3 !== void 0 ? _e$description3 : row.description) !== null && _ref12 !== void 0 ? _ref12 : ""
+            });
+          case 1:
+            setDirty(function (prev) {
+              return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, row.name, false));
+            });
+            setBusy(function (b) {
+              return _objectSpread(_objectSpread({}, b), {}, _defineProperty({}, row.name, false));
+            });
+          case 2:
+            return _context3.a(2);
+        }
+      }, _callee3);
+    }));
+    return _save.apply(this, arguments);
+  }
+  function deleteDefinition(_x4) {
+    return _deleteDefinition.apply(this, arguments);
+  }
+  function _deleteDefinition() {
+    _deleteDefinition = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(name) {
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.n) {
+          case 0:
+            if (window.confirm("Remove \"".concat(name, "\" from promoted definitions?"))) {
+              _context4.n = 1;
+              break;
+            }
+            return _context4.a(2);
+          case 1:
+            setBusy(function (b) {
+              return _objectSpread(_objectSpread({}, b), {}, _defineProperty({}, name, true));
+            });
+            _context4.n = 2;
+            return onAction("delete_definition", {
+              name: name
+            });
+          case 2:
+            setBusy(function (b) {
+              return _objectSpread(_objectSpread({}, b), {}, _defineProperty({}, name, false));
+            });
+          case 3:
+            return _context4.a(2);
+        }
+      }, _callee4);
+    }));
+    return _deleteDefinition.apply(this, arguments);
+  }
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "cdb-filter-row"
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "cdb-filter-input",
+    placeholder: "Filter by name\u2026",
+    value: filter,
+    onChange: function onChange(e) {
+      return setFilter(e.target.value);
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "cdb-count"
+  }, filtered.length, " definition", filtered.length !== 1 ? "s" : "")), /*#__PURE__*/React.createElement("div", {
+    className: "cdb-table-wrap"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "cdb-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Prefix?"), /*#__PURE__*/React.createElement("th", null, "Vendor"), /*#__PURE__*/React.createElement("th", null, "Category"), /*#__PURE__*/React.createElement("th", null, "Description"), /*#__PURE__*/React.createElement("th", null, "Promoted"), /*#__PURE__*/React.createElement("th", null, "Actions"))), /*#__PURE__*/React.createElement("tbody", null, filtered.length === 0 && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 7,
+    className: "cdb-empty"
+  }, "No promoted definitions yet.")), filtered.map(function (row) {
+    var _row$is_prefix;
+    return /*#__PURE__*/React.createElement("tr", {
+      key: row.name
+    }, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+      className: "cdb-name"
+    }, row.name, row.is_prefix ? "*" : "")), /*#__PURE__*/React.createElement("td", {
+      style: {
+        textAlign: "center"
+      }
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "checkbox",
+      checked: getEdit(row.name, "is_prefix", (_row$is_prefix = row.is_prefix) !== null && _row$is_prefix !== void 0 ? _row$is_prefix : false),
+      onChange: function onChange(e) {
+        return edit(row.name, "is_prefix", e.target.checked);
+      }
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("input", {
+      className: "cdb-input",
+      style: {
+        minWidth: 110
+      },
+      value: getEdit(row.name, "vendor", row.vendor || ""),
+      onChange: function onChange(e) {
+        return edit(row.name, "vendor", e.target.value);
+      }
+    })), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("select", {
+      className: "cdb-select",
+      value: getEdit(row.name, "category", row.category || ""),
+      onChange: function onChange(e) {
+        return edit(row.name, "category", e.target.value);
+      }
+    }, /*#__PURE__*/React.createElement("option", {
+      value: ""
+    }, "\u2014"), CATEGORIES.map(function (c) {
+      return /*#__PURE__*/React.createElement("option", {
+        key: c,
+        value: c
+      }, c);
+    }))), /*#__PURE__*/React.createElement("td", {
+      className: "cdb-desc-cell"
+    }, /*#__PURE__*/React.createElement("input", {
+      className: "cdb-input",
+      style: {
+        minWidth: 200
+      },
+      value: getEdit(row.name, "description", row.description || ""),
+      onChange: function onChange(e) {
+        return edit(row.name, "description", e.target.value);
+      }
+    })), /*#__PURE__*/React.createElement("td", {
+      style: {
+        fontSize: "0.72rem",
+        color: "rgba(255,255,255,0.35)",
+        whiteSpace: "nowrap"
+      }
+    }, row.promoted_at ? new Date(row.promoted_at).toLocaleDateString() : "—"), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("div", {
+      className: "cdb-actions"
+    }, dirty[row.name] && /*#__PURE__*/React.createElement("button", {
+      className: "cdb-btn --promote",
+      disabled: !!busy[row.name],
+      onClick: function onClick() {
+        return save(row);
+      }
+    }, "Save"), /*#__PURE__*/React.createElement("button", {
+      className: "cdb-btn --delete",
+      disabled: !!busy[row.name],
+      onClick: function onClick() {
+        return deleteDefinition(row.name);
+      }
+    }, "Delete"))));
+  })))));
+}
+function CookieDatabase() {
+  var _useState13 = useState("discoveries"),
+    _useState14 = _slicedToArray(_useState13, 2),
+    tab = _useState14[0],
+    setTab = _useState14[1];
+  var _useState15 = useState([]),
+    _useState16 = _slicedToArray(_useState15, 2),
+    discoveries = _useState16[0],
+    setDiscoveries = _useState16[1];
+  var _useState17 = useState([]),
+    _useState18 = _slicedToArray(_useState17, 2),
+    definitions = _useState18[0],
+    setDefinitions = _useState18[1];
+  var _useState19 = useState(true),
+    _useState20 = _slicedToArray(_useState19, 2),
+    loading = _useState20[0],
+    setLoading = _useState20[1];
+  var _useState21 = useState(false),
+    _useState22 = _slicedToArray(_useState21, 2),
+    backfilling = _useState22[0],
+    setBackfilling = _useState22[1];
+  var _useState23 = useState(null),
+    _useState24 = _slicedToArray(_useState23, 2),
+    toast = _useState24[0],
+    setToast = _useState24[1];
+  var load = useCallback(function () {
+    setLoading(true);
+    fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].cookieDiscoveries.get.url, {
+      method: "GET",
+      headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].cookieDiscoveries.get.headers
+    }).then(function (r) {
+      return r.json();
+    }).then(function (data) {
+      setDiscoveries(data.discoveries || []);
+      setDefinitions(data.definitions || []);
+    })["catch"](function () {
+      return setToast("Failed to load data.");
+    })["finally"](function () {
+      return setLoading(false);
+    });
+  }, []);
+  useEffect(function () {
+    load();
+  }, []);
+  function runBackfill() {
+    return _runBackfill.apply(this, arguments);
+  }
+  function _runBackfill() {
+    _runBackfill = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+      var res, data, _t;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
+          case 0:
+            setBackfilling(true);
+            _context5.p = 1;
+            _context5.n = 2;
+            return fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].cookieDiscoveries.action.url, {
+              method: "POST",
+              headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].cookieDiscoveries.action.headers,
+              body: JSON.stringify({
+                action: "backfill"
+              })
+            });
+          case 2:
+            res = _context5.v;
+            _context5.n = 3;
+            return res.json();
+          case 3:
+            data = _context5.v;
+            if (!res.ok) {
+              setToast(data.error || "Backfill failed.");
+            } else {
+              setToast("Backfill complete \u2014 ".concat(data.scansProcessed, " scans, ").concat(data.cookiesUpserted, " cookies indexed."));
+              load();
+            }
+            _context5.n = 5;
+            break;
+          case 4:
+            _context5.p = 4;
+            _t = _context5.v;
+            setToast("Network error during backfill.");
+          case 5:
+            _context5.p = 5;
+            setBackfilling(false);
+            return _context5.f(5);
+          case 6:
+            return _context5.a(2);
+        }
+      }, _callee5, null, [[1, 4, 5, 6]]);
+    }));
+    return _runBackfill.apply(this, arguments);
+  }
+  function runBatchAction(_x5, _x6, _x7) {
+    return _runBatchAction.apply(this, arguments);
+  }
+  function _runBatchAction() {
+    _runBatchAction = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(action, body, confirmMsg) {
+      var res, data, _t2;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.p = _context6.n) {
+          case 0:
+            if (window.confirm(confirmMsg)) {
+              _context6.n = 1;
+              break;
+            }
+            return _context6.a(2);
+          case 1:
+            _context6.p = 1;
+            _context6.n = 2;
+            return fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].cookieDiscoveries.action.url, {
+              method: "POST",
+              headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].cookieDiscoveries.action.headers,
+              body: JSON.stringify(_objectSpread({
+                action: action
+              }, body))
+            });
+          case 2:
+            res = _context6.v;
+            _context6.n = 3;
+            return res.json();
+          case 3:
+            data = _context6.v;
+            if (!res.ok) {
+              setToast(data.error || "Action failed.");
+            } else if (action === "batch_promote") {
+              setToast("Promoted ".concat(data.promoted, " cookies."));
+              load();
+            } else if (action === "batch_dismiss_empty") {
+              setToast("Dismissed ".concat(data.dismissed, " cookies with no data."));
+              load();
+            }
+            _context6.n = 5;
+            break;
+          case 4:
+            _context6.p = 4;
+            _t2 = _context6.v;
+            setToast("Network error.");
+          case 5:
+            return _context6.a(2);
+        }
+      }, _callee6, null, [[1, 4]]);
+    }));
+    return _runBatchAction.apply(this, arguments);
+  }
+  function onAction(_x8, _x9) {
+    return _onAction.apply(this, arguments);
+  }
+  function _onAction() {
+    _onAction = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(action, body) {
+      var res, data, _t3;
+      return _regenerator().w(function (_context7) {
+        while (1) switch (_context7.p = _context7.n) {
+          case 0:
+            _context7.p = 0;
+            _context7.n = 1;
+            return fetch(_API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].cookieDiscoveries.action.url, {
+              method: "POST",
+              headers: _API_api_js__WEBPACK_IMPORTED_MODULE_0__["default"].cookieDiscoveries.action.headers,
+              body: JSON.stringify(_objectSpread({
+                action: action
+              }, body))
+            });
+          case 1:
+            res = _context7.v;
+            _context7.n = 2;
+            return res.json();
+          case 2:
+            data = _context7.v;
+            if (res.ok) {
+              _context7.n = 3;
+              break;
+            }
+            setToast(data.error || "Action failed.");
+            return _context7.a(2);
+          case 3:
+            setToast(action === "promote" ? "\"".concat(body.name, "\" promoted to definitions.") : action === "dismiss" ? "\"".concat(body.name, "\" dismissed.") : action === "delete_definition" ? "\"".concat(body.name, "\" removed from definitions.") : "Done.");
+            load();
+            _context7.n = 5;
+            break;
+          case 4:
+            _context7.p = 4;
+            _t3 = _context7.v;
+            setToast("Network error.");
+          case 5:
+            return _context7.a(2);
+        }
+      }, _callee7, null, [[0, 4]]);
+    }));
+    return _onAction.apply(this, arguments);
+  }
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_1__["default"], null, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: "flex",
+      alignItems: "center",
+      gap: "12px"
+    }
+  }, /*#__PURE__*/React.createElement("h1", null, "Cookie Database"), /*#__PURE__*/React.createElement("button", {
+    className: "cdb-btn --promote",
+    style: {
+      fontSize: "0.8rem",
+      padding: "6px 14px"
+    },
+    disabled: backfilling,
+    onClick: runBackfill
+  }, backfilling ? "Backfilling…" : "Backfill from scan history"))), /*#__PURE__*/React.createElement("main", {
+    className: "dashboard-content"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "cdb-tabs"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "cdb-tab".concat(tab === "discoveries" ? " --active" : ""),
+    onClick: function onClick() {
+      return setTab("discoveries");
+    }
+  }, "Discovered", /*#__PURE__*/React.createElement("span", {
+    className: "cdb-count"
+  }, discoveries.length)), /*#__PURE__*/React.createElement("button", {
+    className: "cdb-tab".concat(tab === "definitions" ? " --active" : ""),
+    onClick: function onClick() {
+      return setTab("definitions");
+    }
+  }, "Promoted", /*#__PURE__*/React.createElement("span", {
+    className: "cdb-count"
+  }, definitions.length))), loading ? /*#__PURE__*/React.createElement("div", {
+    className: "cdb-empty"
+  }, "Loading\u2026") : tab === "discoveries" ? /*#__PURE__*/React.createElement(DiscoveriesTab, {
+    discoveries: discoveries,
+    onAction: onAction,
+    onBatchAction: runBatchAction
+  }) : /*#__PURE__*/React.createElement(DefinitionsTab, {
+    definitions: definitions,
+    onAction: onAction
+  })), /*#__PURE__*/React.createElement(Toast, {
+    message: toast,
+    onDone: function onDone() {
+      return setToast(null);
+    }
+  }));
 }
 
 /***/ }),
@@ -57680,6 +59248,401 @@ function Compare(_ref) {
 
 /***/ }),
 
+/***/ "./src/Pages/Reports/MarketingReport/AdConnectionManager.js":
+/*!******************************************************************!*\
+  !*** ./src/Pages/Reports/MarketingReport/AdConnectionManager.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AdConnectionManager)
+/* harmony export */ });
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useCallback = _React.useCallback;
+var AD_PLATFORMS = [{
+  id: "google_ads",
+  label: "Google Ads",
+  color: "#4285f4",
+  initial: "G"
+}, {
+  id: "meta_ads",
+  label: "Meta (Facebook / Instagram)",
+  color: "#1877f2",
+  initial: "f"
+}, {
+  id: "linkedin_ads",
+  label: "LinkedIn Ads",
+  color: "#0a66c2",
+  initial: "in"
+}, {
+  id: "microsoft_ads",
+  label: "Microsoft Ads",
+  color: "#00a4ef",
+  initial: "B"
+}];
+function formatDate(iso) {
+  if (!iso) return "";
+  try {
+    return new Date(iso).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric"
+    });
+  } catch (_unused) {
+    return "";
+  }
+}
+function AdConnectionManager(_ref) {
+  var domain = _ref.domain,
+    orgId = _ref.orgId,
+    authToken = _ref.authToken,
+    fromDate = _ref.fromDate,
+    toDate = _ref.toDate,
+    onImport = _ref.onImport;
+  var _useState = useState([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    connections = _useState2[0],
+    setConnections = _useState2[1];
+  var _useState3 = useState(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loadingConnections = _useState4[0],
+    setLoadingConnections = _useState4[1];
+  var _useState5 = useState(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    importing = _useState6[0],
+    setImporting = _useState6[1];
+  var _useState7 = useState(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    connecting = _useState8[0],
+    setConnecting = _useState8[1];
+  var _useState9 = useState(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    statusMsg = _useState0[0],
+    setStatusMsg = _useState0[1];
+  var _useState1 = useState(false),
+    _useState10 = _slicedToArray(_useState1, 2),
+    statusIsError = _useState10[0],
+    setStatusIsError = _useState10[1];
+  var setStatus = useCallback(function (msg) {
+    var isError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    setStatusMsg(msg);
+    setStatusIsError(isError);
+    if (msg) setTimeout(function () {
+      return setStatusMsg(null);
+    }, 6000);
+  }, []);
+  var fetchConnections = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+    var resp, data, _t;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          if (!(!domain || !orgId || !authToken)) {
+            _context.n = 1;
+            break;
+          }
+          return _context.a(2);
+        case 1:
+          setLoadingConnections(true);
+          _context.p = 2;
+          _context.n = 3;
+          return fetch("/api/ad-connections?domain=".concat(encodeURIComponent(domain)), {
+            headers: {
+              Authorization: authToken,
+              Organisation: String(orgId)
+            }
+          });
+        case 3:
+          resp = _context.v;
+          if (resp.ok) {
+            _context.n = 4;
+            break;
+          }
+          setStatus("Could not load connections.", true);
+          return _context.a(2);
+        case 4:
+          _context.n = 5;
+          return resp.json();
+        case 5:
+          data = _context.v;
+          setConnections(data.connections || []);
+          _context.n = 7;
+          break;
+        case 6:
+          _context.p = 6;
+          _t = _context.v;
+          setStatus(_t.message, true);
+        case 7:
+          _context.p = 7;
+          setLoadingConnections(false);
+          return _context.f(7);
+        case 8:
+          return _context.a(2);
+      }
+    }, _callee, null, [[2, 6, 7, 8]]);
+  })), [domain, orgId, authToken, setStatus]);
+  useEffect(function () {
+    fetchConnections();
+  }, [fetchConnections]);
+
+  // Pick up oauth_success / oauth_error query params set by the callback redirect
+  useEffect(function () {
+    var params = new URLSearchParams(window.location.search);
+    if (params.has("oauth_success")) {
+      var _AD_PLATFORMS$find;
+      var p = params.get("oauth_success");
+      var label = ((_AD_PLATFORMS$find = AD_PLATFORMS.find(function (x) {
+        return x.id === p;
+      })) === null || _AD_PLATFORMS$find === void 0 ? void 0 : _AD_PLATFORMS$find.label) || p;
+      setStatus("".concat(label, " connected."));
+      fetchConnections();
+      var url = new URL(window.location.href);
+      url.searchParams["delete"]("oauth_success");
+      url.searchParams["delete"]("oauth_domain");
+      window.history.replaceState({}, "", url.toString());
+    } else if (params.has("oauth_error")) {
+      setStatus("Connection failed: ".concat(params.get("oauth_error")), true);
+      var _url = new URL(window.location.href);
+      _url.searchParams["delete"]("oauth_error");
+      _url.searchParams["delete"]("platform");
+      window.history.replaceState({}, "", _url.toString());
+    }
+  }, [fetchConnections, setStatus]);
+  function handleConnect(_x) {
+    return _handleConnect.apply(this, arguments);
+  }
+  function _handleConnect() {
+    _handleConnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(platformId) {
+      var returnPath, resp, data, _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            setConnecting(platformId);
+            _context2.p = 1;
+            returnPath = window.location.pathname;
+            _context2.n = 2;
+            return fetch("/api/ad-oauth-start?platform=".concat(platformId, "&domain=").concat(encodeURIComponent(domain), "&returnPath=").concat(encodeURIComponent(returnPath)), {
+              headers: {
+                Authorization: authToken,
+                Organisation: String(orgId)
+              }
+            });
+          case 2:
+            resp = _context2.v;
+            _context2.n = 3;
+            return resp.json();
+          case 3:
+            data = _context2.v;
+            if (resp.ok) {
+              _context2.n = 4;
+              break;
+            }
+            setStatus(data.error || "Could not start connection.", true);
+            setConnecting(null);
+            return _context2.a(2);
+          case 4:
+            // Full-page redirect — the callback will bring the user back
+            window.location.href = data.authUrl;
+            _context2.n = 6;
+            break;
+          case 5:
+            _context2.p = 5;
+            _t2 = _context2.v;
+            setStatus(_t2.message, true);
+            setConnecting(null);
+          case 6:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[1, 5]]);
+    }));
+    return _handleConnect.apply(this, arguments);
+  }
+  function handleDisconnect(_x2) {
+    return _handleDisconnect.apply(this, arguments);
+  }
+  function _handleDisconnect() {
+    _handleDisconnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(platformId) {
+      var _AD_PLATFORMS$find2;
+      var label, _t3;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            label = ((_AD_PLATFORMS$find2 = AD_PLATFORMS.find(function (p) {
+              return p.id === platformId;
+            })) === null || _AD_PLATFORMS$find2 === void 0 ? void 0 : _AD_PLATFORMS$find2.label) || platformId;
+            if (window.confirm("Disconnect ".concat(label, "?\nThis removes the connection from this domain. You can reconnect at any time."))) {
+              _context3.n = 1;
+              break;
+            }
+            return _context3.a(2);
+          case 1:
+            _context3.p = 1;
+            _context3.n = 2;
+            return fetch("/api/ad-connections?platform=".concat(platformId, "&domain=").concat(encodeURIComponent(domain)), {
+              method: "DELETE",
+              headers: {
+                Authorization: authToken,
+                Organisation: String(orgId)
+              }
+            });
+          case 2:
+            setConnections(function (prev) {
+              return prev.filter(function (c) {
+                return c.platform !== platformId;
+              });
+            });
+            setStatus("".concat(label, " disconnected."));
+            _context3.n = 4;
+            break;
+          case 3:
+            _context3.p = 3;
+            _t3 = _context3.v;
+            setStatus(_t3.message, true);
+          case 4:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[1, 3]]);
+    }));
+    return _handleDisconnect.apply(this, arguments);
+  }
+  function handleImport(_x3) {
+    return _handleImport.apply(this, arguments);
+  }
+  function _handleImport() {
+    _handleImport = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(platformId) {
+      var _AD_PLATFORMS$find3, _data$clicks, resp, data, label, _t4;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            if (!(!fromDate || !toDate)) {
+              _context4.n = 1;
+              break;
+            }
+            setStatus("Set a date range in the header filter first.", true);
+            return _context4.a(2);
+          case 1:
+            setImporting(platformId);
+            _context4.p = 2;
+            _context4.n = 3;
+            return fetch("/api/ad-data-fetch?platform=".concat(platformId, "&domain=").concat(encodeURIComponent(domain), "&fromDate=").concat(fromDate, "&toDate=").concat(toDate), {
+              headers: {
+                Authorization: authToken,
+                Organisation: String(orgId)
+              }
+            });
+          case 3:
+            resp = _context4.v;
+            _context4.n = 4;
+            return resp.json();
+          case 4:
+            data = _context4.v;
+            if (resp.ok) {
+              _context4.n = 5;
+              break;
+            }
+            setStatus(data.error || "Import failed.", true);
+            return _context4.a(2);
+          case 5:
+            label = ((_AD_PLATFORMS$find3 = AD_PLATFORMS.find(function (p) {
+              return p.id === platformId;
+            })) === null || _AD_PLATFORMS$find3 === void 0 ? void 0 : _AD_PLATFORMS$find3.label) || platformId;
+            onImport === null || onImport === void 0 || onImport(platformId, data);
+            setStatus("Imported from ".concat(label, ": ").concat(((_data$clicks = data.clicks) === null || _data$clicks === void 0 ? void 0 : _data$clicks.toLocaleString()) || 0, " clicks").concat(data.spend ? ", ".concat(data.currency || "", " ").concat(Number(data.spend).toFixed(2), " spend") : "", "."));
+            _context4.n = 7;
+            break;
+          case 6:
+            _context4.p = 6;
+            _t4 = _context4.v;
+            setStatus(_t4.message, true);
+          case 7:
+            _context4.p = 7;
+            setImporting(null);
+            return _context4.f(7);
+          case 8:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[2, 6, 7, 8]]);
+    }));
+    return _handleImport.apply(this, arguments);
+  }
+  var connMap = Object.fromEntries(connections.map(function (c) {
+    return [c.platform, c];
+  }));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "ad-connection-manager"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ad-connection-manager__header"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "ad-connection-manager__title"
+  }, "Auto-import from Ad Platforms"), /*#__PURE__*/React.createElement("p", {
+    className: "ad-connection-manager__hint"
+  }, "Connect once per domain \u2014 we'll fetch clicks and spend directly from the platform so you don't have to paste them in manually.")), statusMsg && /*#__PURE__*/React.createElement("p", {
+    className: "ad-connection-manager__status".concat(statusIsError ? " ad-connection-manager__status--error" : ""),
+    role: "alert"
+  }, statusMsg), loadingConnections ? /*#__PURE__*/React.createElement("p", {
+    className: "ad-connection-manager__loading"
+  }, "Checking connections\u2026") : /*#__PURE__*/React.createElement("div", {
+    className: "ad-connection-manager__list"
+  }, AD_PLATFORMS.map(function (platform) {
+    var conn = connMap[platform.id];
+    var isConnected = !!conn;
+    var isImporting = importing === platform.id;
+    var isConnecting = connecting === platform.id;
+    return /*#__PURE__*/React.createElement("div", {
+      key: platform.id,
+      className: "ad-connection-card".concat(isConnected ? " ad-connection-card--connected" : "")
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "ad-connection-card__icon",
+      style: {
+        background: platform.color
+      },
+      "aria-hidden": "true"
+    }, platform.initial), /*#__PURE__*/React.createElement("div", {
+      className: "ad-connection-card__info"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ad-connection-card__name"
+    }, platform.label), isConnected ? /*#__PURE__*/React.createElement("span", {
+      className: "ad-connection-card__meta"
+    }, conn.account_label || "Connected", conn.updated_at ? " \xB7 synced ".concat(formatDate(conn.updated_at)) : "") : /*#__PURE__*/React.createElement("span", {
+      className: "ad-connection-card__meta ad-connection-card__meta--dim"
+    }, "Not connected")), /*#__PURE__*/React.createElement("div", {
+      className: "ad-connection-card__actions"
+    }, isConnected ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+      className: "ad-connection-card__btn ad-connection-card__btn--import",
+      onClick: function onClick() {
+        return handleImport(platform.id);
+      },
+      disabled: isImporting,
+      title: "Import ".concat(fromDate, "\u2013").concat(toDate, " data from ").concat(platform.label)
+    }, isImporting ? "Importing…" : "Import data"), /*#__PURE__*/React.createElement("button", {
+      className: "ad-connection-card__btn ad-connection-card__btn--disconnect",
+      onClick: function onClick() {
+        return handleDisconnect(platform.id);
+      }
+    }, "Disconnect")) : /*#__PURE__*/React.createElement("button", {
+      className: "ad-connection-card__btn ad-connection-card__btn--connect",
+      onClick: function onClick() {
+        return handleConnect(platform.id);
+      },
+      disabled: isConnecting
+    }, isConnecting ? "Opening…" : "Connect")));
+  })));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Reports/MarketingReport/MarketingCharts.js":
 /*!**************************************************************!*\
   !*** ./src/Pages/Reports/MarketingReport/MarketingCharts.js ***!
@@ -58154,15 +60117,15 @@ function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLim
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
-function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 var _React = React,
   useCallback = _React.useCallback,
   useEffect = _React.useEffect,
@@ -58260,6 +60223,55 @@ var PLATFORM_BY_ID = PLATFORMS.reduce(function (acc, p) {
   acc[p.id] = p;
   return acc;
 }, {});
+var PLATFORM_COLORS = {
+  google_ads: "#4285f4",
+  meta_ads: "#1877f2",
+  linkedin_ads: "#0a66c2",
+  microsoft_ads: "#00a4ef",
+  tiktok_ads: "#ee1d52",
+  pinterest_ads: "#e60023",
+  twitter_ads: "#1da1f2",
+  ga4: "#e37400",
+  other: "#888888"
+};
+
+/*
+ * Run the same utm_source filter used by platformStats, but for an
+ * arbitrary platformId rather than the currently-selected one.
+ * Used by the comparison table to show all platforms side-by-side.
+ */
+function computeStatsForPlatform(platformId, scopeRows, fallbackConsents, fallbackVisible, fallbackInvisible) {
+  var pattern = platformPattern(platformId);
+  if (!pattern) {
+    return {
+      consents: fallbackConsents,
+      visible: fallbackVisible,
+      invisible: fallbackInvisible
+    };
+  }
+  var rowsArr = Array.isArray(scopeRows) ? scopeRows : [];
+  var consents = 0,
+    visible = 0;
+  var _iterator = _createForOfIteratorHelper(rowsArr),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var r = _step.value;
+      if (!rowMatchesPlatform(r, pattern)) continue;
+      consents += Number(r.consents) || 0;
+      visible += Number(r.acceptAll) || 0;
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return {
+    consents: consents,
+    visible: visible,
+    invisible: Math.max(0, consents - visible)
+  };
+}
 
 /*
  * Per-platform utm_source matchers.
@@ -58503,18 +60515,18 @@ function escapeCsv(value) {
 function snapshotsToCsv(snapshots) {
   var header = ["saved_at", "scope", "platform", "platform_metric", "reported_count", "consents", "visible_consents", "invisible_consents", "banner_reach_pct", "visible_share_of_reported_pct", "invisible_share_of_reported_pct", "visible_share_of_consents_pct", "spend", "currency", "cost_per_visible", "source_filter_active", "matched_utm_sources", "scope_consents", "coverage_of_scope_pct", "from_date", "to_date"];
   var lines = [header.map(escapeCsv).join(",")];
-  var _iterator = _createForOfIteratorHelper(snapshots),
-    _step;
+  var _iterator2 = _createForOfIteratorHelper(snapshots),
+    _step2;
   try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
       var _s$scopeConsents, _s$coverageOfScopePct;
-      var s = _step.value;
+      var s = _step2.value;
       lines.push([s.savedAt, s.scopeLabel, s.platformLabel, s.metric, s.adClicks, s.consents, s.visibleConsents, s.invisibleConsents, s.bannerReachPct, s.visibleSharePct, s.invisibleSharePct, s.visibilityOfConsentsPct, s.spend, s.currency, s.costPerVisible, s.sourceFilterActive ? "yes" : "no", s.matchedSources || "", (_s$scopeConsents = s.scopeConsents) !== null && _s$scopeConsents !== void 0 ? _s$scopeConsents : "", (_s$coverageOfScopePct = s.coverageOfScopePct) !== null && _s$coverageOfScopePct !== void 0 ? _s$coverageOfScopePct : "", s.fromDate, s.toDate].map(escapeCsv).join(","));
     }
   } catch (err) {
-    _iterator.e(err);
+    _iterator2.e(err);
   } finally {
-    _iterator.f();
+    _iterator2.f();
   }
   return lines.join("\n");
 }
@@ -58554,16 +60566,295 @@ function ResultCard(_ref) {
     className: "marketing-reconciliation__result-sub"
   }, subDetail) : null);
 }
-function MarketingReconciliationPanel(_ref2) {
-  var scopeLabel = _ref2.scopeLabel,
-    scopeKey = _ref2.scopeKey,
-    domainKey = _ref2.domainKey,
-    consents = _ref2.consents,
-    visibleConsents = _ref2.visibleConsents,
-    invisibleConsents = _ref2.invisibleConsents,
-    scopeRows = _ref2.scopeRows,
-    fromDate = _ref2.fromDate,
-    toDate = _ref2.toDate;
+
+/* ─── Trend chart ───────────────────────────────────────────────────────── */
+
+function TrendChart(_ref2) {
+  var snapshots = _ref2.snapshots;
+  var lines = useMemo(function () {
+    var byPlatform = {};
+    var _iterator3 = _createForOfIteratorHelper(snapshots),
+      _step3;
+    try {
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var s = _step3.value;
+        if (s.visibilityOfConsentsPct === "" || s.visibilityOfConsentsPct == null) continue;
+        var pid = s.platform;
+        if (!byPlatform[pid]) byPlatform[pid] = [];
+        byPlatform[pid].push({
+          date: new Date(s.savedAt).getTime(),
+          pct: Number(s.visibilityOfConsentsPct),
+          scope: s.scopeLabel || ""
+        });
+      }
+    } catch (err) {
+      _iterator3.e(err);
+    } finally {
+      _iterator3.f();
+    }
+    return Object.entries(byPlatform).map(function (_ref3) {
+      var _ref4 = _slicedToArray(_ref3, 2),
+        pid = _ref4[0],
+        pts = _ref4[1];
+      return {
+        pid: pid,
+        label: (PLATFORM_BY_ID[pid] || {}).label || pid,
+        color: PLATFORM_COLORS[pid] || "#888",
+        pts: pts.sort(function (a, b) {
+          return a.date - b.date;
+        })
+      };
+    }).filter(function (l) {
+      return l.pts.length >= 1;
+    });
+  }, [snapshots]);
+  if (lines.length === 0) return null;
+  var W = 600,
+    H = 180;
+  var PAD = {
+    top: 16,
+    right: 16,
+    bottom: 36,
+    left: 44
+  };
+  var plotW = W - PAD.left - PAD.right;
+  var plotH = H - PAD.top - PAD.bottom;
+  var allDates = lines.flatMap(function (l) {
+    return l.pts.map(function (p) {
+      return p.date;
+    });
+  });
+  var minDate = Math.min.apply(Math, _toConsumableArray(allDates));
+  var maxDate = Math.max.apply(Math, _toConsumableArray(allDates));
+  var dateRange = maxDate - minDate || 1;
+  var toX = function toX(d) {
+    return PAD.left + (d - minDate) / dateRange * plotW;
+  };
+  var toY = function toY(pct) {
+    return PAD.top + plotH - Math.min(100, Math.max(0, pct)) / 100 * plotH;
+  };
+  var yTicks = [0, 25, 50, 75, 100];
+  var uniqueDates = _toConsumableArray(new Set(allDates)).sort(function (a, b) {
+    return a - b;
+  });
+  var xTicks = uniqueDates.length > 7 ? uniqueDates.filter(function (_, i) {
+    return i % Math.ceil(uniqueDates.length / 6) === 0;
+  }) : uniqueDates;
+  function fmtDate(ts) {
+    return new Date(ts).toLocaleDateString("de-DE", {
+      month: "short",
+      day: "numeric"
+    });
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "marketing-reconciliation__trend"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "marketing-reconciliation__section-title"
+  }, "Visibility trend"), /*#__PURE__*/React.createElement("p", {
+    className: "marketing-reconciliation__section-hint"
+  }, "Analytics-visible consents as a share of all consents recorded, over time. Save snapshots regularly to grow this chart."), /*#__PURE__*/React.createElement("div", {
+    className: "marketing-reconciliation__trend-legend"
+  }, lines.map(function (l) {
+    return /*#__PURE__*/React.createElement("span", {
+      key: l.pid,
+      className: "marketing-reconciliation__trend-legend-item"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "marketing-reconciliation__trend-legend-dot",
+      style: {
+        background: l.color
+      }
+    }), l.label);
+  })), /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 ".concat(W, " ").concat(H),
+    className: "marketing-reconciliation__trend-svg",
+    role: "img",
+    "aria-label": "Visibility % over time"
+  }, yTicks.map(function (pct) {
+    return /*#__PURE__*/React.createElement("g", {
+      key: pct
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: PAD.left,
+      y1: toY(pct),
+      x2: W - PAD.right,
+      y2: toY(pct),
+      stroke: "rgba(255,255,255,0.07)",
+      strokeWidth: "1"
+    }), /*#__PURE__*/React.createElement("text", {
+      x: PAD.left - 6,
+      y: toY(pct) + 4,
+      textAnchor: "end",
+      fontSize: "10",
+      fill: "rgba(200,200,210,0.5)"
+    }, pct, "%"));
+  }), xTicks.map(function (ts) {
+    return /*#__PURE__*/React.createElement("text", {
+      key: ts,
+      x: toX(ts),
+      y: H - PAD.bottom + 14,
+      textAnchor: "middle",
+      fontSize: "10",
+      fill: "rgba(200,200,210,0.5)"
+    }, fmtDate(ts));
+  }), lines.map(function (l) {
+    return /*#__PURE__*/React.createElement("g", {
+      key: l.pid
+    }, l.pts.length >= 2 && /*#__PURE__*/React.createElement("polyline", {
+      points: l.pts.map(function (p) {
+        return "".concat(toX(p.date), ",").concat(toY(p.pct));
+      }).join(" "),
+      fill: "none",
+      stroke: l.color,
+      strokeWidth: "2",
+      strokeLinejoin: "round",
+      opacity: "0.85"
+    }), l.pts.map(function (p, i) {
+      return /*#__PURE__*/React.createElement("circle", {
+        key: i,
+        cx: toX(p.date),
+        cy: toY(p.pct),
+        r: "4",
+        fill: l.color,
+        stroke: "rgba(0,0,0,0.5)",
+        strokeWidth: "1.5"
+      }, /*#__PURE__*/React.createElement("title", null, l.label, " \xB7 ", fmtDate(p.date), ": ", formatPct(p.pct), p.scope ? " (".concat(p.scope, ")") : ""));
+    }));
+  })));
+}
+
+/* ─── Platform comparison table ─────────────────────────────────────────── */
+
+function ComparisonTable(_ref5) {
+  var rows = _ref5.rows,
+    currency = _ref5.currency;
+  if (rows.length < 2) return null;
+  var hasSpend = rows.some(function (r) {
+    return r.spend > 0;
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    className: "marketing-reconciliation__comparison"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "marketing-reconciliation__section-title"
+  }, "Platform comparison"), /*#__PURE__*/React.createElement("p", {
+    className: "marketing-reconciliation__section-hint"
+  }, "Every platform where you've entered data, reconciled against this scope's consent data side-by-side."), /*#__PURE__*/React.createElement("div", {
+    className: "marketing-reconciliation__comparison-wrap"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "marketing-reconciliation__comparison-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    scope: "col"
+  }, "Platform"), /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "Reported"), /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "Consents"), /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "Visible"), /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "Gap"), /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "Visibility"), hasSpend ? /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "Cost / visible") : null)), /*#__PURE__*/React.createElement("tbody", null, rows.map(function (r) {
+    var visibilityClass = r.visibilityPct != null && r.visibilityPct >= 70 ? "marketing-reconciliation__comparison-good" : r.visibilityPct != null && r.visibilityPct < 50 ? "marketing-reconciliation__comparison-warn" : "";
+    return /*#__PURE__*/React.createElement("tr", {
+      key: r.platform.id
+    }, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("span", {
+      className: "marketing-reconciliation__comparison-dot",
+      style: {
+        background: PLATFORM_COLORS[r.platform.id] || "#888"
+      }
+    }), r.platform.label), /*#__PURE__*/React.createElement("td", {
+      className: "num"
+    }, formatInt(r.clicks)), /*#__PURE__*/React.createElement("td", {
+      className: "num"
+    }, formatInt(r.consents)), /*#__PURE__*/React.createElement("td", {
+      className: "num"
+    }, formatInt(r.visible), r.visibleSharePct != null ? /*#__PURE__*/React.createElement("span", {
+      className: "marketing-reconciliation__snapshots-sub"
+    }, " ", "(", formatShareOfReportedPct(r.visibleSharePct), ")") : null), /*#__PURE__*/React.createElement("td", {
+      className: "num"
+    }, formatInt(r.invisible), r.invisibleSharePct != null ? /*#__PURE__*/React.createElement("span", {
+      className: "marketing-reconciliation__snapshots-sub"
+    }, " ", "(", formatShareOfReportedPct(r.invisibleSharePct), ")") : null), /*#__PURE__*/React.createElement("td", {
+      className: "num ".concat(visibilityClass)
+    }, r.visibilityPct != null ? formatPct(r.visibilityPct) : "—"), hasSpend ? /*#__PURE__*/React.createElement("td", {
+      className: "num"
+    }, r.costPerVisible != null ? formatMoney(r.costPerVisible, currency) : "—") : null);
+  })))));
+}
+
+/* ─── Visibility improvement projection ─────────────────────────────────── */
+
+function ProjectionTable(_ref6) {
+  var numConsents = _ref6.numConsents,
+    numVisible = _ref6.numVisible,
+    spend = _ref6.spend,
+    currency = _ref6.currency;
+  if (!spend || spend <= 0 || numConsents <= 0 || numVisible <= 0) return null;
+  var currentPct = numVisible / numConsents * 100;
+  var targets = [60, 75, 90, 100].filter(function (t) {
+    return t > currentPct + 2;
+  });
+  if (!targets.length) return null;
+  var currentCost = spend / numVisible;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "marketing-reconciliation__projection"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "marketing-reconciliation__section-title"
+  }, "What improved visibility would cost"), /*#__PURE__*/React.createElement("p", {
+    className: "marketing-reconciliation__section-hint"
+  }, "If more visitors consented, your effective cost per analytics-visible consent would fall. Assumes the same spend and same total consent volume; only the visibility rate changes."), /*#__PURE__*/React.createElement("table", {
+    className: "marketing-reconciliation__projection-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    scope: "col"
+  }, "Visibility rate"), /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "Visible consents"), /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "Cost per visible"), /*#__PURE__*/React.createElement("th", {
+    scope: "col",
+    className: "num"
+  }, "vs. today"))), /*#__PURE__*/React.createElement("tbody", null, /*#__PURE__*/React.createElement("tr", {
+    className: "marketing-reconciliation__projection-row--current"
+  }, /*#__PURE__*/React.createElement("td", null, "Today (", formatPct(currentPct), ")"), /*#__PURE__*/React.createElement("td", {
+    className: "num"
+  }, formatInt(numVisible)), /*#__PURE__*/React.createElement("td", {
+    className: "num"
+  }, formatMoney(currentCost, currency)), /*#__PURE__*/React.createElement("td", {
+    className: "num"
+  }, "\u2014")), targets.map(function (targetPct) {
+    var projVisible = Math.round(targetPct / 100 * numConsents);
+    var projCost = spend / Math.max(1, projVisible);
+    var saving = (currentCost - projCost) / currentCost * 100;
+    return /*#__PURE__*/React.createElement("tr", {
+      key: targetPct
+    }, /*#__PURE__*/React.createElement("td", null, targetPct, "%"), /*#__PURE__*/React.createElement("td", {
+      className: "num"
+    }, formatInt(projVisible)), /*#__PURE__*/React.createElement("td", {
+      className: "num"
+    }, formatMoney(projCost, currency)), /*#__PURE__*/React.createElement("td", {
+      className: "num marketing-reconciliation__comparison-good"
+    }, "\u2212", formatPct(saving, 0)));
+  }))));
+}
+function MarketingReconciliationPanel(_ref7) {
+  var scopeLabel = _ref7.scopeLabel,
+    scopeKey = _ref7.scopeKey,
+    domainKey = _ref7.domainKey,
+    consents = _ref7.consents,
+    visibleConsents = _ref7.visibleConsents,
+    invisibleConsents = _ref7.invisibleConsents,
+    scopeRows = _ref7.scopeRows,
+    fromDate = _ref7.fromDate,
+    toDate = _ref7.toDate;
   var inputsKeyValue = inputsKey(domainKey, scopeKey);
   var snapshotsKeyValue = snapshotsKey(domainKey);
   var _useState = useState(function () {
@@ -58706,11 +60997,11 @@ function MarketingReconciliationPanel(_ref2) {
     var totalVisible = 0;
     var rowsMatched = 0;
     var matchedSourcesSet = new Set();
-    var _iterator2 = _createForOfIteratorHelper(rowsArr),
-      _step2;
+    var _iterator4 = _createForOfIteratorHelper(rowsArr),
+      _step4;
     try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var r = _step2.value;
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var r = _step4.value;
         if (!rowMatchesPlatform(r, pattern)) continue;
         rowsMatched += 1;
         totalConsents += Number(r.consents) || 0;
@@ -58720,9 +61011,9 @@ function MarketingReconciliationPanel(_ref2) {
         }
       }
     } catch (err) {
-      _iterator2.e(err);
+      _iterator4.e(err);
     } finally {
-      _iterator2.f();
+      _iterator4.f();
     }
     var invisible = Math.max(0, totalConsents - totalVisible);
     return {
@@ -58749,6 +61040,57 @@ function MarketingReconciliationPanel(_ref2) {
   var coverageOfScopePct = filterActive && scopeConsents > 0 ? Math.round(numConsents / scopeConsents * 1000) / 10 : null;
   var hasScopeRows = Array.isArray(scopeRows) && scopeRows.length > 0;
   var noMatchedRows = filterActive && hasScopeRows && numConsents === 0;
+
+  // All platforms with entered data, each with their own filtered consent stats.
+  // Powers the side-by-side comparison table.
+  var comparisonRows = useMemo(function () {
+    var byPlatform = inputs.byPlatform || {};
+    return PLATFORMS.map(function (p) {
+      var vals = byPlatform[p.id];
+      var clicks = Number(vals === null || vals === void 0 ? void 0 : vals.adClicks) || 0;
+      if (!clicks) return null;
+      var spend = Number(vals === null || vals === void 0 ? void 0 : vals.spend) || 0;
+      var stats = computeStatsForPlatform(p.id, scopeRows, scopeConsents, scopeVisible, scopeInvisible);
+      var visibleSharePct = stats.visible / clicks * 100;
+      var invisibleSharePct = stats.invisible / clicks * 100;
+      var visibilityPct = stats.consents > 0 ? stats.visible / stats.consents * 100 : null;
+      var costPerVisible = spend > 0 && stats.visible > 0 ? spend / stats.visible : null;
+      return {
+        platform: p,
+        clicks: clicks,
+        spend: spend,
+        consents: stats.consents,
+        visible: stats.visible,
+        invisible: stats.invisible,
+        visibleSharePct: visibleSharePct,
+        invisibleSharePct: invisibleSharePct,
+        visibilityPct: visibilityPct,
+        costPerVisible: costPerVisible
+      };
+    }).filter(Boolean);
+  }, [inputs.byPlatform, scopeRows, scopeConsents, scopeVisible, scopeInvisible]);
+
+  // All utm_source values actually present in scope — surfaced when no platform match is found
+  var actualScopeSources = useMemo(function () {
+    if (!noMatchedRows || !Array.isArray(scopeRows)) return [];
+    var seen = new Set();
+    var _iterator5 = _createForOfIteratorHelper(scopeRows),
+      _step5;
+    try {
+      for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+        var r = _step5.value;
+        var s = r && r.utmSource;
+        if (s && s !== "—" && s !== "(none)" && s !== "(not set)") seen.add(String(s));
+      }
+    } catch (err) {
+      _iterator5.e(err);
+    } finally {
+      _iterator5.f();
+    }
+    return _toConsumableArray(seen).sort(function (a, b) {
+      return a.localeCompare(b);
+    });
+  }, [noMatchedRows, scopeRows]);
   var clicksNum = Math.max(0, Number(currentValues.adClicks) || 0);
   var spendNum = Math.max(0, Number(currentValues.spend) || 0);
   var hasClicks = clicksNum > 0;
@@ -58913,7 +61255,7 @@ function MarketingReconciliationPanel(_ref2) {
   }, windowHint), filterActive ? noMatchedRows ? /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__filter-note marketing-reconciliation__filter-note--empty",
     role: "status"
-  }, /*#__PURE__*/React.createElement("p", null, "No traffic tagged as ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " in ", scopeSentence, ". We match canonical ", /*#__PURE__*/React.createElement("code", null, "utm_source"), " values like", " ", /*#__PURE__*/React.createElement("code", null, (PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).join(", ") || "—"), ". Either your campaigns aren't UTM-tagged with a recognised source, or the traffic lives in a different channel \u2014 switch to", " ", /*#__PURE__*/React.createElement("strong", null, "Other / custom"), " to reconcile against the scope total instead, or adjust your UTM tagging.")) : /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("p", null, "No traffic tagged as ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " in ", scopeSentence, ". We match ", /*#__PURE__*/React.createElement("code", null, "utm_source"), " values like", " ", /*#__PURE__*/React.createElement("code", null, (PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).join(", ") || "—"), "."), actualScopeSources.length > 0 ? /*#__PURE__*/React.createElement("p", null, "Sources we ", /*#__PURE__*/React.createElement("em", null, "do"), " see in this scope:", " ", /*#__PURE__*/React.createElement("code", null, actualScopeSources.slice(0, 10).join(", "), actualScopeSources.length > 10 ? " +".concat(actualScopeSources.length - 10, " more") : ""), ". If your campaign uses one of these, switch to", " ", /*#__PURE__*/React.createElement("strong", null, "Other / custom"), " to reconcile against the full scope, or update your UTM tags to a recognised source name.") : /*#__PURE__*/React.createElement("p", null, "No ", /*#__PURE__*/React.createElement("code", null, "utm_source"), " values found in this scope at all \u2014 either the traffic isn't UTM-tagged, or it lives in a different channel. Switch to ", /*#__PURE__*/React.createElement("strong", null, "Other / custom"), " to reconcile against the scope total instead.")) : /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__filter-note",
     role: "status"
   }, /*#__PURE__*/React.createElement("p", null, "Filtered to ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " traffic:", " ", /*#__PURE__*/React.createElement("strong", null, formatInt(numConsents)), " of", " ", /*#__PURE__*/React.createElement("strong", null, formatInt(scopeConsents)), " scope consents", coverageOfScopePct != null ? /*#__PURE__*/React.createElement(React.Fragment, null, " ", "(", formatPct(coverageOfScopePct), " coverage)") : null, ".", platformStats.matchedSources.length > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, " ", "Matched ", /*#__PURE__*/React.createElement("code", null, "utm_source"), ":", " ", /*#__PURE__*/React.createElement("code", null, platformStats.matchedSources.slice(0, 6).join(", "), platformStats.matchedSources.length > 6 ? ", +".concat(platformStats.matchedSources.length - 6, " more") : ""), ".") : null)) : /*#__PURE__*/React.createElement("div", {
@@ -58947,7 +61289,17 @@ function MarketingReconciliationPanel(_ref2) {
     }), "\xD7.") : null
   }) : null) : /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__empty"
-  }, /*#__PURE__*/React.createElement("p", null, "Enter your ", selectedPlatform.metric, " count from", " ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " above to see the reconciliation. Use the same date range as the header filter so the numbers line up.")), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("p", null, "Enter your ", selectedPlatform.metric, " count from", " ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " above to see the reconciliation. Use the same date range as the header filter so the numbers line up.")), comparisonRows.length >= 2 ? /*#__PURE__*/React.createElement(ComparisonTable, {
+    rows: comparisonRows,
+    currency: inputs.currency
+  }) : null, hasSpend && hasClicks && numVisible > 0 ? /*#__PURE__*/React.createElement(ProjectionTable, {
+    numConsents: numConsents,
+    numVisible: numVisible,
+    spend: spendNum,
+    currency: inputs.currency
+  }) : null, snapshots.length >= 3 ? /*#__PURE__*/React.createElement(TrendChart, {
+    snapshots: snapshots
+  }) : null, /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__snapshots"
   }, /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__snapshots-bar"
@@ -59286,6 +61638,423 @@ function MarketingSuggestionsStrip(_ref5) {
 
 /***/ }),
 
+/***/ "./src/Pages/Reports/MarketingReport/ReconcilePage.js":
+/*!************************************************************!*\
+  !*** ./src/Pages/Reports/MarketingReport/ReconcilePage.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ReconcilePage)
+/* harmony export */ });
+/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Reports__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Reports */ "./src/Pages/Reports/Reports.js");
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
+/* harmony import */ var _MarketingReport_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./MarketingReport.css */ "./src/Pages/Reports/MarketingReport/MarketingReport.css");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MarketingReconciliationPanel.js */ "./src/Pages/Reports/MarketingReport/MarketingReconciliationPanel.js");
+/* harmony import */ var _AdConnectionManager_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./AdConnectionManager.js */ "./src/Pages/Reports/MarketingReport/AdConnectionManager.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useMemo = _React.useMemo,
+  useContext = _React.useContext,
+  useCallback = _React.useCallback;
+
+
+
+
+
+
+
+
+
+
+
+
+var useParams = window.ReactRouterDOM.useParams;
+function toYmd(d) {
+  if (!d) return "";
+  try {
+    if (typeof d === "string") return d.split("T")[0];
+    return d.toISOString().split("T")[0];
+  } catch (_unused) {
+    return "";
+  }
+}
+
+/**
+ * Normalise a raw API row so the reconciliation panel always gets
+ * camelCase field names (utmSource, utmMedium, acceptAll …) regardless
+ * of whether the backend returns snake_case or camelCase.
+ */
+function mapRow(r) {
+  var _ref, _ref2, _r$utm_source, _ref3, _ref4, _r$utm_medium, _ref5, _ref6, _r$consents, _ref7, _r$acceptAll, _ref8, _r$channel;
+  return _objectSpread(_objectSpread({}, r), {}, {
+    utmSource: String((_ref = (_ref2 = (_r$utm_source = r.utm_source) !== null && _r$utm_source !== void 0 ? _r$utm_source : r.utmSource) !== null && _ref2 !== void 0 ? _ref2 : r.source) !== null && _ref !== void 0 ? _ref : "—"),
+    utmMedium: String((_ref3 = (_ref4 = (_r$utm_medium = r.utm_medium) !== null && _r$utm_medium !== void 0 ? _r$utm_medium : r.utmMedium) !== null && _ref4 !== void 0 ? _ref4 : r.medium) !== null && _ref3 !== void 0 ? _ref3 : "—"),
+    consents: Number((_ref5 = (_ref6 = (_r$consents = r.consents) !== null && _r$consents !== void 0 ? _r$consents : r.consent_count) !== null && _ref6 !== void 0 ? _ref6 : r.count) !== null && _ref5 !== void 0 ? _ref5 : 0) || 0,
+    acceptAll: Number((_ref7 = (_r$acceptAll = r.acceptAll) !== null && _r$acceptAll !== void 0 ? _r$acceptAll : r.accept_all) !== null && _ref7 !== void 0 ? _ref7 : 0) || 0,
+    channel: (_ref8 = (_r$channel = r.channel) !== null && _r$channel !== void 0 ? _r$channel : r.utm_channel) !== null && _ref8 !== void 0 ? _ref8 : ""
+  });
+}
+function extractRows(payload) {
+  if (payload == null) return [];
+  var root = payload.data != null ? payload.data : payload;
+  if (Array.isArray(root)) return root.map(mapRow);
+  if (Array.isArray(root.rows)) return root.rows.map(mapRow);
+  if (Array.isArray(root.campaigns)) return root.campaigns.map(mapRow);
+  if (Array.isArray(root.items)) return root.items.map(mapRow);
+  if (Array.isArray(root.attribution)) return root.attribution.map(mapRow);
+  return [];
+}
+function extractSummary(payload) {
+  if (payload == null) return null;
+  var root = payload.data != null ? payload.data : payload;
+  if (root && _typeof(root) === "object" && root.summary) return root.summary;
+  if (root && _typeof(root) === "object" && root.totals) return root.totals;
+  return null;
+}
+function pickFromSummaryOrRows(summary, rows, summaryField, rowField) {
+  var v = (summary === null || summary === void 0 ? void 0 : summary[summaryField]) != null ? Number(summary[summaryField]) : NaN;
+  if (Number.isFinite(v) && v >= 0) return v;
+  return rows.reduce(function (s, r) {
+    return s + (Number(r[rowField]) || 0);
+  }, 0);
+}
+function ReconcilePage() {
+  var _settings$dateRange, _API$id;
+  document.title = "Ad Reconciliation | Reports | Intastellar Consents";
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_3__.DomainContext),
+    _useContext2 = _slicedToArray(_useContext, 2),
+    currentDomain = _useContext2[0],
+    setGlobalDomain = _useContext2[1];
+  var _useParams = useParams(),
+    id = _useParams.id,
+    handle = _useParams.handle;
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.useSyncDomainFromRoute)(handle, setGlobalDomain);
+  var settings = function () {
+    try {
+      return JSON.parse(localStorage.getItem("settings")) || {
+        dateRange: 30
+      };
+    } catch (_unused2) {
+      return {
+        dateRange: 30
+      };
+    }
+  }();
+  var today = new Date();
+  var initialLastDays = (_settings$dateRange = settings === null || settings === void 0 ? void 0 : settings.dateRange) !== null && _settings$dateRange !== void 0 ? _settings$dateRange : 30;
+  var _useState = useState(initialLastDays),
+    _useState2 = _slicedToArray(_useState, 2),
+    getLastDays = _useState2[0],
+    setLastDays = _useState2[1];
+  var _useState3 = useState(new Date(new Date().setDate(today.getDate() - initialLastDays))),
+    _useState4 = _slicedToArray(_useState3, 2),
+    fromDate = _useState4[0],
+    setFromDate = _useState4[1];
+  var _useState5 = useState(new Date(new Date().setDate(today.getDate() - 1))),
+    _useState6 = _slicedToArray(_useState5, 2),
+    toDate = _useState6[0],
+    setToDate = _useState6[1];
+  var _useState7 = useState(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    setActiveData = _useState8[1];
+  var _useState9 = useState(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    selectedChannel = _useState0[0],
+    setSelectedChannel = _useState0[1];
+  var listDomainLabel = useMemo(function () {
+    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.consentsDomainFromRoute)(handle, currentDomain);
+  }, [handle, currentDomain]);
+  var domainsApiHeader = useMemo(function () {
+    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.toDomainsApiHeader)(listDomainLabel);
+  }, [listDomainLabel]);
+
+  // Auth for ad-connections / ad-data-fetch endpoints
+  var authToken = useMemo(function () {
+    return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getToken();
+  }, []);
+  var orgId = useMemo(function () {
+    return _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getOrganisation();
+  }, []);
+  var _useState1 = useState([]),
+    _useState10 = _slicedToArray(_useState1, 2),
+    rows = _useState10[0],
+    setRows = _useState10[1];
+  var _useState11 = useState(null),
+    _useState12 = _slicedToArray(_useState11, 2),
+    summary = _useState12[0],
+    setSummary = _useState12[1];
+  var _useState13 = useState(true),
+    _useState14 = _slicedToArray(_useState13, 2),
+    loading = _useState14[0],
+    setLoading = _useState14[1];
+  var _useState15 = useState(null),
+    _useState16 = _slicedToArray(_useState15, 2),
+    error = _useState16[0],
+    setError = _useState16[1];
+
+  // Bump to force panel re-mount after an external import (updates localStorage then re-mounts)
+  var _useState17 = useState(0),
+    _useState18 = _slicedToArray(_useState17, 2),
+    panelKey = _useState18[0],
+    setPanelKey = _useState18[1];
+  var endpoint = (_API$id = _API_api__WEBPACK_IMPORTED_MODULE_4__["default"][id]) === null || _API$id === void 0 ? void 0 : _API$id.marketingAttribution;
+  var fetchData = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+    var headers, res, text, json, _json, _t, _t2;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          if (endpoint !== null && endpoint !== void 0 && endpoint.url) {
+            _context.n = 1;
+            break;
+          }
+          setError("Marketing attribution is not configured for this platform.");
+          setRows([]);
+          setSummary(null);
+          setLoading(false);
+          return _context.a(2);
+        case 1:
+          setLoading(true);
+          setError(null);
+          _context.p = 2;
+          headers = _objectSpread(_objectSpread({}, endpoint.headers), {}, {
+            Domains: domainsApiHeader,
+            FromDate: toYmd(fromDate),
+            ToDate: toYmd(toDate),
+            CompareRange: "",
+            PreviousPeriod: "",
+            PreviousPeriod2: "",
+            "X-Compare-Start": "",
+            "X-Compare-End": "",
+            "X-Compare-Range": ""
+          });
+          _context.n = 3;
+          return fetch(endpoint.url, {
+            method: endpoint.method || "GET",
+            headers: headers
+          });
+        case 3:
+          res = _context.v;
+          _context.n = 4;
+          return res.text();
+        case 4:
+          text = _context.v;
+          json = null;
+          _context.p = 5;
+          json = text ? JSON.parse(text) : null;
+          _context.n = 7;
+          break;
+        case 6:
+          _context.p = 6;
+          _t = _context.v;
+          setError("The server returned a non-JSON response.");
+          setLoading(false);
+          return _context.a(2);
+        case 7:
+          if (!(json === "Err_Login_Expired")) {
+            _context.n = 8;
+            break;
+          }
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__["default"].removeItem("globals");
+          window.location.href = "/login";
+          return _context.a(2);
+        case 8:
+          if (res.ok) {
+            _context.n = 9;
+            break;
+          }
+          setError(((_json = json) === null || _json === void 0 ? void 0 : _json.message) || "Request failed (".concat(res.status, ")."));
+          setLoading(false);
+          return _context.a(2);
+        case 9:
+          setRows(extractRows(json));
+          setSummary(extractSummary(json));
+          _context.n = 11;
+          break;
+        case 10:
+          _context.p = 10;
+          _t2 = _context.v;
+          setError(_t2.message || "Network error.");
+        case 11:
+          _context.p = 11;
+          setLoading(false);
+          return _context.f(11);
+        case 12:
+          return _context.a(2);
+      }
+    }, _callee, null, [[5, 6], [2, 10, 11, 12]]);
+  })), [endpoint, domainsApiHeader, fromDate, toDate]);
+  useEffect(function () {
+    fetchData();
+  }, [fetchData]);
+  var channels = useMemo(function () {
+    return _toConsumableArray(new Set(rows.map(function (r) {
+      return r.channel;
+    }).filter(Boolean))).sort(function (a, b) {
+      return a.localeCompare(b);
+    });
+  }, [rows]);
+  useEffect(function () {
+    if (selectedChannel && channels.length > 0 && !channels.includes(selectedChannel)) {
+      setSelectedChannel(null);
+    }
+  }, [channels, selectedChannel]);
+  var drilldownRows = useMemo(function () {
+    return selectedChannel ? rows.filter(function (r) {
+      return r.channel === selectedChannel;
+    }) : [];
+  }, [rows, selectedChannel]);
+  var totalConsents = useMemo(function () {
+    return pickFromSummaryOrRows(summary, rows, "totalConsents", "consents");
+  }, [summary, rows]);
+  var measurementReadyCount = useMemo(function () {
+    return selectedChannel ? drilldownRows.reduce(function (s, r) {
+      return s + (Number(r.acceptAll) || 0);
+    }, 0) : pickFromSummaryOrRows(summary, rows, "measurementReadyConsents", "acceptAll");
+  }, [selectedChannel, drilldownRows, summary, rows]);
+  var visibilityScopeTotal = selectedChannel ? drilldownRows.reduce(function (s, r) {
+    return s + (Number(r.consents) || 0);
+  }, 0) : totalConsents;
+  var invisibleConsents = Math.max(0, visibilityScopeTotal - measurementReadyCount);
+  var channelAnalyticsPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.reportsPath)(id, listDomainLabel, "/marketing");
+
+  // Write imported ad data to localStorage under the same key the panel uses,
+  // then bump panelKey to force a re-mount so the panel picks it up.
+  function handleAdImport(platformId, data) {
+    if (!data || !listDomainLabel) return;
+    var domainKey = listDomainLabel;
+    var scopeKey = selectedChannel ? "channel:".concat(selectedChannel) : "overview";
+    var storageKey = "marketing-reconciliation-inputs:".concat(String(domainKey).slice(0, 120), ":").concat(String(scopeKey).slice(0, 120));
+    try {
+      var existing = JSON.parse(localStorage.getItem(storageKey) || "null") || {};
+      var updated = _objectSpread(_objectSpread({}, existing), {}, {
+        platform: platformId,
+        byPlatform: _objectSpread(_objectSpread({}, existing.byPlatform || {}), {}, _defineProperty({}, platformId, {
+          adClicks: data.clicks != null ? String(Math.round(data.clicks)) : "",
+          spend: data.spend != null ? String(Number(data.spend).toFixed(2)) : ""
+        }))
+      });
+      if (data.currency) updated.currency = data.currency;
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+    } catch (_unused4) {/* private-mode / quota */}
+    setPanelKey(function (k) {
+      return k + 1;
+    });
+  }
+
+  // Domain gate — reconciliation must be scoped to a specific domain
+  var noDomain = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.isCombinedOrClearDomain)(listDomainLabel);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    links: _Reports__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
+    title: "Reports"
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1"
+    }
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    loadingUpdated: loading,
+    finalLoaded: loading,
+    title: "Ad Reconciliation",
+    numberofDays: setLastDays,
+    getLastDays: getLastDays,
+    setActiveData: setActiveData,
+    fromDate: fromDate,
+    toDate: toDate,
+    setFromDate: setFromDate,
+    setToDate: setToDate
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-content marketing-report-page"
+  }, /*#__PURE__*/React.createElement("header", {
+    className: "marketing-report-hero"
+  }, /*#__PURE__*/React.createElement("h1", null, "Ad Reconciliation"), /*#__PURE__*/React.createElement("p", {
+    className: "marketing-report-hero__lede"
+  }, "Paste in the click or session count from your ad platform and see how much of that traffic will actually surface in your analytics tools \u2014 and what falls into the invisible gap. Use the same date range as the header filter. Need channel analytics?", " ", /*#__PURE__*/React.createElement("a", {
+    href: channelAnalyticsPath,
+    className: "marketing-reconciliation-page__back-link"
+  }, "Back to Channel Analytics"))), noDomain ? /*#__PURE__*/React.createElement("div", {
+    className: "reconcile-domain-gate"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "reconcile-domain-gate__icon",
+    "aria-hidden": "true"
+  }, "\u2B06"), /*#__PURE__*/React.createElement("h2", {
+    className: "reconcile-domain-gate__heading"
+  }, "Select a domain first"), /*#__PURE__*/React.createElement("p", {
+    className: "reconcile-domain-gate__body"
+  }, "Ad Reconciliation is domain-specific \u2014 each ad account connection and reconciliation snapshot belongs to a single domain. Select a domain from the dropdown in the page header to continue.")) : /*#__PURE__*/React.createElement(React.Fragment, null, authToken && orgId && /*#__PURE__*/React.createElement(_AdConnectionManager_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
+    domain: listDomainLabel,
+    orgId: orgId,
+    authToken: authToken,
+    fromDate: toYmd(fromDate),
+    toDate: toYmd(toDate),
+    onImport: handleAdImport
+  }), error ? /*#__PURE__*/React.createElement("p", {
+    className: "marketing-report-error"
+  }, error) : loading ? /*#__PURE__*/React.createElement("p", {
+    className: "marketing-report-loading"
+  }, "Loading\u2026") : rows.length === 0 ? /*#__PURE__*/React.createElement("p", {
+    className: "marketing-report-empty"
+  }, "No marketing attribution data found for this period and domain.") : /*#__PURE__*/React.createElement(React.Fragment, null, channels.length > 1 ? /*#__PURE__*/React.createElement("div", {
+    className: "marketing-reconciliation-page__channel-filter"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "marketing-reconciliation-page__channel-label"
+  }, "Filter by channel", /*#__PURE__*/React.createElement("select", {
+    value: selectedChannel || "",
+    onChange: function onChange(e) {
+      return setSelectedChannel(e.target.value || null);
+    },
+    className: "marketing-reconciliation__select"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "All channels"), channels.map(function (ch) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: ch,
+      value: ch
+    }, ch);
+  })))) : null, /*#__PURE__*/React.createElement(_MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
+    key: panelKey,
+    scopeLabel: selectedChannel || "all channels",
+    scopeKey: selectedChannel ? "channel:".concat(selectedChannel) : "overview",
+    domainKey: listDomainLabel,
+    consents: visibilityScopeTotal,
+    visibleConsents: measurementReadyCount,
+    invisibleConsents: invisibleConsents,
+    scopeRows: selectedChannel ? drilldownRows : rows,
+    fromDate: toYmd(fromDate),
+    toDate: toYmd(toDate)
+  }))))));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Reports/MarketingReport/index.js":
 /*!****************************************************!*\
   !*** ./src/Pages/Reports/MarketingReport/index.js ***!
@@ -59306,10 +62075,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MarketingReport_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./MarketingReport.css */ "./src/Pages/Reports/MarketingReport/MarketingReport.css");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
 /* harmony import */ var _MarketingCharts_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MarketingCharts.js */ "./src/Pages/Reports/MarketingReport/MarketingCharts.js");
-/* harmony import */ var _MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./MarketingReconciliationPanel.js */ "./src/Pages/Reports/MarketingReport/MarketingReconciliationPanel.js");
-/* harmony import */ var _MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./MarketingSuggestionsStrip.js */ "./src/Pages/Reports/MarketingReport/MarketingSuggestionsStrip.js");
-/* harmony import */ var _marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./marketingSuggestions.js */ "./src/Pages/Reports/MarketingReport/marketingSuggestions.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./MarketingSuggestionsStrip.js */ "./src/Pages/Reports/MarketingReport/MarketingSuggestionsStrip.js");
+/* harmony import */ var _marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./marketingSuggestions.js */ "./src/Pages/Reports/MarketingReport/marketingSuggestions.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -59337,7 +62105,6 @@ var _React = React,
   useMemo = _React.useMemo,
   useContext = _React.useContext,
   useCallback = _React.useCallback;
-
 
 
 
@@ -61039,7 +63806,7 @@ function MarketingReport() {
             _context.n = 9;
             break;
           }
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_13__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context.a(2);
         case 9:
@@ -61063,7 +63830,7 @@ function MarketingReport() {
             _context.n = 11;
             break;
           }
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_13__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context.a(2);
         case 11:
@@ -61192,7 +63959,7 @@ function MarketingReport() {
                 _context2.n = 10;
                 break;
               }
-              _Functions_storage_js__WEBPACK_IMPORTED_MODULE_13__["default"].removeItem("globals");
+              _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__["default"].removeItem("globals");
               window.location.href = "/login";
               return _context2.a(2);
             case 10:
@@ -61437,7 +64204,7 @@ function MarketingReport() {
     };
   }, [rows, drilldownRows, selectedChannel]);
   var invisibleSuggestions = useMemo(function () {
-    return (0,_marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_12__.buildInvisibleTrafficSuggestions)({
+    return (0,_marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_11__.buildInvisibleTrafficSuggestions)({
       selectedChannel: selectedChannel,
       invisibleSharePct: invisibleSharePct,
       baselineInvisibleSharePct: baselineInvisibleSharePct,
@@ -61674,22 +64441,17 @@ function MarketingReport() {
     }, c.hint) : null, c.compare ? /*#__PURE__*/React.createElement("div", {
       className: "marketing-report-kpi__compare"
     }, c.compare) : null);
-  }))), !error && rows.length > 0 && invisibleSuggestions.length > 0 ? /*#__PURE__*/React.createElement(_MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_11__["default"], {
+  }))), !error && rows.length > 0 && invisibleSuggestions.length > 0 ? /*#__PURE__*/React.createElement(_MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
     suggestions: invisibleSuggestions,
     domainKey: listDomainLabel
   }) : null, !error && rows.length > 0 ? /*#__PURE__*/React.createElement("div", {
-    id: "marketing-reconciliation-panel"
-  }, /*#__PURE__*/React.createElement(_MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
-    scopeLabel: selectedChannel || "all channels",
-    scopeKey: selectedChannel ? "channel:".concat(selectedChannel) : "overview",
-    domainKey: listDomainLabel,
-    consents: visibilityScopeTotal,
-    visibleConsents: measurementReadyCount,
-    invisibleConsents: invisibleConsents,
-    scopeRows: selectedChannel ? drilldownRows : rows,
-    fromDate: toYmd(fromDate),
-    toDate: toYmd(toDate)
-  })) : null, !error && rows.length > 0 ? selectedChannel ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_9__.MarketingChannelCharts, {
+    className: "marketing-reconciliation-cta"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "marketing-reconciliation-cta__text"
+  }, "Want to see how your paid traffic maps to consent visibility?"), /*#__PURE__*/React.createElement("a", {
+    href: (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.reportsPath)(id, listDomainLabel, "/reconcile"),
+    className: "marketing-reconciliation-cta__link"
+  }, "Open Ad Reconciliation \u2192")) : null, !error && rows.length > 0 ? selectedChannel ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_9__.MarketingChannelCharts, {
     channelName: selectedChannel,
     drilldownRows: drilldownRows,
     drillConsents: drillConsents,
@@ -62274,6 +65036,10 @@ var reportsLinks = [{
 }, {
   name: "Channel Analytics",
   path: "/reports/marketing",
+  requiresTier: 'growth'
+}, {
+  name: "Ad Reconciliation",
+  path: "/reports/reconcile",
   requiresTier: 'growth'
 }, {
   name: "Compliance overview",

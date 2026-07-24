@@ -4,6 +4,7 @@ import StickyPageTitle from "../../../Components/Header/Sticky";
 import { reportsLinks } from "../Reports";
 import { DomainContext } from "../../../App.js";
 import API from "../../../API/api";
+import Authentication from "../../../Authentication/Auth";
 import "../../Dashboard/Style.css";
 import "./MarketingReport.css";
 import {
@@ -11,8 +12,10 @@ import {
     consentsDomainFromRoute,
     toDomainsApiHeader,
     reportsPath,
+    isCombinedOrClearDomain,
 } from "../../../Functions/domainPathSegments.js";
 import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
+import AdConnectionManager from "./AdConnectionManager.js";
 import appStorage from "../../../Functions/storage.js";
 
 const useParams = window.ReactRouterDOM.useParams;
@@ -27,14 +30,30 @@ function toYmd(d) {
     }
 }
 
+/**
+ * Normalise a raw API row so the reconciliation panel always gets
+ * camelCase field names (utmSource, utmMedium, acceptAll …) regardless
+ * of whether the backend returns snake_case or camelCase.
+ */
+function mapRow(r) {
+    return {
+        ...r,
+        utmSource:  String(r.utm_source  ?? r.utmSource  ?? r.source ?? "—"),
+        utmMedium:  String(r.utm_medium  ?? r.utmMedium  ?? r.medium ?? "—"),
+        consents:   Number(r.consents    ?? r.consent_count ?? r.count ?? 0) || 0,
+        acceptAll:  Number(r.acceptAll   ?? r.accept_all ?? 0) || 0,
+        channel:    r.channel ?? r.utm_channel ?? "",
+    };
+}
+
 function extractRows(payload) {
     if (payload == null) return [];
     const root = payload.data != null ? payload.data : payload;
-    if (Array.isArray(root)) return root;
-    if (Array.isArray(root.rows)) return root.rows;
-    if (Array.isArray(root.campaigns)) return root.campaigns;
-    if (Array.isArray(root.items)) return root.items;
-    if (Array.isArray(root.attribution)) return root.attribution;
+    if (Array.isArray(root)) return root.map(mapRow);
+    if (Array.isArray(root.rows)) return root.rows.map(mapRow);
+    if (Array.isArray(root.campaigns)) return root.campaigns.map(mapRow);
+    if (Array.isArray(root.items)) return root.items.map(mapRow);
+    if (Array.isArray(root.attribution)) return root.attribution.map(mapRow);
     return [];
 }
 
@@ -82,10 +101,17 @@ export default function ReconcilePage() {
         [listDomainLabel]
     );
 
+    // Auth for ad-connections / ad-data-fetch endpoints
+    const authToken = useMemo(() => Authentication.getToken(), []);
+    const orgId     = useMemo(() => Authentication.getOrganisation(), []);
+
     const [rows, setRows] = useState([]);
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    // Bump to force panel re-mount after an external import (updates localStorage then re-mounts)
+    const [panelKey, setPanelKey] = useState(0);
 
     const endpoint = API[id]?.marketingAttribution;
 
@@ -94,6 +120,7 @@ export default function ReconcilePage() {
             setError("Marketing attribution is not configured for this platform.");
             setRows([]);
             setSummary(null);
+            setLoading(false);
             return;
         }
         setLoading(true);
@@ -145,7 +172,6 @@ export default function ReconcilePage() {
         [rows]
     );
 
-    // Reset channel selection when the channel disappears from the loaded data
     useEffect(() => {
         if (selectedChannel && channels.length > 0 && !channels.includes(selectedChannel)) {
             setSelectedChannel(null);
@@ -173,6 +199,35 @@ export default function ReconcilePage() {
     const invisibleConsents = Math.max(0, visibilityScopeTotal - measurementReadyCount);
 
     const channelAnalyticsPath = reportsPath(id, listDomainLabel, "/marketing");
+
+    // Write imported ad data to localStorage under the same key the panel uses,
+    // then bump panelKey to force a re-mount so the panel picks it up.
+    function handleAdImport(platformId, data) {
+        if (!data || !listDomainLabel) return;
+        const domainKey = listDomainLabel;
+        const scopeKey = selectedChannel ? `channel:${selectedChannel}` : "overview";
+        const storageKey = `marketing-reconciliation-inputs:${String(domainKey).slice(0, 120)}:${String(scopeKey).slice(0, 120)}`;
+        try {
+            const existing = JSON.parse(localStorage.getItem(storageKey) || "null") || {};
+            const updated = {
+                ...existing,
+                platform: platformId,
+                byPlatform: {
+                    ...(existing.byPlatform || {}),
+                    [platformId]: {
+                        adClicks: data.clicks != null ? String(Math.round(data.clicks)) : "",
+                        spend: data.spend != null ? String(Number(data.spend).toFixed(2)) : "",
+                    },
+                },
+            };
+            if (data.currency) updated.currency = data.currency;
+            localStorage.setItem(storageKey, JSON.stringify(updated));
+        } catch { /* private-mode / quota */ }
+        setPanelKey(k => k + 1);
+    }
+
+    // Domain gate — reconciliation must be scoped to a specific domain
+    const noDomain = isCombinedOrClearDomain(listDomainLabel);
 
     return (
         <>
@@ -204,45 +259,73 @@ export default function ReconcilePage() {
                         </p>
                     </header>
 
-                    {error ? (
-                        <p className="marketing-report-error">{error}</p>
-                    ) : loading ? (
-                        <p className="marketing-report-loading">Loading…</p>
-                    ) : rows.length === 0 ? (
-                        <p className="marketing-report-empty">
-                            No marketing attribution data found for this period and domain.
-                        </p>
+                    {noDomain ? (
+                        <div className="reconcile-domain-gate">
+                            <div className="reconcile-domain-gate__icon" aria-hidden="true">⬆</div>
+                            <h2 className="reconcile-domain-gate__heading">Select a domain first</h2>
+                            <p className="reconcile-domain-gate__body">
+                                Ad Reconciliation is domain-specific — each ad account connection and
+                                reconciliation snapshot belongs to a single domain. Select a domain
+                                from the dropdown in the page header to continue.
+                            </p>
+                        </div>
                     ) : (
                         <>
-                            {channels.length > 1 ? (
-                                <div className="marketing-reconciliation-page__channel-filter">
-                                    <label className="marketing-reconciliation-page__channel-label">
-                                        Filter by channel
-                                        <select
-                                            value={selectedChannel || ""}
-                                            onChange={e => setSelectedChannel(e.target.value || null)}
-                                            className="marketing-reconciliation__select"
-                                        >
-                                            <option value="">All channels</option>
-                                            {channels.map(ch => (
-                                                <option key={ch} value={ch}>{ch}</option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                </div>
-                            ) : null}
+                            {/* Ad platform connections */}
+                            {authToken && orgId && (
+                                <AdConnectionManager
+                                    domain={listDomainLabel}
+                                    orgId={orgId}
+                                    authToken={authToken}
+                                    fromDate={toYmd(fromDate)}
+                                    toDate={toYmd(toDate)}
+                                    onImport={handleAdImport}
+                                />
+                            )}
 
-                            <MarketingReconciliationPanel
-                                scopeLabel={selectedChannel || "all channels"}
-                                scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
-                                domainKey={listDomainLabel}
-                                consents={visibilityScopeTotal}
-                                visibleConsents={measurementReadyCount}
-                                invisibleConsents={invisibleConsents}
-                                scopeRows={selectedChannel ? drilldownRows : rows}
-                                fromDate={toYmd(fromDate)}
-                                toDate={toYmd(toDate)}
-                            />
+                            {/* Reconciliation panel */}
+                            {error ? (
+                                <p className="marketing-report-error">{error}</p>
+                            ) : loading ? (
+                                <p className="marketing-report-loading">Loading…</p>
+                            ) : rows.length === 0 ? (
+                                <p className="marketing-report-empty">
+                                    No marketing attribution data found for this period and domain.
+                                </p>
+                            ) : (
+                                <>
+                                    {channels.length > 1 ? (
+                                        <div className="marketing-reconciliation-page__channel-filter">
+                                            <label className="marketing-reconciliation-page__channel-label">
+                                                Filter by channel
+                                                <select
+                                                    value={selectedChannel || ""}
+                                                    onChange={e => setSelectedChannel(e.target.value || null)}
+                                                    className="marketing-reconciliation__select"
+                                                >
+                                                    <option value="">All channels</option>
+                                                    {channels.map(ch => (
+                                                        <option key={ch} value={ch}>{ch}</option>
+                                                    ))}
+                                                </select>
+                                            </label>
+                                        </div>
+                                    ) : null}
+
+                                    <MarketingReconciliationPanel
+                                        key={panelKey}
+                                        scopeLabel={selectedChannel || "all channels"}
+                                        scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
+                                        domainKey={listDomainLabel}
+                                        consents={visibilityScopeTotal}
+                                        visibleConsents={measurementReadyCount}
+                                        invisibleConsents={invisibleConsents}
+                                        scopeRows={selectedChannel ? drilldownRows : rows}
+                                        fromDate={toYmd(fromDate)}
+                                        toDate={toYmd(toDate)}
+                                    />
+                                </>
+                            )}
                         </>
                     )}
                 </div>

@@ -86,6 +86,22 @@
     "api/cron-cleanup-scans.js": {
       "memory": 128,
       "maxDuration": 10
+    },
+    "api/ad-connections.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/ad-oauth-start.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/ad-oauth-callback.js": {
+      "memory": 256,
+      "maxDuration": 15
+    },
+    "api/ad-data-fetch.js": {
+      "memory": 256,
+      "maxDuration": 30
     }
   }
 }
