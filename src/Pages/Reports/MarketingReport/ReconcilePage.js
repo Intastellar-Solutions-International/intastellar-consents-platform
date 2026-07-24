@@ -84,7 +84,7 @@ export default function ReconcilePage() {
 
     const [rows, setRows] = useState([]);
     const [summary, setSummary] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const endpoint = API[id]?.marketingAttribution;
@@ -206,7 +206,9 @@ export default function ReconcilePage() {
 
                     {error ? (
                         <p className="marketing-report-error">{error}</p>
-                    ) : !loading && rows.length === 0 ? (
+                    ) : loading ? (
+                        <p className="marketing-report-loading">Loading…</p>
+                    ) : rows.length === 0 ? (
                         <p className="marketing-report-empty">
                             No marketing attribution data found for this period and domain.
                         </p>
