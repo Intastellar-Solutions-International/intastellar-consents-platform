@@ -2326,3 +2326,202 @@
 .reconcile-connect-hint a:hover {
     text-decoration: underline;
 }
+
+/* ── Ad Connections success banner ─────────────────────────────────────── */
+.ad-connections-success-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    border-radius: 8px;
+    color: rgba(134, 239, 172, 0.95);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* ── Account Picker Modal ───────────────────────────────────────────────── */
+.account-picker-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(8, 10, 18, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.account-picker {
+    background: #13161f;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    outline: none;
+}
+
+.account-picker__header {
+    padding: 24px 24px 0;
+}
+
+.account-picker__title {
+    margin: 0 0 6px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(230,235,245,0.95);
+}
+
+.account-picker__sub {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(160,170,190,0.8);
+    line-height: 1.5;
+}
+
+.account-picker__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px;
+}
+
+.account-picker__loading,
+.account-picker__empty {
+    color: rgba(160,170,190,0.7);
+    font-size: 0.875rem;
+    margin: 8px 0;
+}
+
+.account-picker__error {
+    color: rgba(248,113,113,0.9);
+    font-size: 0.875rem;
+    margin: 8px 0;
+}
+
+.account-picker__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.account-picker__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.account-picker__item:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.12);
+}
+
+.account-picker__item--selected {
+    background: rgba(99,179,237,0.1);
+    border-color: rgba(99,179,237,0.45);
+}
+
+.account-picker__item--dim {
+    opacity: 0.55;
+}
+
+.account-picker__item-radio {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(160,170,190,0.4);
+    background: transparent;
+    position: relative;
+    transition: border-color 0.15s;
+}
+
+.account-picker__item--selected .account-picker__item-radio {
+    border-color: #63b3ed;
+}
+
+.account-picker__item--selected .account-picker__item-radio::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: #63b3ed;
+}
+
+.account-picker__item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.account-picker__item-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(220,230,245,0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.account-picker__item-id {
+    font-size: 0.75rem;
+    color: rgba(140,155,180,0.75);
+    font-family: monospace;
+}
+
+.account-picker__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px 20px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.account-picker__btn {
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.15s, background 0.15s;
+}
+
+.account-picker__btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.account-picker__btn--cancel {
+    background: rgba(255,255,255,0.06);
+    color: rgba(180,185,200,0.9);
+}
+
+.account-picker__btn--cancel:not(:disabled):hover {
+    background: rgba(255,255,255,0.1);
+}
+
+.account-picker__btn--confirm {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.account-picker__btn--confirm:not(:disabled):hover {
+    background: #2563eb;
+}

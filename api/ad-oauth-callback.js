@@ -2,8 +2,9 @@
  * GET /api/ad-oauth-callback?code=...&state=...
  *
  * Called by OAuth providers after the user grants (or denies) access.
- * Validates state, exchanges the authorisation code for tokens, stores
- * them in the database, then redirects the user back to the reconcile page.
+ * Validates state, exchanges the code for tokens, fetches ALL accessible
+ * ad accounts, stores them in a short-lived pending record, then redirects
+ * the user to the account picker UI.
  *
  * Required env vars: same as ad-oauth-start.js plus POSTGRES_URL
  */
@@ -68,7 +69,6 @@ async function exchangeCode(platform, code) {
         default:
             throw new Error(`Unknown platform: ${platform}`);
     }
-
     if (!clientId || !clientSecret) throw new Error(`${platform} credentials not configured on server`);
 
     const body = new URLSearchParams({
@@ -94,58 +94,107 @@ async function exchangeCode(platform, code) {
     };
 }
 
-async function fetchAccountInfo(platform, accessToken) {
+// Returns [{ id, name }] for all accessible ad accounts on the platform.
+async function fetchAllAccounts(platform, accessToken) {
     try {
         switch (platform) {
             case "google_ads": {
-                const resp = await fetch(
+                const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+                const listResp = await fetch(
                     "https://googleads.googleapis.com/v18/customers:listAccessibleCustomers",
-                    {
+                    { headers: { Authorization: `Bearer ${accessToken}`, "developer-token": devToken } }
+                );
+                if (!listResp.ok) return [];
+                const listData = await listResp.json();
+                const resourceNames = listData.resourceNames || [];
+                if (resourceNames.length === 0) return [];
+
+                // Fetch descriptive names in parallel (cap at 20)
+                const ids = resourceNames.slice(0, 20).map(r => r.replace("customers/", ""));
+                const nameResults = await Promise.allSettled(ids.map(id =>
+                    fetch(`https://googleads.googleapis.com/v18/customers/${id}/googleAds:search`, {
+                        method: "POST",
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
-                            "developer-token": process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "",
+                            "developer-token": devToken,
+                            "Content-Type": "application/json",
                         },
-                    }
-                );
-                if (!resp.ok) return { accountId: null, accountLabel: "Google Ads" };
-                const data = await resp.json();
-                const firstId = (data.resourceNames?.[0] || "").replace("customers/", "");
-                return { accountId: firstId || null, accountLabel: firstId ? `Google Ads (${firstId})` : "Google Ads" };
+                        body: JSON.stringify({
+                            query: "SELECT customer.id, customer.descriptive_name, customer.manager FROM customer LIMIT 1",
+                        }),
+                    }).then(r => r.json())
+                ));
+
+                return ids.map((id, i) => {
+                    const res = nameResults[i];
+                    const row = res.status === "fulfilled" ? res.value?.results?.[0]?.customer : null;
+                    const name = row?.descriptiveName || null;
+                    const isManager = row?.manager === true;
+                    return {
+                        id,
+                        name: name ? `${name}${isManager ? " (Manager)" : ""}` : `Account ${id}`,
+                    };
+                });
             }
+
             case "meta_ads": {
                 const resp = await fetch(
-                    "https://graph.facebook.com/v18.0/me/adaccounts?fields=id,name&limit=1",
+                    "https://graph.facebook.com/v18.0/me/adaccounts?fields=id,name,account_status&limit=50",
                     { headers: { Authorization: `Bearer ${accessToken}` } }
                 );
-                if (!resp.ok) return { accountId: null, accountLabel: "Meta Ads" };
+                if (!resp.ok) return [];
                 const data = await resp.json();
-                const account = data.data?.[0];
-                return {
-                    accountId: account?.id || null,
-                    accountLabel: account?.name ? `${account.name}` : "Meta Ads",
-                };
+                return (data.data || []).map(a => ({
+                    id: a.id,
+                    name: a.name || a.id,
+                    status: a.account_status === 1 ? "active" : "inactive",
+                }));
             }
+
             case "linkedin_ads": {
                 const resp = await fetch(
-                    "https://api.linkedin.com/rest/adAccounts?q=search&search.status.values[0]=ACTIVE&count=1",
+                    "https://api.linkedin.com/rest/adAccounts?q=search&count=50",
                     { headers: { Authorization: `Bearer ${accessToken}`, "LinkedIn-Version": "202312" } }
                 );
-                if (!resp.ok) return { accountId: null, accountLabel: "LinkedIn Ads" };
+                if (!resp.ok) return [];
                 const data = await resp.json();
-                const account = data.elements?.[0];
-                return {
-                    accountId: account?.id ? String(account.id) : null,
-                    accountLabel: account?.name || "LinkedIn Ads",
-                };
+                return (data.elements || []).map(a => ({
+                    id: String(a.id),
+                    name: a.name || `Account ${a.id}`,
+                    status: a.status || "",
+                }));
             }
-            case "microsoft_ads":
-                return { accountId: null, accountLabel: "Microsoft Ads" };
+
+            case "microsoft_ads": {
+                // Microsoft Ads uses a SOAP API; token is valid — let the user confirm manually
+                return [{ id: "default", name: "Microsoft Ads (confirm in dashboard)" }];
+            }
+
             default:
-                return { accountId: null, accountLabel: platform };
+                return [];
         }
-    } catch {
-        return { accountId: null, accountLabel: platform.replace(/_/g, " ") };
+    } catch (err) {
+        console.error("[fetchAllAccounts]", platform, err.message);
+        return [];
     }
+}
+
+async function ensurePendingTable(db) {
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS pending_ad_connections (
+            id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+            organisation_id  INTEGER     NOT NULL,
+            domain           TEXT        NOT NULL,
+            platform         TEXT        NOT NULL,
+            accounts         JSONB       NOT NULL DEFAULT '[]',
+            access_token     TEXT        NOT NULL,
+            refresh_token    TEXT,
+            token_expires_at TIMESTAMPTZ,
+            scopes           TEXT,
+            created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            expires_at       TIMESTAMPTZ NOT NULL DEFAULT NOW() + INTERVAL '15 minutes'
+        )
+    `);
 }
 
 export default async function handler(req, res) {
@@ -158,64 +207,82 @@ export default async function handler(req, res) {
     const orgId = stateData?.orgId;
     const returnPath = stateData?.returnPath || "";
 
-    const successBase = returnPath
+    const returnBase = returnPath
         ? `${APP_BASE}${returnPath}`
-        : `${APP_BASE}/reports/reconcile`;
+        : `${APP_BASE}/settings/ad-connections`;
 
     if (error || !code || !stateData || !platform || !domain || !orgId) {
         const msg = error || "oauth_failed";
-        return res.redirect(302, `${successBase}?oauth_error=${encodeURIComponent(msg)}&platform=${encodeURIComponent(platform)}`);
+        return res.redirect(302, `${returnBase}?oauth_error=${encodeURIComponent(msg)}&platform=${encodeURIComponent(platform)}`);
     }
 
     try {
         const tokens = await exchangeCode(platform, code);
-        const { accountId, accountLabel } = await fetchAccountInfo(platform, tokens.accessToken);
+        const accounts = await fetchAllAccounts(platform, tokens.accessToken);
         const expiresAt = tokens.expiresIn
             ? new Date(Date.now() + tokens.expiresIn * 1000).toISOString()
             : null;
 
         const db = getPool();
-        // Ensure table exists (may not have been created yet via ad-connections endpoint)
-        await db.query(`
-            CREATE TABLE IF NOT EXISTS ad_platform_connections (
-                id               SERIAL PRIMARY KEY,
-                organisation_id  INTEGER NOT NULL,
-                domain           TEXT    NOT NULL,
-                platform         TEXT    NOT NULL,
-                account_id       TEXT,
-                account_label    TEXT,
-                access_token     TEXT,
-                refresh_token    TEXT,
-                token_expires_at TIMESTAMPTZ,
-                scopes           TEXT,
-                created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                UNIQUE (organisation_id, domain, platform)
-            )
-        `);
+        await ensurePendingTable(db);
 
-        await db.query(
-            `INSERT INTO ad_platform_connections
-                (organisation_id, domain, platform, account_id, account_label, access_token, refresh_token, token_expires_at, scopes)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-             ON CONFLICT (organisation_id, domain, platform) DO UPDATE SET
-                account_id       = EXCLUDED.account_id,
-                account_label    = EXCLUDED.account_label,
-                access_token     = EXCLUDED.access_token,
-                refresh_token    = COALESCE(EXCLUDED.refresh_token, ad_platform_connections.refresh_token),
-                token_expires_at = EXCLUDED.token_expires_at,
-                scopes           = EXCLUDED.scopes,
-                updated_at       = NOW()`,
-            [orgId, domain, platform, accountId, accountLabel, tokens.accessToken, tokens.refreshToken, expiresAt, tokens.scope]
+        // If only one account, skip picker and save directly
+        if (accounts.length === 1) {
+            await db.query(`
+                CREATE TABLE IF NOT EXISTS ad_platform_connections (
+                    id               SERIAL      PRIMARY KEY,
+                    organisation_id  INTEGER     NOT NULL,
+                    domain           TEXT        NOT NULL,
+                    platform         TEXT        NOT NULL,
+                    account_id       TEXT,
+                    account_label    TEXT,
+                    access_token     TEXT,
+                    refresh_token    TEXT,
+                    token_expires_at TIMESTAMPTZ,
+                    scopes           TEXT,
+                    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                    updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                    UNIQUE (organisation_id, domain, platform)
+                )
+            `);
+            await db.query(
+                `INSERT INTO ad_platform_connections
+                    (organisation_id, domain, platform, account_id, account_label, access_token, refresh_token, token_expires_at, scopes)
+                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+                 ON CONFLICT (organisation_id, domain, platform) DO UPDATE SET
+                    account_id       = EXCLUDED.account_id,
+                    account_label    = EXCLUDED.account_label,
+                    access_token     = EXCLUDED.access_token,
+                    refresh_token    = COALESCE(EXCLUDED.refresh_token, ad_platform_connections.refresh_token),
+                    token_expires_at = EXCLUDED.token_expires_at,
+                    scopes           = EXCLUDED.scopes,
+                    updated_at       = NOW()`,
+                [orgId, domain, platform, accounts[0].id, accounts[0].name,
+                 tokens.accessToken, tokens.refreshToken, expiresAt, tokens.scope]
+            );
+            return res.redirect(302,
+                `${returnBase}?oauth_success=${encodeURIComponent(platform)}&oauth_domain=${encodeURIComponent(domain)}`
+            );
+        }
+
+        // Multiple accounts → save pending and redirect to picker
+        const { rows } = await db.query(
+            `INSERT INTO pending_ad_connections
+                (organisation_id, domain, platform, accounts, access_token, refresh_token, token_expires_at, scopes)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+             RETURNING id`,
+            [orgId, domain, platform, JSON.stringify(accounts),
+             tokens.accessToken, tokens.refreshToken, expiresAt, tokens.scope]
         );
+        const pendingId = rows[0].id;
 
         return res.redirect(302,
-            `${successBase}?oauth_success=${encodeURIComponent(platform)}&oauth_domain=${encodeURIComponent(domain)}`
+            `${returnBase}?select_account=${pendingId}&platform=${encodeURIComponent(platform)}&domain=${encodeURIComponent(domain)}`
         );
     } catch (err) {
         console.error("[ad-oauth-callback]", platform, err.message);
         return res.redirect(302,
-            `${successBase}?oauth_error=${encodeURIComponent(err.message)}&platform=${encodeURIComponent(platform)}`
+            `${returnBase}?oauth_error=${encodeURIComponent(err.message)}&platform=${encodeURIComponent(platform)}`
         );
     }
 }
