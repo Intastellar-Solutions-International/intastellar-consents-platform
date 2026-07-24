@@ -11,13 +11,13 @@ import {
     useSyncDomainFromRoute,
     consentsDomainFromRoute,
     toDomainsApiHeader,
+    reportsPath,
 } from "../../../Functions/domainPathSegments.js";
 import {
     MarketingOverviewCharts,
     MarketingChannelCharts,
     MarketingTimeseriesChart,
 } from "./MarketingCharts.js";
-import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
 import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
 import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
 import appStorage from '../../../Functions/storage.js';
@@ -2428,18 +2428,16 @@ export default function MarketingReport() {
                     ) : null}
 
                     {!error && rows.length > 0 ? (
-                        <div id="marketing-reconciliation-panel">
-                            <MarketingReconciliationPanel
-                                scopeLabel={selectedChannel || "all channels"}
-                                scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
-                                domainKey={listDomainLabel}
-                                consents={visibilityScopeTotal}
-                                visibleConsents={measurementReadyCount}
-                                invisibleConsents={invisibleConsents}
-                                scopeRows={selectedChannel ? drilldownRows : rows}
-                                fromDate={toYmd(fromDate)}
-                                toDate={toYmd(toDate)}
-                            />
+                        <div className="marketing-reconciliation-cta">
+                            <p className="marketing-reconciliation-cta__text">
+                                Want to see how your paid traffic maps to consent visibility?
+                            </p>
+                            <a
+                                href={reportsPath(id, listDomainLabel, "/reconcile")}
+                                className="marketing-reconciliation-cta__link"
+                            >
+                                Open Ad Reconciliation →
+                            </a>
                         </div>
                     ) : null}
 

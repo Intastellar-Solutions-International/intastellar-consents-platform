@@ -36,6 +36,7 @@ import AuthLogin from "./Login/AuthLogin";
 import Experiments from "./Pages/Experiments/Experiments";
 import AuditReport from "./Pages/Reports/AuditReport";
 import MarketingReport from "./Pages/Reports/MarketingReport";
+import ReconcilePage from "./Pages/Reports/MarketingReport/ReconcilePage";
 import CompliancePage from "./Pages/Compliance";
 import LoadingSpinner from "./Components/LoadingSpinner/LoadingSpinner";
 import Workspaces from "./Pages/Settings/Workspaces";
@@ -299,8 +300,13 @@ export default function App() {
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/marketing" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Platform Reconciliation" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/:id/reports/view/:handle/reconcile" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Reconciliation" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <ReconcilePage />}
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/view/:handle/compliance" exact>
@@ -339,8 +345,13 @@ export default function App() {
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/marketing" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Platform Reconciliation" fullPage /> : <ErrorBoundary>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/:id/reports/reconcile" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Reconciliation" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <ReconcilePage />}
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/dashboard">

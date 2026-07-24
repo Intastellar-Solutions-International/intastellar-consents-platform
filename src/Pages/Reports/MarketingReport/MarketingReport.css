@@ -1729,3 +1729,55 @@
         flex-wrap: nowrap;
     }
 }
+
+/* ── Ad Reconciliation CTA (in Channel Analytics) ─────────────────────── */
+.marketing-reconciliation-cta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    margin: 32px 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.marketing-reconciliation-cta__text {
+    margin: 0;
+    color: rgba(220, 220, 230, 0.75);
+    font-size: 0.9rem;
+}
+
+.marketing-reconciliation-cta__link {
+    white-space: nowrap;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #7c9ff5;
+    text-decoration: none;
+}
+
+.marketing-reconciliation-cta__link:hover {
+    text-decoration: underline;
+}
+
+/* ── Reconcile page channel filter ────────────────────────────────────── */
+.marketing-reconciliation-page__channel-filter {
+    margin-bottom: 24px;
+}
+
+.marketing-reconciliation-page__channel-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.88rem;
+    color: rgba(220, 220, 230, 0.8);
+}
+
+.marketing-reconciliation-page__back-link {
+    color: #7c9ff5;
+    text-decoration: none;
+}
+
+.marketing-reconciliation-page__back-link:hover {
+    text-decoration: underline;
+}
