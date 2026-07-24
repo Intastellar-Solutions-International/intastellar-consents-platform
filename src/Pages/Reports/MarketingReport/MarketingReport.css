@@ -1225,9 +1225,11 @@
 }
 
 .marketing-reconciliation__snapshots {
-    margin-top: 22px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-top: 20px;
+    padding: 18px 22px;
+    background: rgba(255,255,255,0.028);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
 }
 
 .marketing-reconciliation__snapshots-bar {
@@ -1867,10 +1869,10 @@
 /* ── Visibility improvement projection ─────────────────────────────────── */
 .marketing-reconciliation__projection {
     margin: 20px 0 0;
-    padding: 20px 24px;
-    background: rgba(255, 255, 255, 0.03);
+    padding: 22px 24px;
+    background: rgba(255, 255, 255, 0.028);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
+    border-radius: 14px;
 }
 
 .marketing-reconciliation__projection-table {
@@ -1914,10 +1916,10 @@
 /* ── Visibility trend chart ────────────────────────────────────────────── */
 .marketing-reconciliation__trend {
     margin: 20px 0 0;
-    padding: 20px 24px;
-    background: rgba(255, 255, 255, 0.03);
+    padding: 22px 24px;
+    background: rgba(255, 255, 255, 0.028);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 10px;
+    border-radius: 14px;
 }
 
 .marketing-reconciliation__trend-legend {
@@ -2159,11 +2161,8 @@
     flex-wrap: wrap;
     align-items: flex-end;
     gap: 14px;
-    padding: 16px 18px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-    margin-bottom: 4px;
+    padding-bottom: 14px;
+    margin-bottom: 0;
 }
 .recon-inputs-bar__field {
     display: flex;
@@ -2190,9 +2189,9 @@
 /* ── Funnel + Gauge layout ─────────────────────────────────── */
 .recon-main {
     display: flex;
-    gap: 24px;
+    gap: 20px;
     align-items: flex-start;
-    margin: 20px 0 28px;
+    margin: 0;
     flex-wrap: wrap;
 }
 
@@ -2631,7 +2630,8 @@
 
 /* ── Insights panel ─────────────────────────────────────────────────────── */
 .recon-insights {
-    margin: 18px 0;
+    margin: 0;
+    flex: 1;
 }
 .recon-insights__heading {
     font-size: 0.78rem;
@@ -2708,7 +2708,11 @@
 
 /* ── Chart sections ─────────────────────────────────────────────────────── */
 .recon-chart-section {
-    margin: 20px 0;
+    margin: 0;
+    background: rgba(255,255,255,0.028);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 20px 20px 16px;
 }
 
 .recon-chart-scroll {
@@ -2742,4 +2746,185 @@
     margin-right: 4px;
     vertical-align: middle;
     flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DASHBOARD LAYOUT — page header, KPI row, card grid
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.recon-page {
+    padding-bottom: 48px;
+}
+
+/* ── Page header ──────────────────────────────────────────────────────────── */
+.recon-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.recon-page-header__left {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.recon-page-header__title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: rgba(240,242,248,0.97);
+    letter-spacing: -0.01em;
+}
+.recon-page-header__domain {
+    font-size: 0.82rem;
+    color: rgba(155,170,200,0.75);
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.recon-page-header__right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.recon-page-header__channel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: rgba(160,165,175,0.8);
+}
+.recon-page-header__back {
+    font-size: 0.82rem;
+    color: rgba(130,145,175,0.75);
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.recon-page-header__back:hover {
+    color: rgba(180,190,215,0.9);
+}
+
+/* ── Generic card ─────────────────────────────────────────────────────────── */
+.recon-card {
+    background: rgba(255,255,255,0.028);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 22px 22px 20px;
+}
+.recon-controls-card {
+    margin-bottom: 20px;
+}
+.recon-card--insights {
+    display: flex;
+    flex-direction: column;
+}
+.recon-card__title {
+    margin: 0 0 14px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(145,158,185,0.65);
+}
+.recon-card__empty-hint {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 24px 16px;
+    font-size: 0.85rem;
+    color: rgba(140,152,175,0.6);
+    text-align: center;
+}
+
+/* ── KPI stat cards ───────────────────────────────────────────────────────── */
+.recon-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+@media (max-width: 900px) {
+    .recon-kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+    .recon-kpi-row { grid-template-columns: 1fr 1fr; }
+}
+
+.recon-stat-card {
+    background: rgba(255,255,255,0.032);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.recon-stat-card--good {
+    border-color: rgba(74,222,128,0.2);
+    background: rgba(74,222,128,0.045);
+}
+.recon-stat-card--warn {
+    border-color: rgba(245,158,11,0.2);
+    background: rgba(245,158,11,0.045);
+}
+.recon-stat-card--bad {
+    border-color: rgba(248,113,113,0.2);
+    background: rgba(248,113,113,0.045);
+}
+.recon-stat-card__label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(145,158,180,0.72);
+}
+.recon-stat-card__value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.05;
+    color: rgba(232,236,248,0.96);
+    letter-spacing: -0.025em;
+}
+.recon-stat-card--good .recon-stat-card__value { color: rgba(134,239,172,0.95); }
+.recon-stat-card--warn .recon-stat-card__value { color: rgba(252,211,77,0.92); }
+.recon-stat-card--bad  .recon-stat-card__value { color: rgba(248,113,113,0.9); }
+.recon-stat-card__sub {
+    font-size: 0.71rem;
+    color: rgba(135,148,170,0.6);
+    margin-top: 1px;
+}
+
+/* ── Dashboard 2-col grid (funnel + insights) ─────────────────────────────── */
+.recon-dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: start;
+}
+@media (max-width: 820px) {
+    .recon-dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Charts 2-col grid ────────────────────────────────────────────────────── */
+.recon-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+.recon-charts-grid > .recon-chart-section:only-child {
+    grid-column: 1 / -1;
+}
+@media (max-width: 820px) {
+    .recon-charts-grid { grid-template-columns: 1fr; }
 }

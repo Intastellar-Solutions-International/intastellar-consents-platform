@@ -211,82 +211,69 @@ export default function ReconcilePage() {
                     setFromDate={setFromDate}
                     setToDate={setToDate}
                 />
-                <div className="dashboard-content marketing-report-page">
-                    <header className="marketing-report-hero">
-                        <h1>Ad Reconciliation</h1>
-                        <p className="marketing-report-hero__lede">
-                            Paste in the click or session count from your ad platform and see how
-                            much of that traffic will actually surface in your analytics tools — and
-                            what falls into the invisible gap. Use the same date range as the header
-                            filter. Need channel analytics?{" "}
-                            <a href={channelAnalyticsPath} className="marketing-reconciliation-page__back-link">
-                                Back to Channel Analytics
+                <div className="dashboard-content recon-page">
+
+                    {/* ── Dashboard page header ─────────────────────────────── */}
+                    <div className="recon-page-header">
+                        <div className="recon-page-header__left">
+                            <h1 className="recon-page-header__title">Ad Reconciliation</h1>
+                            {!noDomain && listDomainLabel && (
+                                <span className="recon-page-header__domain">{listDomainLabel}</span>
+                            )}
+                        </div>
+                        <div className="recon-page-header__right">
+                            {!noDomain && channels.length > 1 && (
+                                <label className="recon-page-header__channel">
+                                    <span>Channel</span>
+                                    <select
+                                        value={selectedChannel || ""}
+                                        onChange={e => setSelectedChannel(e.target.value || null)}
+                                        className="marketing-reconciliation__select"
+                                    >
+                                        <option value="">All channels</option>
+                                        {channels.map(ch => (
+                                            <option key={ch} value={ch}>{ch}</option>
+                                        ))}
+                                    </select>
+                                </label>
+                            )}
+                            <a href={channelAnalyticsPath} className="recon-page-header__back">
+                                ← Channel Analytics
                             </a>
-                        </p>
-                    </header>
+                        </div>
+                    </div>
 
                     {noDomain ? (
                         <div className="reconcile-domain-gate">
                             <div className="reconcile-domain-gate__icon" aria-hidden="true">⬆</div>
                             <h2 className="reconcile-domain-gate__heading">Select a domain first</h2>
                             <p className="reconcile-domain-gate__body">
-                                Ad Reconciliation is domain-specific — each ad account connection and
-                                reconciliation snapshot belongs to a single domain. Select a domain
-                                from the dropdown in the page header to continue.
+                                Ad Reconciliation is domain-specific. Select a domain from the
+                                dropdown in the page header to continue.
                             </p>
                         </div>
+                    ) : error ? (
+                        <p className="marketing-report-error">{error}</p>
+                    ) : loading ? (
+                        <p className="marketing-report-loading">Loading…</p>
+                    ) : rows.length === 0 ? (
+                        <p className="marketing-report-empty">
+                            No marketing attribution data found for this period and domain.
+                        </p>
                     ) : (
-                        <>
-                            {/* Connect hint */}
-                            <div className="reconcile-connect-hint">
-                                <a href="/settings/ad-connections">Connect ad platforms</a> to auto-import clicks &amp; spend.
-                            </div>
-
-                            {/* Reconciliation panel */}
-                            {error ? (
-                                <p className="marketing-report-error">{error}</p>
-                            ) : loading ? (
-                                <p className="marketing-report-loading">Loading…</p>
-                            ) : rows.length === 0 ? (
-                                <p className="marketing-report-empty">
-                                    No marketing attribution data found for this period and domain.
-                                </p>
-                            ) : (
-                                <>
-                                    {channels.length > 1 ? (
-                                        <div className="marketing-reconciliation-page__channel-filter">
-                                            <label className="marketing-reconciliation-page__channel-label">
-                                                Filter by channel
-                                                <select
-                                                    value={selectedChannel || ""}
-                                                    onChange={e => setSelectedChannel(e.target.value || null)}
-                                                    className="marketing-reconciliation__select"
-                                                >
-                                                    <option value="">All channels</option>
-                                                    {channels.map(ch => (
-                                                        <option key={ch} value={ch}>{ch}</option>
-                                                    ))}
-                                                </select>
-                                            </label>
-                                        </div>
-                                    ) : null}
-
-                                    <MarketingReconciliationPanel
-                                        scopeLabel={selectedChannel || "all channels"}
-                                        scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
-                                        domainKey={listDomainLabel}
-                                        consents={visibilityScopeTotal}
-                                        visibleConsents={measurementReadyCount}
-                                        invisibleConsents={invisibleConsents}
-                                        scopeRows={selectedChannel ? drilldownRows : rows}
-                                        fromDate={toYmd(fromDate)}
-                                        toDate={toYmd(toDate)}
-                                        orgId={Authentication.getOrganisation()}
-                                        authToken={Authentication.getToken()}
-                                    />
-                                </>
-                            )}
-                        </>
+                        <MarketingReconciliationPanel
+                            scopeLabel={selectedChannel || "all channels"}
+                            scopeKey={selectedChannel ? `channel:${selectedChannel}` : "overview"}
+                            domainKey={listDomainLabel}
+                            consents={visibilityScopeTotal}
+                            visibleConsents={measurementReadyCount}
+                            invisibleConsents={invisibleConsents}
+                            scopeRows={selectedChannel ? drilldownRows : rows}
+                            fromDate={toYmd(fromDate)}
+                            toDate={toYmd(toDate)}
+                            orgId={Authentication.getOrganisation()}
+                            authToken={Authentication.getToken()}
+                        />
                     )}
                 </div>
             </div>

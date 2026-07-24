@@ -1749,73 +1749,111 @@ export default function MarketingReconciliationPanel({
 
     return (
         <section className="marketing-reconciliation" aria-labelledby="marketing-reconciliation-h">
-            {/* ── Inputs bar ─────────────────────────────────────────────── */}
-            <div className="recon-inputs-bar">
-                <label className="recon-inputs-bar__field">
-                    <span className="recon-inputs-bar__label">Platform</span>
-                    <select value={inputs.platform} onChange={handlePlatformChange}
-                        className="marketing-reconciliation__select">
-                        {PLATFORMS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
-                    </select>
-                </label>
 
-                <label className="recon-inputs-bar__field recon-inputs-bar__field--wide">
-                    <span className="recon-inputs-bar__label">{selectedPlatform.metric}</span>
-                    <input type="number" inputMode="numeric" min="0" step="1" placeholder="e.g. 5 000"
-                        value={currentValues.adClicks} onChange={updatePlatformValue("adClicks")}
-                        className="marketing-reconciliation__input" />
-                </label>
-                <label className="recon-inputs-bar__field recon-inputs-bar__field--wide">
-                    <span className="recon-inputs-bar__label">Spend (optional)</span>
-                    <div className="marketing-reconciliation__money">
-                        <input type="number" inputMode="decimal" min="0" step="0.01" placeholder="e.g. 2 400"
-                            value={currentValues.spend} onChange={updatePlatformValue("spend")}
-                            className="marketing-reconciliation__input marketing-reconciliation__input--money" />
-                        <select value={inputs.currency} onChange={handleCurrencyChange}
-                            className="marketing-reconciliation__select marketing-reconciliation__select--currency">
-                            {CURRENCIES.map(c => <option key={c.id} value={c.id}>{c.id}</option>)}
+            {/* ── Controls card ─────────────────────────────────────────── */}
+            <div className="recon-card recon-controls-card">
+                <div className="recon-inputs-bar">
+                    <label className="recon-inputs-bar__field">
+                        <span className="recon-inputs-bar__label">Platform</span>
+                        <select value={inputs.platform} onChange={handlePlatformChange}
+                            className="marketing-reconciliation__select">
+                            {PLATFORMS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
                         </select>
-                    </div>
-                </label>
-                <div className="recon-inputs-bar__actions">
-                    {isConnected && fromDate && toDate && (
-                        <button
-                            type="button"
-                            className="recon-sync-btn"
-                            onClick={handleSync}
-                            disabled={syncing}
-                            title={`Auto-import ${fromDate} → ${toDate} from ${SYNC_SHORT_LABEL[inputs.platform] || inputs.platform}`}
-                        >
-                            {syncing ? "Syncing…" : `↓ Sync ${SYNC_SHORT_LABEL[inputs.platform] || "platform"}`}
+                    </label>
+
+                    <label className="recon-inputs-bar__field recon-inputs-bar__field--wide">
+                        <span className="recon-inputs-bar__label">{selectedPlatform.metric}</span>
+                        <input type="number" inputMode="numeric" min="0" step="1" placeholder="e.g. 5 000"
+                            value={currentValues.adClicks} onChange={updatePlatformValue("adClicks")}
+                            className="marketing-reconciliation__input" />
+                    </label>
+                    <label className="recon-inputs-bar__field recon-inputs-bar__field--wide">
+                        <span className="recon-inputs-bar__label">Spend (optional)</span>
+                        <div className="marketing-reconciliation__money">
+                            <input type="number" inputMode="decimal" min="0" step="0.01" placeholder="e.g. 2 400"
+                                value={currentValues.spend} onChange={updatePlatformValue("spend")}
+                                className="marketing-reconciliation__input marketing-reconciliation__input--money" />
+                            <select value={inputs.currency} onChange={handleCurrencyChange}
+                                className="marketing-reconciliation__select marketing-reconciliation__select--currency">
+                                {CURRENCIES.map(c => <option key={c.id} value={c.id}>{c.id}</option>)}
+                            </select>
+                        </div>
+                    </label>
+                    <div className="recon-inputs-bar__actions">
+                        {isConnected && fromDate && toDate && (
+                            <button
+                                type="button"
+                                className="recon-sync-btn"
+                                onClick={handleSync}
+                                disabled={syncing}
+                                title={`Auto-import ${fromDate} → ${toDate} from ${SYNC_SHORT_LABEL[inputs.platform] || inputs.platform}`}
+                            >
+                                {syncing ? "Syncing…" : `↓ Sync ${SYNC_SHORT_LABEL[inputs.platform] || "platform"}`}
+                            </button>
+                        )}
+                        <button type="button" className="marketing-reconciliation__save"
+                            onClick={handleSaveSnapshot} disabled={!hasClicks}
+                            title={hasClicks ? "Save snapshot" : `Enter ${selectedPlatform.metric} first`}>
+                            {savedFlash ? "Saved ✓" : "Save snapshot"}
                         </button>
-                    )}
-                    <button type="button" className="marketing-reconciliation__save"
-                        onClick={handleSaveSnapshot} disabled={!hasClicks}
-                        title={hasClicks ? "Save snapshot" : `Enter ${selectedPlatform.metric} first`}>
-                        {savedFlash ? "Saved ✓" : "Save snapshot"}
-                    </button>
-                    <button type="button" className="marketing-reconciliation__clear" onClick={handleClear}>
-                        Clear
-                    </button>
+                        <button type="button" className="marketing-reconciliation__clear" onClick={handleClear}>
+                            Clear
+                        </button>
+                    </div>
                 </div>
+                {syncMsg && (
+                    <p className={`recon-sync-msg${syncMsg.error ? " recon-sync-msg--error" : ""}`} role="status">
+                        {syncMsg.text}
+                        {!isConnected && !syncMsg.error && (
+                            <> · <a href="/settings/ad-connections" className="recon-sync-msg__link">Manage connections</a></>
+                        )}
+                    </p>
+                )}
+                {!isConnected && !syncing && fromDate && toDate && authToken && orgId && (
+                    <p className="recon-sync-hint">
+                        <a href="/settings/ad-connections">Connect {SYNC_SHORT_LABEL[inputs.platform] || "this platform"}</a> to auto-import {selectedPlatform.metric} and spend for this date range.
+                    </p>
+                )}
+                {fromDate && toDate && (
+                    <p className="marketing-reconciliation__window-hint">
+                        Use the same date range as the header filter ({fromDate} → {toDate}).
+                    </p>
+                )}
             </div>
 
-            {syncMsg && (
-                <p className={`recon-sync-msg${syncMsg.error ? " recon-sync-msg--error" : ""}`} role="status">
-                    {syncMsg.text}
-                    {!isConnected && !syncMsg.error && (
-                        <> · <a href="/settings/ad-connections" className="recon-sync-msg__link">Manage connections</a></>
+            {/* ── KPI row ─────────────────────────────────────────────────── */}
+            <div className="recon-kpi-row">
+                <div className="recon-stat-card">
+                    <span className="recon-stat-card__label">Consents in scope</span>
+                    <span className="recon-stat-card__value">{formatInt(scopeConsents)}</span>
+                    {fromDate && toDate && (
+                        <span className="recon-stat-card__sub">{fromDate} → {toDate}</span>
                     )}
-                </p>
-            )}
-            {!isConnected && !syncing && fromDate && toDate && authToken && orgId && (
-                <p className="recon-sync-hint">
-                    <a href="/settings/ad-connections">Connect {SYNC_SHORT_LABEL[inputs.platform] || "this platform"}</a> to auto-import {selectedPlatform.metric} and spend for this date range.
-                </p>
-            )}
+                </div>
+                <div className="recon-stat-card recon-stat-card--good">
+                    <span className="recon-stat-card__label">Visible in analytics</span>
+                    <span className="recon-stat-card__value">{formatInt(scopeVisible)}</span>
+                    <span className="recon-stat-card__sub">accept-all consents</span>
+                </div>
+                <div className={`recon-stat-card${scopeInvisible > 0 ? " recon-stat-card--warn" : ""}`}>
+                    <span className="recon-stat-card__label">Invisible gap</span>
+                    <span className="recon-stat-card__value">{formatInt(scopeInvisible)}</span>
+                    <span className="recon-stat-card__sub">not measurable</span>
+                </div>
+                {(() => {
+                    const visPct = scopeConsents > 0 ? (scopeVisible / scopeConsents) * 100 : null;
+                    const tone = visPct == null ? "" : visPct >= 65 ? " recon-stat-card--good" : visPct >= 40 ? " recon-stat-card--warn" : " recon-stat-card--bad";
+                    return (
+                        <div className={`recon-stat-card${tone}`}>
+                            <span className="recon-stat-card__label">Visibility</span>
+                            <span className="recon-stat-card__value">{visPct != null ? formatPct(visPct) : "—"}</span>
+                            <span className="recon-stat-card__sub">benchmark 65%</span>
+                        </div>
+                    );
+                })()}
+            </div>
 
-            <p className="marketing-reconciliation__window-hint">{windowHint}</p>
-
+            {/* ── Platform filter strip ───────────────────────────────────── */}
             {filterActive ? (
                 noMatchedRows ? (
                     <div
@@ -1856,23 +1894,17 @@ export default function MarketingReconciliationPanel({
                             <strong>{formatInt(numConsents)}</strong> of{" "}
                             <strong>{formatInt(scopeConsents)}</strong> scope consents
                             {coverageOfScopePct != null ? (
-                                <>
-                                    {" "}
-                                    ({formatPct(coverageOfScopePct)} coverage)
-                                </>
-                            ) : null}
-                            .
+                                <> ({formatPct(coverageOfScopePct)} coverage)</>
+                            ) : null}.
                             {platformStats.matchedSources.length > 0 ? (
                                 <>
-                                    {" "}
-                                    Matched <code>utm_source</code>:{" "}
+                                    {" "}Matched <code>utm_source</code>:{" "}
                                     <code>
                                         {platformStats.matchedSources.slice(0, 6).join(", ")}
                                         {platformStats.matchedSources.length > 6
                                             ? `, +${platformStats.matchedSources.length - 6} more`
                                             : ""}
-                                    </code>
-                                    .
+                                    </code>.
                                 </>
                             ) : null}
                         </p>
@@ -1889,53 +1921,67 @@ export default function MarketingReconciliationPanel({
                 </div>
             )}
 
-            {/* ── UTM attribution health ──────────────────────────────────── */}
-            {darkTrafficStats && (
-                <UtmHealthBar
-                    darkTrafficPct={darkTrafficStats.darkTrafficPct}
-                    darkConsents={darkTrafficStats.darkConsents}
-                    darkTrafficTotal={darkTrafficStats.darkTrafficTotal}
-                />
-            )}
+            {/* ── Dashboard grid: Funnel card + Insights card ─────────────── */}
+            <div className="recon-dashboard-grid">
+                <div className="recon-card">
+                    <h3 className="recon-card__title">Conversion funnel</h3>
+                    <div className="recon-main">
+                        <FunnelFlow
+                            clicks={clicksNum} consents={numConsents}
+                            visible={numVisible} invisible={numInvisible}
+                            platform={selectedPlatform}
+                            bannerReachPct={bannerReachPct}
+                            visibleSharePct={visibleSharePct}
+                            invisibleSharePct={invisibleSharePct}
+                            hasClicks={hasClicks}
+                        />
+                        <VisibilityGauge
+                            pct={visibilityOfConsentsPct}
+                            costPerVisible={costPerVisible}
+                            costPerClick={costPerClick}
+                            currency={inputs.currency}
+                        />
+                    </div>
+                    {!hasClicks && (
+                        <div className="marketing-reconciliation__empty">
+                            <p>Enter your {selectedPlatform.metric} count from <strong>{selectedPlatform.label}</strong> above to see the reconciliation.</p>
+                            <p>Use the same date range as the header filter so the numbers line up.</p>
+                        </div>
+                    )}
+                </div>
 
-            {/* ── Main visualisation ──────────────────────────────────────── */}
-            <div className="recon-main">
-                <FunnelFlow
-                    clicks={clicksNum} consents={numConsents}
-                    visible={numVisible} invisible={numInvisible}
-                    platform={selectedPlatform}
-                    bannerReachPct={bannerReachPct}
-                    visibleSharePct={visibleSharePct}
-                    invisibleSharePct={invisibleSharePct}
-                    hasClicks={hasClicks}
-                />
-                <VisibilityGauge
-                    pct={visibilityOfConsentsPct}
-                    costPerVisible={costPerVisible}
-                    costPerClick={costPerClick}
-                    currency={inputs.currency}
-                />
+                <div className="recon-card recon-card--insights">
+                    {darkTrafficStats && (
+                        <UtmHealthBar
+                            darkTrafficPct={darkTrafficStats.darkTrafficPct}
+                            darkConsents={darkTrafficStats.darkConsents}
+                            darkTrafficTotal={darkTrafficStats.darkTrafficTotal}
+                        />
+                    )}
+                    <InsightsPanel insights={insights} />
+                    {insights.length === 0 && (!darkTrafficStats || darkTrafficStats.darkTrafficTotal < 20) && (
+                        <p className="recon-card__empty-hint">
+                            Insights appear once you enter {selectedPlatform.metric} data in the controls above.
+                        </p>
+                    )}
+                </div>
             </div>
 
-            {/* ── Insights panel ───────────────────────────────────────────── */}
-            <InsightsPanel insights={insights} />
+            {/* ── Charts grid ─────────────────────────────────────────────── */}
+            <div className="recon-charts-grid">
+                <UtmSourcesChart scopeRows={scopeRows} />
+                {comparisonRows.length >= 2 ? <PlatformBarsChart rows={comparisonRows} currency={inputs.currency} /> : null}
+            </div>
 
-            {/* ── Empty state ─────────────────────────────────────────────── */}
-            {!hasClicks && (
-                <div className="marketing-reconciliation__empty">
-                    <p>Enter your {selectedPlatform.metric} count from <strong>{selectedPlatform.label}</strong> above to see the reconciliation.</p>
-                    <p>Use the same date range as the header filter so the numbers line up.</p>
-                </div>
-            )}
-
-            {/* ── Charts ──────────────────────────────────────────────────── */}
-            <UtmSourcesChart scopeRows={scopeRows} />
-            {comparisonRows.length >= 2 ? <PlatformBarsChart rows={comparisonRows} currency={inputs.currency} /> : null}
+            {/* ── Cost projection ──────────────────────────────────────────── */}
             {hasSpend && hasClicks && numVisible > 0 ? (
                 <ProjectionTable numConsents={numConsents} numVisible={numVisible} spend={spendNum} currency={inputs.currency} />
             ) : null}
+
+            {/* ── Performance timeline ─────────────────────────────────────── */}
             {snapshots.length >= 2 ? <SnapshotComboChart snapshots={snapshots} /> : null}
 
+            {/* ── Snapshots accordion ──────────────────────────────────────── */}
             <div className="marketing-reconciliation__snapshots">
                 <div className="marketing-reconciliation__snapshots-bar">
                     <button
