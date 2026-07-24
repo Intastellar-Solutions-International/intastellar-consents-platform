@@ -41,7 +41,6 @@ export const reportsLinks = [
         name: "Ad Connections",
         path: "/settings/ad-connections",
         view: ["admin", "super-admin", "manager"],
-        requiresTier: 'growth',
     },
     {
         name: "Blacklist IP",

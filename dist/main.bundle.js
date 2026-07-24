@@ -44998,8 +44998,7 @@ var reportsLinks = [{
 }, {
   name: "Ad Connections",
   path: "/settings/ad-connections",
-  view: ["admin", "super-admin", "manager"],
-  requiresTier: 'growth'
+  view: ["admin", "super-admin", "manager"]
 }, {
   name: "Blacklist IP",
   path: "/settings/blacklist-ip",
