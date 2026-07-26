@@ -1391,7 +1391,7 @@ function computeMarketingHighlights({
         items.push({
             accent: "spotlight",
             title: "Campaign carrying the load",
-            body: `“${truncateLabel(topCamp.utmCampaign, 64)}” represents about ${share}% of this channel (${topCamp.consents.toLocaleString("de-DE")} events).`,
+            body: `"${truncateLabel(topCamp.utmCampaign, 64)}" represents about ${share}% of this channel (${topCamp.consents.toLocaleString("de-DE")} events).`,
         });
 
         const minC = Math.max(5, Math.floor(total * 0.05));
@@ -1404,13 +1404,13 @@ function computeMarketingHighlights({
             items.push({
                 accent: "win",
                 title: "Strongest acceptance",
-                body: `“${truncateLabel(best.utmCampaign, 56)}” leads at ${best.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% among campaigns with enough volume to compare.`,
+                body: `"${truncateLabel(best.utmCampaign, 56)}" leads at ${best.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% among campaigns with enough volume to compare.`,
             });
             if (worst.utmCampaign !== best.utmCampaign) {
                 items.push({
                     accent: "watch",
                     title: "Review next",
-                    body: `“${truncateLabel(worst.utmCampaign, 56)}” is lowest in that set (${worst.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%)—worth checking creative, landing, or consent timing.`,
+                    body: `"${truncateLabel(worst.utmCampaign, 56)}" is lowest in that set (${worst.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}%)—worth checking creative, landing, or consent timing.`,
                 });
             }
         } else if (withRate.length === 1) {
@@ -1418,7 +1418,7 @@ function computeMarketingHighlights({
             items.push({
                 accent: "data",
                 title: "Acceptance",
-                body: `One campaign clears the volume bar: ${only.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% on “${truncateLabel(only.utmCampaign, 48)}”.`,
+                body: `One campaign clears the volume bar: ${only.acceptPct.toLocaleString("de-DE", { maximumFractionDigits: 1 })}% on "${truncateLabel(only.utmCampaign, 48)}".`,
             });
         }
 
@@ -2461,7 +2461,7 @@ export default function MarketingReport() {
                                 </span>
                             </div>
                         </div>
-                        <div className=”marketing-report-table-wrap”>
+                        <div className="marketing-report-table-wrap">
                         {rows.length === 0 && !loading ? (
                             <div className="marketing-report-empty">
                                 No marketing rows for this scope and period. When your API returns data, it will appear
