@@ -1850,19 +1850,29 @@ export default function MarketingReconciliationPanel({
         }
     }, [inputs.platform, fromDate, toDate, authToken, orgId, domainKey]);
 
-    const handleConnectPlatform = useCallback((platform) => {
+    const handleConnectPlatform = useCallback(async (platform) => {
         if (!orgId || !domainKey || domainKey === "combined view") return;
         setConnectingPlatform(true);
-        const returnPath = window.location.pathname + window.location.search;
-        const url = [
-            `${ScannerHost}/api/ad-oauth-start`,
-            `?platform=${encodeURIComponent(platform)}`,
-            `&domain=${encodeURIComponent(domainKey)}`,
-            `&returnPath=${encodeURIComponent(returnPath)}`,
-            `&org=${encodeURIComponent(orgId)}`,
-        ].join("");
-        window.location.href = url;
-    }, [authToken, orgId, domainKey]);
+        try {
+            const returnPath = window.location.pathname + window.location.search;
+            const url = [
+                `${ScannerHost}/api/ad-oauth-start`,
+                `?platform=${encodeURIComponent(platform)}`,
+                `&domain=${encodeURIComponent(domainKey)}`,
+                `&returnPath=${encodeURIComponent(returnPath)}`,
+                `&org=${encodeURIComponent(orgId)}`,
+            ].join("");
+            const resp = await fetch(url);
+            const data = await resp.json();
+            if (!resp.ok || !data.authUrl) {
+                setConnectingPlatform(false);
+                return;
+            }
+            window.location.href = data.authUrl;
+        } catch {
+            setConnectingPlatform(false);
+        }
+    }, [orgId, domainKey]);
 
     const selectedPlatform = useMemo(
         () => platformOrFallback(inputs.platform),

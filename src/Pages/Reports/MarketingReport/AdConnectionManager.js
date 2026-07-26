@@ -76,15 +76,27 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
             return;
         }
         setConnecting(platformId);
-        const returnPath = window.location.pathname;
-        const url = [
-            `${ScannerHost}/api/ad-oauth-start`,
-            `?platform=${encodeURIComponent(platformId)}`,
-            `&domain=${encodeURIComponent(domain)}`,
-            `&returnPath=${encodeURIComponent(returnPath)}`,
-            `&org=${encodeURIComponent(orgId)}`,
-        ].join("");
-        window.location.href = url;
+        try {
+            const returnPath = window.location.pathname;
+            const url = [
+                `${ScannerHost}/api/ad-oauth-start`,
+                `?platform=${encodeURIComponent(platformId)}`,
+                `&domain=${encodeURIComponent(domain)}`,
+                `&returnPath=${encodeURIComponent(returnPath)}`,
+                `&org=${encodeURIComponent(orgId)}`,
+            ].join("");
+            const resp = await fetch(url);
+            const data = await resp.json();
+            if (!resp.ok || !data.authUrl) {
+                setStatus(data.error || "Could not start connection.", true);
+                setConnecting(null);
+                return;
+            }
+            window.location.href = data.authUrl;
+        } catch (err) {
+            setStatus(err.message, true);
+            setConnecting(null);
+        }
     }
 
     async function handleDisconnect(platformId) {

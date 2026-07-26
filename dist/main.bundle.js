@@ -60869,9 +60869,9 @@ function AdConnectionManager(_ref) {
   }
   function _handleConnect() {
     _handleConnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(platformId) {
-      var returnPath, url;
+      var returnPath, url, resp, data, _t2;
       return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.n) {
+        while (1) switch (_context2.p = _context2.n) {
           case 0:
             if (orgId) {
               _context2.n = 1;
@@ -60881,13 +60881,37 @@ function AdConnectionManager(_ref) {
             return _context2.a(2);
           case 1:
             setConnecting(platformId);
+            _context2.p = 2;
             returnPath = window.location.pathname;
             url = ["".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-oauth-start"), "?platform=".concat(encodeURIComponent(platformId)), "&domain=".concat(encodeURIComponent(domain)), "&returnPath=".concat(encodeURIComponent(returnPath)), "&org=".concat(encodeURIComponent(orgId))].join("");
-            window.location.href = url;
-          case 2:
+            _context2.n = 3;
+            return fetch(url);
+          case 3:
+            resp = _context2.v;
+            _context2.n = 4;
+            return resp.json();
+          case 4:
+            data = _context2.v;
+            if (!(!resp.ok || !data.authUrl)) {
+              _context2.n = 5;
+              break;
+            }
+            setStatus(data.error || "Could not start connection.", true);
+            setConnecting(null);
+            return _context2.a(2);
+          case 5:
+            window.location.href = data.authUrl;
+            _context2.n = 7;
+            break;
+          case 6:
+            _context2.p = 6;
+            _t2 = _context2.v;
+            setStatus(_t2.message, true);
+            setConnecting(null);
+          case 7:
             return _context2.a(2);
         }
-      }, _callee2);
+      }, _callee2, null, [[2, 6]]);
     }));
     return _handleConnect.apply(this, arguments);
   }
@@ -60897,7 +60921,7 @@ function AdConnectionManager(_ref) {
   function _handleDisconnect() {
     _handleDisconnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(platformId) {
       var _AD_PLATFORMS$find2;
-      var label, _t2;
+      var label, _t3;
       return _regenerator().w(function (_context3) {
         while (1) switch (_context3.p = _context3.n) {
           case 0:
@@ -60930,8 +60954,8 @@ function AdConnectionManager(_ref) {
             break;
           case 3:
             _context3.p = 3;
-            _t2 = _context3.v;
-            setStatus(_t2.message, true);
+            _t3 = _context3.v;
+            setStatus(_t3.message, true);
           case 4:
             return _context3.a(2);
         }
@@ -60944,7 +60968,7 @@ function AdConnectionManager(_ref) {
   }
   function _handleImport() {
     _handleImport = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(platformId) {
-      var _AD_PLATFORMS$find3, _data$clicks, resp, data, label, _t3;
+      var _AD_PLATFORMS$find3, _data$clicks, resp, data, label, _t4;
       return _regenerator().w(function (_context4) {
         while (1) switch (_context4.p = _context4.n) {
           case 0:
@@ -60986,8 +61010,8 @@ function AdConnectionManager(_ref) {
             break;
           case 6:
             _context4.p = 6;
-            _t3 = _context4.v;
-            setStatus(_t3.message, true);
+            _t4 = _context4.v;
+            setStatus(_t4.message, true);
           case 7:
             _context4.p = 7;
             setImporting(null);
@@ -64063,13 +64087,53 @@ function MarketingReconciliationPanel(_ref23) {
       }
     }, _callee6, null, [[2, 6, 7, 8]]);
   })), [inputs.platform, fromDate, toDate, authToken, orgId, domainKey]);
-  var handleConnectPlatform = useCallback(function (platform) {
-    if (!orgId || !domainKey || domainKey === "combined view") return;
-    setConnectingPlatform(true);
-    var returnPath = window.location.pathname + window.location.search;
-    var url = ["".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-oauth-start"), "?platform=".concat(encodeURIComponent(platform)), "&domain=".concat(encodeURIComponent(domainKey)), "&returnPath=".concat(encodeURIComponent(returnPath)), "&org=".concat(encodeURIComponent(orgId))].join("");
-    window.location.href = url;
-  }, [authToken, orgId, domainKey]);
+  var handleConnectPlatform = useCallback(/*#__PURE__*/function () {
+    var _ref25 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7(platform) {
+      var returnPath, url, resp, data, _t3;
+      return _regenerator().w(function (_context7) {
+        while (1) switch (_context7.p = _context7.n) {
+          case 0:
+            if (!(!orgId || !domainKey || domainKey === "combined view")) {
+              _context7.n = 1;
+              break;
+            }
+            return _context7.a(2);
+          case 1:
+            setConnectingPlatform(true);
+            _context7.p = 2;
+            returnPath = window.location.pathname + window.location.search;
+            url = ["".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-oauth-start"), "?platform=".concat(encodeURIComponent(platform)), "&domain=".concat(encodeURIComponent(domainKey)), "&returnPath=".concat(encodeURIComponent(returnPath)), "&org=".concat(encodeURIComponent(orgId))].join("");
+            _context7.n = 3;
+            return fetch(url);
+          case 3:
+            resp = _context7.v;
+            _context7.n = 4;
+            return resp.json();
+          case 4:
+            data = _context7.v;
+            if (!(!resp.ok || !data.authUrl)) {
+              _context7.n = 5;
+              break;
+            }
+            setConnectingPlatform(false);
+            return _context7.a(2);
+          case 5:
+            window.location.href = data.authUrl;
+            _context7.n = 7;
+            break;
+          case 6:
+            _context7.p = 6;
+            _t3 = _context7.v;
+            setConnectingPlatform(false);
+          case 7:
+            return _context7.a(2);
+        }
+      }, _callee7, null, [[2, 6]]);
+    }));
+    return function (_x4) {
+      return _ref25.apply(this, arguments);
+    };
+  }(), [orgId, domainKey]);
   var selectedPlatform = useMemo(function () {
     return platformOrFallback(inputs.platform);
   }, [inputs.platform]);
@@ -79687,6 +79751,11 @@ var createRoot = window.ReactDOM.createRoot;
 var container = document.getElementById('app');
 var root = createRoot(container); // createRoot(container!) if you use TypeScript
 root.render(/*#__PURE__*/React.createElement(_src_App_js__WEBPACK_IMPORTED_MODULE_0__["default"], null));
+})();
+
+/******/ })()
+;
+//# sourceMappingURL=main.bundle.js.map_WEBPACK_IMPORTED_MODULE_0__["default"], null));
 })();
 
 /******/ })()

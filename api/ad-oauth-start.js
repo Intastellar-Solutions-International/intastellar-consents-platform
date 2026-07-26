@@ -94,11 +94,8 @@ export default async function handler(req, res) {
     const authUrl = buildAuthUrl(platform, state);
 
     if (!authUrl) {
-        const base = returnPath || "/settings/ad-connections";
-        return res.redirect(302,
-            `${base}?oauth_error=${encodeURIComponent(`${platform} OAuth credentials are not configured`)}&platform=${encodeURIComponent(platform)}`
-        );
+        return res.status(503).json({ error: `${platform} OAuth is not configured on this server` });
     }
 
-    return res.redirect(302, authUrl);
+    return res.status(200).json({ authUrl });
 }
