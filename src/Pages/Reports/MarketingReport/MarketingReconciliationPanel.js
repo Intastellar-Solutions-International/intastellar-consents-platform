@@ -1865,11 +1865,13 @@ export default function MarketingReconciliationPanel({
             const resp = await fetch(url);
             const data = await resp.json();
             if (!resp.ok || !data.authUrl) {
+                setSyncMsg({ text: data.error || "Could not start connection.", error: true });
                 setConnectingPlatform(false);
                 return;
             }
             window.location.href = data.authUrl;
-        } catch {
+        } catch (err) {
+            setSyncMsg({ text: err.message, error: true });
             setConnectingPlatform(false);
         }
     }, [orgId, domainKey]);

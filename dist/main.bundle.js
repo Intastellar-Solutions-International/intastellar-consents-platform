@@ -46255,6 +46255,10 @@ var reportsLinks = [{
   view: ["admin", "super-admin", "manager"],
   requiresTier: 'growth'
 }, {
+  name: "Ad Connections",
+  path: "/settings/ad-connections",
+  view: ["admin", "super-admin", "manager"]
+}, {
   name: "Blacklist IP",
   path: "/settings/blacklist-ip",
   view: ["admin", "super-admin", "manager"]
@@ -64115,6 +64119,10 @@ function MarketingReconciliationPanel(_ref23) {
               _context7.n = 5;
               break;
             }
+            setSyncMsg({
+              text: data.error || "Could not start connection.",
+              error: true
+            });
             setConnectingPlatform(false);
             return _context7.a(2);
           case 5:
@@ -64124,6 +64132,10 @@ function MarketingReconciliationPanel(_ref23) {
           case 6:
             _context7.p = 6;
             _t3 = _context7.v;
+            setSyncMsg({
+              text: _t3.message,
+              error: true
+            });
             setConnectingPlatform(false);
           case 7:
             return _context7.a(2);
@@ -79751,11 +79763,6 @@ var createRoot = window.ReactDOM.createRoot;
 var container = document.getElementById('app');
 var root = createRoot(container); // createRoot(container!) if you use TypeScript
 root.render(/*#__PURE__*/React.createElement(_src_App_js__WEBPACK_IMPORTED_MODULE_0__["default"], null));
-})();
-
-/******/ })()
-;
-//# sourceMappingURL=main.bundle.js.map_WEBPACK_IMPORTED_MODULE_0__["default"], null));
 })();
 
 /******/ })()
