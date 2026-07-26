@@ -1,12 +1,29 @@
 const path = require('path');
+const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
 /* const nodeExternals = require('webpack-node-externals'); */
 
+// Emit src/sw.js as a raw, un-bundled asset so the service worker context
+// doesn't break on webpack's CommonJS wrapper (exports / require).
+class CopySwPlugin {
+  apply(compiler) {
+    compiler.hooks.thisCompilation.tap('CopySwPlugin', (compilation) => {
+      compilation.hooks.processAssets.tap(
+        { name: 'CopySwPlugin', stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL },
+        () => {
+          const src = path.resolve(__dirname, 'src/sw.js');
+          const content = fs.readFileSync(src, 'utf8');
+          compilation.emitAsset('sw.js', new compiler.webpack.sources.RawSource(content));
+        }
+      );
+    });
+  }
+}
+
 const config = {
   entry: {
     intastellarAnalytics: path.resolve(__dirname, '/index.js'),
-    sw: { import: path.resolve(__dirname, 'src/sw.js'), filename: 'sw.js' },
   },
   output: {
     filename: '[name].bundle.js',
@@ -64,9 +81,8 @@ module.exports = (env, argv) => {
     config.mode = 'development';
     config.plugins = [
       dotenv,
-      new HtmlWebpackPlugin({
-        template: "./index.html",
-      })
+      new HtmlWebpackPlugin({ template: "./index.html" }),
+      new CopySwPlugin(),
     ]
   }
 
@@ -74,9 +90,8 @@ module.exports = (env, argv) => {
     config.mode = 'production';
     config.plugins = [
       dotenv,
-      new HtmlWebpackPlugin({
-        template: "./production.html",
-      })
+      new HtmlWebpackPlugin({ template: "./production.html" }),
+      new CopySwPlugin(),
     ]
   }
 
