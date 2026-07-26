@@ -6,6 +6,7 @@ const Dotenv = require('dotenv-webpack');
 const config = {
   entry: {
     intastellarAnalytics: path.resolve(__dirname, '/index.js'),
+    sw: { import: path.resolve(__dirname, 'src/sw.js'), filename: 'sw.js' },
   },
   output: {
     filename: '[name].bundle.js',

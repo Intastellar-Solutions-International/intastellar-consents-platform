@@ -1260,6 +1260,463 @@ const SYNC_SHORT_LABEL = {
     twitter_ads: "X / Twitter", ga4: "GA4",
 };
 
+/* ─── NotificationBell ───────────────────────────────────────────────────── */
+
+function NotificationBell({ domainKey, orgId, authToken }) {
+    const [open, setOpen] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [unread, setUnread] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const bellRef = React.useRef(null);
+
+    const fetchNotifications = useCallback(async () => {
+        if (!authToken || !orgId || !domainKey || domainKey === "combined view") return;
+        setLoading(true);
+        try {
+            const resp = await fetch(
+                `/api/ad-alerts?domain=${encodeURIComponent(domainKey)}&resource=notifications&limit=20`,
+                { headers: { Authorization: authToken, Organisation: String(orgId) } }
+            );
+            if (resp.ok) {
+                const data = await resp.json();
+                setNotifications(data.notifications || []);
+                setUnread(data.unread || 0);
+            }
+        } finally {
+            setLoading(false);
+        }
+    }, [domainKey, orgId, authToken]);
+
+    useEffect(() => { fetchNotifications(); }, [fetchNotifications]);
+
+    // Close on outside click
+    useEffect(() => {
+        if (!open) return;
+        function handler(e) {
+            if (bellRef.current && !bellRef.current.contains(e.target)) setOpen(false);
+        }
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, [open]);
+
+    async function markAllRead() {
+        await fetch("/api/ad-alerts", {
+            method: "POST",
+            headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
+            body: JSON.stringify({ domain: domainKey, action: "mark-read", id: "all" }),
+        }).catch(() => {});
+        setNotifications(prev => prev.map(n => ({ ...n, read_at: n.read_at || new Date().toISOString() })));
+        setUnread(0);
+    }
+
+    async function markRead(id) {
+        await fetch("/api/ad-alerts", {
+            method: "POST",
+            headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
+            body: JSON.stringify({ domain: domainKey, action: "mark-read", id }),
+        }).catch(() => {});
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, read_at: new Date().toISOString() } : n));
+        setUnread(prev => Math.max(0, prev - 1));
+    }
+
+    const toggleOpen = () => {
+        if (!open) fetchNotifications();
+        setOpen(v => !v);
+    };
+
+    const severityColors = { critical: "#ef4444", warning: "#f59e0b", info: "#3b82f6" };
+    const ruleLabels = {
+        visibility_low: "Low visibility",
+        dark_traffic_high: "Dark traffic",
+        banner_reach_low: "Banner reach",
+        cost_high: "High cost",
+    };
+
+    return (
+        <div className="notif-bell" ref={bellRef}>
+            <button
+                className={`notif-bell__btn${unread > 0 ? " notif-bell__btn--active" : ""}`}
+                onClick={toggleOpen}
+                aria-label={`Alerts${unread > 0 ? ` — ${unread} unread` : ""}`}
+                title="Analytics blind-spot alerts"
+            >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                {unread > 0 && <span className="notif-bell__badge">{unread > 9 ? "9+" : unread}</span>}
+            </button>
+
+            {open && (
+                <div className="notif-dropdown">
+                    <div className="notif-dropdown__header">
+                        <span className="notif-dropdown__title">Alerts</span>
+                        {unread > 0 && (
+                            <button className="notif-dropdown__mark-all" onClick={markAllRead}>
+                                Mark all read
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="notif-dropdown__list">
+                        {loading && notifications.length === 0 && (
+                            <p className="notif-dropdown__empty">Loading…</p>
+                        )}
+                        {!loading && notifications.length === 0 && (
+                            <p className="notif-dropdown__empty">
+                                No alerts yet. Configure alert rules to get notified when analytics visibility drops.
+                            </p>
+                        )}
+                        {notifications.map(n => (
+                            <div
+                                key={n.id}
+                                className={`notif-item${!n.read_at ? " notif-item--unread" : ""}`}
+                                style={{ borderLeftColor: severityColors[n.severity] || "#6366f1" }}
+                                onClick={() => !n.read_at && markRead(n.id)}
+                            >
+                                <div className="notif-item__meta">
+                                    <span className="notif-item__type" style={{ color: severityColors[n.severity] }}>
+                                        {ruleLabels[n.rule_type] || n.rule_type}
+                                    </span>
+                                    <span className="notif-item__time">
+                                        {new Date(n.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                                    </span>
+                                </div>
+                                <p className="notif-item__title">{n.title}</p>
+                                {!n.read_at && <span className="notif-item__dot" aria-label="unread" />}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+/* ─── AlertSettingsModal ─────────────────────────────────────────────────── */
+
+const RULE_DEFS = [
+    { type: "visibility_low",    label: "Visibility below",      unit: "percent",         defaultThreshold: 65, hint: "Alert when analytics-visible consent % drops below this value." },
+    { type: "dark_traffic_high", label: "Untagged traffic above", unit: "percent",         defaultThreshold: 40, hint: "Alert when utm_source is missing for more than this % of consents." },
+    { type: "banner_reach_low",  label: "Banner reach below",    unit: "percent",         defaultThreshold: 40, hint: "Alert when fewer than this % of ad clicks trigger a banner interaction." },
+    { type: "cost_high",         label: "Cost per visible above", unit: "currency_amount", defaultThreshold: null, hint: "Alert when cost per analytics-visible consent exceeds this amount." },
+];
+
+function AlertSettingsModal({ domainKey, orgId, authToken, currency, onClose }) {
+    const [rules, setRules] = useState([]);
+    const [vapidKey, setVapidKey] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState({});
+    const [pushSubscription, setPushSubscription] = useState(null);
+    const [pushStatus, setPushStatus] = useState("idle"); // idle | subscribing | subscribed | unsupported
+    const [email, setEmail] = useState("");
+
+    useEffect(() => {
+        if (!authToken || !orgId || !domainKey) return;
+        fetch(`/api/ad-alerts?domain=${encodeURIComponent(domainKey)}&resource=rules`, {
+            headers: { Authorization: authToken, Organisation: String(orgId) },
+        })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (!data) return;
+                setRules(data.rules || []);
+                setVapidKey(data.vapidPublicKey || null);
+                const emailRule = (data.rules || []).find(r => r.email_address);
+                if (emailRule) setEmail(emailRule.email_address || "");
+            })
+            .finally(() => setLoading(false));
+
+        // Check existing push subscription
+        if ("serviceWorker" in navigator && "PushManager" in window) {
+            navigator.serviceWorker.ready.then(reg => reg.pushManager.getSubscription())
+                .then(sub => { if (sub) { setPushSubscription(sub); setPushStatus("subscribed"); } })
+                .catch(() => {});
+        } else {
+            setPushStatus("unsupported");
+        }
+    }, [domainKey, orgId, authToken]);
+
+    async function saveRule(ruleType, updates) {
+        setSaving(p => ({ ...p, [ruleType]: true }));
+        try {
+            const rule = rules.find(r => r.rule_type === ruleType) || {};
+            const def  = RULE_DEFS.find(d => d.type === ruleType);
+            const payload = {
+                domain: domainKey,
+                action: "save-rule",
+                rule_type: ruleType,
+                threshold: updates.threshold ?? rule.threshold ?? def?.defaultThreshold,
+                threshold_unit: def?.unit || "percent",
+                currency: ruleType === "cost_high" ? (updates.currency || rule.currency || currency) : null,
+                enabled: updates.enabled ?? rule.enabled ?? false,
+                notify_email: updates.notify_email ?? rule.notify_email ?? false,
+                notify_push: updates.notify_push ?? rule.notify_push ?? false,
+                email_address: updates.email_address ?? rule.email_address ?? email || null,
+            };
+            const resp = await fetch("/api/ad-alerts", {
+                method: "POST",
+                headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                setRules(prev => {
+                    const idx = prev.findIndex(r => r.rule_type === ruleType);
+                    const next = [...prev];
+                    if (idx >= 0) next[idx] = data.rule;
+                    else next.push(data.rule);
+                    return next;
+                });
+            }
+        } finally {
+            setSaving(p => ({ ...p, [ruleType]: false }));
+        }
+    }
+
+    async function togglePush() {
+        if (!vapidKey) return;
+        if (pushStatus === "subscribed" && pushSubscription) {
+            setPushStatus("idle");
+            await pushSubscription.unsubscribe().catch(() => {});
+            await fetch("/api/ad-alerts", {
+                method: "POST",
+                headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
+                body: JSON.stringify({ domain: domainKey, action: "unsubscribe-push", subscription: { endpoint: pushSubscription.endpoint } }),
+            }).catch(() => {});
+            setPushSubscription(null);
+            return;
+        }
+        setPushStatus("subscribing");
+        try {
+            const perm = await Notification.requestPermission();
+            if (perm !== "granted") { setPushStatus("idle"); return; }
+            const reg = await navigator.serviceWorker.ready;
+            const sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: vapidKey,
+            });
+            setPushSubscription(sub);
+            await fetch("/api/ad-alerts", {
+                method: "POST",
+                headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
+                body: JSON.stringify({ domain: domainKey, action: "subscribe-push", subscription: sub.toJSON() }),
+            });
+            setPushStatus("subscribed");
+        } catch (err) {
+            console.error("[push]", err);
+            setPushStatus("idle");
+        }
+    }
+
+    const ruleMap = Object.fromEntries(rules.map(r => [r.rule_type, r]));
+
+    return (
+        <div className="alert-settings-backdrop" onClick={onClose}>
+            <div className="alert-settings-modal" onClick={e => e.stopPropagation()}>
+                <div className="alert-settings-modal__header">
+                    <div>
+                        <h2 className="alert-settings-modal__title">Analytics blind-spot alerts</h2>
+                        <p className="alert-settings-modal__sub">
+                            Get notified when visibility, dark traffic, banner reach, or cost metrics cross your thresholds.
+                        </p>
+                    </div>
+                    <button className="alert-settings-modal__close" onClick={onClose} aria-label="Close">×</button>
+                </div>
+
+                {loading ? (
+                    <p style={{ color: "rgba(160,170,195,0.7)", padding: "24px 0" }}>Loading…</p>
+                ) : (
+                    <>
+                        {/* Notification channels */}
+                        <div className="alert-settings-channels">
+                            <h3 className="alert-settings-channels__title">Notification channels</h3>
+                            <div className="alert-settings-channels__row">
+                                <div className="alert-settings-channels__item">
+                                    <div className="alert-settings-channels__icon">✉</div>
+                                    <div className="alert-settings-channels__info">
+                                        <span className="alert-settings-channels__name">Email</span>
+                                        <input
+                                            type="email"
+                                            className="alert-settings-email-input"
+                                            placeholder="your@email.com"
+                                            value={email}
+                                            onChange={e => setEmail(e.target.value)}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="alert-settings-channels__item">
+                                    <div className="alert-settings-channels__icon">🔔</div>
+                                    <div className="alert-settings-channels__info">
+                                        <span className="alert-settings-channels__name">Push notifications</span>
+                                        {pushStatus === "unsupported" ? (
+                                            <span className="alert-settings-channels__status">Not supported in this browser</span>
+                                        ) : !vapidKey ? (
+                                            <span className="alert-settings-channels__status">Requires VAPID keys (set in Vercel env)</span>
+                                        ) : (
+                                            <button
+                                                className={`alert-settings-push-btn${pushStatus === "subscribed" ? " alert-settings-push-btn--active" : ""}`}
+                                                onClick={togglePush}
+                                                disabled={pushStatus === "subscribing"}
+                                            >
+                                                {pushStatus === "subscribing" ? "Enabling…"
+                                                    : pushStatus === "subscribed" ? "✓ Enabled — click to disable"
+                                                    : "Enable push notifications"}
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Alert rules */}
+                        <h3 className="alert-settings-rules__title">Alert rules</h3>
+                        <div className="alert-settings-rules">
+                            {RULE_DEFS.map(def => {
+                                const rule = ruleMap[def.type] || {};
+                                const enabled = rule.enabled ?? false;
+                                const threshold = rule.threshold ?? def.defaultThreshold ?? "";
+                                const isCost = def.unit === "currency_amount";
+                                const isSaving = saving[def.type];
+
+                                return (
+                                    <div key={def.type} className={`alert-rule${enabled ? " alert-rule--enabled" : ""}`}>
+                                        <div className="alert-rule__top">
+                                            <label className="alert-rule__toggle">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={enabled}
+                                                    onChange={e => saveRule(def.type, { enabled: e.target.checked, email_address: email || null })}
+                                                    disabled={isSaving}
+                                                />
+                                                <span className="alert-rule__toggle-label">{def.label}</span>
+                                            </label>
+                                            <div className="alert-rule__threshold">
+                                                <input
+                                                    type="number"
+                                                    className="alert-rule__threshold-input"
+                                                    value={threshold}
+                                                    min="0"
+                                                    step={isCost ? "0.01" : "1"}
+                                                    placeholder={isCost ? "e.g. 5.00" : "e.g. 65"}
+                                                    onChange={e => saveRule(def.type, { threshold: e.target.value, email_address: email || null })}
+                                                    disabled={!enabled || isSaving}
+                                                />
+                                                <span className="alert-rule__unit">
+                                                    {isCost ? (currency || "EUR") : "%"}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <p className="alert-rule__hint">{def.hint}</p>
+                                        {enabled && (
+                                            <div className="alert-rule__channels">
+                                                <label className="alert-rule__channel-toggle">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={rule.notify_email ?? false}
+                                                        onChange={e => saveRule(def.type, { notify_email: e.target.checked, email_address: email || null })}
+                                                        disabled={isSaving || !email}
+                                                    />
+                                                    Email{!email && <span className="alert-rule__channel-note"> (enter email above)</span>}
+                                                </label>
+                                                <label className="alert-rule__channel-toggle">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={rule.notify_push ?? false}
+                                                        onChange={e => saveRule(def.type, { notify_push: e.target.checked, email_address: email || null })}
+                                                        disabled={isSaving || pushStatus !== "subscribed"}
+                                                    />
+                                                    Push{pushStatus !== "subscribed" && <span className="alert-rule__channel-note"> (subscribe above)</span>}
+                                                </label>
+                                                <span className="alert-rule__channel-note">In-app always on</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+}
+
+/* ─── CostByChannelTable ─────────────────────────────────────────────────── */
+
+function CostByChannelTable({ rows, currency }) {
+    if (!rows || rows.length === 0) return null;
+    const hasSpend = rows.some(r => r.spend > 0 && r.costPerVisible != null);
+    if (!hasSpend) return null;
+
+    const sym = currency === "USD" ? "$" : currency === "GBP" ? "£" : currency === "CHF" ? "CHF " : "€";
+    const avgCost = (() => {
+        const totalSpend   = rows.reduce((s, r) => s + (r.spend || 0), 0);
+        const totalVisible = rows.reduce((s, r) => s + (r.costPerVisible != null ? r.visible : 0), 0);
+        return totalVisible > 0 ? totalSpend / totalVisible : null;
+    })();
+
+    return (
+        <div className="cost-by-channel">
+            <h3 className="recon-card__title" style={{ marginBottom: "14px" }}>Cost per visible consent — by platform</h3>
+            <div className="cost-by-channel__table-wrap">
+                <table className="cost-by-channel__table">
+                    <thead>
+                        <tr>
+                            <th>Platform</th>
+                            <th className="num">Spend</th>
+                            <th className="num">Visible</th>
+                            <th className="num">Invisible gap</th>
+                            <th className="num">Visibility</th>
+                            <th className="num cost-col">Cost / visible</th>
+                            <th className="num">vs avg</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows.map(r => {
+                            const cost = r.costPerVisible;
+                            const visPct = r.visibilityPct;
+                            const vsAvg = cost != null && avgCost != null ? ((cost - avgCost) / avgCost) * 100 : null;
+                            const costColor = cost == null ? "" : cost < (avgCost || Infinity) ? "rgba(74,222,128,0.9)" : cost > (avgCost || 0) * 1.2 ? "rgba(248,113,113,0.9)" : "rgba(252,211,77,0.9)";
+                            const shortName = r.platform.label.replace(" (Facebook / Instagram)", "").replace(" Ads", "");
+                            return (
+                                <tr key={r.platform.id}>
+                                    <td>
+                                        <span className="cost-by-channel__dot" style={{ background: PLATFORM_COLORS[r.platform.id] || "#888" }} />
+                                        {shortName}
+                                    </td>
+                                    <td className="num">{r.spend > 0 ? `${sym}${r.spend.toLocaleString("de-DE", { minimumFractionDigits: 2 })}` : "—"}</td>
+                                    <td className="num">{formatInt(r.visible)}</td>
+                                    <td className="num">{formatInt(r.invisible)}</td>
+                                    <td className={`num${visPct != null ? visPct >= 65 ? " cost-by-channel__good" : visPct < 40 ? " cost-by-channel__bad" : " cost-by-channel__warn" : ""}`}>
+                                        {visPct != null ? formatPct(visPct) : "—"}
+                                    </td>
+                                    <td className="num cost-col" style={{ color: costColor, fontWeight: 700, fontSize: "1.05rem" }}>
+                                        {cost != null ? `${sym}${cost.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}
+                                    </td>
+                                    <td className={`num${vsAvg != null ? vsAvg < 0 ? " cost-by-channel__good" : vsAvg > 20 ? " cost-by-channel__bad" : "" : ""}`}>
+                                        {vsAvg != null ? `${vsAvg > 0 ? "+" : ""}${vsAvg.toFixed(0)}%` : "—"}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                        {rows.length > 1 && avgCost != null && (
+                            <tr className="cost-by-channel__avg-row">
+                                <td><em>Average</em></td>
+                                <td className="num">—</td>
+                                <td className="num">—</td>
+                                <td className="num">—</td>
+                                <td className="num">—</td>
+                                <td className="num cost-col" style={{ fontWeight: 700 }}>{`${sym}${avgCost.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</td>
+                                <td className="num">baseline</td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}
+
 export default function MarketingReconciliationPanel({
     scopeLabel,
     scopeKey,
@@ -1284,6 +1741,7 @@ export default function MarketingReconciliationPanel({
     const [connections, setConnections] = useState([]);
     const [syncing, setSyncing] = useState(false);
     const [syncMsg, setSyncMsg] = useState(null);
+    const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
 
     /*
      * Load inputs whenever scope changes; load snapshots whenever
@@ -1336,6 +1794,13 @@ export default function MarketingReconciliationPanel({
         const t = window.setTimeout(() => setSavedFlash(false), 2200);
         return () => window.clearTimeout(t);
     }, [savedFlash]);
+
+    // Register service worker for push notifications
+    useEffect(() => {
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js").catch(() => {});
+        }
+    }, []);
 
     // Keep an up-to-date list of which platforms have active connections for this domain
     useEffect(() => {
@@ -1794,6 +2259,20 @@ export default function MarketingReconciliationPanel({
                         <button type="button" className="marketing-reconciliation__clear" onClick={handleClear}>
                             Clear
                         </button>
+                        <button
+                            type="button"
+                            className="recon-alerts-settings-btn"
+                            onClick={() => setAlertSettingsOpen(true)}
+                            title="Configure analytics blind-spot alerts"
+                            aria-label="Alert settings"
+                        >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            Alerts
+                        </button>
+                        <NotificationBell domainKey={domainKey} orgId={orgId} authToken={authToken} />
                     </div>
                 </div>
                 {syncMsg && (
@@ -1968,6 +2447,13 @@ export default function MarketingReconciliationPanel({
                 {comparisonRows.length >= 2 ? <PlatformBarsChart rows={comparisonRows} currency={inputs.currency} /> : null}
             </div>
 
+            {/* ── Cost per visible by channel ──────────────────────────────── */}
+            {comparisonRows.length >= 1 && (
+                <div className="recon-card">
+                    <CostByChannelTable rows={comparisonRows} currency={inputs.currency} />
+                </div>
+            )}
+
             {/* ── Cost projection ──────────────────────────────────────────── */}
             {hasSpend && hasClicks && numVisible > 0 ? (
                 <ProjectionTable numConsents={numConsents} numVisible={numVisible} spend={spendNum} currency={inputs.currency} />
@@ -1975,6 +2461,17 @@ export default function MarketingReconciliationPanel({
 
             {/* ── Performance timeline ─────────────────────────────────────── */}
             {snapshots.length >= 2 ? <SnapshotComboChart snapshots={snapshots} /> : null}
+
+            {/* ── Alert settings modal ─────────────────────────────────────── */}
+            {alertSettingsOpen && (
+                <AlertSettingsModal
+                    domainKey={domainKey}
+                    orgId={orgId}
+                    authToken={authToken}
+                    currency={inputs.currency}
+                    onClose={() => setAlertSettingsOpen(false)}
+                />
+            )}
 
             {/* ── Snapshots accordion ──────────────────────────────────────── */}
             <div className="marketing-reconciliation__snapshots">

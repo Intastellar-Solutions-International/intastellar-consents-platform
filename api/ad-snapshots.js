@@ -12,6 +12,8 @@
 import pkg from "pg";
 const { Pool } = pkg;
 
+import { checkAndFireAlerts } from "./_alert-check.js";
+
 let pool;
 function getPool() {
     if (!pool) {
@@ -193,6 +195,10 @@ export default async function handler(req, res) {
                     s.savedAt ? new Date(s.savedAt) : new Date(),
                 ]
             );
+
+            // Fire alert check non-blocking
+            checkAndFireAlerts(db, { orgId: organisationId, domain, snapshot: { ...s, id } })
+                .catch(err => console.error("[ad-snapshots] alert check:", err.message));
 
             return res.status(201).json({ ok: true, id });
         }
