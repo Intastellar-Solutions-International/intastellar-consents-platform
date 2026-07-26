@@ -15,11 +15,12 @@ function formatDate(iso) {
     } catch { return ""; }
 }
 
-export default function AdConnectionManager({ domain, orgId, authToken, fromDate, toDate, onImport }) {
+export default function AdConnectionManager({ domain, orgId, authToken, fromDate, toDate, onImport, onSelectAccount }) {
     const [connections, setConnections] = useState([]);
     const [loadingConnections, setLoadingConnections] = useState(false);
     const [importing, setImporting] = useState(null);
     const [connecting, setConnecting] = useState(null);
+    const [reselecting, setReselecting] = useState(null);
     const [statusMsg, setStatusMsg] = useState(null);
     const [statusIsError, setStatusIsError] = useState(false);
 
@@ -99,6 +100,30 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
         }
     }
 
+    async function handleReselect(platformId) {
+        setReselecting(platformId);
+        try {
+            const resp = await fetch(
+                `${ScannerHost}/api/ad-account-reselect?platform=${encodeURIComponent(platformId)}&domain=${encodeURIComponent(domain)}&org=${encodeURIComponent(orgId)}`,
+                { headers: { Authorization: authToken, Organisation: String(orgId) } }
+            );
+            const data = await resp.json();
+            if (!resp.ok) {
+                setStatus(data.error || "Could not load accounts.", true);
+                return;
+            }
+            if (!data.pendingId) {
+                setStatus(data.message || "No accounts found — the token may be expired. Try reconnecting.", true);
+                return;
+            }
+            onSelectAccount?.(platformId, data.pendingId, domain);
+        } catch (err) {
+            setStatus(err.message, true);
+        } finally {
+            setReselecting(null);
+        }
+    }
+
     async function handleDisconnect(platformId) {
         const label = AD_PLATFORMS.find(p => p.id === platformId)?.label || platformId;
         if (!window.confirm(`Disconnect ${label}?\nThis removes the connection from this domain. You can reconnect at any time.`)) return;
@@ -167,14 +192,18 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                 <div className="ad-connection-manager__list">
                     {AD_PLATFORMS.map(platform => {
                         const conn = connMap[platform.id];
-                        const isConnected = !!conn;
+                        const hasToken = conn?.has_token;
+                        const hasAccount = !!conn?.account_id;
+                        const isFullyConnected = hasToken && hasAccount;
+                        const needsAccountSelection = hasToken && !hasAccount;
                         const isImporting = importing === platform.id;
                         const isConnecting = connecting === platform.id;
+                        const isReselecting = reselecting === platform.id;
 
                         return (
                             <div
                                 key={platform.id}
-                                className={`ad-connection-card${isConnected ? " ad-connection-card--connected" : ""}`}
+                                className={`ad-connection-card${isFullyConnected ? " ad-connection-card--connected" : needsAccountSelection ? " ad-connection-card--pending" : ""}`}
                             >
                                 <div
                                     className="ad-connection-card__icon"
@@ -186,10 +215,14 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
 
                                 <div className="ad-connection-card__info">
                                     <span className="ad-connection-card__name">{platform.label}</span>
-                                    {isConnected ? (
+                                    {isFullyConnected ? (
                                         <span className="ad-connection-card__meta">
                                             {conn.account_label || "Connected"}
                                             {conn.updated_at ? ` · synced ${formatDate(conn.updated_at)}` : ""}
+                                        </span>
+                                    ) : needsAccountSelection ? (
+                                        <span className="ad-connection-card__meta ad-connection-card__meta--dim">
+                                            Authorized — select an ad account to finish
                                         </span>
                                     ) : (
                                         <span className="ad-connection-card__meta ad-connection-card__meta--dim">
@@ -199,7 +232,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                 </div>
 
                                 <div className="ad-connection-card__actions">
-                                    {isConnected ? (
+                                    {isFullyConnected ? (
                                         <>
                                             <button
                                                 className="ad-connection-card__btn ad-connection-card__btn--import"
@@ -208,6 +241,22 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                                 title={`Import ${fromDate}–${toDate} data from ${platform.label}`}
                                             >
                                                 {isImporting ? "Importing…" : "Import data"}
+                                            </button>
+                                            <button
+                                                className="ad-connection-card__btn ad-connection-card__btn--disconnect"
+                                                onClick={() => handleDisconnect(platform.id)}
+                                            >
+                                                Disconnect
+                                            </button>
+                                        </>
+                                    ) : needsAccountSelection ? (
+                                        <>
+                                            <button
+                                                className="ad-connection-card__btn ad-connection-card__btn--connect"
+                                                onClick={() => handleReselect(platform.id)}
+                                                disabled={isReselecting}
+                                            >
+                                                {isReselecting ? "Loading…" : "Select account"}
                                             </button>
                                             <button
                                                 className="ad-connection-card__btn ad-connection-card__btn--disconnect"

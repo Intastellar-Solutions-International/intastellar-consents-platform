@@ -255,6 +255,12 @@ export default function AdConnectionsSettings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    function handleSelectAccount(platform, pendingId, domain) {
+        setPendingId(pendingId);
+        setPendingPlatform(platform);
+        setPendingDomain(domain || selectedDomain);
+    }
+
     function handlePickerDone(platform, accountName) {
         const platformLabels = {
             google_ads: "Google Ads", meta_ads: "Meta Ads",

@@ -110,12 +110,14 @@ export default async function handler(req, res) {
         const { domain } = req.query;
         const result = domain
             ? await db.query(
-                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at
+                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at,
+                        (access_token IS NOT NULL) AS has_token
                  FROM ad_platform_connections WHERE organisation_id=$1 AND domain=$2 ORDER BY platform`,
                 [orgId, domain]
             )
             : await db.query(
-                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at
+                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at,
+                        (access_token IS NOT NULL) AS has_token
                  FROM ad_platform_connections WHERE organisation_id=$1 ORDER BY domain, platform`,
                 [orgId]
             );
