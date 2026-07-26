@@ -175,10 +175,14 @@ async function fetchGoogleAds(conn, fromDate, toDate) {
     const resp = await gadsPost(query);
 
     if (!resp.ok) {
-        const errBody = await resp.json().catch(() => ({}));
+        const rawText = await resp.text().catch(() => "");
+        let errBody = {};
+        try { errBody = JSON.parse(rawText); } catch {}
+        console.error(`[ad-data-fetch] Google Ads ${resp.status} for customer ${customerId}:`, rawText.slice(0, 500));
         const msg = errBody?.error?.message
             || errBody?.error?.details?.[0]?.errors?.[0]?.message
-            || `Google Ads API error (${resp.status})`;
+            || errBody?.errors?.[0]?.message
+            || `Google Ads API error (${resp.status}): ${rawText.slice(0, 200)}`;
         throw new Error(msg);
     }
 
