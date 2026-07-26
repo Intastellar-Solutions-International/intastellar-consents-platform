@@ -1755,6 +1755,8 @@ export default function MarketingReconciliationPanel({
     const [syncMsg, setSyncMsg] = useState(null);
     const [ga4Sessions, setGa4Sessions] = useState(null);
     const [ga4Syncing, setGa4Syncing] = useState(false);
+    const [ga4DailyRows, setGa4DailyRows] = useState(null);       // [{ date, sessions }]
+    const [ga4PlatformBreakdown, setGa4PlatformBreakdown] = useState(null); // [{ platform, sessions }]
     const autoFetchedRef = React.useRef(new Set());
     const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
     const [connectingPlatform, setConnectingPlatform] = useState(false);
@@ -1887,21 +1889,27 @@ export default function MarketingReconciliationPanel({
             .finally(() => setSyncing(false));
     }, [scopeKey, scopeLabel, connections, fromDate, toDate, authToken, orgId, domainKey]);
 
-    // Auto-fetch GA4 sessions whenever the date range changes and GA4 is connected
+    // Auto-fetch GA4 sessions + daily chart data whenever the date range changes and GA4 is connected
     useEffect(() => {
         const ga4Conn = connections.find(c => c.platform === "google_analytics" && c.account_id);
         if (!ga4Conn || !fromDate || !toDate || !authToken || !orgId || !domainKey || domainKey === "combined view") {
             return;
         }
         setGa4Syncing(true);
-        fetch(
-            `${ScannerHost}/api/ad-data-fetch?platform=google_analytics&domain=${encodeURIComponent(domainKey)}&fromDate=${fromDate}&toDate=${toDate}`,
-            { headers: { Authorization: authToken, Organisation: String(orgId) } }
-        )
-            .then(r => r.ok ? r.json() : null)
-            .then(data => { if (data?.sessions != null) setGa4Sessions(data.sessions); })
-            .catch(() => {})
-            .finally(() => setGa4Syncing(false));
+        const qs = `platform=google_analytics&domain=${encodeURIComponent(domainKey)}&fromDate=${fromDate}&toDate=${toDate}`;
+        const headers = { Authorization: authToken, Organisation: String(orgId) };
+
+        // Aggregate total + daily breakdown + platform breakdown — run in parallel
+        Promise.all([
+            fetch(`${ScannerHost}/api/ad-data-fetch?${qs}`, { headers })
+                .then(r => r.ok ? r.json() : null).catch(() => null),
+            fetch(`${ScannerHost}/api/ad-daily-data?${qs}`, { headers })
+                .then(r => r.ok ? r.json() : null).catch(() => null),
+        ]).then(([aggregate, daily]) => {
+            if (aggregate?.sessions != null) setGa4Sessions(aggregate.sessions);
+            if (daily?.rows?.length)         setGa4DailyRows(daily.rows);
+            if (daily?.platformBreakdown)    setGa4PlatformBreakdown(daily.platformBreakdown);
+        }).finally(() => setGa4Syncing(false));
     }, [connections, fromDate, toDate, authToken, orgId, domainKey]);
 
     const handleSync = useCallback(async () => {

@@ -122,6 +122,10 @@
     "api/cron-ad-sync.js": {
       "memory": 256,
       "maxDuration": 90
+    },
+    "api/ad-daily-data.js": {
+      "memory": 256,
+      "maxDuration": 15
     }
   }
 }
