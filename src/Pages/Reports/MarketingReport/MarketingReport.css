@@ -2167,6 +2167,69 @@
     color: rgba(220, 160, 145, 0.9);
 }
 
+/* ── Manual Customer ID input ──────────────────────────────── */
+.ad-manual-input-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.ad-manual-input {
+    background: #1a1d2e;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 28px 32px;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.ad-manual-input__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(220, 225, 235, 0.95);
+    margin: 0;
+}
+
+.ad-manual-input__hint {
+    font-size: 0.82rem;
+    color: rgba(160, 165, 180, 0.8);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.ad-manual-input__field {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: rgba(220, 225, 235, 0.95);
+    font-size: 0.9rem;
+    width: 100%;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.ad-manual-input__field:focus {
+    border-color: rgba(100, 140, 255, 0.5);
+}
+
+.ad-manual-input__field::placeholder {
+    color: rgba(160, 165, 180, 0.45);
+}
+
+.ad-manual-input__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
 /* ── Inputs bar ────────────────────────────────────────────── */
 .recon-inputs-bar {
     display: flex;

@@ -21,6 +21,9 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
     const [importing, setImporting] = useState(null);
     const [connecting, setConnecting] = useState(null);
     const [reselecting, setReselecting] = useState(null);
+    const [manualInput, setManualInput] = useState(null); // { platformId } | null
+    const [manualId, setManualId] = useState("");
+    const [savingManual, setSavingManual] = useState(false);
     const [statusMsg, setStatusMsg] = useState(null);
     const [statusIsError, setStatusIsError] = useState(false);
 
@@ -113,7 +116,8 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                 return;
             }
             if (!data.pendingId) {
-                setStatus(data.message || "No accounts found — the token may be expired. Try reconnecting.", true);
+                // Google returned no accounts (Basic API access level) — fall back to manual ID entry
+                setManualInput({ platformId });
                 return;
             }
             onSelectAccount?.(platformId, data.pendingId, domain);
@@ -121,6 +125,37 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
             setStatus(err.message, true);
         } finally {
             setReselecting(null);
+        }
+    }
+
+    async function handleManualSave() {
+        if (!manualId.trim() || !manualInput) return;
+        setSavingManual(true);
+        try {
+            const resp = await fetch(`${ScannerHost}/api/ad-account-reselect`, {
+                method: "POST",
+                headers: {
+                    Authorization: authToken,
+                    Organisation: String(orgId),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    platform: manualInput.platformId,
+                    domain,
+                    accountId: manualId.trim(),
+                    accountLabel: manualId.trim(),
+                }),
+            });
+            const data = await resp.json();
+            if (!resp.ok) { setStatus(data.error || "Could not save account.", true); return; }
+            setManualInput(null);
+            setManualId("");
+            setStatus("Account connected.");
+            fetchConnections();
+        } catch (err) {
+            setStatus(err.message, true);
+        } finally {
+            setSavingManual(false);
         }
     }
 
@@ -280,6 +315,42 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                     })}
                 </div>
             )}
+        {manualInput && (
+            <div className="ad-manual-input-backdrop">
+                <div className="ad-manual-input">
+                    <h4 className="ad-manual-input__title">Enter Google Ads Customer ID</h4>
+                    <p className="ad-manual-input__hint">
+                        Find it in Google Ads under the account name — 10 digits, format{" "}
+                        <strong>XXX-XXX-XXXX</strong>. Dashes are optional.
+                    </p>
+                    <input
+                        className="ad-manual-input__field"
+                        type="text"
+                        value={manualId}
+                        onChange={e => setManualId(e.target.value)}
+                        placeholder="e.g. 123-456-7890"
+                        onKeyDown={e => e.key === "Enter" && handleManualSave()}
+                        autoFocus
+                    />
+                    <div className="ad-manual-input__actions">
+                        <button
+                            className="ad-connection-card__btn ad-connection-card__btn--disconnect"
+                            onClick={() => { setManualInput(null); setManualId(""); }}
+                            disabled={savingManual}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="ad-connection-card__btn ad-connection-card__btn--connect"
+                            onClick={handleManualSave}
+                            disabled={!manualId.trim() || savingManual}
+                        >
+                            {savingManual ? "Connecting…" : "Connect"}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
         </div>
     );
 }

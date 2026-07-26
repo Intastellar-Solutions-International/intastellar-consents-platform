@@ -56,7 +56,7 @@ function setCors(req, res) {
     const origin = req.headers.origin || "";
     if (ALLOWED_ORIGINS.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
@@ -215,6 +215,57 @@ export default async function handler(req, res) {
         req.headers.organisation || req.headers.organization || req.query.org || "0", 10
     );
     if (!orgId) return res.status(400).json({ error: "Organisation header or ?org param required" });
+
+    if (req.method === "POST") {
+        const { platform, domain, accountId, accountLabel } = req.body || {};
+        if (!platform || !domain || !accountId) {
+            return res.status(400).json({ error: "platform, domain, and accountId are required" });
+        }
+
+        let tokenRow = null;
+        const { rows: fr } = await db.query(
+            `SELECT access_token, refresh_token, token_expires_at, scopes
+             FROM ad_platform_connections
+             WHERE organisation_id=$1 AND domain=$2 AND platform=$3 AND access_token IS NOT NULL`,
+            [orgId, domain, platform]
+        );
+        if (fr.length) {
+            tokenRow = fr[0];
+        } else {
+            const { rows: pr } = await db.query(
+                `SELECT access_token, refresh_token, token_expires_at, scopes
+                 FROM pending_ad_connections
+                 WHERE organisation_id=$1 AND domain=$2 AND platform=$3
+                 ORDER BY created_at DESC LIMIT 1`,
+                [orgId, domain, platform]
+            );
+            if (pr.length) tokenRow = pr[0];
+        }
+
+        if (!tokenRow) {
+            return res.status(404).json({ error: "No stored token. Please reconnect via OAuth first." });
+        }
+
+        const cleanId = String(accountId).replace(/\D/g, "");
+        await db.query(`
+            INSERT INTO ad_platform_connections
+                (organisation_id, domain, platform, account_id, account_label,
+                 access_token, refresh_token, token_expires_at, scopes)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+            ON CONFLICT (organisation_id, domain, platform) DO UPDATE SET
+                account_id        = EXCLUDED.account_id,
+                account_label     = EXCLUDED.account_label,
+                access_token      = EXCLUDED.access_token,
+                refresh_token     = COALESCE(EXCLUDED.refresh_token, ad_platform_connections.refresh_token),
+                token_expires_at  = EXCLUDED.token_expires_at,
+                scopes            = EXCLUDED.scopes,
+                updated_at        = NOW()
+        `, [orgId, domain, platform, cleanId, accountLabel || cleanId,
+            tokenRow.access_token, tokenRow.refresh_token,
+            tokenRow.token_expires_at, tokenRow.scopes]);
+
+        return res.status(200).json({ ok: true, accountId: cleanId });
+    }
 
     if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
