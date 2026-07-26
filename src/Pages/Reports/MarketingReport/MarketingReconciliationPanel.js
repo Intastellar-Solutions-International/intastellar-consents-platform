@@ -1849,26 +1849,20 @@ export default function MarketingReconciliationPanel({
         }
     }, [inputs.platform, fromDate, toDate, authToken, orgId, domainKey]);
 
-    const handleConnectPlatform = useCallback(async (platform) => {
+    const handleConnectPlatform = useCallback((platform) => {
         if (!authToken || !orgId || !domainKey || domainKey === "combined view") return;
         setConnectingPlatform(true);
-        try {
-            const returnPath = window.location.pathname + window.location.search;
-            const resp = await fetch(
-                `/api/ad-oauth-start?platform=${encodeURIComponent(platform)}&domain=${encodeURIComponent(domainKey)}&returnPath=${encodeURIComponent(returnPath)}`,
-                { headers: { Authorization: authToken, Organisation: String(orgId) } }
-            );
-            const data = await resp.json();
-            if (data.authUrl) {
-                window.location.href = data.authUrl;
-            } else {
-                setSyncMsg({ text: data.error || "Could not start connection — check platform credentials are configured.", error: true });
-                setConnectingPlatform(false);
-            }
-        } catch (err) {
-            setSyncMsg({ text: err.message, error: true });
-            setConnectingPlatform(false);
-        }
+        const returnPath = window.location.pathname + window.location.search;
+        const rawToken = authToken.replace(/^Bearer\s+/i, "");
+        const url = [
+            `/api/ad-oauth-start`,
+            `?platform=${encodeURIComponent(platform)}`,
+            `&domain=${encodeURIComponent(domainKey)}`,
+            `&returnPath=${encodeURIComponent(returnPath)}`,
+            `&token=${encodeURIComponent(rawToken)}`,
+            `&org=${encodeURIComponent(orgId)}`,
+        ].join("");
+        window.location.href = url;
     }, [authToken, orgId, domainKey]);
 
     const selectedPlatform = useMemo(

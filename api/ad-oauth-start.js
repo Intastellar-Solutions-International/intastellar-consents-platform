@@ -100,11 +100,16 @@ export default async function handler(req, res) {
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
-    const jwt = validateJwt(req.headers.authorization);
+    // Accept JWT from Authorization header OR ?token query param (direct-link mode)
+    const jwt = validateJwt(req.headers.authorization)
+        || validateJwt(req.query.token ? `Bearer ${req.query.token}` : "");
     if (!jwt) return res.status(401).json({ error: "Unauthorized" });
 
-    const orgId = parseInt(req.headers.organisation || req.headers.organization || "0", 10);
-    if (!orgId) return res.status(400).json({ error: "Organisation header required" });
+    // Accept org from header OR ?org query param
+    const orgId = parseInt(
+        req.headers.organisation || req.headers.organization || req.query.org || "0", 10
+    );
+    if (!orgId) return res.status(400).json({ error: "Organisation header or ?org param required" });
 
     const { platform, domain, returnPath } = req.query;
     if (!platform || !domain) return res.status(400).json({ error: "platform and domain are required" });
@@ -113,11 +118,26 @@ export default async function handler(req, res) {
     const authUrl = buildAuthUrl(platform, state);
 
     if (!authUrl) {
+        const errBase = returnPath
+            ? `${REDIRECT_URI.replace("/api/ad-oauth-callback", "")}${returnPath}`
+            : `${REDIRECT_URI.replace("/api/ad-oauth-callback", "")}/settings/ad-connections`;
+        // In direct-link mode, redirect back with error instead of returning JSON
+        if (req.query.token) {
+            return res.redirect(302,
+                `${errBase}?oauth_error=${encodeURIComponent(`${platform} OAuth credentials are not configured on the server`)}&platform=${encodeURIComponent(platform)}`
+            );
+        }
         return res.status(503).json({
             error: `${platform} OAuth is not configured on this server. Set the required environment variables.`,
             missingConfig: true,
         });
     }
 
+    // Direct-link mode (token in query param): redirect immediately to OAuth provider
+    if (req.query.token) {
+        return res.redirect(302, authUrl);
+    }
+
+    // Fetch mode (token in Authorization header): return JSON so the client can redirect
     return res.status(200).json({ authUrl });
 }

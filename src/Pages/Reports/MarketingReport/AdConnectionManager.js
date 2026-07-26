@@ -70,31 +70,24 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
     }, [fetchConnections, setStatus]);
 
     async function handleConnect(platformId) {
-        setConnecting(platformId);
-        try {
-            const returnPath = window.location.pathname;
-            const resp = await fetch(
-                `/api/ad-oauth-start?platform=${platformId}&domain=${encodeURIComponent(domain)}&returnPath=${encodeURIComponent(returnPath)}`,
-                { headers: { Authorization: authToken, Organisation: String(orgId) } }
-            );
-            const data = await resp.json();
-            if (data.missingConfig) {
-                const label = AD_PLATFORMS.find(x => x.id === platformId)?.label || platformId;
-                setStatus(`${label} OAuth credentials are not yet configured. Add the required environment variables in Vercel (e.g. GOOGLE_ADS_CLIENT_ID, OAUTH_REDIRECT_URI) to enable this connection.`, true);
-                setConnecting(null);
-                return;
-            }
-            if (!resp.ok) {
-                setStatus(data.error || "Could not start connection.", true);
-                setConnecting(null);
-                return;
-            }
-            // Full-page redirect — the callback will bring the user back
-            window.location.href = data.authUrl;
-        } catch (err) {
-            setStatus(err.message, true);
-            setConnecting(null);
+        if (!authToken || !orgId) {
+            setStatus("Session expired — please reload and log in again.", true);
+            return;
         }
+        setConnecting(platformId);
+        const returnPath = window.location.pathname;
+        // Strip "Bearer " prefix to get the raw token for the URL param
+        const rawToken = authToken.replace(/^Bearer\s+/i, "");
+        const url = [
+            `/api/ad-oauth-start`,
+            `?platform=${encodeURIComponent(platformId)}`,
+            `&domain=${encodeURIComponent(domain)}`,
+            `&returnPath=${encodeURIComponent(returnPath)}`,
+            `&token=${encodeURIComponent(rawToken)}`,
+            `&org=${encodeURIComponent(orgId)}`,
+        ].join("");
+        // Navigate directly — server validates token and 302-redirects to OAuth provider
+        window.location.href = url;
     }
 
     async function handleDisconnect(platformId) {
