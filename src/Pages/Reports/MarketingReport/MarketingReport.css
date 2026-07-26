@@ -3670,3 +3670,108 @@
     flex-shrink: 0;
 }
 .acct-picker-modal__cancel:hover { background: rgba(255,255,255,0.08); }
+
+/* ─── GA4 Sessions Chart ─────────────────────────────────────────────────── */
+.ga4-sessions-chart {
+    margin: 4px 0 18px;
+    padding: 18px 20px 16px;
+    background: rgba(227,116,0,0.04);
+    border: 1px solid rgba(227,116,0,0.14);
+    border-radius: 14px;
+}
+.ga4-sessions-chart__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+.ga4-sessions-chart__header .marketing-reconciliation__section-title {
+    margin: 0;
+}
+.ga4-sessions-chart__syncing {
+    font-size: 0.72rem;
+    color: rgba(227,116,0,0.6);
+    margin-left: auto;
+}
+.ga4-ss-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 20px;
+    font-size: 0.71rem;
+    font-weight: 600;
+    color: rgba(165,170,255,0.95);
+    letter-spacing: 0.01em;
+}
+
+/* Platform breakdown */
+.ga4-platform-breakdown {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+.ga4-platform-breakdown__title {
+    margin: 0 0 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(145,158,180,0.65);
+}
+.ga4-platform-breakdown__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.ga4-pb-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 52px 70px;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+}
+.ga4-pb-row__name {
+    color: rgba(185,195,215,0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ga4-pb-row--ss .ga4-pb-row__name {
+    color: rgba(165,170,255,0.9);
+    font-weight: 600;
+}
+.ga4-pb-row__ss-icon {
+    margin-right: 4px;
+}
+.ga4-pb-row__ss-hint {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: rgba(140,145,200,0.65);
+    margin-left: 4px;
+}
+.ga4-pb-row__bar-wrap {
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.ga4-pb-row__bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+.ga4-pb-row__share {
+    text-align: right;
+    color: rgba(145,160,185,0.75);
+    font-size: 0.75rem;
+}
+.ga4-pb-row__count {
+    text-align: right;
+    color: rgba(185,195,215,0.7);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
