@@ -152,6 +152,30 @@ async function fetchGA4AggregateSummary(accessToken, propertyId, fromDate, toDat
     };
 }
 
+async function fetchGA4ChannelBreakdown(accessToken, propertyId, fromDate, toDate) {
+    const resp = await fetch(
+        `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
+        {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+                dateRanges: [{ startDate: fromDate, endDate: toDate }],
+                dimensions: [{ name: "sessionDefaultChannelGroup" }],
+                metrics: [{ name: "sessions" }, { name: "totalUsers" }, { name: "engagementRate" }],
+                orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
+            }),
+        }
+    );
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    return (data.rows || []).map(row => ({
+        channelGroup:    row.dimensionValues?.[0]?.value || "(other)",
+        sessions:        Number(row.metricValues?.[0]?.value || 0),
+        users:           Number(row.metricValues?.[1]?.value || 0),
+        engagementRate:  Number(row.metricValues?.[2]?.value || 0),
+    }));
+}
+
 async function fetchGA4PlatformBreakdown(accessToken, propertyId, fromDate, toDate) {
     const resp = await fetch(
         `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
@@ -241,15 +265,17 @@ export default async function handler(req, res) {
             .catch(() => []);
     }
 
-    // For GA4: live platform breakdown + aggregate summary (run in parallel)
+    // For GA4: platform breakdown + aggregate summary + channel group breakdown (all in parallel)
     let platformBreakdown = null;
     let summary = null;
+    let channelBreakdown = null;
     if (platform === "google_analytics" && ga4AccessToken && ga4PropertyId) {
-        [platformBreakdown, summary] = await Promise.all([
+        [platformBreakdown, summary, channelBreakdown] = await Promise.all([
             fetchGA4PlatformBreakdown(ga4AccessToken, ga4PropertyId, fromDate, toDate).catch(() => null),
             fetchGA4AggregateSummary(ga4AccessToken, ga4PropertyId, fromDate, toDate).catch(() => null),
+            fetchGA4ChannelBreakdown(ga4AccessToken, ga4PropertyId, fromDate, toDate).catch(() => null),
         ]);
     }
 
-    return res.status(200).json({ rows, platformBreakdown, summary });
+    return res.status(200).json({ rows, platformBreakdown, summary, channelBreakdown });
 }

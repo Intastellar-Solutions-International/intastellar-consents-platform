@@ -3990,3 +3990,206 @@ details[open] .ca-context-summary::before { content: "▾"; }
     border-radius: 10px 10px 0 0;
     border-bottom: none;
 }
+
+/* ─── GA4 Coverage & Blindspots ─────────────────────────────────────────── */
+
+.ga4-coverage {
+    margin: 20px 0 0;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.025);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+}
+.ga4-coverage__header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.ga4-coverage__title {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(192,159,83,0.9);
+}
+.ga4-coverage__subtitle {
+    font-size: 0.72rem;
+    color: rgba(140,155,180,0.65);
+}
+.ga4-coverage__metrics {
+    display: flex;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.ga4-coverage__metric {
+    flex: 1;
+    min-width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 12px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    gap: 3px;
+}
+.ga4-coverage__metric:last-child { border-right: none; }
+.ga4-coverage__metric--dark { background: rgba(239,68,68,0.05); }
+.ga4-coverage__metric-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: rgba(235,240,255,0.95);
+    letter-spacing: -0.01em;
+}
+.ga4-coverage__metric--dark .ga4-coverage__metric-value {
+    color: rgba(239,68,68,0.85);
+}
+.ga4-coverage__metric-label {
+    font-size: 0.67rem;
+    color: rgba(140,155,180,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+/* Stacked bar */
+.ga4-coverage__bar-track {
+    position: relative;
+    height: 10px;
+    background: rgba(239,68,68,0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+.ga4-coverage__bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, rgba(74,222,128,0.75), rgba(34,197,94,0.65));
+    border-radius: 6px;
+    transition: width 0.4s ease;
+    min-width: 2px;
+}
+.ga4-coverage__bar-legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 0.7rem;
+}
+.ga4-coverage__legend-consent::before {
+    content: "■";
+    color: rgba(74,222,128,0.75);
+    margin-right: 4px;
+}
+.ga4-coverage__legend-dark::before {
+    content: "■";
+    color: rgba(239,68,68,0.4);
+    margin-right: 4px;
+}
+.ga4-coverage__legend-consent { color: rgba(165,185,215,0.75); }
+.ga4-coverage__legend-dark    { color: rgba(165,185,215,0.75); }
+.ga4-coverage__note {
+    margin: 0;
+    font-size: 0.71rem;
+    color: rgba(130,145,170,0.6);
+    line-height: 1.5;
+}
+
+/* ─── GA4 Channel Cross-reference ───────────────────────────────────────── */
+
+.ga4-xref {
+    margin: 20px 0 0;
+    padding: 16px 20px 12px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+}
+.ga4-xref__header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+.ga4-xref__title {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(192,159,83,0.9);
+}
+.ga4-xref__subtitle {
+    font-size: 0.69rem;
+    color: rgba(130,145,170,0.55);
+}
+.ga4-xref__scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 10px;
+}
+.ga4-xref__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+}
+.ga4-xref__th {
+    padding: 6px 10px;
+    text-align: left;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(140,155,180,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
+}
+.ga4-xref__th--num { text-align: right; }
+.ga4-xref__td {
+    padding: 7px 10px;
+    color: rgba(215,225,245,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+}
+.ga4-xref__td--num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.ga4-xref__td--channels {
+    font-size: 0.72rem;
+    color: rgba(180,195,225,0.7);
+    max-width: 220px;
+}
+.ga4-xref__row--blind {
+    background: rgba(239,68,68,0.04);
+}
+.ga4-xref__row--blind .ga4-xref__td { color: rgba(220,230,250,0.85); }
+.ga4-xref__blind-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(239,68,68,0.9);
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+.ga4-xref__no-match {
+    color: rgba(130,145,170,0.45);
+    font-style: italic;
+}
+.ga4-xref__cov--low  { color: rgba(239,68,68,0.85);  font-weight: 600; }
+.ga4-xref__cov--mid  { color: rgba(251,191,36,0.85); font-weight: 600; }
+.ga4-xref__cov--high { color: rgba(74,222,128,0.85); font-weight: 600; }
+.ga4-xref__note {
+    margin: 0;
+    font-size: 0.7rem;
+    color: rgba(120,135,160,0.55);
+    line-height: 1.5;
+}

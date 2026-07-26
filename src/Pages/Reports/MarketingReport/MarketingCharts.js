@@ -462,7 +462,31 @@ function fmtDuration(seconds) {
     return r === 0 ? `${m}m` : `${m}m ${r}s`;
 }
 
-export function Ga4SessionsChart({ rows, platformBreakdown, summary, syncing }) {
+/*
+ * Maps GA4's sessionDefaultChannelGroup value to consent-platform channel names.
+ * The match is intentionally broad — one GA4 group covers several possible channel
+ * labels depending on how UTM tags were set up. Returns [] when no pattern applies
+ * (e.g. "Referral", "Unassigned") so the cross-reference shows a genuine gap.
+ */
+function matchConsentChannels(ga4Group, channelOverview) {
+    const matchers = {
+        "Paid Search":    c => /(google ads|microsoft ads|bing)/i.test(c.channel),
+        "Paid Shopping":  c => /(google ads|microsoft ads)/i.test(c.channel),
+        "Cross-network":  c => /google ads/i.test(c.channel),
+        "Organic Search": c => /organic search/i.test(c.channel),
+        "Paid Social":    c => /ads/i.test(c.channel) && /(facebook|instagram|linkedin|tiktok|twitter|pinterest|meta)/i.test(c.channel),
+        "Paid Video":     c => /tiktok ads/i.test(c.channel),
+        "Organic Social": c => !/ads/i.test(c.channel) && /(facebook \(organic\)|^instagram$|^linkedin$|^tiktok$|twitter|^pinterest$)/i.test(c.channel),
+        "Direct":         c => /^direct$/i.test(c.channel),
+        "Email":          c => /email/i.test(c.channel),
+        "Affiliates":     c => /affiliate/i.test(c.channel),
+    };
+    const fn = matchers[ga4Group];
+    if (!fn) return [];
+    return (channelOverview || []).filter(fn);
+}
+
+export function Ga4SessionsChart({ rows, platformBreakdown, summary, channelBreakdown, totalConsents, channelOverview, syncing }) {
     if (!rows || rows.length === 0) {
         if (!syncing) return null;
         return (
@@ -602,6 +626,132 @@ export function Ga4SessionsChart({ rows, platformBreakdown, summary, syncing }) 
                     </div>
                 </div>
             )}
+
+            {/* ── Coverage & Blindspots ──────────────────────────────────────── */}
+            {summary && summary.sessions > 0 && totalConsents != null && (() => {
+                const ga4Sess = summary.sessions;
+                const capturePct = Math.min(100, (totalConsents / ga4Sess) * 100);
+                const darkZone = Math.max(0, ga4Sess - totalConsents);
+                const captureStr = capturePct.toFixed(1) + "%";
+                return (
+                    <div className="ga4-coverage">
+                        <div className="ga4-coverage__header">
+                            <h4 className="ga4-coverage__title">Consent coverage</h4>
+                            <span className="ga4-coverage__subtitle">GA4 sessions vs consent events in this period</span>
+                        </div>
+
+                        <div className="ga4-coverage__metrics">
+                            <div className="ga4-coverage__metric">
+                                <span className="ga4-coverage__metric-value">{captureStr}</span>
+                                <span className="ga4-coverage__metric-label">capture rate</span>
+                            </div>
+                            <div className="ga4-coverage__metric ga4-coverage__metric--dark">
+                                <span className="ga4-coverage__metric-value">{fmtInt(darkZone)}</span>
+                                <span className="ga4-coverage__metric-label">session dark zone</span>
+                            </div>
+                            <div className="ga4-coverage__metric">
+                                <span className="ga4-coverage__metric-value">{fmtInt(totalConsents)}</span>
+                                <span className="ga4-coverage__metric-label">consent events</span>
+                            </div>
+                            <div className="ga4-coverage__metric">
+                                <span className="ga4-coverage__metric-value">{fmtInt(ga4Sess)}</span>
+                                <span className="ga4-coverage__metric-label">GA4 sessions</span>
+                            </div>
+                        </div>
+
+                        {/* Stacked bar */}
+                        <div className="ga4-coverage__bar-track" title={`${captureStr} of sessions generated a consent event`}>
+                            <div className="ga4-coverage__bar-fill" style={{ width: `${capturePct}%` }} />
+                        </div>
+                        <div className="ga4-coverage__bar-legend">
+                            <span className="ga4-coverage__legend-consent">Consent events ({fmtInt(totalConsents)})</span>
+                            <span className="ga4-coverage__legend-dark">Dark zone ({fmtInt(darkZone)})</span>
+                        </div>
+
+                        <p className="ga4-coverage__note">
+                            Dark zone = sessions that reached the site but generated no consent event.
+                            Typical causes: returning visitors with an existing consent cookie, bounces before
+                            the banner rendered, or bot traffic. A very large dark zone can also mean the CMP
+                            is loading too late in the page lifecycle.
+                        </p>
+                    </div>
+                );
+            })()}
+
+            {/* ── Channel cross-reference ────────────────────────────────────── */}
+            {channelBreakdown && channelBreakdown.length > 0 && channelOverview && channelOverview.length > 0 && (() => {
+                const ga4Total = channelBreakdown.reduce((s, g) => s + g.sessions, 0) || 1;
+                return (
+                    <div className="ga4-xref">
+                        <div className="ga4-xref__header">
+                            <h4 className="ga4-xref__title">GA4 channels vs consent attribution</h4>
+                            <span className="ga4-xref__subtitle">
+                                Approximate — GA4 channel groups and consent-platform UTM channels use different classification rules.
+                            </span>
+                        </div>
+                        <div className="ga4-xref__scroll">
+                            <table className="ga4-xref__table">
+                                <thead>
+                                    <tr>
+                                        <th className="ga4-xref__th">GA4 channel group</th>
+                                        <th className="ga4-xref__th ga4-xref__th--num">Sessions</th>
+                                        <th className="ga4-xref__th ga4-xref__th--num">Share</th>
+                                        <th className="ga4-xref__th">Matched consent channels</th>
+                                        <th className="ga4-xref__th ga4-xref__th--num">Consents</th>
+                                        <th className="ga4-xref__th ga4-xref__th--num">Coverage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {channelBreakdown.map(g => {
+                                        const matched = matchConsentChannels(g.channelGroup, channelOverview);
+                                        const consentSum = matched.reduce((s, c) => s + c.consents, 0);
+                                        const covPct = g.sessions > 0 && matched.length > 0
+                                            ? (consentSum / g.sessions) * 100 : null;
+                                        const sessionShare = (g.sessions / ga4Total) * 100;
+                                        const isBlindspot = g.channelGroup === "Unassigned" ||
+                                            (g.sessions > 50 && matched.length === 0) ||
+                                            (covPct !== null && covPct < 5);
+                                        return (
+                                            <tr key={g.channelGroup} className={isBlindspot ? "ga4-xref__row--blind" : ""}>
+                                                <td className="ga4-xref__td">
+                                                    {isBlindspot && (
+                                                        <span className="ga4-xref__blind-badge" title="Low or no consent attribution for this GA4 channel — potential tracking gap">
+                                                            blind spot
+                                                        </span>
+                                                    )}
+                                                    {g.channelGroup}
+                                                </td>
+                                                <td className="ga4-xref__td ga4-xref__td--num">{fmtInt(g.sessions)}</td>
+                                                <td className="ga4-xref__td ga4-xref__td--num">{sessionShare.toFixed(1)}%</td>
+                                                <td className="ga4-xref__td ga4-xref__td--channels">
+                                                    {matched.length > 0
+                                                        ? matched.map(c => c.channel).join(", ")
+                                                        : <span className="ga4-xref__no-match">no match</span>}
+                                                </td>
+                                                <td className="ga4-xref__td ga4-xref__td--num">
+                                                    {matched.length > 0 ? fmtInt(consentSum) : "—"}
+                                                </td>
+                                                <td className="ga4-xref__td ga4-xref__td--num">
+                                                    {covPct !== null
+                                                        ? <span className={covPct < 10 ? "ga4-xref__cov--low" : covPct > 50 ? "ga4-xref__cov--high" : "ga4-xref__cov--mid"}>
+                                                            {covPct.toFixed(1)}%
+                                                          </span>
+                                                        : "—"}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                        <p className="ga4-xref__note">
+                            Coverage = consent events / GA4 sessions for matched channels. Below 10% is flagged as a
+                            potential blindspot. "Unassigned" traffic has no UTM tags and is invisible to both GA4
+                            channel grouping and consent attribution — these are true dark sessions.
+                        </p>
+                    </div>
+                );
+            })()}
         </div>
     );
 }

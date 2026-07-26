@@ -1622,6 +1622,7 @@ export default function MarketingReport() {
     const [ga4DailyRows, setGa4DailyRows] = useState(null);
     const [ga4PlatformBreakdown, setGa4PlatformBreakdown] = useState(null);
     const [ga4Summary, setGa4Summary] = useState(null);
+    const [ga4ChannelBreakdown, setGa4ChannelBreakdown] = useState(null);
     const [ga4Syncing, setGa4Syncing] = useState(false);
 
     const endpoint = API[id]?.marketingAttribution;
@@ -1877,6 +1878,7 @@ export default function MarketingReport() {
         setGa4DailyRows(null);
         setGa4PlatformBreakdown(null);
         setGa4Summary(null);
+        setGa4ChannelBreakdown(null);
 
         const headers = { Authorization: authToken, Organisation: String(orgId) };
 
@@ -1894,9 +1896,10 @@ export default function MarketingReport() {
                     .then(r => r.ok ? r.json() : null)
                     .then(daily => {
                         if (cancelled) return;
-                        if (daily?.rows?.length)      setGa4DailyRows(daily.rows);
-                        if (daily?.platformBreakdown) setGa4PlatformBreakdown(daily.platformBreakdown);
-                        if (daily?.summary)           setGa4Summary(daily.summary);
+                        if (daily?.rows?.length)       setGa4DailyRows(daily.rows);
+                        if (daily?.platformBreakdown)  setGa4PlatformBreakdown(daily.platformBreakdown);
+                        if (daily?.summary)            setGa4Summary(daily.summary);
+                        if (daily?.channelBreakdown)   setGa4ChannelBreakdown(daily.channelBreakdown);
                     });
             })
             .catch(() => {})
@@ -2321,6 +2324,28 @@ export default function MarketingReport() {
                 });
             }
         }
+        // GA4 coverage KPIs — only show on overview (not per-channel drilldown)
+        if (!selectedChannel && ga4Summary && ga4Summary.sessions > 0) {
+            const ga4Sess = ga4Summary.sessions;
+            const capturePct = Math.round((totalConsents / ga4Sess) * 1000) / 10;
+            const darkZone = Math.max(0, ga4Sess - totalConsents);
+            cards.push({
+                key: "ga4-coverage",
+                label: "GA4 consent coverage",
+                value: Number.isFinite(capturePct) ? `${capturePct}%` : "—",
+                hint: `${totalConsents.toLocaleString("de-DE")} consent events from ${ga4Sess.toLocaleString("de-DE")} GA4 sessions. Sessions that did not generate a consent event are the dark zone.`,
+                variant: capturePct < 15 ? "warn" : null,
+                compare: null,
+            });
+            cards.push({
+                key: "ga4-dark-zone",
+                label: "Session dark zone",
+                value: darkZone.toLocaleString("de-DE"),
+                hint: "GA4 sessions that reached the site but generated no consent event. Includes returning visitors with prior consent, bounces before banner load, and bot traffic.",
+                variant: "warn",
+                compare: null,
+            });
+        }
         return cards;
     }, [
         totalConsents,
@@ -2341,6 +2366,7 @@ export default function MarketingReport() {
         invisibleConsents,
         invisibleSharePct,
         baselineInvisibleConsents,
+        ga4Summary,
     ]);
 
     return (
@@ -2768,6 +2794,9 @@ export default function MarketingReport() {
                             rows={ga4DailyRows || []}
                             platformBreakdown={ga4PlatformBreakdown}
                             summary={ga4Summary}
+                            channelBreakdown={ga4ChannelBreakdown}
+                            totalConsents={totalConsents}
+                            channelOverview={channelOverview}
                             syncing={ga4Syncing}
                         />
                     )}
