@@ -108,20 +108,68 @@ export default async function handler(req, res) {
 
     if (req.method === "GET") {
         const { domain } = req.query;
-        const result = domain
+
+        // Query finalized connections
+        const finalizedResult = domain
             ? await db.query(
                 `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at,
-                        (access_token IS NOT NULL) AS has_token
+                        (access_token IS NOT NULL) AS has_token, NULL::uuid AS pending_id
                  FROM ad_platform_connections WHERE organisation_id=$1 AND domain=$2 ORDER BY platform`,
                 [orgId, domain]
             )
             : await db.query(
                 `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at,
-                        (access_token IS NOT NULL) AS has_token
+                        (access_token IS NOT NULL) AS has_token, NULL::uuid AS pending_id
                  FROM ad_platform_connections WHERE organisation_id=$1 ORDER BY domain, platform`,
                 [orgId]
             );
-        return res.status(200).json({ connections: result.rows });
+
+        // Also check pending_ad_connections for OAuth flows that completed but never had
+        // an account selected. Surface these so the user can finish without re-doing OAuth.
+        let pendingRows = [];
+        try {
+            const pendingParams = domain ? [orgId, domain] : [orgId];
+            const pendingWhere = domain
+                ? `WHERE organisation_id=$1 AND domain=$2 AND expires_at > NOW()`
+                : `WHERE organisation_id=$1 AND expires_at > NOW()`;
+
+            const pendingResult = await db.query(
+                `SELECT DISTINCT ON (organisation_id, domain, platform)
+                        id AS pending_id, platform, domain, scopes, created_at
+                 FROM pending_ad_connections
+                 ${pendingWhere}
+                 ORDER BY organisation_id, domain, platform, created_at DESC`,
+                pendingParams
+            );
+
+            // Only surface pending entries that don't already have a finalized connection
+            const finalizedKey = new Set(
+                finalizedResult.rows.map(r => `${r.domain}|${r.platform}`)
+            );
+            pendingRows = pendingResult.rows
+                .filter(r => !finalizedKey.has(`${r.domain}|${r.platform}`))
+                .map(r => ({
+                    id: null,
+                    platform: r.platform,
+                    domain: r.domain,
+                    account_id: null,
+                    account_label: null,
+                    login_customer_id: null,
+                    account_currency: null,
+                    scopes: r.scopes,
+                    created_at: r.created_at,
+                    updated_at: r.created_at,
+                    has_token: true,
+                    pending_id: r.pending_id,
+                }));
+        } catch (_) {
+            // pending_ad_connections table doesn't exist yet — ignore
+        }
+
+        const connections = [...finalizedResult.rows, ...pendingRows]
+            .sort((a, b) => (a.domain || "").localeCompare(b.domain || "") || a.platform.localeCompare(b.platform));
+
+        return res.status(200).json({ connections });
     }
 
     if (req.method === "DELETE") {

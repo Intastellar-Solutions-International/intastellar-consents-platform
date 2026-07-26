@@ -253,7 +253,15 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                         <>
                                             <button
                                                 className="ad-connection-card__btn ad-connection-card__btn--connect"
-                                                onClick={() => handleReselect(platform.id)}
+                                                onClick={() => {
+                                                    if (conn.pending_id) {
+                                                        // Pending record already exists — open picker directly
+                                                        onSelectAccount?.(platform.id, conn.pending_id, domain);
+                                                    } else {
+                                                        // Token is in ad_platform_connections — fetch accounts via reselect
+                                                        handleReselect(platform.id);
+                                                    }
+                                                }}
                                                 disabled={isReselecting}
                                             >
                                                 {isReselecting ? "Loading…" : "Select account"}
