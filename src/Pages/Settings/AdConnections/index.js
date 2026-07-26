@@ -342,6 +342,7 @@ export default function AdConnectionsSettings() {
                                         domain={selectedDomain}
                                         orgId={orgId}
                                         authToken={authToken}
+                                        onSelectAccount={handleSelectAccount}
                                     />
                                 </>
                             ) : null}
