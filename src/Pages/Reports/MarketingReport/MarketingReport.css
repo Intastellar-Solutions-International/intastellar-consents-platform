@@ -2960,6 +2960,11 @@
     border-color: rgba(248,113,113,0.2);
     background: rgba(248,113,113,0.045);
 }
+.recon-stat-card--ga4 {
+    border-color: rgba(227,116,0,0.25);
+    background: rgba(227,116,0,0.055);
+}
+.recon-stat-card--ga4 .recon-stat-card__value { color: rgba(251,191,36,0.95); }
 .recon-stat-card__label {
     font-size: 0.68rem;
     font-weight: 600;

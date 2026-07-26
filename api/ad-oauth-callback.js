@@ -61,6 +61,11 @@ async function exchangeCode(platform, code) {
             clientId = process.env.LINKEDIN_CLIENT_ID;
             clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
             break;
+        case "google_analytics":
+            url = "https://oauth2.googleapis.com/token";
+            clientId = process.env.GOOGLE_CLIENT_ID;
+            clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+            break;
         case "microsoft_ads":
             url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
             clientId = process.env.MICROSOFT_ADS_CLIENT_ID;
@@ -209,6 +214,26 @@ async function fetchAllAccounts(platform, accessToken) {
                     name: a.name || `Account ${a.id}`,
                     status: a.status || "",
                 }));
+            }
+
+            case "google_analytics": {
+                const resp = await fetch(
+                    "https://analyticsadmin.googleapis.com/v1beta/accountSummaries",
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
+                if (!resp.ok) return [];
+                const data = await resp.json();
+                const accounts = [];
+                for (const account of (data.accountSummaries || [])) {
+                    for (const prop of (account.propertySummaries || [])) {
+                        const propertyId = prop.property.replace("properties/", "");
+                        accounts.push({
+                            id: propertyId,
+                            name: `${prop.displayName} (${account.displayName})`,
+                        });
+                    }
+                }
+                return accounts;
             }
 
             case "microsoft_ads": {

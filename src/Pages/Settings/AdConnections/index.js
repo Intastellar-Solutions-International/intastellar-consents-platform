@@ -32,10 +32,11 @@ function AccountPickerModal({ pendingId, platform, domain, orgId, authToken, onD
     const dialogRef = useRef(null);
 
     const platformLabels = {
-        google_ads:    "Google Ads",
-        meta_ads:      "Meta Ads",
-        linkedin_ads:  "LinkedIn Ads",
-        microsoft_ads: "Microsoft Ads",
+        google_ads:        "Google Ads",
+        google_analytics:  "Google Analytics 4",
+        meta_ads:          "Meta Ads",
+        linkedin_ads:      "LinkedIn Ads",
+        microsoft_ads:     "Microsoft Ads",
     };
     const label = platformLabels[platform] || platform;
 

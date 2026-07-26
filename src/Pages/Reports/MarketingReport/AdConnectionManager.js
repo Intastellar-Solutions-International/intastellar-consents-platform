@@ -2,10 +2,11 @@ const { useState, useEffect, useCallback } = React;
 import { ScannerHost } from "../../../API/host";
 
 const AD_PLATFORMS = [
-    { id: "google_ads",    label: "Google Ads",                  color: "#4285f4", initial: "G" },
-    { id: "meta_ads",      label: "Meta (Facebook / Instagram)",  color: "#1877f2", initial: "f" },
-    { id: "linkedin_ads",  label: "LinkedIn Ads",                 color: "#0a66c2", initial: "in" },
-    { id: "microsoft_ads", label: "Microsoft Ads",                color: "#00a4ef", initial: "B" },
+    { id: "google_ads",        label: "Google Ads",                  color: "#4285f4", initial: "G",  isAnalytics: false },
+    { id: "google_analytics",  label: "Google Analytics 4",          color: "#e37400", initial: "GA", isAnalytics: true  },
+    { id: "meta_ads",          label: "Meta (Facebook / Instagram)",  color: "#1877f2", initial: "f",  isAnalytics: false },
+    { id: "linkedin_ads",      label: "LinkedIn Ads",                 color: "#0a66c2", initial: "in", isAnalytics: false },
+    { id: "microsoft_ads",     label: "Microsoft Ads",                color: "#00a4ef", initial: "B",  isAnalytics: false },
 ];
 
 function formatDate(iso) {
@@ -190,9 +191,13 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                 setStatus(data.error || "Import failed.", true);
                 return;
             }
-            const label = AD_PLATFORMS.find(p => p.id === platformId)?.label || platformId;
+            const platformMeta = AD_PLATFORMS.find(p => p.id === platformId);
+            const label = platformMeta?.label || platformId;
             onImport?.(platformId, data);
-            setStatus(`Imported from ${label}: ${data.clicks?.toLocaleString() || 0} clicks${data.spend ? `, ${data.currency || ""} ${Number(data.spend).toFixed(2)} spend` : ""}.`);
+            const summary = platformMeta?.isAnalytics
+                ? `${data.sessions?.toLocaleString() || 0} sessions`
+                : `${data.clicks?.toLocaleString() || 0} clicks${data.spend ? `, ${data.currency || ""} ${Number(data.spend).toFixed(2)} spend` : ""}`;
+            setStatus(`Imported from ${label}: ${summary}`);
         } catch (err) {
             setStatus(err.message, true);
         } finally {
@@ -253,15 +258,17 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                     {isFullyConnected ? (
                                         <span className="ad-connection-card__meta">
                                             {conn.account_label || "Connected"}
-                                            {conn.updated_at ? ` · synced ${formatDate(conn.updated_at)}` : ""}
+                                            {platform.isAnalytics
+                                                ? " · auto-populates dashboard"
+                                                : conn.updated_at ? ` · synced ${formatDate(conn.updated_at)}` : ""}
                                         </span>
                                     ) : needsAccountSelection ? (
                                         <span className="ad-connection-card__meta ad-connection-card__meta--dim">
-                                            Authorized — select an ad account to finish
+                                            {platform.isAnalytics ? "Authorized — select a property to finish" : "Authorized — select an ad account to finish"}
                                         </span>
                                     ) : (
                                         <span className="ad-connection-card__meta ad-connection-card__meta--dim">
-                                            Not connected
+                                            {platform.isAnalytics ? "Not connected · sessions auto-populate when connected" : "Not connected"}
                                         </span>
                                     )}
                                 </div>
@@ -269,14 +276,16 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                 <div className="ad-connection-card__actions">
                                     {isFullyConnected ? (
                                         <>
-                                            <button
-                                                className="ad-connection-card__btn ad-connection-card__btn--import"
-                                                onClick={() => handleImport(platform.id)}
-                                                disabled={isImporting}
-                                                title={`Import ${fromDate}–${toDate} data from ${platform.label}`}
-                                            >
-                                                {isImporting ? "Importing…" : "Import data"}
-                                            </button>
+                                            {!platform.isAnalytics && (
+                                                <button
+                                                    className="ad-connection-card__btn ad-connection-card__btn--import"
+                                                    onClick={() => handleImport(platform.id)}
+                                                    disabled={isImporting}
+                                                    title={`Import ${fromDate}–${toDate} data from ${platform.label}`}
+                                                >
+                                                    {isImporting ? "Importing…" : "Import data"}
+                                                </button>
+                                            )}
                                             <button
                                                 className="ad-connection-card__btn ad-connection-card__btn--disconnect"
                                                 onClick={() => handleDisconnect(platform.id)}
@@ -291,7 +300,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                                 onClick={() => handleReselect(platform.id)}
                                                 disabled={isReselecting}
                                             >
-                                                {isReselecting ? "Loading…" : "Select account"}
+                                                {isReselecting ? "Loading…" : platform.isAnalytics ? "Select property" : "Select account"}
                                             </button>
                                             <button
                                                 className="ad-connection-card__btn ad-connection-card__btn--disconnect"
@@ -315,20 +324,25 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                     })}
                 </div>
             )}
-        {manualInput && (
+        {manualInput && (() => {
+            const isGA4 = manualInput.platformId === "google_analytics";
+            return (
             <div className="ad-manual-input-backdrop">
                 <div className="ad-manual-input">
-                    <h4 className="ad-manual-input__title">Enter Google Ads Customer ID</h4>
+                    <h4 className="ad-manual-input__title">
+                        {isGA4 ? "Enter GA4 Property ID" : "Enter Google Ads Customer ID"}
+                    </h4>
                     <p className="ad-manual-input__hint">
-                        Find it in Google Ads under the account name — 10 digits, format{" "}
-                        <strong>XXX-XXX-XXXX</strong>. Dashes are optional.
+                        {isGA4
+                            ? <>Find it in Google Analytics → Admin → Property settings — a numeric ID like <strong>123456789</strong>.</>
+                            : <>Find it in Google Ads under the account name — 10 digits, format{" "}<strong>XXX-XXX-XXXX</strong>. Dashes are optional.</>}
                     </p>
                     <input
                         className="ad-manual-input__field"
                         type="text"
                         value={manualId}
                         onChange={e => setManualId(e.target.value)}
-                        placeholder="e.g. 123-456-7890"
+                        placeholder={isGA4 ? "e.g. 123456789" : "e.g. 123-456-7890"}
                         onKeyDown={e => e.key === "Enter" && handleManualSave()}
                         autoFocus
                     />
@@ -350,7 +364,8 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                     </div>
                 </div>
             </div>
-        )}
+            );
+        })()}
         </div>
     );
 }

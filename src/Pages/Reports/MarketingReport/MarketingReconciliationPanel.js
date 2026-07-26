@@ -29,7 +29,6 @@ import { ScannerHost } from "../../../API/host";
 const PLATFORMS = [
     { id: "google_ads", label: "Google Ads", metric: "clicks" },
     { id: "meta_ads", label: "Meta (Facebook / Instagram) Ads", metric: "link clicks" },
-    { id: "ga4", label: "Google Analytics 4", metric: "sessions" },
     { id: "linkedin_ads", label: "LinkedIn Ads", metric: "clicks" },
     { id: "microsoft_ads", label: "Microsoft Ads", metric: "clicks" },
     { id: "tiktok_ads", label: "TikTok Ads", metric: "clicks" },
@@ -1742,6 +1741,8 @@ export default function MarketingReconciliationPanel({
     const [connections, setConnections] = useState([]);
     const [syncing, setSyncing] = useState(false);
     const [syncMsg, setSyncMsg] = useState(null);
+    const [ga4Sessions, setGa4Sessions] = useState(null);
+    const [ga4Syncing, setGa4Syncing] = useState(false);
     const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
     const [connectingPlatform, setConnectingPlatform] = useState(false);
 
@@ -1814,6 +1815,23 @@ export default function MarketingReconciliationPanel({
             .then(data => { if (data?.connections) setConnections(data.connections); })
             .catch(() => {});
     }, [authToken, orgId, domainKey]);
+
+    // Auto-fetch GA4 sessions whenever the date range changes and GA4 is connected
+    useEffect(() => {
+        const ga4Conn = connections.find(c => c.platform === "google_analytics" && c.account_id);
+        if (!ga4Conn || !fromDate || !toDate || !authToken || !orgId || !domainKey || domainKey === "combined view") {
+            return;
+        }
+        setGa4Syncing(true);
+        fetch(
+            `${ScannerHost}/api/ad-data-fetch?platform=google_analytics&domain=${encodeURIComponent(domainKey)}&fromDate=${fromDate}&toDate=${toDate}`,
+            { headers: { Authorization: authToken, Organisation: String(orgId) } }
+        )
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { if (data?.sessions != null) setGa4Sessions(data.sessions); })
+            .catch(() => {})
+            .finally(() => setGa4Syncing(false));
+    }, [connections, fromDate, toDate, authToken, orgId, domainKey]);
 
     const handleSync = useCallback(async () => {
         if (!fromDate || !toDate || !authToken || !orgId || !domainKey) return;
@@ -2363,6 +2381,15 @@ export default function MarketingReconciliationPanel({
                         </div>
                     );
                 })()}
+                {ga4Sessions != null && (
+                    <div className="recon-stat-card recon-stat-card--ga4">
+                        <span className="recon-stat-card__label">GA4 Sessions</span>
+                        <span className="recon-stat-card__value">
+                            {ga4Syncing ? "…" : formatInt(ga4Sessions)}
+                        </span>
+                        <span className="recon-stat-card__sub">auto · {fromDate} → {toDate}</span>
+                    </div>
+                )}
             </div>
 
             {/* ── Platform filter strip ───────────────────────────────────── */}

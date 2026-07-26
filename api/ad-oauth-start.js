@@ -66,6 +66,12 @@ function buildAuthUrl(platform, state) {
             const scope = encodeURIComponent("r_ads r_ads_reporting");
             return `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
         }
+        case "google_analytics": {
+            const clientId = process.env.GOOGLE_CLIENT_ID;
+            if (!clientId) return null;
+            const scope = encodeURIComponent("https://www.googleapis.com/auth/analytics.readonly");
+            return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
+        }
         case "microsoft_ads": {
             const clientId = process.env.MICROSOFT_ADS_CLIENT_ID;
             if (!clientId) return null;

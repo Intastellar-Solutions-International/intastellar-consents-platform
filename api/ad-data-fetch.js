@@ -82,6 +82,12 @@ async function tryRefreshToken(db, conn) {
             clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
             bodyExtra = { grant_type: "refresh_token", refresh_token: conn.refresh_token };
             break;
+        case "google_analytics":
+            refreshUrl = "https://oauth2.googleapis.com/token";
+            clientId = process.env.GOOGLE_CLIENT_ID;
+            clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+            bodyExtra = { grant_type: "refresh_token", refresh_token: conn.refresh_token };
+            break;
         case "microsoft_ads":
             refreshUrl = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
             clientId = process.env.MICROSOFT_ADS_CLIENT_ID;
@@ -273,11 +279,45 @@ async function fetchLinkedInAds(conn, fromDate, toDate) {
     };
 }
 
+async function fetchGoogleAnalytics(conn, fromDate, toDate) {
+    if (!conn.account_id) throw new Error("No GA4 property linked — select a property first.");
+    const propertyId = conn.account_id;
+
+    const resp = await fetch(
+        `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
+        {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${conn.access_token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                dateRanges: [{ startDate: fromDate, endDate: toDate }],
+                metrics: [{ name: "sessions" }],
+            }),
+        }
+    );
+
+    if (!resp.ok) {
+        const rawText = await resp.text().catch(() => "");
+        let errBody = {};
+        try { errBody = JSON.parse(rawText); } catch {}
+        console.error(`[ad-data-fetch] GA4 ${resp.status} for property ${propertyId}:`, rawText.slice(0, 500));
+        const msg = errBody?.error?.message || `GA4 API error (${resp.status}): ${rawText.slice(0, 200)}`;
+        throw new Error(msg);
+    }
+
+    const data = await resp.json();
+    const sessions = Number(data.rows?.[0]?.metricValues?.[0]?.value || 0);
+    return { clicks: sessions, sessions, spend: 0, currency: null, impressions: 0 };
+}
+
 async function fetchPlatformData(conn, fromDate, toDate) {
     switch (conn.platform) {
-        case "google_ads":   return fetchGoogleAds(conn, fromDate, toDate);
-        case "meta_ads":     return fetchMetaAds(conn, fromDate, toDate);
-        case "linkedin_ads": return fetchLinkedInAds(conn, fromDate, toDate);
+        case "google_ads":       return fetchGoogleAds(conn, fromDate, toDate);
+        case "meta_ads":         return fetchMetaAds(conn, fromDate, toDate);
+        case "linkedin_ads":     return fetchLinkedInAds(conn, fromDate, toDate);
+        case "google_analytics": return fetchGoogleAnalytics(conn, fromDate, toDate);
         case "microsoft_ads":
             throw new Error("Microsoft Ads automatic import is not yet available. Please enter the data manually.");
         default:
