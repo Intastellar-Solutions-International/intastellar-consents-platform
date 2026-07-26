@@ -14,6 +14,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
+import { tryRefreshToken } from "./_ad-platform-fetch.js";
 
 let pool;
 function getPool() {
@@ -167,14 +168,15 @@ export default async function handler(req, res) {
     let ga4AccessToken = null, ga4PropertyId = null;
     if (platform === "google_analytics") {
         const { rows: connRows } = await db.query(
-            `SELECT access_token, account_id FROM ad_platform_connections
+            `SELECT * FROM ad_platform_connections
              WHERE organisation_id=$1 AND domain=$2 AND platform='google_analytics'
                AND account_id IS NOT NULL AND access_token IS NOT NULL`,
             [orgId, domain]
         );
         if (connRows.length) {
-            ga4AccessToken = connRows[0].access_token;
-            ga4PropertyId  = connRows[0].account_id;
+            const refreshed = await tryRefreshToken(db, connRows[0]).catch(() => connRows[0]);
+            ga4AccessToken = refreshed.access_token;
+            ga4PropertyId  = refreshed.account_id;
         }
     }
 
