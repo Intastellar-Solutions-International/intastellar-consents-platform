@@ -8,7 +8,7 @@
  * Required env vars (one set per platform):
  *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
  *   META_ADS_CLIENT_ID,   META_ADS_CLIENT_SECRET
- *   LINKEDIN_ADS_CLIENT_ID, LINKEDIN_ADS_CLIENT_SECRET
+ *   LINKEDIN_CLIENT_ID, LINKEDIN_CLIENT_SECRET
  *   MICROSOFT_ADS_CLIENT_ID, MICROSOFT_ADS_CLIENT_SECRET
  *   OAUTH_STATE_SECRET   — shared HMAC secret
  *   OAUTH_REDIRECT_URI   — defaults to https://www.intastellarconsents.com/api/ad-oauth-callback
@@ -61,7 +61,7 @@ function buildAuthUrl(platform, state) {
             return `https://www.facebook.com/v18.0/dialog/oauth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
         }
         case "linkedin_ads": {
-            const clientId = process.env.LINKEDIN_ADS_CLIENT_ID;
+            const clientId = process.env.LINKEDIN_CLIENT_ID;
             if (!clientId) return null;
             const scope = encodeURIComponent("r_ads r_ads_reporting");
             return `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;

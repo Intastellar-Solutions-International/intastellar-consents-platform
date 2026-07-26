@@ -78,8 +78,8 @@ async function tryRefreshToken(db, conn) {
             break;
         case "linkedin_ads":
             refreshUrl = "https://www.linkedin.com/oauth/v2/accessToken";
-            clientId = process.env.LINKEDIN_ADS_CLIENT_ID;
-            clientSecret = process.env.LINKEDIN_ADS_CLIENT_SECRET;
+            clientId = process.env.LINKEDIN_CLIENT_ID;
+            clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
             bodyExtra = { grant_type: "refresh_token", refresh_token: conn.refresh_token };
             break;
         case "microsoft_ads":

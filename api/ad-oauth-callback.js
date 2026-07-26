@@ -58,8 +58,8 @@ async function exchangeCode(platform, code) {
             break;
         case "linkedin_ads":
             url = "https://www.linkedin.com/oauth/v2/accessToken";
-            clientId = process.env.LINKEDIN_ADS_CLIENT_ID;
-            clientSecret = process.env.LINKEDIN_ADS_CLIENT_SECRET;
+            clientId = process.env.LINKEDIN_CLIENT_ID;
+            clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
             break;
         case "microsoft_ads":
             url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
