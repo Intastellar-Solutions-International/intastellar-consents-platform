@@ -27,11 +27,21 @@ function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;
     try {
-        const parts = match[1].split(".");
+        // Token is base64-encoded wholesale (per Authentication.php JWTDecode):
+        // base64_decode(token) → "header.payload.sig", then payload is decoded again.
+        const decoded = Buffer.from(match[1], "base64").toString("utf8");
+        const parts = decoded.split(".");
         if (parts.length !== 3) return null;
         const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
         const now = Math.floor(Date.now() / 1000);
-        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
+        const iss = payload.iss ?? "";
+        if (iss === "Intastellar Account") {
+            if ((payload.nbf && payload.nbf > now) || (payload.exp && payload.exp < now)) return null;
+        } else if (iss === "Intastellar Cron") {
+            if (payload.sub !== "cron_scan_domains" || (payload.exp && payload.exp < now)) return null;
+        } else {
+            return null;
+        }
         return payload;
     } catch { return null; }
 }
