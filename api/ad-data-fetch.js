@@ -12,6 +12,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
+import { tryRefreshToken as _tryRefreshToken, fetchPlatformData } from "./_ad-platform-fetch.js";
 
 let pool;
 function getPool() {
@@ -62,267 +63,36 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
-async function tryRefreshToken(db, conn) {
-    if (!conn.token_expires_at) return conn;
-    const expiresAt = new Date(conn.token_expires_at).getTime();
-    if (Date.now() < expiresAt - 60_000) return conn; // still valid (> 1 min headroom)
-    if (!conn.refresh_token) return conn;              // no refresh token — try with current
+const tryRefreshToken = _tryRefreshToken;
 
-    let refreshUrl, clientId, clientSecret, bodyExtra = {};
-    switch (conn.platform) {
-        case "google_ads":
-            refreshUrl = "https://oauth2.googleapis.com/token";
-            clientId = process.env.GOOGLE_ADS_CLIENT_ID;
-            clientSecret = process.env.GOOGLE_ADS_CLIENT_SECRET;
-            bodyExtra = { grant_type: "refresh_token", refresh_token: conn.refresh_token };
-            break;
-        case "linkedin_ads":
-            refreshUrl = "https://www.linkedin.com/oauth/v2/accessToken";
-            clientId = process.env.LINKEDIN_CLIENT_ID;
-            clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
-            bodyExtra = { grant_type: "refresh_token", refresh_token: conn.refresh_token };
-            break;
-        case "google_analytics":
-            refreshUrl = "https://oauth2.googleapis.com/token";
-            clientId = process.env.GOOGLE_CLIENT_ID;
-            clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-            bodyExtra = { grant_type: "refresh_token", refresh_token: conn.refresh_token };
-            break;
-        case "microsoft_ads":
-            refreshUrl = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
-            clientId = process.env.MICROSOFT_ADS_CLIENT_ID;
-            clientSecret = process.env.MICROSOFT_ADS_CLIENT_SECRET;
-            bodyExtra = { grant_type: "refresh_token", refresh_token: conn.refresh_token };
-            break;
-        case "meta_ads": {
-            // Meta uses long-lived token extension instead of standard refresh
-            const resp = await fetch(
-                `https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.META_ADS_CLIENT_ID}&client_secret=${process.env.META_ADS_CLIENT_SECRET}&fb_exchange_token=${conn.access_token}`
-            ).catch(() => null);
-            if (!resp?.ok) return conn;
-            const data = await resp.json().catch(() => null);
-            if (!data?.access_token) return conn;
-            const newExpiry = data.expires_in ? new Date(Date.now() + data.expires_in * 1000).toISOString() : null;
-            await db.query(
-                `UPDATE ad_platform_connections SET access_token=$1, token_expires_at=$2, updated_at=NOW()
-                 WHERE organisation_id=$3 AND domain=$4 AND platform=$5`,
-                [data.access_token, newExpiry, conn.organisation_id, conn.domain, conn.platform]
-            );
-            return { ...conn, access_token: data.access_token, token_expires_at: newExpiry };
-        }
-        default:
-            return conn;
-    }
-
-    if (!clientId || !clientSecret) return conn;
-
+// Check ad_daily_data cache; returns aggregate if all days are present, null otherwise.
+async function fromCache(db, orgId, domain, platform, fromDate, toDate) {
     try {
-        const body = new URLSearchParams({ client_id: clientId, client_secret: clientSecret, ...bodyExtra });
-        const resp = await fetch(refreshUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: body.toString(),
-        });
-        if (!resp.ok) return conn;
-        const data = await resp.json();
-        if (!data.access_token) return conn;
+        const from = new Date(fromDate + "T00:00:00Z");
+        const to   = new Date(toDate   + "T00:00:00Z");
+        const totalDays = Math.round((to - from) / 86_400_000) + 1;
 
-        const newExpiry = data.expires_in ? new Date(Date.now() + data.expires_in * 1000).toISOString() : null;
-        await db.query(
-            `UPDATE ad_platform_connections SET access_token=$1, refresh_token=COALESCE($2, refresh_token), token_expires_at=$3, updated_at=NOW()
-             WHERE organisation_id=$4 AND domain=$5 AND platform=$6`,
-            [data.access_token, data.refresh_token || null, newExpiry, conn.organisation_id, conn.domain, conn.platform]
+        const { rows } = await db.query(
+            `SELECT COUNT(*)::int AS n, SUM(clicks)::bigint AS clicks,
+                    SUM(impressions)::bigint AS impressions,
+                    SUM(spend)::numeric AS spend, MAX(currency) AS currency
+             FROM ad_daily_data
+             WHERE organisation_id=$1 AND domain=$2 AND platform=$3
+               AND date >= $4::date AND date <= $5::date`,
+            [orgId, domain, platform, fromDate, toDate]
         );
-        return { ...conn, access_token: data.access_token, token_expires_at: newExpiry };
-    } catch { return conn; }
-}
-
-async function fetchGoogleAds(conn, fromDate, toDate) {
-    if (!conn.account_id) {
-        throw new Error("No Google Ads customer ID linked — reconnect to let us detect your account.");
-    }
-    const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
-    const customerId = conn.account_id.replace(/\D/g, ""); // strip dashes if present
-
-    const baseHeaders = {
-        Authorization: `Bearer ${conn.access_token}`,
-        "developer-token": devToken,
-        "Content-Type": "application/json",
-    };
-    if (conn.login_customer_id) {
-        baseHeaders["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
-    }
-
-    const gadsPost = (query) => fetch(
-        `https://googleads.googleapis.com/v18/customers/${customerId}/googleAds:search`,
-        { method: "POST", headers: baseHeaders, body: JSON.stringify({ query }) }
-    );
-
-    // Fetch currency from the account if not already stored
-    let currency = conn.account_currency || null;
-    if (!currency) {
-        const currResp = await gadsPost(
-            "SELECT customer.currency_code FROM customer LIMIT 1"
-        ).catch(() => null);
-        if (currResp?.ok) {
-            const currData = await currResp.json().catch(() => ({}));
-            currency = currData?.results?.[0]?.customer?.currencyCode || null;
-        }
-    }
-
-    // Fetch clicks, spend, impressions aggregated across all campaigns in the date range
-    const query = `
-        SELECT metrics.clicks, metrics.cost_micros, metrics.impressions
-        FROM campaign
-        WHERE segments.date BETWEEN '${fromDate}' AND '${toDate}'
-          AND campaign.status != 'REMOVED'
-    `;
-
-    const resp = await gadsPost(query);
-
-    if (!resp.ok) {
-        const rawText = await resp.text().catch(() => "");
-        let errBody = {};
-        try { errBody = JSON.parse(rawText); } catch {}
-        console.error(`[ad-data-fetch] Google Ads ${resp.status} for customer ${customerId}:`, rawText.slice(0, 500));
-        const msg = errBody?.error?.message
-            || errBody?.error?.details?.[0]?.errors?.[0]?.message
-            || errBody?.errors?.[0]?.message
-            || `Google Ads API error (${resp.status}): ${rawText.slice(0, 200)}`;
-        throw new Error(msg);
-    }
-
-    const data = await resp.json();
-    let clicks = 0, spendMicros = 0, impressions = 0;
-    for (const row of (data.results || [])) {
-        clicks      += Number(row.metrics?.clicks || 0);
-        spendMicros += Number(row.metrics?.costMicros ?? row.metrics?.cost_micros ?? 0);
-        impressions += Number(row.metrics?.impressions || 0);
-    }
-
-    return {
-        clicks,
-        spend: +(spendMicros / 1_000_000).toFixed(2),
-        currency: currency || "EUR",
-        impressions,
-    };
-}
-
-async function fetchMetaAds(conn, fromDate, toDate) {
-    const accountId = String(conn.account_id || "").replace(/^act_/, "");
-    if (!accountId) throw new Error("No Meta Ad Account linked — reconnect to select your account.");
-
-    const params = new URLSearchParams({
-        fields: "clicks,spend,impressions,account_currency",
-        time_range: JSON.stringify({ since: fromDate, until: toDate }),
-        level: "account",
-        access_token: conn.access_token,
-    });
-
-    const resp = await fetch(`https://graph.facebook.com/v18.0/act_${accountId}/insights?${params}`);
-    if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `Meta API error (${resp.status})`);
-    }
-    const data = await resp.json();
-    const row = data.data?.[0];
-    if (!row) return { clicks: 0, spend: 0, currency: "USD", impressions: 0 };
-    return {
-        clicks: Number(row.clicks || 0),
-        spend: Number(row.spend || 0),
-        currency: row.account_currency || "USD",
-        impressions: Number(row.impressions || 0),
-    };
-}
-
-async function fetchLinkedInAds(conn, fromDate, toDate) {
-    if (!conn.account_id) throw new Error("No LinkedIn Ads account linked — select an account first.");
-
-    const [fy, fm, fd] = fromDate.split("-").map(Number);
-    const [ty, tm, td] = toDate.split("-").map(Number);
-
-    const params = new URLSearchParams({
-        q: "analytics",
-        "dateRange.start.year": fy,
-        "dateRange.start.month": fm,
-        "dateRange.start.day": fd,
-        "dateRange.end.year": ty,
-        "dateRange.end.month": tm,
-        "dateRange.end.day": td,
-        pivot: "ACCOUNT",
-        timeGranularity: "ALL",
-        fields: "clicks,costInUsd,impressions",
-    });
-    // LinkedIn requires the account as a sponsored account URN
-    params.append("accounts", `urn:li:sponsoredAccount:${conn.account_id}`);
-
-    const resp = await fetch(`https://api.linkedin.com/rest/adAnalytics?${params}`, {
-        headers: { Authorization: `Bearer ${conn.access_token}`, "LinkedIn-Version": "202406" },
-    });
-
-    if (!resp.ok) {
-        const rawText = await resp.text().catch(() => "");
-        let errBody = {};
-        try { errBody = JSON.parse(rawText); } catch {}
-        console.error(`[ad-data-fetch] LinkedIn Ads ${resp.status} for account ${conn.account_id}:`, rawText.slice(0, 500));
-        throw new Error(errBody?.message || `LinkedIn API error (${resp.status}): ${rawText.slice(0, 200)}`);
-    }
-
-    const data = await resp.json();
-    const row = data.elements?.[0];
-    if (!row) return { clicks: 0, spend: 0, currency: "USD", impressions: 0 };
-    return {
-        clicks: Number(row.clicks || 0),
-        spend: Number(row.costInUsd || 0),
-        currency: "USD",
-        impressions: Number(row.impressions || 0),
-    };
-}
-
-async function fetchGoogleAnalytics(conn, fromDate, toDate) {
-    if (!conn.account_id) throw new Error("No GA4 property linked — select a property first.");
-    const propertyId = conn.account_id;
-
-    const resp = await fetch(
-        `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
-        {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${conn.access_token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                dateRanges: [{ startDate: fromDate, endDate: toDate }],
-                metrics: [{ name: "sessions" }],
-            }),
-        }
-    );
-
-    if (!resp.ok) {
-        const rawText = await resp.text().catch(() => "");
-        let errBody = {};
-        try { errBody = JSON.parse(rawText); } catch {}
-        console.error(`[ad-data-fetch] GA4 ${resp.status} for property ${propertyId}:`, rawText.slice(0, 500));
-        const msg = errBody?.error?.message || `GA4 API error (${resp.status}): ${rawText.slice(0, 200)}`;
-        throw new Error(msg);
-    }
-
-    const data = await resp.json();
-    const sessions = Number(data.rows?.[0]?.metricValues?.[0]?.value || 0);
-    return { clicks: sessions, sessions, spend: 0, currency: null, impressions: 0 };
-}
-
-async function fetchPlatformData(conn, fromDate, toDate) {
-    switch (conn.platform) {
-        case "google_ads":       return fetchGoogleAds(conn, fromDate, toDate);
-        case "meta_ads":         return fetchMetaAds(conn, fromDate, toDate);
-        case "linkedin_ads":     return fetchLinkedInAds(conn, fromDate, toDate);
-        case "google_analytics": return fetchGoogleAnalytics(conn, fromDate, toDate);
-        case "microsoft_ads":
-            throw new Error("Microsoft Ads automatic import is not yet available. Please enter the data manually.");
-        default:
-            throw new Error(`Unsupported platform: ${conn.platform}`);
-    }
+        const row = rows[0];
+        if (!row || Number(row.n) < totalDays) return null;
+        const sessions = platform === "google_analytics" ? Number(row.clicks || 0) : undefined;
+        return {
+            clicks:      Number(row.clicks      || 0),
+            impressions: Number(row.impressions  || 0),
+            spend:       Number(row.spend        || 0),
+            currency:    row.currency            || null,
+            ...(sessions != null ? { sessions } : {}),
+            fromCache: true,
+        };
+    } catch { return null; }
 }
 
 export default async function handler(req, res) {
@@ -351,6 +121,11 @@ export default async function handler(req, res) {
     }
 
     let conn = result.rows[0];
+
+    // Serve from cache if all days in range are pre-synced by the cron
+    const cached = await fromCache(db, orgId, domain, platform, fromDate, toDate);
+    if (cached) return res.status(200).json(cached);
+
     conn = await tryRefreshToken(db, conn);
 
     try {

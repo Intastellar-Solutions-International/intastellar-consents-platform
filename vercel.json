@@ -25,6 +25,10 @@
     {
       "path": "/api/cron-cleanup-scans",
       "schedule": "30 3 * * *"
+    },
+    {
+      "path": "/api/cron-ad-sync",
+      "schedule": "0 2 * * *"
     }
   ],
   "functions": {
@@ -114,6 +118,10 @@
     "api/ad-alerts.js": {
       "memory": 256,
       "maxDuration": 15
+    },
+    "api/cron-ad-sync.js": {
+      "memory": 256,
+      "maxDuration": 90
     }
   }
 }
