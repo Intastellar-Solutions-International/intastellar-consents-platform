@@ -1451,7 +1451,7 @@ function AlertSettingsModal({ domainKey, orgId, authToken, currency, onClose }) 
                 enabled: updates.enabled ?? rule.enabled ?? false,
                 notify_email: updates.notify_email ?? rule.notify_email ?? false,
                 notify_push: updates.notify_push ?? rule.notify_push ?? false,
-                email_address: updates.email_address ?? rule.email_address ?? email || null,
+                email_address: (updates.email_address ?? rule.email_address ?? email) || null,
             };
             const resp = await fetch("/api/ad-alerts", {
                 method: "POST",
