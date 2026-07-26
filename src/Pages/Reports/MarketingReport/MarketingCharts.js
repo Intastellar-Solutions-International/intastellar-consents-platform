@@ -455,13 +455,20 @@ function fmtInt(n) {
     return Math.round(x).toLocaleString("de-DE");
 }
 
-export function Ga4SessionsChart({ rows, platformBreakdown, syncing }) {
+function fmtDuration(seconds) {
+    const s = Math.round(Number(seconds) || 0);
+    if (s < 60) return `${s}s`;
+    const m = Math.floor(s / 60), r = s % 60;
+    return r === 0 ? `${m}m` : `${m}m ${r}s`;
+}
+
+export function Ga4SessionsChart({ rows, platformBreakdown, summary, syncing }) {
     if (!rows || rows.length === 0) {
         if (!syncing) return null;
         return (
-            <div className="ga4-sessions-chart">
-                <div className="ga4-sessions-chart__header">
-                    <h3 className="marketing-reconciliation__section-title">GA4 Daily Sessions</h3>
+            <div className="ga4-card">
+                <div className="ga4-card__header">
+                    <span className="ga4-card__title">Google Analytics 4</span>
                     <span className="ga4-sessions-chart__syncing">loading…</span>
                 </div>
             </div>
@@ -485,24 +492,47 @@ export function Ga4SessionsChart({ rows, platformBreakdown, syncing }) {
     const ssPlatform = platformBreakdown?.find(p => p.platform === "(other)");
     const hasSsTracking = ssPlatform && ssPlatform.sessions > 0;
     const ssShare = hasSsTracking && totalSessions > 0
-        ? Math.round((ssPlatform.sessions / totalSessions) * 100)
-        : 0;
+        ? Math.round((ssPlatform.sessions / totalSessions) * 100) : 0;
+
+    // KPI values — prefer aggregate summary, fall back to summing daily rows
+    const kpis = summary ? [
+        { label: "Sessions",      value: fmtInt(summary.sessions) },
+        { label: "Users",         value: fmtInt(summary.totalUsers) },
+        { label: "New users",     value: fmtInt(summary.newUsers) },
+        { label: "Page views",    value: fmtInt(summary.pageViews) },
+        { label: "Engagement",    value: `${(summary.engagementRate * 100).toFixed(1)}%`,
+          title: "Engaged sessions as a share of total sessions (GA4's replacement for bounce rate)." },
+        { label: "Avg. session",  value: fmtDuration(summary.avgSessionDuration) },
+    ] : null;
 
     return (
-        <div className="ga4-sessions-chart">
-            <div className="ga4-sessions-chart__header">
-                <h3 className="marketing-reconciliation__section-title">GA4 Daily Sessions</h3>
-                {hasSsTracking && (
-                    <span className="ga4-ss-badge"
-                          title={`${ssShare}% of sessions come from server-side tracking (Measurement Protocol / sGTM)`}>
-                        Server-side events detected · {ssShare}%
-                    </span>
-                )}
-                {syncing && <span className="ga4-sessions-chart__syncing">syncing…</span>}
+        <div className="ga4-card">
+            <div className="ga4-card__header">
+                <span className="ga4-card__title">Google Analytics 4</span>
+                <div className="ga4-card__badges">
+                    {hasSsTracking && (
+                        <span className="ga4-ss-badge"
+                              title={`${ssShare}% of sessions from server-side tracking (Measurement Protocol / sGTM)`}>
+                            ⚡ Server-side · {ssShare}%
+                        </span>
+                    )}
+                    {syncing && <span className="ga4-sessions-chart__syncing">syncing…</span>}
+                </div>
             </div>
-            <p className="marketing-reconciliation__section-hint">
-                Daily session count from the connected GA4 property, auto-synced nightly.
-            </p>
+
+            {/* KPI strip */}
+            {kpis && (
+                <div className="ga4-kpi-strip">
+                    {kpis.map(k => (
+                        <div key={k.label} className="ga4-kpi" title={k.title || ""}>
+                            <span className="ga4-kpi__value">{k.value}</span>
+                            <span className="ga4-kpi__label">{k.label}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Daily sessions bar chart */}
             <div className="recon-chart-scroll">
                 <svg viewBox={`0 0 ${W} ${H}`} className="marketing-reconciliation__trend-svg"
                      role="img" aria-label="GA4 daily sessions bar chart">
@@ -523,12 +553,12 @@ export function Ga4SessionsChart({ rows, platformBreakdown, syncing }) {
                         return (
                             <rect key={r.date} x={toX(i) - barW / 2} y={top}
                                   width={barW} height={Math.max(1, ht)}
-                                  rx="2" fill="rgba(227,116,0,0.72)">
-                                <title>{r.date}: {fmtInt(sessions)} sessions</title>
+                                  rx="2" fill="rgba(227,116,0,0.75)">
+                                <title>{r.date}: {fmtInt(sessions)} sessions · {fmtInt(r.users || 0)} users · {fmtInt(r.pageViews || 0)} page views</title>
                             </rect>
                         );
                     })}
-                    {rows.filter((_, i) => i % xStep === 0 || i === rows.length - 1).map((r, _, arr) => {
+                    {rows.filter((_, i) => i % xStep === 0 || i === rows.length - 1).map(r => {
                         const i = rows.indexOf(r);
                         return (
                             <text key={r.date} x={toX(i)} y={H - PAD.bottom + 14}
@@ -540,10 +570,12 @@ export function Ga4SessionsChart({ rows, platformBreakdown, syncing }) {
                     <text x={PAD.left - 38} y={PAD.top + plotH / 2} textAnchor="middle"
                           fontSize="9" fill="rgba(150,165,190,0.5)"
                           transform={`rotate(-90,${PAD.left - 38},${PAD.top + plotH / 2})`}>
-                        Sessions
+                        Sessions / day
                     </text>
                 </svg>
             </div>
+
+            {/* Platform / server-side tracking breakdown */}
             {platformBreakdown && platformBreakdown.length > 0 && (
                 <div className="ga4-platform-breakdown">
                     <h4 className="ga4-platform-breakdown__title">Session source breakdown</h4>
@@ -555,11 +587,7 @@ export function Ga4SessionsChart({ rows, platformBreakdown, syncing }) {
                                 <div key={p.platform} className={`ga4-pb-row${isSs ? " ga4-pb-row--ss" : ""}`}>
                                     <span className="ga4-pb-row__name">
                                         {isSs ? (
-                                            <>
-                                                <span className="ga4-pb-row__ss-icon" aria-hidden="true">⚡</span>
-                                                {p.platform}
-                                                <span className="ga4-pb-row__ss-hint"> — server-side / Measurement Protocol</span>
-                                            </>
+                                            <>{p.platform}<span className="ga4-pb-row__ss-hint"> — server-side / Measurement Protocol</span></>
                                         ) : p.platform}
                                     </span>
                                     <div className="ga4-pb-row__bar-wrap">

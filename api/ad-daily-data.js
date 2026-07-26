@@ -65,6 +65,15 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
+const GA4_DAILY_METRICS = [
+    { name: "sessions" },
+    { name: "totalUsers" },
+    { name: "newUsers" },
+    { name: "screenPageViews" },
+    { name: "engagedSessions" },
+    { name: "userEngagementDuration" },
+];
+
 async function fetchGA4DailyLive(accessToken, propertyId, fromDate, toDate) {
     const resp = await fetch(
         `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
@@ -74,7 +83,7 @@ async function fetchGA4DailyLive(accessToken, propertyId, fromDate, toDate) {
             body: JSON.stringify({
                 dateRanges: [{ startDate: fromDate, endDate: toDate }],
                 dimensions: [{ name: "date" }],
-                metrics: [{ name: "sessions" }],
+                metrics: GA4_DAILY_METRICS,
                 orderBys: [{ dimension: { dimensionName: "date" } }],
             }),
         }
@@ -86,15 +95,61 @@ async function fetchGA4DailyLive(accessToken, propertyId, fromDate, toDate) {
         const date = raw.length === 8
             ? `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`
             : raw;
+        const mv = row.metricValues || [];
+        const sessions      = Number(mv[0]?.value || 0);
+        const users         = Number(mv[1]?.value || 0);
+        const newUsers      = Number(mv[2]?.value || 0);
+        const pageViews     = Number(mv[3]?.value || 0);
+        const engagedSess   = Number(mv[4]?.value || 0);
+        const engageDurSec  = Number(mv[5]?.value || 0);
         return {
             date,
-            sessions: Number(row.metricValues?.[0]?.value || 0),
-            clicks: Number(row.metricValues?.[0]?.value || 0),
+            sessions,
+            users,
+            newUsers,
+            pageViews,
+            engagedSessions: engagedSess,
+            engagementDurationSec: engageDurSec,
+            clicks: sessions, // backward-compat alias
             impressions: 0,
             spend: 0,
             currency: null,
         };
     });
+}
+
+async function fetchGA4AggregateSummary(accessToken, propertyId, fromDate, toDate) {
+    const resp = await fetch(
+        `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
+        {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+                dateRanges: [{ startDate: fromDate, endDate: toDate }],
+                metrics: [
+                    { name: "sessions" },
+                    { name: "totalUsers" },
+                    { name: "newUsers" },
+                    { name: "screenPageViews" },
+                    { name: "engagementRate" },
+                    { name: "averageSessionDuration" },
+                    { name: "bounceRate" },
+                ],
+            }),
+        }
+    );
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    const mv = data.rows?.[0]?.metricValues || [];
+    return {
+        sessions:            Number(mv[0]?.value || 0),
+        totalUsers:          Number(mv[1]?.value || 0),
+        newUsers:            Number(mv[2]?.value || 0),
+        pageViews:           Number(mv[3]?.value || 0),
+        engagementRate:      Number(mv[4]?.value || 0),   // 0–1 float
+        avgSessionDuration:  Number(mv[5]?.value || 0),   // seconds
+        bounceRate:          Number(mv[6]?.value || 0),   // 0–1 float
+    };
 }
 
 async function fetchGA4PlatformBreakdown(accessToken, propertyId, fromDate, toDate) {
@@ -186,12 +241,15 @@ export default async function handler(req, res) {
             .catch(() => []);
     }
 
-    // For GA4: live platform breakdown for server-side tracking detection
+    // For GA4: live platform breakdown + aggregate summary (run in parallel)
     let platformBreakdown = null;
+    let summary = null;
     if (platform === "google_analytics" && ga4AccessToken && ga4PropertyId) {
-        platformBreakdown = await fetchGA4PlatformBreakdown(ga4AccessToken, ga4PropertyId, fromDate, toDate)
-            .catch(() => null);
+        [platformBreakdown, summary] = await Promise.all([
+            fetchGA4PlatformBreakdown(ga4AccessToken, ga4PropertyId, fromDate, toDate).catch(() => null),
+            fetchGA4AggregateSummary(ga4AccessToken, ga4PropertyId, fromDate, toDate).catch(() => null),
+        ]);
     }
 
-    return res.status(200).json({ rows, platformBreakdown });
+    return res.status(200).json({ rows, platformBreakdown, summary });
 }

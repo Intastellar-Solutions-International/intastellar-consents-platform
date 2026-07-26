@@ -1621,6 +1621,7 @@ export default function MarketingReport() {
 
     const [ga4DailyRows, setGa4DailyRows] = useState(null);
     const [ga4PlatformBreakdown, setGa4PlatformBreakdown] = useState(null);
+    const [ga4Summary, setGa4Summary] = useState(null);
     const [ga4Syncing, setGa4Syncing] = useState(false);
 
     const endpoint = API[id]?.marketingAttribution;
@@ -1875,6 +1876,7 @@ export default function MarketingReport() {
         setGa4Syncing(true);
         setGa4DailyRows(null);
         setGa4PlatformBreakdown(null);
+        setGa4Summary(null);
 
         const headers = { Authorization: authToken, Organisation: String(orgId) };
 
@@ -1894,6 +1896,7 @@ export default function MarketingReport() {
                         if (cancelled) return;
                         if (daily?.rows?.length)      setGa4DailyRows(daily.rows);
                         if (daily?.platformBreakdown) setGa4PlatformBreakdown(daily.platformBreakdown);
+                        if (daily?.summary)           setGa4Summary(daily.summary);
                     });
             })
             .catch(() => {})
@@ -2363,112 +2366,63 @@ export default function MarketingReport() {
                     setCompareWindowEnd={setPreviousPeriod2}
                 />
                 <div className="dashboard-content marketing-report-page">
-                    <header className="marketing-report-hero">
-                        <h1>Channel Analytics</h1>
-                        <p className="marketing-report-hero__lede">
-                            <strong>Start with Highlights</strong> for what deserves attention in your selected period,
-                            then drill into channels and campaigns. <strong>Full-stack consent events</strong> show how
-                            much of your tagged traffic actually accepted every optional category — a budget signal, not
-                            ROAS. Cookie choices (accept all, essential only, granular) explain how tags can fire;
-                            exports sit below if you need a spreadsheet.
-                        </p>
-                        {compareOn ? (
-                            <p className="marketing-report-compare-banner">
-                                Period comparison is on: <strong>{formatPeriodRange(fromDate, toDate)}</strong> vs{" "}
-                                <strong>{formatPeriodRange(previousPeriod, previousPeriod2)}</strong>. Table deltas match
-                                rows by source, medium, campaign, and referrer host.
-                            </p>
-                        ) : null}
-                        {compareBaselineNote ? (
-                            <p className="marketing-report-compare-warning" role="status">
-                                {compareBaselineNote} Current-period figures are still shown; baseline deltas are hidden
-                                until the comparison request succeeds.
-                            </p>
-                        ) : null}
-                    </header>
 
-                    {error ? (
-                        <div className="marketing-report-error" role="alert">
-                            {error}
-                            <pre className="marketing-report-code">
-                                {`Example row: { "utm_source": "fb", "utm_medium": "paid", "utm_campaign": "spring_sale", "consents": 120, "acceptRate": 72.5, "acceptAll": 72, "essentialOnly": 30, "granular": 18 }`}
-                            </pre>
+                    {/* ── Compact page header ─────────────────────────────── */}
+                    <div className="ca-page-header">
+                        <div className="ca-page-header__left">
+                            <h1 className="ca-page-header__title">
+                                {selectedChannel ? (
+                                    <>
+                                        <button className="ca-back-btn" onClick={() => setSelectedChannel(null)}>
+                                            ← Channels
+                                        </button>
+                                        <span className="ca-page-header__channel">{selectedChannel}</span>
+                                    </>
+                                ) : "Channel Analytics"}
+                            </h1>
+                            {compareOn && (
+                                <span className="ca-compare-pill">
+                                    {formatPeriodRange(fromDate, toDate)} vs {formatPeriodRange(previousPeriod, previousPeriod2)}
+                                </span>
+                            )}
                         </div>
+                        <a href={reportsPath(id, listDomainLabel, "/reconcile")}
+                           className="ca-reconcile-link">
+                            Ad Reconciliation →
+                        </a>
+                    </div>
+
+                    {compareBaselineNote ? (
+                        <p className="marketing-report-compare-warning" role="status">
+                            {compareBaselineNote}
+                        </p>
                     ) : null}
 
+                    {error ? (
+                        <div className="marketing-report-error" role="alert">{error}</div>
+                    ) : null}
+
+                    {/* ── Consent KPI strip ───────────────────────────────── */}
+                    {!error && rows.length > 0 && (
+                        <div className="ca-kpi-strip">
+                            {kpiCards.slice(0, 5).map((c) => (
+                                <div key={c.key || c.label}
+                                     className={["ca-kpi", c.variant ? `ca-kpi--${c.variant}` : ""].filter(Boolean).join(" ")}
+                                     title={c.hint || ""}>
+                                    <span className="ca-kpi__value">{c.value}</span>
+                                    <span className="ca-kpi__label">{c.label}</span>
+                                    {c.compare ? <div className="ca-kpi__compare">{c.compare}</div> : null}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* ── Highlights ──────────────────────────────────────── */}
                     {!error && !(loading && rows.length === 0) ? (
                         <MarketingHighlightsSection highlights={highlights} />
                     ) : null}
 
-                    <section className="marketing-report-section" aria-labelledby="at-a-glance-heading">
-                        <h2 id="at-a-glance-heading" className="marketing-report-section__title">
-                            At a glance
-                        </h2>
-                        <p className="marketing-report-section__hint">
-                            {compareOn
-                                ? `Primary window ${formatPeriodRange(fromDate, toDate)} · Baseline ${formatPeriodRange(previousPeriod, previousPeriod2)}.`
-                                : "Quick counts for the same date range as the header filter."}{" "}
-                            Full-stack metrics use the API summary when available so totals stay correct even if the
-                            campaign table is paginated.
-                        </p>
-                        {!error && rows.length > 0 && invisibleSharePct != null ? (
-                            <p
-                                className="marketing-report-visibility-narrative"
-                                role="note"
-                                aria-live="polite"
-                            >
-                                {selectedChannel ? (
-                                    <>
-                                        In{" "}
-                                        <strong>{selectedChannel}</strong>,{" "}
-                                        <strong>
-                                            {invisibleConsents.toLocaleString("de-DE")}
-                                        </strong>{" "}
-                                        of{" "}
-                                        <strong>{visibilityScopeTotal.toLocaleString("de-DE")}</strong>{" "}
-                                        attributed consents
-                                    </>
-                                ) : (
-                                    <>
-                                        <strong>
-                                            {invisibleConsents.toLocaleString("de-DE")}
-                                        </strong>{" "}
-                                        of{" "}
-                                        <strong>{visibilityScopeTotal.toLocaleString("de-DE")}</strong>{" "}
-                                        attributed consents in this view
-                                    </>
-                                )}{" "}
-                                (
-                                <strong>
-                                    {invisibleSharePct.toLocaleString("de-DE", {
-                                        maximumFractionDigits: 1,
-                                    })}
-                                    %
-                                </strong>
-                                ) won't reach your analytics tools — those visits chose essential-only or
-                                granular categories, so GA4, Ads Manager, and the Meta pixel won't record them.
-                            </p>
-                        ) : null}
-                        <div className="marketing-report-summary">
-                            {kpiCards.map((c) => (
-                                <div
-                                    key={c.key || c.label}
-                                    className={[
-                                        "marketing-report-kpi",
-                                        c.variant ? `marketing-report-kpi--${c.variant}` : "",
-                                    ]
-                                        .filter(Boolean)
-                                        .join(" ")}
-                                >
-                                    <span className="marketing-report-kpi__label">{c.label}</span>
-                                    <span className="marketing-report-kpi__value">{c.value}</span>
-                                    {c.hint ? <p className="marketing-report-kpi__hint">{c.hint}</p> : null}
-                                    {c.compare ? <div className="marketing-report-kpi__compare">{c.compare}</div> : null}
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-
+                    {/* ── Suggestions ─────────────────────────────────────── */}
                     {!error && rows.length > 0 && invisibleSuggestions.length > 0 ? (
                         <MarketingSuggestionsStrip
                             suggestions={invisibleSuggestions}
@@ -2476,152 +2430,38 @@ export default function MarketingReport() {
                         />
                     ) : null}
 
-                    {!error && rows.length > 0 ? (
-                        <div className="marketing-reconciliation-cta">
-                            <p className="marketing-reconciliation-cta__text">
-                                Want to see how your paid traffic maps to consent visibility?
-                            </p>
-                            <a
-                                href={reportsPath(id, listDomainLabel, "/reconcile")}
-                                className="marketing-reconciliation-cta__link"
-                            >
-                                Open Ad Reconciliation →
-                            </a>
+                    {/* ── Main table ──────────────────────────────────────── */}
+                    <section className="marketing-report-section ca-table-section" aria-labelledby="detail-table-heading-top">
+                        <div className="ca-table-header">
+                            <h2 id="detail-table-heading-top" className="marketing-report-section__title" style={{margin:0}}>
+                                {selectedChannel ? `Campaigns · ${selectedChannel}` : "Channels & campaigns"}
+                            </h2>
+                            <div className="ca-table-toolbar">
+                                {rows.length > 0 && (
+                                    <>
+                                        <button type="button" className="marketing-report-export"
+                                            onClick={() => {
+                                                const data = selectedChannel ? sortedDrilldownRows : rows;
+                                                const slug = selectedChannel ? selectedChannel.replace(/[^\w\-]+/g, "_").slice(0, 48) : "";
+                                                triggerCsvDownload(`${exportFilenameBase}_campaigns${slug ? `_${slug}` : ""}.csv`, buildMarketingCsvCampaignRows(data, exportCsvMeta));
+                                            }}>
+                                            {selectedChannel ? "Export campaigns CSV" : "Export campaigns CSV"}
+                                        </button>
+                                        <button type="button" className="marketing-report-export marketing-report-export--secondary"
+                                            onClick={() => triggerCsvDownload(`${exportFilenameBase}_channels.csv`, buildMarketingCsvChannelRows(sortedChannelOverview, exportCsvMeta))}>
+                                            Export channels CSV
+                                        </button>
+                                    </>
+                                )}
+                                <span className="marketing-report-toolbar__meta">
+                                    {loading ? "Loading…"
+                                        : selectedChannel
+                                          ? `${drilldownRows.length} campaign${drilldownRows.length === 1 ? "" : "s"} · ${drilldownRows.reduce((s, r) => s + r.consents, 0).toLocaleString("de-DE")} consents`
+                                          : `${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString("de-DE")} consents`}
+                                </span>
+                            </div>
                         </div>
-                    ) : null}
-
-                    {!error && rows.length > 0 ? (
-                        selectedChannel ? (
-                            <>
-                                <MarketingChannelCharts
-                                    channelName={selectedChannel}
-                                    drilldownRows={drilldownRows}
-                                    drillConsents={drillConsents}
-                                    mergedContext={mergedContext}
-                                />
-                                <MarketingTimeseriesChart
-                                    channelName={selectedChannel}
-                                    deriveChannel={deriveMarketingChannel}
-                                    timeseriesRows={timeseriesRows}
-                                    baselineTimeseriesRows={baselineTimeseriesRows}
-                                    fromDate={fromDate}
-                                    toDate={toDate}
-                                    compareEnabled={compareUi}
-                                    loading={timeseriesLoading}
-                                    errorMessage={timeseriesError}
-                                />
-                            </>
-                        ) : (
-                            <MarketingOverviewCharts
-                                channelOverview={channelOverview}
-                                rows={rows}
-                            />
-                        )
-                    ) : null}
-
-                    {(ga4DailyRows?.length > 0 || ga4Syncing) && (
-                        <Ga4SessionsChart
-                            rows={ga4DailyRows || []}
-                            platformBreakdown={ga4PlatformBreakdown}
-                            syncing={ga4Syncing}
-                        />
-                    )}
-
-                    <section className="marketing-report-section" aria-labelledby="exports-heading">
-                        <h2 id="exports-heading" className="marketing-report-section__title">
-                            Exports & navigation
-                        </h2>
-                        <p className="marketing-report-section__hint">
-                            Download CSV for stakeholders; use back to return to all channels.
-                        </p>
-                    <div className="marketing-report-toolbar">
-                        <div className="marketing-report-toolbar__left">
-                            {selectedChannel ? (
-                                <button
-                                    type="button"
-                                    className="marketing-report-back"
-                                    onClick={() => setSelectedChannel(null)}
-                                >
-                                    ← Channel overview
-                                </button>
-                            ) : null}
-                            {rows.length > 0 ? (
-                                <>
-                                    <button
-                                        type="button"
-                                        className="marketing-report-export"
-                                        onClick={() => {
-                                            const data = selectedChannel ? sortedDrilldownRows : rows;
-                                            const slug = selectedChannel
-                                                ? selectedChannel.replace(/[^\w\-]+/g, "_").slice(0, 48)
-                                                : "";
-                                            triggerCsvDownload(
-                                                `${exportFilenameBase}_campaigns${slug ? `_${slug}` : ""}.csv`,
-                                                buildMarketingCsvCampaignRows(data, exportCsvMeta)
-                                            );
-                                        }}
-                                    >
-                                        {selectedChannel ? "Export this channel (campaigns) CSV" : "Export campaigns CSV"}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="marketing-report-export marketing-report-export--secondary"
-                                        onClick={() =>
-                                            triggerCsvDownload(
-                                                `${exportFilenameBase}_channels.csv`,
-                                                buildMarketingCsvChannelRows(sortedChannelOverview, exportCsvMeta)
-                                            )
-                                        }
-                                    >
-                                        Export channels CSV
-                                    </button>
-                                </>
-                            ) : null}
-                        </div>
-                        <span className="marketing-report-toolbar__meta">
-                            {loading
-                                ? "Loading…"
-                                : selectedChannel
-                                  ? `${drilldownRows.length} campaign${drilldownRows.length === 1 ? "" : "s"} · ${drilldownRows.reduce((s, r) => s + r.consents, 0).toLocaleString("de-DE")} consents in “${selectedChannel}”`
-                                  : `${channelOverview.length} channel${channelOverview.length === 1 ? "" : "s"} · ${totalConsents.toLocaleString("de-DE")} consents`}
-                        </span>
-                    </div>
-                    </section>
-
-                    <section className="marketing-report-section" aria-labelledby="perf-context-section-h">
-                        <h2 id="perf-context-section-h" className="marketing-report-section__title">
-                            What's driving differences
-                        </h2>
-                        <p className="marketing-report-section__hint">
-                            Geography, landing paths, and UTM variants (merged from campaign-level API slices).
-                        </p>
-                    {rows.length > 0 ? (
-                        <MarketingContextSection
-                            heading={
-                                selectedChannel
-                                    ? `${selectedChannel} · detail`
-                                    : "All channels · detail"
-                            }
-                            rows={selectedChannel ? drilldownRows : rows}
-                        />
-                    ) : null}
-                    </section>
-
-                    <section className="marketing-report-section" aria-labelledby="detail-table-heading">
-                        <h2 id="detail-table-heading" className="marketing-report-section__title">
-                            {selectedChannel ? `Campaigns · ${selectedChannel}` : "Channels & campaigns"}
-                        </h2>
-                        <p className="marketing-report-section__hint">
-                            {selectedChannel
-                                ? compareUi
-                                    ? "Per-campaign metrics vs the comparison window for matched rows. Choice columns are current period only."
-                                    : "Per-campaign consent and cookie-choice mix for this channel."
-                                : compareUi
-                                  ? "Channel totals vs the comparison window. Deltas use baseline traffic grouped the same way as the primary table."
-                                  : "Open a channel row to see individual campaigns."}
-                        </p>
-
-                    <div className="marketing-report-table-wrap">
+                        <div className=”marketing-report-table-wrap”>
                         {rows.length === 0 && !loading ? (
                             <div className="marketing-report-empty">
                                 No marketing rows for this scope and period. When your API returns data, it will appear
@@ -2921,6 +2761,61 @@ export default function MarketingReport() {
                             three choice columns.
                         </p>
                     ) : null}
+
+                    {/* ── GA4 card ─────────────────────────────────────────── */}
+                    {(ga4DailyRows?.length > 0 || ga4Syncing) && (
+                        <Ga4SessionsChart
+                            rows={ga4DailyRows || []}
+                            platformBreakdown={ga4PlatformBreakdown}
+                            summary={ga4Summary}
+                            syncing={ga4Syncing}
+                        />
+                    )}
+
+                    {/* ── Channel charts (overview or drill-in) ───────────── */}
+                    {!error && rows.length > 0 ? (
+                        selectedChannel ? (
+                            <>
+                                <MarketingChannelCharts
+                                    channelName={selectedChannel}
+                                    drilldownRows={drilldownRows}
+                                    drillConsents={drillConsents}
+                                    mergedContext={mergedContext}
+                                />
+                                <MarketingTimeseriesChart
+                                    channelName={selectedChannel}
+                                    deriveChannel={deriveMarketingChannel}
+                                    timeseriesRows={timeseriesRows}
+                                    baselineTimeseriesRows={baselineTimeseriesRows}
+                                    fromDate={fromDate}
+                                    toDate={toDate}
+                                    compareEnabled={compareUi}
+                                    loading={timeseriesLoading}
+                                    errorMessage={timeseriesError}
+                                />
+                            </>
+                        ) : (
+                            <MarketingOverviewCharts
+                                channelOverview={channelOverview}
+                                rows={rows}
+                            />
+                        )
+                    ) : null}
+
+                    {/* ── What's driving differences (collapsed by default) ── */}
+                    {rows.length > 0 ? (
+                        <details className="ca-context-details">
+                            <summary className="ca-context-summary">
+                                What's driving differences
+                                <span className="ca-context-summary__hint">geography · landing paths · UTM variants</span>
+                            </summary>
+                            <MarketingContextSection
+                                heading={selectedChannel ? `${selectedChannel} · detail` : "All channels · detail"}
+                                rows={selectedChannel ? drilldownRows : rows}
+                            />
+                        </details>
+                    ) : null}
+
                 </div>
             </div>
         </>

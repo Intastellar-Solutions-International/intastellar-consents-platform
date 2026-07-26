@@ -3671,28 +3671,74 @@
 }
 .acct-picker-modal__cancel:hover { background: rgba(255,255,255,0.08); }
 
-/* ─── GA4 Sessions Chart ─────────────────────────────────────────────────── */
-.ga4-sessions-chart {
+/* ─── GA4 Card (Channel Analytics) ──────────────────────────────────────── */
+.ga4-card {
     margin: 4px 0 18px;
     padding: 18px 20px 16px;
     background: rgba(227,116,0,0.04);
     border: 1px solid rgba(227,116,0,0.14);
     border-radius: 14px;
 }
-.ga4-sessions-chart__header {
+.ga4-card__header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 4px;
+    margin-bottom: 14px;
 }
-.ga4-sessions-chart__header .marketing-reconciliation__section-title {
-    margin: 0;
+.ga4-card__title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(227,116,0,0.9);
+}
+.ga4-card__badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 .ga4-sessions-chart__syncing {
     font-size: 0.72rem;
     color: rgba(227,116,0,0.6);
-    margin-left: auto;
+}
+
+/* GA4 KPI strip */
+.ga4-kpi-strip {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    border: 1px solid rgba(227,116,0,0.12);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.ga4-kpi {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 8px;
+    border-right: 1px solid rgba(227,116,0,0.1);
+    cursor: default;
+    transition: background 0.12s;
+}
+.ga4-kpi:last-child { border-right: none; }
+.ga4-kpi:hover { background: rgba(227,116,0,0.07); }
+.ga4-kpi__value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgba(240,190,80,0.95);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+.ga4-kpi__label {
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(145,158,180,0.65);
+    margin-top: 2px;
+    white-space: nowrap;
 }
 .ga4-ss-badge {
     display: inline-flex;
@@ -3774,4 +3820,173 @@
     color: rgba(185,195,215,0.7);
     font-size: 0.75rem;
     font-variant-numeric: tabular-nums;
+}
+
+/* ─── Channel Analytics Redesigned Layout ───────────────────────────────── */
+
+/* Compact page header */
+.ca-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.ca-page-header__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.ca-page-header__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: rgba(235,240,255,0.96);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.ca-page-header__channel {
+    color: rgba(200,210,240,0.9);
+    font-weight: 600;
+}
+.ca-back-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(145,160,200,0.75);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.12s;
+}
+.ca-back-btn:hover { color: rgba(200,210,240,0.95); }
+.ca-compare-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.22);
+    border-radius: 20px;
+    font-size: 0.71rem;
+    color: rgba(165,170,255,0.85);
+}
+.ca-reconcile-link {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(99,102,241,0.1);
+    border: 1px solid rgba(99,102,241,0.22);
+    border-radius: 8px;
+    font-size: 0.77rem;
+    font-weight: 600;
+    color: rgba(165,170,255,0.88);
+    text-decoration: none;
+    transition: background 0.13s;
+    white-space: nowrap;
+}
+.ca-reconcile-link:hover { background: rgba(99,102,241,0.18); color: rgba(185,190,255,0.95); }
+
+/* Consent KPI strip */
+.ca-kpi-strip {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.ca-kpi {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    cursor: default;
+    min-width: 0;
+    transition: background 0.12s;
+}
+.ca-kpi:last-child { border-right: none; }
+.ca-kpi:hover { background: rgba(255,255,255,0.035); }
+.ca-kpi__value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: rgba(232,236,248,0.95);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+.ca-kpi--warn .ca-kpi__value { color: rgba(252,165,50,0.92); }
+.ca-kpi__label {
+    font-size: 0.64rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(140,155,180,0.6);
+    margin-top: 3px;
+    text-align: center;
+    line-height: 1.2;
+}
+.ca-kpi__compare {
+    margin-top: 3px;
+    font-size: 0.7rem;
+}
+
+/* Table section header with inline toolbar */
+.ca-table-section { margin-bottom: 0; }
+.ca-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.ca-table-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Collapsed context section */
+.ca-context-details {
+    margin: 16px 0 4px;
+}
+.ca-context-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(170,180,210,0.8);
+    list-style: none;
+    user-select: none;
+    transition: background 0.12s;
+}
+.ca-context-summary::-webkit-details-marker { display: none; }
+.ca-context-summary::before {
+    content: "▸";
+    font-size: 0.7rem;
+    color: rgba(140,155,180,0.5);
+    transition: transform 0.15s;
+}
+details[open] .ca-context-summary::before { content: "▾"; }
+.ca-context-summary:hover { background: rgba(255,255,255,0.055); }
+.ca-context-summary__hint {
+    font-size: 0.69rem;
+    font-weight: 400;
+    color: rgba(130,145,170,0.55);
+    margin-left: 4px;
+}
+.ca-context-details[open] .ca-context-summary {
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
 }
