@@ -101,7 +101,10 @@ async function fetchAllAccounts(platform, accessToken) {
                     "https://googleads.googleapis.com/v18/customers:listAccessibleCustomers",
                     { headers: { Authorization: `Bearer ${accessToken}`, "developer-token": devToken } }
                 );
-                if (!listResp.ok) return [];
+                if (!listResp.ok) {
+                    const body = await listResp.text().catch(() => "");
+                    throw new Error(`Google Ads API ${listResp.status}: ${body.slice(0, 300)}`);
+                }
                 const listData = await listResp.json();
                 const resourceNames = listData.resourceNames || [];
                 if (resourceNames.length === 0) return [];
@@ -220,20 +223,44 @@ export default async function handler(req, res) {
 
     const db = getPool();
 
-    const { rows } = await db.query(
+    // Look in finalized connections first, fall back to pending_ad_connections
+    // (pending is where the token lives when accounts=[] was stored during OAuth callback)
+    let tokenRow = null;
+
+    const { rows: finalizedRows } = await db.query(
         `SELECT access_token, refresh_token, token_expires_at, scopes
          FROM ad_platform_connections
          WHERE organisation_id=$1 AND domain=$2 AND platform=$3 AND access_token IS NOT NULL`,
         [orgId, domain, platform]
     );
+    if (finalizedRows.length) {
+        tokenRow = finalizedRows[0];
+    } else {
+        const { rows: pendingRows } = await db.query(
+            `SELECT access_token, refresh_token, token_expires_at, scopes
+             FROM pending_ad_connections
+             WHERE organisation_id=$1 AND domain=$2 AND platform=$3
+             ORDER BY created_at DESC LIMIT 1`,
+            [orgId, domain, platform]
+        );
+        if (pendingRows.length) tokenRow = pendingRows[0];
+    }
 
-    if (!rows.length) return res.status(404).json({ error: "No stored token found for this connection" });
+    if (!tokenRow) {
+        return res.status(404).json({ error: "No stored token found. Please reconnect via OAuth." });
+    }
 
-    const { access_token, refresh_token, token_expires_at, scopes } = rows[0];
+    const { access_token, refresh_token, token_expires_at, scopes } = tokenRow;
 
-    const accounts = await fetchAllAccounts(platform, access_token);
+    let accounts;
+    try {
+        accounts = await fetchAllAccounts(platform, access_token);
+    } catch (err) {
+        return res.status(502).json({ error: err.message });
+    }
+
     if (!accounts.length) {
-        return res.status(200).json({ accounts: [], pendingId: null, message: "No ad accounts found — the token may be expired. Try reconnecting." });
+        return res.status(200).json({ accounts: [], pendingId: null, message: "No ad accounts found on this Google login. The token may be expired — try reconnecting." });
     }
 
     await ensurePendingTable(db);

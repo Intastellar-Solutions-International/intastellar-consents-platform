@@ -130,8 +130,8 @@ export default async function handler(req, res) {
         try {
             const pendingParams = domain ? [orgId, domain] : [orgId];
             const pendingWhere = domain
-                ? `WHERE organisation_id=$1 AND domain=$2 AND expires_at > NOW()`
-                : `WHERE organisation_id=$1 AND expires_at > NOW()`;
+                ? `WHERE organisation_id=$1 AND domain=$2`
+                : `WHERE organisation_id=$1`;
 
             const pendingResult = await db.query(
                 `SELECT DISTINCT ON (organisation_id, domain, platform)
