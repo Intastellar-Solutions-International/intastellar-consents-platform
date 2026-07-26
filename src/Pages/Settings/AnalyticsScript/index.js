@@ -180,25 +180,35 @@ export default function AnalyticsScript() {
                             <SnippetBox siteKey={siteData.id} />
 
                             <div className="as-privacy-note">
-                                <h4 className="as-privacy-note__title">What we collect</h4>
+                                <h4 className="as-privacy-note__title">Always collected (legitimate interest — no consent needed)</h4>
                                 <div className="as-privacy-note__cols">
                                     <ul className="as-privacy-note__list as-privacy-note__list--yes">
-                                        <li>Page path &amp; query string</li>
-                                        <li>Page title</li>
+                                        <li>Page path (no query string)</li>
+                                        <li>Device type (mobile / tablet / desktop)</li>
+                                        <li>Country code (from IP — IP discarded)</li>
+                                        <li>Consent choices made by the visitor</li>
+                                    </ul>
+                                    <ul className="as-privacy-note__list as-privacy-note__list--no">
+                                        <li>No session ID — requests cannot be linked</li>
+                                        <li>No query string (may contain PII)</li>
+                                        <li>No referrer, no UTMs, no browser details</li>
+                                    </ul>
+                                </div>
+                                <h4 className="as-privacy-note__title" style={{marginTop:"14px"}}>Additionally with statisticCookies consent</h4>
+                                <div className="as-privacy-note__cols">
+                                    <ul className="as-privacy-note__list as-privacy-note__list--yes">
+                                        <li>Page title &amp; full URL</li>
                                         <li>Referrer hostname</li>
                                         <li>UTM parameters</li>
-                                        <li>Device type, screen dimensions</li>
-                                        <li>Browser &amp; OS family</li>
-                                        <li>Country code (from IP — IP discarded)</li>
+                                        <li>Screen dimensions, browser &amp; OS family</li>
                                         <li>Tab-scoped session ID (cleared on tab close)</li>
                                         <li>Time on page</li>
                                     </ul>
                                     <ul className="as-privacy-note__list as-privacy-note__list--no">
-                                        <li>IP addresses</li>
+                                        <li>IP addresses (ever)</li>
                                         <li>Full referrer URLs</li>
                                         <li>User identifiers or email</li>
                                         <li>Cross-session or cross-device tracking</li>
-                                        <li>Data without explicit statisticCookies consent</li>
                                     </ul>
                                 </div>
                             </div>

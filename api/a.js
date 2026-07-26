@@ -322,20 +322,22 @@ export default async function handler(req, res) {
               utm_source, utm_medium, utm_campaign, utm_content,
               country_code, region, device_type, screen_width, screen_height,
               browser_family, os_family, duration_sec)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)`,
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)`,
             [
-                siteId, orgId, String(sid).slice(0, 64),
-                cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
-                urlColumn, pathname,
-                (title || "").slice(0, 500),
-                referrerHost,
-                (us || "").slice(0, 255), (um || "").slice(0, 255),
-                (uc || "").slice(0, 255), (uk || "").slice(0, 255),
-                country, region,
-                deviceType,
-                Number(sw) || null, Number(sh) || null,
-                browser, os,
-                Math.min(Number(dur) || 0, 86400),
+                siteId, orgId, String(sid).slice(0, 64),           // $1 $2 $3
+                cs === 1 || cs === true,                            // $4 consent_stat
+                cf === 1 || cf === true,                            // $5 consent_func
+                ca === 1 || ca === true,                            // $6 consent_adv
+                urlColumn, pathname,                                // $7 $8
+                (title || "").slice(0, 500),                        // $9
+                referrerHost,                                       // $10
+                (us || "").slice(0, 255), (um || "").slice(0, 255), // $11 $12
+                (uc || "").slice(0, 255), (uk || "").slice(0, 255), // $13 $14
+                country, region,                                    // $15 $16
+                deviceType,                                         // $17
+                Number(sw) || null, Number(sh) || null,             // $18 $19
+                browser, os,                                        // $20 $21
+                Math.min(Number(dur) || 0, 86400),                  // $22 duration_sec
             ]
         ).catch(() => {});
     }

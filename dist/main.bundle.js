@@ -72193,13 +72193,24 @@ function AnalyticsScript() {
     className: "as-privacy-note"
   }, /*#__PURE__*/React.createElement("h4", {
     className: "as-privacy-note__title"
-  }, "What we collect"), /*#__PURE__*/React.createElement("div", {
+  }, "Always collected (legitimate interest \u2014 no consent needed)"), /*#__PURE__*/React.createElement("div", {
     className: "as-privacy-note__cols"
   }, /*#__PURE__*/React.createElement("ul", {
     className: "as-privacy-note__list as-privacy-note__list--yes"
-  }, /*#__PURE__*/React.createElement("li", null, "Page path & query string"), /*#__PURE__*/React.createElement("li", null, "Page title"), /*#__PURE__*/React.createElement("li", null, "Referrer hostname"), /*#__PURE__*/React.createElement("li", null, "UTM parameters"), /*#__PURE__*/React.createElement("li", null, "Device type, screen dimensions"), /*#__PURE__*/React.createElement("li", null, "Browser & OS family"), /*#__PURE__*/React.createElement("li", null, "Country code (from IP \u2014 IP discarded)"), /*#__PURE__*/React.createElement("li", null, "Tab-scoped session ID (cleared on tab close)"), /*#__PURE__*/React.createElement("li", null, "Time on page")), /*#__PURE__*/React.createElement("ul", {
+  }, /*#__PURE__*/React.createElement("li", null, "Page path (no query string)"), /*#__PURE__*/React.createElement("li", null, "Device type (mobile / tablet / desktop)"), /*#__PURE__*/React.createElement("li", null, "Country code (from IP \u2014 IP discarded)"), /*#__PURE__*/React.createElement("li", null, "Consent choices made by the visitor")), /*#__PURE__*/React.createElement("ul", {
     className: "as-privacy-note__list as-privacy-note__list--no"
-  }, /*#__PURE__*/React.createElement("li", null, "IP addresses"), /*#__PURE__*/React.createElement("li", null, "Full referrer URLs"), /*#__PURE__*/React.createElement("li", null, "User identifiers or email"), /*#__PURE__*/React.createElement("li", null, "Cross-session or cross-device tracking"), /*#__PURE__*/React.createElement("li", null, "Data without explicit statisticCookies consent"))))))));
+  }, /*#__PURE__*/React.createElement("li", null, "No session ID \u2014 requests cannot be linked"), /*#__PURE__*/React.createElement("li", null, "No query string (may contain PII)"), /*#__PURE__*/React.createElement("li", null, "No referrer, no UTMs, no browser details"))), /*#__PURE__*/React.createElement("h4", {
+    className: "as-privacy-note__title",
+    style: {
+      marginTop: "14px"
+    }
+  }, "Additionally with statisticCookies consent"), /*#__PURE__*/React.createElement("div", {
+    className: "as-privacy-note__cols"
+  }, /*#__PURE__*/React.createElement("ul", {
+    className: "as-privacy-note__list as-privacy-note__list--yes"
+  }, /*#__PURE__*/React.createElement("li", null, "Page title & full URL"), /*#__PURE__*/React.createElement("li", null, "Referrer hostname"), /*#__PURE__*/React.createElement("li", null, "UTM parameters"), /*#__PURE__*/React.createElement("li", null, "Screen dimensions, browser & OS family"), /*#__PURE__*/React.createElement("li", null, "Tab-scoped session ID (cleared on tab close)"), /*#__PURE__*/React.createElement("li", null, "Time on page")), /*#__PURE__*/React.createElement("ul", {
+    className: "as-privacy-note__list as-privacy-note__list--no"
+  }, /*#__PURE__*/React.createElement("li", null, "IP addresses (ever)"), /*#__PURE__*/React.createElement("li", null, "Full referrer URLs"), /*#__PURE__*/React.createElement("li", null, "User identifiers or email"), /*#__PURE__*/React.createElement("li", null, "Cross-session or cross-device tracking"))))))));
 }
 
 /***/ }),
