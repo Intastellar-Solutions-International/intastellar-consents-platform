@@ -31,7 +31,7 @@ function validateJwt(authHeader) {
         if (parts.length !== 3) return null;
         const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
         const now = Math.floor(Date.now() / 1000);
-        if (payload.iss !== "Intastellar Account" || (payload.nbf || 0) > now || (payload.exp || 0) < now) return null;
+        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
         return payload;
     } catch { return null; }
 }
@@ -83,11 +83,15 @@ export default async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
-    const jwt = validateJwt(req.headers.authorization);
+    const authHeader = req.headers.authorization
+        || (req.query.token ? `Bearer ${req.query.token}` : "");
+    const jwt = validateJwt(authHeader);
     if (!jwt) return res.status(401).json({ error: "Unauthorized" });
 
-    const orgId = parseInt(req.headers.organisation || req.headers.organization || "0", 10);
-    if (!orgId) return res.status(400).json({ error: "Organisation header required" });
+    const orgId = parseInt(
+        req.headers.organisation || req.headers.organization || req.query.org || "0", 10
+    );
+    if (!orgId) return res.status(400).json({ error: "Organisation header or ?org param required" });
 
     const db = getPool();
     await ensureTable(db);

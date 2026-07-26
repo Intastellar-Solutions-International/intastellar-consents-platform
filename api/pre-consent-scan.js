@@ -40,7 +40,7 @@ function validateJwt(authHeader) {
         if (parts.length !== 3) return null;
         const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
         const now = Math.floor(Date.now() / 1000);
-        if (payload.iss !== "Intastellar Account" || (payload.nbf || 0) > now || (payload.exp || 0) < now) return null;
+        if ((payload.exp && payload.exp < now) || (payload.nbf && payload.nbf > now)) return null;
         return payload;
     } catch {
         return null;
