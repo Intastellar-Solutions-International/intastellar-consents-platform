@@ -129,6 +129,18 @@ function platformPattern(platformId) {
     return PLATFORM_SOURCE_PATTERNS[platformId];
 }
 
+// Reverse-match a channel display name (e.g. "Google", "Meta (Facebook / Instagram)")
+// against the UTM-source patterns to find the ad platform it belongs to.
+function detectPlatformForChannelName(channelName) {
+    if (!channelName) return null;
+    const normalized = String(channelName).toLowerCase().replace(/[\s_()/\\-]+/g, "");
+    for (const [platformId, pattern] of Object.entries(PLATFORM_SOURCE_PATTERNS)) {
+        if (!pattern || platformId === "other" || platformId === "ga4") continue;
+        if (pattern.test(normalized)) return platformId;
+    }
+    return null;
+}
+
 function rowMatchesPlatform(row, pattern) {
     if (!pattern) return true;
     const raw = row && row.utmSource ? row.utmSource : "";
@@ -1743,6 +1755,7 @@ export default function MarketingReconciliationPanel({
     const [syncMsg, setSyncMsg] = useState(null);
     const [ga4Sessions, setGa4Sessions] = useState(null);
     const [ga4Syncing, setGa4Syncing] = useState(false);
+    const autoFetchedRef = React.useRef(new Set());
     const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
     const [connectingPlatform, setConnectingPlatform] = useState(false);
 
@@ -1784,6 +1797,11 @@ export default function MarketingReconciliationPanel({
         writeStored(inputsKeyValue, inputs);
     }, [inputsKeyValue, inputs, loaded]);
 
+    // Clear auto-fetch cache when date range changes so new dates trigger a fresh fetch
+    useEffect(() => {
+        autoFetchedRef.current.clear();
+    }, [fromDate, toDate]);
+
     useEffect(() => {
         writeStored(snapshotsKeyValue, snapshots);
     }, [snapshotsKeyValue, snapshots]);
@@ -1815,6 +1833,59 @@ export default function MarketingReconciliationPanel({
             .then(data => { if (data?.connections) setConnections(data.connections); })
             .catch(() => {});
     }, [authToken, orgId, domainKey]);
+
+    // When the user drills into a channel, detect the matching ad platform, switch the
+    // platform dropdown to it, and auto-fetch data if that platform is connected.
+    useEffect(() => {
+        if (!scopeKey?.startsWith("channel:")) return;
+        const detected = detectPlatformForChannelName(scopeLabel);
+        if (!detected || !PLATFORMS.find(p => p.id === detected)) return;
+
+        // Switch the platform dropdown to the detected platform
+        setInputs(prev => prev.platform === detected ? prev : { ...prev, platform: detected });
+
+        const isConn = connections.some(c => c.platform === detected && c.account_id);
+        if (!isConn || !fromDate || !toDate || !authToken || !orgId || !domainKey || domainKey === "combined view") return;
+
+        // Avoid fetching the same data twice
+        const fetchKey = `${detected}|${domainKey}|${fromDate}|${toDate}`;
+        if (autoFetchedRef.current.has(fetchKey)) return;
+        autoFetchedRef.current.add(fetchKey);
+
+        setSyncing(true);
+        setSyncMsg(null);
+        fetch(
+            `${ScannerHost}/api/ad-data-fetch?platform=${detected}&domain=${encodeURIComponent(domainKey)}&fromDate=${fromDate}&toDate=${toDate}`,
+            { headers: { Authorization: authToken, Organisation: String(orgId) } }
+        )
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (!data) return;
+                const clicks = data.clicks != null ? String(Math.round(data.clicks)) : "";
+                const spend  = data.spend  != null ? String(Number(data.spend).toFixed(2)) : "";
+                setInputs(prev => {
+                    const existing = prev.byPlatform?.[detected];
+                    if (existing?.adClicks) return prev; // don't overwrite a user-entered value
+                    return {
+                        ...prev,
+                        ...(data.currency ? { currency: data.currency } : {}),
+                        byPlatform: {
+                            ...prev.byPlatform,
+                            [detected]: { adClicks: clicks, spend },
+                        },
+                    };
+                });
+                const shortLabel = SYNC_SHORT_LABEL[detected] || detected;
+                const metric = PLATFORMS.find(p => p.id === detected)?.metric || "clicks";
+                setSyncMsg({
+                    text: `Auto-populated from ${shortLabel}: ${clicks} ${metric}${spend ? `, ${data.currency || ""} ${spend} spend` : ""}.`,
+                    error: false,
+                });
+                setTimeout(() => setSyncMsg(null), 8000);
+            })
+            .catch(() => { autoFetchedRef.current.delete(fetchKey); })
+            .finally(() => setSyncing(false));
+    }, [scopeKey, scopeLabel, connections, fromDate, toDate, authToken, orgId, domainKey]);
 
     // Auto-fetch GA4 sessions whenever the date range changes and GA4 is connected
     useEffect(() => {
