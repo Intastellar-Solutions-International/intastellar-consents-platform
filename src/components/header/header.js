@@ -18,8 +18,142 @@ import {
 import { canAccess } from "../../Functions/tier.js";
 import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
+import { ScannerHost } from "../../API/host";
 
-const { useState, useEffect, useContext, useMemo } = React;
+const { useState, useEffect, useContext, useMemo, useRef, useCallback } = React;
+
+function NotificationCenter() {
+    const authToken = Authentication.getToken();
+    const orgId = Authentication.getOrganisation();
+
+    const [open, setOpen] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+    const [unread, setUnread] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const dropdownRef = useRef(null);
+
+    const fetchNotifications = useCallback(async () => {
+        if (!authToken || !orgId) return;
+        try {
+            const resp = await fetch(`${ScannerHost}/api/ad-alerts?resource=notifications`, {
+                headers: { Authorization: authToken, Organisation: String(orgId) },
+            });
+            if (!resp.ok) return;
+            const data = await resp.json();
+            setNotifications(data.notifications || []);
+            setUnread(data.unreadCount || 0);
+        } catch {}
+    }, [authToken, orgId]);
+
+    useEffect(() => {
+        fetchNotifications();
+        const interval = setInterval(fetchNotifications, 60000);
+        return () => clearInterval(interval);
+    }, [fetchNotifications]);
+
+    useEffect(() => {
+        if (!open) return;
+        function handleClick(e) {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClick);
+        return () => document.removeEventListener("mousedown", handleClick);
+    }, [open]);
+
+    async function markAllRead() {
+        if (!authToken || !orgId) return;
+        try {
+            await fetch(`${ScannerHost}/api/ad-alerts`, {
+                method: "POST",
+                headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "mark-read", all: true }),
+            });
+            setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+            setUnread(0);
+        } catch {}
+    }
+
+    async function markOneRead(id) {
+        if (!authToken || !orgId) return;
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+        setUnread(prev => Math.max(0, prev - 1));
+        try {
+            await fetch(`${ScannerHost}/api/ad-alerts`, {
+                method: "POST",
+                headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "mark-read", notificationId: id }),
+            });
+        } catch {}
+    }
+
+    function timeAgo(iso) {
+        const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+        if (diff < 60) return "just now";
+        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+        return `${Math.floor(diff / 86400)}d ago`;
+    }
+
+    return (
+        <div className="notif-center" ref={dropdownRef}>
+            <button
+                className="notif-bell"
+                onClick={() => { setOpen(o => !o); if (!open) fetchNotifications(); }}
+                aria-label="Notifications"
+                title="Notifications"
+            >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+                {unread > 0 && (
+                    <span className="notif-badge">{unread > 99 ? "99+" : unread}</span>
+                )}
+            </button>
+
+            {open && (
+                <div className="notif-dropdown">
+                    <div className="notif-dropdown__header">
+                        <span className="notif-dropdown__title">Notifications</span>
+                        {unread > 0 && (
+                            <button className="notif-dropdown__mark-all" onClick={markAllRead}>
+                                Mark all read
+                            </button>
+                        )}
+                    </div>
+
+                    <div className="notif-dropdown__list">
+                        {loading && (
+                            <p className="notif-dropdown__empty">Loading…</p>
+                        )}
+                        {!loading && notifications.length === 0 && (
+                            <p className="notif-dropdown__empty">No notifications yet</p>
+                        )}
+                        {notifications.map(n => (
+                            <div
+                                key={n.id}
+                                className={`notif-item${n.read ? "" : " notif-item--unread"}`}
+                                onClick={() => !n.read && markOneRead(n.id)}
+                            >
+                                <div className="notif-item__body">
+                                    <span className="notif-item__title">{n.title || n.rule_type}</span>
+                                    <span className="notif-item__msg">{n.message || n.body}</span>
+                                </div>
+                                <div className="notif-item__meta">
+                                    <span className="notif-item__domain">{n.domain}</span>
+                                    <span className="notif-item__time">{timeAgo(n.created_at)}</span>
+                                </div>
+                                {!n.read && <span className="notif-item__dot" aria-label="unread" />}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
 const useHistory = window.ReactRouterDOM.useHistory;
 const useLocation = window.ReactRouterDOM.useLocation;
 
@@ -561,7 +695,8 @@ export default function Header(props) {
                             )}
                         </section>
                     </section>
-                    <div className="flex profileImage">
+                    <div className="flex profileImage" style={{ gap: "12px" }}>
+                        <NotificationCenter />
                         <img src={profileImage} className="content-img" onClick={() => setViewUserProfile(!viewUserProfile)} />
                     </div>
                 </div>
