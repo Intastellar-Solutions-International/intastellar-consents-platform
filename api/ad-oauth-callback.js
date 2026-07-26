@@ -48,8 +48,8 @@ async function exchangeCode(platform, code) {
     switch (platform) {
         case "google_ads":
             url = "https://oauth2.googleapis.com/token";
-            clientId = process.env.GOOGLE_ADS_CLIENT_ID;
-            clientSecret = process.env.GOOGLE_ADS_CLIENT_SECRET;
+            clientId = process.env.GOOGLE_CLIENT_ID;
+            clientSecret = process.env.GOOGLE_CLIENT_SECRET;
             break;
         case "meta_ads":
             url = "https://graph.facebook.com/v18.0/oauth/access_token";

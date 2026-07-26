@@ -6,7 +6,7 @@
  * which the callback endpoint verifies before storing any tokens.
  *
  * Required env vars (one set per platform):
- *   GOOGLE_ADS_CLIENT_ID, GOOGLE_ADS_CLIENT_SECRET
+ *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
  *   META_ADS_CLIENT_ID,   META_ADS_CLIENT_SECRET
  *   LINKEDIN_ADS_CLIENT_ID, LINKEDIN_ADS_CLIENT_SECRET
  *   MICROSOFT_ADS_CLIENT_ID, MICROSOFT_ADS_CLIENT_SECRET
@@ -49,7 +49,7 @@ function buildAuthUrl(platform, state) {
 
     switch (platform) {
         case "google_ads": {
-            const clientId = process.env.GOOGLE_ADS_CLIENT_ID;
+            const clientId = process.env.GOOGLE_CLIENT_ID;
             if (!clientId) return null;
             const scope = encodeURIComponent("https://www.googleapis.com/auth/adwords");
             return `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}&state=${state}&access_type=offline&prompt=consent`;
