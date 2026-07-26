@@ -6,7 +6,7 @@ import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../../API/host.js";
 import "../Style.css";
 
-const INGEST_URL = "https://app.intastellarconsents.com/api/a";
+const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
 
 function readCachedDomains() {
     try {

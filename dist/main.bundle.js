@@ -71909,7 +71909,7 @@ var _window$React = window.React,
 
 
 
-var INGEST_URL = "https://app.intastellarconsents.com/api/a";
+var INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
 function readCachedDomains() {
   try {
     var raw = localStorage.getItem("domains");

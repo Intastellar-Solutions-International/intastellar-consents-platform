@@ -115,7 +115,7 @@ var CK='IntastellarConsentSolution';
 var el=document.currentScript||document.querySelector('script[data-site]');
 var SITE=el&&el.getAttribute('data-site');
 if(!SITE)return;
-var EP=(el&&el.getAttribute('data-endpoint'))||'https://app.intastellarconsents.com/api/a';
+var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
 
 function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 
