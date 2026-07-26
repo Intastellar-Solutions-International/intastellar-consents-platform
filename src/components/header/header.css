@@ -157,6 +157,34 @@
     padding: 0;
 }
 
+.sidebar__group-label {
+    margin: 10px 0 2px;
+    padding: 0 10px;
+    list-style: none;
+}
+
+.sidebar__group-label:first-child {
+    margin-top: 4px;
+}
+
+.sidebar__group-label-text {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+    padding: 4px 2px 2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar__group-label:first-child .sidebar__group-label-text {
+    border-top: none;
+}
+
 .collapsed .navItems,
 .collapsed .sidebar__link {
     color: rgba(255, 255, 255, 0.88);

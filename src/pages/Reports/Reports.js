@@ -12,6 +12,25 @@ const { useContext, useMemo } = React;
 
 export const reportsLinks = [
     {
+        divider: true,
+        label: "Marketing",
+        requiresTier: 'growth',
+    },
+    {
+        name: "Channel Analytics",
+        path: "/reports/marketing",
+        requiresTier: 'growth',
+    },
+    {
+        name: "Ad Reconciliation",
+        path: "/reports/reconcile",
+        requiresTier: 'growth',
+    },
+    {
+        divider: true,
+        label: "Compliance",
+    },
+    {
         name: "Audit log",
         path: "/reports/user-consents",
         requiresTier: 'personal',
@@ -25,16 +44,6 @@ export const reportsLinks = [
         name: "DSR Portal",
         path: "/reports/dsr",
         requiresTier: 'personal',
-    },
-    {
-        name: "Channel Analytics",
-        path: "/reports/marketing",
-        requiresTier: 'growth',
-    },
-    {
-        name: "Ad Reconciliation",
-        path: "/reports/reconcile",
-        requiresTier: 'growth',
     },
     {
         name: "Compliance overview",

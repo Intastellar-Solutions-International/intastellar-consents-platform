@@ -81,6 +81,15 @@ export default function SideNav(props) {
                 <ul className="sidebar__list">
                 {
                     props?.links?.map((link, key) => {
+                        if (link.divider) {
+                            if (link.requiresTier && !canAccess(link.requiresTier)) return null;
+                            return (
+                                <li key={key} className="sidebar__group-label" aria-hidden="true">
+                                    <span className="sidebar__group-label-text">{link.label}</span>
+                                </li>
+                            );
+                        }
+
                         if (
                             link?.view?.length &&
                             link.view.indexOf(Authentication.getCurrentOrganisationRole()) === -1
