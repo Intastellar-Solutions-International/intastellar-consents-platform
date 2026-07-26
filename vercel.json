@@ -142,6 +142,10 @@
     "api/analytics-site.js": {
       "memory": 256,
       "maxDuration": 10
+    },
+    "api/analytics-report.js": {
+      "memory": 256,
+      "maxDuration": 15
     }
   }
 }
