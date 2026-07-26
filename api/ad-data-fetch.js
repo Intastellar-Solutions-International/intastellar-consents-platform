@@ -230,6 +230,8 @@ async function fetchMetaAds(conn, fromDate, toDate) {
 }
 
 async function fetchLinkedInAds(conn, fromDate, toDate) {
+    if (!conn.account_id) throw new Error("No LinkedIn Ads account linked — select an account first.");
+
     const [fy, fm, fd] = fromDate.split("-").map(Number);
     const [ty, tm, td] = toDate.split("-").map(Number);
 
@@ -242,17 +244,24 @@ async function fetchLinkedInAds(conn, fromDate, toDate) {
         "dateRange.end.month": tm,
         "dateRange.end.day": td,
         pivot: "ACCOUNT",
-        fields: "clicks,costInUsd,impressions",
         timeGranularity: "ALL",
+        fields: "clicks,costInUsd,impressions",
     });
+    // LinkedIn requires the account as a sponsored account URN
+    params.append("accounts", `urn:li:sponsoredAccount:${conn.account_id}`);
 
     const resp = await fetch(`https://api.linkedin.com/rest/adAnalytics?${params}`, {
-        headers: { Authorization: `Bearer ${conn.access_token}`, "LinkedIn-Version": "202312" },
+        headers: { Authorization: `Bearer ${conn.access_token}`, "LinkedIn-Version": "202406" },
     });
+
     if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err?.message || `LinkedIn API error (${resp.status})`);
+        const rawText = await resp.text().catch(() => "");
+        let errBody = {};
+        try { errBody = JSON.parse(rawText); } catch {}
+        console.error(`[ad-data-fetch] LinkedIn Ads ${resp.status} for account ${conn.account_id}:`, rawText.slice(0, 500));
+        throw new Error(errBody?.message || `LinkedIn API error (${resp.status}): ${rawText.slice(0, 200)}`);
     }
+
     const data = await resp.json();
     const row = data.elements?.[0];
     if (!row) return { clicks: 0, spend: 0, currency: "USD", impressions: 0 };

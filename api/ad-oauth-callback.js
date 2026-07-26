@@ -200,7 +200,7 @@ async function fetchAllAccounts(platform, accessToken) {
             case "linkedin_ads": {
                 const resp = await fetch(
                     "https://api.linkedin.com/rest/adAccounts?q=search&count=50",
-                    { headers: { Authorization: `Bearer ${accessToken}`, "LinkedIn-Version": "202312" } }
+                    { headers: { Authorization: `Bearer ${accessToken}`, "LinkedIn-Version": "202406" } }
                 );
                 if (!resp.ok) return [];
                 const data = await resp.json();

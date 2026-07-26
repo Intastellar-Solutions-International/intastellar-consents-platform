@@ -63,7 +63,7 @@ function buildAuthUrl(platform, state) {
         case "linkedin_ads": {
             const clientId = process.env.LINKEDIN_ADS_CLIENT_ID;
             if (!clientId) return null;
-            const scope = encodeURIComponent("r_ads_reporting r_organization_social");
+            const scope = encodeURIComponent("r_ads r_ads_reporting");
             return `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
         }
         case "microsoft_ads": {
