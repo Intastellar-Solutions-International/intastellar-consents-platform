@@ -44,7 +44,7 @@ function parseUA(ua = "") {
     return { browser, os };
 }
 
-// ── Tables (auto-created on first use) ───────────────────────────────────────
+// ── Tables (auto-created / migrated on first use) ────────────────────────────
 async function ensureTables(db) {
     await db.query(`
         CREATE TABLE IF NOT EXISTS analytics_sites (
@@ -59,8 +59,15 @@ async function ensureTables(db) {
             id              BIGSERIAL    PRIMARY KEY,
             site_id         VARCHAR(32)  NOT NULL,
             organisation_id INTEGER      NOT NULL,
-            session_id      VARCHAR(64)  NOT NULL,
+            -- NULL for minimal (no-consent) events — avoids cross-request linking
+            session_id      VARCHAR(64),
             received_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            -- "minimal" = path only, consent choices; "full" = enriched with UTMs/session/device
+            consent_level   VARCHAR(8)   NOT NULL DEFAULT 'minimal',
+            -- consent state at the time of the event
+            consent_stat    BOOLEAN,
+            consent_func    BOOLEAN,
+            consent_adv     BOOLEAN,
             url             TEXT         NOT NULL,
             pathname        TEXT         NOT NULL,
             title           VARCHAR(500),
@@ -82,17 +89,26 @@ async function ensureTables(db) {
         CREATE INDEX IF NOT EXISTS idx_ae_org        ON analytics_events (organisation_id);
         CREATE INDEX IF NOT EXISTS idx_ae_received   ON analytics_events (received_at);
         CREATE INDEX IF NOT EXISTS idx_ae_session    ON analytics_events (session_id);
+        CREATE INDEX IF NOT EXISTS idx_ae_level      ON analytics_events (consent_level);
     `);
+    // Add columns to existing tables that pre-date this schema version
+    await db.query(`
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_level  VARCHAR(8)  NOT NULL DEFAULT 'minimal';
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_stat   BOOLEAN;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_func   BOOLEAN;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_adv    BOOLEAN;
+        ALTER TABLE analytics_events ALTER COLUMN session_id DROP NOT NULL;
+    `).catch(() => {});
 }
 
 // ── The embed script (served as application/javascript on GET) ────────────────
-// This script is embedded on customer websites. It:
-//   1. Reads the IntastellarConsentSolution cookie
-//   2. Decodes it using the same algorithm as the CMP
-//   3. Only fires if statisticCookies === true
-//   4. Polls for up to 30 s in case the visitor accepts consent after load
-//   5. Uses sessionStorage for a tab-scoped session ID (cleared when tab closes)
-//   6. Sends a final event on page exit with elapsed duration
+// Two-tier firing:
+//   MINIMAL (always, no consent needed): path only, consent choices, device type.
+//     No session ID — requests cannot be linked across page views.
+//     Legal basis: legitimate interest (consent record-keeping, aggregate counts).
+//   FULL (statisticCookies === true): enriched with session ID, UTMs, referrer,
+//     screen, browser/OS, duration.
+// If the user accepts mid-session the full event fires at that point (upgrade).
 const EMBED_SCRIPT = `(function(){
 'use strict';
 var CK='IntastellarConsentSolution';
@@ -116,12 +132,14 @@ function decode(raw){
   }catch(e){return null;}
 }
 
-function hasConsent(){
+function getConsents(){
   var raw=gc(CK);
-  if(!raw)return false;
+  if(!raw)return null;
   var obj=decode(raw);
-  return !!(obj&&obj.consents&&obj.consents.statisticCookies===true);
+  return(obj&&obj.consents)||null;
 }
+
+function hasStat(c){return !!(c&&c.statisticCookies===true);}
 
 function getSid(){
   try{
@@ -134,51 +152,67 @@ function getSid(){
 function utmp(p){try{return new URLSearchParams(location.search).get(p)||'';}catch(e){return '';}}
 function devType(){var w=screen.width;return w<768?'m':w<1024?'t':'d';}
 
-var t0=Date.now(),pageviewSent=false,exitSent=false;
+var t0=Date.now(),fullFired=false,exitSent=false;
 
-function buildPayload(final){
-  return JSON.stringify({
-    s:SITE,sid:getSid(),
+function send(payload,beacon){
+  var b=new Blob([payload],{type:'application/json'});
+  if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);}
+  else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).catch(function(){});}
+}
+
+function sendMinimal(c){
+  send(JSON.stringify({
+    s:SITE,cl:'minimal',
+    u:location.pathname,
+    dt:devType(),
+    cs:c&&c.statisticCookies?1:0,
+    cf:c&&c.functionalCookies?1:0,
+    ca:c&&c.advertisementCookies?1:0
+  }),false);
+}
+
+function sendFull(c,final){
+  fullFired=true;
+  send(JSON.stringify({
+    s:SITE,cl:'full',sid:getSid(),
     u:location.href,r:document.referrer||'',
     ti:(document.title||'').slice(0,200),
     us:utmp('utm_source'),um:utmp('utm_medium'),
     uc:utmp('utm_campaign'),uk:utmp('utm_content'),
     dt:devType(),sw:screen.width,sh:screen.height,
     dur:Math.round((Date.now()-t0)/1000),
+    cs:c&&c.statisticCookies?1:0,
+    cf:c&&c.functionalCookies?1:0,
+    ca:c&&c.advertisementCookies?1:0,
     final:final?1:0
-  });
-}
-
-function sendPayload(payload,beacon){
-  var b=new Blob([payload],{type:'application/json'});
-  if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);}
-  else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).catch(function(){});}
-}
-
-function sendPageview(){
-  if(pageviewSent)return;
-  pageviewSent=true;
-  sendPayload(buildPayload(false),false);
-}
-
-function sendExit(){
-  if(exitSent||!pageviewSent)return;
-  exitSent=true;
-  sendPayload(buildPayload(true),true);
+  }),final||false);
 }
 
 document.addEventListener('visibilitychange',function(){
-  if(document.visibilityState==='hidden'&&hasConsent())sendExit();
+  if(document.visibilityState==='hidden'&&fullFired&&!exitSent){
+    exitSent=true;
+    var c=getConsents();
+    if(hasStat(c))sendFull(c,true);
+  }
 });
 window.addEventListener('pagehide',function(){
-  if(hasConsent())sendExit();
+  if(fullFired&&!exitSent){
+    exitSent=true;
+    var c=getConsents();
+    if(hasStat(c))sendFull(c,true);
+  }
 });
 
-if(hasConsent()){
-  sendPageview();
+// Fire on load
+var c=getConsents();
+if(hasStat(c)){
+  sendFull(c,false);
 }else{
+  sendMinimal(c);
+  // Poll: if consent is given mid-session, send the full upgrade event
   var n=0,iv=setInterval(function(){
-    if(hasConsent()){clearInterval(iv);sendPageview();}
+    var c2=getConsents();
+    if(hasStat(c2)){clearInterval(iv);sendFull(c2,false);}
     else if(++n>60){clearInterval(iv);}
   },500);
 }
