@@ -94,12 +94,26 @@ async function exchangeCode(platform, code) {
     };
 }
 
-// Returns [{ id, name }] for all accessible ad accounts on the platform.
+// Returns [{ id, name, loginCustomerId?, currency? }] for all accessible ad accounts on the platform.
 async function fetchAllAccounts(platform, accessToken) {
     try {
         switch (platform) {
             case "google_ads": {
                 const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+
+                const gadsSearch = (customerId, query, loginCustomerId) => {
+                    const headers = {
+                        Authorization: `Bearer ${accessToken}`,
+                        "developer-token": devToken,
+                        "Content-Type": "application/json",
+                    };
+                    if (loginCustomerId) headers["login-customer-id"] = String(loginCustomerId);
+                    return fetch(
+                        `https://googleads.googleapis.com/v18/customers/${customerId}/googleAds:search`,
+                        { method: "POST", headers, body: JSON.stringify({ query }) }
+                    ).then(r => r.json()).catch(() => ({ results: [] }));
+                };
+
                 const listResp = await fetch(
                     "https://googleads.googleapis.com/v18/customers:listAccessibleCustomers",
                     { headers: { Authorization: `Bearer ${accessToken}`, "developer-token": devToken } }
@@ -109,32 +123,64 @@ async function fetchAllAccounts(platform, accessToken) {
                 const resourceNames = listData.resourceNames || [];
                 if (resourceNames.length === 0) return [];
 
-                // Fetch descriptive names in parallel (cap at 20)
-                const ids = resourceNames.slice(0, 20).map(r => r.replace("customers/", ""));
-                const nameResults = await Promise.allSettled(ids.map(id =>
-                    fetch(`https://googleads.googleapis.com/v18/customers/${id}/googleAds:search`, {
-                        method: "POST",
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                            "developer-token": devToken,
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            query: "SELECT customer.id, customer.descriptive_name, customer.manager FROM customer LIMIT 1",
-                        }),
-                    }).then(r => r.json())
+                const ids = resourceNames.slice(0, 30).map(r => r.replace("customers/", ""));
+
+                // Fetch customer info for all top-level IDs
+                const infoResults = await Promise.allSettled(ids.map(id =>
+                    gadsSearch(id, "SELECT customer.id, customer.descriptive_name, customer.manager, customer.currency_code FROM customer LIMIT 1")
                 ));
 
-                return ids.map((id, i) => {
-                    const res = nameResults[i];
+                const accounts = [];
+                const seen = new Set();
+
+                await Promise.allSettled(ids.map(async (id, i) => {
+                    const res = infoResults[i];
                     const row = res.status === "fulfilled" ? res.value?.results?.[0]?.customer : null;
-                    const name = row?.descriptiveName || null;
+                    const name = row?.descriptiveName || `Account ${id}`;
                     const isManager = row?.manager === true;
-                    return {
-                        id,
-                        name: name ? `${name}${isManager ? " (Manager)" : ""}` : `Account ${id}`,
-                    };
-                });
+                    const currency = row?.currencyCode || null;
+
+                    if (!isManager) {
+                        // Direct client account — queryable without login-customer-id
+                        if (!seen.has(id)) {
+                            seen.add(id);
+                            accounts.push({ id, name, currency });
+                        }
+                    } else {
+                        // Manager (MCC) account — expand to sub-clients
+                        const subResp = await gadsSearch(
+                            id,
+                            "SELECT customer_client.client_customer, customer_client.descriptive_name, customer_client.manager, customer_client.status, customer_client.currency_code FROM customer_client WHERE customer_client.status = 'ENABLED' AND customer_client.manager = FALSE",
+                            id
+                        ).catch(() => ({ results: [] }));
+
+                        const subClients = subResp.results || [];
+                        if (subClients.length > 0) {
+                            for (const subRow of subClients) {
+                                const client = subRow.customerClient;
+                                if (!client) continue;
+                                const clientId = String(client.clientCustomer || "").replace("customers/", "");
+                                if (!clientId || seen.has(clientId)) continue;
+                                seen.add(clientId);
+                                const clientName = client.descriptiveName || `Account ${clientId}`;
+                                accounts.push({
+                                    id: clientId,
+                                    name: `${clientName} (via ${name})`,
+                                    loginCustomerId: id,
+                                    currency: client.currencyCode || null,
+                                });
+                            }
+                        } else {
+                            // No sub-clients found (or query failed) — include the manager itself as fallback
+                            if (!seen.has(id)) {
+                                seen.add(id);
+                                accounts.push({ id, name: `${name} (Manager)`, currency, loginCustomerId: null });
+                            }
+                        }
+                    }
+                }));
+
+                return accounts.sort((a, b) => a.name.localeCompare(b.name));
             }
 
             case "meta_ads": {
@@ -177,6 +223,52 @@ async function fetchAllAccounts(platform, accessToken) {
         console.error("[fetchAllAccounts]", platform, err.message);
         return [];
     }
+}
+
+async function ensureConnectionTable(db) {
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS ad_platform_connections (
+            id               SERIAL      PRIMARY KEY,
+            organisation_id  INTEGER     NOT NULL,
+            domain           TEXT        NOT NULL,
+            platform         TEXT        NOT NULL,
+            account_id       TEXT,
+            account_label    TEXT,
+            login_customer_id TEXT,
+            account_currency TEXT,
+            access_token     TEXT,
+            refresh_token    TEXT,
+            token_expires_at TIMESTAMPTZ,
+            scopes           TEXT,
+            created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            UNIQUE (organisation_id, domain, platform)
+        )
+    `);
+    // Add new columns to existing tables if upgrading from older schema
+    await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS login_customer_id TEXT`).catch(() => {});
+    await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS account_currency TEXT`).catch(() => {});
+}
+
+async function saveConnection(db, { orgId, domain, platform, accountId, accountLabel, loginCustomerId, currency, accessToken, refreshToken, expiresAt, scope }) {
+    await db.query(
+        `INSERT INTO ad_platform_connections
+            (organisation_id, domain, platform, account_id, account_label, login_customer_id, account_currency, access_token, refresh_token, token_expires_at, scopes)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+         ON CONFLICT (organisation_id, domain, platform) DO UPDATE SET
+            account_id        = EXCLUDED.account_id,
+            account_label     = EXCLUDED.account_label,
+            login_customer_id = EXCLUDED.login_customer_id,
+            account_currency  = EXCLUDED.account_currency,
+            access_token      = EXCLUDED.access_token,
+            refresh_token     = COALESCE(EXCLUDED.refresh_token, ad_platform_connections.refresh_token),
+            token_expires_at  = EXCLUDED.token_expires_at,
+            scopes            = EXCLUDED.scopes,
+            updated_at        = NOW()`,
+        [orgId, domain, platform, accountId, accountLabel,
+         loginCustomerId || null, currency || null,
+         accessToken, refreshToken, expiresAt, scope]
+    );
 }
 
 async function ensurePendingTable(db) {
@@ -228,38 +320,19 @@ export default async function handler(req, res) {
 
         // If only one account, skip picker and save directly
         if (accounts.length === 1) {
-            await db.query(`
-                CREATE TABLE IF NOT EXISTS ad_platform_connections (
-                    id               SERIAL      PRIMARY KEY,
-                    organisation_id  INTEGER     NOT NULL,
-                    domain           TEXT        NOT NULL,
-                    platform         TEXT        NOT NULL,
-                    account_id       TEXT,
-                    account_label    TEXT,
-                    access_token     TEXT,
-                    refresh_token    TEXT,
-                    token_expires_at TIMESTAMPTZ,
-                    scopes           TEXT,
-                    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    UNIQUE (organisation_id, domain, platform)
-                )
-            `);
-            await db.query(
-                `INSERT INTO ad_platform_connections
-                    (organisation_id, domain, platform, account_id, account_label, access_token, refresh_token, token_expires_at, scopes)
-                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
-                 ON CONFLICT (organisation_id, domain, platform) DO UPDATE SET
-                    account_id       = EXCLUDED.account_id,
-                    account_label    = EXCLUDED.account_label,
-                    access_token     = EXCLUDED.access_token,
-                    refresh_token    = COALESCE(EXCLUDED.refresh_token, ad_platform_connections.refresh_token),
-                    token_expires_at = EXCLUDED.token_expires_at,
-                    scopes           = EXCLUDED.scopes,
-                    updated_at       = NOW()`,
-                [orgId, domain, platform, accounts[0].id, accounts[0].name,
-                 tokens.accessToken, tokens.refreshToken, expiresAt, tokens.scope]
-            );
+            await ensureConnectionTable(db);
+            const acc = accounts[0];
+            await saveConnection(db, {
+                orgId, domain, platform,
+                accountId: acc.id,
+                accountLabel: acc.name,
+                loginCustomerId: acc.loginCustomerId || null,
+                currency: acc.currency || null,
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken,
+                expiresAt,
+                scope: tokens.scope,
+            });
             return res.redirect(302,
                 `${returnBase}?oauth_success=${encodeURIComponent(platform)}&oauth_domain=${encodeURIComponent(domain)}`
             );

@@ -128,37 +128,66 @@ async function fetchGoogleAds(conn, fromDate, toDate) {
         throw new Error("No Google Ads customer ID linked — reconnect to let us detect your account.");
     }
     const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+    const customerId = conn.account_id.replace(/\D/g, ""); // strip dashes if present
+
+    const baseHeaders = {
+        Authorization: `Bearer ${conn.access_token}`,
+        "developer-token": devToken,
+        "Content-Type": "application/json",
+    };
+    if (conn.login_customer_id) {
+        baseHeaders["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
+    }
+
+    const gadsPost = (query) => fetch(
+        `https://googleads.googleapis.com/v18/customers/${customerId}/googleAds:search`,
+        { method: "POST", headers: baseHeaders, body: JSON.stringify({ query }) }
+    );
+
+    // Fetch currency from the account if not already stored
+    let currency = conn.account_currency || null;
+    if (!currency) {
+        const currResp = await gadsPost(
+            "SELECT customer.currency_code FROM customer LIMIT 1"
+        ).catch(() => null);
+        if (currResp?.ok) {
+            const currData = await currResp.json().catch(() => ({}));
+            currency = currData?.results?.[0]?.customer?.currencyCode || null;
+        }
+    }
+
+    // Fetch clicks, spend, impressions aggregated across all campaigns in the date range
     const query = `
         SELECT metrics.clicks, metrics.cost_micros, metrics.impressions
         FROM campaign
         WHERE segments.date BETWEEN '${fromDate}' AND '${toDate}'
+          AND campaign.status != 'REMOVED'
     `;
 
-    const resp = await fetch(
-        `https://googleads.googleapis.com/v18/customers/${conn.account_id}/googleAds:search`,
-        {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${conn.access_token}`,
-                "developer-token": devToken,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ query }),
-        }
-    );
+    const resp = await gadsPost(query);
 
     if (!resp.ok) {
-        const err = await resp.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `Google Ads API error (${resp.status})`);
+        const errBody = await resp.json().catch(() => ({}));
+        const msg = errBody?.error?.message
+            || errBody?.error?.details?.[0]?.errors?.[0]?.message
+            || `Google Ads API error (${resp.status})`;
+        throw new Error(msg);
     }
+
     const data = await resp.json();
     let clicks = 0, spendMicros = 0, impressions = 0;
     for (const row of (data.results || [])) {
-        clicks     += Number(row.metrics?.clicks || 0);
-        spendMicros += Number(row.metrics?.costMicros || row.metrics?.cost_micros || 0);
+        clicks      += Number(row.metrics?.clicks || 0);
+        spendMicros += Number(row.metrics?.costMicros ?? row.metrics?.cost_micros ?? 0);
         impressions += Number(row.metrics?.impressions || 0);
     }
-    return { clicks, spend: +(spendMicros / 1_000_000).toFixed(2), currency: "EUR", impressions };
+
+    return {
+        clicks,
+        spend: +(spendMicros / 1_000_000).toFixed(2),
+        currency: currency || "EUR",
+        impressions,
+    };
 }
 
 async function fetchMetaAds(conn, fromDate, toDate) {

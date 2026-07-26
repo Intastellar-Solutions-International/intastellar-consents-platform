@@ -57,21 +57,25 @@ async function ensureTable(db) {
     if (tableReady) return;
     await db.query(`
         CREATE TABLE IF NOT EXISTS ad_platform_connections (
-            id               SERIAL PRIMARY KEY,
-            organisation_id  INTEGER NOT NULL,
-            domain           TEXT    NOT NULL,
-            platform         TEXT    NOT NULL,
-            account_id       TEXT,
-            account_label    TEXT,
-            access_token     TEXT,
-            refresh_token    TEXT,
-            token_expires_at TIMESTAMPTZ,
-            scopes           TEXT,
-            created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-            updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            id                SERIAL PRIMARY KEY,
+            organisation_id   INTEGER NOT NULL,
+            domain            TEXT    NOT NULL,
+            platform          TEXT    NOT NULL,
+            account_id        TEXT,
+            account_label     TEXT,
+            login_customer_id TEXT,
+            account_currency  TEXT,
+            access_token      TEXT,
+            refresh_token     TEXT,
+            token_expires_at  TIMESTAMPTZ,
+            scopes            TEXT,
+            created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             UNIQUE (organisation_id, domain, platform)
         )
     `);
+    await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS login_customer_id TEXT`).catch(() => {});
+    await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS account_currency TEXT`).catch(() => {});
     tableReady = true;
 }
 
@@ -92,12 +96,12 @@ export default async function handler(req, res) {
         const { domain } = req.query;
         const result = domain
             ? await db.query(
-                `SELECT id, platform, domain, account_id, account_label, scopes, created_at, updated_at
+                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at
                  FROM ad_platform_connections WHERE organisation_id=$1 AND domain=$2 ORDER BY platform`,
                 [orgId, domain]
             )
             : await db.query(
-                `SELECT id, platform, domain, account_id, account_label, scopes, created_at, updated_at
+                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at
                  FROM ad_platform_connections WHERE organisation_id=$1 ORDER BY domain, platform`,
                 [orgId]
             );

@@ -96,41 +96,49 @@ export default async function handler(req, res) {
         if (rows.length === 0) return res.status(404).json({ error: "Pending connection not found or expired. Please reconnect." });
 
         const pending = rows[0];
-        const label = accountLabel
-            || pending.accounts?.find?.(a => a.id === accountId)?.name
-            || accountId;
+        const selectedAccount = (pending.accounts || []).find(a => a.id === accountId);
+        const label = accountLabel || selectedAccount?.name || accountId;
+        const loginCustomerId = selectedAccount?.loginCustomerId || null;
+        const currency = selectedAccount?.currency || null;
 
         await db.query(`
             CREATE TABLE IF NOT EXISTS ad_platform_connections (
-                id               SERIAL      PRIMARY KEY,
-                organisation_id  INTEGER     NOT NULL,
-                domain           TEXT        NOT NULL,
-                platform         TEXT        NOT NULL,
-                account_id       TEXT,
-                account_label    TEXT,
-                access_token     TEXT,
-                refresh_token    TEXT,
-                token_expires_at TIMESTAMPTZ,
-                scopes           TEXT,
-                created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                id                SERIAL      PRIMARY KEY,
+                organisation_id   INTEGER     NOT NULL,
+                domain            TEXT        NOT NULL,
+                platform          TEXT        NOT NULL,
+                account_id        TEXT,
+                account_label     TEXT,
+                login_customer_id TEXT,
+                account_currency  TEXT,
+                access_token      TEXT,
+                refresh_token     TEXT,
+                token_expires_at  TIMESTAMPTZ,
+                scopes            TEXT,
+                created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
                 UNIQUE (organisation_id, domain, platform)
             )
         `);
+        await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS login_customer_id TEXT`).catch(() => {});
+        await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS account_currency TEXT`).catch(() => {});
 
         await db.query(
             `INSERT INTO ad_platform_connections
-                (organisation_id, domain, platform, account_id, account_label, access_token, refresh_token, token_expires_at, scopes)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+                (organisation_id, domain, platform, account_id, account_label, login_customer_id, account_currency, access_token, refresh_token, token_expires_at, scopes)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
              ON CONFLICT (organisation_id, domain, platform) DO UPDATE SET
-                account_id       = EXCLUDED.account_id,
-                account_label    = EXCLUDED.account_label,
-                access_token     = EXCLUDED.access_token,
-                refresh_token    = COALESCE(EXCLUDED.refresh_token, ad_platform_connections.refresh_token),
-                token_expires_at = EXCLUDED.token_expires_at,
-                scopes           = EXCLUDED.scopes,
-                updated_at       = NOW()`,
+                account_id        = EXCLUDED.account_id,
+                account_label     = EXCLUDED.account_label,
+                login_customer_id = EXCLUDED.login_customer_id,
+                account_currency  = EXCLUDED.account_currency,
+                access_token      = EXCLUDED.access_token,
+                refresh_token     = COALESCE(EXCLUDED.refresh_token, ad_platform_connections.refresh_token),
+                token_expires_at  = EXCLUDED.token_expires_at,
+                scopes            = EXCLUDED.scopes,
+                updated_at        = NOW()`,
             [orgId, pending.domain, pending.platform, accountId, label,
+             loginCustomerId, currency,
              pending.access_token, pending.refresh_token, pending.token_expires_at, pending.scopes]
         );
 
