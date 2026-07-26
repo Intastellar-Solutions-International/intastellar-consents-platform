@@ -60700,6 +60700,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AdConnectionManager)
 /* harmony export */ });
+/* harmony import */ var _API_host__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../API/host */ "./src/API/host.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -60714,6 +60715,7 @@ var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
   useCallback = _React.useCallback;
+
 var AD_PLATFORMS = [{
   id: "google_ads",
   label: "Google Ads",
@@ -60800,7 +60802,7 @@ function AdConnectionManager(_ref) {
           setLoadingConnections(true);
           _context.p = 2;
           _context.n = 3;
-          return fetch("/api/ad-connections?domain=".concat(encodeURIComponent(domain)), {
+          return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-connections?domain=").concat(encodeURIComponent(domain)), {
             headers: {
               Authorization: authToken,
               Organisation: String(orgId)
@@ -60867,11 +60869,11 @@ function AdConnectionManager(_ref) {
   }
   function _handleConnect() {
     _handleConnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(platformId) {
-      var returnPath, rawToken, url;
+      var returnPath, url;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.n) {
           case 0:
-            if (!(!authToken || !orgId)) {
+            if (orgId) {
               _context2.n = 1;
               break;
             }
@@ -60879,9 +60881,8 @@ function AdConnectionManager(_ref) {
             return _context2.a(2);
           case 1:
             setConnecting(platformId);
-            returnPath = window.location.pathname; // Strip "Bearer " prefix to get the raw token for the URL param
-            rawToken = authToken.replace(/^Bearer\s+/i, "");
-            url = ["/api/ad-oauth-start", "?platform=".concat(encodeURIComponent(platformId)), "&domain=".concat(encodeURIComponent(domain)), "&returnPath=".concat(encodeURIComponent(returnPath)), "&token=".concat(encodeURIComponent(rawToken)), "&org=".concat(encodeURIComponent(orgId))].join(""); // Navigate directly — server validates token and 302-redirects to OAuth provider
+            returnPath = window.location.pathname;
+            url = ["".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-oauth-start"), "?platform=".concat(encodeURIComponent(platformId)), "&domain=".concat(encodeURIComponent(domain)), "&returnPath=".concat(encodeURIComponent(returnPath)), "&org=".concat(encodeURIComponent(orgId))].join("");
             window.location.href = url;
           case 2:
             return _context2.a(2);
@@ -60911,7 +60912,7 @@ function AdConnectionManager(_ref) {
           case 1:
             _context3.p = 1;
             _context3.n = 2;
-            return fetch("/api/ad-connections?platform=".concat(platformId, "&domain=").concat(encodeURIComponent(domain)), {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-connections?platform=").concat(platformId, "&domain=").concat(encodeURIComponent(domain)), {
               method: "DELETE",
               headers: {
                 Authorization: authToken,
@@ -60957,7 +60958,7 @@ function AdConnectionManager(_ref) {
             setImporting(platformId);
             _context4.p = 2;
             _context4.n = 3;
-            return fetch("/api/ad-data-fetch?platform=".concat(platformId, "&domain=").concat(encodeURIComponent(domain), "&fromDate=").concat(fromDate, "&toDate=").concat(toDate), {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-data-fetch?platform=").concat(platformId, "&domain=").concat(encodeURIComponent(domain), "&fromDate=").concat(fromDate, "&toDate=").concat(toDate), {
               headers: {
                 Authorization: authToken,
                 Organisation: String(orgId)
@@ -61530,6 +61531,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ MarketingReconciliationPanel)
 /* harmony export */ });
+/* harmony import */ var _API_host__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../API/host */ "./src/API/host.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -61556,6 +61558,7 @@ var _React = React,
   useEffect = _React.useEffect,
   useMemo = _React.useMemo,
   useState = _React.useState;
+
 
 /*
  * MarketingReconciliationPanel
@@ -63114,7 +63117,7 @@ function NotificationBell(_ref13) {
           setLoading(true);
           _context.p = 2;
           _context.n = 3;
-          return fetch("/api/ad-alerts?domain=".concat(encodeURIComponent(domainKey), "&resource=notifications&limit=20"), {
+          return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-alerts?domain=").concat(encodeURIComponent(domainKey), "&resource=notifications&limit=20"), {
             headers: {
               Authorization: authToken,
               Organisation: String(orgId)
@@ -63165,7 +63168,7 @@ function NotificationBell(_ref13) {
         while (1) switch (_context2.n) {
           case 0:
             _context2.n = 1;
-            return fetch("/api/ad-alerts", {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-alerts"), {
               method: "POST",
               headers: {
                 Authorization: authToken,
@@ -63203,7 +63206,7 @@ function NotificationBell(_ref13) {
         while (1) switch (_context3.n) {
           case 0:
             _context3.n = 1;
-            return fetch("/api/ad-alerts", {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-alerts"), {
               method: "POST",
               headers: {
                 Authorization: authToken,
@@ -63386,7 +63389,7 @@ function AlertSettingsModal(_ref15) {
     setEmail = _useState20[1];
   useEffect(function () {
     if (!authToken || !orgId || !domainKey) return;
-    fetch("/api/ad-alerts?domain=".concat(encodeURIComponent(domainKey), "&resource=rules"), {
+    fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-alerts?domain=").concat(encodeURIComponent(domainKey), "&resource=rules"), {
       headers: {
         Authorization: authToken,
         Organisation: String(orgId)
@@ -63451,7 +63454,7 @@ function AlertSettingsModal(_ref15) {
               email_address: ((_ref21 = (_updates$email_addres = updates.email_address) !== null && _updates$email_addres !== void 0 ? _updates$email_addres : rule.email_address) !== null && _ref21 !== void 0 ? _ref21 : email) || null
             };
             _context4.n = 2;
-            return fetch("/api/ad-alerts", {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-alerts"), {
               method: "POST",
               headers: {
                 Authorization: authToken,
@@ -63515,7 +63518,7 @@ function AlertSettingsModal(_ref15) {
             return pushSubscription.unsubscribe()["catch"](function () {});
           case 2:
             _context5.n = 3;
-            return fetch("/api/ad-alerts", {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-alerts"), {
               method: "POST",
               headers: {
                 Authorization: authToken,
@@ -63560,7 +63563,7 @@ function AlertSettingsModal(_ref15) {
             sub = _context5.v;
             setPushSubscription(sub);
             _context5.n = 10;
-            return fetch("/api/ad-alerts", {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-alerts"), {
               method: "POST",
               headers: {
                 Authorization: authToken,
@@ -63916,7 +63919,7 @@ function MarketingReconciliationPanel(_ref23) {
     setSnapshots(local);
     // Then fetch from DB and merge (DB wins for anything it has)
     if (authToken && orgId && domainKey && domainKey !== "combined view") {
-      fetch("/api/ad-snapshots?domain=".concat(encodeURIComponent(domainKey)), {
+      fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-snapshots?domain=").concat(encodeURIComponent(domainKey)), {
         headers: {
           Authorization: authToken,
           Organisation: String(orgId)
@@ -63971,7 +63974,7 @@ function MarketingReconciliationPanel(_ref23) {
   // Keep an up-to-date list of which platforms have active connections for this domain
   useEffect(function () {
     if (!authToken || !orgId || !domainKey || domainKey === "combined view") return;
-    fetch("/api/ad-connections?domain=".concat(encodeURIComponent(domainKey)), {
+    fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-connections?domain=").concat(encodeURIComponent(domainKey)), {
       headers: {
         Authorization: authToken,
         Organisation: String(orgId)
@@ -63997,7 +64000,7 @@ function MarketingReconciliationPanel(_ref23) {
           setSyncMsg(null);
           _context6.p = 2;
           _context6.n = 3;
-          return fetch("/api/ad-data-fetch?platform=".concat(inputs.platform, "&domain=").concat(encodeURIComponent(domainKey), "&fromDate=").concat(fromDate, "&toDate=").concat(toDate), {
+          return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-data-fetch?platform=").concat(inputs.platform, "&domain=").concat(encodeURIComponent(domainKey), "&fromDate=").concat(fromDate, "&toDate=").concat(toDate), {
             headers: {
               Authorization: authToken,
               Organisation: String(orgId)
@@ -64061,11 +64064,10 @@ function MarketingReconciliationPanel(_ref23) {
     }, _callee6, null, [[2, 6, 7, 8]]);
   })), [inputs.platform, fromDate, toDate, authToken, orgId, domainKey]);
   var handleConnectPlatform = useCallback(function (platform) {
-    if (!authToken || !orgId || !domainKey || domainKey === "combined view") return;
+    if (!orgId || !domainKey || domainKey === "combined view") return;
     setConnectingPlatform(true);
     var returnPath = window.location.pathname + window.location.search;
-    var rawToken = authToken.replace(/^Bearer\s+/i, "");
-    var url = ["/api/ad-oauth-start", "?platform=".concat(encodeURIComponent(platform)), "&domain=".concat(encodeURIComponent(domainKey)), "&returnPath=".concat(encodeURIComponent(returnPath)), "&token=".concat(encodeURIComponent(rawToken)), "&org=".concat(encodeURIComponent(orgId))].join("");
+    var url = ["".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-oauth-start"), "?platform=".concat(encodeURIComponent(platform)), "&domain=".concat(encodeURIComponent(domainKey)), "&returnPath=".concat(encodeURIComponent(returnPath)), "&org=".concat(encodeURIComponent(orgId))].join("");
     window.location.href = url;
   }, [authToken, orgId, domainKey]);
   var selectedPlatform = useMemo(function () {
@@ -64362,7 +64364,7 @@ function MarketingReconciliationPanel(_ref23) {
     setSavedFlash(true);
     // Also persist to DB
     if (authToken && orgId && domainKey && domainKey !== "combined view") {
-      fetch('/api/ad-snapshots', {
+      fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-snapshots"), {
         method: 'POST',
         headers: {
           Authorization: authToken,
@@ -64383,7 +64385,7 @@ function MarketingReconciliationPanel(_ref23) {
       });
     });
     if (authToken && orgId) {
-      fetch("/api/ad-snapshots?id=".concat(encodeURIComponent(id)), {
+      fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-snapshots?id=").concat(encodeURIComponent(id)), {
         method: 'DELETE',
         headers: {
           Authorization: authToken,
@@ -64398,7 +64400,7 @@ function MarketingReconciliationPanel(_ref23) {
     if (ok) {
       setSnapshots([]);
       if (authToken && orgId && domainKey) {
-        fetch("/api/ad-snapshots?domain=".concat(encodeURIComponent(domainKey), "&all=1"), {
+        fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-snapshots?domain=").concat(encodeURIComponent(domainKey), "&all=1"), {
           method: 'DELETE',
           headers: {
             Authorization: authToken,
@@ -64523,7 +64525,7 @@ function MarketingReconciliationPanel(_ref23) {
   }, syncMsg.text, !isConnected && !syncMsg.error && /*#__PURE__*/React.createElement(React.Fragment, null, " \xB7 ", /*#__PURE__*/React.createElement("a", {
     href: "/settings/ad-connections",
     className: "recon-sync-msg__link"
-  }, "Manage connections"))), !isConnected && fromDate && toDate && authToken && orgId && !["ga4", "other"].includes(inputs.platform) && /*#__PURE__*/React.createElement("div", {
+  }, "Manage connections"))), !isConnected && fromDate && toDate && orgId && !["ga4", "other"].includes(inputs.platform) && /*#__PURE__*/React.createElement("div", {
     className: "recon-connect-prompt"
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
@@ -64999,12 +65001,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Reports__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Reports */ "./src/Pages/Reports/Reports.js");
 /* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
 /* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
-/* harmony import */ var _MarketingReport_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./MarketingReport.css */ "./src/Pages/Reports/MarketingReport/MarketingReport.css");
-/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var _MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MarketingReconciliationPanel.js */ "./src/Pages/Reports/MarketingReport/MarketingReconciliationPanel.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _API_host__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../API/host */ "./src/API/host.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
+/* harmony import */ var _MarketingReport_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./MarketingReport.css */ "./src/Pages/Reports/MarketingReport/MarketingReport.css");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./MarketingReconciliationPanel.js */ "./src/Pages/Reports/MarketingReport/MarketingReconciliationPanel.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
@@ -65031,6 +65034,7 @@ var _React = React,
   useMemo = _React.useMemo,
   useContext = _React.useContext,
   useCallback = _React.useCallback;
+
 
 
 
@@ -65070,7 +65074,7 @@ function AccountPickerModal(_ref) {
     err = _useState8[0],
     setErr = _useState8[1];
   useEffect(function () {
-    fetch("/api/ad-connection-pending?id=".concat(encodeURIComponent(pendingId)), {
+    fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_5__.ScannerHost, "/api/ad-connection-pending?id=").concat(encodeURIComponent(pendingId)), {
       headers: {
         Authorization: authToken,
         Organisation: String(orgId)
@@ -65101,7 +65105,7 @@ function AccountPickerModal(_ref) {
             setSaving(true);
             _context.p = 1;
             _context.n = 2;
-            return fetch("/api/ad-connection-pending?id=".concat(encodeURIComponent(pendingId)), {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_5__.ScannerHost, "/api/ad-connection-pending?id=").concat(encodeURIComponent(pendingId)), {
               method: "POST",
               headers: {
                 Authorization: authToken,
@@ -65287,7 +65291,7 @@ function ReconcilePage() {
   var _useParams = useParams(),
     id = _useParams.id,
     handle = _useParams.handle;
-  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.useSyncDomainFromRoute)(handle, setGlobalDomain);
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_9__.useSyncDomainFromRoute)(handle, setGlobalDomain);
 
   // ── OAuth return handling ─────────────────────────────────────────────
   var oauthParams = useMemo(function () {
@@ -65379,10 +65383,10 @@ function ReconcilePage() {
     selectedChannel = _useState20[0],
     setSelectedChannel = _useState20[1];
   var listDomainLabel = useMemo(function () {
-    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.consentsDomainFromRoute)(handle, currentDomain);
+    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_9__.consentsDomainFromRoute)(handle, currentDomain);
   }, [handle, currentDomain]);
   var domainsApiHeader = useMemo(function () {
-    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.toDomainsApiHeader)(listDomainLabel);
+    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_9__.toDomainsApiHeader)(listDomainLabel);
   }, [listDomainLabel]);
   var _useState21 = useState([]),
     _useState22 = _slicedToArray(_useState21, 2),
@@ -65457,7 +65461,7 @@ function ReconcilePage() {
             _context2.n = 8;
             break;
           }
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_10__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_11__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context2.a(2);
         case 8:
@@ -65518,10 +65522,10 @@ function ReconcilePage() {
     return s + (Number(r.consents) || 0);
   }, 0) : totalConsents;
   var invisibleConsents = Math.max(0, visibilityScopeTotal - measurementReadyCount);
-  var channelAnalyticsPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.reportsPath)(id, listDomainLabel, "/marketing");
+  var channelAnalyticsPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_9__.reportsPath)(id, listDomainLabel, "/marketing");
 
   // Domain gate — reconciliation must be scoped to a specific domain
-  var noDomain = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.isCombinedOrClearDomain)(listDomainLabel);
+  var noDomain = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_9__.isCombinedOrClearDomain)(listDomainLabel);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_0__["default"], {
     links: _Reports__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
     title: "Reports"
@@ -65552,8 +65556,8 @@ function ReconcilePage() {
   }), accountPicker && /*#__PURE__*/React.createElement(AccountPickerModal, {
     pendingId: accountPicker.pendingId,
     platform: accountPicker.platform,
-    authToken: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getToken(),
-    orgId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getOrganisation(),
+    authToken: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_6__["default"].getToken(),
+    orgId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_6__["default"].getOrganisation(),
     onDone: function onDone(platform, accountLabel) {
       setAccountPicker(null);
       setOauthBanner({
@@ -65611,7 +65615,7 @@ function ReconcilePage() {
     className: "marketing-report-loading"
   }, "Loading\u2026") : rows.length === 0 ? /*#__PURE__*/React.createElement("p", {
     className: "marketing-report-empty"
-  }, "No marketing attribution data found for this period and domain.") : /*#__PURE__*/React.createElement(_MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_9__["default"], {
+  }, "No marketing attribution data found for this period and domain.") : /*#__PURE__*/React.createElement(_MarketingReconciliationPanel_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
     scopeLabel: selectedChannel || "all channels",
     scopeKey: selectedChannel ? "channel:".concat(selectedChannel) : "overview",
     domainKey: listDomainLabel,
@@ -65621,8 +65625,8 @@ function ReconcilePage() {
     scopeRows: selectedChannel ? drilldownRows : rows,
     fromDate: toYmd(fromDate),
     toDate: toYmd(toDate),
-    orgId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getOrganisation(),
-    authToken: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getToken()
+    orgId: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_6__["default"].getOrganisation(),
+    authToken: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_6__["default"].getToken()
   }))));
 }
 
@@ -68843,12 +68847,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ AdConnectionsSettings)
 /* harmony export */ });
 /* harmony import */ var _Reports_MarketingReport_AdConnectionManager_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Reports/MarketingReport/AdConnectionManager.js */ "./src/Pages/Reports/MarketingReport/AdConnectionManager.js");
-/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
-/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
-/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
-/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
+/* harmony import */ var _API_host__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../API/host */ "./src/API/host.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/SideNav */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../Components/Header/Sticky */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -68859,6 +68864,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -68928,7 +68934,7 @@ function AccountPickerModal(_ref) {
       setLoadError("Session missing. Please reconnect.");
       return;
     }
-    fetch("/api/ad-connection-pending?id=".concat(encodeURIComponent(pendingId)), {
+    fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_1__.ScannerHost, "/api/ad-connection-pending?id=").concat(encodeURIComponent(pendingId)), {
       headers: {
         Authorization: authToken,
         Organisation: String(orgId)
@@ -68975,7 +68981,7 @@ function AccountPickerModal(_ref) {
               return a.id === selected;
             });
             _context.n = 3;
-            return fetch("/api/ad-connection-pending?id=".concat(encodeURIComponent(pendingId)), {
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_1__.ScannerHost, "/api/ad-connection-pending?id=").concat(encodeURIComponent(pendingId)), {
               method: "POST",
               headers: {
                 Authorization: authToken,
@@ -69083,7 +69089,7 @@ function AccountPickerModal(_ref) {
 
 function AdConnectionsSettings() {
   document.title = "Ad Connections | Settings | Intastellar Consents";
-  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_6__.DomainContext),
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_7__.DomainContext),
     _useContext2 = _slicedToArray(_useContext, 1),
     currentDomain = _useContext2[0];
   var _useState1 = useState(function () {
@@ -69130,8 +69136,8 @@ function AdConnectionsSettings() {
     setManagerKey = _useState26[1]; // bump to re-mount AdConnectionManager
 
   // Always read fresh auth values at render time
-  var authToken = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken();
-  var orgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation();
+  var authToken = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_2__["default"].getToken();
+  var orgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_2__["default"].getOrganisation();
 
   // Detect ?select_account, ?oauth_success, ?oauth_error from URL on mount
   useEffect(function () {
@@ -69188,14 +69194,14 @@ function AdConnectionsSettings() {
     }
 
     // Fallback: fetch from the same endpoint the header uses
-    var ep = (_API$gdpr = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"].gdpr) === null || _API$gdpr === void 0 ? void 0 : _API$gdpr.getDomains;
+    var ep = (_API$gdpr = _API_api__WEBPACK_IMPORTED_MODULE_6__["default"].gdpr) === null || _API$gdpr === void 0 ? void 0 : _API$gdpr.getDomains;
     if (!(ep !== null && ep !== void 0 && ep.url)) {
       setDomainsLoading(false);
       setDomainsError(true);
       return;
     }
-    var token = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getToken();
-    var org = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation();
+    var token = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_2__["default"].getToken();
+    var org = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_2__["default"].getOrganisation();
     fetch(ep.url, {
       method: ep.method || "GET",
       headers: {
@@ -69247,14 +69253,14 @@ function AdConnectionsSettings() {
     setPendingDomain(null);
   }
   var notLoggedIn = !authToken || !orgId;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_4__.reportsLinks,
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    links: _Components_Header_SideNavLinks__WEBPACK_IMPORTED_MODULE_5__.reportsLinks,
     title: "Settings"
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: "1"
     }
-  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky__WEBPACK_IMPORTED_MODULE_4__["default"], {
     title: "Ad Connections"
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content"

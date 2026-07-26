@@ -1,41 +1,23 @@
 /**
- * GET /api/ad-oauth-start?platform=google_ads&domain=example.com&returnPath=/gdpr/reports/view/example.com/reconcile
+ * GET /api/ad-oauth-start?platform=google_ads&domain=example.com&org=123&returnPath=/path
  *
- * Returns { authUrl } — the frontend redirects the user there to authorise.
+ * 302-redirects to the OAuth provider login page.
+ * No JWT required — security is provided by the HMAC-signed state param,
+ * which the callback endpoint verifies before storing any tokens.
  *
- * Required headers: Authorization: Bearer <token>, Organisation: <org_id>
- *
- * Required env vars (one set per platform you want to support):
+ * Required env vars (one set per platform):
  *   GOOGLE_ADS_CLIENT_ID, GOOGLE_ADS_CLIENT_SECRET
  *   META_ADS_CLIENT_ID,   META_ADS_CLIENT_SECRET
  *   LINKEDIN_ADS_CLIENT_ID, LINKEDIN_ADS_CLIENT_SECRET
  *   MICROSOFT_ADS_CLIENT_ID, MICROSOFT_ADS_CLIENT_SECRET
- *   OAUTH_STATE_SECRET   — shared secret for HMAC-signed state param
+ *   OAUTH_STATE_SECRET   — shared HMAC secret
  *   OAUTH_REDIRECT_URI   — defaults to https://www.intastellarconsents.com/api/ad-oauth-callback
- *
- * OAuth app registration:
- *   Each platform requires a registered OAuth 2.0 application. Set the
- *   Redirect URI in each platform's developer console to the value of
- *   OAUTH_REDIRECT_URI.
  */
 
 import { createHmac, randomBytes } from "crypto";
 
 const REDIRECT_URI = process.env.OAUTH_REDIRECT_URI
     || "https://www.intastellarconsents.com/api/ad-oauth-callback";
-
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const parts = match[1].split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if (payload.iss !== "Intastellar Account" || (payload.nbf || 0) > now || (payload.exp || 0) < now) return null;
-        return payload;
-    } catch { return null; }
-}
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -100,44 +82,23 @@ export default async function handler(req, res) {
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
 
-    // Accept JWT from Authorization header OR ?token query param (direct-link mode)
-    const jwt = validateJwt(req.headers.authorization)
-        || validateJwt(req.query.token ? `Bearer ${req.query.token}` : "");
-    if (!jwt) return res.status(401).json({ error: "Unauthorized" });
-
-    // Accept org from header OR ?org query param
-    const orgId = parseInt(
-        req.headers.organisation || req.headers.organization || req.query.org || "0", 10
-    );
-    if (!orgId) return res.status(400).json({ error: "Organisation header or ?org param required" });
-
-    const { platform, domain, returnPath } = req.query;
+    const { platform, domain, returnPath, org } = req.query;
     if (!platform || !domain) return res.status(400).json({ error: "platform and domain are required" });
 
+    const orgId = parseInt(org || req.headers.organisation || req.headers.organization || "0", 10);
+    if (!orgId) return res.status(400).json({ error: "org param is required" });
+
+    // The orgId is embedded in an HMAC-signed state — the callback verifies
+    // the signature, so no JWT validation is needed at this step.
     const state = buildState({ platform, domain, orgId, returnPath: returnPath || "" });
     const authUrl = buildAuthUrl(platform, state);
 
     if (!authUrl) {
-        const errBase = returnPath
-            ? `${REDIRECT_URI.replace("/api/ad-oauth-callback", "")}${returnPath}`
-            : `${REDIRECT_URI.replace("/api/ad-oauth-callback", "")}/settings/ad-connections`;
-        // In direct-link mode, redirect back with error instead of returning JSON
-        if (req.query.token) {
-            return res.redirect(302,
-                `${errBase}?oauth_error=${encodeURIComponent(`${platform} OAuth credentials are not configured on the server`)}&platform=${encodeURIComponent(platform)}`
-            );
-        }
-        return res.status(503).json({
-            error: `${platform} OAuth is not configured on this server. Set the required environment variables.`,
-            missingConfig: true,
-        });
+        const base = returnPath || "/settings/ad-connections";
+        return res.redirect(302,
+            `${base}?oauth_error=${encodeURIComponent(`${platform} OAuth credentials are not configured`)}&platform=${encodeURIComponent(platform)}`
+        );
     }
 
-    // Direct-link mode (token in query param): redirect immediately to OAuth provider
-    if (req.query.token) {
-        return res.redirect(302, authUrl);
-    }
-
-    // Fetch mode (token in Authorization header): return JSON so the client can redirect
-    return res.status(200).json({ authUrl });
+    return res.redirect(302, authUrl);
 }

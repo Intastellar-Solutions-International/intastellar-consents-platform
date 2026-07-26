@@ -1851,16 +1851,14 @@ export default function MarketingReconciliationPanel({
     }, [inputs.platform, fromDate, toDate, authToken, orgId, domainKey]);
 
     const handleConnectPlatform = useCallback((platform) => {
-        if (!authToken || !orgId || !domainKey || domainKey === "combined view") return;
+        if (!orgId || !domainKey || domainKey === "combined view") return;
         setConnectingPlatform(true);
         const returnPath = window.location.pathname + window.location.search;
-        const rawToken = authToken.replace(/^Bearer\s+/i, "");
         const url = [
             `${ScannerHost}/api/ad-oauth-start`,
             `?platform=${encodeURIComponent(platform)}`,
             `&domain=${encodeURIComponent(domainKey)}`,
             `&returnPath=${encodeURIComponent(returnPath)}`,
-            `&token=${encodeURIComponent(rawToken)}`,
             `&org=${encodeURIComponent(orgId)}`,
         ].join("");
         window.location.href = url;
@@ -2301,7 +2299,7 @@ export default function MarketingReconciliationPanel({
                         )}
                     </p>
                 )}
-                {!isConnected && fromDate && toDate && authToken && orgId && !["ga4", "other"].includes(inputs.platform) && (
+                {!isConnected && fromDate && toDate && orgId && !["ga4", "other"].includes(inputs.platform) && (
                     <div className="recon-connect-prompt">
                         <button
                             type="button"

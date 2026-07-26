@@ -71,23 +71,19 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
     }, [fetchConnections, setStatus]);
 
     async function handleConnect(platformId) {
-        if (!authToken || !orgId) {
+        if (!orgId) {
             setStatus("Session expired — please reload and log in again.", true);
             return;
         }
         setConnecting(platformId);
         const returnPath = window.location.pathname;
-        // Strip "Bearer " prefix to get the raw token for the URL param
-        const rawToken = authToken.replace(/^Bearer\s+/i, "");
         const url = [
             `${ScannerHost}/api/ad-oauth-start`,
             `?platform=${encodeURIComponent(platformId)}`,
             `&domain=${encodeURIComponent(domain)}`,
             `&returnPath=${encodeURIComponent(returnPath)}`,
-            `&token=${encodeURIComponent(rawToken)}`,
             `&org=${encodeURIComponent(orgId)}`,
         ].join("");
-        // Navigate directly — server validates token and 302-redirects to OAuth provider
         window.location.href = url;
     }
 
