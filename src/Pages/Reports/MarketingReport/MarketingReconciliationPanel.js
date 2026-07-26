@@ -1742,6 +1742,7 @@ export default function MarketingReconciliationPanel({
     const [syncing, setSyncing] = useState(false);
     const [syncMsg, setSyncMsg] = useState(null);
     const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
+    const [connectingPlatform, setConnectingPlatform] = useState(false);
 
     /*
      * Load inputs whenever scope changes; load snapshots whenever
@@ -1847,6 +1848,28 @@ export default function MarketingReconciliationPanel({
             setSyncing(false);
         }
     }, [inputs.platform, fromDate, toDate, authToken, orgId, domainKey]);
+
+    const handleConnectPlatform = useCallback(async (platform) => {
+        if (!authToken || !orgId || !domainKey || domainKey === "combined view") return;
+        setConnectingPlatform(true);
+        try {
+            const returnPath = window.location.pathname + window.location.search;
+            const resp = await fetch(
+                `/api/ad-oauth-start?platform=${encodeURIComponent(platform)}&domain=${encodeURIComponent(domainKey)}&returnPath=${encodeURIComponent(returnPath)}`,
+                { headers: { Authorization: authToken, Organisation: String(orgId) } }
+            );
+            const data = await resp.json();
+            if (data.authUrl) {
+                window.location.href = data.authUrl;
+            } else {
+                setSyncMsg({ text: data.error || "Could not start connection — check platform credentials are configured.", error: true });
+                setConnectingPlatform(false);
+            }
+        } catch (err) {
+            setSyncMsg({ text: err.message, error: true });
+            setConnectingPlatform(false);
+        }
+    }, [authToken, orgId, domainKey]);
 
     const selectedPlatform = useMemo(
         () => platformOrFallback(inputs.platform),
@@ -2283,10 +2306,20 @@ export default function MarketingReconciliationPanel({
                         )}
                     </p>
                 )}
-                {!isConnected && !syncing && fromDate && toDate && authToken && orgId && (
-                    <p className="recon-sync-hint">
-                        <a href="/settings/ad-connections">Connect {SYNC_SHORT_LABEL[inputs.platform] || "this platform"}</a> to auto-import {selectedPlatform.metric} and spend for this date range.
-                    </p>
+                {!isConnected && fromDate && toDate && authToken && orgId && !["ga4", "other"].includes(inputs.platform) && (
+                    <div className="recon-connect-prompt">
+                        <button
+                            type="button"
+                            className="recon-connect-btn"
+                            onClick={() => handleConnectPlatform(inputs.platform)}
+                            disabled={connectingPlatform}
+                        >
+                            {connectingPlatform ? "Opening…" : `Connect ${SYNC_SHORT_LABEL[inputs.platform] || "platform"} to enable auto-import`}
+                        </button>
+                        <span className="recon-connect-prompt__hint">
+                            Automatically pull {selectedPlatform.metric} and spend for {fromDate} → {toDate}
+                        </span>
+                    </div>
                 )}
                 {fromDate && toDate && (
                     <p className="marketing-reconciliation__window-hint">

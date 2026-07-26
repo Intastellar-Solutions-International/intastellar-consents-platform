@@ -83,7 +83,21 @@ module.exports = (env, argv) => {
       dotenv,
       new HtmlWebpackPlugin({ template: "./index.html" }),
       new CopySwPlugin(),
-    ]
+    ];
+    config.devServer = {
+      port: 8080,
+      hot: true,
+      historyApiFallback: true,
+      static: './dist',
+      proxy: [
+        {
+          context: ['/api'],
+          target: 'https://www.intastellarconsents.com',
+          changeOrigin: true,
+          secure: true,
+        },
+      ],
+    };
   }
 
   if (argv.mode === 'production') {
