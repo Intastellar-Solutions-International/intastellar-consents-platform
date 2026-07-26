@@ -25,18 +25,6 @@ function getPool() {
     return pool;
 }
 
-function validateJwt(authHeader) {
-    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
-    if (!match) return null;
-    try {
-        const parts = match[1].split(".");
-        if (parts.length !== 3) return null;
-        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
-        const now = Math.floor(Date.now() / 1000);
-        if (payload.iss !== "Intastellar Account" || (payload.nbf || 0) > now || (payload.exp || 0) < now) return null;
-        return payload;
-    } catch { return null; }
-}
 
 const ALLOWED_ORIGINS = [
     "https://www.intastellarconsents.com",
@@ -58,22 +46,17 @@ export default async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
 
-    const jwt = validateJwt(req.headers.authorization);
-    if (!jwt) return res.status(401).json({ error: "Unauthorized" });
-
-    const orgId = parseInt(req.headers.organisation || req.headers.organization || "0", 10);
-    if (!orgId) return res.status(400).json({ error: "Organisation header required" });
-
     const { id } = req.query;
     if (!id) return res.status(400).json({ error: "id is required" });
 
     const db = getPool();
 
     if (req.method === "GET") {
+        // The UUID is the security token — no JWT needed for read
         const { rows } = await db.query(
             `SELECT platform, domain, accounts FROM pending_ad_connections
-             WHERE id = $1 AND organisation_id = $2 AND expires_at > NOW()`,
-            [id, orgId]
+             WHERE id = $1 AND expires_at > NOW()`,
+            [id]
         );
         if (rows.length === 0) return res.status(404).json({ error: "Pending connection not found or expired." });
         const row = rows[0];
@@ -88,10 +71,11 @@ export default async function handler(req, res) {
         const { accountId, accountLabel } = req.body || {};
         if (!accountId) return res.status(400).json({ error: "accountId is required" });
 
+        // Use orgId from the pending record — UUID proves the user initiated the flow
         const { rows } = await db.query(
             `SELECT * FROM pending_ad_connections
-             WHERE id = $1 AND organisation_id = $2 AND expires_at > NOW()`,
-            [id, orgId]
+             WHERE id = $1 AND expires_at > NOW()`,
+            [id]
         );
         if (rows.length === 0) return res.status(404).json({ error: "Pending connection not found or expired. Please reconnect." });
 
@@ -137,7 +121,7 @@ export default async function handler(req, res) {
                 token_expires_at  = EXCLUDED.token_expires_at,
                 scopes            = EXCLUDED.scopes,
                 updated_at        = NOW()`,
-            [orgId, pending.domain, pending.platform, accountId, label,
+            [pending.organisation_id, pending.domain, pending.platform, accountId, label,
              loginCustomerId, currency,
              pending.access_token, pending.refresh_token, pending.token_expires_at, pending.scopes]
         );
