@@ -11,7 +11,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
-import crypto from "crypto";
+import { randomBytes } from "crypto";
 
 let pool;
 function getPool() {
@@ -57,7 +57,7 @@ function validateJwt(authHeader) {
 }
 
 function generateSiteId() {
-    return crypto.randomBytes(12).toString("base64url").slice(0, 16);
+    return randomBytes(12).toString("base64url").slice(0, 16);
 }
 
 export default async function handler(req, res) {
@@ -71,6 +71,18 @@ export default async function handler(req, res) {
     if (!orgId) return res.status(400).json({ error: "Organisation header required" });
 
     const db = getPool();
+
+    // Ensure the sites table exists (no-op after first call)
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS analytics_sites (
+            id              VARCHAR(32)  PRIMARY KEY,
+            organisation_id INTEGER      NOT NULL,
+            domain          VARCHAR(255) NOT NULL,
+            active          BOOLEAN      NOT NULL DEFAULT true,
+            created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            UNIQUE (organisation_id, domain)
+        )
+    `).catch(() => {});
 
     // ── GET: return existing site key for a domain ────────────────────────────
     if (req.method === "GET") {

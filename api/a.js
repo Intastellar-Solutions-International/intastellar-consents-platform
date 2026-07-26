@@ -246,21 +246,33 @@ export default async function handler(req, res) {
         return res.status(400).end();
     }
 
-    const { s: siteId, sid, u: rawUrl, r: referrer, ti: title,
-            us, um, uc, uk, dt, sw, sh, dur } = body;
+    const { s: siteId, cl: consentLevel, sid, u: rawUrl, r: referrer, ti: title,
+            us, um, uc, uk, dt, sw, sh, dur, cs, cf, ca } = body;
 
-    if (!siteId || typeof siteId !== "string" || !sid || !rawUrl) {
+    if (!siteId || typeof siteId !== "string" || !rawUrl) {
         return res.status(400).end();
     }
 
-    // Basic URL validation
-    let parsedUrl;
-    try { parsedUrl = new URL(rawUrl); }
-    catch { return res.status(400).end(); }
+    const isMinimal = consentLevel !== "full";
+
+    // For minimal events the URL is just a pathname; for full events it's the full href.
+    // Parse carefully — prepend a placeholder origin if needed.
+    let pathname, urlColumn;
+    if (isMinimal) {
+        // rawUrl is already a pathname (e.g. /pricing)
+        pathname  = ("/" + String(rawUrl).replace(/^\//, "")).slice(0, 2000);
+        urlColumn = pathname;
+    } else {
+        let parsedUrl;
+        try { parsedUrl = new URL(rawUrl); }
+        catch { return res.status(400).end(); }
+        pathname  = parsedUrl.pathname.slice(0, 2000);
+        urlColumn = (parsedUrl.pathname + parsedUrl.search).slice(0, 2000);
+    }
 
     const db = getPool();
 
-    // Ensure tables exist (idempotent — runs fast after first time)
+    // Ensure tables exist and schema is up to date
     await ensureTables(db).catch(() => {});
 
     // Validate site ID — reject unknown or inactive sites
@@ -276,37 +288,57 @@ export default async function handler(req, res) {
     const country = (req.headers["x-vercel-ip-country"]  || "").slice(0, 2)  || null;
     const region  = (req.headers["x-vercel-ip-country-region"] || "").slice(0, 64) || null;
 
-    const { browser, os } = parseUA(req.headers["user-agent"]);
-
     const deviceType = dt === "m" ? "mobile" : dt === "t" ? "tablet" : "desktop";
 
-    // Referrer: only store the hostname, never the full URL (path may contain PII)
-    let referrerHost = null;
-    try { if (referrer) referrerHost = new URL(referrer).hostname.slice(0, 255); }
-    catch {}
+    if (isMinimal) {
+        // Minimal: no session, no UTMs, no referrer, no screen/browser — just path + consent state
+        await db.query(
+            `INSERT INTO analytics_events
+             (site_id, organisation_id, consent_level, consent_stat, consent_func, consent_adv,
+              url, pathname, country_code, region, device_type)
+             VALUES ($1,$2,'minimal',$3,$4,$5,$6,$7,$8,$9,$10)`,
+            [
+                siteId, orgId,
+                cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
+                urlColumn, pathname,
+                country, region, deviceType,
+            ]
+        ).catch(() => {});
+    } else {
+        // Full: enriched event (sid required)
+        if (!sid) return res.status(400).end();
 
-    await db.query(
-        `INSERT INTO analytics_events
-         (site_id, organisation_id, session_id, url, pathname, title,
-          referrer_host, utm_source, utm_medium, utm_campaign, utm_content,
-          country_code, region, device_type, screen_width, screen_height,
-          browser_family, os_family, duration_sec)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)`,
-        [
-            siteId, orgId, String(sid).slice(0, 64),
-            (parsedUrl.pathname + parsedUrl.search).slice(0, 2000),
-            parsedUrl.pathname.slice(0, 2000),
-            (title || "").slice(0, 500),
-            referrerHost,
-            (us || "").slice(0, 255), (um || "").slice(0, 255),
-            (uc || "").slice(0, 255), (uk || "").slice(0, 255),
-            country, region,
-            deviceType,
-            Number(sw) || null, Number(sh) || null,
-            browser, os,
-            Math.min(Number(dur) || 0, 86400),
-        ]
-    ).catch(() => {});
+        const { browser, os } = parseUA(req.headers["user-agent"]);
+
+        let referrerHost = null;
+        try { if (referrer) referrerHost = new URL(referrer).hostname.slice(0, 255); }
+        catch {}
+
+        await db.query(
+            `INSERT INTO analytics_events
+             (site_id, organisation_id, session_id, consent_level,
+              consent_stat, consent_func, consent_adv,
+              url, pathname, title, referrer_host,
+              utm_source, utm_medium, utm_campaign, utm_content,
+              country_code, region, device_type, screen_width, screen_height,
+              browser_family, os_family, duration_sec)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)`,
+            [
+                siteId, orgId, String(sid).slice(0, 64),
+                cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
+                urlColumn, pathname,
+                (title || "").slice(0, 500),
+                referrerHost,
+                (us || "").slice(0, 255), (um || "").slice(0, 255),
+                (uc || "").slice(0, 255), (uk || "").slice(0, 255),
+                country, region,
+                deviceType,
+                Number(sw) || null, Number(sh) || null,
+                browser, os,
+                Math.min(Number(dur) || 0, 86400),
+            ]
+        ).catch(() => {});
+    }
 
     return res.status(202).end();
 }
