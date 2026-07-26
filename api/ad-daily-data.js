@@ -64,6 +64,38 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
+async function fetchGA4DailyLive(accessToken, propertyId, fromDate, toDate) {
+    const resp = await fetch(
+        `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
+        {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+                dateRanges: [{ startDate: fromDate, endDate: toDate }],
+                dimensions: [{ name: "date" }],
+                metrics: [{ name: "sessions" }],
+                orderBys: [{ dimension: { dimensionName: "date" } }],
+            }),
+        }
+    );
+    if (!resp.ok) return [];
+    const data = await resp.json();
+    return (data.rows || []).map(row => {
+        const raw = row.dimensionValues?.[0]?.value || "";
+        const date = raw.length === 8
+            ? `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`
+            : raw;
+        return {
+            date,
+            sessions: Number(row.metricValues?.[0]?.value || 0),
+            clicks: Number(row.metricValues?.[0]?.value || 0),
+            impressions: 0,
+            spend: 0,
+            currency: null,
+        };
+    });
+}
+
 async function fetchGA4PlatformBreakdown(accessToken, propertyId, fromDate, toDate) {
     const resp = await fetch(
         `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
@@ -104,31 +136,35 @@ export default async function handler(req, res) {
 
     const db = getPool();
 
-    // Read daily rows from cache
-    const { rows: dailyRows } = await db.query(
-        `SELECT date::text AS date,
-                clicks::bigint     AS clicks,
-                impressions::bigint AS impressions,
-                spend::float       AS spend,
-                currency
-         FROM ad_daily_data
-         WHERE organisation_id=$1 AND domain=$2 AND platform=$3
-           AND date >= $4::date AND date <= $5::date
-         ORDER BY date ASC`,
-        [orgId, domain, platform, fromDate, toDate]
-    );
+    // Read daily rows from cache (table may not exist yet before cron first runs)
+    let rows = [];
+    try {
+        const { rows: dailyRows } = await db.query(
+            `SELECT date::text AS date,
+                    clicks::bigint      AS clicks,
+                    impressions::bigint AS impressions,
+                    spend::float        AS spend,
+                    currency
+             FROM ad_daily_data
+             WHERE organisation_id=$1 AND domain=$2 AND platform=$3
+               AND date >= $4::date AND date <= $5::date
+             ORDER BY date ASC`,
+            [orgId, domain, platform, fromDate, toDate]
+        );
+        rows = dailyRows.map(r => ({
+            date:        r.date,
+            sessions:    Number(r.clicks || 0), // GA4 stores sessions in "clicks" column
+            clicks:      Number(r.clicks || 0),
+            impressions: Number(r.impressions || 0),
+            spend:       Number(r.spend || 0),
+            currency:    r.currency,
+        }));
+    } catch {
+        // ad_daily_data table doesn't exist yet — cron hasn't run; fall through to live fetch
+    }
 
-    const rows = dailyRows.map(r => ({
-        date:        r.date,
-        sessions:    Number(r.clicks || 0), // GA4 stores sessions in "clicks" column
-        clicks:      Number(r.clicks || 0),
-        impressions: Number(r.impressions || 0),
-        spend:       Number(r.spend || 0),
-        currency:    r.currency,
-    }));
-
-    // For GA4: also fetch live platform breakdown for server-side tracking detection
-    let platformBreakdown = null;
+    // For GA4: look up the connection token (needed for live fallback + platform breakdown)
+    let ga4AccessToken = null, ga4PropertyId = null;
     if (platform === "google_analytics") {
         const { rows: connRows } = await db.query(
             `SELECT access_token, account_id FROM ad_platform_connections
@@ -137,10 +173,22 @@ export default async function handler(req, res) {
             [orgId, domain]
         );
         if (connRows.length) {
-            const { access_token, account_id } = connRows[0];
-            platformBreakdown = await fetchGA4PlatformBreakdown(access_token, account_id, fromDate, toDate)
-                .catch(() => null);
+            ga4AccessToken = connRows[0].access_token;
+            ga4PropertyId  = connRows[0].account_id;
         }
+    }
+
+    // Live fallback: if no cached rows and we have a GA4 token, fetch directly from the API
+    if (rows.length === 0 && ga4AccessToken && ga4PropertyId) {
+        rows = await fetchGA4DailyLive(ga4AccessToken, ga4PropertyId, fromDate, toDate)
+            .catch(() => []);
+    }
+
+    // For GA4: live platform breakdown for server-side tracking detection
+    let platformBreakdown = null;
+    if (platform === "google_analytics" && ga4AccessToken && ga4PropertyId) {
+        platformBreakdown = await fetchGA4PlatformBreakdown(ga4AccessToken, ga4PropertyId, fromDate, toDate)
+            .catch(() => null);
     }
 
     return res.status(200).json({ rows, platformBreakdown });
