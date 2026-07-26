@@ -43,6 +43,12 @@ export const reportsLinks = [
         view: ["admin", "super-admin", "manager"],
     },
     {
+        name: "Analytics Script",
+        path: "/settings/analytics-script",
+        view: ["admin", "super-admin", "manager"],
+        requiresTier: 'starter',
+    },
+    {
         name: "Blacklist IP",
         path: "/settings/blacklist-ip",
         view: ["admin", "super-admin", "manager"]

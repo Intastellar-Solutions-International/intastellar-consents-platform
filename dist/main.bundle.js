@@ -19190,7 +19190,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.dashboard-header {
 }
 
 .profileImage {
-    width: 50px;
+    width: 80px;
 }
 
 .clock {
@@ -19315,6 +19315,34 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.dashboard-header {
 .sidebar__item {
     margin: 0;
     padding: 0;
+}
+
+.sidebar__group-label {
+    margin: 10px 0 2px;
+    padding: 0 10px;
+    list-style: none;
+}
+
+.sidebar__group-label:first-child {
+    margin-top: 4px;
+}
+
+.sidebar__group-label-text {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.28);
+    padding: 4px 2px 2px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar__group-label:first-child .sidebar__group-label-text {
+    border-top: none;
 }
 
 .collapsed .navItems,
@@ -20061,7 +20089,158 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.dashboard-header {
     .workspace-indicator__badge {
         display: none;
     }
-}`, "",{"version":3,"sources":["webpack://./src/Components/Header/header.css"],"names":[],"mappings":"AAAA;IACI,WAAW;IACX,gBAAgB;IAChB,eAAe;IACf,MAAM;IACN,OAAO;IACP,YAAY;IACZ,aAAa;IACb,mBAAmB;IACnB,8BAA8B;IAC9B,yBAAyB;IACzB,iCAAiC;IACjC,yBAAyB;IACzB,wCAAwC;AAC5C;;AAEA;IACI,aAAa;IACb,sCAAsC;IACtC,mBAAmB;IACnB,8BAA8B;IAC9B,WAAW;IACX,eAAe;IACf,aAAa;AACjB;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,WAAW;AACf;;AAEA;IACI,yBAAyB;IACzB,SAAS;AACb;;AAEA;IACI,eAAe;IACf,eAAe;IACf,SAAS;AACb;;AAEA;IACI,SAAS;IACT,WAAW;IACX,YAAY;IACZ,mBAAmB;IACnB,kBAAkB;IAClB,iBAAiB;IACjB,iBAAiB;AACrB;;AAEA;IACI,YAAY;IACZ,gBAAgB;IAChB,kBAAkB;IAClB,mBAAmB;IACnB,kBAAkB;IAClB,kBAAkB;AACtB;;AAEA;IACI,mDAAmD;IACnD,WAAW;AACf;;AAEA;IACI,WAAW;IACX,0BAA0B;;IAE1B,kDAAkD;IAClD,aAAa;IACb,sBAAsB;IACtB,eAAe;;IAEf,8BAA8B;IAC9B,iDAAiD;IACjD,kGAAkG;IAClG,8CAA8C;AAClD;;AAEA;IACI,mBAAmB;AACvB;;AAEA;IACI,eAAe;IACf,qBAAqB;IACrB,uBAAuB;IACvB,mBAAmB;IACnB,kBAAkB;AACtB;;AAEA;IACI,UAAU;IACV,QAAQ;IACR,kBAAkB;IAClB,gCAAgC;AACpC;;AAEA;;;;IAII,gBAAgB;IAChB,WAAW;AACf;;AAEA;IACI,aAAa;IACb,YAAY;IACZ,kBAAkB;AACtB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,WAAW;IACX,aAAa;IACb,sBAAsB;IACtB,OAAO;IACP,aAAa;AACjB;;AAEA;IACI,SAAS;IACT,uBAAuB;IACvB,kBAAkB;IAClB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,gCAAgC;IAChC,kDAAkD;IAClD,mBAAmB;IACnB,gBAAgB;IAChB,uBAAuB;AAC3B;;AAEA;IACI,gBAAgB;IAChB,SAAS;IACT,YAAY;IACZ,aAAa;IACb,sBAAsB;IACtB,QAAQ;IACR,OAAO;AACX;;AAEA;IACI,SAAS;IACT,UAAU;AACd;;AAEA;;IAEI,gCAAgC;IAChC,aAAa;IACb,SAAS;IACT,WAAW;IACX,kBAAkB;IAClB,gBAAgB;IAChB,mBAAmB;IACnB,2BAA2B;IAC3B,mBAAmB;IACnB,6EAA6E;IAC7E,qBAAqB;IACrB,sBAAsB;AAC1B;;AAEA;;IAEI,qCAAqC;IACrC,yBAAyB;IACzB,6CAA6C;AACjD;;AAEA;;IAEI,2CAA2C;IAC3C,yBAAyB;AAC7B;;AAEA;;;;IAII,WAAW;AACf;;AAEA;;IAEI,YAAY;AAChB;;AAEA;;IAEI,UAAU;IACV,WAAW;IACX,mBAAmB;AACvB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,aAAa;IACb,uBAAuB;IACvB,mBAAmB;IACnB,wBAAwB;IACxB,4BAA4B;IAC5B,8BAA8B;IAC9B,2BAA2B;AAC/B;;AAEA;;AAEA;;AAEA;IACI,WAAW;IACX,kBAAkB;IAClB,eAAe;IACf,cAAc;IACd,WAAW;IACX,YAAY;IACZ,wBAAwB;IACxB,4BAA4B;IAC5B,8BAA8B;IAC9B,2BAA2B;AAC/B;;AAEA;IACI,6BAA6B;IAC7B,sBAAsB;IACtB,WAAW;IACX,eAAe;IACf,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,eAAe;IACf,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,UAAU;IACV,iBAAiB;AACrB;;AAEA;;;;;;;;;GASG;;AAEH;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;GAsGG;;AAEH;IACI,YAAY;IACZ,aAAa;IACb,gBAAgB;IAChB,YAAY;IACZ,uBAAuB;IACvB,WAAW;;IAEX,aAAa;IACb,mBAAmB;IACnB,oBAAoB;IACpB,eAAe;AACnB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI,gBAAgB;IAChB,uBAAuB;IACvB,YAAY;IACZ,WAAW;IACX,WAAW;IACX,kBAAkB;IAClB,eAAe;IACf,kBAAkB;IAClB,6BAA6B;IAC7B,eAAe;IACf,aAAa;IACb,mBAAmB;IACnB,uBAAuB;;AAE3B;;AAEA;IACI,YAAY;IACZ,iBAAiB;IACjB,uBAAuB;IACvB,WAAW;IACX,eAAe;IACf,gBAAgB;IAChB,wBAAwB;IACxB,kBAAkB;AACtB;;AAEA;;;IAGI,aAAa;AACjB;;AAEA;IACI,kBAAkB;AACtB;;AAEA;IACI,YAAY;IACZ,kBAAkB;IAClB,iBAAiB;AACrB;;AAEA;IACI,WAAW;IACX,YAAY;IACZ,qBAAqB;IACrB,iBAAiB;;AAErB;;AAEA;IACI,aAAa;IACb,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;;IAEI,kBAAkB;IAClB,YAAY;AAChB;;AAEA;;IAEI,eAAe;AACnB;;AAEA;IACI,gBAAgB;IAChB,gBAAgB;IAChB,kBAAkB;IAClB,oBAAoB;AACxB;;AAEA;IACI,aAAa;IACb;AACJ;;AAEA;IACI,aAAa;IACb,mBAAmB;AACvB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,gBAAgB;AACpB;;AAEA;IACI;QACI,WAAW;QACX,gBAAgB;QAChB,oBAAoB;IACxB;;IAEA;QACI,kBAAkB;IACtB;;IAEA;QACI,cAAc;QACd,iBAAiB;QACjB,iBAAiB;QACjB,eAAe;QACf,6BAA6B;QAC7B,YAAY;QACZ,WAAW;QACX,kBAAkB;QAClB,sCAAsC;IAC1C;;IAEA;QACI,0CAA0C;QAC1C,mBAAmB;IACvB;;IAEA;QACI,2CAA2C;IAC/C;;IAEA;QACI,WAAW;QACX,WAAW;QACX,2CAA2C;QAC3C,gBAAgB;QAChB,gCAAgC;QAChC,kBAAkB;IACtB;;IAEA;QACI,aAAa;QACb,+BAA+B;QAC/B,6BAA6B;QAC7B,kBAAkB;QAClB,cAAc;QACd,yBAAyB;QACzB,WAAW;IACf;;IAEA;QACI,iBAAiB;IACrB;;IAEA;QACI,cAAc;QACd,WAAW;QACX,aAAa;QACb,mBAAmB;QACnB,QAAQ;QACR,YAAY;IAChB;;IAEA;QACI,mBAAmB;QACnB,WAAW;QACX,aAAa;QACb,8BAA8B;QAC9B,QAAQ;QACR,WAAW;QACX,eAAe;QACf,iBAAiB;QACjB,gBAAgB;QAChB,oBAAoB;QACpB,wBAAwB;IAC5B;;IAEA;;QAEI,eAAe;QACf,WAAW;QACX,YAAY;IAChB;;IAEA;QACI,cAAc;QACd,WAAW;QACX,iBAAiB;QACjB,iBAAiB;IACrB;;IAEA;QACI,YAAY;QACZ,eAAe;QACf,0CAA0C;IAC9C;;IAEA;QACI,0BAA0B;IAC9B;;IAEA;QACI,cAAc;IAClB;;IAEA;QACI,WAAW;IACf;;IAEA;QACI,aAAa;IACjB;;IAEA;QACI,YAAY;QACZ,+BAA+B;IACnC;;IAEA;;;;QAII,YAAY;IAChB;;IAEA;QACI,UAAU;QACV,WAAW;QACX,mBAAmB;IACvB;;IAEA;QACI,SAAS;IACb;;IAEA;QACI,YAAY;QACZ,UAAU;QACV,SAAS;IACb;;IAEA;QACI,kBAAkB;IACtB;;IAEA;QACI,UAAU;IACd;;IAEA;QACI,0CAA0C;IAC9C;;IAEA;QACI,kBAAkB;IACtB;;IAEA;QACI,cAAc;QACd,yBAAyB;IAC7B;AACJ;;AAEA;IACI;QACI,0BAA0B;IAC9B;AACJ;;AAEA,uDAAuD;AACvD;IACI,iBAAiB;AACrB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI,aAAa;AACjB;;AAEA;IACI;QACI,oBAAoB;QACpB,mBAAmB;QACnB,SAAS;QACT,eAAe;QACf,UAAU;QACV,UAAU;QACV,YAAY;QACZ,iBAAiB;QACjB,SAAS;QACT,2CAA2C;QAC3C,kBAAkB;QAClB,6EAA6E;QAC7E,gCAAgC;QAChC,aAAa;QACb,eAAe;QACf,eAAe;QACf,0CAA0C;IAC9C;;IAEA;QACI,aAAa;QACb,sBAAsB;QACtB,QAAQ;IACZ;;IAEA;QACI,cAAc;QACd,WAAW;QACX,WAAW;QACX,wBAAwB;QACxB,kBAAkB;IACtB;;IAEA;QACI,kBAAkB;QAClB,UAAU;QACV,WAAW;QACX,UAAU;QACV,YAAY;QACZ,gBAAgB;QAChB,sBAAsB;QACtB,SAAS;IACb;;IAEA;QACI,cAAc;QACd,eAAe;QACf,QAAQ;QACR,YAAY;QACZ,8BAA8B;QAC9B,UAAU;QACV,kBAAkB;QAClB,oBAAoB;QACpB,qDAAqD;IACzD;;IAEA;QACI,UAAU;QACV,mBAAmB;QACnB,oBAAoB;IACxB;;IAEA;QACI,mBAAmB;QACnB,uBAAuB;QACvB,iBAAiB;IACrB;;IAEA;QACI,4BAA4B;QAC5B,uDAAuD;QACvD,kCAAkC;QAClC,sCAAsC;QACtC,SAAS;QACT,qCAAqC;QACrC,yCAAyC;QACzC,YAAY;QACZ,0CAA0C;IAC9C;;IAEA;QACI,wBAAwB;IAC5B;;IAEA;;QAEI,sCAAsC;QACtC,kCAAkC;IACtC;;IAEA;;QAEI,WAAW;IACf;;IAEA;QACI,aAAa;QACb,mBAAmB;QACnB,uBAAuB;QACvB,8BAA8B;QAC9B,QAAQ;QACR,kBAAkB;QAClB,kDAAkD;QAClD,kBAAkB;IACtB;;IAEA;QACI,mBAAmB;QACnB,mBAAmB;QACnB,OAAO;QACP,YAAY;IAChB;;IAEA;QACI,aAAa;QACb,mBAAmB;QACnB,uBAAuB;QACvB,cAAc;QACd,WAAW;QACX,YAAY;QACZ,SAAS;QACT,UAAU;QACV,YAAY;QACZ,kBAAkB;QAClB,uBAAuB;QACvB,gCAAgC;QAChC,eAAe;QACf,cAAc;QACd,eAAe;IACnB;;IAEA;QACI,qCAAqC;IACzC;;IAEA,uEAAuE;IACvE;;;;OAIG;AACP;;AAEA;IACI;QACI,wBAAwB;IAC5B;AACJ;;AAEA,wBAAwB;AACxB;IACI,aAAa;IACb,mBAAmB;IACnB,QAAQ;IACR,0BAA0B;IAC1B,iBAAiB;IACjB,mBAAmB;IACnB,+FAA+F;IAC/F,0CAA0C;IAC1C,kDAAkD;AACtD;;AAEA;IACI;QACI,2CAA2C;IAC/C;IACA;QACI,gDAAgD;IACpD;AACJ;;AAEA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,sBAAsB;IACtB,yBAAyB;IACzB,cAAc;IACd,gBAAgB;IAChB,mCAAmC;IACnC,kBAAkB;AACtB;;AAEA;IACI,oBAAoB;IACpB,gBAAgB;IAChB,cAAc;IACd,gBAAgB;IAChB,gBAAgB;IAChB,uBAAuB;IACvB,mBAAmB;AACvB;;AAEA;IACI,oBAAoB;IACpB,8BAA8B;IAC9B,gBAAgB;IAChB,oCAAoC;IACpC,kBAAkB;AACtB;;AAEA;IACI,aAAa;IACb,mBAAmB;IACnB,uBAAuB;IACvB,WAAW;IACX,YAAY;IACZ,kBAAkB;IAClB,YAAY;IACZ,oCAAoC;IACpC,+BAA+B;IAC/B,eAAe;IACf,cAAc;IACd,eAAe;IACf,iDAAiD;AACrD;;AAEA;IACI,kCAAkC;IAClC,WAAW;AACf;;AAEA;IACI;QACI,gBAAgB;QAChB,gBAAgB;IACpB;;IAEA;QACI,eAAe;QACf,kBAAkB;IACtB;;IAEA;QACI,aAAa;IACjB;AACJ","sourcesContent":[".dashboard-header {\n    width: 100%;\n    max-height: 66px;\n    position: fixed;\n    top: 0;\n    left: 0;\n    z-index: 101;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 25px 0px 0px;\n    background-color: rgb(63, 63, 63);\n    color: rgb(197, 197, 197);\n    border-bottom: 1px solid rgb(95, 95, 95);\n}\n\n.dashboard-profile {\n    display: grid;\n    grid-template-columns: 1fr min-content;\n    align-items: center;\n    justify-content: space-between;\n    width: 100%;\n    font-size: 19px;\n    padding: 10px;\n}\n\n.flex {\n    display: flex;\n    align-items: center;\n}\n\n.profileImage {\n    width: 50px;\n}\n\n.clock {\n    color: rgb(197, 197, 197);\n    margin: 0;\n}\n\n.dashboard-name {\n    font-size: 14px;\n    cursor: pointer;\n    margin: 0;\n}\n\n.dashboard-header>.dashboard-profile .content-img {\n    margin: 0;\n    width: 50px;\n    height: 50px;\n    border-width: 2.5px;\n    border-radius: 50%;\n    object-fit: cover;\n    margin-left: auto;\n}\n\n.dashboard-logo {\n    height: 56px;\n    text-align: left;\n    margin-right: 30px;\n    object-fit: contain;\n    object-position: 0;\n    position: relative;\n}\n\n.sidebar {\n    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);\n    width: 65px;\n}\n\n.collapsed {\n    width: 65px;\n    height: calc(100vh - 88px);\n\n    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);\n    display: flex;\n    flex-direction: column;\n    position: fixed;\n\n    min-height: calc(100vh - 66px);\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);\n    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);\n}\n\n.divider {\n    padding: 0 0 0 20px;\n}\n\n.platform-view {\n    padding: 0 20px;\n    display: inline-block;\n    border-right: 1px solid;\n    padding-right: 10px;\n    margin-right: 10px;\n}\n\n.collapsed .hiddenCollapsed {\n    opacity: 0;\n    width: 0;\n    visibility: hidden;\n    transition: all .25s ease-in-out;\n}\n\n.sidebar:hover,\n.sidebar:hover>.collapsed,\n.sidebar.expand,\n.collapsed.expand {\n    min-width: 231px;\n    width: auto;\n}\n\n.navOverlay {\n    display: flex;\n    z-index: 103;\n    position: relative;\n}\n\n.navOverlay.expand {\n    display: flex;\n}\n\n.collapsed nav {\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    min-height: 0;\n}\n\n.sidebar__heading {\n    margin: 0;\n    padding: 18px 14px 12px;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.45);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.sidebar__list {\n    list-style: none;\n    margin: 0;\n    padding: 0px;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n}\n\n.sidebar__item {\n    margin: 0;\n    padding: 0;\n}\n\n.collapsed .navItems,\n.collapsed .sidebar__link {\n    color: rgba(255, 255, 255, 0.88);\n    display: flex;\n    gap: 10px;\n    width: 100%;\n    padding: 12px 10px;\n    overflow: hidden;\n    align-items: center;\n    justify-content: flex-start;\n    white-space: nowrap;\n    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;\n    text-decoration: none;\n    box-sizing: border-box;\n}\n\n.navItems.--active,\n.sidebar__link.--active {\n    background: rgba(255, 255, 255, 0.08);\n    color: rgb(255, 255, 255);\n    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);\n}\n\n.navItems:hover:not(.--active),\n.sidebar__link:hover:not(.--active) {\n    background-color: rgba(255, 255, 255, 0.06);\n    color: rgb(255, 255, 255);\n}\n\n.collapsed:hover .navItems,\n.collapsed:hover .sidebar__link,\n.collapsed.expand a.navItems,\n.collapsed.expand a.sidebar__link {\n    width: 100%;\n}\n\n.collapsed:hover nav,\n.collapsed.expand nav {\n    width: 150px;\n}\n\n.collapsed.expand .hiddenCollapsed,\n.collapsed:hover .hiddenCollapsed {\n    opacity: 1;\n    width: auto;\n    visibility: visible;\n}\n\n.dashboard-icons {\n    width: 25px;\n    height: 25px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.dashboard-icons:after{\n\n}\n\n.dashboard-icons::after {\n    content: \"\";\n    font-style: normal;\n    font-size: 20px;\n    display: block;\n    width: 20px;\n    height: 20px;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.secondary{\n    background-color: transparent;\n    border: 1px solid #fff;\n    color: #fff;\n    font-size: 14px;\n    width: 30px;\n    height: 30px;\n    border-radius: 5px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0;\n    margin-left: 10px;\n}\n\n/* .dashboard-icons[data-icon]::after {\n    content: \"\";\n    background: url();\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    width: 20px;\n    height: 20px;\n} */\n\n/* .reports::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.compare::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.home::after {\n    content: \"\";\n    background: url(\"icons/home.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.user-consents::after {\n    content: \"\";\n    background: url(\"icons/user-consents.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.domains::after {\n    content: \"\";\n    background: url(\"icons/domain.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.settings::after {\n    content: \"\";\n    background: url(\"icons/settings.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.cookies {\n    content: \"\";\n    background: url(\"icons/cookies.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.logout::after {\n    content: \"\";\n    background: url(\"icons/Logout.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n} */\n\n.expandBtn {\n    float: right;\n    padding: 10px;\n    margin: 10px 0px;\n    border: none;\n    background: transparent;\n    color: #fff;\n\n    display: flex;\n    align-items: center;\n    justify-content: end;\n    cursor: pointer;\n}\n\n.navItems--bottom {\n    margin-top: auto;\n}\n\n.navLogout {\n    margin-top: auto;\n    background: transparent;\n    border: none;\n    width: 100%;\n    color: #fff;\n    padding: 30px 15px;\n    font-size: 15px;\n    text-align: center;\n    border-top: 1px solid #636363;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n}\n\n.dashboard-organisationSelector {\n    border: none;\n    padding: 0px 17px;\n    background: transparent;\n    color: #fff;\n    font-size: 12px;\n    appearance: none;\n    -webkit-appearance: none;\n    position: relative;\n}\n\n.dashboard-organisationSelector:focus,\n.dashboard-organisationSelector:focus-within,\n.dashboard-organisationSelector:focus-visible {\n    outline: none;\n}\n\n.dashboard-organisationContainer {\n    position: relative;\n}\n\n.dashboard-profile__nameContainer {\n    width: 250px;\n    margin-right: 20px;\n    text-align: right;\n}\n\n.arrowRight {\n    width: 10px;\n    height: 10px;\n    display: inline-block;\n    margin-left: 10px;\n\n}\n\n.company_container {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n\n.company_container .selectorContianer,\n.company_container .selector-container {\n    margin-right: 16px;\n    min-width: 0;\n}\n\n.company_container .selectorContianer:last-child,\n.company_container .selector-container:last-child {\n    margin-right: 0;\n}\n\n.selector.selector--placeholder {\n    min-height: 36px;\n    min-width: 120px;\n    visibility: hidden;\n    pointer-events: none;\n}\n\n.logo_container {\n    display: flex;\n    align-items: center\n}\n\n.logo-selector-container {\n    display: flex;\n    align-items: center;\n}\n\n.menu {\n    display: none;\n}\n\n.dashboard-content h1{\n    display: flex;\n}\n\n.sticky-title {\n    font-size: 1.5em;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .dashboard-header {\n        width: 100%;\n        max-height: none;\n        padding: 0 8px 0 4px;\n    }\n\n    .main-grid {\n        padding-top: 158px;\n    }\n\n    .menu {\n        display: block;\n        padding: 8px 10px;\n        margin-right: 2px;\n        cursor: pointer;\n        background-color: transparent;\n        border: none;\n        color: #fff;\n        border-radius: 8px;\n        transition: background-color 0.2s ease;\n    }\n\n    .menu:focus-visible {\n        outline: 2px solid rgba(192, 159, 83, 0.6);\n        outline-offset: 2px;\n    }\n\n    .menu:active {\n        background-color: rgba(255, 255, 255, 0.06);\n    }\n\n    .menu-bar {\n        width: 22px;\n        height: 2px;\n        background-color: rgba(255, 255, 255, 0.92);\n        margin: 5px auto;\n        transition: all 0.3s ease-in-out;\n        border-radius: 2px;\n    }\n\n    .dashboard-profile {\n        display: grid;\n        grid-template-columns: 1fr auto;\n        grid-template-rows: auto auto;\n        align-items: start;\n        gap: 10px 10px;\n        padding: 8px 4px 10px 8px;\n        width: 100%;\n    }\n\n    .logo-selector-container {\n        display: contents;\n    }\n\n    .logo_container {\n        grid-column: 1;\n        grid-row: 1;\n        display: flex;\n        align-items: center;\n        gap: 2px;\n        min-width: 0;\n    }\n\n    .company_container {\n        grid-column: 1 / -1;\n        grid-row: 2;\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 8px;\n        width: 100%;\n        max-width: 100%;\n        padding-bottom: 0;\n        padding-right: 0;\n        align-items: stretch;\n        justify-content: stretch;\n    }\n\n    .company_container .selectorContianer,\n    .company_container .selector-container {\n        margin-right: 0;\n        width: 100%;\n        min-width: 0;\n    }\n\n    .dashboard-profile > .flex.profileImage {\n        grid-column: 2;\n        grid-row: 1;\n        justify-self: end;\n        align-self: start;\n    }\n\n    .dashboard-logo {\n        height: 44px;\n        margin-right: 0;\n        max-width: min(200px, calc(100vw - 120px));\n    }\n\n    .grid-3 {\n        grid-template-columns: 1fr;\n    }\n\n    .grid-container {\n        display: block;\n    }\n\n    .dashboard-profile__nameContainer {\n        width: auto;\n    }\n\n    .navOverlay {\n        display: none;\n    }\n\n    .sidebar .collapsed{\n        width: 300px;\n        min-height: calc(100vh - 200px);\n    }\n\n    .sidebar:hover,\n    .sidebar:hover>.collapsed,\n    .sidebar.expand,\n    .collapsed.expand{\n        width: 300px;\n    }\n\n    .collapsed .hiddenCollapsed{\n        opacity: 1;\n        width: auto;\n        visibility: visible;\n    }\n\n    .dashboard-header > .dashboard-profile .content-img {\n        margin: 0;\n    }\n\n    .platform-view {\n        border: none;\n        padding: 0;\n        margin: 0;\n    }\n\n    .infoHeader {\n        position: relative;\n    }\n\n    .infoHeader.sticky {\n        top: 158px;\n    }\n\n    .infoHeader .dashboard-content {\n        grid-template-columns: .5fr 1fr !important;\n    }\n\n    .infoHeader .crawl-cta {\n        width: max-content;\n    }\n\n    .sticky-title{\n        font-size: 1em;\n        display: block !important;\n    }\n}\n\n@media screen and (min-width: 320px) and (max-width: 480px) {\n    .company_container {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* SideNav (reports/settings): mobile drawer + toggle */\n.sidebar__top {\n    display: contents;\n}\n\n.sidebar-mobile-toggle {\n    display: none;\n}\n\n.sidebar-backdrop {\n    display: none;\n}\n\n@media (max-width: 768px) {\n    .sidebar-mobile-toggle {\n        display: inline-flex;\n        align-items: center;\n        gap: 10px;\n        position: fixed;\n        top: 120px;\n        left: 12px;\n        z-index: 102;\n        padding: 8px 12px;\n        margin: 0;\n        border: 1px solid rgba(255, 255, 255, 0.12);\n        border-radius: 8px;\n        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);\n        color: rgba(255, 255, 255, 0.92);\n        font: inherit;\n        font-size: 14px;\n        cursor: pointer;\n        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);\n    }\n\n    .sidebar-mobile-toggle__bars {\n        display: flex;\n        flex-direction: column;\n        gap: 4px;\n    }\n\n    .sidebar-mobile-toggle__bar {\n        display: block;\n        width: 18px;\n        height: 2px;\n        background: currentColor;\n        border-radius: 1px;\n    }\n\n    .sidebar-mobile-toggle__label {\n        position: absolute;\n        width: 1px;\n        height: 1px;\n        padding: 0;\n        margin: -1px;\n        overflow: hidden;\n        clip: rect(0, 0, 0, 0);\n        border: 0;\n    }\n\n    .sidebar-backdrop {\n        display: block;\n        position: fixed;\n        inset: 0;\n        z-index: 100;\n        background: rgba(0, 0, 0, 0.5);\n        opacity: 0;\n        visibility: hidden;\n        pointer-events: none;\n        transition: opacity 0.25s ease, visibility 0.25s ease;\n    }\n\n    .sidebar-backdrop.sidebar-backdrop--visible {\n        opacity: 1;\n        visibility: visible;\n        pointer-events: auto;\n    }\n\n    .sidebar.expand {\n        width: 0 !important;\n        min-width: 0 !important;\n        overflow: visible;\n    }\n\n    .sidebar.expand .collapsed {\n        transform: translateX(-100%);\n        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n        width: min(86vw, 300px) !important;\n        min-width: min(86vw, 300px) !important;\n        top: 66px;\n        height: calc(100vh - 66px) !important;\n        min-height: calc(100vh - 66px) !important;\n        z-index: 102;\n        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);\n    }\n\n    .sidebar.expand.sidebar--open .collapsed {\n        transform: translateX(0);\n    }\n\n    .sidebar.expand .collapsed:hover,\n    .sidebar.expand.sidebar--open .collapsed {\n        min-width: min(86vw, 300px) !important;\n        width: min(86vw, 300px) !important;\n    }\n\n    .sidebar.expand .collapsed:hover nav,\n    .sidebar.expand.sidebar--open .collapsed nav {\n        width: 100%;\n    }\n\n    .sidebar__top {\n        display: flex;\n        flex-direction: row;\n        align-items: flex-start;\n        justify-content: space-between;\n        gap: 8px;\n        padding-right: 4px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n        margin-bottom: 4px;\n    }\n\n    .sidebar__top .sidebar__heading {\n        border-bottom: none;\n        padding-bottom: 8px;\n        flex: 1;\n        min-width: 0;\n    }\n\n    .sidebar-mobile-close {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        flex-shrink: 0;\n        width: 40px;\n        height: 40px;\n        margin: 0;\n        padding: 0;\n        border: none;\n        border-radius: 8px;\n        background: transparent;\n        color: rgba(255, 255, 255, 0.88);\n        font-size: 28px;\n        line-height: 1;\n        cursor: pointer;\n    }\n\n    .sidebar-mobile-close:hover {\n        background: rgba(255, 255, 255, 0.08);\n    }\n\n    /* Offset main content next to the fixed menu control (SideNav pages) */\n    /* .sidebar-mobile-toggle ~ article,\n    .sidebar-mobile-toggle ~ main,\n    .sidebar-mobile-toggle ~ div.dashboard-content {\n        padding-left: 52px;\n    } */\n}\n\n@media (min-width: 769px) {\n    .sidebar-mobile-close {\n        display: none !important;\n    }\n}\n\n/* Workspace indicator */\n.workspace-indicator {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 10px 6px 12px;\n    margin-left: 12px;\n    border-radius: 10px;\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 70, 0.12) 100%);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    animation: workspace-pulse 2s ease-in-out infinite;\n}\n\n@keyframes workspace-pulse {\n    0%, 100% {\n        box-shadow: 0 0 0 0 rgba(192, 159, 83, 0.3);\n    }\n    50% {\n        box-shadow: 0 0 8px 2px rgba(192, 159, 83, 0.15);\n    }\n}\n\n.workspace-indicator__badge {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 3px 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border-radius: 4px;\n}\n\n.workspace-indicator__name {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #f5f0e6;\n    max-width: 150px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.workspace-indicator__domains {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.9);\n    padding: 2px 6px;\n    background: rgba(192, 159, 83, 0.15);\n    border-radius: 4px;\n}\n\n.workspace-indicator__exit {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 20px;\n    height: 20px;\n    border-radius: 4px;\n    border: none;\n    background: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, color 0.2s ease;\n}\n\n.workspace-indicator__exit:hover {\n    background: rgba(220, 80, 80, 0.3);\n    color: #fff;\n}\n\n@media screen and (max-width: 600px) {\n    .workspace-indicator {\n        margin-left: 8px;\n        padding: 4px 8px;\n    }\n\n    .workspace-indicator__name {\n        max-width: 80px;\n        font-size: 0.75rem;\n    }\n\n    .workspace-indicator__badge {\n        display: none;\n    }\n}"],"sourceRoot":""}]);
+}
+/* ── Notification Center ─────────────────────────────────────────────────── */
+.notif-center {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.notif-bell {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgb(197, 197, 197);
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, color 0.15s;
+}
+.notif-bell:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+.notif-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #e05252;
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.notif-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 340px;
+    background: #2a2a2a;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 200;
+    overflow: hidden;
+}
+
+.notif-dropdown__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.notif-dropdown__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(220,225,235,0.95);
+}
+
+.notif-dropdown__mark-all {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: rgba(140,160,255,0.85);
+    padding: 0;
+}
+.notif-dropdown__mark-all:hover { color: rgba(140,160,255,1); }
+
+.notif-dropdown__list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notif-dropdown__empty {
+    padding: 24px 16px;
+    text-align: center;
+    font-size: 0.82rem;
+    color: rgba(180,185,200,0.5);
+    margin: 0;
+}
+
+.notif-item {
+    position: relative;
+    padding: 12px 16px 12px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: default;
+    transition: background 0.12s;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item--unread { cursor: pointer; background: rgba(140,160,255,0.05); }
+.notif-item--unread:hover { background: rgba(140,160,255,0.1); }
+
+.notif-item__dot {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #8ca0ff;
+}
+
+.notif-item__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 4px;
+}
+
+.notif-item__title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(220,225,235,0.9);
+}
+
+.notif-item__msg {
+    font-size: 0.78rem;
+    color: rgba(180,185,200,0.75);
+    line-height: 1.4;
+}
+
+.notif-item__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notif-item__domain {
+    font-size: 0.7rem;
+    color: rgba(140,160,255,0.7);
+}
+
+.notif-item__time {
+    font-size: 0.7rem;
+    color: rgba(180,185,200,0.4);
+}
+`, "",{"version":3,"sources":["webpack://./src/Components/Header/header.css"],"names":[],"mappings":"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","sourcesContent":[".dashboard-header {\n    width: 100%;\n    max-height: 66px;\n    position: fixed;\n    top: 0;\n    left: 0;\n    z-index: 101;\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 0px 25px 0px 0px;\n    background-color: rgb(63, 63, 63);\n    color: rgb(197, 197, 197);\n    border-bottom: 1px solid rgb(95, 95, 95);\n}\n\n.dashboard-profile {\n    display: grid;\n    grid-template-columns: 1fr min-content;\n    align-items: center;\n    justify-content: space-between;\n    width: 100%;\n    font-size: 19px;\n    padding: 10px;\n}\n\n.flex {\n    display: flex;\n    align-items: center;\n}\n\n.profileImage {\n    width: 80px;\n}\n\n.clock {\n    color: rgb(197, 197, 197);\n    margin: 0;\n}\n\n.dashboard-name {\n    font-size: 14px;\n    cursor: pointer;\n    margin: 0;\n}\n\n.dashboard-header>.dashboard-profile .content-img {\n    margin: 0;\n    width: 50px;\n    height: 50px;\n    border-width: 2.5px;\n    border-radius: 50%;\n    object-fit: cover;\n    margin-left: auto;\n}\n\n.dashboard-logo {\n    height: 56px;\n    text-align: left;\n    margin-right: 30px;\n    object-fit: contain;\n    object-position: 0;\n    position: relative;\n}\n\n.sidebar {\n    transition: width .35s cubic-bezier(0.4, 0, 0.2, 1);\n    width: 65px;\n}\n\n.collapsed {\n    width: 65px;\n    height: calc(100vh - 88px);\n\n    transition: width .3s cubic-bezier(0.4, 0, 0.2, 1);\n    display: flex;\n    flex-direction: column;\n    position: fixed;\n\n    min-height: calc(100vh - 66px);\n    border-right: 1px solid rgba(255, 255, 255, 0.06);\n    background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 45%, rgb(42, 42, 42) 100%);\n    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);\n}\n\n.divider {\n    padding: 0 0 0 20px;\n}\n\n.platform-view {\n    padding: 0 20px;\n    display: inline-block;\n    border-right: 1px solid;\n    padding-right: 10px;\n    margin-right: 10px;\n}\n\n.collapsed .hiddenCollapsed {\n    opacity: 0;\n    width: 0;\n    visibility: hidden;\n    transition: all .25s ease-in-out;\n}\n\n.sidebar:hover,\n.sidebar:hover>.collapsed,\n.sidebar.expand,\n.collapsed.expand {\n    min-width: 231px;\n    width: auto;\n}\n\n.navOverlay {\n    display: flex;\n    z-index: 103;\n    position: relative;\n}\n\n.navOverlay.expand {\n    display: flex;\n}\n\n.collapsed nav {\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n    flex: 1;\n    min-height: 0;\n}\n\n.sidebar__heading {\n    margin: 0;\n    padding: 18px 14px 12px;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.45);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.sidebar__list {\n    list-style: none;\n    margin: 0;\n    padding: 0px;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    flex: 1;\n}\n\n.sidebar__item {\n    margin: 0;\n    padding: 0;\n}\n\n.sidebar__group-label {\n    margin: 10px 0 2px;\n    padding: 0 10px;\n    list-style: none;\n}\n\n.sidebar__group-label:first-child {\n    margin-top: 4px;\n}\n\n.sidebar__group-label-text {\n    display: block;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.28);\n    padding: 4px 2px 2px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.sidebar__group-label:first-child .sidebar__group-label-text {\n    border-top: none;\n}\n\n.collapsed .navItems,\n.collapsed .sidebar__link {\n    color: rgba(255, 255, 255, 0.88);\n    display: flex;\n    gap: 10px;\n    width: 100%;\n    padding: 12px 10px;\n    overflow: hidden;\n    align-items: center;\n    justify-content: flex-start;\n    white-space: nowrap;\n    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;\n    text-decoration: none;\n    box-sizing: border-box;\n}\n\n.navItems.--active,\n.sidebar__link.--active {\n    background: rgba(255, 255, 255, 0.08);\n    color: rgb(255, 255, 255);\n    box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);\n}\n\n.navItems:hover:not(.--active),\n.sidebar__link:hover:not(.--active) {\n    background-color: rgba(255, 255, 255, 0.06);\n    color: rgb(255, 255, 255);\n}\n\n.collapsed:hover .navItems,\n.collapsed:hover .sidebar__link,\n.collapsed.expand a.navItems,\n.collapsed.expand a.sidebar__link {\n    width: 100%;\n}\n\n.collapsed:hover nav,\n.collapsed.expand nav {\n    width: 150px;\n}\n\n.collapsed.expand .hiddenCollapsed,\n.collapsed:hover .hiddenCollapsed {\n    opacity: 1;\n    width: auto;\n    visibility: visible;\n}\n\n.dashboard-icons {\n    width: 25px;\n    height: 25px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.dashboard-icons:after{\n\n}\n\n.dashboard-icons::after {\n    content: \"\";\n    font-style: normal;\n    font-size: 20px;\n    display: block;\n    width: 20px;\n    height: 20px;\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    background-position: center;\n}\n\n.secondary{\n    background-color: transparent;\n    border: 1px solid #fff;\n    color: #fff;\n    font-size: 14px;\n    width: 30px;\n    height: 30px;\n    border-radius: 5px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 0;\n    margin-left: 10px;\n}\n\n/* .dashboard-icons[data-icon]::after {\n    content: \"\";\n    background: url();\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    width: 20px;\n    height: 20px;\n} */\n\n/* .reports::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.compare::after {\n    content: \"\";\n    background: url(\"icons/reports.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.home::after {\n    content: \"\";\n    background: url(\"icons/home.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.user-consents::after {\n    content: \"\";\n    background: url(\"icons/user-consents.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.domains::after {\n    content: \"\";\n    background: url(\"icons/domain.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.settings::after {\n    content: \"\";\n    background: url(\"icons/settings.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.cookies {\n    content: \"\";\n    background: url(\"icons/cookies.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n}\n\n.logout::after {\n    content: \"\";\n    background: url(\"icons/Logout.svg\");\n    background-size: contain;\n    background-repeat: no-repeat;\n    background-blend-mode: lighten;\n    display: block;\n    font-style: normal;\n    font-size: 20px;\n    width: 20px;\n    height: 20px;\n} */\n\n.expandBtn {\n    float: right;\n    padding: 10px;\n    margin: 10px 0px;\n    border: none;\n    background: transparent;\n    color: #fff;\n\n    display: flex;\n    align-items: center;\n    justify-content: end;\n    cursor: pointer;\n}\n\n.navItems--bottom {\n    margin-top: auto;\n}\n\n.navLogout {\n    margin-top: auto;\n    background: transparent;\n    border: none;\n    width: 100%;\n    color: #fff;\n    padding: 30px 15px;\n    font-size: 15px;\n    text-align: center;\n    border-top: 1px solid #636363;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n}\n\n.dashboard-organisationSelector {\n    border: none;\n    padding: 0px 17px;\n    background: transparent;\n    color: #fff;\n    font-size: 12px;\n    appearance: none;\n    -webkit-appearance: none;\n    position: relative;\n}\n\n.dashboard-organisationSelector:focus,\n.dashboard-organisationSelector:focus-within,\n.dashboard-organisationSelector:focus-visible {\n    outline: none;\n}\n\n.dashboard-organisationContainer {\n    position: relative;\n}\n\n.dashboard-profile__nameContainer {\n    width: 250px;\n    margin-right: 20px;\n    text-align: right;\n}\n\n.arrowRight {\n    width: 10px;\n    height: 10px;\n    display: inline-block;\n    margin-left: 10px;\n\n}\n\n.company_container {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n}\n\n.company_container .selectorContianer,\n.company_container .selector-container {\n    margin-right: 16px;\n    min-width: 0;\n}\n\n.company_container .selectorContianer:last-child,\n.company_container .selector-container:last-child {\n    margin-right: 0;\n}\n\n.selector.selector--placeholder {\n    min-height: 36px;\n    min-width: 120px;\n    visibility: hidden;\n    pointer-events: none;\n}\n\n.logo_container {\n    display: flex;\n    align-items: center\n}\n\n.logo-selector-container {\n    display: flex;\n    align-items: center;\n}\n\n.menu {\n    display: none;\n}\n\n.dashboard-content h1{\n    display: flex;\n}\n\n.sticky-title {\n    font-size: 1.5em;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .dashboard-header {\n        width: 100%;\n        max-height: none;\n        padding: 0 8px 0 4px;\n    }\n\n    .main-grid {\n        padding-top: 158px;\n    }\n\n    .menu {\n        display: block;\n        padding: 8px 10px;\n        margin-right: 2px;\n        cursor: pointer;\n        background-color: transparent;\n        border: none;\n        color: #fff;\n        border-radius: 8px;\n        transition: background-color 0.2s ease;\n    }\n\n    .menu:focus-visible {\n        outline: 2px solid rgba(192, 159, 83, 0.6);\n        outline-offset: 2px;\n    }\n\n    .menu:active {\n        background-color: rgba(255, 255, 255, 0.06);\n    }\n\n    .menu-bar {\n        width: 22px;\n        height: 2px;\n        background-color: rgba(255, 255, 255, 0.92);\n        margin: 5px auto;\n        transition: all 0.3s ease-in-out;\n        border-radius: 2px;\n    }\n\n    .dashboard-profile {\n        display: grid;\n        grid-template-columns: 1fr auto;\n        grid-template-rows: auto auto;\n        align-items: start;\n        gap: 10px 10px;\n        padding: 8px 4px 10px 8px;\n        width: 100%;\n    }\n\n    .logo-selector-container {\n        display: contents;\n    }\n\n    .logo_container {\n        grid-column: 1;\n        grid-row: 1;\n        display: flex;\n        align-items: center;\n        gap: 2px;\n        min-width: 0;\n    }\n\n    .company_container {\n        grid-column: 1 / -1;\n        grid-row: 2;\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 8px;\n        width: 100%;\n        max-width: 100%;\n        padding-bottom: 0;\n        padding-right: 0;\n        align-items: stretch;\n        justify-content: stretch;\n    }\n\n    .company_container .selectorContianer,\n    .company_container .selector-container {\n        margin-right: 0;\n        width: 100%;\n        min-width: 0;\n    }\n\n    .dashboard-profile > .flex.profileImage {\n        grid-column: 2;\n        grid-row: 1;\n        justify-self: end;\n        align-self: start;\n    }\n\n    .dashboard-logo {\n        height: 44px;\n        margin-right: 0;\n        max-width: min(200px, calc(100vw - 120px));\n    }\n\n    .grid-3 {\n        grid-template-columns: 1fr;\n    }\n\n    .grid-container {\n        display: block;\n    }\n\n    .dashboard-profile__nameContainer {\n        width: auto;\n    }\n\n    .navOverlay {\n        display: none;\n    }\n\n    .sidebar .collapsed{\n        width: 300px;\n        min-height: calc(100vh - 200px);\n    }\n\n    .sidebar:hover,\n    .sidebar:hover>.collapsed,\n    .sidebar.expand,\n    .collapsed.expand{\n        width: 300px;\n    }\n\n    .collapsed .hiddenCollapsed{\n        opacity: 1;\n        width: auto;\n        visibility: visible;\n    }\n\n    .dashboard-header > .dashboard-profile .content-img {\n        margin: 0;\n    }\n\n    .platform-view {\n        border: none;\n        padding: 0;\n        margin: 0;\n    }\n\n    .infoHeader {\n        position: relative;\n    }\n\n    .infoHeader.sticky {\n        top: 158px;\n    }\n\n    .infoHeader .dashboard-content {\n        grid-template-columns: .5fr 1fr !important;\n    }\n\n    .infoHeader .crawl-cta {\n        width: max-content;\n    }\n\n    .sticky-title{\n        font-size: 1em;\n        display: block !important;\n    }\n}\n\n@media screen and (min-width: 320px) and (max-width: 480px) {\n    .company_container {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* SideNav (reports/settings): mobile drawer + toggle */\n.sidebar__top {\n    display: contents;\n}\n\n.sidebar-mobile-toggle {\n    display: none;\n}\n\n.sidebar-backdrop {\n    display: none;\n}\n\n@media (max-width: 768px) {\n    .sidebar-mobile-toggle {\n        display: inline-flex;\n        align-items: center;\n        gap: 10px;\n        position: fixed;\n        top: 120px;\n        left: 12px;\n        z-index: 102;\n        padding: 8px 12px;\n        margin: 0;\n        border: 1px solid rgba(255, 255, 255, 0.12);\n        border-radius: 8px;\n        background: linear-gradient(180deg, rgb(58, 58, 58) 0%, rgb(48, 48, 48) 100%);\n        color: rgba(255, 255, 255, 0.92);\n        font: inherit;\n        font-size: 14px;\n        cursor: pointer;\n        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);\n    }\n\n    .sidebar-mobile-toggle__bars {\n        display: flex;\n        flex-direction: column;\n        gap: 4px;\n    }\n\n    .sidebar-mobile-toggle__bar {\n        display: block;\n        width: 18px;\n        height: 2px;\n        background: currentColor;\n        border-radius: 1px;\n    }\n\n    .sidebar-mobile-toggle__label {\n        position: absolute;\n        width: 1px;\n        height: 1px;\n        padding: 0;\n        margin: -1px;\n        overflow: hidden;\n        clip: rect(0, 0, 0, 0);\n        border: 0;\n    }\n\n    .sidebar-backdrop {\n        display: block;\n        position: fixed;\n        inset: 0;\n        z-index: 100;\n        background: rgba(0, 0, 0, 0.5);\n        opacity: 0;\n        visibility: hidden;\n        pointer-events: none;\n        transition: opacity 0.25s ease, visibility 0.25s ease;\n    }\n\n    .sidebar-backdrop.sidebar-backdrop--visible {\n        opacity: 1;\n        visibility: visible;\n        pointer-events: auto;\n    }\n\n    .sidebar.expand {\n        width: 0 !important;\n        min-width: 0 !important;\n        overflow: visible;\n    }\n\n    .sidebar.expand .collapsed {\n        transform: translateX(-100%);\n        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n        width: min(86vw, 300px) !important;\n        min-width: min(86vw, 300px) !important;\n        top: 66px;\n        height: calc(100vh - 66px) !important;\n        min-height: calc(100vh - 66px) !important;\n        z-index: 102;\n        box-shadow: 6px 0 28px rgba(0, 0, 0, 0.35);\n    }\n\n    .sidebar.expand.sidebar--open .collapsed {\n        transform: translateX(0);\n    }\n\n    .sidebar.expand .collapsed:hover,\n    .sidebar.expand.sidebar--open .collapsed {\n        min-width: min(86vw, 300px) !important;\n        width: min(86vw, 300px) !important;\n    }\n\n    .sidebar.expand .collapsed:hover nav,\n    .sidebar.expand.sidebar--open .collapsed nav {\n        width: 100%;\n    }\n\n    .sidebar__top {\n        display: flex;\n        flex-direction: row;\n        align-items: flex-start;\n        justify-content: space-between;\n        gap: 8px;\n        padding-right: 4px;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n        margin-bottom: 4px;\n    }\n\n    .sidebar__top .sidebar__heading {\n        border-bottom: none;\n        padding-bottom: 8px;\n        flex: 1;\n        min-width: 0;\n    }\n\n    .sidebar-mobile-close {\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        flex-shrink: 0;\n        width: 40px;\n        height: 40px;\n        margin: 0;\n        padding: 0;\n        border: none;\n        border-radius: 8px;\n        background: transparent;\n        color: rgba(255, 255, 255, 0.88);\n        font-size: 28px;\n        line-height: 1;\n        cursor: pointer;\n    }\n\n    .sidebar-mobile-close:hover {\n        background: rgba(255, 255, 255, 0.08);\n    }\n\n    /* Offset main content next to the fixed menu control (SideNav pages) */\n    /* .sidebar-mobile-toggle ~ article,\n    .sidebar-mobile-toggle ~ main,\n    .sidebar-mobile-toggle ~ div.dashboard-content {\n        padding-left: 52px;\n    } */\n}\n\n@media (min-width: 769px) {\n    .sidebar-mobile-close {\n        display: none !important;\n    }\n}\n\n/* Workspace indicator */\n.workspace-indicator {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 10px 6px 12px;\n    margin-left: 12px;\n    border-radius: 10px;\n    background: linear-gradient(135deg, rgba(192, 159, 83, 0.18) 0%, rgba(160, 130, 70, 0.12) 100%);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    animation: workspace-pulse 2s ease-in-out infinite;\n}\n\n@keyframes workspace-pulse {\n    0%, 100% {\n        box-shadow: 0 0 0 0 rgba(192, 159, 83, 0.3);\n    }\n    50% {\n        box-shadow: 0 0 8px 2px rgba(192, 159, 83, 0.15);\n    }\n}\n\n.workspace-indicator__badge {\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: #c0a053;\n    padding: 3px 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border-radius: 4px;\n}\n\n.workspace-indicator__name {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #f5f0e6;\n    max-width: 150px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.workspace-indicator__domains {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.9);\n    padding: 2px 6px;\n    background: rgba(192, 159, 83, 0.15);\n    border-radius: 4px;\n}\n\n.workspace-indicator__exit {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    width: 20px;\n    height: 20px;\n    border-radius: 4px;\n    border: none;\n    background: rgba(255, 255, 255, 0.1);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, color 0.2s ease;\n}\n\n.workspace-indicator__exit:hover {\n    background: rgba(220, 80, 80, 0.3);\n    color: #fff;\n}\n\n@media screen and (max-width: 600px) {\n    .workspace-indicator {\n        margin-left: 8px;\n        padding: 4px 8px;\n    }\n\n    .workspace-indicator__name {\n        max-width: 80px;\n        font-size: 0.75rem;\n    }\n\n    .workspace-indicator__badge {\n        display: none;\n    }\n}\n/* ── Notification Center ─────────────────────────────────────────────────── */\n.notif-center {\n    position: relative;\n    display: flex;\n    align-items: center;\n}\n\n.notif-bell {\n    position: relative;\n    background: none;\n    border: none;\n    cursor: pointer;\n    color: rgb(197, 197, 197);\n    padding: 6px;\n    border-radius: 6px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: background 0.15s, color 0.15s;\n}\n.notif-bell:hover {\n    background: rgba(255,255,255,0.08);\n    color: #fff;\n}\n\n.notif-badge {\n    position: absolute;\n    top: 2px;\n    right: 2px;\n    background: #e05252;\n    color: #fff;\n    font-size: 0.6rem;\n    font-weight: 700;\n    min-width: 16px;\n    height: 16px;\n    border-radius: 8px;\n    padding: 0 4px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    line-height: 1;\n    pointer-events: none;\n}\n\n.notif-dropdown {\n    position: absolute;\n    top: calc(100% + 10px);\n    right: 0;\n    width: 340px;\n    background: #2a2a2a;\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 10px;\n    box-shadow: 0 8px 32px rgba(0,0,0,0.5);\n    z-index: 200;\n    overflow: hidden;\n}\n\n.notif-dropdown__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 14px 16px 10px;\n    border-bottom: 1px solid rgba(255,255,255,0.07);\n}\n\n.notif-dropdown__title {\n    font-size: 0.85rem;\n    font-weight: 600;\n    color: rgba(220,225,235,0.95);\n}\n\n.notif-dropdown__mark-all {\n    background: none;\n    border: none;\n    cursor: pointer;\n    font-size: 0.75rem;\n    color: rgba(140,160,255,0.85);\n    padding: 0;\n}\n.notif-dropdown__mark-all:hover { color: rgba(140,160,255,1); }\n\n.notif-dropdown__list {\n    max-height: 400px;\n    overflow-y: auto;\n}\n\n.notif-dropdown__empty {\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.82rem;\n    color: rgba(180,185,200,0.5);\n    margin: 0;\n}\n\n.notif-item {\n    position: relative;\n    padding: 12px 16px 12px 28px;\n    border-bottom: 1px solid rgba(255,255,255,0.05);\n    cursor: default;\n    transition: background 0.12s;\n}\n.notif-item:last-child { border-bottom: none; }\n.notif-item--unread { cursor: pointer; background: rgba(140,160,255,0.05); }\n.notif-item--unread:hover { background: rgba(140,160,255,0.1); }\n\n.notif-item__dot {\n    position: absolute;\n    left: 10px;\n    top: 50%;\n    transform: translateY(-50%);\n    width: 7px;\n    height: 7px;\n    border-radius: 50%;\n    background: #8ca0ff;\n}\n\n.notif-item__body {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    margin-bottom: 4px;\n}\n\n.notif-item__title {\n    font-size: 0.8rem;\n    font-weight: 600;\n    color: rgba(220,225,235,0.9);\n}\n\n.notif-item__msg {\n    font-size: 0.78rem;\n    color: rgba(180,185,200,0.75);\n    line-height: 1.4;\n}\n\n.notif-item__meta {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.notif-item__domain {\n    font-size: 0.7rem;\n    color: rgba(140,160,255,0.7);\n}\n\n.notif-item__time {\n    font-size: 0.7rem;\n    color: rgba(180,185,200,0.4);\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -30305,6 +30484,69 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.marketing-report-page {
     color: rgba(220, 160, 145, 0.9);
 }
 
+/* ── Manual Customer ID input ──────────────────────────────── */
+.ad-manual-input-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.ad-manual-input {
+    background: #1a1d2e;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 28px 32px;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.ad-manual-input__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(220, 225, 235, 0.95);
+    margin: 0;
+}
+
+.ad-manual-input__hint {
+    font-size: 0.82rem;
+    color: rgba(160, 165, 180, 0.8);
+    margin: 0;
+    line-height: 1.5;
+}
+
+.ad-manual-input__field {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: rgba(220, 225, 235, 0.95);
+    font-size: 0.9rem;
+    width: 100%;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.ad-manual-input__field:focus {
+    border-color: rgba(100, 140, 255, 0.5);
+}
+
+.ad-manual-input__field::placeholder {
+    color: rgba(160, 165, 180, 0.45);
+}
+
+.ad-manual-input__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
 /* ── Inputs bar ────────────────────────────────────────────── */
 .recon-inputs-bar {
     display: flex;
@@ -31035,6 +31277,11 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.marketing-report-page {
     border-color: rgba(248,113,113,0.2);
     background: rgba(248,113,113,0.045);
 }
+.recon-stat-card--ga4 {
+    border-color: rgba(227,116,0,0.25);
+    background: rgba(227,116,0,0.055);
+}
+.recon-stat-card--ga4 .recon-stat-card__value { color: rgba(251,191,36,0.95); }
 .recon-stat-card__label {
     font-size: 0.68rem;
     font-weight: 600;
@@ -31740,7 +31987,530 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.marketing-report-page {
     flex-shrink: 0;
 }
 .acct-picker-modal__cancel:hover { background: rgba(255,255,255,0.08); }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Reports/MarketingReport/MarketingReport.css"],"names":[],"mappings":"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","sourcesContent":[".marketing-report-page {\n    padding-bottom: 48px;\n}\n\n.marketing-report-hero {\n    margin: 0 0 20px;\n}\n\n.marketing-report-hero h1 {\n    margin: 0 0 8px;\n    font-size: 1.35rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.marketing-report-hero p,\n.marketing-report-hero__lede {\n    margin: 0;\n    max-width: 52rem;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(200, 200, 205, 0.9);\n}\n\n.marketing-report-section {\n    margin-bottom: 28px;\n}\n\n.marketing-report-section__title {\n    margin: 0 0 6px;\n    font-size: 0.78rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.92);\n}\n\n.marketing-report-section__hint {\n    margin: 0 0 14px;\n    max-width: 44rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n}\n\n.marketing-highlights {\n    margin-bottom: 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 55%);\n}\n\n.marketing-highlights__h2 {\n    margin-bottom: 10px;\n}\n\n.marketing-highlights__eyebrow {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-highlights__headline {\n    margin: 0 0 8px;\n    font-size: 1.2rem;\n    font-weight: 600;\n    line-height: 1.35;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-highlights__sub {\n    margin: 0 0 16px;\n    max-width: 44rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(185, 185, 192, 0.92);\n}\n\n.marketing-highlights__list {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n    display: grid;\n    gap: 10px;\n}\n\n.marketing-highlights__item {\n    margin: 0;\n    padding: 12px 14px 12px 16px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    border-left-width: 3px;\n}\n\n.marketing-highlights__item--spotlight {\n    border-left-color: rgba(192, 159, 83, 0.95);\n}\n\n.marketing-highlights__item--win {\n    border-left-color: rgba(110, 185, 130, 0.9);\n}\n\n.marketing-highlights__item--watch {\n    border-left-color: rgba(220, 145, 115, 0.9);\n}\n\n.marketing-highlights__item--data {\n    border-left-color: rgba(140, 155, 190, 0.75);\n}\n\n.marketing-highlights__item-title {\n    display: block;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    color: rgba(210, 205, 195, 0.95);\n    margin-bottom: 6px;\n}\n\n.marketing-highlights__item-body {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(225, 225, 228, 0.94);\n}\n\n.marketing-report-banner {\n    margin-bottom: 20px;\n    padding: 12px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.28);\n    background: rgba(192, 159, 83, 0.08);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.marketing-report-summary {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));\n    gap: 12px;\n    margin-bottom: 22px;\n}\n\n.marketing-report-kpi {\n    padding: 14px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.marketing-report-kpi__label {\n    display: block;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n    margin-bottom: 6px;\n}\n\n.marketing-report-kpi__hint {\n    margin: 6px 0 0;\n    font-size: 0.7rem;\n    line-height: 1.4;\n    color: rgba(155, 155, 165, 0.95);\n    font-weight: 400;\n}\n\n.marketing-report-kpi__value {\n    font-size: 1.15rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: #f4f4f4;\n}\n\n.marketing-report-toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    margin-bottom: 12px;\n}\n\n.marketing-report-toolbar__left {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n}\n\n.marketing-report-toolbar__placeholder {\n    flex: 0 0 auto;\n    min-width: 1px;\n}\n\n.marketing-report-back {\n    flex: 0 0 auto;\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.1);\n    color: rgba(230, 220, 195, 0.98);\n    font-size: 0.8125rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-back:hover {\n    background: rgba(192, 159, 83, 0.18);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.marketing-report-toolbar__meta {\n    margin-left: auto;\n    font-size: 0.78rem;\n    color: rgba(180, 180, 188, 0.9);\n    text-align: right;\n}\n\n.marketing-report-export {\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(230, 230, 232, 0.96);\n    font-size: 0.78rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-export:hover {\n    background: rgba(255, 255, 255, 0.1);\n    border-color: rgba(255, 255, 255, 0.22);\n}\n\n.marketing-report-export--secondary {\n    border-color: rgba(192, 159, 83, 0.22);\n    background: rgba(192, 159, 83, 0.06);\n    color: rgba(230, 220, 200, 0.95);\n}\n\n.marketing-report-export--secondary:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.marketing-report-drill-title {\n    margin: 0 0 12px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-report-table-wrap {\n    overflow-x: auto;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n}\n\n.marketing-report-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.8125rem;\n}\n\n.marketing-report-table th,\n.marketing-report-table td {\n    padding: 10px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.92);\n    white-space: nowrap;\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.marketing-report-table td {\n    color: rgba(230, 230, 232, 0.95);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-report-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.marketing-report-table__row--clickable {\n    cursor: pointer;\n}\n\n.marketing-report-table__row--clickable:hover td {\n    background: rgba(192, 159, 83, 0.07);\n}\n\n.marketing-report-table__row--clickable:focus {\n    outline: none;\n}\n\n.marketing-report-table__row--clickable:focus-visible td:first-child {\n    box-shadow: inset 3px 0 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.marketing-report-channel-cell {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 10px;\n}\n\n.marketing-report-channel-cell__label {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-report-channel-cell__chevron {\n    flex-shrink: 0;\n    font-size: 0.9rem;\n    color: rgba(192, 159, 83, 0.75);\n}\n\n.marketing-report-table__empty-row {\n    text-align: center;\n    font-variant-numeric: normal;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-table--with-choices {\n    font-size: 0.78rem;\n}\n\n.marketing-report-table__col-choice {\n    min-width: 6.75rem;\n    max-width: 9.5rem;\n    white-space: normal;\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    line-height: 1.35;\n}\n\n.marketing-report-table th.marketing-report-table__col-choice {\n    text-align: right;\n    white-space: normal;\n    line-height: 1.25;\n}\n\n.marketing-report-footnote {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.92);\n}\n\n.marketing-report-table__col-channel {\n    min-width: 10.5rem;\n    max-width: 14rem;\n    white-space: normal;\n}\n\n.marketing-report-table__col-campaign {\n    min-width: 12rem;\n    max-width: 28rem;\n    white-space: normal;\n    word-break: break-word;\n    font-variant-numeric: normal;\n}\n\n.marketing-report-table__col-num {\n    width: 1%;\n    white-space: nowrap;\n    text-align: right;\n}\n\n.marketing-report-table th.marketing-report-table__col-num {\n    text-align: right;\n}\n\n.marketing-report-th-inner {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    width: 100%;\n    justify-content: flex-start;\n}\n\n.marketing-report-table th.marketing-report-table__col-num .marketing-report-th-inner,\n.marketing-report-table th.marketing-report-table__col-choice .marketing-report-th-inner {\n    justify-content: flex-end;\n}\n\n.marketing-report-th-label {\n    min-width: 0;\n}\n\n.marketing-report-col-sort {\n    flex-shrink: 0;\n    margin: 0;\n    padding: 2px 6px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.2);\n    color: rgba(175, 175, 185, 0.95);\n    font-size: 0.65rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: 0.02em;\n    line-height: 1.2;\n    cursor: pointer;\n}\n\n.marketing-report-col-sort:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    color: rgba(235, 228, 210, 0.98);\n    background: rgba(192, 159, 83, 0.1);\n}\n\n.marketing-report-col-sort--active {\n    border-color: rgba(192, 159, 83, 0.55);\n    color: rgba(240, 232, 210, 0.98);\n    background: rgba(192, 159, 83, 0.14);\n}\n\n.marketing-report-empty {\n    padding: 28px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-error {\n    padding: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 120, 120, 0.35);\n    background: rgba(80, 20, 20, 0.25);\n    color: rgba(255, 200, 200, 0.95);\n    font-size: 0.875rem;\n    margin-bottom: 16px;\n}\n\n.marketing-report-code {\n    margin-top: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    font-size: 0.72rem;\n    overflow-x: auto;\n    color: rgba(220, 220, 225, 0.9);\n}\n\n.marketing-context {\n    margin-bottom: 18px;\n    padding: 14px 16px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context--empty {\n    border-style: dashed;\n    border-color: rgba(255, 255, 255, 0.1);\n}\n\n.marketing-context__title {\n    margin: 0 0 6px;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-context__lede {\n    margin: 0 0 14px;\n    max-width: 48rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.92);\n}\n\n.marketing-context__empty-note {\n    margin: 0;\n    max-width: 48rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-context__empty-note code {\n    font-size: 0.72rem;\n    color: rgba(210, 195, 160, 0.95);\n}\n\n.marketing-context__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));\n    gap: 16px;\n    align-items: start;\n}\n\n.marketing-context__block-title {\n    margin: 0 0 8px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-context__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.72rem;\n}\n\n.marketing-context__table th,\n.marketing-context__table td {\n    padding: 6px 8px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: top;\n}\n\n.marketing-context__table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.85);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context__label {\n    word-break: break-word;\n    font-variant-numeric: normal;\n    color: rgba(230, 230, 232, 0.95);\n}\n\n.marketing-context__num {\n    text-align: right;\n    white-space: nowrap;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-context__split {\n    font-size: 0.68rem;\n    line-height: 1.35;\n    color: rgba(195, 195, 200, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-compare-banner {\n    margin: 12px 0 0;\n    max-width: 52rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(210, 200, 175, 0.95);\n}\n\n.marketing-report-compare-warning {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    padding: 10px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(220, 150, 100, 0.35);\n    background: rgba(60, 30, 15, 0.35);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(255, 210, 185, 0.96);\n}\n\n.marketing-report-kpi__compare {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.72rem;\n    font-weight: 500;\n    line-height: 1.35;\n}\n\n.marketing-report-cell-stack {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-end;\n    gap: 3px;\n}\n\n.marketing-report-table__col-campaign .marketing-report-cell-stack {\n    align-items: flex-start;\n}\n\n.marketing-report-cell-stack__primary {\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-cell-stack__compare {\n    font-size: 0.68rem;\n    line-height: 1.25;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-delta {\n    font-weight: 600;\n    letter-spacing: 0.01em;\n}\n\n.marketing-report-delta--up {\n    color: rgba(130, 205, 155, 0.95);\n}\n\n.marketing-report-delta--down {\n    color: rgba(235, 145, 125, 0.95);\n}\n\n.marketing-report-delta--flat {\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-report-delta--new {\n    font-weight: 500;\n    color: rgba(160, 185, 220, 0.92);\n}\n\n/*\n * Marketing dashboard chart strip.\n *\n * The overview view shows two cards side-by-side (choice mix donut +\n * channels bar). The channel drill-down shows five cards: a wide one for\n * \"top campaigns\" and four half-width for mix, acceptance %, countries,\n * and paths. On narrow screens everything collapses to a single column.\n */\n.marketing-charts {\n    margin-bottom: 28px;\n}\n\n.marketing-charts__grid {\n    display: grid;\n    gap: 16px;\n}\n\n.marketing-charts__grid--two-up {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n}\n\n.marketing-charts__grid--three-up {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__grid--three-up {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__grid--two-up,\n    .marketing-charts__grid--three-up {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-charts__card {\n    display: flex;\n    flex-direction: column;\n    min-height: 280px;\n    padding: 14px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.18);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.06) 0%, rgba(0, 0, 0, 0.22) 60%);\n}\n\n.marketing-charts__card--wide {\n    grid-column: span 2;\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__card--wide {\n        grid-column: span 2;\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__card--wide {\n        grid-column: span 1;\n    }\n}\n\n.marketing-charts__card-header {\n    margin-bottom: 8px;\n}\n\n.marketing-charts__card-title {\n    margin: 0 0 4px;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(245, 243, 238, 0.96);\n}\n\n.marketing-charts__card-sub {\n    margin: 0;\n    font-size: 0.74rem;\n    line-height: 1.4;\n    color: rgba(170, 170, 180, 0.9);\n}\n\n.marketing-charts__card-body {\n    flex: 1;\n    min-height: 220px;\n    position: relative;\n}\n\n/*\n * AnyChart's pie/bar containers need an explicit height; the inner chart\n * renders into a block element inside <div class=\"chart\">.\n */\n.marketing-charts__card-body .widget {\n    height: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__card-body .chart {\n    width: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__empty {\n    margin: 0;\n    padding: 18px 14px;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.88);\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px dashed rgba(192, 159, 83, 0.24);\n}\n\n.marketing-charts__card--timeseries {\n    margin-top: 0;\n}\n\n.marketing-charts__card-body--tall {\n    min-height: 350px;\n}\n\n.marketing-charts__card-body--tall .widget,\n.marketing-charts__card-body--tall .chart {\n    min-height: 350px;\n}\n\n/*\n * --- Visibility reframe --------------------------------------------------\n *\n * The \"analytics-invisible traffic\" narrative and supporting cues.\n * Color palette stays in the platform gold/amber family so the warning\n * reads as \"pay attention\" rather than \"something is broken\" — this is a\n * product-level insight, not an error state.\n */\n\n.marketing-report-visibility-narrative {\n    margin: 4px 0 16px;\n    padding: 12px 14px 13px;\n    max-width: 62rem;\n    font-size: 0.85rem;\n    line-height: 1.55;\n    color: rgba(240, 230, 205, 0.95);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.25) 65%);\n    border: 1px solid rgba(210, 165, 80, 0.28);\n    border-left: 3px solid rgba(210, 165, 80, 0.82);\n    border-radius: 10px;\n}\n\n.marketing-report-visibility-narrative strong {\n    color: rgba(255, 235, 195, 1);\n    font-weight: 600;\n}\n\n.marketing-report-kpi--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.24) 60%);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__label {\n    color: rgba(235, 205, 145, 0.92);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__value {\n    color: rgba(255, 235, 195, 1);\n}\n\n/*\n * Per-row \"analytics blind spot\" highlight.\n *\n * A faint amber tint + a thick leading border drawn via a box-shadow\n * inset so it doesn't shift row layout. The badge sits next to the\n * campaign / channel name in lowercase to read as a label, not a button.\n */\n\n.marketing-report-table__row--blind-spot {\n    background: rgba(210, 165, 80, 0.06);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.6);\n}\n\n.marketing-report-table__row--blind-spot.marketing-report-table__row--clickable:hover,\n.marketing-report-table__row--blind-spot:hover {\n    background: rgba(210, 165, 80, 0.12);\n}\n\n.marketing-report-blind-spot-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 2px 8px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n/*\n * --- Channels table pagination -----------------------------------------\n *\n * Compact pager shown under the overview table so the list never grows\n * past ten rows. Prev/Next buttons sit to either side of the numbered\n * pages; ellipsis gaps compress long page lists. Meta text reports the\n * window so totals stay visible without the user opening the CSV export.\n */\n\n.marketing-report-pagination {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: center;\n    gap: 6px 10px;\n    margin-top: 14px;\n    padding: 18px 8px 14px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-pagination__btn {\n    padding: 7px 12px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-report-pagination__btn:hover:not(:disabled) {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.08);\n}\n\n.marketing-report-pagination__btn:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__btn:disabled {\n    opacity: 0.38;\n    cursor: not-allowed;\n}\n\n.marketing-report-pagination__pages {\n    display: flex;\n    gap: 4px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-report-pagination__page {\n    min-width: 34px;\n    padding: 7px 10px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.88);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 7px;\n    cursor: pointer;\n    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;\n}\n\n.marketing-report-pagination__page:hover {\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-report-pagination__page:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__page--active,\n.marketing-report-pagination__page--active:hover {\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, rgba(216, 181, 106, 0.96) 0%, rgba(184, 141, 60, 0.96) 100%);\n    border-color: rgba(192, 159, 83, 0.65);\n    font-weight: 600;\n    cursor: default;\n}\n\n.marketing-report-pagination__gap {\n    padding: 7px 2px;\n    color: rgba(160, 160, 170, 0.7);\n    -webkit-user-select: none;\n    user-select: none;\n}\n\n.marketing-report-pagination__meta {\n    flex-basis: 100%;\n    margin-top: 2px;\n    font-size: 0.76rem;\n    line-height: 1.4;\n    color: rgba(180, 180, 190, 0.86);\n    text-align: center;\n}\n\n.marketing-report-pagination__meta strong {\n    color: rgba(230, 230, 235, 0.95);\n    font-weight: 600;\n}\n\n@media (min-width: 720px) {\n    .marketing-report-pagination__meta {\n        flex-basis: auto;\n        margin-top: 0;\n        margin-left: 12px;\n        text-align: left;\n    }\n}\n\n/*\n * --- Ad-platform reconciliation panel ----------------------------------\n *\n * Sits between the KPI grid and the chart strip. Inputs stack responsively;\n * result cards flow in a 3–4 column grid on wide screens, collapsing to a\n * single column on phones. The \"good\" and \"warn\" tones match the rest of\n * the dashboard's palette (green accents for visibility, gold/amber for the\n * invisible-gap card).\n */\n\n.marketing-reconciliation {\n    margin: 0 0 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(\n        155deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n}\n\n.marketing-reconciliation__header {\n    margin-bottom: 14px;\n}\n\n.marketing-reconciliation__inputs {\n    display: grid;\n    grid-template-columns: 1.2fr 1fr 1fr auto;\n    gap: 12px 14px;\n    align-items: end;\n    margin-bottom: 8px;\n}\n\n@media (max-width: 900px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n\n@media (max-width: 540px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-reconciliation__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__field-label {\n    font-size: 0.74rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.86);\n}\n\n.marketing-reconciliation__input,\n.marketing-reconciliation__select {\n    width: 100%;\n    height: 38px;\n    padding: 0 11px;\n    box-sizing: border-box;\n    font-size: 0.88rem;\n    font-family: inherit;\n    color: rgba(245, 243, 238, 0.98);\n    background: rgba(0, 0, 0, 0.28);\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 8px;\n    outline: none;\n    transition:\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__select {\n    -webkit-appearance: none;\n    appearance: none;\n    padding-right: 28px;\n    background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(180,185,200,0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");\n    background-repeat: no-repeat;\n    background-position: right 9px center;\n    cursor: pointer;\n}\n\n.marketing-reconciliation__input:focus,\n.marketing-reconciliation__select:focus {\n    border-color: rgba(192, 159, 83, 0.6);\n    background: rgba(0, 0, 0, 0.38);\n}\n\n.marketing-reconciliation__money {\n    display: flex;\n    gap: 6px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__input--money {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-reconciliation__select--currency {\n    flex: 0 0 auto;\n    width: 88px;\n}\n\n.marketing-reconciliation__actions {\n    display: flex;\n    justify-content: flex-end;\n    align-items: flex-end;\n}\n\n.marketing-reconciliation__clear {\n    padding: 9px 14px;\n    font-size: 0.82rem;\n    font-family: inherit;\n    color: rgba(215, 215, 220, 0.94);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.18);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease;\n}\n\n.marketing-reconciliation__clear:hover {\n    border-color: rgba(210, 165, 80, 0.5);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__window-hint {\n    margin: 2px 0 16px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(160, 160, 170, 0.88);\n}\n\n.marketing-reconciliation__empty {\n    padding: 18px 16px;\n    font-size: 0.88rem;\n    line-height: 1.55;\n    color: rgba(185, 185, 195, 0.92);\n    border: 1px dashed rgba(192, 159, 83, 0.28);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.marketing-reconciliation__empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n/*\n * Result grid: 4-up on wide desktops (three reconciliation cards + cost\n * card when spend is entered), graceful fallback to 2-up and 1-up.\n */\n.marketing-reconciliation__results {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\n    gap: 12px;\n    margin-top: 4px;\n}\n\n.marketing-reconciliation__result {\n    padding: 14px 14px 15px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.035);\n}\n\n.marketing-reconciliation__result--good {\n    border-color: rgba(140, 200, 130, 0.35);\n    background: linear-gradient(\n        155deg,\n        rgba(140, 200, 130, 0.12) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.14) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result-title {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.92);\n}\n\n.marketing-reconciliation__result--good .marketing-reconciliation__result-title {\n    color: rgba(175, 220, 165, 0.95);\n}\n\n.marketing-reconciliation__result--warn .marketing-reconciliation__result-title {\n    color: rgba(235, 200, 140, 0.95);\n}\n\n.marketing-reconciliation__result-headline {\n    margin: 0 0 6px;\n    font-size: 1.3rem;\n    font-weight: 600;\n    line-height: 1.25;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-reconciliation__result-detail {\n    margin: 0;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(195, 195, 205, 0.9);\n}\n\n.marketing-reconciliation__result-sub {\n    margin: 8px 0 0;\n    padding-top: 8px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.86);\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n/*\n * --- Reconciliation: save / snapshots --------------------------------\n *\n * The save button shares the actions slot with \"Clear inputs\" and gets\n * the gold accent treatment so it reads as the primary CTA. The\n * snapshots list is a collapsible details-style block with a compact\n * table — wide enough to be useful, narrow enough not to dominate.\n */\n\n.marketing-reconciliation__actions {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n    align-items: stretch;\n}\n\n@media (min-width: 901px) {\n    .marketing-reconciliation__actions {\n        flex-direction: row;\n        align-items: flex-end;\n        justify-content: flex-end;\n    }\n}\n\n.marketing-reconciliation__save {\n    padding: 9px 16px;\n    font-size: 0.84rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, #d8b56a 0%, #b88d3c 100%);\n    border: 1px solid rgba(192, 159, 83, 0.7);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        transform 80ms ease,\n        box-shadow 120ms ease,\n        opacity 120ms ease;\n}\n\n.marketing-reconciliation__save:hover:not(:disabled) {\n    transform: translateY(-1px);\n    box-shadow: 0 6px 14px -8px rgba(210, 165, 80, 0.6);\n}\n\n.marketing-reconciliation__save:disabled {\n    cursor: not-allowed;\n    opacity: 0.45;\n}\n\n.marketing-reconciliation__snapshots {\n    margin-top: 20px;\n    padding: 18px 22px;\n    background: rgba(255,255,255,0.028);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n}\n\n.marketing-reconciliation__snapshots-bar {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n\n.marketing-reconciliation__snapshots-toggle {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 7px 10px 7px 6px;\n    margin-left: -6px;\n    font-size: 0.86rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(235, 233, 228, 0.96);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 8px;\n    cursor: pointer;\n    transition: background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-toggle:hover {\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-reconciliation__snapshots-count {\n    display: inline-flex;\n    min-width: 22px;\n    height: 22px;\n    padding: 0 7px;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.74rem;\n    font-weight: 600;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n}\n\n.marketing-reconciliation__snapshots-actions {\n    display: inline-flex;\n    gap: 8px;\n}\n\n.marketing-reconciliation__snapshots-export,\n.marketing-reconciliation__snapshots-clear {\n    padding: 7px 12px;\n    font-size: 0.78rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-export:hover {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__snapshots-clear:hover {\n    border-color: rgba(220, 110, 110, 0.55);\n    color: rgba(245, 175, 175, 0.98);\n}\n\n.marketing-reconciliation__snapshots-empty {\n    margin: 14px 0 0;\n    padding: 14px 14px;\n    font-size: 0.84rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.9);\n    border: 1px dashed rgba(255, 255, 255, 0.12);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.1);\n}\n\n.marketing-reconciliation__snapshots-empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n.marketing-reconciliation__snapshots-table-wrap {\n    margin-top: 14px;\n    overflow-x: auto;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__snapshots-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n    color: rgba(225, 225, 230, 0.94);\n}\n\n.marketing-reconciliation__snapshots-table thead th {\n    padding: 9px 10px;\n    text-align: left;\n    font-size: 0.7rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(180, 180, 190, 0.92);\n    background: rgba(255, 255, 255, 0.03);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-table tbody td {\n    padding: 9px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    vertical-align: top;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:hover {\n    background: rgba(255, 255, 255, 0.025);\n}\n\n.marketing-reconciliation__snapshots-table .num {\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-metric,\n.marketing-reconciliation__snapshots-sub {\n    color: rgba(160, 160, 170, 0.86);\n    font-size: 0.74rem;\n}\n\n.marketing-reconciliation__snapshots-delete {\n    padding: 2px 8px;\n    font-size: 1rem;\n    line-height: 1;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.7);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 6px;\n    cursor: pointer;\n    transition:\n        color 120ms ease,\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-delete:hover {\n    color: rgba(245, 175, 175, 0.98);\n    border-color: rgba(220, 110, 110, 0.45);\n    background: rgba(220, 110, 110, 0.08);\n}\n\n/*\n * --- Reconciliation: over-count & caption ----------------------------\n *\n * \"Over-count\" = the scope's attributed consents exceed the reported\n * clicks/sessions from the ad platform (multi-session visits, pre-\n * consented returns, UTM-tagged URLs shared beyond the ad). The row is\n * lightly tinted amber, the Reported cell carries a compact badge, and\n * the in-cell share label is capped at \"100%+\" so the math stays\n * readable.\n */\n.marketing-reconciliation__snapshots-caption {\n    margin: 0 0 10px;\n    font-size: 0.78rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.86);\n}\n\n.marketing-reconciliation__over-count-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 1px 7px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__over-count-badge--inline {\n    margin: 0 4px;\n}\n\n.marketing-reconciliation__snapshots-row--overcount {\n    background: rgba(210, 165, 80, 0.05);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.45);\n}\n\n.marketing-reconciliation__snapshots-row--overcount:hover {\n    background: rgba(210, 165, 80, 0.09);\n}\n\n/*\n * --- Reconciliation: platform filter note ----------------------------\n *\n * The filter note sits between the inputs and the result cards. When\n * the filter is active and matched, it shows the coverage + matched\n * utm_source values. When active and empty, it swaps to a warn tone\n * prompting the user to fix their UTM tagging or switch to \"Other\".\n */\n\n.marketing-reconciliation__filter-note {\n    margin: 0 0 14px;\n    padding: 10px 14px;\n    font-size: 0.82rem;\n    line-height: 1.55;\n    color: rgba(215, 215, 220, 0.92);\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__filter-note p {\n    margin: 0;\n}\n\n.marketing-reconciliation__filter-note code {\n    padding: 1px 6px;\n    font-size: 0.78rem;\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.1);\n    border: 1px solid rgba(210, 165, 80, 0.25);\n    border-radius: 5px;\n}\n\n.marketing-reconciliation__filter-note--empty {\n    color: rgba(245, 210, 170, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 130, 80, 0.15) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n    border-color: rgba(220, 140, 90, 0.45);\n}\n\n/*\n * --- Suggestions strip ------------------------------------------------\n *\n * Sits between the KPI grid and the reconciliation panel. Visually quieter\n * than the KPI cards (no large numbers) so it reads as a *next move*\n * footnote, not as another metric. Severity is encoded in (1) a chip in\n * the card head, (2) a coloured left border, and (3) a faint background\n * tint — three independent cues so colour-blind readers still see the\n * priority distinction.\n */\n\n.marketing-suggestions {\n    margin: 0 0 28px;\n    padding: 16px 18px 18px;\n    border-radius: 14px;\n    background: linear-gradient(\n        155deg,\n        rgba(255, 255, 255, 0.03) 0%,\n        rgba(255, 255, 255, 0.01) 100%\n    );\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-suggestions__head {\n    margin: 0 0 12px;\n}\n\n.marketing-suggestions__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.95);\n}\n\n.marketing-suggestions__hint {\n    margin: 4px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n    max-width: 56rem;\n}\n\n.marketing-suggestions__list {\n    display: grid;\n    gap: 10px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-suggestions__card {\n    position: relative;\n    padding: 14px 16px 14px 18px;\n    background: rgba(255, 255, 255, 0.025);\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    border-radius: 10px;\n    border-left-width: 3px;\n}\n\n.marketing-suggestions__card--critical {\n    border-left-color: rgba(232, 95, 95, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(232, 95, 95, 0.08) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--high {\n    border-left-color: rgba(210, 165, 80, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.07) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--medium {\n    border-left-color: rgba(130, 175, 220, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(130, 175, 220, 0.05) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--low {\n    border-left-color: rgba(160, 160, 170, 0.6);\n}\n\n.marketing-suggestions__card-head {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 6px;\n}\n\n.marketing-suggestions__severity {\n    display: inline-flex;\n    align-items: center;\n    padding: 2px 8px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    border-radius: 999px;\n    border: 1px solid currentColor;\n    line-height: 1.4;\n}\n\n.marketing-suggestions__severity--critical {\n    color: rgba(255, 180, 180, 0.95);\n    background: rgba(232, 95, 95, 0.12);\n}\n\n.marketing-suggestions__severity--high {\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.14);\n}\n\n.marketing-suggestions__severity--medium {\n    color: rgba(190, 220, 245, 0.95);\n    background: rgba(130, 175, 220, 0.12);\n}\n\n.marketing-suggestions__severity--low {\n    color: rgba(200, 200, 210, 0.85);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__card-title {\n    margin: 0;\n    font-size: 0.92rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.96);\n    line-height: 1.35;\n}\n\n.marketing-suggestions__card-body {\n    margin: 0 0 10px;\n    font-size: 0.84rem;\n    line-height: 1.5;\n    color: rgba(200, 200, 210, 0.92);\n}\n\n.marketing-suggestions__card-actions {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 8px 12px;\n}\n\n.marketing-suggestions__cta {\n    display: inline-flex;\n    align-items: center;\n    padding: 7px 14px;\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(216, 181, 106, 0.96) 0%,\n        rgba(184, 141, 60, 0.96) 100%\n    );\n    border-radius: 7px;\n    text-decoration: none;\n    transition: filter 120ms ease, transform 120ms ease;\n}\n\n.marketing-suggestions__cta:hover,\n.marketing-suggestions__cta:focus-visible {\n    filter: brightness(1.07);\n    text-decoration: none;\n}\n\n.marketing-suggestions__cta:focus-visible {\n    outline: 2px solid rgba(255, 225, 170, 0.85);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__snooze {\n    padding: 6px 10px;\n    font-size: 0.76rem;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.86);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-suggestions__snooze:hover,\n.marketing-suggestions__snooze:focus-visible {\n    border-color: rgba(255, 255, 255, 0.32);\n    color: rgba(240, 240, 245, 0.96);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__snooze:focus-visible {\n    outline: 2px solid rgba(160, 160, 170, 0.6);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__evidence {\n    margin-top: 10px;\n    font-size: 0.76rem;\n    color: rgba(160, 160, 170, 0.9);\n}\n\n.marketing-suggestions__evidence summary {\n    cursor: pointer;\n    -webkit-user-select: none;\n    user-select: none;\n    color: rgba(180, 180, 190, 0.86);\n    transition: color 120ms ease;\n}\n\n.marketing-suggestions__evidence summary:hover {\n    color: rgba(220, 220, 230, 0.96);\n}\n\n.marketing-suggestions__evidence ul {\n    margin: 8px 0 0;\n    padding: 0 0 0 18px;\n    line-height: 1.55;\n}\n\n.marketing-suggestions__evidence code {\n    padding: 1px 6px;\n    font-size: 0.74rem;\n    color: rgba(220, 220, 230, 0.92);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 4px;\n}\n\n@media (min-width: 720px) {\n    .marketing-suggestions__card-head {\n        flex-wrap: nowrap;\n    }\n}\n\n/* ── Ad Reconciliation CTA (in Channel Analytics) ─────────────────────── */\n.marketing-reconciliation-cta {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    padding: 18px 24px;\n    margin: 32px 0;\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation-cta__text {\n    margin: 0;\n    color: rgba(220, 220, 230, 0.75);\n    font-size: 0.9rem;\n}\n\n.marketing-reconciliation-cta__link {\n    white-space: nowrap;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-cta__link:hover {\n    text-decoration: underline;\n}\n\n/* ── Reconcile page channel filter ────────────────────────────────────── */\n.marketing-reconciliation-page__channel-filter {\n    margin-bottom: 24px;\n}\n\n.marketing-reconciliation-page__channel-label {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    font-size: 0.88rem;\n    color: rgba(220, 220, 230, 0.8);\n}\n\n.marketing-reconciliation-page__back-link {\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-page__back-link:hover {\n    text-decoration: underline;\n}\n\n/* ── Shared section headers ────────────────────────────────────────────── */\n.marketing-reconciliation__section-title {\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(220, 220, 230, 0.9);\n    margin: 0 0 4px;\n}\n\n.marketing-reconciliation__section-hint {\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.55);\n    margin: 0 0 16px;\n    line-height: 1.5;\n}\n\n/* ── Platform comparison table ─────────────────────────────────────────── */\n.marketing-reconciliation__comparison {\n    margin: 28px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__comparison-wrap {\n    overflow-x: auto;\n}\n\n.marketing-reconciliation__comparison-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__comparison-table th,\n.marketing-reconciliation__comparison-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__comparison-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__comparison-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__comparison-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__comparison-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__comparison-dot {\n    display: inline-block;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    margin-right: 8px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__comparison-good {\n    color: #4caf7d;\n    font-weight: 600;\n}\n\n.marketing-reconciliation__comparison-warn {\n    color: #f5a623;\n    font-weight: 600;\n}\n\n/* ── Visibility improvement projection ─────────────────────────────────── */\n.marketing-reconciliation__projection {\n    margin: 20px 0 0;\n    padding: 22px 24px;\n    background: rgba(255, 255, 255, 0.028);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 14px;\n}\n\n.marketing-reconciliation__projection-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__projection-table th,\n.marketing-reconciliation__projection-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-reconciliation__projection-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__projection-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__projection-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__projection-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__projection-row--current td {\n    color: rgba(200, 200, 210, 0.55);\n    font-style: italic;\n}\n\n/* ── Visibility trend chart ────────────────────────────────────────────── */\n.marketing-reconciliation__trend {\n    margin: 20px 0 0;\n    padding: 22px 24px;\n    background: rgba(255, 255, 255, 0.028);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 14px;\n}\n\n.marketing-reconciliation__trend-legend {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 12px 20px;\n    margin-bottom: 12px;\n}\n\n.marketing-reconciliation__trend-legend-item {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.8);\n}\n\n.marketing-reconciliation__trend-legend-dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__trend-svg {\n    display: block;\n    width: 100%;\n    height: auto;\n    overflow: visible;\n}\n\n/* ── Domain gate ──────────────────────────────────────────────────────────── */\n\n.reconcile-domain-gate {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 56px 24px;\n    margin: 24px 0;\n    border-radius: 16px;\n    border: 1.5px dashed rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.04);\n    text-align: center;\n}\n\n.reconcile-domain-gate__icon {\n    font-size: 2rem;\n    opacity: 0.55;\n}\n\n.reconcile-domain-gate__heading {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: rgba(240, 235, 220, 0.9);\n}\n\n.reconcile-domain-gate__body {\n    margin: 0;\n    max-width: 36rem;\n    font-size: 0.875rem;\n    line-height: 1.6;\n    color: rgba(180, 175, 165, 0.85);\n}\n\n/* ── Ad Connection Manager ─────────────────────────────────────────────────── */\n\n.ad-connection-manager {\n    margin: 0 0 32px;\n    padding: 20px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(100, 180, 255, 0.15);\n    background: rgba(30, 50, 80, 0.18);\n}\n\n.ad-connection-manager__header {\n    margin-bottom: 14px;\n}\n\n.ad-connection-manager__title {\n    margin: 0 0 6px;\n    font-size: 0.82rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(130, 185, 255, 0.85);\n}\n\n.ad-connection-manager__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(160, 165, 175, 0.85);\n}\n\n.ad-connection-manager__loading {\n    font-size: 0.8rem;\n    color: rgba(160, 165, 175, 0.7);\n    margin: 0;\n}\n\n.ad-connection-manager__status {\n    margin: 0 0 12px;\n    padding: 8px 12px;\n    border-radius: 8px;\n    font-size: 0.8rem;\n    background: rgba(60, 200, 100, 0.12);\n    border: 1px solid rgba(60, 200, 100, 0.25);\n    color: rgba(160, 230, 160, 0.95);\n}\n\n.ad-connection-manager__status--error {\n    background: rgba(220, 80, 60, 0.1);\n    border-color: rgba(220, 80, 60, 0.25);\n    color: rgba(255, 160, 140, 0.95);\n}\n\n.ad-connection-manager__list {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n/* ── Individual connection card ────────────────────────────────────────────── */\n\n.ad-connection-card {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.03);\n    transition: border-color 0.15s;\n}\n\n.ad-connection-card--connected {\n    border-color: rgba(60, 180, 255, 0.2);\n    background: rgba(30, 80, 140, 0.12);\n}\n\n.ad-connection-card__icon {\n    width: 34px;\n    height: 34px;\n    border-radius: 8px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.75rem;\n    font-weight: 700;\n    color: #fff;\n    flex-shrink: 0;\n    letter-spacing: -0.02em;\n}\n\n.ad-connection-card__info {\n    flex: 1;\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n\n.ad-connection-card__name {\n    font-size: 0.84rem;\n    font-weight: 500;\n    color: rgba(220, 220, 228, 0.95);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.ad-connection-card__meta {\n    font-size: 0.75rem;\n    color: rgba(120, 200, 120, 0.85);\n}\n\n.ad-connection-card__meta--dim {\n    color: rgba(140, 140, 150, 0.65);\n}\n\n.ad-connection-card__actions {\n    display: flex;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.ad-connection-card__btn {\n    padding: 5px 12px;\n    border-radius: 6px;\n    font-size: 0.77rem;\n    font-weight: 500;\n    cursor: pointer;\n    border: 1px solid transparent;\n    transition: background 0.15s, opacity 0.15s;\n}\n\n.ad-connection-card__btn:disabled {\n    opacity: 0.55;\n    cursor: not-allowed;\n}\n\n.ad-connection-card__btn--connect {\n    background: rgba(60, 140, 255, 0.18);\n    border-color: rgba(60, 140, 255, 0.35);\n    color: rgba(130, 185, 255, 0.95);\n}\n\n.ad-connection-card__btn--connect:not(:disabled):hover {\n    background: rgba(60, 140, 255, 0.28);\n}\n\n.ad-connection-card__btn--import {\n    background: rgba(60, 200, 100, 0.14);\n    border-color: rgba(60, 200, 100, 0.3);\n    color: rgba(130, 220, 150, 0.95);\n}\n\n.ad-connection-card__btn--import:not(:disabled):hover {\n    background: rgba(60, 200, 100, 0.24);\n}\n\n.ad-connection-card__btn--disconnect {\n    background: transparent;\n    border-color: rgba(200, 100, 80, 0.25);\n    color: rgba(200, 140, 130, 0.75);\n}\n\n.ad-connection-card__btn--disconnect:hover {\n    background: rgba(200, 80, 60, 0.1);\n    color: rgba(220, 160, 145, 0.9);\n}\n\n/* ── Inputs bar ────────────────────────────────────────────── */\n.recon-inputs-bar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: flex-end;\n    gap: 14px;\n    padding-bottom: 14px;\n    margin-bottom: 0;\n}\n.recon-inputs-bar__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n.recon-inputs-bar__field--wide {\n    flex: 1;\n    min-width: 130px;\n}\n.recon-inputs-bar__label {\n    font-size: 0.72rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(160,165,175,0.85);\n}\n.recon-inputs-bar__actions {\n    display: flex;\n    gap: 8px;\n    align-items: flex-end;\n}\n\n/* ── Funnel + Gauge layout ─────────────────────────────────── */\n.recon-main {\n    display: flex;\n    gap: 20px;\n    align-items: flex-start;\n    margin: 0;\n    flex-wrap: wrap;\n}\n\n/* ── Funnel ────────────────────────────────────────────────── */\n.recon-funnel {\n    flex: 1;\n    min-width: 220px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 0;\n    padding: 20px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.08);\n    background: rgba(255,255,255,0.025);\n}\n.recon-funnel__step {\n    width: 100%;\n    max-width: 200px;\n    text-align: center;\n    padding: 12px 16px;\n    border-radius: 10px;\n}\n.recon-funnel__step--reported {\n    background: rgba(120,160,220,0.1);\n    border: 1px solid rgba(120,160,220,0.2);\n}\n.recon-funnel__step--consents {\n    background: rgba(100,200,160,0.08);\n    border: 1px solid rgba(100,200,160,0.2);\n}\n.recon-funnel__step--visible {\n    background: rgba(80,200,120,0.12);\n    border: 1px solid rgba(80,200,120,0.25);\n}\n.recon-funnel__num {\n    font-size: 1.6rem;\n    font-weight: 700;\n    line-height: 1;\n    margin-bottom: 4px;\n    color: rgba(235,235,245,0.95);\n}\n.recon-funnel__label {\n    font-size: 0.75rem;\n    color: rgba(170,175,185,0.85);\n}\n.recon-funnel__arrow {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 2px;\n    padding: 6px 0;\n}\n.recon-funnel__arrow-pct {\n    font-size: 0.7rem;\n    color: rgba(150,155,165,0.8);\n}\n.recon-funnel__arrow-line {\n    font-size: 1.1rem;\n    color: rgba(150,155,165,0.5);\n}\n.recon-funnel__gap {\n    margin-top: 12px;\n    padding: 8px 14px;\n    border-radius: 8px;\n    background: rgba(220,80,60,0.08);\n    border: 1px solid rgba(220,80,60,0.2);\n    text-align: center;\n    width: 100%;\n    max-width: 200px;\n}\n.recon-funnel__gap-num {\n    font-size: 1.1rem;\n    font-weight: 700;\n    color: rgba(240,140,120,0.9);\n}\n.recon-funnel__gap-label {\n    font-size: 0.72rem;\n    color: rgba(200,130,110,0.8);\n}\n\n/* ── Gauge ─────────────────────────────────────────────────── */\n.recon-gauge {\n    min-width: 200px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 12px;\n    padding: 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.08);\n    background: rgba(255,255,255,0.025);\n}\n.recon-gauge__svg {\n    width: 180px;\n    height: 160px;\n    display: block;\n}\n.recon-gauge__cost {\n    text-align: center;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n.recon-gauge__cost-label {\n    font-size: 0.72rem;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(150,155,165,0.7);\n}\n.recon-gauge__cost-val {\n    font-size: 1.2rem;\n    font-weight: 700;\n    color: rgba(235,235,245,0.95);\n}\n.recon-gauge__cost-sub {\n    font-size: 0.72rem;\n    color: rgba(150,155,165,0.7);\n}\n\n/* ── Connect hint ──────────────────────────────────────────── */\n.reconcile-connect-hint {\n    font-size: 0.78rem;\n    color: rgba(140,160,190,0.8);\n    margin-bottom: 16px;\n}\n.reconcile-connect-hint a {\n    color: rgba(100,170,255,0.9);\n    text-decoration: none;\n}\n.reconcile-connect-hint a:hover {\n    text-decoration: underline;\n}\n\n/* ── Ad Connections success banner ─────────────────────────────────────── */\n.ad-connections-success-banner {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 12px 16px;\n    margin-bottom: 20px;\n    background: rgba(34, 197, 94, 0.12);\n    border: 1px solid rgba(34, 197, 94, 0.35);\n    border-radius: 8px;\n    color: rgba(134, 239, 172, 0.95);\n    font-size: 0.875rem;\n    font-weight: 500;\n}\n\n/* ── Account Picker Modal ───────────────────────────────────────────────── */\n.account-picker-backdrop {\n    position: fixed;\n    inset: 0;\n    z-index: 1000;\n    background: rgba(8, 10, 18, 0.75);\n    backdrop-filter: blur(4px);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 24px;\n}\n\n.account-picker {\n    background: #13161f;\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    width: 100%;\n    max-width: 480px;\n    max-height: 80vh;\n    display: flex;\n    flex-direction: column;\n    box-shadow: 0 24px 60px rgba(0,0,0,0.6);\n    outline: none;\n}\n\n.account-picker__header {\n    padding: 24px 24px 0;\n}\n\n.account-picker__title {\n    margin: 0 0 6px;\n    font-size: 1.1rem;\n    font-weight: 700;\n    color: rgba(230,235,245,0.95);\n}\n\n.account-picker__sub {\n    margin: 0;\n    font-size: 0.85rem;\n    color: rgba(160,170,190,0.8);\n    line-height: 1.5;\n}\n\n.account-picker__body {\n    flex: 1;\n    overflow-y: auto;\n    padding: 16px 24px;\n}\n\n.account-picker__loading,\n.account-picker__empty {\n    color: rgba(160,170,190,0.7);\n    font-size: 0.875rem;\n    margin: 8px 0;\n}\n\n.account-picker__error {\n    color: rgba(248,113,113,0.9);\n    font-size: 0.875rem;\n    margin: 8px 0;\n}\n\n.account-picker__list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.account-picker__item {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.06);\n    background: rgba(255,255,255,0.03);\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n}\n\n.account-picker__item:hover {\n    background: rgba(255,255,255,0.06);\n    border-color: rgba(255,255,255,0.12);\n}\n\n.account-picker__item--selected {\n    background: rgba(99,179,237,0.1);\n    border-color: rgba(99,179,237,0.45);\n}\n\n.account-picker__item--dim {\n    opacity: 0.55;\n}\n\n.account-picker__item-radio {\n    flex-shrink: 0;\n    width: 16px;\n    height: 16px;\n    border-radius: 50%;\n    border: 2px solid rgba(160,170,190,0.4);\n    background: transparent;\n    position: relative;\n    transition: border-color 0.15s;\n}\n\n.account-picker__item--selected .account-picker__item-radio {\n    border-color: #63b3ed;\n}\n\n.account-picker__item--selected .account-picker__item-radio::after {\n    content: \"\";\n    position: absolute;\n    inset: 3px;\n    border-radius: 50%;\n    background: #63b3ed;\n}\n\n.account-picker__item-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n}\n\n.account-picker__item-name {\n    font-size: 0.9rem;\n    font-weight: 600;\n    color: rgba(220,230,245,0.95);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.account-picker__item-id {\n    font-size: 0.75rem;\n    color: rgba(140,155,180,0.75);\n    font-family: monospace;\n}\n\n.account-picker__footer {\n    display: flex;\n    justify-content: flex-end;\n    gap: 10px;\n    padding: 16px 24px 20px;\n    border-top: 1px solid rgba(255,255,255,0.06);\n}\n\n.account-picker__btn {\n    padding: 9px 20px;\n    border-radius: 8px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    border: none;\n    cursor: pointer;\n    transition: opacity 0.15s, background 0.15s;\n}\n\n.account-picker__btn:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n}\n\n.account-picker__btn--cancel {\n    background: rgba(255,255,255,0.06);\n    color: rgba(180,185,200,0.9);\n}\n\n.account-picker__btn--cancel:not(:disabled):hover {\n    background: rgba(255,255,255,0.1);\n}\n\n.account-picker__btn--confirm {\n    background: #3b82f6;\n    color: #fff;\n}\n\n.account-picker__btn--confirm:not(:disabled):hover {\n    background: #2563eb;\n}\n\n/* ── Sync button & messages ────────────────────────────────────────────── */\n.recon-sync-btn {\n    padding: 7px 14px;\n    border-radius: 7px;\n    background: rgba(59, 130, 246, 0.15);\n    border: 1px solid rgba(59, 130, 246, 0.4);\n    color: rgba(147, 197, 253, 0.95);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    white-space: nowrap;\n    transition: background 0.15s, border-color 0.15s;\n    letter-spacing: 0.01em;\n}\n.recon-sync-btn:not(:disabled):hover {\n    background: rgba(59, 130, 246, 0.28);\n    border-color: rgba(59, 130, 246, 0.65);\n}\n.recon-sync-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n.recon-sync-msg {\n    font-size: 0.8rem;\n    color: rgba(134, 239, 172, 0.9);\n    margin: 6px 0 0;\n    padding: 7px 12px;\n    background: rgba(34,197,94,0.08);\n    border: 1px solid rgba(34,197,94,0.25);\n    border-radius: 6px;\n}\n.recon-sync-msg--error {\n    color: rgba(252,165,165,0.9);\n    background: rgba(239,68,68,0.08);\n    border-color: rgba(239,68,68,0.25);\n}\n.recon-sync-msg__link {\n    color: inherit;\n    opacity: 0.8;\n    text-decoration: underline;\n}\n.recon-sync-hint {\n    font-size: 0.78rem;\n    color: rgba(140,155,180,0.7);\n    margin: 5px 0 0;\n}\n.recon-sync-hint a {\n    color: rgba(100,170,255,0.85);\n    text-decoration: none;\n}\n.recon-sync-hint a:hover { text-decoration: underline; }\n\n/* ── UTM attribution health bar ────────────────────────────────────────── */\n.utm-health {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 8px 14px;\n    margin: 8px 0;\n    border-radius: 8px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.06);\n    font-size: 0.8rem;\n    flex-wrap: wrap;\n}\n.utm-health__label {\n    color: rgba(160,170,190,0.8);\n    font-weight: 600;\n    text-transform: uppercase;\n    font-size: 0.7rem;\n    letter-spacing: 0.05em;\n    white-space: nowrap;\n    min-width: 110px;\n}\n.utm-health__track {\n    flex: 1;\n    min-width: 80px;\n    height: 6px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.08);\n    overflow: hidden;\n}\n.utm-health__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.4s ease;\n}\n.utm-health--good .utm-health__fill { background: #4ade80; }\n.utm-health--warn .utm-health__fill { background: #f59e0b; }\n.utm-health--bad  .utm-health__fill { background: #f87171; }\n.utm-health__stats {\n    color: rgba(200,210,225,0.9);\n    white-space: nowrap;\n}\n.utm-health__stats strong { font-weight: 700; }\n.utm-health--good .utm-health__stats strong { color: #86efac; }\n.utm-health--warn .utm-health__stats strong { color: #fcd34d; }\n.utm-health--bad  .utm-health__stats strong { color: #fca5a5; }\n.utm-health__dark {\n    color: rgba(160,170,190,0.65);\n    font-size: 0.75rem;\n}\n\n/* ── Insights panel ─────────────────────────────────────────────────────── */\n.recon-insights {\n    margin: 0;\n    flex: 1;\n}\n.recon-insights__heading {\n    font-size: 0.78rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    color: rgba(160,170,190,0.7);\n    margin: 0 0 10px;\n}\n.recon-insights__list {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n.recon-insight {\n    display: flex;\n    gap: 12px;\n    padding: 12px 16px;\n    border-radius: 10px;\n    border-left: 3px solid transparent;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.06);\n}\n.recon-insight--critical {\n    background: rgba(239,68,68,0.07);\n    border-color: rgba(239,68,68,0.25);\n    border-left-color: #ef4444;\n}\n.recon-insight--warning {\n    background: rgba(245,158,11,0.07);\n    border-color: rgba(245,158,11,0.25);\n    border-left-color: #f59e0b;\n}\n.recon-insight--opportunity {\n    background: rgba(59,130,246,0.07);\n    border-color: rgba(59,130,246,0.22);\n    border-left-color: #3b82f6;\n}\n.recon-insight--good {\n    background: rgba(34,197,94,0.06);\n    border-color: rgba(34,197,94,0.2);\n    border-left-color: #22c55e;\n}\n.recon-insight__icon {\n    font-size: 1rem;\n    flex-shrink: 0;\n    margin-top: 1px;\n    width: 18px;\n    text-align: center;\n}\n.recon-insight--critical .recon-insight__icon { color: #f87171; }\n.recon-insight--warning  .recon-insight__icon { color: #fbbf24; }\n.recon-insight--opportunity .recon-insight__icon { color: #60a5fa; }\n.recon-insight--good     .recon-insight__icon { color: #4ade80; }\n.recon-insight__content {\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n    min-width: 0;\n}\n.recon-insight__title {\n    font-size: 0.875rem;\n    font-weight: 700;\n    color: rgba(220,230,245,0.95);\n    margin: 0;\n    line-height: 1.3;\n}\n.recon-insight__body {\n    font-size: 0.8rem;\n    color: rgba(170,180,200,0.85);\n    margin: 0;\n    line-height: 1.55;\n}\n\n/* ── Chart sections ─────────────────────────────────────────────────────── */\n.recon-chart-section {\n    margin: 0;\n    background: rgba(255,255,255,0.028);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 20px 16px;\n}\n\n.recon-chart-scroll {\n    overflow-x: auto;\n    -webkit-overflow-scrolling: touch;\n}\n\n.recon-bar-chart {\n    display: block;\n    width: 100%;\n    max-width: 620px;\n    height: auto;\n    overflow: visible;\n}\n\n.recon-chart-legend {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 14px;\n    margin-top: 10px;\n    font-size: 0.78rem;\n    color: rgba(160,175,200,0.75);\n    align-items: center;\n}\n\n.recon-legend-dot {\n    display: inline-block;\n    width: 10px;\n    height: 10px;\n    border-radius: 50%;\n    margin-right: 4px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n\n/* ═══════════════════════════════════════════════════════════════════════════\n   DASHBOARD LAYOUT — page header, KPI row, card grid\n   ═══════════════════════════════════════════════════════════════════════════ */\n\n.recon-page {\n    padding-bottom: 48px;\n}\n\n/* ── Page header ──────────────────────────────────────────────────────────── */\n.recon-page-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    flex-wrap: wrap;\n    gap: 12px;\n    margin-bottom: 24px;\n    padding-bottom: 18px;\n    border-bottom: 1px solid rgba(255,255,255,0.07);\n}\n.recon-page-header__left {\n    display: flex;\n    align-items: baseline;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n.recon-page-header__title {\n    margin: 0;\n    font-size: 1.4rem;\n    font-weight: 700;\n    color: rgba(240,242,248,0.97);\n    letter-spacing: -0.01em;\n}\n.recon-page-header__domain {\n    font-size: 0.82rem;\n    color: rgba(155,170,200,0.75);\n    padding: 3px 10px;\n    border-radius: 20px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.1);\n}\n.recon-page-header__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    flex-wrap: wrap;\n}\n.recon-page-header__channel {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    font-size: 0.8rem;\n    color: rgba(160,165,175,0.8);\n}\n\n.recon-page-header__channel .marketing-reconciliation__select {\n    width: auto;\n    min-width: 140px;\n}\n.recon-page-header__back {\n    font-size: 0.82rem;\n    color: rgba(130,145,175,0.75);\n    text-decoration: none;\n    transition: color 0.15s;\n}\n.recon-page-header__back:hover {\n    color: rgba(180,190,215,0.9);\n}\n\n/* ── Generic card ─────────────────────────────────────────────────────────── */\n.recon-card {\n    background: rgba(255,255,255,0.028);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 22px 22px 20px;\n}\n.recon-controls-card {\n    margin-bottom: 20px;\n}\n.recon-card--insights {\n    display: flex;\n    flex-direction: column;\n}\n.recon-card__title {\n    margin: 0 0 14px;\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(145,158,185,0.65);\n}\n.recon-card__empty-hint {\n    flex: 1;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    margin: 0;\n    padding: 24px 16px;\n    font-size: 0.85rem;\n    color: rgba(140,152,175,0.6);\n    text-align: center;\n}\n\n/* ── KPI stat cards ───────────────────────────────────────────────────────── */\n.recon-kpi-row {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 14px;\n    margin-bottom: 20px;\n}\n@media (max-width: 900px) {\n    .recon-kpi-row { grid-template-columns: repeat(2, 1fr); }\n}\n@media (max-width: 480px) {\n    .recon-kpi-row { grid-template-columns: 1fr 1fr; }\n}\n\n.recon-stat-card {\n    background: rgba(255,255,255,0.032);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 12px;\n    padding: 16px 18px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n.recon-stat-card--good {\n    border-color: rgba(74,222,128,0.2);\n    background: rgba(74,222,128,0.045);\n}\n.recon-stat-card--warn {\n    border-color: rgba(245,158,11,0.2);\n    background: rgba(245,158,11,0.045);\n}\n.recon-stat-card--bad {\n    border-color: rgba(248,113,113,0.2);\n    background: rgba(248,113,113,0.045);\n}\n.recon-stat-card__label {\n    font-size: 0.68rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    color: rgba(145,158,180,0.72);\n}\n.recon-stat-card__value {\n    font-size: 1.8rem;\n    font-weight: 700;\n    line-height: 1.05;\n    color: rgba(232,236,248,0.96);\n    letter-spacing: -0.025em;\n}\n.recon-stat-card--good .recon-stat-card__value { color: rgba(134,239,172,0.95); }\n.recon-stat-card--warn .recon-stat-card__value { color: rgba(252,211,77,0.92); }\n.recon-stat-card--bad  .recon-stat-card__value { color: rgba(248,113,113,0.9); }\n.recon-stat-card__sub {\n    font-size: 0.71rem;\n    color: rgba(135,148,170,0.6);\n    margin-top: 1px;\n}\n\n/* ── Dashboard 2-col grid (funnel + insights) ─────────────────────────────── */\n.recon-dashboard-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 16px;\n    margin-bottom: 20px;\n    align-items: start;\n}\n@media (max-width: 820px) {\n    .recon-dashboard-grid { grid-template-columns: 1fr; }\n}\n\n/* ── Charts 2-col grid ────────────────────────────────────────────────────── */\n.recon-charts-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 16px;\n    margin-bottom: 20px;\n}\n.recon-charts-grid > .recon-chart-section:only-child {\n    grid-column: 1 / -1;\n}\n@media (max-width: 820px) {\n    .recon-charts-grid { grid-template-columns: 1fr; }\n}\n\n/* ── Alert settings button ───────────────────────────────────────────────── */\n.recon-alerts-settings-btn {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 7px 12px;\n    background: rgba(99,102,241,0.12);\n    border: 1px solid rgba(99,102,241,0.28);\n    border-radius: 8px;\n    color: rgba(165,168,255,0.9);\n    font-size: 0.78rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n    flex-shrink: 0;\n}\n.recon-alerts-settings-btn:hover {\n    background: rgba(99,102,241,0.22);\n    border-color: rgba(99,102,241,0.5);\n}\n\n/* ── Notification bell ───────────────────────────────────────────────────── */\n.notif-bell {\n    position: relative;\n    display: inline-flex;\n    align-items: center;\n    flex-shrink: 0;\n}\n.notif-bell__btn {\n    position: relative;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 34px;\n    height: 34px;\n    background: rgba(255,255,255,0.05);\n    border: 1px solid rgba(255,255,255,0.09);\n    border-radius: 8px;\n    color: rgba(180,190,210,0.75);\n    cursor: pointer;\n    transition: background 0.15s, color 0.15s, border-color 0.15s;\n}\n.notif-bell__btn:hover {\n    background: rgba(255,255,255,0.09);\n    color: rgba(220,225,240,0.95);\n    border-color: rgba(255,255,255,0.15);\n}\n.notif-bell__btn--active {\n    color: rgba(252,211,77,0.9);\n    border-color: rgba(252,211,77,0.3);\n    background: rgba(252,211,77,0.07);\n}\n.notif-bell__badge {\n    position: absolute;\n    top: -5px;\n    right: -5px;\n    min-width: 16px;\n    height: 16px;\n    padding: 0 3px;\n    background: #ef4444;\n    border-radius: 9px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    color: #fff;\n    line-height: 16px;\n    text-align: center;\n    pointer-events: none;\n}\n\n/* ── Notification dropdown ───────────────────────────────────────────────── */\n.notif-dropdown {\n    position: absolute;\n    top: calc(100% + 8px);\n    right: 0;\n    width: 320px;\n    max-height: 420px;\n    background: rgba(18,22,36,0.97);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 14px;\n    box-shadow: 0 12px 40px rgba(0,0,0,0.5);\n    display: flex;\n    flex-direction: column;\n    z-index: 999;\n    overflow: hidden;\n}\n.notif-dropdown__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 12px 16px 10px;\n    border-bottom: 1px solid rgba(255,255,255,0.07);\n    flex-shrink: 0;\n}\n.notif-dropdown__title {\n    font-size: 0.78rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.07em;\n    color: rgba(180,190,215,0.7);\n}\n.notif-dropdown__mark-all {\n    font-size: 0.71rem;\n    color: rgba(99,102,241,0.9);\n    background: none;\n    border: none;\n    cursor: pointer;\n    padding: 0;\n    text-decoration: underline;\n}\n.notif-dropdown__list {\n    overflow-y: auto;\n    flex: 1;\n    padding: 6px 0;\n}\n.notif-dropdown__empty {\n    margin: 0;\n    padding: 16px;\n    font-size: 0.78rem;\n    color: rgba(155,165,185,0.65);\n    line-height: 1.5;\n}\n\n/* ── Notification item ───────────────────────────────────────────────────── */\n.notif-item {\n    position: relative;\n    padding: 10px 16px 10px 14px;\n    border-left: 3px solid transparent;\n    cursor: pointer;\n    transition: background 0.12s;\n}\n.notif-item:hover { background: rgba(255,255,255,0.04); }\n.notif-item--unread { background: rgba(99,102,241,0.05); }\n.notif-item__meta {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    margin-bottom: 3px;\n    gap: 8px;\n}\n.notif-item__type {\n    font-size: 0.67rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n}\n.notif-item__time {\n    font-size: 0.67rem;\n    color: rgba(130,140,165,0.6);\n    flex-shrink: 0;\n}\n.notif-item__title {\n    margin: 0;\n    font-size: 0.8rem;\n    color: rgba(215,220,235,0.88);\n    line-height: 1.4;\n}\n.notif-item__dot {\n    position: absolute;\n    top: 12px;\n    right: 12px;\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    background: #6366f1;\n}\n\n/* ── Alert settings modal ────────────────────────────────────────────────── */\n.alert-settings-backdrop {\n    position: fixed;\n    inset: 0;\n    background: rgba(5,8,20,0.72);\n    backdrop-filter: blur(4px);\n    z-index: 1200;\n    display: flex;\n    align-items: flex-start;\n    justify-content: center;\n    padding: 48px 16px;\n    overflow-y: auto;\n}\n.alert-settings-modal {\n    background: rgb(14,18,30);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 18px;\n    box-shadow: 0 24px 72px rgba(0,0,0,0.7);\n    width: 100%;\n    max-width: 560px;\n    padding: 28px 28px 32px;\n    position: relative;\n}\n.alert-settings-modal__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 22px;\n}\n.alert-settings-modal__title {\n    margin: 0 0 5px;\n    font-size: 1.05rem;\n    font-weight: 700;\n    color: rgba(232,236,248,0.95);\n}\n.alert-settings-modal__sub {\n    margin: 0;\n    font-size: 0.8rem;\n    color: rgba(150,160,185,0.75);\n    line-height: 1.5;\n}\n.alert-settings-modal__close {\n    flex-shrink: 0;\n    width: 30px;\n    height: 30px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.09);\n    border-radius: 8px;\n    color: rgba(180,190,215,0.7);\n    font-size: 1.1rem;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: background 0.12s;\n}\n.alert-settings-modal__close:hover { background: rgba(255,255,255,0.1); }\n\n/* channels section */\n.alert-settings-channels {\n    background: rgba(255,255,255,0.025);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 12px;\n    padding: 16px 18px;\n    margin-bottom: 24px;\n}\n.alert-settings-channels__title {\n    margin: 0 0 12px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.07em;\n    color: rgba(140,150,175,0.7);\n}\n.alert-settings-channels__row {\n    display: flex;\n    flex-direction: column;\n    gap: 12px;\n}\n.alert-settings-channels__item {\n    display: flex;\n    align-items: flex-start;\n    gap: 12px;\n}\n.alert-settings-channels__icon {\n    font-size: 1rem;\n    margin-top: 2px;\n    flex-shrink: 0;\n}\n.alert-settings-channels__info {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    flex: 1;\n}\n.alert-settings-channels__name {\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(210,218,235,0.88);\n}\n.alert-settings-channels__status {\n    font-size: 0.74rem;\n    color: rgba(130,140,165,0.65);\n}\n.alert-settings-email-input {\n    width: 100%;\n    padding: 7px 10px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 8px;\n    color: rgba(210,218,235,0.9);\n    font-size: 0.82rem;\n    outline: none;\n    transition: border-color 0.15s;\n}\n.alert-settings-email-input:focus { border-color: rgba(99,102,241,0.5); }\n.alert-settings-push-btn {\n    padding: 6px 12px;\n    background: rgba(99,102,241,0.12);\n    border: 1px solid rgba(99,102,241,0.3);\n    border-radius: 8px;\n    color: rgba(165,168,255,0.9);\n    font-size: 0.77rem;\n    font-weight: 600;\n    cursor: pointer;\n    width: fit-content;\n    transition: background 0.15s;\n}\n.alert-settings-push-btn:hover { background: rgba(99,102,241,0.22); }\n.alert-settings-push-btn--active {\n    background: rgba(74,222,128,0.1);\n    border-color: rgba(74,222,128,0.3);\n    color: rgba(134,239,172,0.9);\n}\n\n/* alert rules */\n.alert-settings-rules__title {\n    margin: 0 0 12px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.07em;\n    color: rgba(140,150,175,0.7);\n}\n.alert-settings-rules {\n    display: flex;\n    flex-direction: column;\n    gap: 10px;\n}\n.alert-rule {\n    background: rgba(255,255,255,0.025);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 11px;\n    padding: 14px 16px;\n    transition: border-color 0.15s, background 0.15s;\n}\n.alert-rule--enabled {\n    border-color: rgba(99,102,241,0.25);\n    background: rgba(99,102,241,0.04);\n}\n.alert-rule__top {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n}\n.alert-rule__toggle {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    cursor: pointer;\n}\n.alert-rule__toggle input[type=\"checkbox\"] {\n    width: 16px;\n    height: 16px;\n    accent-color: #6366f1;\n    cursor: pointer;\n    flex-shrink: 0;\n}\n.alert-rule__toggle-label {\n    font-size: 0.84rem;\n    font-weight: 600;\n    color: rgba(210,218,235,0.9);\n}\n.alert-rule__threshold {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n.alert-rule__threshold-input {\n    width: 72px;\n    padding: 5px 8px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 7px;\n    color: rgba(210,218,235,0.9);\n    font-size: 0.82rem;\n    text-align: right;\n    outline: none;\n    transition: border-color 0.15s;\n}\n.alert-rule__threshold-input:focus { border-color: rgba(99,102,241,0.5); }\n.alert-rule__threshold-input:disabled { opacity: 0.4; }\n.alert-rule__unit {\n    font-size: 0.76rem;\n    color: rgba(140,150,175,0.65);\n    min-width: 24px;\n}\n.alert-rule__hint {\n    margin: 6px 0 0;\n    font-size: 0.74rem;\n    color: rgba(130,140,165,0.65);\n    line-height: 1.45;\n}\n.alert-rule__channels {\n    display: flex;\n    align-items: center;\n    gap: 14px;\n    flex-wrap: wrap;\n    margin-top: 10px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255,255,255,0.06);\n}\n.alert-rule__channel-toggle {\n    display: flex;\n    align-items: center;\n    gap: 5px;\n    font-size: 0.77rem;\n    color: rgba(175,185,210,0.8);\n    cursor: pointer;\n}\n.alert-rule__channel-toggle input[type=\"checkbox\"] {\n    width: 13px;\n    height: 13px;\n    accent-color: #6366f1;\n    flex-shrink: 0;\n}\n.alert-rule__channel-note {\n    font-size: 0.7rem;\n    color: rgba(120,130,155,0.6);\n    font-style: italic;\n}\n\n/* ── Cost by channel table ───────────────────────────────────────────────── */\n.cost-by-channel {\n    width: 100%;\n}\n.cost-by-channel__table-wrap {\n    overflow-x: auto;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n}\n.cost-by-channel__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n.cost-by-channel__table th {\n    padding: 9px 14px;\n    background: rgba(255,255,255,0.03);\n    color: rgba(140,152,178,0.72);\n    font-size: 0.68rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    text-align: left;\n    border-bottom: 1px solid rgba(255,255,255,0.07);\n    white-space: nowrap;\n}\n.cost-by-channel__table th.num,\n.cost-by-channel__table td.num {\n    text-align: right;\n}\n.cost-by-channel__table td {\n    padding: 10px 14px;\n    color: rgba(210,218,235,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n    white-space: nowrap;\n}\n.cost-by-channel__table tbody tr:last-child td {\n    border-bottom: none;\n}\n.cost-by-channel__table tbody tr:hover td {\n    background: rgba(255,255,255,0.02);\n}\n.cost-by-channel__dot {\n    display: inline-block;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    margin-right: 7px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n.cost-col {\n    background: rgba(99,102,241,0.04);\n}\n.cost-by-channel__good { color: rgba(134,239,172,0.9) !important; }\n.cost-by-channel__warn { color: rgba(252,211,77,0.85) !important; }\n.cost-by-channel__bad  { color: rgba(248,113,113,0.85) !important; }\n.cost-by-channel__avg-row td {\n    border-top: 1px solid rgba(255,255,255,0.07);\n    background: rgba(255,255,255,0.025);\n    color: rgba(175,185,210,0.75);\n    font-size: 0.78rem;\n}\n\n/* ── Connect prompt (inline, below inputs bar) ───────────────────────────── */\n.recon-connect-prompt {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    flex-wrap: wrap;\n    padding: 10px 0 4px;\n}\n.recon-connect-btn {\n    display: inline-flex;\n    align-items: center;\n    gap: 7px;\n    padding: 8px 16px;\n    background: linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.18) 100%);\n    border: 1px solid rgba(99,102,241,0.4);\n    border-radius: 9px;\n    color: rgba(165,168,255,0.95);\n    font-size: 0.82rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s, opacity 0.15s;\n    white-space: nowrap;\n}\n.recon-connect-btn::before {\n    content: \"→\";\n    font-size: 0.9rem;\n}\n.recon-connect-btn:hover {\n    background: linear-gradient(135deg, rgba(99,102,241,0.28) 0%, rgba(139,92,246,0.28) 100%);\n    border-color: rgba(99,102,241,0.65);\n}\n.recon-connect-btn:disabled { opacity: 0.55; cursor: wait; }\n.recon-connect-prompt__hint {\n    font-size: 0.75rem;\n    color: rgba(130,140,165,0.65);\n}\n\n/* ── OAuth result banner ─────────────────────────────────────────────────── */\n.oauth-banner {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    padding: 12px 18px;\n    border-radius: 11px;\n    margin-bottom: 16px;\n    font-size: 0.83rem;\n    font-weight: 500;\n}\n.oauth-banner--success {\n    background: rgba(74,222,128,0.1);\n    border: 1px solid rgba(74,222,128,0.28);\n    color: rgba(134,239,172,0.95);\n}\n.oauth-banner--error {\n    background: rgba(248,113,113,0.09);\n    border: 1px solid rgba(248,113,113,0.3);\n    color: rgba(252,165,165,0.95);\n}\n.oauth-banner__msg { flex: 1; }\n.oauth-banner__close {\n    background: none;\n    border: none;\n    cursor: pointer;\n    font-size: 1.1rem;\n    color: inherit;\n    opacity: 0.7;\n    padding: 0 4px;\n    line-height: 1;\n}\n.oauth-banner__close:hover { opacity: 1; }\n\n/* ── Account picker modal ────────────────────────────────────────────────── */\n.acct-picker-backdrop {\n    position: fixed;\n    inset: 0;\n    background: rgba(5,8,20,0.78);\n    backdrop-filter: blur(5px);\n    z-index: 1300;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 24px;\n}\n.acct-picker-modal {\n    background: rgb(14,18,30);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 18px;\n    box-shadow: 0 28px 80px rgba(0,0,0,0.75);\n    width: 100%;\n    max-width: 480px;\n    padding: 28px 28px 24px;\n    max-height: 80vh;\n    display: flex;\n    flex-direction: column;\n}\n.acct-picker-modal__header { margin-bottom: 18px; }\n.acct-picker-modal__title {\n    margin: 0 0 5px;\n    font-size: 1.05rem;\n    font-weight: 700;\n    color: rgba(232,236,248,0.95);\n}\n.acct-picker-modal__sub {\n    margin: 0;\n    font-size: 0.8rem;\n    color: rgba(150,160,185,0.75);\n}\n.acct-picker-modal__loading,\n.acct-picker-modal__empty {\n    margin: 0 0 16px;\n    font-size: 0.82rem;\n    color: rgba(150,160,185,0.7);\n}\n.acct-picker-modal__error {\n    margin: 0 0 16px;\n    font-size: 0.82rem;\n    color: rgba(252,165,165,0.9);\n    background: rgba(248,113,113,0.08);\n    border: 1px solid rgba(248,113,113,0.2);\n    border-radius: 8px;\n    padding: 10px 14px;\n}\n.acct-picker-list {\n    list-style: none;\n    margin: 0 0 16px;\n    padding: 0;\n    overflow-y: auto;\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n.acct-picker-item {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 13px 16px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 11px;\n    text-align: left;\n    cursor: pointer;\n    transition: background 0.13s, border-color 0.13s;\n}\n.acct-picker-item:hover:not(:disabled) {\n    background: rgba(99,102,241,0.1);\n    border-color: rgba(99,102,241,0.35);\n}\n.acct-picker-item:disabled { opacity: 0.5; cursor: wait; }\n.acct-picker-item__name {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(218,224,240,0.95);\n    flex: 1;\n}\n.acct-picker-item__meta {\n    font-size: 0.72rem;\n    color: rgba(130,140,165,0.65);\n    white-space: nowrap;\n}\n.acct-picker-item__arrow {\n    flex-shrink: 0;\n    color: rgba(99,102,241,0.6);\n}\n.acct-picker-modal__cancel {\n    width: 100%;\n    padding: 10px;\n    background: rgba(255,255,255,0.04);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 9px;\n    color: rgba(155,165,190,0.7);\n    font-size: 0.82rem;\n    cursor: pointer;\n    transition: background 0.13s;\n    flex-shrink: 0;\n}\n.acct-picker-modal__cancel:hover { background: rgba(255,255,255,0.08); }\n"],"sourceRoot":""}]);
+
+/* ─── GA4 Card (Channel Analytics) ──────────────────────────────────────── */
+.ga4-card {
+    margin: 4px 0 18px;
+    padding: 18px 20px 16px;
+    background: rgba(227,116,0,0.04);
+    border: 1px solid rgba(227,116,0,0.14);
+    border-radius: 14px;
+}
+.ga4-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.ga4-card__title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(227,116,0,0.9);
+}
+.ga4-card__badges {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ga4-sessions-chart__syncing {
+    font-size: 0.72rem;
+    color: rgba(227,116,0,0.6);
+}
+
+/* GA4 KPI strip */
+.ga4-kpi-strip {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    border: 1px solid rgba(227,116,0,0.12);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.ga4-kpi {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 8px;
+    border-right: 1px solid rgba(227,116,0,0.1);
+    cursor: default;
+    transition: background 0.12s;
+}
+.ga4-kpi:last-child { border-right: none; }
+.ga4-kpi:hover { background: rgba(227,116,0,0.07); }
+.ga4-kpi__value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgba(240,190,80,0.95);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+.ga4-kpi__label {
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(145,158,180,0.65);
+    margin-top: 2px;
+    white-space: nowrap;
+}
+.ga4-ss-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 20px;
+    font-size: 0.71rem;
+    font-weight: 600;
+    color: rgba(165,170,255,0.95);
+    letter-spacing: 0.01em;
+}
+
+/* Platform breakdown */
+.ga4-platform-breakdown {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+.ga4-platform-breakdown__title {
+    margin: 0 0 10px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(145,158,180,0.65);
+}
+.ga4-platform-breakdown__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.ga4-pb-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 52px 70px;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+}
+.ga4-pb-row__name {
+    color: rgba(185,195,215,0.85);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ga4-pb-row--ss .ga4-pb-row__name {
+    color: rgba(165,170,255,0.9);
+    font-weight: 600;
+}
+.ga4-pb-row__ss-icon {
+    margin-right: 4px;
+}
+.ga4-pb-row__ss-hint {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: rgba(140,145,200,0.65);
+    margin-left: 4px;
+}
+.ga4-pb-row__bar-wrap {
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.ga4-pb-row__bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+.ga4-pb-row__share {
+    text-align: right;
+    color: rgba(145,160,185,0.75);
+    font-size: 0.75rem;
+}
+.ga4-pb-row__count {
+    text-align: right;
+    color: rgba(185,195,215,0.7);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── Channel Analytics Redesigned Layout ───────────────────────────────── */
+
+/* Compact page header */
+.ca-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.ca-page-header__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.ca-page-header__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: rgba(235,240,255,0.96);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.ca-page-header__channel {
+    color: rgba(200,210,240,0.9);
+    font-weight: 600;
+}
+.ca-back-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(145,160,200,0.75);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.12s;
+}
+.ca-back-btn:hover { color: rgba(200,210,240,0.95); }
+.ca-compare-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    background: rgba(99,102,241,0.12);
+    border: 1px solid rgba(99,102,241,0.22);
+    border-radius: 20px;
+    font-size: 0.71rem;
+    color: rgba(165,170,255,0.85);
+}
+.ca-reconcile-link {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(99,102,241,0.1);
+    border: 1px solid rgba(99,102,241,0.22);
+    border-radius: 8px;
+    font-size: 0.77rem;
+    font-weight: 600;
+    color: rgba(165,170,255,0.88);
+    text-decoration: none;
+    transition: background 0.13s;
+    white-space: nowrap;
+}
+.ca-reconcile-link:hover { background: rgba(99,102,241,0.18); color: rgba(185,190,255,0.95); }
+
+/* Consent KPI strip */
+.ca-kpi-strip {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.ca-kpi {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    cursor: default;
+    min-width: 0;
+    transition: background 0.12s;
+}
+.ca-kpi:last-child { border-right: none; }
+.ca-kpi:hover { background: rgba(255,255,255,0.035); }
+.ca-kpi__value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: rgba(232,236,248,0.95);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+.ca-kpi--warn .ca-kpi__value { color: rgba(252,165,50,0.92); }
+.ca-kpi__label {
+    font-size: 0.64rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(140,155,180,0.6);
+    margin-top: 3px;
+    text-align: center;
+    line-height: 1.2;
+}
+.ca-kpi__compare {
+    margin-top: 3px;
+    font-size: 0.7rem;
+}
+
+/* Table section header with inline toolbar */
+.ca-table-section { margin-bottom: 0; }
+.ca-table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.ca-table-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Collapsed context section */
+.ca-context-details {
+    margin: 16px 0 4px;
+}
+.ca-context-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(170,180,210,0.8);
+    list-style: none;
+    user-select: none;
+    transition: background 0.12s;
+}
+.ca-context-summary::-webkit-details-marker { display: none; }
+.ca-context-summary::before {
+    content: "▸";
+    font-size: 0.7rem;
+    color: rgba(140,155,180,0.5);
+    transition: transform 0.15s;
+}
+details[open] .ca-context-summary::before { content: "▾"; }
+.ca-context-summary:hover { background: rgba(255,255,255,0.055); }
+.ca-context-summary__hint {
+    font-size: 0.69rem;
+    font-weight: 400;
+    color: rgba(130,145,170,0.55);
+    margin-left: 4px;
+}
+.ca-context-details[open] .ca-context-summary {
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+}
+
+/* ─── GA4 Coverage & Blindspots ─────────────────────────────────────────── */
+
+.ga4-coverage {
+    margin: 20px 0 0;
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.025);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+}
+.ga4-coverage__header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.ga4-coverage__title {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(192,159,83,0.9);
+}
+.ga4-coverage__subtitle {
+    font-size: 0.72rem;
+    color: rgba(140,155,180,0.65);
+}
+.ga4-coverage__metrics {
+    display: flex;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.ga4-coverage__metric {
+    flex: 1;
+    min-width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 12px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    gap: 3px;
+}
+.ga4-coverage__metric:last-child { border-right: none; }
+.ga4-coverage__metric--dark { background: rgba(239,68,68,0.05); }
+.ga4-coverage__metric-value {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: rgba(235,240,255,0.95);
+    letter-spacing: -0.01em;
+}
+.ga4-coverage__metric--dark .ga4-coverage__metric-value {
+    color: rgba(239,68,68,0.85);
+}
+.ga4-coverage__metric-label {
+    font-size: 0.67rem;
+    color: rgba(140,155,180,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+/* Stacked bar */
+.ga4-coverage__bar-track {
+    position: relative;
+    height: 10px;
+    background: rgba(239,68,68,0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+.ga4-coverage__bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: linear-gradient(90deg, rgba(74,222,128,0.75), rgba(34,197,94,0.65));
+    border-radius: 6px;
+    transition: width 0.4s ease;
+    min-width: 2px;
+}
+.ga4-coverage__bar-legend {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 0.7rem;
+}
+.ga4-coverage__legend-consent::before {
+    content: "■";
+    color: rgba(74,222,128,0.75);
+    margin-right: 4px;
+}
+.ga4-coverage__legend-dark::before {
+    content: "■";
+    color: rgba(239,68,68,0.4);
+    margin-right: 4px;
+}
+.ga4-coverage__legend-consent { color: rgba(165,185,215,0.75); }
+.ga4-coverage__legend-dark    { color: rgba(165,185,215,0.75); }
+.ga4-coverage__note {
+    margin: 0;
+    font-size: 0.71rem;
+    color: rgba(130,145,170,0.6);
+    line-height: 1.5;
+}
+
+/* ─── GA4 Channel Cross-reference ───────────────────────────────────────── */
+
+.ga4-xref {
+    margin: 20px 0 0;
+    padding: 16px 20px 12px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+}
+.ga4-xref__header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+.ga4-xref__title {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(192,159,83,0.9);
+}
+.ga4-xref__subtitle {
+    font-size: 0.69rem;
+    color: rgba(130,145,170,0.55);
+}
+.ga4-xref__scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 10px;
+}
+.ga4-xref__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+}
+.ga4-xref__th {
+    padding: 6px 10px;
+    text-align: left;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(140,155,180,0.7);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    white-space: nowrap;
+}
+.ga4-xref__th--num { text-align: right; }
+.ga4-xref__td {
+    padding: 7px 10px;
+    color: rgba(215,225,245,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: middle;
+}
+.ga4-xref__td--num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.ga4-xref__td--channels {
+    font-size: 0.72rem;
+    color: rgba(180,195,225,0.7);
+    max-width: 220px;
+}
+.ga4-xref__row--blind {
+    background: rgba(239,68,68,0.04);
+}
+.ga4-xref__row--blind .ga4-xref__td { color: rgba(220,230,250,0.85); }
+.ga4-xref__blind-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(239,68,68,0.9);
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+.ga4-xref__no-match {
+    color: rgba(130,145,170,0.45);
+    font-style: italic;
+}
+.ga4-xref__cov--low  { color: rgba(239,68,68,0.85);  font-weight: 600; }
+.ga4-xref__cov--mid  { color: rgba(251,191,36,0.85); font-weight: 600; }
+.ga4-xref__cov--high { color: rgba(74,222,128,0.85); font-weight: 600; }
+.ga4-xref__note {
+    margin: 0;
+    font-size: 0.7rem;
+    color: rgba(120,135,160,0.55);
+    line-height: 1.5;
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/Reports/MarketingReport/MarketingReport.css"],"names":[],"mappings":"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,SAAS;IACT,oBAAoB;IACpB,gBAAgB;AACpB;AACA;IACI,aAAa;IACb,sBAAsB;IACtB,QAAQ;AACZ;AACA;IACI,OAAO;IACP,gBAAgB;AACpB;AACA;IACI,kBAAkB;IAClB,gBAAgB;IAChB,yBAAyB;IACzB,sBAAsB;IACtB,6BAA6B;AACjC;AACA;IACI,aAAa;IACb,QAAQ;IACR,qBAAqB;AACzB;;AAEA,iEAAiE;AACjE;IACI,aAAa;IACb,SAAS;IACT,uBAAuB;IACvB,SAAS;IACT,eAAe;AACnB;;AAEA,iEAAiE;AACjE;IACI,OAAO;IACP,gBAAgB;IAChB,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,MAAM;IACN,uBAAuB;IACvB,mBAAmB;IACnB,wCAAwC;IACxC,mCAAmC;AACvC;AACA;IACI,WAAW;IACX,gBAAgB;IAChB,kBAAkB;IAClB,kBAAkB;IAClB,mBAAmB;AACvB;AACA;IACI,iCAAiC;IACjC,uCAAuC;AAC3C;AACA;IACI,kCAAkC;IAClC,uCAAuC;AAC3C;AACA;IACI,iCAAiC;IACjC,uCAAuC;AAC3C;AACA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,cAAc;IACd,kBAAkB;IAClB,6BAA6B;AACjC;AACA;IACI,kBAAkB;IAClB,6BAA6B;AACjC;AACA;IACI,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,QAAQ;IACR,cAAc;AAClB;AACA;IACI,iBAAiB;IACjB,4BAA4B;AAChC;AACA;IACI,iBAAiB;IACjB,4BAA4B;AAChC;AACA;IACI,gBAAgB;IAChB,iBAAiB;IACjB,kBAAkB;IAClB,gCAAgC;IAChC,qCAAqC;IACrC,kBAAkB;IAClB,WAAW;IACX,gBAAgB;AACpB;AACA;IACI,iBAAiB;IACjB,gBAAgB;IAChB,4BAA4B;AAChC;AACA;IACI,kBAAkB;IAClB,4BAA4B;AAChC;;AAEA,iEAAiE;AACjE;IACI,gBAAgB;IAChB,aAAa;IACb,sBAAsB;IACtB,mBAAmB;IACnB,SAAS;IACT,kBAAkB;IAClB,mBAAmB;IACnB,wCAAwC;IACxC,m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","sourcesContent":[".marketing-report-page {\n    padding-bottom: 48px;\n}\n\n.marketing-report-hero {\n    margin: 0 0 20px;\n}\n\n.marketing-report-hero h1 {\n    margin: 0 0 8px;\n    font-size: 1.35rem;\n    font-weight: 600;\n    color: rgb(240, 240, 240);\n}\n\n.marketing-report-hero p,\n.marketing-report-hero__lede {\n    margin: 0;\n    max-width: 52rem;\n    font-size: 0.875rem;\n    line-height: 1.55;\n    color: rgba(200, 200, 205, 0.9);\n}\n\n.marketing-report-section {\n    margin-bottom: 28px;\n}\n\n.marketing-report-section__title {\n    margin: 0 0 6px;\n    font-size: 0.78rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.92);\n}\n\n.marketing-report-section__hint {\n    margin: 0 0 14px;\n    max-width: 44rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n}\n\n.marketing-highlights {\n    margin-bottom: 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.1) 0%, rgba(0, 0, 0, 0.2) 55%);\n}\n\n.marketing-highlights__h2 {\n    margin-bottom: 10px;\n}\n\n.marketing-highlights__eyebrow {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-highlights__headline {\n    margin: 0 0 8px;\n    font-size: 1.2rem;\n    font-weight: 600;\n    line-height: 1.35;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-highlights__sub {\n    margin: 0 0 16px;\n    max-width: 44rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(185, 185, 192, 0.92);\n}\n\n.marketing-highlights__list {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n    display: grid;\n    gap: 10px;\n}\n\n.marketing-highlights__item {\n    margin: 0;\n    padding: 12px 14px 12px 16px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.22);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    border-left-width: 3px;\n}\n\n.marketing-highlights__item--spotlight {\n    border-left-color: rgba(192, 159, 83, 0.95);\n}\n\n.marketing-highlights__item--win {\n    border-left-color: rgba(110, 185, 130, 0.9);\n}\n\n.marketing-highlights__item--watch {\n    border-left-color: rgba(220, 145, 115, 0.9);\n}\n\n.marketing-highlights__item--data {\n    border-left-color: rgba(140, 155, 190, 0.75);\n}\n\n.marketing-highlights__item-title {\n    display: block;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    color: rgba(210, 205, 195, 0.95);\n    margin-bottom: 6px;\n}\n\n.marketing-highlights__item-body {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(225, 225, 228, 0.94);\n}\n\n.marketing-report-banner {\n    margin-bottom: 20px;\n    padding: 12px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.28);\n    background: rgba(192, 159, 83, 0.08);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(230, 225, 210, 0.95);\n}\n\n.marketing-report-summary {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));\n    gap: 12px;\n    margin-bottom: 22px;\n}\n\n.marketing-report-kpi {\n    padding: 14px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.marketing-report-kpi__label {\n    display: block;\n    font-size: 0.65rem;\n    font-weight: 600;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n    margin-bottom: 6px;\n}\n\n.marketing-report-kpi__hint {\n    margin: 6px 0 0;\n    font-size: 0.7rem;\n    line-height: 1.4;\n    color: rgba(155, 155, 165, 0.95);\n    font-weight: 400;\n}\n\n.marketing-report-kpi__value {\n    font-size: 1.15rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: #f4f4f4;\n}\n\n.marketing-report-toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    margin-bottom: 12px;\n}\n\n.marketing-report-toolbar__left {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n}\n\n.marketing-report-toolbar__placeholder {\n    flex: 0 0 auto;\n    min-width: 1px;\n}\n\n.marketing-report-back {\n    flex: 0 0 auto;\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.1);\n    color: rgba(230, 220, 195, 0.98);\n    font-size: 0.8125rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-back:hover {\n    background: rgba(192, 159, 83, 0.18);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.marketing-report-toolbar__meta {\n    margin-left: auto;\n    font-size: 0.78rem;\n    color: rgba(180, 180, 188, 0.9);\n    text-align: right;\n}\n\n.marketing-report-export {\n    margin: 0;\n    padding: 6px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: rgba(230, 230, 232, 0.96);\n    font-size: 0.78rem;\n    font-weight: 500;\n    cursor: pointer;\n}\n\n.marketing-report-export:hover {\n    background: rgba(255, 255, 255, 0.1);\n    border-color: rgba(255, 255, 255, 0.22);\n}\n\n.marketing-report-export--secondary {\n    border-color: rgba(192, 159, 83, 0.22);\n    background: rgba(192, 159, 83, 0.06);\n    color: rgba(230, 220, 200, 0.95);\n}\n\n.marketing-report-export--secondary:hover {\n    background: rgba(192, 159, 83, 0.12);\n    border-color: rgba(192, 159, 83, 0.35);\n}\n\n.marketing-report-drill-title {\n    margin: 0 0 12px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-report-table-wrap {\n    overflow-x: auto;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.18);\n}\n\n.marketing-report-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.8125rem;\n}\n\n.marketing-report-table th,\n.marketing-report-table td {\n    padding: 10px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.92);\n    white-space: nowrap;\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.marketing-report-table td {\n    color: rgba(230, 230, 232, 0.95);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-report-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.marketing-report-table__row--clickable {\n    cursor: pointer;\n}\n\n.marketing-report-table__row--clickable:hover td {\n    background: rgba(192, 159, 83, 0.07);\n}\n\n.marketing-report-table__row--clickable:focus {\n    outline: none;\n}\n\n.marketing-report-table__row--clickable:focus-visible td:first-child {\n    box-shadow: inset 3px 0 0 0 rgba(192, 159, 83, 0.85);\n}\n\n.marketing-report-channel-cell {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 10px;\n}\n\n.marketing-report-channel-cell__label {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-report-channel-cell__chevron {\n    flex-shrink: 0;\n    font-size: 0.9rem;\n    color: rgba(192, 159, 83, 0.75);\n}\n\n.marketing-report-table__empty-row {\n    text-align: center;\n    font-variant-numeric: normal;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-table--with-choices {\n    font-size: 0.78rem;\n}\n\n.marketing-report-table__col-choice {\n    min-width: 6.75rem;\n    max-width: 9.5rem;\n    white-space: normal;\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    line-height: 1.35;\n}\n\n.marketing-report-table th.marketing-report-table__col-choice {\n    text-align: right;\n    white-space: normal;\n    line-height: 1.25;\n}\n\n.marketing-report-footnote {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.92);\n}\n\n.marketing-report-table__col-channel {\n    min-width: 10.5rem;\n    max-width: 14rem;\n    white-space: normal;\n}\n\n.marketing-report-table__col-campaign {\n    min-width: 12rem;\n    max-width: 28rem;\n    white-space: normal;\n    word-break: break-word;\n    font-variant-numeric: normal;\n}\n\n.marketing-report-table__col-num {\n    width: 1%;\n    white-space: nowrap;\n    text-align: right;\n}\n\n.marketing-report-table th.marketing-report-table__col-num {\n    text-align: right;\n}\n\n.marketing-report-th-inner {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    width: 100%;\n    justify-content: flex-start;\n}\n\n.marketing-report-table th.marketing-report-table__col-num .marketing-report-th-inner,\n.marketing-report-table th.marketing-report-table__col-choice .marketing-report-th-inner {\n    justify-content: flex-end;\n}\n\n.marketing-report-th-label {\n    min-width: 0;\n}\n\n.marketing-report-col-sort {\n    flex-shrink: 0;\n    margin: 0;\n    padding: 2px 6px;\n    border-radius: 6px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.2);\n    color: rgba(175, 175, 185, 0.95);\n    font-size: 0.65rem;\n    font-weight: 600;\n    font-variant-numeric: tabular-nums;\n    letter-spacing: 0.02em;\n    line-height: 1.2;\n    cursor: pointer;\n}\n\n.marketing-report-col-sort:hover {\n    border-color: rgba(192, 159, 83, 0.45);\n    color: rgba(235, 228, 210, 0.98);\n    background: rgba(192, 159, 83, 0.1);\n}\n\n.marketing-report-col-sort--active {\n    border-color: rgba(192, 159, 83, 0.55);\n    color: rgba(240, 232, 210, 0.98);\n    background: rgba(192, 159, 83, 0.14);\n}\n\n.marketing-report-empty {\n    padding: 28px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 188, 0.88);\n}\n\n.marketing-report-error {\n    padding: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 120, 120, 0.35);\n    background: rgba(80, 20, 20, 0.25);\n    color: rgba(255, 200, 200, 0.95);\n    font-size: 0.875rem;\n    margin-bottom: 16px;\n}\n\n.marketing-report-code {\n    margin-top: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    font-size: 0.72rem;\n    overflow-x: auto;\n    color: rgba(220, 220, 225, 0.9);\n}\n\n.marketing-context {\n    margin-bottom: 18px;\n    padding: 14px 16px 16px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context--empty {\n    border-style: dashed;\n    border-color: rgba(255, 255, 255, 0.1);\n}\n\n.marketing-context__title {\n    margin: 0 0 6px;\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(235, 232, 225, 0.98);\n}\n\n.marketing-context__lede {\n    margin: 0 0 14px;\n    max-width: 48rem;\n    font-size: 0.75rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.92);\n}\n\n.marketing-context__empty-note {\n    margin: 0;\n    max-width: 48rem;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-context__empty-note code {\n    font-size: 0.72rem;\n    color: rgba(210, 195, 160, 0.95);\n}\n\n.marketing-context__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));\n    gap: 16px;\n    align-items: start;\n}\n\n.marketing-context__block-title {\n    margin: 0 0 8px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.88);\n}\n\n.marketing-context__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.72rem;\n}\n\n.marketing-context__table th,\n.marketing-context__table td {\n    padding: 6px 8px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: top;\n}\n\n.marketing-context__table th {\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.85);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.marketing-context__label {\n    word-break: break-word;\n    font-variant-numeric: normal;\n    color: rgba(230, 230, 232, 0.95);\n}\n\n.marketing-context__num {\n    text-align: right;\n    white-space: nowrap;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-context__split {\n    font-size: 0.68rem;\n    line-height: 1.35;\n    color: rgba(195, 195, 200, 0.9);\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-compare-banner {\n    margin: 12px 0 0;\n    max-width: 52rem;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(210, 200, 175, 0.95);\n}\n\n.marketing-report-compare-warning {\n    margin: 10px 0 0;\n    max-width: 52rem;\n    padding: 10px 12px;\n    border-radius: 8px;\n    border: 1px solid rgba(220, 150, 100, 0.35);\n    background: rgba(60, 30, 15, 0.35);\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(255, 210, 185, 0.96);\n}\n\n.marketing-report-kpi__compare {\n    display: block;\n    margin-top: 6px;\n    font-size: 0.72rem;\n    font-weight: 500;\n    line-height: 1.35;\n}\n\n.marketing-report-cell-stack {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-end;\n    gap: 3px;\n}\n\n.marketing-report-table__col-campaign .marketing-report-cell-stack {\n    align-items: flex-start;\n}\n\n.marketing-report-cell-stack__primary {\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-cell-stack__compare {\n    font-size: 0.68rem;\n    line-height: 1.25;\n    font-variant-numeric: tabular-nums;\n}\n\n.marketing-report-delta {\n    font-weight: 600;\n    letter-spacing: 0.01em;\n}\n\n.marketing-report-delta--up {\n    color: rgba(130, 205, 155, 0.95);\n}\n\n.marketing-report-delta--down {\n    color: rgba(235, 145, 125, 0.95);\n}\n\n.marketing-report-delta--flat {\n    color: rgba(175, 175, 185, 0.9);\n}\n\n.marketing-report-delta--new {\n    font-weight: 500;\n    color: rgba(160, 185, 220, 0.92);\n}\n\n/*\n * Marketing dashboard chart strip.\n *\n * The overview view shows two cards side-by-side (choice mix donut +\n * channels bar). The channel drill-down shows five cards: a wide one for\n * \"top campaigns\" and four half-width for mix, acceptance %, countries,\n * and paths. On narrow screens everything collapses to a single column.\n */\n.marketing-charts {\n    margin-bottom: 28px;\n}\n\n.marketing-charts__grid {\n    display: grid;\n    gap: 16px;\n}\n\n.marketing-charts__grid--two-up {\n    grid-template-columns: repeat(2, minmax(0, 1fr));\n}\n\n.marketing-charts__grid--three-up {\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__grid--three-up {\n        grid-template-columns: repeat(2, minmax(0, 1fr));\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__grid--two-up,\n    .marketing-charts__grid--three-up {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-charts__card {\n    display: flex;\n    flex-direction: column;\n    min-height: 280px;\n    padding: 14px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.18);\n    background: linear-gradient(155deg, rgba(192, 159, 83, 0.06) 0%, rgba(0, 0, 0, 0.22) 60%);\n}\n\n.marketing-charts__card--wide {\n    grid-column: span 2;\n}\n\n@media (max-width: 1200px) {\n    .marketing-charts__card--wide {\n        grid-column: span 2;\n    }\n}\n\n@media (max-width: 820px) {\n    .marketing-charts__card--wide {\n        grid-column: span 1;\n    }\n}\n\n.marketing-charts__card-header {\n    margin-bottom: 8px;\n}\n\n.marketing-charts__card-title {\n    margin: 0 0 4px;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(245, 243, 238, 0.96);\n}\n\n.marketing-charts__card-sub {\n    margin: 0;\n    font-size: 0.74rem;\n    line-height: 1.4;\n    color: rgba(170, 170, 180, 0.9);\n}\n\n.marketing-charts__card-body {\n    flex: 1;\n    min-height: 220px;\n    position: relative;\n}\n\n/*\n * AnyChart's pie/bar containers need an explicit height; the inner chart\n * renders into a block element inside <div class=\"chart\">.\n */\n.marketing-charts__card-body .widget {\n    height: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__card-body .chart {\n    width: 100%;\n    min-height: 220px;\n}\n\n.marketing-charts__empty {\n    margin: 0;\n    padding: 18px 14px;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.88);\n    border-radius: 10px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px dashed rgba(192, 159, 83, 0.24);\n}\n\n.marketing-charts__card--timeseries {\n    margin-top: 0;\n}\n\n.marketing-charts__card-body--tall {\n    min-height: 350px;\n}\n\n.marketing-charts__card-body--tall .widget,\n.marketing-charts__card-body--tall .chart {\n    min-height: 350px;\n}\n\n/*\n * --- Visibility reframe --------------------------------------------------\n *\n * The \"analytics-invisible traffic\" narrative and supporting cues.\n * Color palette stays in the platform gold/amber family so the warning\n * reads as \"pay attention\" rather than \"something is broken\" — this is a\n * product-level insight, not an error state.\n */\n\n.marketing-report-visibility-narrative {\n    margin: 4px 0 16px;\n    padding: 12px 14px 13px;\n    max-width: 62rem;\n    font-size: 0.85rem;\n    line-height: 1.55;\n    color: rgba(240, 230, 205, 0.95);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.25) 65%);\n    border: 1px solid rgba(210, 165, 80, 0.28);\n    border-left: 3px solid rgba(210, 165, 80, 0.82);\n    border-radius: 10px;\n}\n\n.marketing-report-visibility-narrative strong {\n    color: rgba(255, 235, 195, 1);\n    font-weight: 600;\n}\n\n.marketing-report-kpi--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(155deg, rgba(210, 165, 80, 0.12) 0%, rgba(0, 0, 0, 0.24) 60%);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__label {\n    color: rgba(235, 205, 145, 0.92);\n}\n\n.marketing-report-kpi--warn .marketing-report-kpi__value {\n    color: rgba(255, 235, 195, 1);\n}\n\n/*\n * Per-row \"analytics blind spot\" highlight.\n *\n * A faint amber tint + a thick leading border drawn via a box-shadow\n * inset so it doesn't shift row layout. The badge sits next to the\n * campaign / channel name in lowercase to read as a label, not a button.\n */\n\n.marketing-report-table__row--blind-spot {\n    background: rgba(210, 165, 80, 0.06);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.6);\n}\n\n.marketing-report-table__row--blind-spot.marketing-report-table__row--clickable:hover,\n.marketing-report-table__row--blind-spot:hover {\n    background: rgba(210, 165, 80, 0.12);\n}\n\n.marketing-report-blind-spot-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 2px 8px;\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n/*\n * --- Channels table pagination -----------------------------------------\n *\n * Compact pager shown under the overview table so the list never grows\n * past ten rows. Prev/Next buttons sit to either side of the numbered\n * pages; ellipsis gaps compress long page lists. Meta text reports the\n * window so totals stay visible without the user opening the CSV export.\n */\n\n.marketing-report-pagination {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: center;\n    gap: 6px 10px;\n    margin-top: 14px;\n    padding: 18px 8px 14px;\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-report-pagination__btn {\n    padding: 7px 12px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-report-pagination__btn:hover:not(:disabled) {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.08);\n}\n\n.marketing-report-pagination__btn:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__btn:disabled {\n    opacity: 0.38;\n    cursor: not-allowed;\n}\n\n.marketing-report-pagination__pages {\n    display: flex;\n    gap: 4px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-report-pagination__page {\n    min-width: 34px;\n    padding: 7px 10px;\n    font-size: 0.8rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.88);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 7px;\n    cursor: pointer;\n    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;\n}\n\n.marketing-report-pagination__page:hover {\n    background: rgba(255, 255, 255, 0.04);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-report-pagination__page:focus-visible {\n    outline: 2px solid rgba(210, 165, 80, 0.7);\n    outline-offset: 2px;\n}\n\n.marketing-report-pagination__page--active,\n.marketing-report-pagination__page--active:hover {\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, rgba(216, 181, 106, 0.96) 0%, rgba(184, 141, 60, 0.96) 100%);\n    border-color: rgba(192, 159, 83, 0.65);\n    font-weight: 600;\n    cursor: default;\n}\n\n.marketing-report-pagination__gap {\n    padding: 7px 2px;\n    color: rgba(160, 160, 170, 0.7);\n    -webkit-user-select: none;\n    user-select: none;\n}\n\n.marketing-report-pagination__meta {\n    flex-basis: 100%;\n    margin-top: 2px;\n    font-size: 0.76rem;\n    line-height: 1.4;\n    color: rgba(180, 180, 190, 0.86);\n    text-align: center;\n}\n\n.marketing-report-pagination__meta strong {\n    color: rgba(230, 230, 235, 0.95);\n    font-weight: 600;\n}\n\n@media (min-width: 720px) {\n    .marketing-report-pagination__meta {\n        flex-basis: auto;\n        margin-top: 0;\n        margin-left: 12px;\n        text-align: left;\n    }\n}\n\n/*\n * --- Ad-platform reconciliation panel ----------------------------------\n *\n * Sits between the KPI grid and the chart strip. Inputs stack responsively;\n * result cards flow in a 3–4 column grid on wide screens, collapsing to a\n * single column on phones. The \"good\" and \"warn\" tones match the rest of\n * the dashboard's palette (green accents for visibility, gold/amber for the\n * invisible-gap card).\n */\n\n.marketing-reconciliation {\n    margin: 0 0 28px;\n    padding: 18px 18px 20px;\n    border-radius: 14px;\n    border: 1px solid rgba(192, 159, 83, 0.24);\n    background: linear-gradient(\n        155deg,\n        rgba(192, 159, 83, 0.08) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n}\n\n.marketing-reconciliation__header {\n    margin-bottom: 14px;\n}\n\n.marketing-reconciliation__inputs {\n    display: grid;\n    grid-template-columns: 1.2fr 1fr 1fr auto;\n    gap: 12px 14px;\n    align-items: end;\n    margin-bottom: 8px;\n}\n\n@media (max-width: 900px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr 1fr;\n    }\n}\n\n@media (max-width: 540px) {\n    .marketing-reconciliation__inputs {\n        grid-template-columns: 1fr;\n    }\n}\n\n.marketing-reconciliation__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__field-label {\n    font-size: 0.74rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.86);\n}\n\n.marketing-reconciliation__input,\n.marketing-reconciliation__select {\n    width: 100%;\n    height: 38px;\n    padding: 0 11px;\n    box-sizing: border-box;\n    font-size: 0.88rem;\n    font-family: inherit;\n    color: rgba(245, 243, 238, 0.98);\n    background: rgba(0, 0, 0, 0.28);\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 8px;\n    outline: none;\n    transition:\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__select {\n    -webkit-appearance: none;\n    appearance: none;\n    padding-right: 28px;\n    background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(180,185,200,0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E\");\n    background-repeat: no-repeat;\n    background-position: right 9px center;\n    cursor: pointer;\n}\n\n.marketing-reconciliation__input:focus,\n.marketing-reconciliation__select:focus {\n    border-color: rgba(192, 159, 83, 0.6);\n    background: rgba(0, 0, 0, 0.38);\n}\n\n.marketing-reconciliation__money {\n    display: flex;\n    gap: 6px;\n    min-width: 0;\n}\n\n.marketing-reconciliation__input--money {\n    flex: 1;\n    min-width: 0;\n}\n\n.marketing-reconciliation__select--currency {\n    flex: 0 0 auto;\n    width: 88px;\n}\n\n.marketing-reconciliation__actions {\n    display: flex;\n    justify-content: flex-end;\n    align-items: flex-end;\n}\n\n.marketing-reconciliation__clear {\n    padding: 9px 14px;\n    font-size: 0.82rem;\n    font-family: inherit;\n    color: rgba(215, 215, 220, 0.94);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.18);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease;\n}\n\n.marketing-reconciliation__clear:hover {\n    border-color: rgba(210, 165, 80, 0.5);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__window-hint {\n    margin: 2px 0 16px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(160, 160, 170, 0.88);\n}\n\n.marketing-reconciliation__empty {\n    padding: 18px 16px;\n    font-size: 0.88rem;\n    line-height: 1.55;\n    color: rgba(185, 185, 195, 0.92);\n    border: 1px dashed rgba(192, 159, 83, 0.28);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.12);\n}\n\n.marketing-reconciliation__empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n/*\n * Result grid: 4-up on wide desktops (three reconciliation cards + cost\n * card when spend is entered), graceful fallback to 2-up and 1-up.\n */\n.marketing-reconciliation__results {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));\n    gap: 12px;\n    margin-top: 4px;\n}\n\n.marketing-reconciliation__result {\n    padding: 14px 14px 15px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(255, 255, 255, 0.035);\n}\n\n.marketing-reconciliation__result--good {\n    border-color: rgba(140, 200, 130, 0.35);\n    background: linear-gradient(\n        155deg,\n        rgba(140, 200, 130, 0.12) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result--warn {\n    border-color: rgba(210, 165, 80, 0.45);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.14) 0%,\n        rgba(0, 0, 0, 0.25) 60%\n    );\n}\n\n.marketing-reconciliation__result-title {\n    margin: 0 0 6px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(195, 195, 205, 0.92);\n}\n\n.marketing-reconciliation__result--good .marketing-reconciliation__result-title {\n    color: rgba(175, 220, 165, 0.95);\n}\n\n.marketing-reconciliation__result--warn .marketing-reconciliation__result-title {\n    color: rgba(235, 200, 140, 0.95);\n}\n\n.marketing-reconciliation__result-headline {\n    margin: 0 0 6px;\n    font-size: 1.3rem;\n    font-weight: 600;\n    line-height: 1.25;\n    color: rgba(245, 243, 238, 0.98);\n}\n\n.marketing-reconciliation__result-detail {\n    margin: 0;\n    font-size: 0.82rem;\n    line-height: 1.5;\n    color: rgba(195, 195, 205, 0.9);\n}\n\n.marketing-reconciliation__result-sub {\n    margin: 8px 0 0;\n    padding-top: 8px;\n    font-size: 0.76rem;\n    line-height: 1.5;\n    color: rgba(170, 170, 180, 0.86);\n    border-top: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n/*\n * --- Reconciliation: save / snapshots --------------------------------\n *\n * The save button shares the actions slot with \"Clear inputs\" and gets\n * the gold accent treatment so it reads as the primary CTA. The\n * snapshots list is a collapsible details-style block with a compact\n * table — wide enough to be useful, narrow enough not to dominate.\n */\n\n.marketing-reconciliation__actions {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n    align-items: stretch;\n}\n\n@media (min-width: 901px) {\n    .marketing-reconciliation__actions {\n        flex-direction: row;\n        align-items: flex-end;\n        justify-content: flex-end;\n    }\n}\n\n.marketing-reconciliation__save {\n    padding: 9px 16px;\n    font-size: 0.84rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(155deg, #d8b56a 0%, #b88d3c 100%);\n    border: 1px solid rgba(192, 159, 83, 0.7);\n    border-radius: 8px;\n    cursor: pointer;\n    transition:\n        transform 80ms ease,\n        box-shadow 120ms ease,\n        opacity 120ms ease;\n}\n\n.marketing-reconciliation__save:hover:not(:disabled) {\n    transform: translateY(-1px);\n    box-shadow: 0 6px 14px -8px rgba(210, 165, 80, 0.6);\n}\n\n.marketing-reconciliation__save:disabled {\n    cursor: not-allowed;\n    opacity: 0.45;\n}\n\n.marketing-reconciliation__snapshots {\n    margin-top: 20px;\n    padding: 18px 22px;\n    background: rgba(255,255,255,0.028);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n}\n\n.marketing-reconciliation__snapshots-bar {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n\n.marketing-reconciliation__snapshots-toggle {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    padding: 7px 10px 7px 6px;\n    margin-left: -6px;\n    font-size: 0.86rem;\n    font-weight: 600;\n    font-family: inherit;\n    color: rgba(235, 233, 228, 0.96);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 8px;\n    cursor: pointer;\n    transition: background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-toggle:hover {\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-reconciliation__snapshots-count {\n    display: inline-flex;\n    min-width: 22px;\n    height: 22px;\n    padding: 0 7px;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.74rem;\n    font-weight: 600;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n}\n\n.marketing-reconciliation__snapshots-actions {\n    display: inline-flex;\n    gap: 8px;\n}\n\n.marketing-reconciliation__snapshots-export,\n.marketing-reconciliation__snapshots-clear {\n    padding: 7px 12px;\n    font-size: 0.78rem;\n    font-family: inherit;\n    color: rgba(225, 225, 230, 0.94);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.16);\n    border-radius: 7px;\n    cursor: pointer;\n    transition:\n        border-color 120ms ease,\n        color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-export:hover {\n    border-color: rgba(210, 165, 80, 0.55);\n    color: rgba(255, 225, 170, 0.98);\n}\n\n.marketing-reconciliation__snapshots-clear:hover {\n    border-color: rgba(220, 110, 110, 0.55);\n    color: rgba(245, 175, 175, 0.98);\n}\n\n.marketing-reconciliation__snapshots-empty {\n    margin: 14px 0 0;\n    padding: 14px 14px;\n    font-size: 0.84rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.9);\n    border: 1px dashed rgba(255, 255, 255, 0.12);\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.1);\n}\n\n.marketing-reconciliation__snapshots-empty strong {\n    color: rgba(245, 243, 238, 0.98);\n    font-weight: 600;\n}\n\n.marketing-reconciliation__snapshots-table-wrap {\n    margin-top: 14px;\n    overflow-x: auto;\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__snapshots-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n    color: rgba(225, 225, 230, 0.94);\n}\n\n.marketing-reconciliation__snapshots-table thead th {\n    padding: 9px 10px;\n    text-align: left;\n    font-size: 0.7rem;\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(180, 180, 190, 0.92);\n    background: rgba(255, 255, 255, 0.03);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-table tbody td {\n    padding: 9px 10px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.05);\n    vertical-align: top;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__snapshots-table tbody tr:hover {\n    background: rgba(255, 255, 255, 0.025);\n}\n\n.marketing-reconciliation__snapshots-table .num {\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__snapshots-metric,\n.marketing-reconciliation__snapshots-sub {\n    color: rgba(160, 160, 170, 0.86);\n    font-size: 0.74rem;\n}\n\n.marketing-reconciliation__snapshots-delete {\n    padding: 2px 8px;\n    font-size: 1rem;\n    line-height: 1;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.7);\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: 6px;\n    cursor: pointer;\n    transition:\n        color 120ms ease,\n        border-color 120ms ease,\n        background 120ms ease;\n}\n\n.marketing-reconciliation__snapshots-delete:hover {\n    color: rgba(245, 175, 175, 0.98);\n    border-color: rgba(220, 110, 110, 0.45);\n    background: rgba(220, 110, 110, 0.08);\n}\n\n/*\n * --- Reconciliation: over-count & caption ----------------------------\n *\n * \"Over-count\" = the scope's attributed consents exceed the reported\n * clicks/sessions from the ad platform (multi-session visits, pre-\n * consented returns, UTM-tagged URLs shared beyond the ad). The row is\n * lightly tinted amber, the Reported cell carries a compact badge, and\n * the in-cell share label is capped at \"100%+\" so the math stays\n * readable.\n */\n.marketing-reconciliation__snapshots-caption {\n    margin: 0 0 10px;\n    font-size: 0.78rem;\n    line-height: 1.55;\n    color: rgba(180, 180, 190, 0.86);\n}\n\n.marketing-reconciliation__over-count-badge {\n    display: inline-flex;\n    align-items: center;\n    margin-left: 8px;\n    padding: 1px 7px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.03em;\n    text-transform: lowercase;\n    color: rgba(255, 225, 170, 0.98);\n    background: rgba(210, 165, 80, 0.18);\n    border: 1px solid rgba(210, 165, 80, 0.45);\n    border-radius: 999px;\n    vertical-align: middle;\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__over-count-badge--inline {\n    margin: 0 4px;\n}\n\n.marketing-reconciliation__snapshots-row--overcount {\n    background: rgba(210, 165, 80, 0.05);\n    box-shadow: inset 3px 0 0 0 rgba(210, 165, 80, 0.45);\n}\n\n.marketing-reconciliation__snapshots-row--overcount:hover {\n    background: rgba(210, 165, 80, 0.09);\n}\n\n/*\n * --- Reconciliation: platform filter note ----------------------------\n *\n * The filter note sits between the inputs and the result cards. When\n * the filter is active and matched, it shows the coverage + matched\n * utm_source values. When active and empty, it swaps to a warn tone\n * prompting the user to fix their UTM tagging or switch to \"Other\".\n */\n\n.marketing-reconciliation__filter-note {\n    margin: 0 0 14px;\n    padding: 10px 14px;\n    font-size: 0.82rem;\n    line-height: 1.55;\n    color: rgba(215, 215, 220, 0.92);\n    background: rgba(0, 0, 0, 0.18);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__filter-note p {\n    margin: 0;\n}\n\n.marketing-reconciliation__filter-note code {\n    padding: 1px 6px;\n    font-size: 0.78rem;\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.1);\n    border: 1px solid rgba(210, 165, 80, 0.25);\n    border-radius: 5px;\n}\n\n.marketing-reconciliation__filter-note--empty {\n    color: rgba(245, 210, 170, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 130, 80, 0.15) 0%,\n        rgba(0, 0, 0, 0.22) 65%\n    );\n    border-color: rgba(220, 140, 90, 0.45);\n}\n\n/*\n * --- Suggestions strip ------------------------------------------------\n *\n * Sits between the KPI grid and the reconciliation panel. Visually quieter\n * than the KPI cards (no large numbers) so it reads as a *next move*\n * footnote, not as another metric. Severity is encoded in (1) a chip in\n * the card head, (2) a coloured left border, and (3) a faint background\n * tint — three independent cues so colour-blind readers still see the\n * priority distinction.\n */\n\n.marketing-suggestions {\n    margin: 0 0 28px;\n    padding: 16px 18px 18px;\n    border-radius: 14px;\n    background: linear-gradient(\n        155deg,\n        rgba(255, 255, 255, 0.03) 0%,\n        rgba(255, 255, 255, 0.01) 100%\n    );\n    border: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-suggestions__head {\n    margin: 0 0 12px;\n}\n\n.marketing-suggestions__title {\n    margin: 0;\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.95);\n}\n\n.marketing-suggestions__hint {\n    margin: 4px 0 0;\n    font-size: 0.78rem;\n    line-height: 1.45;\n    color: rgba(165, 165, 175, 0.9);\n    max-width: 56rem;\n}\n\n.marketing-suggestions__list {\n    display: grid;\n    gap: 10px;\n    list-style: none;\n    margin: 0;\n    padding: 0;\n}\n\n.marketing-suggestions__card {\n    position: relative;\n    padding: 14px 16px 14px 18px;\n    background: rgba(255, 255, 255, 0.025);\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    border-radius: 10px;\n    border-left-width: 3px;\n}\n\n.marketing-suggestions__card--critical {\n    border-left-color: rgba(232, 95, 95, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(232, 95, 95, 0.08) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--high {\n    border-left-color: rgba(210, 165, 80, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(210, 165, 80, 0.07) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--medium {\n    border-left-color: rgba(130, 175, 220, 0.85);\n    background: linear-gradient(\n        155deg,\n        rgba(130, 175, 220, 0.05) 0%,\n        rgba(255, 255, 255, 0.015) 70%\n    );\n}\n\n.marketing-suggestions__card--low {\n    border-left-color: rgba(160, 160, 170, 0.6);\n}\n\n.marketing-suggestions__card-head {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 6px;\n}\n\n.marketing-suggestions__severity {\n    display: inline-flex;\n    align-items: center;\n    padding: 2px 8px;\n    font-size: 0.66rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    border-radius: 999px;\n    border: 1px solid currentColor;\n    line-height: 1.4;\n}\n\n.marketing-suggestions__severity--critical {\n    color: rgba(255, 180, 180, 0.95);\n    background: rgba(232, 95, 95, 0.12);\n}\n\n.marketing-suggestions__severity--high {\n    color: rgba(255, 225, 170, 0.95);\n    background: rgba(210, 165, 80, 0.14);\n}\n\n.marketing-suggestions__severity--medium {\n    color: rgba(190, 220, 245, 0.95);\n    background: rgba(130, 175, 220, 0.12);\n}\n\n.marketing-suggestions__severity--low {\n    color: rgba(200, 200, 210, 0.85);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__card-title {\n    margin: 0;\n    font-size: 0.92rem;\n    font-weight: 600;\n    color: rgba(240, 232, 210, 0.96);\n    line-height: 1.35;\n}\n\n.marketing-suggestions__card-body {\n    margin: 0 0 10px;\n    font-size: 0.84rem;\n    line-height: 1.5;\n    color: rgba(200, 200, 210, 0.92);\n}\n\n.marketing-suggestions__card-actions {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 8px 12px;\n}\n\n.marketing-suggestions__cta {\n    display: inline-flex;\n    align-items: center;\n    padding: 7px 14px;\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(20, 18, 12, 0.96);\n    background: linear-gradient(\n        155deg,\n        rgba(216, 181, 106, 0.96) 0%,\n        rgba(184, 141, 60, 0.96) 100%\n    );\n    border-radius: 7px;\n    text-decoration: none;\n    transition: filter 120ms ease, transform 120ms ease;\n}\n\n.marketing-suggestions__cta:hover,\n.marketing-suggestions__cta:focus-visible {\n    filter: brightness(1.07);\n    text-decoration: none;\n}\n\n.marketing-suggestions__cta:focus-visible {\n    outline: 2px solid rgba(255, 225, 170, 0.85);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__snooze {\n    padding: 6px 10px;\n    font-size: 0.76rem;\n    font-family: inherit;\n    color: rgba(200, 200, 210, 0.86);\n    background: transparent;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 7px;\n    cursor: pointer;\n    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;\n}\n\n.marketing-suggestions__snooze:hover,\n.marketing-suggestions__snooze:focus-visible {\n    border-color: rgba(255, 255, 255, 0.32);\n    color: rgba(240, 240, 245, 0.96);\n    background: rgba(255, 255, 255, 0.04);\n}\n\n.marketing-suggestions__snooze:focus-visible {\n    outline: 2px solid rgba(160, 160, 170, 0.6);\n    outline-offset: 2px;\n}\n\n.marketing-suggestions__evidence {\n    margin-top: 10px;\n    font-size: 0.76rem;\n    color: rgba(160, 160, 170, 0.9);\n}\n\n.marketing-suggestions__evidence summary {\n    cursor: pointer;\n    -webkit-user-select: none;\n    user-select: none;\n    color: rgba(180, 180, 190, 0.86);\n    transition: color 120ms ease;\n}\n\n.marketing-suggestions__evidence summary:hover {\n    color: rgba(220, 220, 230, 0.96);\n}\n\n.marketing-suggestions__evidence ul {\n    margin: 8px 0 0;\n    padding: 0 0 0 18px;\n    line-height: 1.55;\n}\n\n.marketing-suggestions__evidence code {\n    padding: 1px 6px;\n    font-size: 0.74rem;\n    color: rgba(220, 220, 230, 0.92);\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 4px;\n}\n\n@media (min-width: 720px) {\n    .marketing-suggestions__card-head {\n        flex-wrap: nowrap;\n    }\n}\n\n/* ── Ad Reconciliation CTA (in Channel Analytics) ─────────────────────── */\n.marketing-reconciliation-cta {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    padding: 18px 24px;\n    margin: 32px 0;\n    background: rgba(255, 255, 255, 0.04);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation-cta__text {\n    margin: 0;\n    color: rgba(220, 220, 230, 0.75);\n    font-size: 0.9rem;\n}\n\n.marketing-reconciliation-cta__link {\n    white-space: nowrap;\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-cta__link:hover {\n    text-decoration: underline;\n}\n\n/* ── Reconcile page channel filter ────────────────────────────────────── */\n.marketing-reconciliation-page__channel-filter {\n    margin-bottom: 24px;\n}\n\n.marketing-reconciliation-page__channel-label {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    font-size: 0.88rem;\n    color: rgba(220, 220, 230, 0.8);\n}\n\n.marketing-reconciliation-page__back-link {\n    color: #7c9ff5;\n    text-decoration: none;\n}\n\n.marketing-reconciliation-page__back-link:hover {\n    text-decoration: underline;\n}\n\n/* ── Shared section headers ────────────────────────────────────────────── */\n.marketing-reconciliation__section-title {\n    font-size: 0.95rem;\n    font-weight: 600;\n    color: rgba(220, 220, 230, 0.9);\n    margin: 0 0 4px;\n}\n\n.marketing-reconciliation__section-hint {\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.55);\n    margin: 0 0 16px;\n    line-height: 1.5;\n}\n\n/* ── Platform comparison table ─────────────────────────────────────────── */\n.marketing-reconciliation__comparison {\n    margin: 28px 0 0;\n    padding: 20px 24px;\n    background: rgba(255, 255, 255, 0.03);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 10px;\n}\n\n.marketing-reconciliation__comparison-wrap {\n    overflow-x: auto;\n}\n\n.marketing-reconciliation__comparison-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__comparison-table th,\n.marketing-reconciliation__comparison-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    white-space: nowrap;\n}\n\n.marketing-reconciliation__comparison-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__comparison-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__comparison-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__comparison-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__comparison-dot {\n    display: inline-block;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    margin-right: 8px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__comparison-good {\n    color: #4caf7d;\n    font-weight: 600;\n}\n\n.marketing-reconciliation__comparison-warn {\n    color: #f5a623;\n    font-weight: 600;\n}\n\n/* ── Visibility improvement projection ─────────────────────────────────── */\n.marketing-reconciliation__projection {\n    margin: 20px 0 0;\n    padding: 22px 24px;\n    background: rgba(255, 255, 255, 0.028);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 14px;\n}\n\n.marketing-reconciliation__projection-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.86rem;\n}\n\n.marketing-reconciliation__projection-table th,\n.marketing-reconciliation__projection-table td {\n    padding: 8px 12px;\n    text-align: left;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.marketing-reconciliation__projection-table th {\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(200, 200, 210, 0.55);\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.marketing-reconciliation__projection-table td {\n    color: rgba(220, 220, 230, 0.85);\n}\n\n.marketing-reconciliation__projection-table tr:last-child td {\n    border-bottom: none;\n}\n\n.marketing-reconciliation__projection-table .num {\n    text-align: right;\n}\n\n.marketing-reconciliation__projection-row--current td {\n    color: rgba(200, 200, 210, 0.55);\n    font-style: italic;\n}\n\n/* ── Visibility trend chart ────────────────────────────────────────────── */\n.marketing-reconciliation__trend {\n    margin: 20px 0 0;\n    padding: 22px 24px;\n    background: rgba(255, 255, 255, 0.028);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n    border-radius: 14px;\n}\n\n.marketing-reconciliation__trend-legend {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 12px 20px;\n    margin-bottom: 12px;\n}\n\n.marketing-reconciliation__trend-legend-item {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    font-size: 0.82rem;\n    color: rgba(200, 200, 210, 0.8);\n}\n\n.marketing-reconciliation__trend-legend-dot {\n    width: 10px;\n    height: 10px;\n    border-radius: 50%;\n    flex-shrink: 0;\n}\n\n.marketing-reconciliation__trend-svg {\n    display: block;\n    width: 100%;\n    height: auto;\n    overflow: visible;\n}\n\n/* ── Domain gate ──────────────────────────────────────────────────────────── */\n\n.reconcile-domain-gate {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    justify-content: center;\n    gap: 12px;\n    padding: 56px 24px;\n    margin: 24px 0;\n    border-radius: 16px;\n    border: 1.5px dashed rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.04);\n    text-align: center;\n}\n\n.reconcile-domain-gate__icon {\n    font-size: 2rem;\n    opacity: 0.55;\n}\n\n.reconcile-domain-gate__heading {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: rgba(240, 235, 220, 0.9);\n}\n\n.reconcile-domain-gate__body {\n    margin: 0;\n    max-width: 36rem;\n    font-size: 0.875rem;\n    line-height: 1.6;\n    color: rgba(180, 175, 165, 0.85);\n}\n\n/* ── Ad Connection Manager ─────────────────────────────────────────────────── */\n\n.ad-connection-manager {\n    margin: 0 0 32px;\n    padding: 20px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(100, 180, 255, 0.15);\n    background: rgba(30, 50, 80, 0.18);\n}\n\n.ad-connection-manager__header {\n    margin-bottom: 14px;\n}\n\n.ad-connection-manager__title {\n    margin: 0 0 6px;\n    font-size: 0.82rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(130, 185, 255, 0.85);\n}\n\n.ad-connection-manager__hint {\n    margin: 0;\n    font-size: 0.8rem;\n    line-height: 1.5;\n    color: rgba(160, 165, 175, 0.85);\n}\n\n.ad-connection-manager__loading {\n    font-size: 0.8rem;\n    color: rgba(160, 165, 175, 0.7);\n    margin: 0;\n}\n\n.ad-connection-manager__status {\n    margin: 0 0 12px;\n    padding: 8px 12px;\n    border-radius: 8px;\n    font-size: 0.8rem;\n    background: rgba(60, 200, 100, 0.12);\n    border: 1px solid rgba(60, 200, 100, 0.25);\n    color: rgba(160, 230, 160, 0.95);\n}\n\n.ad-connection-manager__status--error {\n    background: rgba(220, 80, 60, 0.1);\n    border-color: rgba(220, 80, 60, 0.25);\n    color: rgba(255, 160, 140, 0.95);\n}\n\n.ad-connection-manager__list {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n/* ── Individual connection card ────────────────────────────────────────────── */\n\n.ad-connection-card {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(255, 255, 255, 0.03);\n    transition: border-color 0.15s;\n}\n\n.ad-connection-card--connected {\n    border-color: rgba(60, 180, 255, 0.2);\n    background: rgba(30, 80, 140, 0.12);\n}\n\n.ad-connection-card__icon {\n    width: 34px;\n    height: 34px;\n    border-radius: 8px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.75rem;\n    font-weight: 700;\n    color: #fff;\n    flex-shrink: 0;\n    letter-spacing: -0.02em;\n}\n\n.ad-connection-card__info {\n    flex: 1;\n    min-width: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n\n.ad-connection-card__name {\n    font-size: 0.84rem;\n    font-weight: 500;\n    color: rgba(220, 220, 228, 0.95);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.ad-connection-card__meta {\n    font-size: 0.75rem;\n    color: rgba(120, 200, 120, 0.85);\n}\n\n.ad-connection-card__meta--dim {\n    color: rgba(140, 140, 150, 0.65);\n}\n\n.ad-connection-card__actions {\n    display: flex;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.ad-connection-card__btn {\n    padding: 5px 12px;\n    border-radius: 6px;\n    font-size: 0.77rem;\n    font-weight: 500;\n    cursor: pointer;\n    border: 1px solid transparent;\n    transition: background 0.15s, opacity 0.15s;\n}\n\n.ad-connection-card__btn:disabled {\n    opacity: 0.55;\n    cursor: not-allowed;\n}\n\n.ad-connection-card__btn--connect {\n    background: rgba(60, 140, 255, 0.18);\n    border-color: rgba(60, 140, 255, 0.35);\n    color: rgba(130, 185, 255, 0.95);\n}\n\n.ad-connection-card__btn--connect:not(:disabled):hover {\n    background: rgba(60, 140, 255, 0.28);\n}\n\n.ad-connection-card__btn--import {\n    background: rgba(60, 200, 100, 0.14);\n    border-color: rgba(60, 200, 100, 0.3);\n    color: rgba(130, 220, 150, 0.95);\n}\n\n.ad-connection-card__btn--import:not(:disabled):hover {\n    background: rgba(60, 200, 100, 0.24);\n}\n\n.ad-connection-card__btn--disconnect {\n    background: transparent;\n    border-color: rgba(200, 100, 80, 0.25);\n    color: rgba(200, 140, 130, 0.75);\n}\n\n.ad-connection-card__btn--disconnect:hover {\n    background: rgba(200, 80, 60, 0.1);\n    color: rgba(220, 160, 145, 0.9);\n}\n\n/* ── Manual Customer ID input ──────────────────────────────── */\n.ad-manual-input-backdrop {\n    position: fixed;\n    inset: 0;\n    background: rgba(0, 0, 0, 0.55);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    z-index: 1000;\n}\n\n.ad-manual-input {\n    background: #1a1d2e;\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 12px;\n    padding: 28px 32px;\n    width: 100%;\n    max-width: 420px;\n    display: flex;\n    flex-direction: column;\n    gap: 14px;\n}\n\n.ad-manual-input__title {\n    font-size: 1rem;\n    font-weight: 600;\n    color: rgba(220, 225, 235, 0.95);\n    margin: 0;\n}\n\n.ad-manual-input__hint {\n    font-size: 0.82rem;\n    color: rgba(160, 165, 180, 0.8);\n    margin: 0;\n    line-height: 1.5;\n}\n\n.ad-manual-input__field {\n    background: rgba(255,255,255,0.05);\n    border: 1px solid rgba(255,255,255,0.12);\n    border-radius: 6px;\n    padding: 10px 14px;\n    color: rgba(220, 225, 235, 0.95);\n    font-size: 0.9rem;\n    width: 100%;\n    outline: none;\n    box-sizing: border-box;\n}\n\n.ad-manual-input__field:focus {\n    border-color: rgba(100, 140, 255, 0.5);\n}\n\n.ad-manual-input__field::placeholder {\n    color: rgba(160, 165, 180, 0.45);\n}\n\n.ad-manual-input__actions {\n    display: flex;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n/* ── Inputs bar ────────────────────────────────────────────── */\n.recon-inputs-bar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: flex-end;\n    gap: 14px;\n    padding-bottom: 14px;\n    margin-bottom: 0;\n}\n.recon-inputs-bar__field {\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n.recon-inputs-bar__field--wide {\n    flex: 1;\n    min-width: 130px;\n}\n.recon-inputs-bar__label {\n    font-size: 0.72rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(160,165,175,0.85);\n}\n.recon-inputs-bar__actions {\n    display: flex;\n    gap: 8px;\n    align-items: flex-end;\n}\n\n/* ── Funnel + Gauge layout ─────────────────────────────────── */\n.recon-main {\n    display: flex;\n    gap: 20px;\n    align-items: flex-start;\n    margin: 0;\n    flex-wrap: wrap;\n}\n\n/* ── Funnel ────────────────────────────────────────────────── */\n.recon-funnel {\n    flex: 1;\n    min-width: 220px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 0;\n    padding: 20px 16px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.08);\n    background: rgba(255,255,255,0.025);\n}\n.recon-funnel__step {\n    width: 100%;\n    max-width: 200px;\n    text-align: center;\n    padding: 12px 16px;\n    border-radius: 10px;\n}\n.recon-funnel__step--reported {\n    background: rgba(120,160,220,0.1);\n    border: 1px solid rgba(120,160,220,0.2);\n}\n.recon-funnel__step--consents {\n    background: rgba(100,200,160,0.08);\n    border: 1px solid rgba(100,200,160,0.2);\n}\n.recon-funnel__step--visible {\n    background: rgba(80,200,120,0.12);\n    border: 1px solid rgba(80,200,120,0.25);\n}\n.recon-funnel__num {\n    font-size: 1.6rem;\n    font-weight: 700;\n    line-height: 1;\n    margin-bottom: 4px;\n    color: rgba(235,235,245,0.95);\n}\n.recon-funnel__label {\n    font-size: 0.75rem;\n    color: rgba(170,175,185,0.85);\n}\n.recon-funnel__arrow {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 2px;\n    padding: 6px 0;\n}\n.recon-funnel__arrow-pct {\n    font-size: 0.7rem;\n    color: rgba(150,155,165,0.8);\n}\n.recon-funnel__arrow-line {\n    font-size: 1.1rem;\n    color: rgba(150,155,165,0.5);\n}\n.recon-funnel__gap {\n    margin-top: 12px;\n    padding: 8px 14px;\n    border-radius: 8px;\n    background: rgba(220,80,60,0.08);\n    border: 1px solid rgba(220,80,60,0.2);\n    text-align: center;\n    width: 100%;\n    max-width: 200px;\n}\n.recon-funnel__gap-num {\n    font-size: 1.1rem;\n    font-weight: 700;\n    color: rgba(240,140,120,0.9);\n}\n.recon-funnel__gap-label {\n    font-size: 0.72rem;\n    color: rgba(200,130,110,0.8);\n}\n\n/* ── Gauge ─────────────────────────────────────────────────── */\n.recon-gauge {\n    min-width: 200px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 12px;\n    padding: 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.08);\n    background: rgba(255,255,255,0.025);\n}\n.recon-gauge__svg {\n    width: 180px;\n    height: 160px;\n    display: block;\n}\n.recon-gauge__cost {\n    text-align: center;\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n.recon-gauge__cost-label {\n    font-size: 0.72rem;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(150,155,165,0.7);\n}\n.recon-gauge__cost-val {\n    font-size: 1.2rem;\n    font-weight: 700;\n    color: rgba(235,235,245,0.95);\n}\n.recon-gauge__cost-sub {\n    font-size: 0.72rem;\n    color: rgba(150,155,165,0.7);\n}\n\n/* ── Connect hint ──────────────────────────────────────────── */\n.reconcile-connect-hint {\n    font-size: 0.78rem;\n    color: rgba(140,160,190,0.8);\n    margin-bottom: 16px;\n}\n.reconcile-connect-hint a {\n    color: rgba(100,170,255,0.9);\n    text-decoration: none;\n}\n.reconcile-connect-hint a:hover {\n    text-decoration: underline;\n}\n\n/* ── Ad Connections success banner ─────────────────────────────────────── */\n.ad-connections-success-banner {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 12px 16px;\n    margin-bottom: 20px;\n    background: rgba(34, 197, 94, 0.12);\n    border: 1px solid rgba(34, 197, 94, 0.35);\n    border-radius: 8px;\n    color: rgba(134, 239, 172, 0.95);\n    font-size: 0.875rem;\n    font-weight: 500;\n}\n\n/* ── Account Picker Modal ───────────────────────────────────────────────── */\n.account-picker-backdrop {\n    position: fixed;\n    inset: 0;\n    z-index: 1000;\n    background: rgba(8, 10, 18, 0.75);\n    backdrop-filter: blur(4px);\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 24px;\n}\n\n.account-picker {\n    background: #13161f;\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    width: 100%;\n    max-width: 480px;\n    max-height: 80vh;\n    display: flex;\n    flex-direction: column;\n    box-shadow: 0 24px 60px rgba(0,0,0,0.6);\n    outline: none;\n}\n\n.account-picker__header {\n    padding: 24px 24px 0;\n}\n\n.account-picker__title {\n    margin: 0 0 6px;\n    font-size: 1.1rem;\n    font-weight: 700;\n    color: rgba(230,235,245,0.95);\n}\n\n.account-picker__sub {\n    margin: 0;\n    font-size: 0.85rem;\n    color: rgba(160,170,190,0.8);\n    line-height: 1.5;\n}\n\n.account-picker__body {\n    flex: 1;\n    overflow-y: auto;\n    padding: 16px 24px;\n}\n\n.account-picker__loading,\n.account-picker__empty {\n    color: rgba(160,170,190,0.7);\n    font-size: 0.875rem;\n    margin: 8px 0;\n}\n\n.account-picker__error {\n    color: rgba(248,113,113,0.9);\n    font-size: 0.875rem;\n    margin: 8px 0;\n}\n\n.account-picker__list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.account-picker__item {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.06);\n    background: rgba(255,255,255,0.03);\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n}\n\n.account-picker__item:hover {\n    background: rgba(255,255,255,0.06);\n    border-color: rgba(255,255,255,0.12);\n}\n\n.account-picker__item--selected {\n    background: rgba(99,179,237,0.1);\n    border-color: rgba(99,179,237,0.45);\n}\n\n.account-picker__item--dim {\n    opacity: 0.55;\n}\n\n.account-picker__item-radio {\n    flex-shrink: 0;\n    width: 16px;\n    height: 16px;\n    border-radius: 50%;\n    border: 2px solid rgba(160,170,190,0.4);\n    background: transparent;\n    position: relative;\n    transition: border-color 0.15s;\n}\n\n.account-picker__item--selected .account-picker__item-radio {\n    border-color: #63b3ed;\n}\n\n.account-picker__item--selected .account-picker__item-radio::after {\n    content: \"\";\n    position: absolute;\n    inset: 3px;\n    border-radius: 50%;\n    background: #63b3ed;\n}\n\n.account-picker__item-info {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n    min-width: 0;\n}\n\n.account-picker__item-name {\n    font-size: 0.9rem;\n    font-weight: 600;\n    color: rgba(220,230,245,0.95);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n\n.account-picker__item-id {\n    font-size: 0.75rem;\n    color: rgba(140,155,180,0.75);\n    font-family: monospace;\n}\n\n.account-picker__footer {\n    display: flex;\n    justify-content: flex-end;\n    gap: 10px;\n    padding: 16px 24px 20px;\n    border-top: 1px solid rgba(255,255,255,0.06);\n}\n\n.account-picker__btn {\n    padding: 9px 20px;\n    border-radius: 8px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    border: none;\n    cursor: pointer;\n    transition: opacity 0.15s, background 0.15s;\n}\n\n.account-picker__btn:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n}\n\n.account-picker__btn--cancel {\n    background: rgba(255,255,255,0.06);\n    color: rgba(180,185,200,0.9);\n}\n\n.account-picker__btn--cancel:not(:disabled):hover {\n    background: rgba(255,255,255,0.1);\n}\n\n.account-picker__btn--confirm {\n    background: #3b82f6;\n    color: #fff;\n}\n\n.account-picker__btn--confirm:not(:disabled):hover {\n    background: #2563eb;\n}\n\n/* ── Sync button & messages ────────────────────────────────────────────── */\n.recon-sync-btn {\n    padding: 7px 14px;\n    border-radius: 7px;\n    background: rgba(59, 130, 246, 0.15);\n    border: 1px solid rgba(59, 130, 246, 0.4);\n    color: rgba(147, 197, 253, 0.95);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    white-space: nowrap;\n    transition: background 0.15s, border-color 0.15s;\n    letter-spacing: 0.01em;\n}\n.recon-sync-btn:not(:disabled):hover {\n    background: rgba(59, 130, 246, 0.28);\n    border-color: rgba(59, 130, 246, 0.65);\n}\n.recon-sync-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n.recon-sync-msg {\n    font-size: 0.8rem;\n    color: rgba(134, 239, 172, 0.9);\n    margin: 6px 0 0;\n    padding: 7px 12px;\n    background: rgba(34,197,94,0.08);\n    border: 1px solid rgba(34,197,94,0.25);\n    border-radius: 6px;\n}\n.recon-sync-msg--error {\n    color: rgba(252,165,165,0.9);\n    background: rgba(239,68,68,0.08);\n    border-color: rgba(239,68,68,0.25);\n}\n.recon-sync-msg__link {\n    color: inherit;\n    opacity: 0.8;\n    text-decoration: underline;\n}\n.recon-sync-hint {\n    font-size: 0.78rem;\n    color: rgba(140,155,180,0.7);\n    margin: 5px 0 0;\n}\n.recon-sync-hint a {\n    color: rgba(100,170,255,0.85);\n    text-decoration: none;\n}\n.recon-sync-hint a:hover { text-decoration: underline; }\n\n/* ── UTM attribution health bar ────────────────────────────────────────── */\n.utm-health {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    padding: 8px 14px;\n    margin: 8px 0;\n    border-radius: 8px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.06);\n    font-size: 0.8rem;\n    flex-wrap: wrap;\n}\n.utm-health__label {\n    color: rgba(160,170,190,0.8);\n    font-weight: 600;\n    text-transform: uppercase;\n    font-size: 0.7rem;\n    letter-spacing: 0.05em;\n    white-space: nowrap;\n    min-width: 110px;\n}\n.utm-health__track {\n    flex: 1;\n    min-width: 80px;\n    height: 6px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.08);\n    overflow: hidden;\n}\n.utm-health__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.4s ease;\n}\n.utm-health--good .utm-health__fill { background: #4ade80; }\n.utm-health--warn .utm-health__fill { background: #f59e0b; }\n.utm-health--bad  .utm-health__fill { background: #f87171; }\n.utm-health__stats {\n    color: rgba(200,210,225,0.9);\n    white-space: nowrap;\n}\n.utm-health__stats strong { font-weight: 700; }\n.utm-health--good .utm-health__stats strong { color: #86efac; }\n.utm-health--warn .utm-health__stats strong { color: #fcd34d; }\n.utm-health--bad  .utm-health__stats strong { color: #fca5a5; }\n.utm-health__dark {\n    color: rgba(160,170,190,0.65);\n    font-size: 0.75rem;\n}\n\n/* ── Insights panel ─────────────────────────────────────────────────────── */\n.recon-insights {\n    margin: 0;\n    flex: 1;\n}\n.recon-insights__heading {\n    font-size: 0.78rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    color: rgba(160,170,190,0.7);\n    margin: 0 0 10px;\n}\n.recon-insights__list {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n.recon-insight {\n    display: flex;\n    gap: 12px;\n    padding: 12px 16px;\n    border-radius: 10px;\n    border-left: 3px solid transparent;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.06);\n}\n.recon-insight--critical {\n    background: rgba(239,68,68,0.07);\n    border-color: rgba(239,68,68,0.25);\n    border-left-color: #ef4444;\n}\n.recon-insight--warning {\n    background: rgba(245,158,11,0.07);\n    border-color: rgba(245,158,11,0.25);\n    border-left-color: #f59e0b;\n}\n.recon-insight--opportunity {\n    background: rgba(59,130,246,0.07);\n    border-color: rgba(59,130,246,0.22);\n    border-left-color: #3b82f6;\n}\n.recon-insight--good {\n    background: rgba(34,197,94,0.06);\n    border-color: rgba(34,197,94,0.2);\n    border-left-color: #22c55e;\n}\n.recon-insight__icon {\n    font-size: 1rem;\n    flex-shrink: 0;\n    margin-top: 1px;\n    width: 18px;\n    text-align: center;\n}\n.recon-insight--critical .recon-insight__icon { color: #f87171; }\n.recon-insight--warning  .recon-insight__icon { color: #fbbf24; }\n.recon-insight--opportunity .recon-insight__icon { color: #60a5fa; }\n.recon-insight--good     .recon-insight__icon { color: #4ade80; }\n.recon-insight__content {\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n    min-width: 0;\n}\n.recon-insight__title {\n    font-size: 0.875rem;\n    font-weight: 700;\n    color: rgba(220,230,245,0.95);\n    margin: 0;\n    line-height: 1.3;\n}\n.recon-insight__body {\n    font-size: 0.8rem;\n    color: rgba(170,180,200,0.85);\n    margin: 0;\n    line-height: 1.55;\n}\n\n/* ── Chart sections ─────────────────────────────────────────────────────── */\n.recon-chart-section {\n    margin: 0;\n    background: rgba(255,255,255,0.028);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 20px 16px;\n}\n\n.recon-chart-scroll {\n    overflow-x: auto;\n    -webkit-overflow-scrolling: touch;\n}\n\n.recon-bar-chart {\n    display: block;\n    width: 100%;\n    max-width: 620px;\n    height: auto;\n    overflow: visible;\n}\n\n.recon-chart-legend {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 14px;\n    margin-top: 10px;\n    font-size: 0.78rem;\n    color: rgba(160,175,200,0.75);\n    align-items: center;\n}\n\n.recon-legend-dot {\n    display: inline-block;\n    width: 10px;\n    height: 10px;\n    border-radius: 50%;\n    margin-right: 4px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n\n/* ═══════════════════════════════════════════════════════════════════════════\n   DASHBOARD LAYOUT — page header, KPI row, card grid\n   ═══════════════════════════════════════════════════════════════════════════ */\n\n.recon-page {\n    padding-bottom: 48px;\n}\n\n/* ── Page header ──────────────────────────────────────────────────────────── */\n.recon-page-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    flex-wrap: wrap;\n    gap: 12px;\n    margin-bottom: 24px;\n    padding-bottom: 18px;\n    border-bottom: 1px solid rgba(255,255,255,0.07);\n}\n.recon-page-header__left {\n    display: flex;\n    align-items: baseline;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n.recon-page-header__title {\n    margin: 0;\n    font-size: 1.4rem;\n    font-weight: 700;\n    color: rgba(240,242,248,0.97);\n    letter-spacing: -0.01em;\n}\n.recon-page-header__domain {\n    font-size: 0.82rem;\n    color: rgba(155,170,200,0.75);\n    padding: 3px 10px;\n    border-radius: 20px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.1);\n}\n.recon-page-header__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n    flex-wrap: wrap;\n}\n.recon-page-header__channel {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    font-size: 0.8rem;\n    color: rgba(160,165,175,0.8);\n}\n\n.recon-page-header__channel .marketing-reconciliation__select {\n    width: auto;\n    min-width: 140px;\n}\n.recon-page-header__back {\n    font-size: 0.82rem;\n    color: rgba(130,145,175,0.75);\n    text-decoration: none;\n    transition: color 0.15s;\n}\n.recon-page-header__back:hover {\n    color: rgba(180,190,215,0.9);\n}\n\n/* ── Generic card ─────────────────────────────────────────────────────────── */\n.recon-card {\n    background: rgba(255,255,255,0.028);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 22px 22px 20px;\n}\n.recon-controls-card {\n    margin-bottom: 20px;\n}\n.recon-card--insights {\n    display: flex;\n    flex-direction: column;\n}\n.recon-card__title {\n    margin: 0 0 14px;\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(145,158,185,0.65);\n}\n.recon-card__empty-hint {\n    flex: 1;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    margin: 0;\n    padding: 24px 16px;\n    font-size: 0.85rem;\n    color: rgba(140,152,175,0.6);\n    text-align: center;\n}\n\n/* ── KPI stat cards ───────────────────────────────────────────────────────── */\n.recon-kpi-row {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 14px;\n    margin-bottom: 20px;\n}\n@media (max-width: 900px) {\n    .recon-kpi-row { grid-template-columns: repeat(2, 1fr); }\n}\n@media (max-width: 480px) {\n    .recon-kpi-row { grid-template-columns: 1fr 1fr; }\n}\n\n.recon-stat-card {\n    background: rgba(255,255,255,0.032);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 12px;\n    padding: 16px 18px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n.recon-stat-card--good {\n    border-color: rgba(74,222,128,0.2);\n    background: rgba(74,222,128,0.045);\n}\n.recon-stat-card--warn {\n    border-color: rgba(245,158,11,0.2);\n    background: rgba(245,158,11,0.045);\n}\n.recon-stat-card--bad {\n    border-color: rgba(248,113,113,0.2);\n    background: rgba(248,113,113,0.045);\n}\n.recon-stat-card--ga4 {\n    border-color: rgba(227,116,0,0.25);\n    background: rgba(227,116,0,0.055);\n}\n.recon-stat-card--ga4 .recon-stat-card__value { color: rgba(251,191,36,0.95); }\n.recon-stat-card__label {\n    font-size: 0.68rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    color: rgba(145,158,180,0.72);\n}\n.recon-stat-card__value {\n    font-size: 1.8rem;\n    font-weight: 700;\n    line-height: 1.05;\n    color: rgba(232,236,248,0.96);\n    letter-spacing: -0.025em;\n}\n.recon-stat-card--good .recon-stat-card__value { color: rgba(134,239,172,0.95); }\n.recon-stat-card--warn .recon-stat-card__value { color: rgba(252,211,77,0.92); }\n.recon-stat-card--bad  .recon-stat-card__value { color: rgba(248,113,113,0.9); }\n.recon-stat-card__sub {\n    font-size: 0.71rem;\n    color: rgba(135,148,170,0.6);\n    margin-top: 1px;\n}\n\n/* ── Dashboard 2-col grid (funnel + insights) ─────────────────────────────── */\n.recon-dashboard-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 16px;\n    margin-bottom: 20px;\n    align-items: start;\n}\n@media (max-width: 820px) {\n    .recon-dashboard-grid { grid-template-columns: 1fr; }\n}\n\n/* ── Charts 2-col grid ────────────────────────────────────────────────────── */\n.recon-charts-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 16px;\n    margin-bottom: 20px;\n}\n.recon-charts-grid > .recon-chart-section:only-child {\n    grid-column: 1 / -1;\n}\n@media (max-width: 820px) {\n    .recon-charts-grid { grid-template-columns: 1fr; }\n}\n\n/* ── Alert settings button ───────────────────────────────────────────────── */\n.recon-alerts-settings-btn {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 7px 12px;\n    background: rgba(99,102,241,0.12);\n    border: 1px solid rgba(99,102,241,0.28);\n    border-radius: 8px;\n    color: rgba(165,168,255,0.9);\n    font-size: 0.78rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n    flex-shrink: 0;\n}\n.recon-alerts-settings-btn:hover {\n    background: rgba(99,102,241,0.22);\n    border-color: rgba(99,102,241,0.5);\n}\n\n/* ── Notification bell ───────────────────────────────────────────────────── */\n.notif-bell {\n    position: relative;\n    display: inline-flex;\n    align-items: center;\n    flex-shrink: 0;\n}\n.notif-bell__btn {\n    position: relative;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 34px;\n    height: 34px;\n    background: rgba(255,255,255,0.05);\n    border: 1px solid rgba(255,255,255,0.09);\n    border-radius: 8px;\n    color: rgba(180,190,210,0.75);\n    cursor: pointer;\n    transition: background 0.15s, color 0.15s, border-color 0.15s;\n}\n.notif-bell__btn:hover {\n    background: rgba(255,255,255,0.09);\n    color: rgba(220,225,240,0.95);\n    border-color: rgba(255,255,255,0.15);\n}\n.notif-bell__btn--active {\n    color: rgba(252,211,77,0.9);\n    border-color: rgba(252,211,77,0.3);\n    background: rgba(252,211,77,0.07);\n}\n.notif-bell__badge {\n    position: absolute;\n    top: -5px;\n    right: -5px;\n    min-width: 16px;\n    height: 16px;\n    padding: 0 3px;\n    background: #ef4444;\n    border-radius: 9px;\n    font-size: 0.6rem;\n    font-weight: 700;\n    color: #fff;\n    line-height: 16px;\n    text-align: center;\n    pointer-events: none;\n}\n\n/* ── Notification dropdown ───────────────────────────────────────────────── */\n.notif-dropdown {\n    position: absolute;\n    top: calc(100% + 8px);\n    right: 0;\n    width: 320px;\n    max-height: 420px;\n    background: rgba(18,22,36,0.97);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 14px;\n    box-shadow: 0 12px 40px rgba(0,0,0,0.5);\n    display: flex;\n    flex-direction: column;\n    z-index: 999;\n    overflow: hidden;\n}\n.notif-dropdown__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 12px 16px 10px;\n    border-bottom: 1px solid rgba(255,255,255,0.07);\n    flex-shrink: 0;\n}\n.notif-dropdown__title {\n    font-size: 0.78rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.07em;\n    color: rgba(180,190,215,0.7);\n}\n.notif-dropdown__mark-all {\n    font-size: 0.71rem;\n    color: rgba(99,102,241,0.9);\n    background: none;\n    border: none;\n    cursor: pointer;\n    padding: 0;\n    text-decoration: underline;\n}\n.notif-dropdown__list {\n    overflow-y: auto;\n    flex: 1;\n    padding: 6px 0;\n}\n.notif-dropdown__empty {\n    margin: 0;\n    padding: 16px;\n    font-size: 0.78rem;\n    color: rgba(155,165,185,0.65);\n    line-height: 1.5;\n}\n\n/* ── Notification item ───────────────────────────────────────────────────── */\n.notif-item {\n    position: relative;\n    padding: 10px 16px 10px 14px;\n    border-left: 3px solid transparent;\n    cursor: pointer;\n    transition: background 0.12s;\n}\n.notif-item:hover { background: rgba(255,255,255,0.04); }\n.notif-item--unread { background: rgba(99,102,241,0.05); }\n.notif-item__meta {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    margin-bottom: 3px;\n    gap: 8px;\n}\n.notif-item__type {\n    font-size: 0.67rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n}\n.notif-item__time {\n    font-size: 0.67rem;\n    color: rgba(130,140,165,0.6);\n    flex-shrink: 0;\n}\n.notif-item__title {\n    margin: 0;\n    font-size: 0.8rem;\n    color: rgba(215,220,235,0.88);\n    line-height: 1.4;\n}\n.notif-item__dot {\n    position: absolute;\n    top: 12px;\n    right: 12px;\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n    background: #6366f1;\n}\n\n/* ── Alert settings modal ────────────────────────────────────────────────── */\n.alert-settings-backdrop {\n    position: fixed;\n    inset: 0;\n    background: rgba(5,8,20,0.72);\n    backdrop-filter: blur(4px);\n    z-index: 1200;\n    display: flex;\n    align-items: flex-start;\n    justify-content: center;\n    padding: 48px 16px;\n    overflow-y: auto;\n}\n.alert-settings-modal {\n    background: rgb(14,18,30);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 18px;\n    box-shadow: 0 24px 72px rgba(0,0,0,0.7);\n    width: 100%;\n    max-width: 560px;\n    padding: 28px 28px 32px;\n    position: relative;\n}\n.alert-settings-modal__header {\n    display: flex;\n    align-items: flex-start;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 22px;\n}\n.alert-settings-modal__title {\n    margin: 0 0 5px;\n    font-size: 1.05rem;\n    font-weight: 700;\n    color: rgba(232,236,248,0.95);\n}\n.alert-settings-modal__sub {\n    margin: 0;\n    font-size: 0.8rem;\n    color: rgba(150,160,185,0.75);\n    line-height: 1.5;\n}\n.alert-settings-modal__close {\n    flex-shrink: 0;\n    width: 30px;\n    height: 30px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.09);\n    border-radius: 8px;\n    color: rgba(180,190,215,0.7);\n    font-size: 1.1rem;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: background 0.12s;\n}\n.alert-settings-modal__close:hover { background: rgba(255,255,255,0.1); }\n\n/* channels section */\n.alert-settings-channels {\n    background: rgba(255,255,255,0.025);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 12px;\n    padding: 16px 18px;\n    margin-bottom: 24px;\n}\n.alert-settings-channels__title {\n    margin: 0 0 12px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.07em;\n    color: rgba(140,150,175,0.7);\n}\n.alert-settings-channels__row {\n    display: flex;\n    flex-direction: column;\n    gap: 12px;\n}\n.alert-settings-channels__item {\n    display: flex;\n    align-items: flex-start;\n    gap: 12px;\n}\n.alert-settings-channels__icon {\n    font-size: 1rem;\n    margin-top: 2px;\n    flex-shrink: 0;\n}\n.alert-settings-channels__info {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    flex: 1;\n}\n.alert-settings-channels__name {\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(210,218,235,0.88);\n}\n.alert-settings-channels__status {\n    font-size: 0.74rem;\n    color: rgba(130,140,165,0.65);\n}\n.alert-settings-email-input {\n    width: 100%;\n    padding: 7px 10px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 8px;\n    color: rgba(210,218,235,0.9);\n    font-size: 0.82rem;\n    outline: none;\n    transition: border-color 0.15s;\n}\n.alert-settings-email-input:focus { border-color: rgba(99,102,241,0.5); }\n.alert-settings-push-btn {\n    padding: 6px 12px;\n    background: rgba(99,102,241,0.12);\n    border: 1px solid rgba(99,102,241,0.3);\n    border-radius: 8px;\n    color: rgba(165,168,255,0.9);\n    font-size: 0.77rem;\n    font-weight: 600;\n    cursor: pointer;\n    width: fit-content;\n    transition: background 0.15s;\n}\n.alert-settings-push-btn:hover { background: rgba(99,102,241,0.22); }\n.alert-settings-push-btn--active {\n    background: rgba(74,222,128,0.1);\n    border-color: rgba(74,222,128,0.3);\n    color: rgba(134,239,172,0.9);\n}\n\n/* alert rules */\n.alert-settings-rules__title {\n    margin: 0 0 12px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.07em;\n    color: rgba(140,150,175,0.7);\n}\n.alert-settings-rules {\n    display: flex;\n    flex-direction: column;\n    gap: 10px;\n}\n.alert-rule {\n    background: rgba(255,255,255,0.025);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 11px;\n    padding: 14px 16px;\n    transition: border-color 0.15s, background 0.15s;\n}\n.alert-rule--enabled {\n    border-color: rgba(99,102,241,0.25);\n    background: rgba(99,102,241,0.04);\n}\n.alert-rule__top {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n}\n.alert-rule__toggle {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    cursor: pointer;\n}\n.alert-rule__toggle input[type=\"checkbox\"] {\n    width: 16px;\n    height: 16px;\n    accent-color: #6366f1;\n    cursor: pointer;\n    flex-shrink: 0;\n}\n.alert-rule__toggle-label {\n    font-size: 0.84rem;\n    font-weight: 600;\n    color: rgba(210,218,235,0.9);\n}\n.alert-rule__threshold {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n.alert-rule__threshold-input {\n    width: 72px;\n    padding: 5px 8px;\n    background: rgba(255,255,255,0.06);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 7px;\n    color: rgba(210,218,235,0.9);\n    font-size: 0.82rem;\n    text-align: right;\n    outline: none;\n    transition: border-color 0.15s;\n}\n.alert-rule__threshold-input:focus { border-color: rgba(99,102,241,0.5); }\n.alert-rule__threshold-input:disabled { opacity: 0.4; }\n.alert-rule__unit {\n    font-size: 0.76rem;\n    color: rgba(140,150,175,0.65);\n    min-width: 24px;\n}\n.alert-rule__hint {\n    margin: 6px 0 0;\n    font-size: 0.74rem;\n    color: rgba(130,140,165,0.65);\n    line-height: 1.45;\n}\n.alert-rule__channels {\n    display: flex;\n    align-items: center;\n    gap: 14px;\n    flex-wrap: wrap;\n    margin-top: 10px;\n    padding-top: 10px;\n    border-top: 1px solid rgba(255,255,255,0.06);\n}\n.alert-rule__channel-toggle {\n    display: flex;\n    align-items: center;\n    gap: 5px;\n    font-size: 0.77rem;\n    color: rgba(175,185,210,0.8);\n    cursor: pointer;\n}\n.alert-rule__channel-toggle input[type=\"checkbox\"] {\n    width: 13px;\n    height: 13px;\n    accent-color: #6366f1;\n    flex-shrink: 0;\n}\n.alert-rule__channel-note {\n    font-size: 0.7rem;\n    color: rgba(120,130,155,0.6);\n    font-style: italic;\n}\n\n/* ── Cost by channel table ───────────────────────────────────────────────── */\n.cost-by-channel {\n    width: 100%;\n}\n.cost-by-channel__table-wrap {\n    overflow-x: auto;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n}\n.cost-by-channel__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n.cost-by-channel__table th {\n    padding: 9px 14px;\n    background: rgba(255,255,255,0.03);\n    color: rgba(140,152,178,0.72);\n    font-size: 0.68rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    text-align: left;\n    border-bottom: 1px solid rgba(255,255,255,0.07);\n    white-space: nowrap;\n}\n.cost-by-channel__table th.num,\n.cost-by-channel__table td.num {\n    text-align: right;\n}\n.cost-by-channel__table td {\n    padding: 10px 14px;\n    color: rgba(210,218,235,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n    white-space: nowrap;\n}\n.cost-by-channel__table tbody tr:last-child td {\n    border-bottom: none;\n}\n.cost-by-channel__table tbody tr:hover td {\n    background: rgba(255,255,255,0.02);\n}\n.cost-by-channel__dot {\n    display: inline-block;\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    margin-right: 7px;\n    vertical-align: middle;\n    flex-shrink: 0;\n}\n.cost-col {\n    background: rgba(99,102,241,0.04);\n}\n.cost-by-channel__good { color: rgba(134,239,172,0.9) !important; }\n.cost-by-channel__warn { color: rgba(252,211,77,0.85) !important; }\n.cost-by-channel__bad  { color: rgba(248,113,113,0.85) !important; }\n.cost-by-channel__avg-row td {\n    border-top: 1px solid rgba(255,255,255,0.07);\n    background: rgba(255,255,255,0.025);\n    color: rgba(175,185,210,0.75);\n    font-size: 0.78rem;\n}\n\n/* ── Connect prompt (inline, below inputs bar) ───────────────────────────── */\n.recon-connect-prompt {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    flex-wrap: wrap;\n    padding: 10px 0 4px;\n}\n.recon-connect-btn {\n    display: inline-flex;\n    align-items: center;\n    gap: 7px;\n    padding: 8px 16px;\n    background: linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.18) 100%);\n    border: 1px solid rgba(99,102,241,0.4);\n    border-radius: 9px;\n    color: rgba(165,168,255,0.95);\n    font-size: 0.82rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s, opacity 0.15s;\n    white-space: nowrap;\n}\n.recon-connect-btn::before {\n    content: \"→\";\n    font-size: 0.9rem;\n}\n.recon-connect-btn:hover {\n    background: linear-gradient(135deg, rgba(99,102,241,0.28) 0%, rgba(139,92,246,0.28) 100%);\n    border-color: rgba(99,102,241,0.65);\n}\n.recon-connect-btn:disabled { opacity: 0.55; cursor: wait; }\n.recon-connect-prompt__hint {\n    font-size: 0.75rem;\n    color: rgba(130,140,165,0.65);\n}\n\n/* ── OAuth result banner ─────────────────────────────────────────────────── */\n.oauth-banner {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    padding: 12px 18px;\n    border-radius: 11px;\n    margin-bottom: 16px;\n    font-size: 0.83rem;\n    font-weight: 500;\n}\n.oauth-banner--success {\n    background: rgba(74,222,128,0.1);\n    border: 1px solid rgba(74,222,128,0.28);\n    color: rgba(134,239,172,0.95);\n}\n.oauth-banner--error {\n    background: rgba(248,113,113,0.09);\n    border: 1px solid rgba(248,113,113,0.3);\n    color: rgba(252,165,165,0.95);\n}\n.oauth-banner__msg { flex: 1; }\n.oauth-banner__close {\n    background: none;\n    border: none;\n    cursor: pointer;\n    font-size: 1.1rem;\n    color: inherit;\n    opacity: 0.7;\n    padding: 0 4px;\n    line-height: 1;\n}\n.oauth-banner__close:hover { opacity: 1; }\n\n/* ── Account picker modal ────────────────────────────────────────────────── */\n.acct-picker-backdrop {\n    position: fixed;\n    inset: 0;\n    background: rgba(5,8,20,0.78);\n    backdrop-filter: blur(5px);\n    z-index: 1300;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 24px;\n}\n.acct-picker-modal {\n    background: rgb(14,18,30);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 18px;\n    box-shadow: 0 28px 80px rgba(0,0,0,0.75);\n    width: 100%;\n    max-width: 480px;\n    padding: 28px 28px 24px;\n    max-height: 80vh;\n    display: flex;\n    flex-direction: column;\n}\n.acct-picker-modal__header { margin-bottom: 18px; }\n.acct-picker-modal__title {\n    margin: 0 0 5px;\n    font-size: 1.05rem;\n    font-weight: 700;\n    color: rgba(232,236,248,0.95);\n}\n.acct-picker-modal__sub {\n    margin: 0;\n    font-size: 0.8rem;\n    color: rgba(150,160,185,0.75);\n}\n.acct-picker-modal__loading,\n.acct-picker-modal__empty {\n    margin: 0 0 16px;\n    font-size: 0.82rem;\n    color: rgba(150,160,185,0.7);\n}\n.acct-picker-modal__error {\n    margin: 0 0 16px;\n    font-size: 0.82rem;\n    color: rgba(252,165,165,0.9);\n    background: rgba(248,113,113,0.08);\n    border: 1px solid rgba(248,113,113,0.2);\n    border-radius: 8px;\n    padding: 10px 14px;\n}\n.acct-picker-list {\n    list-style: none;\n    margin: 0 0 16px;\n    padding: 0;\n    overflow-y: auto;\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n.acct-picker-item {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 13px 16px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 11px;\n    text-align: left;\n    cursor: pointer;\n    transition: background 0.13s, border-color 0.13s;\n}\n.acct-picker-item:hover:not(:disabled) {\n    background: rgba(99,102,241,0.1);\n    border-color: rgba(99,102,241,0.35);\n}\n.acct-picker-item:disabled { opacity: 0.5; cursor: wait; }\n.acct-picker-item__name {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(218,224,240,0.95);\n    flex: 1;\n}\n.acct-picker-item__meta {\n    font-size: 0.72rem;\n    color: rgba(130,140,165,0.65);\n    white-space: nowrap;\n}\n.acct-picker-item__arrow {\n    flex-shrink: 0;\n    color: rgba(99,102,241,0.6);\n}\n.acct-picker-modal__cancel {\n    width: 100%;\n    padding: 10px;\n    background: rgba(255,255,255,0.04);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 9px;\n    color: rgba(155,165,190,0.7);\n    font-size: 0.82rem;\n    cursor: pointer;\n    transition: background 0.13s;\n    flex-shrink: 0;\n}\n.acct-picker-modal__cancel:hover { background: rgba(255,255,255,0.08); }\n\n/* ─── GA4 Card (Channel Analytics) ──────────────────────────────────────── */\n.ga4-card {\n    margin: 4px 0 18px;\n    padding: 18px 20px 16px;\n    background: rgba(227,116,0,0.04);\n    border: 1px solid rgba(227,116,0,0.14);\n    border-radius: 14px;\n}\n.ga4-card__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    margin-bottom: 14px;\n}\n.ga4-card__title {\n    font-size: 0.78rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.07em;\n    color: rgba(227,116,0,0.9);\n}\n.ga4-card__badges {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n.ga4-sessions-chart__syncing {\n    font-size: 0.72rem;\n    color: rgba(227,116,0,0.6);\n}\n\n/* GA4 KPI strip */\n.ga4-kpi-strip {\n    display: flex;\n    gap: 0;\n    margin-bottom: 16px;\n    border: 1px solid rgba(227,116,0,0.12);\n    border-radius: 10px;\n    overflow: hidden;\n}\n.ga4-kpi {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    padding: 10px 8px;\n    border-right: 1px solid rgba(227,116,0,0.1);\n    cursor: default;\n    transition: background 0.12s;\n}\n.ga4-kpi:last-child { border-right: none; }\n.ga4-kpi:hover { background: rgba(227,116,0,0.07); }\n.ga4-kpi__value {\n    font-size: 1.25rem;\n    font-weight: 700;\n    color: rgba(240,190,80,0.95);\n    letter-spacing: -0.02em;\n    line-height: 1.1;\n}\n.ga4-kpi__label {\n    font-size: 0.66rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(145,158,180,0.65);\n    margin-top: 2px;\n    white-space: nowrap;\n}\n.ga4-ss-badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 5px;\n    padding: 3px 10px;\n    background: rgba(99,102,241,0.12);\n    border: 1px solid rgba(99,102,241,0.3);\n    border-radius: 20px;\n    font-size: 0.71rem;\n    font-weight: 600;\n    color: rgba(165,170,255,0.95);\n    letter-spacing: 0.01em;\n}\n\n/* Platform breakdown */\n.ga4-platform-breakdown {\n    margin-top: 16px;\n    padding-top: 14px;\n    border-top: 1px solid rgba(255,255,255,0.06);\n}\n.ga4-platform-breakdown__title {\n    margin: 0 0 10px;\n    font-size: 0.72rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    color: rgba(145,158,180,0.65);\n}\n.ga4-platform-breakdown__rows {\n    display: flex;\n    flex-direction: column;\n    gap: 7px;\n}\n.ga4-pb-row {\n    display: grid;\n    grid-template-columns: 160px 1fr 52px 70px;\n    align-items: center;\n    gap: 10px;\n    font-size: 0.8rem;\n}\n.ga4-pb-row__name {\n    color: rgba(185,195,215,0.85);\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}\n.ga4-pb-row--ss .ga4-pb-row__name {\n    color: rgba(165,170,255,0.9);\n    font-weight: 600;\n}\n.ga4-pb-row__ss-icon {\n    margin-right: 4px;\n}\n.ga4-pb-row__ss-hint {\n    font-size: 0.7rem;\n    font-weight: 400;\n    color: rgba(140,145,200,0.65);\n    margin-left: 4px;\n}\n.ga4-pb-row__bar-wrap {\n    height: 8px;\n    background: rgba(255,255,255,0.05);\n    border-radius: 4px;\n    overflow: hidden;\n}\n.ga4-pb-row__bar {\n    height: 100%;\n    border-radius: 4px;\n    transition: width 0.3s ease;\n}\n.ga4-pb-row__share {\n    text-align: right;\n    color: rgba(145,160,185,0.75);\n    font-size: 0.75rem;\n}\n.ga4-pb-row__count {\n    text-align: right;\n    color: rgba(185,195,215,0.7);\n    font-size: 0.75rem;\n    font-variant-numeric: tabular-nums;\n}\n\n/* ─── Channel Analytics Redesigned Layout ───────────────────────────────── */\n\n/* Compact page header */\n.ca-page-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 16px;\n    flex-wrap: wrap;\n}\n.ca-page-header__left {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    flex-wrap: wrap;\n}\n.ca-page-header__title {\n    margin: 0;\n    font-size: 1.15rem;\n    font-weight: 700;\n    color: rgba(235,240,255,0.96);\n    display: flex;\n    align-items: center;\n    gap: 10px;\n}\n.ca-page-header__channel {\n    color: rgba(200,210,240,0.9);\n    font-weight: 600;\n}\n.ca-back-btn {\n    background: none;\n    border: none;\n    padding: 0;\n    font-size: 0.82rem;\n    font-weight: 600;\n    color: rgba(145,160,200,0.75);\n    cursor: pointer;\n    white-space: nowrap;\n    transition: color 0.12s;\n}\n.ca-back-btn:hover { color: rgba(200,210,240,0.95); }\n.ca-compare-pill {\n    display: inline-block;\n    padding: 3px 10px;\n    background: rgba(99,102,241,0.12);\n    border: 1px solid rgba(99,102,241,0.22);\n    border-radius: 20px;\n    font-size: 0.71rem;\n    color: rgba(165,170,255,0.85);\n}\n.ca-reconcile-link {\n    display: inline-block;\n    padding: 6px 14px;\n    background: rgba(99,102,241,0.1);\n    border: 1px solid rgba(99,102,241,0.22);\n    border-radius: 8px;\n    font-size: 0.77rem;\n    font-weight: 600;\n    color: rgba(165,170,255,0.88);\n    text-decoration: none;\n    transition: background 0.13s;\n    white-space: nowrap;\n}\n.ca-reconcile-link:hover { background: rgba(99,102,241,0.18); color: rgba(185,190,255,0.95); }\n\n/* Consent KPI strip */\n.ca-kpi-strip {\n    display: flex;\n    gap: 0;\n    margin-bottom: 16px;\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 12px;\n    overflow: hidden;\n}\n.ca-kpi {\n    flex: 1;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    padding: 12px 8px;\n    border-right: 1px solid rgba(255,255,255,0.06);\n    cursor: default;\n    min-width: 0;\n    transition: background 0.12s;\n}\n.ca-kpi:last-child { border-right: none; }\n.ca-kpi:hover { background: rgba(255,255,255,0.035); }\n.ca-kpi__value {\n    font-size: 1.3rem;\n    font-weight: 700;\n    color: rgba(232,236,248,0.95);\n    letter-spacing: -0.025em;\n    line-height: 1.1;\n    white-space: nowrap;\n}\n.ca-kpi--warn .ca-kpi__value { color: rgba(252,165,50,0.92); }\n.ca-kpi__label {\n    font-size: 0.64rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    color: rgba(140,155,180,0.6);\n    margin-top: 3px;\n    text-align: center;\n    line-height: 1.2;\n}\n.ca-kpi__compare {\n    margin-top: 3px;\n    font-size: 0.7rem;\n}\n\n/* Table section header with inline toolbar */\n.ca-table-section { margin-bottom: 0; }\n.ca-table-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px;\n    margin-bottom: 10px;\n    flex-wrap: wrap;\n}\n.ca-table-toolbar {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n}\n\n/* Collapsed context section */\n.ca-context-details {\n    margin: 16px 0 4px;\n}\n.ca-context-summary {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 14px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n    cursor: pointer;\n    font-size: 0.8rem;\n    font-weight: 600;\n    color: rgba(170,180,210,0.8);\n    list-style: none;\n    user-select: none;\n    transition: background 0.12s;\n}\n.ca-context-summary::-webkit-details-marker { display: none; }\n.ca-context-summary::before {\n    content: \"▸\";\n    font-size: 0.7rem;\n    color: rgba(140,155,180,0.5);\n    transition: transform 0.15s;\n}\ndetails[open] .ca-context-summary::before { content: \"▾\"; }\n.ca-context-summary:hover { background: rgba(255,255,255,0.055); }\n.ca-context-summary__hint {\n    font-size: 0.69rem;\n    font-weight: 400;\n    color: rgba(130,145,170,0.55);\n    margin-left: 4px;\n}\n.ca-context-details[open] .ca-context-summary {\n    border-radius: 10px 10px 0 0;\n    border-bottom: none;\n}\n\n/* ─── GA4 Coverage & Blindspots ─────────────────────────────────────────── */\n\n.ga4-coverage {\n    margin: 20px 0 0;\n    padding: 16px 20px;\n    background: rgba(255,255,255,0.025);\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n}\n.ga4-coverage__header {\n    display: flex;\n    align-items: baseline;\n    gap: 10px;\n    margin-bottom: 14px;\n}\n.ga4-coverage__title {\n    margin: 0;\n    font-size: 0.75rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.9);\n}\n.ga4-coverage__subtitle {\n    font-size: 0.72rem;\n    color: rgba(140,155,180,0.65);\n}\n.ga4-coverage__metrics {\n    display: flex;\n    gap: 0;\n    flex-wrap: wrap;\n    margin-bottom: 14px;\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 8px;\n    overflow: hidden;\n}\n.ga4-coverage__metric {\n    flex: 1;\n    min-width: 90px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    padding: 10px 12px;\n    border-right: 1px solid rgba(255,255,255,0.07);\n    gap: 3px;\n}\n.ga4-coverage__metric:last-child { border-right: none; }\n.ga4-coverage__metric--dark { background: rgba(239,68,68,0.05); }\n.ga4-coverage__metric-value {\n    font-size: 1.05rem;\n    font-weight: 700;\n    font-variant-numeric: tabular-nums;\n    color: rgba(235,240,255,0.95);\n    letter-spacing: -0.01em;\n}\n.ga4-coverage__metric--dark .ga4-coverage__metric-value {\n    color: rgba(239,68,68,0.85);\n}\n.ga4-coverage__metric-label {\n    font-size: 0.67rem;\n    color: rgba(140,155,180,0.7);\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n/* Stacked bar */\n.ga4-coverage__bar-track {\n    position: relative;\n    height: 10px;\n    background: rgba(239,68,68,0.2);\n    border-radius: 6px;\n    overflow: hidden;\n    margin-bottom: 6px;\n}\n.ga4-coverage__bar-fill {\n    position: absolute;\n    left: 0; top: 0; bottom: 0;\n    background: linear-gradient(90deg, rgba(74,222,128,0.75), rgba(34,197,94,0.65));\n    border-radius: 6px;\n    transition: width 0.4s ease;\n    min-width: 2px;\n}\n.ga4-coverage__bar-legend {\n    display: flex;\n    gap: 16px;\n    margin-bottom: 10px;\n    font-size: 0.7rem;\n}\n.ga4-coverage__legend-consent::before {\n    content: \"■\";\n    color: rgba(74,222,128,0.75);\n    margin-right: 4px;\n}\n.ga4-coverage__legend-dark::before {\n    content: \"■\";\n    color: rgba(239,68,68,0.4);\n    margin-right: 4px;\n}\n.ga4-coverage__legend-consent { color: rgba(165,185,215,0.75); }\n.ga4-coverage__legend-dark    { color: rgba(165,185,215,0.75); }\n.ga4-coverage__note {\n    margin: 0;\n    font-size: 0.71rem;\n    color: rgba(130,145,170,0.6);\n    line-height: 1.5;\n}\n\n/* ─── GA4 Channel Cross-reference ───────────────────────────────────────── */\n\n.ga4-xref {\n    margin: 20px 0 0;\n    padding: 16px 20px 12px;\n    background: rgba(255,255,255,0.02);\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n}\n.ga4-xref__header {\n    display: flex;\n    align-items: baseline;\n    gap: 10px;\n    margin-bottom: 12px;\n    flex-wrap: wrap;\n}\n.ga4-xref__title {\n    margin: 0;\n    font-size: 0.75rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.9);\n}\n.ga4-xref__subtitle {\n    font-size: 0.69rem;\n    color: rgba(130,145,170,0.55);\n}\n.ga4-xref__scroll {\n    overflow-x: auto;\n    -webkit-overflow-scrolling: touch;\n    margin-bottom: 10px;\n}\n.ga4-xref__table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.78rem;\n}\n.ga4-xref__th {\n    padding: 6px 10px;\n    text-align: left;\n    font-size: 0.68rem;\n    font-weight: 600;\n    letter-spacing: 0.04em;\n    text-transform: uppercase;\n    color: rgba(140,155,180,0.7);\n    border-bottom: 1px solid rgba(255,255,255,0.08);\n    white-space: nowrap;\n}\n.ga4-xref__th--num { text-align: right; }\n.ga4-xref__td {\n    padding: 7px 10px;\n    color: rgba(215,225,245,0.85);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n.ga4-xref__td--num {\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n.ga4-xref__td--channels {\n    font-size: 0.72rem;\n    color: rgba(180,195,225,0.7);\n    max-width: 220px;\n}\n.ga4-xref__row--blind {\n    background: rgba(239,68,68,0.04);\n}\n.ga4-xref__row--blind .ga4-xref__td { color: rgba(220,230,250,0.85); }\n.ga4-xref__blind-badge {\n    display: inline-block;\n    font-size: 0.6rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    color: rgba(239,68,68,0.9);\n    background: rgba(239,68,68,0.12);\n    border: 1px solid rgba(239,68,68,0.3);\n    border-radius: 4px;\n    padding: 1px 5px;\n    margin-right: 6px;\n    vertical-align: middle;\n}\n.ga4-xref__no-match {\n    color: rgba(130,145,170,0.45);\n    font-style: italic;\n}\n.ga4-xref__cov--low  { color: rgba(239,68,68,0.85);  font-weight: 600; }\n.ga4-xref__cov--mid  { color: rgba(251,191,36,0.85); font-weight: 600; }\n.ga4-xref__cov--high { color: rgba(74,222,128,0.85); font-weight: 600; }\n.ga4-xref__note {\n    margin: 0;\n    font-size: 0.7rem;\n    color: rgba(120,135,160,0.55);\n    line-height: 1.5;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33627,7 +34397,327 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
 
 .settings-verify-modal__status strong {
     color: #7dd590;
-}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"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","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px 20px;\n    margin-bottom: 18px;\n}\n\n.settings-subpage__toolbar .cta {\n    margin-top: 0;\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn--danger {\n    border-color: rgba(220, 100, 100, 0.5);\n    background: rgba(160, 50, 50, 0.22);\n    color: #ffd8d8;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}\n\n.settings-org-modal__divider {\n    margin: 20px 0 14px;\n    border: none;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-org-modal__danger-title {\n    margin: 0 0 8px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 160, 160, 0.85);\n}\n\n.settings-org-modal__danger-desc {\n    margin: 0 0 12px;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(190, 190, 190, 0.95);\n}\n\n.settings-blacklist-modal__card .settings-org-modal__text-input {\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    cursor: pointer;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-org-modal__field-block {\n    margin-bottom: 14px;\n}\n\n.settings-org-modal__label {\n    display: block;\n    margin-bottom: 6px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n}\n\n/* Workspace-specific styles */\n.settings-workspace__domain {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.1);\n    padding: 3px 8px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.2);\n}\n\n.settings-workspace__description {\n    color: rgba(180, 180, 180, 0.85);\n    font-size: 0.8125rem;\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    display: inline-block;\n}\n\n.settings-workspace__badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 8px;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.settings-workspace__badge--agency {\n    background: rgba(192, 159, 83, 0.15);\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    color: #c0a053;\n}\n\n.settings-workspace__user-count {\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Wider modal for workspaces */\n.settings-blacklist-modal__card--wide {\n    max-width: 520px;\n}\n\n/* User management section */\n.settings-workspace__users-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__users-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__user-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-user-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-user-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__users-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__user-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.settings-workspace__user-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__user-email {\n    font-size: 0.8125rem;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__remove-user-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-user-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-users {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domain management section */\n.settings-workspace__domains-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__domains-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__domain-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-domain-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-domain-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__domains-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__domain-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    gap: 10px;\n}\n\n.settings-workspace__domain-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__domain-info {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    min-width: 0;\n    flex: 1;\n}\n\n.settings-workspace__domain-name {\n    font-size: 0.8125rem;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__primary-badge {\n    flex-shrink: 0;\n    font-size: 0.625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 6px;\n    border-radius: 4px;\n    background: rgba(192, 159, 83, 0.25);\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__domain-actions {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.settings-workspace__set-primary-btn {\n    padding: 4px 8px;\n    border-radius: 4px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 0.6875rem;\n    font-weight: 500;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__set-primary-btn:hover {\n    background: rgba(192, 159, 83, 0.15);\n    border-color: rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__set-primary-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__remove-domain-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-domain-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-domains {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domains cell in table */\n.settings-workspace__domains-cell {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.settings-workspace__domain-count {\n    font-size: 0.6875rem;\n    color: rgba(180, 180, 180, 0.75);\n    font-weight: 500;\n}\n\n/* Domain verification badge */\n.settings-workspace__verify-badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 4px;\n    padding: 2px 8px;\n    border-radius: 4px;\n    font-size: 0.625rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.settings-workspace__verify-badge--verified {\n    background: rgba(80, 180, 100, 0.15);\n    border: 1px solid rgba(80, 180, 100, 0.3);\n    color: #7dd590;\n}\n\n.settings-workspace__verify-badge--unverified {\n    background: rgba(220, 160, 60, 0.15);\n    border: 1px solid rgba(220, 160, 60, 0.3);\n    color: #e8c76a;\n}\n\n.settings-workspace__verify-badge--expired {\n    background: rgba(220, 100, 80, 0.15);\n    border: 1px solid rgba(220, 100, 80, 0.3);\n    color: #f0a8a0;\n}\n\n.settings-workspace__verify-badge--unknown {\n    background: rgba(150, 150, 150, 0.15);\n    border: 1px solid rgba(150, 150, 150, 0.3);\n    color: #aaa;\n}\n\n.settings-workspace__verify-icon {\n    font-size: 0.75rem;\n}\n\n.settings-workspace__verify-btn {\n    padding: 4px 10px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c9a855;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__verify-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-workspace__verify-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Domain Verification Modal */\n.settings-verify-modal__domain {\n    margin: 0 0 20px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.9375rem;\n    color: #f0f0f0;\n}\n\n.settings-verify-modal__instructions {\n    margin-bottom: 20px;\n}\n\n.settings-verify-modal__intro {\n    margin: 0 0 16px;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.9);\n    line-height: 1.5;\n}\n\n.settings-verify-modal__method {\n    margin-bottom: 18px;\n    padding: 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.2);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-verify-modal__method h4 {\n    margin: 0 0 8px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-verify-modal__method p {\n    margin: 0 0 10px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n    line-height: 1.45;\n}\n\n.settings-verify-modal__method code {\n    background: rgba(0, 0, 0, 0.3);\n    padding: 1px 4px;\n    border-radius: 3px;\n    font-size: 0.75rem;\n}\n\n.settings-verify-modal__code-block {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    overflow-x: auto;\n}\n\n.settings-verify-modal__code-block code {\n    flex: 1;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.75rem;\n    color: #b8e0b8;\n    background: transparent;\n    padding: 0;\n    white-space: nowrap;\n}\n\n.settings-verify-modal__copy-btn {\n    flex-shrink: 0;\n    padding: 5px 10px;\n    border-radius: 5px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.08);\n    color: #ccc;\n    font-size: 0.6875rem;\n    font-weight: 500;\n    cursor: pointer;\n    transition: background 0.2s ease;\n}\n\n.settings-verify-modal__copy-btn:hover {\n    background: rgba(255, 255, 255, 0.15);\n}\n\n.settings-verify-modal__token-info {\n    margin-top: 14px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    background: rgba(192, 159, 83, 0.08);\n    border: 1px solid rgba(192, 159, 83, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-verify-modal__token-info strong {\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-verify-modal__token {\n    display: block;\n    margin-top: 6px;\n    padding: 6px 10px;\n    border-radius: 5px;\n    background: rgba(0, 0, 0, 0.25);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.75rem;\n    color: #d4b87a;\n    word-break: break-all;\n}\n\n.settings-verify-modal__result {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 16px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n}\n\n.settings-verify-modal__result--success {\n    background: rgba(80, 180, 100, 0.12);\n    border: 1px solid rgba(80, 180, 100, 0.3);\n    color: #7dd590;\n}\n\n.settings-verify-modal__result--error {\n    background: rgba(220, 100, 80, 0.12);\n    border: 1px solid rgba(220, 100, 80, 0.3);\n    color: #f0a8a0;\n}\n\n.settings-verify-modal__result-icon {\n    font-size: 1rem;\n}\n\n.settings-verify-modal__status {\n    margin-top: 16px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    background: rgba(80, 180, 100, 0.08);\n    border: 1px solid rgba(80, 180, 100, 0.2);\n    font-size: 0.8125rem;\n}\n\n.settings-verify-modal__status p {\n    margin: 0;\n    color: rgba(180, 200, 180, 0.9);\n}\n\n.settings-verify-modal__status p + p {\n    margin-top: 6px;\n}\n\n.settings-verify-modal__status strong {\n    color: #7dd590;\n}"],"sourceRoot":""}]);
+}
+
+/* ── Analytics Script settings page ─────────────────────────────────────── */
+
+.settings-section {
+    max-width: 760px;
+    padding: 4px 0 48px;
+}
+
+.as-intro {
+    margin-bottom: 24px;
+}
+
+.as-intro p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: rgba(197, 197, 197, 0.9);
+}
+
+.as-domain-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.as-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.9);
+    white-space: nowrap;
+}
+
+.as-select {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    color: #ececec;
+    font-size: 0.9rem;
+    padding: 6px 10px;
+    min-width: 220px;
+    cursor: pointer;
+}
+
+.as-select:focus {
+    outline: 2px solid rgba(192, 159, 83, 0.5);
+    outline-offset: 2px;
+}
+
+.as-error {
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    background: rgba(220, 80, 80, 0.1);
+    border: 1px solid rgba(220, 100, 100, 0.3);
+    color: #f5aeae;
+}
+
+.as-loading {
+    color: rgba(160, 160, 160, 0.8);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.as-empty {
+    padding: 28px 24px;
+    border-radius: 14px;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.as-empty p {
+    margin: 0 0 16px;
+    color: rgba(197, 197, 197, 0.8);
+    font-size: 0.9375rem;
+}
+
+.as-generate-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(192, 159, 83, 0.5);
+    background: rgba(192, 159, 83, 0.12);
+    color: rgba(227, 200, 130, 0.95);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.as-generate-btn:hover:not(:disabled) {
+    background: rgba(192, 159, 83, 0.22);
+    border-color: rgba(192, 159, 83, 0.7);
+}
+
+.as-generate-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.as-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.as-key-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.as-key-row > div:first-child {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.as-key-value {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.95rem;
+    color: #ececec;
+    letter-spacing: 0.04em;
+}
+
+.as-key-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.as-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+.as-status::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.as-status--active {
+    background: rgba(74, 222, 128, 0.12);
+    color: #6ee7a0;
+    border: 1px solid rgba(74, 222, 128, 0.25);
+}
+
+.as-status--active::before {
+    background: #4ade80;
+}
+
+.as-status--inactive {
+    background: rgba(160, 160, 160, 0.1);
+    color: rgba(180, 180, 180, 0.8);
+    border: 1px solid rgba(160, 160, 160, 0.2);
+}
+
+.as-status--inactive::before {
+    background: rgba(180, 180, 180, 0.6);
+}
+
+.as-copy-btn {
+    padding: 5px 13px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(200, 200, 200, 0.9);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    white-space: nowrap;
+}
+
+.as-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: #ececec;
+}
+
+.as-copy-btn--done {
+    background: rgba(74, 222, 128, 0.14);
+    border-color: rgba(74, 222, 128, 0.35);
+    color: #6ee7a0;
+}
+
+.as-snippet {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.as-snippet__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.as-snippet__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(192, 159, 83, 0.9);
+}
+
+.as-snippet__code {
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(0, 0, 0, 0.35);
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #c9e9a0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: auto;
+}
+
+.as-snippet__hint {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: rgba(170, 170, 170, 0.75);
+    line-height: 1.55;
+}
+
+.as-snippet__hint code {
+    font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+    font-size: 0.8em;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: #d4b896;
+}
+
+.as-privacy-note {
+    padding: 18px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.as-privacy-note__title {
+    margin: 0 0 14px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(180, 180, 180, 0.7);
+}
+
+.as-privacy-note__cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+}
+
+@media (max-width: 560px) {
+    .as-privacy-note__cols {
+        grid-template-columns: 1fr;
+    }
+}
+
+.as-privacy-note__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.as-privacy-note__list li {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    padding-left: 18px;
+    position: relative;
+    color: rgba(197, 197, 197, 0.82);
+}
+
+.as-privacy-note__list li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 0.8rem;
+}
+
+.as-privacy-note__list--yes li::before {
+    content: "✓";
+    color: #4ade80;
+}
+
+.as-privacy-note__list--no li::before {
+    content: "✕";
+    color: rgba(239, 68, 68, 0.8);
+}`, "",{"version":3,"sources":["webpack://./src/Pages/Settings/Style.css"],"names":[],"mappings":"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","sourcesContent":[".settingsNavItem {\n    display: inline-block;\n    padding: 15px;\n    color: inherit;\n    text-decoration: none;\n}\n\n.settingsNavItem:hover {\n    background-color: rgb(197, 197, 197);\n    color: initial;\n    border-radius: 10px;\n}\n\n.my-0 {\n    margin: 0;\n}\n\n/* Settings index hub (aligned with Reports hub styling) */\n.settings-hub {\n    padding: 8px 0 48px;\n    max-width: 960px;\n}\n\n.settings-hub__intro {\n    margin: 0 0 24px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.92);\n}\n\n.settings-hub__scope {\n    display: inline-flex;\n    align-items: center;\n    gap: 8px;\n    margin-bottom: 28px;\n    padding: 8px 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.88);\n}\n\n.settings-hub__scope-label {\n    font-weight: 600;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    font-size: 0.65rem;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-hub__scope-value {\n    font-weight: 500;\n    color: #ececec;\n    word-break: break-word;\n}\n\n.settings-hub__empty {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.9);\n}\n\n.settings-hub__grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));\n    gap: 16px;\n}\n\n.settings-hub__card {\n    display: flex;\n    flex-direction: column;\n    align-items: flex-start;\n    text-align: left;\n    padding: 20px 20px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    text-decoration: none;\n    color: inherit;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.2s ease,\n        box-shadow 0.2s ease;\n}\n\n.settings-hub__card:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: linear-gradient(165deg, rgba(68, 64, 58, 0.45) 0%, rgba(40, 38, 34, 0.85) 100%);\n    box-shadow:\n        0 16px 40px rgba(0, 0, 0, 0.28),\n        inset 0 1px 0 rgba(255, 255, 255, 0.06);\n    transform: translateY(-1px);\n}\n\n.settings-hub__card:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 3px;\n}\n\n.settings-hub__card-title {\n    margin: 0 0 8px;\n    font-size: 1.05rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    color: #f2f2f2;\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    width: 100%;\n}\n\n.settings-hub__card-arrow {\n    flex-shrink: 0;\n    width: 10px;\n    height: 10px;\n    margin-left: auto;\n    border-right: 2px solid rgba(192, 159, 83, 0.75);\n    border-bottom: 2px solid rgba(192, 159, 83, 0.75);\n    transform: rotate(-45deg);\n    margin-top: 2px;\n}\n\n.settings-hub__card-desc {\n    margin: 0;\n    font-size: 0.8125rem;\n    line-height: 1.5;\n    color: rgba(180, 180, 180, 0.95);\n}\n\n@media screen and (max-width: 600px) {\n    .settings-hub__grid {\n        grid-template-columns: 1fr;\n    }\n}\n\n/* ——— Shared layout for Settings subpages ——— */\n.settings-subpage {\n    max-width: 720px;\n    padding: 8px 0 56px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n}\n\n.settings-subpage--wide {\n    max-width: 960px;\n}\n\n.settings-subpage__intro {\n    margin: 0 0 20px;\n    font-size: 0.9375rem;\n    line-height: 1.55;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-subpage__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 12px 20px;\n    margin-bottom: 18px;\n}\n\n.settings-subpage__toolbar .cta {\n    margin-top: 0;\n}\n\n.settings-subpage__back {\n    display: inline-flex;\n    align-items: center;\n    margin-bottom: 18px;\n    font-size: 0.875rem;\n    font-weight: 500;\n    color: #8f9aad;\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition:\n        color 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-subpage__back:hover {\n    color: #c0a053;\n    border-bottom-color: rgba(192, 159, 83, 0.45);\n}\n\n.settings-subpage__panel {\n    padding: 22px 22px 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.55) 0%, rgba(28, 28, 32, 0.72) 100%);\n    box-shadow:\n        0 12px 32px rgba(0, 0, 0, 0.22),\n        inset 0 1px 0 rgba(255, 255, 255, 0.05);\n    margin-bottom: 20px;\n}\n\n.settings-subpage__panel--flush {\n    padding: 0;\n    overflow: hidden;\n}\n\n.settings-subpage__status {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(192, 159, 83, 0.12);\n    border: 1px solid rgba(192, 159, 83, 0.25);\n    color: #e8dcc8;\n}\n\n.settings-subpage__status--error {\n    background: rgba(220, 80, 80, 0.12);\n    border-color: rgba(220, 100, 100, 0.35);\n    color: #f0c4c4;\n}\n\n.settings-subpage__form {\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n.settings-subpage__field-row {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    gap: 12px 20px;\n}\n\n.settings-subpage__field-row label {\n    font-size: 0.875rem;\n    font-weight: 600;\n    color: #d8d8d8;\n    min-width: 140px;\n}\n\n.settings-subpage__select {\n    flex: 1;\n    min-width: 200px;\n    padding: 10px 12px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n}\n\n.settings-subpage__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.settings-subpage__submit,\n.settings-subpage .cta {\n    align-self: flex-start;\n    margin-top: 8px;\n    padding: 11px 22px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.22) 0%, rgba(160, 130, 70, 0.18) 100%);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition:\n        border-color 0.2s ease,\n        background 0.2s ease,\n        transform 0.15s ease;\n}\n\n.settings-subpage__submit:hover,\n.settings-subpage .cta:hover {\n    border-color: rgba(192, 159, 83, 0.65);\n    background: linear-gradient(180deg, rgba(192, 159, 83, 0.32) 0%, rgba(160, 130, 70, 0.26) 100%);\n}\n\n.settings-subpage__submit:focus-visible,\n.settings-subpage .cta:focus-visible {\n    outline: 2px solid rgba(192, 159, 83, 0.65);\n    outline-offset: 2px;\n}\n\n.settings-subpage__submit:disabled,\n.settings-subpage .cta:disabled {\n    opacity: 0.45;\n    cursor: not-allowed;\n    transform: none;\n}\n\n/* Data tables (users, organisations) */\n.settings-table-wrap {\n    margin-top: 8px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    overflow-x: auto;\n}\n\n.settings-table {\n    width: 100%;\n    min-width: 560px;\n    border-collapse: collapse;\n    font-size: 0.875rem;\n    color: #e0e0e0;\n}\n\n.settings-table th {\n    text-align: left;\n    padding: 12px 16px;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.95);\n    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.25);\n}\n\n.settings-table td {\n    padding: 14px 16px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    vertical-align: middle;\n}\n\n.settings-table tr:last-child td {\n    border-bottom: none;\n}\n\n.settings-table tbody tr:hover td {\n    background: rgba(255, 255, 255, 0.03);\n}\n\n.settings-table .cta {\n    margin-top: 0;\n    padding: 8px 14px;\n    font-size: 0.8125rem;\n}\n\n.settings-subpage__empty {\n    margin: 0;\n    padding: 24px 16px;\n    text-align: center;\n    font-size: 0.875rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Blacklist IP (page-specific, dark theme) */\n.settings-blacklist__toolbar {\n    display: flex;\n    flex-wrap: wrap;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    margin-bottom: 20px;\n    padding: 16px 18px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(52, 52, 56, 0.5) 0%, rgba(28, 28, 32, 0.65) 100%);\n}\n\n.settings-blacklist__toolbar p {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.92);\n    line-height: 1.45;\n}\n\n.settings-blacklist__ip {\n    font-weight: 600;\n    color: #c0a053;\n}\n\n.settings-blacklist__add {\n    flex-shrink: 0;\n    width: 44px;\n    height: 44px;\n    border-radius: 12px;\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    background: rgba(192, 159, 83, 0.15);\n    color: #f0e6d2;\n    font-size: 1.5rem;\n    line-height: 1;\n    cursor: pointer;\n    transition:\n        background 0.2s ease,\n        border-color 0.2s ease;\n}\n\n.settings-blacklist__add:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-blacklist__list {\n    list-style: none;\n    margin: 0;\n    padding: 8px 0;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.22);\n}\n\n.settings-blacklist__item {\n    padding: 12px 18px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    font-family: ui-monospace, monospace;\n    font-size: 0.875rem;\n    color: #e4e4e4;\n}\n\n.settings-blacklist__item:last-child {\n    border-bottom: none;\n}\n\n.settings-blacklist-modal {\n    position: fixed;\n    inset: 0;\n    z-index: 220;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    padding: 20px;\n    background: rgba(0, 0, 0, 0.65);\n    backdrop-filter: blur(6px);\n}\n\n.settings-blacklist-modal__card {\n    width: 100%;\n    max-width: 420px;\n    padding: 24px 22px 22px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    background: linear-gradient(168deg, rgba(48, 48, 52, 0.98) 0%, rgba(24, 24, 28, 0.99) 100%);\n    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5);\n}\n\n.settings-blacklist-modal__card h2 {\n    margin: 0 0 16px;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #f2f2f2;\n}\n\n.settings-blacklist-modal__card input {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: ui-monospace, monospace;\n}\n\n.settings-blacklist-modal__card input:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-blacklist-modal__actions {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 10px;\n    justify-content: flex-end;\n}\n\n.settings-blacklist-modal__btn {\n    padding: 10px 18px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.06);\n    color: #e0e0e0;\n}\n\n.settings-blacklist-modal__btn--primary {\n    border-color: rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.2);\n    color: #faf6ee;\n}\n\n.settings-blacklist-modal__btn--danger {\n    border-color: rgba(220, 100, 100, 0.5);\n    background: rgba(160, 50, 50, 0.22);\n    color: #ffd8d8;\n}\n\n.settings-blacklist-modal__btn:hover {\n    filter: brightness(1.08);\n}\n\n.settings-org-modal__divider {\n    margin: 20px 0 14px;\n    border: none;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-org-modal__danger-title {\n    margin: 0 0 8px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: rgba(255, 160, 160, 0.85);\n}\n\n.settings-org-modal__danger-desc {\n    margin: 0 0 12px;\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    color: rgba(190, 190, 190, 0.95);\n}\n\n.settings-blacklist-modal__card .settings-org-modal__text-input {\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 10px 12px;\n    margin-bottom: 14px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.35);\n    color: #f0f0f0;\n    font-size: 0.875rem;\n    font-family: inherit;\n    cursor: pointer;\n}\n\n.settings-blacklist-modal__card .settings-org-modal__select:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-org-modal__field-block {\n    margin-bottom: 14px;\n}\n\n.settings-org-modal__label {\n    display: block;\n    margin-bottom: 6px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #c8c8c8;\n}\n\n/* Workspace-specific styles */\n.settings-workspace__domain {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.8125rem;\n    color: #c0a053;\n    background: rgba(192, 159, 83, 0.1);\n    padding: 3px 8px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.2);\n}\n\n.settings-workspace__description {\n    color: rgba(180, 180, 180, 0.85);\n    font-size: 0.8125rem;\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    display: inline-block;\n}\n\n.settings-workspace__badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    padding: 4px 10px;\n    border-radius: 8px;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.settings-workspace__badge--agency {\n    background: rgba(192, 159, 83, 0.15);\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    color: #c0a053;\n}\n\n.settings-workspace__user-count {\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n}\n\n/* Wider modal for workspaces */\n.settings-blacklist-modal__card--wide {\n    max-width: 520px;\n}\n\n/* User management section */\n.settings-workspace__users-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__users-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__user-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-user-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-user-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__users-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__user-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.settings-workspace__user-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__user-email {\n    font-size: 0.8125rem;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__remove-user-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-user-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-user-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-users {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domain management section */\n.settings-workspace__domains-section {\n    margin-top: 16px;\n    padding-top: 16px;\n    border-top: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-workspace__domains-add {\n    display: flex;\n    gap: 8px;\n    margin-bottom: 12px;\n}\n\n.settings-workspace__domain-input {\n    flex: 1;\n    margin-bottom: 0 !important;\n}\n\n.settings-workspace__add-domain-btn {\n    flex-shrink: 0;\n    padding: 10px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.45);\n    background: rgba(192, 159, 83, 0.18);\n    color: #f5f0e6;\n    font-size: 0.875rem;\n    font-weight: 600;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__add-domain-btn:hover {\n    background: rgba(192, 159, 83, 0.28);\n    border-color: rgba(192, 159, 83, 0.6);\n}\n\n.settings-workspace__add-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__domains-list {\n    list-style: none;\n    margin: 0;\n    padding: 0;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.2);\n    max-height: 180px;\n    overflow-y: auto;\n}\n\n.settings-workspace__domain-item {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 10px 14px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n    gap: 10px;\n}\n\n.settings-workspace__domain-item:last-child {\n    border-bottom: none;\n}\n\n.settings-workspace__domain-info {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    min-width: 0;\n    flex: 1;\n}\n\n.settings-workspace__domain-name {\n    font-size: 0.8125rem;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    color: #e4e4e4;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.settings-workspace__primary-badge {\n    flex-shrink: 0;\n    font-size: 0.625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 6px;\n    border-radius: 4px;\n    background: rgba(192, 159, 83, 0.25);\n    border: 1px solid rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__domain-actions {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.settings-workspace__set-primary-btn {\n    padding: 4px 8px;\n    border-radius: 4px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(255, 255, 255, 0.7);\n    font-size: 0.6875rem;\n    font-weight: 500;\n    font-family: inherit;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__set-primary-btn:hover {\n    background: rgba(192, 159, 83, 0.15);\n    border-color: rgba(192, 159, 83, 0.4);\n    color: #c0a053;\n}\n\n.settings-workspace__set-primary-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__remove-domain-btn {\n    flex-shrink: 0;\n    width: 24px;\n    height: 24px;\n    border-radius: 6px;\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    background: rgba(220, 80, 80, 0.12);\n    color: #f0c4c4;\n    font-size: 1rem;\n    line-height: 1;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__remove-domain-btn:hover {\n    background: rgba(220, 80, 80, 0.25);\n    border-color: rgba(220, 100, 100, 0.5);\n}\n\n.settings-workspace__remove-domain-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.settings-workspace__no-domains {\n    margin: 0;\n    padding: 14px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.7);\n    text-align: center;\n    border-radius: 10px;\n    border: 1px dashed rgba(255, 255, 255, 0.1);\n    background: rgba(0, 0, 0, 0.1);\n}\n\n/* Domains cell in table */\n.settings-workspace__domains-cell {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.settings-workspace__domain-count {\n    font-size: 0.6875rem;\n    color: rgba(180, 180, 180, 0.75);\n    font-weight: 500;\n}\n\n/* Domain verification badge */\n.settings-workspace__verify-badge {\n    display: inline-flex;\n    align-items: center;\n    gap: 4px;\n    padding: 2px 8px;\n    border-radius: 4px;\n    font-size: 0.625rem;\n    font-weight: 600;\n    text-transform: uppercase;\n    letter-spacing: 0.04em;\n}\n\n.settings-workspace__verify-badge--verified {\n    background: rgba(80, 180, 100, 0.15);\n    border: 1px solid rgba(80, 180, 100, 0.3);\n    color: #7dd590;\n}\n\n.settings-workspace__verify-badge--unverified {\n    background: rgba(220, 160, 60, 0.15);\n    border: 1px solid rgba(220, 160, 60, 0.3);\n    color: #e8c76a;\n}\n\n.settings-workspace__verify-badge--expired {\n    background: rgba(220, 100, 80, 0.15);\n    border: 1px solid rgba(220, 100, 80, 0.3);\n    color: #f0a8a0;\n}\n\n.settings-workspace__verify-badge--unknown {\n    background: rgba(150, 150, 150, 0.15);\n    border: 1px solid rgba(150, 150, 150, 0.3);\n    color: #aaa;\n}\n\n.settings-workspace__verify-icon {\n    font-size: 0.75rem;\n}\n\n.settings-workspace__verify-btn {\n    padding: 4px 10px;\n    border-radius: 6px;\n    border: 1px solid rgba(192, 159, 83, 0.3);\n    background: rgba(192, 159, 83, 0.1);\n    color: #c9a855;\n    font-size: 0.6875rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s ease, border-color 0.2s ease;\n}\n\n.settings-workspace__verify-btn:hover {\n    background: rgba(192, 159, 83, 0.2);\n    border-color: rgba(192, 159, 83, 0.5);\n}\n\n.settings-workspace__verify-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n/* Domain Verification Modal */\n.settings-verify-modal__domain {\n    margin: 0 0 20px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.9375rem;\n    color: #f0f0f0;\n}\n\n.settings-verify-modal__instructions {\n    margin-bottom: 20px;\n}\n\n.settings-verify-modal__intro {\n    margin: 0 0 16px;\n    font-size: 0.875rem;\n    color: rgba(197, 197, 197, 0.9);\n    line-height: 1.5;\n}\n\n.settings-verify-modal__method {\n    margin-bottom: 18px;\n    padding: 14px;\n    border-radius: 10px;\n    background: rgba(0, 0, 0, 0.2);\n    border: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.settings-verify-modal__method h4 {\n    margin: 0 0 8px;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-verify-modal__method p {\n    margin: 0 0 10px;\n    font-size: 0.8125rem;\n    color: rgba(180, 180, 180, 0.85);\n    line-height: 1.45;\n}\n\n.settings-verify-modal__method code {\n    background: rgba(0, 0, 0, 0.3);\n    padding: 1px 4px;\n    border-radius: 3px;\n    font-size: 0.75rem;\n}\n\n.settings-verify-modal__code-block {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    padding: 10px 12px;\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.35);\n    border: 1px solid rgba(255, 255, 255, 0.06);\n    overflow-x: auto;\n}\n\n.settings-verify-modal__code-block code {\n    flex: 1;\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.75rem;\n    color: #b8e0b8;\n    background: transparent;\n    padding: 0;\n    white-space: nowrap;\n}\n\n.settings-verify-modal__copy-btn {\n    flex-shrink: 0;\n    padding: 5px 10px;\n    border-radius: 5px;\n    border: 1px solid rgba(255, 255, 255, 0.15);\n    background: rgba(255, 255, 255, 0.08);\n    color: #ccc;\n    font-size: 0.6875rem;\n    font-weight: 500;\n    cursor: pointer;\n    transition: background 0.2s ease;\n}\n\n.settings-verify-modal__copy-btn:hover {\n    background: rgba(255, 255, 255, 0.15);\n}\n\n.settings-verify-modal__token-info {\n    margin-top: 14px;\n    padding: 10px 14px;\n    border-radius: 8px;\n    background: rgba(192, 159, 83, 0.08);\n    border: 1px solid rgba(192, 159, 83, 0.2);\n    font-size: 0.8125rem;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.settings-verify-modal__token-info strong {\n    color: rgba(192, 159, 83, 0.95);\n}\n\n.settings-verify-modal__token {\n    display: block;\n    margin-top: 6px;\n    padding: 6px 10px;\n    border-radius: 5px;\n    background: rgba(0, 0, 0, 0.25);\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    font-size: 0.75rem;\n    color: #d4b87a;\n    word-break: break-all;\n}\n\n.settings-verify-modal__result {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n    margin-bottom: 16px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    font-size: 0.8125rem;\n    font-weight: 500;\n}\n\n.settings-verify-modal__result--success {\n    background: rgba(80, 180, 100, 0.12);\n    border: 1px solid rgba(80, 180, 100, 0.3);\n    color: #7dd590;\n}\n\n.settings-verify-modal__result--error {\n    background: rgba(220, 100, 80, 0.12);\n    border: 1px solid rgba(220, 100, 80, 0.3);\n    color: #f0a8a0;\n}\n\n.settings-verify-modal__result-icon {\n    font-size: 1rem;\n}\n\n.settings-verify-modal__status {\n    margin-top: 16px;\n    padding: 12px 14px;\n    border-radius: 8px;\n    background: rgba(80, 180, 100, 0.08);\n    border: 1px solid rgba(80, 180, 100, 0.2);\n    font-size: 0.8125rem;\n}\n\n.settings-verify-modal__status p {\n    margin: 0;\n    color: rgba(180, 200, 180, 0.9);\n}\n\n.settings-verify-modal__status p + p {\n    margin-top: 6px;\n}\n\n.settings-verify-modal__status strong {\n    color: #7dd590;\n}\n\n/* ── Analytics Script settings page ─────────────────────────────────────── */\n\n.settings-section {\n    max-width: 760px;\n    padding: 4px 0 48px;\n}\n\n.as-intro {\n    margin-bottom: 24px;\n}\n\n.as-intro p {\n    margin: 0;\n    font-size: 0.9375rem;\n    line-height: 1.6;\n    color: rgba(197, 197, 197, 0.9);\n}\n\n.as-domain-row {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n    margin-bottom: 24px;\n}\n\n.as-label {\n    font-size: 0.75rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n    white-space: nowrap;\n}\n\n.as-select {\n    background: rgba(0, 0, 0, 0.35);\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    border-radius: 8px;\n    color: #ececec;\n    font-size: 0.9rem;\n    padding: 6px 10px;\n    min-width: 220px;\n    cursor: pointer;\n}\n\n.as-select:focus {\n    outline: 2px solid rgba(192, 159, 83, 0.5);\n    outline-offset: 2px;\n}\n\n.as-error {\n    margin: 0 0 16px;\n    padding: 10px 14px;\n    border-radius: 10px;\n    font-size: 0.875rem;\n    background: rgba(220, 80, 80, 0.1);\n    border: 1px solid rgba(220, 100, 100, 0.3);\n    color: #f5aeae;\n}\n\n.as-loading {\n    color: rgba(160, 160, 160, 0.8);\n    font-size: 0.875rem;\n    margin: 0;\n}\n\n.as-empty {\n    padding: 28px 24px;\n    border-radius: 14px;\n    border: 1px dashed rgba(255, 255, 255, 0.12);\n    background: rgba(0, 0, 0, 0.15);\n    text-align: center;\n}\n\n.as-empty p {\n    margin: 0 0 16px;\n    color: rgba(197, 197, 197, 0.8);\n    font-size: 0.9375rem;\n}\n\n.as-generate-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 9px 20px;\n    border-radius: 10px;\n    border: 1px solid rgba(192, 159, 83, 0.5);\n    background: rgba(192, 159, 83, 0.12);\n    color: rgba(227, 200, 130, 0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.as-generate-btn:hover:not(:disabled) {\n    background: rgba(192, 159, 83, 0.22);\n    border-color: rgba(192, 159, 83, 0.7);\n}\n\n.as-generate-btn:disabled {\n    opacity: 0.5;\n    cursor: not-allowed;\n}\n\n.as-card {\n    display: flex;\n    flex-direction: column;\n    gap: 20px;\n    padding: 24px;\n    border-radius: 14px;\n    border: 1px solid rgba(255, 255, 255, 0.1);\n    background: linear-gradient(165deg, rgba(58, 58, 62, 0.55) 0%, rgba(36, 36, 40, 0.75) 100%);\n    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.05);\n}\n\n.as-key-row {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    gap: 16px;\n    flex-wrap: wrap;\n}\n\n.as-key-row > div:first-child {\n    display: flex;\n    align-items: baseline;\n    gap: 12px;\n}\n\n.as-key-value {\n    font-family: \"SF Mono\", \"Fira Code\", \"Cascadia Code\", monospace;\n    font-size: 0.95rem;\n    color: #ececec;\n    letter-spacing: 0.04em;\n}\n\n.as-key-actions {\n    display: flex;\n    align-items: center;\n    gap: 12px;\n}\n\n.as-status {\n    display: inline-flex;\n    align-items: center;\n    gap: 6px;\n    font-size: 0.75rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    padding: 3px 10px;\n    border-radius: 999px;\n}\n\n.as-status::before {\n    content: \"\";\n    display: inline-block;\n    width: 6px;\n    height: 6px;\n    border-radius: 50%;\n}\n\n.as-status--active {\n    background: rgba(74, 222, 128, 0.12);\n    color: #6ee7a0;\n    border: 1px solid rgba(74, 222, 128, 0.25);\n}\n\n.as-status--active::before {\n    background: #4ade80;\n}\n\n.as-status--inactive {\n    background: rgba(160, 160, 160, 0.1);\n    color: rgba(180, 180, 180, 0.8);\n    border: 1px solid rgba(160, 160, 160, 0.2);\n}\n\n.as-status--inactive::before {\n    background: rgba(180, 180, 180, 0.6);\n}\n\n.as-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(255, 255, 255, 0.05);\n    color: rgba(200, 200, 200, 0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.18s, border-color 0.18s, color 0.18s;\n    white-space: nowrap;\n}\n\n.as-copy-btn:hover {\n    background: rgba(255, 255, 255, 0.1);\n    border-color: rgba(255, 255, 255, 0.22);\n    color: #ececec;\n}\n\n.as-copy-btn--done {\n    background: rgba(74, 222, 128, 0.14);\n    border-color: rgba(74, 222, 128, 0.35);\n    color: #6ee7a0;\n}\n\n.as-snippet {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.as-snippet__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.as-snippet__label {\n    font-size: 0.75rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.9);\n}\n\n.as-snippet__code {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.09);\n    background: rgba(0, 0, 0, 0.35);\n    font-family: \"SF Mono\", \"Fira Code\", \"Cascadia Code\", monospace;\n    font-size: 0.8rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n    overflow-x: auto;\n}\n\n.as-snippet__hint {\n    margin: 0;\n    font-size: 0.8125rem;\n    color: rgba(170, 170, 170, 0.75);\n    line-height: 1.55;\n}\n\n.as-snippet__hint code {\n    font-family: \"SF Mono\", \"Fira Code\", \"Cascadia Code\", monospace;\n    font-size: 0.8em;\n    background: rgba(255, 255, 255, 0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n\n.as-privacy-note {\n    padding: 18px 20px;\n    border-radius: 12px;\n    border: 1px solid rgba(255, 255, 255, 0.07);\n    background: rgba(0, 0, 0, 0.2);\n}\n\n.as-privacy-note__title {\n    margin: 0 0 14px;\n    font-size: 0.8125rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(180, 180, 180, 0.7);\n}\n\n.as-privacy-note__cols {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px 24px;\n}\n\n@media (max-width: 560px) {\n    .as-privacy-note__cols {\n        grid-template-columns: 1fr;\n    }\n}\n\n.as-privacy-note__list {\n    margin: 0;\n    padding: 0;\n    list-style: none;\n    display: flex;\n    flex-direction: column;\n    gap: 5px;\n}\n\n.as-privacy-note__list li {\n    font-size: 0.8125rem;\n    line-height: 1.45;\n    padding-left: 18px;\n    position: relative;\n    color: rgba(197, 197, 197, 0.82);\n}\n\n.as-privacy-note__list li::before {\n    position: absolute;\n    left: 0;\n    top: 0;\n    font-size: 0.8rem;\n}\n\n.as-privacy-note__list--yes li::before {\n    content: \"✓\";\n    color: #4ade80;\n}\n\n.as-privacy-note__list--no li::before {\n    content: \"✕\";\n    color: rgba(239, 68, 68, 0.8);\n}"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -39386,17 +40476,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pages_DSR__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./Pages/DSR */ "./src/Pages/DSR/index.js");
 /* harmony import */ var _Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__ = __webpack_require__(/*! ./Pages/DSR/DSRDetail */ "./src/Pages/DSR/DSRDetail.js");
 /* harmony import */ var _Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./Pages/Settings/AdConnections */ "./src/Pages/Settings/AdConnections/index.js");
-/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
-/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
-/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
-/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _Pages_Settings_AnalyticsScript__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Pages/Settings/AnalyticsScript */ "./src/Pages/Settings/AnalyticsScript/index.js");
+/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
+/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
+/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -39463,7 +40555,7 @@ var Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
-var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("organisation"));
+var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].getItem("organisation"));
 var AllOrg = createContext(null);
 var DomainContext = createContext(null);
 var WorkspaceContext = createContext([null, function () {}]);
@@ -39472,7 +40564,7 @@ function App() {
     _useState2 = _slicedToArray(_useState, 2),
     dashboardView = _useState2[0],
     setDashboardView = _useState2[1];
-  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("organisation") : null),
+  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].getItem("organisation") : null),
     _useState4 = _slicedToArray(_useState3, 2),
     organisation = _useState4[0],
     setOrganisation = _useState4[1];
@@ -39504,7 +40596,7 @@ function App() {
     domainError = _useState12[0],
     setDomainError = _useState12[1];
   var _useState13 = useState(function () {
-      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("subscription");
+      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].getItem("subscription");
       if (cached) {
         try {
           return JSON.parse(cached);
@@ -39525,14 +40617,14 @@ function App() {
     setId = _useState16[1];
   var navigate = window.ReactRouterDOM.useHistory();
   useEffect(function () {
-    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("globals");
+    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].getItem("globals");
     var path = window.location.pathname;
     var isApiRoute = path === "/api" || path.startsWith("/api/");
     if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
       window.location.replace("/login");
     }
   }, []);
-  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("globals") != null) {
+  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].getItem("globals") != null) {
     var _getOrg2;
     var path = window.location.pathname;
     // Only redirect if id is present and not already on dashboard
@@ -39550,7 +40642,7 @@ function App() {
         organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
@@ -39558,15 +40650,15 @@ function App() {
       });
       (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.headers, JSON.stringify({
         user: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId(),
-        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
+        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
         setSubscriptionStatus(data);
-        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].setItem("subscription", JSON.stringify(data));
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].setItem("subscription", JSON.stringify(data));
       });
       if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
         (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.headers).then(function (data) {
@@ -39609,7 +40701,7 @@ function App() {
         });
       }
     }, []);
-    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
+    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
     var isDevOrg = Number(orgId) === 1;
     var hasNoSubscription = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" || typeof (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.message) === "string" && subscriptionStatus.message.includes("Subscription not found");
     var subscriptionLoading = !isDevOrg && !hasNoSubscription && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
@@ -39638,7 +40730,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -39651,7 +40743,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -39672,11 +40764,11 @@ function App() {
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
@@ -39685,7 +40777,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -39694,7 +40786,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -39703,7 +40795,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -39712,7 +40804,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -39721,28 +40813,28 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport_ReconcilePage__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -39751,7 +40843,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -39760,7 +40852,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -39769,7 +40861,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -39778,7 +40870,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -39787,7 +40879,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -39796,7 +40888,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
@@ -39804,7 +40896,7 @@ function App() {
         path: "/dashboard"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
-        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
+        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/login",
         exact: true
@@ -39812,56 +40904,56 @@ function App() {
         path: "/auth-login"
       }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/config-gdpr"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "starter",
         featureName: "Jurisdiction Configuration",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_42__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/legal-basis"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "Legal Basis Tracking",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_43__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa/:entryId"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_45__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_44__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr/:requestId",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR__WEBPACK_IMPORTED_MODULE_46__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/blacklist-ip"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org) {
-        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__["default"].getItem("organisation");
+        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__["default"].getItem("organisation");
         var org = null;
         try {
           org = JSON.parse(orgRaw);
         } catch (_unused4) {/* ignore */}
         var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
-        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
           minTier: "agency-pro",
           featureName: "Client Workspaces",
           fullPage: true
@@ -39875,22 +40967,29 @@ function App() {
       }())), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ad-connections",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "Ad Connections",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/settings/analytics-script",
+        exact: true
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
+        minTier: "starter",
+        featureName: "Analytics Script",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Pages_Settings_AnalyticsScript__WEBPACK_IMPORTED_MODULE_49__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/plans",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_52__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_50__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_53__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_51__["default"], {
         minTier: "growth",
         featureName: "Portfolio Benchmark",
         fullPage: true
@@ -39905,7 +41004,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/cookie-database",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_53__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_49__["default"], null) : /*#__PURE__*/React.createElement("p", {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_54__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_50__["default"], null) : /*#__PURE__*/React.createElement("p", {
         style: {
           padding: "40px",
           color: "#999"
@@ -39924,7 +41023,7 @@ function App() {
       }, /*#__PURE__*/React.createElement("img", {
         src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
         className: "crawlerPage-logo"
-      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_51__["default"], null)));
+      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_52__["default"], null)));
     }
   } else {
     return /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
@@ -46233,6 +47332,16 @@ function SideNav(props) {
     className: "sidebar__list"
   }, props === null || props === void 0 || (_props$links = props.links) === null || _props$links === void 0 ? void 0 : _props$links.map(function (link, key) {
     var _link$view;
+    if (link.divider) {
+      if (link.requiresTier && !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_2__.canAccess)(link.requiresTier)) return null;
+      return /*#__PURE__*/React.createElement("li", {
+        key: key,
+        className: "sidebar__group-label",
+        "aria-hidden": "true"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "sidebar__group-label-text"
+      }, link.label));
+    }
     if (link !== null && link !== void 0 && (_link$view = link.view) !== null && _link$view !== void 0 && _link$view.length && link.view.indexOf(_Authentication_Auth__WEBPACK_IMPORTED_MODULE_0__["default"].getCurrentOrganisationRole()) === -1) {
       return null;
     }
@@ -46315,6 +47424,11 @@ var reportsLinks = [{
   name: "Ad Connections",
   path: "/settings/ad-connections",
   view: ["admin", "super-admin", "manager"]
+}, {
+  name: "Analytics Script",
+  path: "/settings/analytics-script",
+  view: ["admin", "super-admin", "manager"],
+  requiresTier: 'starter'
 }, {
   name: "Blacklist IP",
   path: "/settings/blacklist-ip",
@@ -46531,22 +47645,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../Functions/tier.js */ "./src/Functions/tier.js");
 /* harmony import */ var punycode__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! punycode */ "./node_modules/punycode/punycode.es6.js");
 /* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _API_host__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../../API/host */ "./src/API/host.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
-function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
-function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -46564,7 +47684,268 @@ var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
   useContext = _React.useContext,
-  useMemo = _React.useMemo;
+  useMemo = _React.useMemo,
+  useRef = _React.useRef,
+  useCallback = _React.useCallback;
+function NotificationCenter() {
+  var authToken = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getToken();
+  var orgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_5__["default"].getOrganisation();
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    open = _useState2[0],
+    setOpen = _useState2[1];
+  var _useState3 = useState([]),
+    _useState4 = _slicedToArray(_useState3, 2),
+    notifications = _useState4[0],
+    setNotifications = _useState4[1];
+  var _useState5 = useState(0),
+    _useState6 = _slicedToArray(_useState5, 2),
+    unread = _useState6[0],
+    setUnread = _useState6[1];
+  var _useState7 = useState(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    loading = _useState8[0],
+    setLoading = _useState8[1];
+  var dropdownRef = useRef(null);
+  var fetchNotifications = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+    var resp, data, _t;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          if (!(!authToken || !orgId)) {
+            _context.n = 1;
+            break;
+          }
+          return _context.a(2);
+        case 1:
+          _context.p = 1;
+          _context.n = 2;
+          return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_13__.ScannerHost, "/api/ad-alerts?resource=notifications"), {
+            headers: {
+              Authorization: authToken,
+              Organisation: String(orgId)
+            }
+          });
+        case 2:
+          resp = _context.v;
+          if (resp.ok) {
+            _context.n = 3;
+            break;
+          }
+          return _context.a(2);
+        case 3:
+          _context.n = 4;
+          return resp.json();
+        case 4:
+          data = _context.v;
+          setNotifications(data.notifications || []);
+          setUnread(data.unreadCount || 0);
+          _context.n = 6;
+          break;
+        case 5:
+          _context.p = 5;
+          _t = _context.v;
+        case 6:
+          return _context.a(2);
+      }
+    }, _callee, null, [[1, 5]]);
+  })), [authToken, orgId]);
+  useEffect(function () {
+    fetchNotifications();
+    var interval = setInterval(fetchNotifications, 60000);
+    return function () {
+      return clearInterval(interval);
+    };
+  }, [fetchNotifications]);
+  useEffect(function () {
+    if (!open) return;
+    function handleClick(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return function () {
+      return document.removeEventListener("mousedown", handleClick);
+    };
+  }, [open]);
+  function markAllRead() {
+    return _markAllRead.apply(this, arguments);
+  }
+  function _markAllRead() {
+    _markAllRead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            if (!(!authToken || !orgId)) {
+              _context2.n = 1;
+              break;
+            }
+            return _context2.a(2);
+          case 1:
+            _context2.p = 1;
+            _context2.n = 2;
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_13__.ScannerHost, "/api/ad-alerts"), {
+              method: "POST",
+              headers: {
+                Authorization: authToken,
+                Organisation: String(orgId),
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                action: "mark-read",
+                all: true
+              })
+            });
+          case 2:
+            setNotifications(function (prev) {
+              return prev.map(function (n) {
+                return _objectSpread(_objectSpread({}, n), {}, {
+                  read: true
+                });
+              });
+            });
+            setUnread(0);
+            _context2.n = 4;
+            break;
+          case 3:
+            _context2.p = 3;
+            _t2 = _context2.v;
+          case 4:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[1, 3]]);
+    }));
+    return _markAllRead.apply(this, arguments);
+  }
+  function markOneRead(_x) {
+    return _markOneRead.apply(this, arguments);
+  }
+  function _markOneRead() {
+    _markOneRead = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(id) {
+      var _t3;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            if (!(!authToken || !orgId)) {
+              _context3.n = 1;
+              break;
+            }
+            return _context3.a(2);
+          case 1:
+            setNotifications(function (prev) {
+              return prev.map(function (n) {
+                return n.id === id ? _objectSpread(_objectSpread({}, n), {}, {
+                  read: true
+                }) : n;
+              });
+            });
+            setUnread(function (prev) {
+              return Math.max(0, prev - 1);
+            });
+            _context3.p = 2;
+            _context3.n = 3;
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_13__.ScannerHost, "/api/ad-alerts"), {
+              method: "POST",
+              headers: {
+                Authorization: authToken,
+                Organisation: String(orgId),
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                action: "mark-read",
+                notificationId: id
+              })
+            });
+          case 3:
+            _context3.n = 5;
+            break;
+          case 4:
+            _context3.p = 4;
+            _t3 = _context3.v;
+          case 5:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[2, 4]]);
+    }));
+    return _markOneRead.apply(this, arguments);
+  }
+  function timeAgo(iso) {
+    var diff = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if (diff < 60) return "just now";
+    if (diff < 3600) return "".concat(Math.floor(diff / 60), "m ago");
+    if (diff < 86400) return "".concat(Math.floor(diff / 3600), "h ago");
+    return "".concat(Math.floor(diff / 86400), "d ago");
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "notif-center",
+    ref: dropdownRef
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "notif-bell",
+    onClick: function onClick() {
+      setOpen(function (o) {
+        return !o;
+      });
+      if (!open) fetchNotifications();
+    },
+    "aria-label": "Notifications",
+    title: "Notifications"
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "20",
+    height: "20",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M13.73 21a2 2 0 0 1-3.46 0"
+  })), unread > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "notif-badge"
+  }, unread > 99 ? "99+" : unread)), open && /*#__PURE__*/React.createElement("div", {
+    className: "notif-dropdown"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "notif-dropdown__header"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "notif-dropdown__title"
+  }, "Notifications"), unread > 0 && /*#__PURE__*/React.createElement("button", {
+    className: "notif-dropdown__mark-all",
+    onClick: markAllRead
+  }, "Mark all read")), /*#__PURE__*/React.createElement("div", {
+    className: "notif-dropdown__list"
+  }, loading && /*#__PURE__*/React.createElement("p", {
+    className: "notif-dropdown__empty"
+  }, "Loading\u2026"), !loading && notifications.length === 0 && /*#__PURE__*/React.createElement("p", {
+    className: "notif-dropdown__empty"
+  }, "No notifications yet"), notifications.map(function (n) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: n.id,
+      className: "notif-item".concat(n.read ? "" : " notif-item--unread"),
+      onClick: function onClick() {
+        return !n.read && markOneRead(n.id);
+      }
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "notif-item__body"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "notif-item__title"
+    }, n.title || n.rule_type), /*#__PURE__*/React.createElement("span", {
+      className: "notif-item__msg"
+    }, n.message || n.body)), /*#__PURE__*/React.createElement("div", {
+      className: "notif-item__meta"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "notif-item__domain"
+    }, n.domain), /*#__PURE__*/React.createElement("span", {
+      className: "notif-item__time"
+    }, timeAgo(n.created_at))), !n.read && /*#__PURE__*/React.createElement("span", {
+      className: "notif-item__dot",
+      "aria-label": "unread"
+    }));
+  }))));
+}
 var useHistory = window.ReactRouterDOM.useHistory;
 var useLocation = window.ReactRouterDOM.useLocation;
 
@@ -46577,7 +47958,7 @@ function getCurrentWorkspace() {
     if (stored) {
       return JSON.parse(stored);
     }
-  } catch (_unused) {
+  } catch (_unused4) {
     /* ignore */
   }
   return null;
@@ -46622,7 +48003,7 @@ function getWorkspaceFilter() {
     if (stored) {
       return JSON.parse(stored);
     }
-  } catch (_unused2) {
+  } catch (_unused5) {
     /* ignore */
   }
   return null;
@@ -46672,7 +48053,7 @@ function readCachedDomains() {
         lastedVisited: null
       };
     })));
-  } catch (_unused3) {
+  } catch (_unused6) {
     return null;
   }
 }
@@ -46701,7 +48082,7 @@ function readAgencyWorkspaces() {
         return ws;
       });
     }
-  } catch (_unused4) {
+  } catch (_unused7) {
     /* ignore */
   }
   return [];
@@ -46747,7 +48128,7 @@ function getCurrentOrgId() {
       var org = JSON.parse(orgRaw);
       return (org === null || org === void 0 ? void 0 : org.id) || null;
     }
-  } catch (_unused5) {
+  } catch (_unused8) {
     /* ignore */
   }
   return null;
@@ -46782,18 +48163,18 @@ function Header(props) {
   var displayDomain = useMemo(function () {
     return domainLabelForHeader(location.pathname, globalDomain);
   }, [location.pathname, globalDomain]);
-  var _useState = useState(displayDomain),
-    _useState2 = _slicedToArray(_useState, 2),
-    currentDomain = _useState2[0],
-    setCurrentDomain = _useState2[1];
+  var _useState9 = useState(displayDomain),
+    _useState0 = _slicedToArray(_useState9, 2),
+    currentDomain = _useState0[0],
+    setCurrentDomain = _useState0[1];
   var profileImage = (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.user) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.avatar;
   var domainList = null;
   var history = useHistory();
   var platformId = props.id || window.location.pathname.split("/").filter(Boolean)[0] || "gdpr";
-  var _useState3 = useState(null),
-    _useState4 = _slicedToArray(_useState3, 2),
-    allOrganisations = _useState4[0],
-    setallOrganisations = _useState4[1];
+  var _useState1 = useState(null),
+    _useState10 = _slicedToArray(_useState1, 2),
+    allOrganisations = _useState10[0],
+    setallOrganisations = _useState10[1];
   /*
    * Bootstrap order on first render:
    *   1. props.domains (passed by App.js once it has fetched)
@@ -46803,26 +48184,26 @@ function Header(props) {
    *   3. null — the placeholder selector renders briefly until the
    *      effect below repopulates from the API.
    */
-  var _useState5 = useState(function () {
+  var _useState11 = useState(function () {
       return props.domains || readCachedDomains();
     }),
-    _useState6 = _slicedToArray(_useState5, 2),
-    domains = _useState6[0],
-    setDomains = _useState6[1];
-  var _useState7 = useState(false),
-    _useState8 = _slicedToArray(_useState7, 2),
-    viewUserProfile = _useState8[0],
-    setViewUserProfile = _useState8[1];
+    _useState12 = _slicedToArray(_useState11, 2),
+    domains = _useState12[0],
+    setDomains = _useState12[1];
+  var _useState13 = useState(false),
+    _useState14 = _slicedToArray(_useState13, 2),
+    viewUserProfile = _useState14[0],
+    setViewUserProfile = _useState14[1];
   var _useContext5 = useContext(_App__WEBPACK_IMPORTED_MODULE_0__.WorkspaceContext),
     _useContext6 = _slicedToArray(_useContext5, 2),
     activeWorkspace = _useContext6[0],
     setActiveWorkspace = _useContext6[1];
-  var _useState9 = useState(function () {
+  var _useState15 = useState(function () {
       return readAgencyWorkspaces();
     }),
-    _useState0 = _slicedToArray(_useState9, 2),
-    agencyWorkspaces = _useState0[0],
-    setAgencyWorkspaces = _useState0[1];
+    _useState16 = _slicedToArray(_useState15, 2),
+    agencyWorkspaces = _useState16[0],
+    setAgencyWorkspaces = _useState16[1];
   var Platform = localStorage.getItem("platform") == "gdpr" ? "Intastellar Consents | CMP" : "Ferry Booking";
   useEffect(function () {
     setCurrentDomain(displayDomain);
@@ -47129,8 +48510,11 @@ function Header(props) {
     className: "selector selector--placeholder",
     "aria-hidden": "true"
   }))), /*#__PURE__*/React.createElement("div", {
-    className: "flex profileImage"
-  }, /*#__PURE__*/React.createElement("img", {
+    className: "flex profileImage",
+    style: {
+      gap: "12px"
+    }
+  }, /*#__PURE__*/React.createElement(NotificationCenter, null), /*#__PURE__*/React.createElement("img", {
     src: profileImage,
     className: "content-img",
     onClick: function onClick() {
@@ -60781,22 +62165,32 @@ var AD_PLATFORMS = [{
   id: "google_ads",
   label: "Google Ads",
   color: "#4285f4",
-  initial: "G"
+  initial: "G",
+  isAnalytics: false
+}, {
+  id: "google_analytics",
+  label: "Google Analytics 4",
+  color: "#e37400",
+  initial: "GA",
+  isAnalytics: true
 }, {
   id: "meta_ads",
   label: "Meta (Facebook / Instagram)",
   color: "#1877f2",
-  initial: "f"
+  initial: "f",
+  isAnalytics: false
 }, {
   id: "linkedin_ads",
   label: "LinkedIn Ads",
   color: "#0a66c2",
-  initial: "in"
+  initial: "in",
+  isAnalytics: false
 }, {
   id: "microsoft_ads",
   label: "Microsoft Ads",
   color: "#00a4ef",
-  initial: "B"
+  initial: "B",
+  isAnalytics: false
 }];
 function formatDate(iso) {
   if (!iso) return "";
@@ -60816,7 +62210,8 @@ function AdConnectionManager(_ref) {
     authToken = _ref.authToken,
     fromDate = _ref.fromDate,
     toDate = _ref.toDate,
-    onImport = _ref.onImport;
+    onImport = _ref.onImport,
+    onSelectAccount = _ref.onSelectAccount;
   var _useState = useState([]),
     _useState2 = _slicedToArray(_useState, 2),
     connections = _useState2[0],
@@ -60835,12 +62230,28 @@ function AdConnectionManager(_ref) {
     setConnecting = _useState8[1];
   var _useState9 = useState(null),
     _useState0 = _slicedToArray(_useState9, 2),
-    statusMsg = _useState0[0],
-    setStatusMsg = _useState0[1];
-  var _useState1 = useState(false),
+    reselecting = _useState0[0],
+    setReselecting = _useState0[1];
+  var _useState1 = useState(null),
     _useState10 = _slicedToArray(_useState1, 2),
-    statusIsError = _useState10[0],
-    setStatusIsError = _useState10[1];
+    manualInput = _useState10[0],
+    setManualInput = _useState10[1]; // { platformId } | null
+  var _useState11 = useState(""),
+    _useState12 = _slicedToArray(_useState11, 2),
+    manualId = _useState12[0],
+    setManualId = _useState12[1];
+  var _useState13 = useState(false),
+    _useState14 = _slicedToArray(_useState13, 2),
+    savingManual = _useState14[0],
+    setSavingManual = _useState14[1];
+  var _useState15 = useState(null),
+    _useState16 = _slicedToArray(_useState15, 2),
+    statusMsg = _useState16[0],
+    setStatusMsg = _useState16[1];
+  var _useState17 = useState(false),
+    _useState18 = _slicedToArray(_useState17, 2),
+    statusIsError = _useState18[0],
+    setStatusIsError = _useState18[1];
   var setStatus = useCallback(function (msg) {
     var isError = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     setStatusMsg(msg);
@@ -60976,27 +62387,152 @@ function AdConnectionManager(_ref) {
     }));
     return _handleConnect.apply(this, arguments);
   }
-  function handleDisconnect(_x2) {
+  function handleReselect(_x2) {
+    return _handleReselect.apply(this, arguments);
+  }
+  function _handleReselect() {
+    _handleReselect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(platformId) {
+      var resp, data, _t3;
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.p = _context3.n) {
+          case 0:
+            setReselecting(platformId);
+            _context3.p = 1;
+            _context3.n = 2;
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-account-reselect?platform=").concat(encodeURIComponent(platformId), "&domain=").concat(encodeURIComponent(domain), "&org=").concat(encodeURIComponent(orgId)), {
+              headers: {
+                Authorization: authToken,
+                Organisation: String(orgId)
+              }
+            });
+          case 2:
+            resp = _context3.v;
+            _context3.n = 3;
+            return resp.json();
+          case 3:
+            data = _context3.v;
+            if (resp.ok) {
+              _context3.n = 4;
+              break;
+            }
+            setStatus(data.error || "Could not load accounts.", true);
+            return _context3.a(2);
+          case 4:
+            if (data.pendingId) {
+              _context3.n = 5;
+              break;
+            }
+            // Google returned no accounts (Basic API access level) — fall back to manual ID entry
+            setManualInput({
+              platformId: platformId
+            });
+            return _context3.a(2);
+          case 5:
+            onSelectAccount === null || onSelectAccount === void 0 || onSelectAccount(platformId, data.pendingId, domain);
+            _context3.n = 7;
+            break;
+          case 6:
+            _context3.p = 6;
+            _t3 = _context3.v;
+            setStatus(_t3.message, true);
+          case 7:
+            _context3.p = 7;
+            setReselecting(null);
+            return _context3.f(7);
+          case 8:
+            return _context3.a(2);
+        }
+      }, _callee3, null, [[1, 6, 7, 8]]);
+    }));
+    return _handleReselect.apply(this, arguments);
+  }
+  function handleManualSave() {
+    return _handleManualSave.apply(this, arguments);
+  }
+  function _handleManualSave() {
+    _handleManualSave = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+      var resp, data, _t4;
+      return _regenerator().w(function (_context4) {
+        while (1) switch (_context4.p = _context4.n) {
+          case 0:
+            if (!(!manualId.trim() || !manualInput)) {
+              _context4.n = 1;
+              break;
+            }
+            return _context4.a(2);
+          case 1:
+            setSavingManual(true);
+            _context4.p = 2;
+            _context4.n = 3;
+            return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-account-reselect"), {
+              method: "POST",
+              headers: {
+                Authorization: authToken,
+                Organisation: String(orgId),
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                platform: manualInput.platformId,
+                domain: domain,
+                accountId: manualId.trim(),
+                accountLabel: manualId.trim()
+              })
+            });
+          case 3:
+            resp = _context4.v;
+            _context4.n = 4;
+            return resp.json();
+          case 4:
+            data = _context4.v;
+            if (resp.ok) {
+              _context4.n = 5;
+              break;
+            }
+            setStatus(data.error || "Could not save account.", true);
+            return _context4.a(2);
+          case 5:
+            setManualInput(null);
+            setManualId("");
+            setStatus("Account connected.");
+            fetchConnections();
+            _context4.n = 7;
+            break;
+          case 6:
+            _context4.p = 6;
+            _t4 = _context4.v;
+            setStatus(_t4.message, true);
+          case 7:
+            _context4.p = 7;
+            setSavingManual(false);
+            return _context4.f(7);
+          case 8:
+            return _context4.a(2);
+        }
+      }, _callee4, null, [[2, 6, 7, 8]]);
+    }));
+    return _handleManualSave.apply(this, arguments);
+  }
+  function handleDisconnect(_x3) {
     return _handleDisconnect.apply(this, arguments);
   }
   function _handleDisconnect() {
-    _handleDisconnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(platformId) {
+    _handleDisconnect = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(platformId) {
       var _AD_PLATFORMS$find2;
-      var label, _t3;
-      return _regenerator().w(function (_context3) {
-        while (1) switch (_context3.p = _context3.n) {
+      var label, _t5;
+      return _regenerator().w(function (_context5) {
+        while (1) switch (_context5.p = _context5.n) {
           case 0:
             label = ((_AD_PLATFORMS$find2 = AD_PLATFORMS.find(function (p) {
               return p.id === platformId;
             })) === null || _AD_PLATFORMS$find2 === void 0 ? void 0 : _AD_PLATFORMS$find2.label) || platformId;
             if (window.confirm("Disconnect ".concat(label, "?\nThis removes the connection from this domain. You can reconnect at any time."))) {
-              _context3.n = 1;
+              _context5.n = 1;
               break;
             }
-            return _context3.a(2);
+            return _context5.a(2);
           case 1:
-            _context3.p = 1;
-            _context3.n = 2;
+            _context5.p = 1;
+            _context5.n = 2;
             return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-connections?platform=").concat(platformId, "&domain=").concat(encodeURIComponent(domain)), {
               method: "DELETE",
               headers: {
@@ -61011,38 +62547,38 @@ function AdConnectionManager(_ref) {
               });
             });
             setStatus("".concat(label, " disconnected."));
-            _context3.n = 4;
+            _context5.n = 4;
             break;
           case 3:
-            _context3.p = 3;
-            _t3 = _context3.v;
-            setStatus(_t3.message, true);
+            _context5.p = 3;
+            _t5 = _context5.v;
+            setStatus(_t5.message, true);
           case 4:
-            return _context3.a(2);
+            return _context5.a(2);
         }
-      }, _callee3, null, [[1, 3]]);
+      }, _callee5, null, [[1, 3]]);
     }));
     return _handleDisconnect.apply(this, arguments);
   }
-  function handleImport(_x3) {
+  function handleImport(_x4) {
     return _handleImport.apply(this, arguments);
   }
   function _handleImport() {
-    _handleImport = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(platformId) {
-      var _AD_PLATFORMS$find3, _data$clicks, resp, data, label, _t4;
-      return _regenerator().w(function (_context4) {
-        while (1) switch (_context4.p = _context4.n) {
+    _handleImport = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6(platformId) {
+      var _data$sessions, _data$clicks, resp, data, platformMeta, label, summary, _t6;
+      return _regenerator().w(function (_context6) {
+        while (1) switch (_context6.p = _context6.n) {
           case 0:
             if (!(!fromDate || !toDate)) {
-              _context4.n = 1;
+              _context6.n = 1;
               break;
             }
             setStatus("Set a date range in the header filter first.", true);
-            return _context4.a(2);
+            return _context6.a(2);
           case 1:
             setImporting(platformId);
-            _context4.p = 2;
-            _context4.n = 3;
+            _context6.p = 2;
+            _context6.n = 3;
             return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-data-fetch?platform=").concat(platformId, "&domain=").concat(encodeURIComponent(domain), "&fromDate=").concat(fromDate, "&toDate=").concat(toDate), {
               headers: {
                 Authorization: authToken,
@@ -61050,37 +62586,39 @@ function AdConnectionManager(_ref) {
               }
             });
           case 3:
-            resp = _context4.v;
-            _context4.n = 4;
+            resp = _context6.v;
+            _context6.n = 4;
             return resp.json();
           case 4:
-            data = _context4.v;
+            data = _context6.v;
             if (resp.ok) {
-              _context4.n = 5;
+              _context6.n = 5;
               break;
             }
             setStatus(data.error || "Import failed.", true);
-            return _context4.a(2);
+            return _context6.a(2);
           case 5:
-            label = ((_AD_PLATFORMS$find3 = AD_PLATFORMS.find(function (p) {
+            platformMeta = AD_PLATFORMS.find(function (p) {
               return p.id === platformId;
-            })) === null || _AD_PLATFORMS$find3 === void 0 ? void 0 : _AD_PLATFORMS$find3.label) || platformId;
+            });
+            label = (platformMeta === null || platformMeta === void 0 ? void 0 : platformMeta.label) || platformId;
             onImport === null || onImport === void 0 || onImport(platformId, data);
-            setStatus("Imported from ".concat(label, ": ").concat(((_data$clicks = data.clicks) === null || _data$clicks === void 0 ? void 0 : _data$clicks.toLocaleString()) || 0, " clicks").concat(data.spend ? ", ".concat(data.currency || "", " ").concat(Number(data.spend).toFixed(2), " spend") : "", "."));
-            _context4.n = 7;
+            summary = platformMeta !== null && platformMeta !== void 0 && platformMeta.isAnalytics ? "".concat(((_data$sessions = data.sessions) === null || _data$sessions === void 0 ? void 0 : _data$sessions.toLocaleString()) || 0, " sessions") : "".concat(((_data$clicks = data.clicks) === null || _data$clicks === void 0 ? void 0 : _data$clicks.toLocaleString()) || 0, " clicks").concat(data.spend ? ", ".concat(data.currency || "", " ").concat(Number(data.spend).toFixed(2), " spend") : "");
+            setStatus("Imported from ".concat(label, ": ").concat(summary));
+            _context6.n = 7;
             break;
           case 6:
-            _context4.p = 6;
-            _t4 = _context4.v;
-            setStatus(_t4.message, true);
+            _context6.p = 6;
+            _t6 = _context6.v;
+            setStatus(_t6.message, true);
           case 7:
-            _context4.p = 7;
+            _context6.p = 7;
             setImporting(null);
-            return _context4.f(7);
+            return _context6.f(7);
           case 8:
-            return _context4.a(2);
+            return _context6.a(2);
         }
-      }, _callee4, null, [[2, 6, 7, 8]]);
+      }, _callee6, null, [[2, 6, 7, 8]]);
     }));
     return _handleImport.apply(this, arguments);
   }
@@ -61104,12 +62642,16 @@ function AdConnectionManager(_ref) {
     className: "ad-connection-manager__list"
   }, AD_PLATFORMS.map(function (platform) {
     var conn = connMap[platform.id];
-    var isConnected = !!conn;
+    var hasToken = conn === null || conn === void 0 ? void 0 : conn.has_token;
+    var hasAccount = !!(conn !== null && conn !== void 0 && conn.account_id);
+    var isFullyConnected = hasToken && hasAccount;
+    var needsAccountSelection = hasToken && !hasAccount;
     var isImporting = importing === platform.id;
     var isConnecting = connecting === platform.id;
+    var isReselecting = reselecting === platform.id;
     return /*#__PURE__*/React.createElement("div", {
       key: platform.id,
-      className: "ad-connection-card".concat(isConnected ? " ad-connection-card--connected" : "")
+      className: "ad-connection-card".concat(isFullyConnected ? " ad-connection-card--connected" : needsAccountSelection ? " ad-connection-card--pending" : "")
     }, /*#__PURE__*/React.createElement("div", {
       className: "ad-connection-card__icon",
       style: {
@@ -61120,13 +62662,15 @@ function AdConnectionManager(_ref) {
       className: "ad-connection-card__info"
     }, /*#__PURE__*/React.createElement("span", {
       className: "ad-connection-card__name"
-    }, platform.label), isConnected ? /*#__PURE__*/React.createElement("span", {
+    }, platform.label), isFullyConnected ? /*#__PURE__*/React.createElement("span", {
       className: "ad-connection-card__meta"
-    }, conn.account_label || "Connected", conn.updated_at ? " \xB7 synced ".concat(formatDate(conn.updated_at)) : "") : /*#__PURE__*/React.createElement("span", {
+    }, conn.account_label || "Connected", platform.isAnalytics ? " · auto-populates dashboard" : conn.updated_at ? " \xB7 synced ".concat(formatDate(conn.updated_at)) : "") : needsAccountSelection ? /*#__PURE__*/React.createElement("span", {
       className: "ad-connection-card__meta ad-connection-card__meta--dim"
-    }, "Not connected")), /*#__PURE__*/React.createElement("div", {
+    }, platform.isAnalytics ? "Authorized — select a property to finish" : "Authorized — select an ad account to finish") : /*#__PURE__*/React.createElement("span", {
+      className: "ad-connection-card__meta ad-connection-card__meta--dim"
+    }, platform.isAnalytics ? "Not connected · sessions auto-populate when connected" : "Not connected")), /*#__PURE__*/React.createElement("div", {
       className: "ad-connection-card__actions"
-    }, isConnected ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+    }, isFullyConnected ? /*#__PURE__*/React.createElement(React.Fragment, null, !platform.isAnalytics && /*#__PURE__*/React.createElement("button", {
       className: "ad-connection-card__btn ad-connection-card__btn--import",
       onClick: function onClick() {
         return handleImport(platform.id);
@@ -61138,6 +62682,17 @@ function AdConnectionManager(_ref) {
       onClick: function onClick() {
         return handleDisconnect(platform.id);
       }
+    }, "Disconnect")) : needsAccountSelection ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+      className: "ad-connection-card__btn ad-connection-card__btn--connect",
+      onClick: function onClick() {
+        return handleReselect(platform.id);
+      },
+      disabled: isReselecting
+    }, isReselecting ? "Loading…" : platform.isAnalytics ? "Select property" : "Select account"), /*#__PURE__*/React.createElement("button", {
+      className: "ad-connection-card__btn ad-connection-card__btn--disconnect",
+      onClick: function onClick() {
+        return handleDisconnect(platform.id);
+      }
     }, "Disconnect")) : /*#__PURE__*/React.createElement("button", {
       className: "ad-connection-card__btn ad-connection-card__btn--connect",
       onClick: function onClick() {
@@ -61145,7 +62700,43 @@ function AdConnectionManager(_ref) {
       },
       disabled: isConnecting
     }, isConnecting ? "Opening…" : "Connect")));
-  })));
+  })), manualInput && function () {
+    var isGA4 = manualInput.platformId === "google_analytics";
+    return /*#__PURE__*/React.createElement("div", {
+      className: "ad-manual-input-backdrop"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "ad-manual-input"
+    }, /*#__PURE__*/React.createElement("h4", {
+      className: "ad-manual-input__title"
+    }, isGA4 ? "Enter GA4 Property ID" : "Enter Google Ads Customer ID"), /*#__PURE__*/React.createElement("p", {
+      className: "ad-manual-input__hint"
+    }, isGA4 ? /*#__PURE__*/React.createElement(React.Fragment, null, "Find it in Google Analytics \u2192 Admin \u2192 Property settings \u2014 a numeric ID like ", /*#__PURE__*/React.createElement("strong", null, "123456789"), ".") : /*#__PURE__*/React.createElement(React.Fragment, null, "Find it in Google Ads under the account name \u2014 10 digits, format", " ", /*#__PURE__*/React.createElement("strong", null, "XXX-XXX-XXXX"), ". Dashes are optional.")), /*#__PURE__*/React.createElement("input", {
+      className: "ad-manual-input__field",
+      type: "text",
+      value: manualId,
+      onChange: function onChange(e) {
+        return setManualId(e.target.value);
+      },
+      placeholder: isGA4 ? "e.g. 123456789" : "e.g. 123-456-7890",
+      onKeyDown: function onKeyDown(e) {
+        return e.key === "Enter" && handleManualSave();
+      },
+      autoFocus: true
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "ad-manual-input__actions"
+    }, /*#__PURE__*/React.createElement("button", {
+      className: "ad-connection-card__btn ad-connection-card__btn--disconnect",
+      onClick: function onClick() {
+        setManualInput(null);
+        setManualId("");
+      },
+      disabled: savingManual
+    }, "Cancel"), /*#__PURE__*/React.createElement("button", {
+      className: "ad-connection-card__btn ad-connection-card__btn--connect",
+      onClick: handleManualSave,
+      disabled: !manualId.trim() || savingManual
+    }, savingManual ? "Connecting…" : "Connect"))));
+  }());
 }
 
 /***/ }),
@@ -61158,6 +62749,7 @@ function AdConnectionManager(_ref) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ga4SessionsChart: () => (/* binding */ Ga4SessionsChart),
 /* harmony export */   MarketingChannelCharts: () => (/* binding */ MarketingChannelCharts),
 /* harmony export */   MarketingOverviewCharts: () => (/* binding */ MarketingOverviewCharts),
 /* harmony export */   MarketingTimeseriesChart: () => (/* binding */ MarketingTimeseriesChart),
@@ -61602,6 +63194,371 @@ function MarketingTimeseriesChart(_ref10) {
     showRangeControls: true
   }))));
 }
+
+/* ─── Ga4SessionsChart ───────────────────────────────────────────────────── */
+
+function fmtInt(n) {
+  var x = Number(n);
+  if (!Number.isFinite(x)) return "—";
+  return Math.round(x).toLocaleString("de-DE");
+}
+function fmtDuration(seconds) {
+  var s = Math.round(Number(seconds) || 0);
+  if (s < 60) return "".concat(s, "s");
+  var m = Math.floor(s / 60),
+    r = s % 60;
+  return r === 0 ? "".concat(m, "m") : "".concat(m, "m ").concat(r, "s");
+}
+
+/*
+ * Maps GA4's sessionDefaultChannelGroup value to consent-platform channel names.
+ * The match is intentionally broad — one GA4 group covers several possible channel
+ * labels depending on how UTM tags were set up. Returns [] when no pattern applies
+ * (e.g. "Referral", "Unassigned") so the cross-reference shows a genuine gap.
+ */
+function matchConsentChannels(ga4Group, channelOverview) {
+  var matchers = {
+    "Paid Search": function Paid_Search(c) {
+      return /(google ads|microsoft ads|bing)/i.test(c.channel);
+    },
+    "Paid Shopping": function Paid_Shopping(c) {
+      return /(google ads|microsoft ads)/i.test(c.channel);
+    },
+    "Cross-network": function CrossNetwork(c) {
+      return /google ads/i.test(c.channel);
+    },
+    "Organic Search": function Organic_Search(c) {
+      return /organic search/i.test(c.channel);
+    },
+    "Paid Social": function Paid_Social(c) {
+      return /ads/i.test(c.channel) && /(facebook|instagram|linkedin|tiktok|twitter|pinterest|meta)/i.test(c.channel);
+    },
+    "Paid Video": function Paid_Video(c) {
+      return /tiktok ads/i.test(c.channel);
+    },
+    "Organic Social": function Organic_Social(c) {
+      return !/ads/i.test(c.channel) && /(facebook \(organic\)|^instagram$|^linkedin$|^tiktok$|twitter|^pinterest$)/i.test(c.channel);
+    },
+    "Direct": function Direct(c) {
+      return /^direct$/i.test(c.channel);
+    },
+    "Email": function Email(c) {
+      return /email/i.test(c.channel);
+    },
+    "Affiliates": function Affiliates(c) {
+      return /affiliate/i.test(c.channel);
+    }
+  };
+  var fn = matchers[ga4Group];
+  if (!fn) return [];
+  return (channelOverview || []).filter(fn);
+}
+function Ga4SessionsChart(_ref11) {
+  var rows = _ref11.rows,
+    platformBreakdown = _ref11.platformBreakdown,
+    summary = _ref11.summary,
+    channelBreakdown = _ref11.channelBreakdown,
+    totalConsents = _ref11.totalConsents,
+    channelOverview = _ref11.channelOverview,
+    syncing = _ref11.syncing;
+  if (!rows || rows.length === 0) {
+    if (!syncing) return null;
+    return /*#__PURE__*/React.createElement("div", {
+      className: "ga4-card"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "ga4-card__header"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-card__title"
+    }, "Google Analytics 4"), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-sessions-chart__syncing"
+    }, "loading\u2026")));
+  }
+  var W = 620,
+    H = 200;
+  var PAD = {
+    top: 20,
+    right: 16,
+    bottom: 40,
+    left: 52
+  };
+  var plotW = W - PAD.left - PAD.right;
+  var plotH = H - PAD.top - PAD.bottom;
+  var maxSessions = Math.max.apply(Math, _toConsumableArray(rows.map(function (r) {
+    return Number(r.sessions) || 0;
+  })).concat([1]));
+  var barW = Math.max(4, Math.min(28, plotW / rows.length * 0.7));
+  var toX = function toX(i) {
+    return PAD.left + (i + 0.5) / rows.length * plotW;
+  };
+  var toY = function toY(v) {
+    return PAD.top + plotH - Math.max(0, v) / maxSessions * plotH;
+  };
+  var yTicks = [0, 0.25, 0.5, 0.75, 1].map(function (f) {
+    return Math.round(maxSessions * f);
+  });
+  var xStep = Math.ceil(rows.length / 8);
+  var totalSessions = (platformBreakdown === null || platformBreakdown === void 0 ? void 0 : platformBreakdown.reduce(function (s, p) {
+    return s + p.sessions;
+  }, 0)) || 0;
+  var ssPlatform = platformBreakdown === null || platformBreakdown === void 0 ? void 0 : platformBreakdown.find(function (p) {
+    return p.platform === "(other)";
+  });
+  var hasSsTracking = ssPlatform && ssPlatform.sessions > 0;
+  var ssShare = hasSsTracking && totalSessions > 0 ? Math.round(ssPlatform.sessions / totalSessions * 100) : 0;
+
+  // KPI values — prefer aggregate summary, fall back to summing daily rows
+  var kpis = summary ? [{
+    label: "Sessions",
+    value: fmtInt(summary.sessions)
+  }, {
+    label: "Users",
+    value: fmtInt(summary.totalUsers)
+  }, {
+    label: "New users",
+    value: fmtInt(summary.newUsers)
+  }, {
+    label: "Page views",
+    value: fmtInt(summary.pageViews)
+  }, {
+    label: "Engagement",
+    value: "".concat((summary.engagementRate * 100).toFixed(1), "%"),
+    title: "Engaged sessions as a share of total sessions (GA4's replacement for bounce rate)."
+  }, {
+    label: "Avg. session",
+    value: fmtDuration(summary.avgSessionDuration)
+  }] : null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "ga4-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ga4-card__header"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "ga4-card__title"
+  }, "Google Analytics 4"), /*#__PURE__*/React.createElement("div", {
+    className: "ga4-card__badges"
+  }, hasSsTracking && /*#__PURE__*/React.createElement("span", {
+    className: "ga4-ss-badge",
+    title: "".concat(ssShare, "% of sessions from server-side tracking (Measurement Protocol / sGTM)")
+  }, "\u26A1 Server-side \xB7 ", ssShare, "%"), syncing && /*#__PURE__*/React.createElement("span", {
+    className: "ga4-sessions-chart__syncing"
+  }, "syncing\u2026"))), kpis && /*#__PURE__*/React.createElement("div", {
+    className: "ga4-kpi-strip"
+  }, kpis.map(function (k) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: k.label,
+      className: "ga4-kpi",
+      title: k.title || ""
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-kpi__value"
+    }, k.value), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-kpi__label"
+    }, k.label));
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "recon-chart-scroll"
+  }, /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 ".concat(W, " ").concat(H),
+    className: "marketing-reconciliation__trend-svg",
+    role: "img",
+    "aria-label": "GA4 daily sessions bar chart"
+  }, yTicks.map(function (v) {
+    return /*#__PURE__*/React.createElement("g", {
+      key: v
+    }, /*#__PURE__*/React.createElement("line", {
+      x1: PAD.left,
+      y1: toY(v),
+      x2: W - PAD.right,
+      y2: toY(v),
+      stroke: "rgba(255,255,255,0.06)",
+      strokeWidth: "1"
+    }), /*#__PURE__*/React.createElement("text", {
+      x: PAD.left - 6,
+      y: toY(v) + 4,
+      textAnchor: "end",
+      fontSize: "9",
+      fill: "rgba(160,175,200,0.5)"
+    }, v >= 1000 ? "".concat((v / 1000).toFixed(v % 1000 === 0 ? 0 : 1), "k") : v));
+  }), rows.map(function (r, i) {
+    var sessions = Number(r.sessions) || 0;
+    var top = toY(sessions);
+    var ht = PAD.top + plotH - top;
+    return /*#__PURE__*/React.createElement("rect", {
+      key: r.date,
+      x: toX(i) - barW / 2,
+      y: top,
+      width: barW,
+      height: Math.max(1, ht),
+      rx: "2",
+      fill: "rgba(227,116,0,0.75)"
+    }, /*#__PURE__*/React.createElement("title", null, r.date, ": ", fmtInt(sessions), " sessions \xB7 ", fmtInt(r.users || 0), " users \xB7 ", fmtInt(r.pageViews || 0), " page views"));
+  }), rows.filter(function (_, i) {
+    return i % xStep === 0 || i === rows.length - 1;
+  }).map(function (r) {
+    var i = rows.indexOf(r);
+    return /*#__PURE__*/React.createElement("text", {
+      key: r.date,
+      x: toX(i),
+      y: H - PAD.bottom + 14,
+      textAnchor: "middle",
+      fontSize: "9",
+      fill: "rgba(160,175,200,0.55)"
+    }, (r.date || "").slice(5));
+  }), /*#__PURE__*/React.createElement("text", {
+    x: PAD.left - 38,
+    y: PAD.top + plotH / 2,
+    textAnchor: "middle",
+    fontSize: "9",
+    fill: "rgba(150,165,190,0.5)",
+    transform: "rotate(-90,".concat(PAD.left - 38, ",").concat(PAD.top + plotH / 2, ")")
+  }, "Sessions / day"))), platformBreakdown && platformBreakdown.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "ga4-platform-breakdown"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "ga4-platform-breakdown__title"
+  }, "Session source breakdown"), /*#__PURE__*/React.createElement("div", {
+    className: "ga4-platform-breakdown__rows"
+  }, platformBreakdown.map(function (p) {
+    var share = totalSessions > 0 ? p.sessions / totalSessions * 100 : 0;
+    var isSs = p.platform === "(other)";
+    return /*#__PURE__*/React.createElement("div", {
+      key: p.platform,
+      className: "ga4-pb-row".concat(isSs ? " ga4-pb-row--ss" : "")
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-pb-row__name"
+    }, isSs ? /*#__PURE__*/React.createElement(React.Fragment, null, p.platform, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-pb-row__ss-hint"
+    }, " \u2014 server-side / Measurement Protocol")) : p.platform), /*#__PURE__*/React.createElement("div", {
+      className: "ga4-pb-row__bar-wrap"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "ga4-pb-row__bar",
+      style: {
+        width: "".concat(Math.max(1, share), "%"),
+        background: isSs ? "rgba(99,102,241,0.7)" : "rgba(227,116,0,0.6)"
+      }
+    })), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-pb-row__share"
+    }, share.toFixed(1), "%"), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-pb-row__count"
+    }, fmtInt(p.sessions)));
+  }))), summary && summary.sessions > 0 && totalConsents != null && function () {
+    var ga4Sess = summary.sessions;
+    var capturePct = Math.min(100, totalConsents / ga4Sess * 100);
+    var darkZone = Math.max(0, ga4Sess - totalConsents);
+    var captureStr = capturePct.toFixed(1) + "%";
+    return /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__header"
+    }, /*#__PURE__*/React.createElement("h4", {
+      className: "ga4-coverage__title"
+    }, "Consent coverage"), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__subtitle"
+    }, "GA4 sessions vs consent events in this period")), /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__metrics"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__metric"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__metric-value"
+    }, captureStr), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__metric-label"
+    }, "capture rate")), /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__metric ga4-coverage__metric--dark"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__metric-value"
+    }, fmtInt(darkZone)), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__metric-label"
+    }, "session dark zone")), /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__metric"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__metric-value"
+    }, fmtInt(totalConsents)), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__metric-label"
+    }, "consent events")), /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__metric"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__metric-value"
+    }, fmtInt(ga4Sess)), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__metric-label"
+    }, "GA4 sessions"))), /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__bar-track",
+      title: "".concat(captureStr, " of sessions generated a consent event")
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__bar-fill",
+      style: {
+        width: "".concat(capturePct, "%")
+      }
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "ga4-coverage__bar-legend"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__legend-consent"
+    }, "Consent events (", fmtInt(totalConsents), ")"), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-coverage__legend-dark"
+    }, "Dark zone (", fmtInt(darkZone), ")")), /*#__PURE__*/React.createElement("p", {
+      className: "ga4-coverage__note"
+    }, "Dark zone = sessions that reached the site but generated no consent event. Typical causes: returning visitors with an existing consent cookie, bounces before the banner rendered, or bot traffic. A very large dark zone can also mean the CMP is loading too late in the page lifecycle."));
+  }(), channelBreakdown && channelBreakdown.length > 0 && channelOverview && channelOverview.length > 0 && function () {
+    var ga4Total = channelBreakdown.reduce(function (s, g) {
+      return s + g.sessions;
+    }, 0) || 1;
+    return /*#__PURE__*/React.createElement("div", {
+      className: "ga4-xref"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "ga4-xref__header"
+    }, /*#__PURE__*/React.createElement("h4", {
+      className: "ga4-xref__title"
+    }, "GA4 channels vs consent attribution"), /*#__PURE__*/React.createElement("span", {
+      className: "ga4-xref__subtitle"
+    }, "Approximate \u2014 GA4 channel groups and consent-platform UTM channels use different classification rules.")), /*#__PURE__*/React.createElement("div", {
+      className: "ga4-xref__scroll"
+    }, /*#__PURE__*/React.createElement("table", {
+      className: "ga4-xref__table"
+    }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+      className: "ga4-xref__th"
+    }, "GA4 channel group"), /*#__PURE__*/React.createElement("th", {
+      className: "ga4-xref__th ga4-xref__th--num"
+    }, "Sessions"), /*#__PURE__*/React.createElement("th", {
+      className: "ga4-xref__th ga4-xref__th--num"
+    }, "Share"), /*#__PURE__*/React.createElement("th", {
+      className: "ga4-xref__th"
+    }, "Matched consent channels"), /*#__PURE__*/React.createElement("th", {
+      className: "ga4-xref__th ga4-xref__th--num"
+    }, "Consents"), /*#__PURE__*/React.createElement("th", {
+      className: "ga4-xref__th ga4-xref__th--num"
+    }, "Coverage"))), /*#__PURE__*/React.createElement("tbody", null, channelBreakdown.map(function (g) {
+      var matched = matchConsentChannels(g.channelGroup, channelOverview);
+      var consentSum = matched.reduce(function (s, c) {
+        return s + c.consents;
+      }, 0);
+      var covPct = g.sessions > 0 && matched.length > 0 ? consentSum / g.sessions * 100 : null;
+      var sessionShare = g.sessions / ga4Total * 100;
+      var isBlindspot = g.channelGroup === "Unassigned" || g.sessions > 50 && matched.length === 0 || covPct !== null && covPct < 5;
+      return /*#__PURE__*/React.createElement("tr", {
+        key: g.channelGroup,
+        className: isBlindspot ? "ga4-xref__row--blind" : ""
+      }, /*#__PURE__*/React.createElement("td", {
+        className: "ga4-xref__td"
+      }, isBlindspot && /*#__PURE__*/React.createElement("span", {
+        className: "ga4-xref__blind-badge",
+        title: "Low or no consent attribution for this GA4 channel \u2014 potential tracking gap"
+      }, "blind spot"), g.channelGroup), /*#__PURE__*/React.createElement("td", {
+        className: "ga4-xref__td ga4-xref__td--num"
+      }, fmtInt(g.sessions)), /*#__PURE__*/React.createElement("td", {
+        className: "ga4-xref__td ga4-xref__td--num"
+      }, sessionShare.toFixed(1), "%"), /*#__PURE__*/React.createElement("td", {
+        className: "ga4-xref__td ga4-xref__td--channels"
+      }, matched.length > 0 ? matched.map(function (c) {
+        return c.channel;
+      }).join(", ") : /*#__PURE__*/React.createElement("span", {
+        className: "ga4-xref__no-match"
+      }, "no match")), /*#__PURE__*/React.createElement("td", {
+        className: "ga4-xref__td ga4-xref__td--num"
+      }, matched.length > 0 ? fmtInt(consentSum) : "—"), /*#__PURE__*/React.createElement("td", {
+        className: "ga4-xref__td ga4-xref__td--num"
+      }, covPct !== null ? /*#__PURE__*/React.createElement("span", {
+        className: covPct < 10 ? "ga4-xref__cov--low" : covPct > 50 ? "ga4-xref__cov--high" : "ga4-xref__cov--mid"
+      }, covPct.toFixed(1), "%") : "—"));
+    })))), /*#__PURE__*/React.createElement("p", {
+      className: "ga4-xref__note"
+    }, "Coverage = consent events / GA4 sessions for matched channels. Below 10% is flagged as a potential blindspot. \"Unassigned\" traffic has no UTM tags and is invisible to both GA4 channel grouping and consent attribution \u2014 these are true dark sessions."));
+  }());
+}
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MarketingChannelCharts);
 
 /***/ }),
@@ -61625,16 +63582,16 @@ function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArra
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
@@ -61678,10 +63635,6 @@ var PLATFORMS = [{
   id: "meta_ads",
   label: "Meta (Facebook / Instagram) Ads",
   metric: "link clicks"
-}, {
-  id: "ga4",
-  label: "Google Analytics 4",
-  metric: "sessions"
 }, {
   id: "linkedin_ads",
   label: "LinkedIn Ads",
@@ -61824,6 +63777,21 @@ function platformPattern(platformId) {
     return null;
   }
   return PLATFORM_SOURCE_PATTERNS[platformId];
+}
+
+// Reverse-match a channel display name (e.g. "Google", "Meta (Facebook / Instagram)")
+// against the UTM-source patterns to find the ad platform it belongs to.
+function detectPlatformForChannelName(channelName) {
+  if (!channelName) return null;
+  var normalized = String(channelName).toLowerCase().replace(/[\s_()/\\-]+/g, "");
+  for (var _i = 0, _Object$entries = Object.entries(PLATFORM_SOURCE_PATTERNS); _i < _Object$entries.length; _i++) {
+    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+      platformId = _Object$entries$_i[0],
+      pattern = _Object$entries$_i[1];
+    if (!pattern || platformId === "other" || platformId === "ga4") continue;
+    if (pattern.test(normalized)) return platformId;
+  }
+  return null;
 }
 function rowMatchesPlatform(row, pattern) {
   if (!pattern) return true;
@@ -63978,14 +65946,23 @@ function MarketingReconciliationPanel(_ref23) {
     _useState36 = _slicedToArray(_useState35, 2),
     syncMsg = _useState36[0],
     setSyncMsg = _useState36[1];
-  var _useState37 = useState(false),
+  var _useState37 = useState(null),
     _useState38 = _slicedToArray(_useState37, 2),
-    alertSettingsOpen = _useState38[0],
-    setAlertSettingsOpen = _useState38[1];
+    ga4Sessions = _useState38[0],
+    setGa4Sessions = _useState38[1];
   var _useState39 = useState(false),
     _useState40 = _slicedToArray(_useState39, 2),
-    connectingPlatform = _useState40[0],
-    setConnectingPlatform = _useState40[1];
+    ga4Syncing = _useState40[0],
+    setGa4Syncing = _useState40[1];
+  var autoFetchedRef = React.useRef(new Set());
+  var _useState41 = useState(false),
+    _useState42 = _slicedToArray(_useState41, 2),
+    alertSettingsOpen = _useState42[0],
+    setAlertSettingsOpen = _useState42[1];
+  var _useState43 = useState(false),
+    _useState44 = _slicedToArray(_useState43, 2),
+    connectingPlatform = _useState44[0],
+    setConnectingPlatform = _useState44[1];
 
   /*
    * Load inputs whenever scope changes; load snapshots whenever
@@ -64031,6 +66008,11 @@ function MarketingReconciliationPanel(_ref23) {
     if (!loaded) return;
     writeStored(inputsKeyValue, inputs);
   }, [inputsKeyValue, inputs, loaded]);
+
+  // Clear auto-fetch cache when date range changes so new dates trigger a fresh fetch
+  useEffect(function () {
+    autoFetchedRef.current.clear();
+  }, [fromDate, toDate]);
   useEffect(function () {
     writeStored(snapshotsKeyValue, snapshots);
   }, [snapshotsKeyValue, snapshots]);
@@ -64070,8 +66052,104 @@ function MarketingReconciliationPanel(_ref23) {
       if (data !== null && data !== void 0 && data.connections) setConnections(data.connections);
     })["catch"](function () {});
   }, [authToken, orgId, domainKey]);
+
+  // When the user drills into a channel, detect the matching ad platform, switch the
+  // platform dropdown to it, and auto-fetch data if that platform is connected.
+  useEffect(function () {
+    if (!(scopeKey !== null && scopeKey !== void 0 && scopeKey.startsWith("channel:"))) return;
+    var detected = detectPlatformForChannelName(scopeLabel);
+    if (!detected || !PLATFORMS.find(function (p) {
+      return p.id === detected;
+    })) return;
+
+    // Switch the platform dropdown to the detected platform
+    setInputs(function (prev) {
+      return prev.platform === detected ? prev : _objectSpread(_objectSpread({}, prev), {}, {
+        platform: detected
+      });
+    });
+    var isConn = connections.some(function (c) {
+      return c.platform === detected && c.account_id;
+    });
+    if (!isConn || !fromDate || !toDate || !authToken || !orgId || !domainKey || domainKey === "combined view") return;
+
+    // Avoid fetching the same data twice
+    var fetchKey = "".concat(detected, "|").concat(domainKey, "|").concat(fromDate, "|").concat(toDate);
+    if (autoFetchedRef.current.has(fetchKey)) return;
+    autoFetchedRef.current.add(fetchKey);
+    setSyncing(true);
+    setSyncMsg(null);
+    fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-data-fetch?platform=").concat(detected, "&domain=").concat(encodeURIComponent(domainKey), "&fromDate=").concat(fromDate, "&toDate=").concat(toDate), {
+      headers: {
+        Authorization: authToken,
+        Organisation: String(orgId)
+      }
+    }).then(function (r) {
+      return r.ok ? r.json() : null;
+    }).then(function (data) {
+      var _PLATFORMS$find;
+      if (!data) return;
+      var clicks = data.clicks != null ? String(Math.round(data.clicks)) : "";
+      var spend = data.spend != null ? String(Number(data.spend).toFixed(2)) : "";
+      setInputs(function (prev) {
+        var _prev$byPlatform;
+        var existing = (_prev$byPlatform = prev.byPlatform) === null || _prev$byPlatform === void 0 ? void 0 : _prev$byPlatform[detected];
+        if (existing !== null && existing !== void 0 && existing.adClicks) return prev; // don't overwrite a user-entered value
+        return _objectSpread(_objectSpread(_objectSpread({}, prev), data.currency ? {
+          currency: data.currency
+        } : {}), {}, {
+          byPlatform: _objectSpread(_objectSpread({}, prev.byPlatform), {}, _defineProperty({}, detected, {
+            adClicks: clicks,
+            spend: spend
+          }))
+        });
+      });
+      var shortLabel = SYNC_SHORT_LABEL[detected] || detected;
+      var metric = ((_PLATFORMS$find = PLATFORMS.find(function (p) {
+        return p.id === detected;
+      })) === null || _PLATFORMS$find === void 0 ? void 0 : _PLATFORMS$find.metric) || "clicks";
+      setSyncMsg({
+        text: "Auto-populated from ".concat(shortLabel, ": ").concat(clicks, " ").concat(metric).concat(spend ? ", ".concat(data.currency || "", " ").concat(spend, " spend") : "", "."),
+        error: false
+      });
+      setTimeout(function () {
+        return setSyncMsg(null);
+      }, 8000);
+    })["catch"](function () {
+      autoFetchedRef.current["delete"](fetchKey);
+    })["finally"](function () {
+      return setSyncing(false);
+    });
+  }, [scopeKey, scopeLabel, connections, fromDate, toDate, authToken, orgId, domainKey]);
+
+  // Auto-fetch GA4 sessions + daily chart data whenever the date range changes and GA4 is connected
+  useEffect(function () {
+    var ga4Conn = connections.find(function (c) {
+      return c.platform === "google_analytics" && c.account_id;
+    });
+    if (!ga4Conn || !fromDate || !toDate || !authToken || !orgId || !domainKey || domainKey === "combined view") {
+      return;
+    }
+    setGa4Syncing(true);
+    var qs = "platform=google_analytics&domain=".concat(encodeURIComponent(domainKey), "&fromDate=").concat(fromDate, "&toDate=").concat(toDate);
+    var headers = {
+      Authorization: authToken,
+      Organisation: String(orgId)
+    };
+    fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/ad-data-fetch?").concat(qs), {
+      headers: headers
+    }).then(function (r) {
+      return r.ok ? r.json() : null;
+    })["catch"](function () {
+      return null;
+    }).then(function (data) {
+      if ((data === null || data === void 0 ? void 0 : data.sessions) != null) setGa4Sessions(data.sessions);
+    })["finally"](function () {
+      return setGa4Syncing(false);
+    });
+  }, [connections, fromDate, toDate, authToken, orgId, domainKey]);
   var handleSync = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
-    var _PLATFORMS$find, resp, data, clicks, spend, shortLabel, platformMetric, _t2;
+    var _PLATFORMS$find2, resp, data, clicks, spend, shortLabel, platformMetric, _t2;
     return _regenerator().w(function (_context6) {
       while (1) switch (_context6.p = _context6.n) {
         case 0:
@@ -64120,9 +66198,9 @@ function MarketingReconciliationPanel(_ref23) {
             });
           });
           shortLabel = SYNC_SHORT_LABEL[inputs.platform] || inputs.platform;
-          platformMetric = ((_PLATFORMS$find = PLATFORMS.find(function (p) {
+          platformMetric = ((_PLATFORMS$find2 = PLATFORMS.find(function (p) {
             return p.id === inputs.platform;
-          })) === null || _PLATFORMS$find === void 0 ? void 0 : _PLATFORMS$find.metric) || "clicks";
+          })) === null || _PLATFORMS$find2 === void 0 ? void 0 : _PLATFORMS$find2.metric) || "clicks";
           setSyncMsg({
             text: "Synced from ".concat(shortLabel, ": ").concat(clicks, " ").concat(platformMetric).concat(spend ? ", ".concat(data.currency || "", " ").concat(spend, " spend") : "", "."),
             error: false
@@ -64709,7 +66787,15 @@ function MarketingReconciliationPanel(_ref23) {
     }, visPct != null ? formatPct(visPct) : "—"), /*#__PURE__*/React.createElement("span", {
       className: "recon-stat-card__sub"
     }, "benchmark 65%"));
-  }()), filterActive ? noMatchedRows ? /*#__PURE__*/React.createElement("div", {
+  }(), ga4Sessions != null && /*#__PURE__*/React.createElement("div", {
+    className: "recon-stat-card recon-stat-card--ga4"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "recon-stat-card__label"
+  }, "GA4 Sessions"), /*#__PURE__*/React.createElement("span", {
+    className: "recon-stat-card__value"
+  }, ga4Syncing ? "…" : formatInt(ga4Sessions)), /*#__PURE__*/React.createElement("span", {
+    className: "recon-stat-card__sub"
+  }, "auto \xB7 ", fromDate, " \u2192 ", toDate))), filterActive ? noMatchedRows ? /*#__PURE__*/React.createElement("div", {
     className: "marketing-reconciliation__filter-note marketing-reconciliation__filter-note--empty",
     role: "status"
   }, /*#__PURE__*/React.createElement("p", null, "No traffic tagged as ", /*#__PURE__*/React.createElement("strong", null, selectedPlatform.label), " in ", scopeSentence, ". We match ", /*#__PURE__*/React.createElement("code", null, "utm_source"), " values like", " ", /*#__PURE__*/React.createElement("code", null, (PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).join(", ") || "—"), "."), actualScopeSources.length > 0 ? /*#__PURE__*/React.createElement("p", null, "Sources we ", /*#__PURE__*/React.createElement("em", null, "do"), " see in this scope:", " ", /*#__PURE__*/React.createElement("code", null, actualScopeSources.slice(0, 10).join(", "), actualScopeSources.length > 10 ? " +".concat(actualScopeSources.length - 10, " more") : ""), ". If your campaign uses one of these, switch to", " ", /*#__PURE__*/React.createElement("strong", null, "Other / custom"), " to reconcile against the full scope, or update your UTM tags to a recognised source name.") : /*#__PURE__*/React.createElement("p", null, "No ", /*#__PURE__*/React.createElement("code", null, "utm_source"), " values found in this scope at all \u2014 either the traffic isn't UTM-tagged, or it lives in a different channel. Switch to ", /*#__PURE__*/React.createElement("strong", null, "Other / custom"), " to reconcile against the scope total instead.")) : /*#__PURE__*/React.createElement("div", {
@@ -65781,13 +67867,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Reports__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Reports */ "./src/Pages/Reports/Reports.js");
 /* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../App.js */ "./src/App.js");
 /* harmony import */ var _API_api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../API/api */ "./src/API/api.js");
-/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
-/* harmony import */ var _MarketingReport_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./MarketingReport.css */ "./src/Pages/Reports/MarketingReport/MarketingReport.css");
-/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
-/* harmony import */ var _MarketingCharts_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MarketingCharts.js */ "./src/Pages/Reports/MarketingReport/MarketingCharts.js");
-/* harmony import */ var _MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./MarketingSuggestionsStrip.js */ "./src/Pages/Reports/MarketingReport/MarketingSuggestionsStrip.js");
-/* harmony import */ var _marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./marketingSuggestions.js */ "./src/Pages/Reports/MarketingReport/marketingSuggestions.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _API_host__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../API/host */ "./src/API/host.js");
+/* harmony import */ var _Authentication_Auth__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../Authentication/Auth */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Dashboard_Style_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../Dashboard/Style.css */ "./src/Pages/Dashboard/Style.css");
+/* harmony import */ var _MarketingReport_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./MarketingReport.css */ "./src/Pages/Reports/MarketingReport/MarketingReport.css");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _MarketingCharts_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./MarketingCharts.js */ "./src/Pages/Reports/MarketingReport/MarketingCharts.js");
+/* harmony import */ var _MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./MarketingSuggestionsStrip.js */ "./src/Pages/Reports/MarketingReport/MarketingSuggestionsStrip.js");
+/* harmony import */ var _marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./marketingSuggestions.js */ "./src/Pages/Reports/MarketingReport/marketingSuggestions.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../../Functions/storage.js */ "./src/Functions/storage.js");
 function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
 function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -65815,6 +67903,8 @@ var _React = React,
   useMemo = _React.useMemo,
   useContext = _React.useContext,
   useCallback = _React.useCallback;
+
+
 
 
 
@@ -67102,7 +69192,7 @@ function computeMarketingHighlights(_ref33) {
     _items.push({
       accent: "spotlight",
       title: "Campaign carrying the load",
-      body: "\u201C".concat(truncateLabel(topCamp.utmCampaign, 64), "\u201D represents about ").concat(share, "% of this channel (").concat(topCamp.consents.toLocaleString("de-DE"), " events).")
+      body: "\"".concat(truncateLabel(topCamp.utmCampaign, 64), "\" represents about ").concat(share, "% of this channel (").concat(topCamp.consents.toLocaleString("de-DE"), " events).")
     });
     var minC = Math.max(5, Math.floor(total * 0.05));
     var withRate = sorted.filter(function (r) {
@@ -67118,7 +69208,7 @@ function computeMarketingHighlights(_ref33) {
       _items.push({
         accent: "win",
         title: "Strongest acceptance",
-        body: "\u201C".concat(truncateLabel(best.utmCampaign, 56), "\u201D leads at ").concat(best.acceptPct.toLocaleString("de-DE", {
+        body: "\"".concat(truncateLabel(best.utmCampaign, 56), "\" leads at ").concat(best.acceptPct.toLocaleString("de-DE", {
           maximumFractionDigits: 1
         }), "% among campaigns with enough volume to compare.")
       });
@@ -67126,7 +69216,7 @@ function computeMarketingHighlights(_ref33) {
         _items.push({
           accent: "watch",
           title: "Review next",
-          body: "\u201C".concat(truncateLabel(worst.utmCampaign, 56), "\u201D is lowest in that set (").concat(worst.acceptPct.toLocaleString("de-DE", {
+          body: "\"".concat(truncateLabel(worst.utmCampaign, 56), "\" is lowest in that set (").concat(worst.acceptPct.toLocaleString("de-DE", {
             maximumFractionDigits: 1
           }), "%)\u2014worth checking creative, landing, or consent timing.")
         });
@@ -67138,7 +69228,7 @@ function computeMarketingHighlights(_ref33) {
         title: "Acceptance",
         body: "One campaign clears the volume bar: ".concat(only.acceptPct.toLocaleString("de-DE", {
           maximumFractionDigits: 1
-        }), "% on \u201C").concat(truncateLabel(only.utmCampaign, 48), "\u201D.")
+        }), "% on \"").concat(truncateLabel(only.utmCampaign, 48), "\".")
       });
     }
     var merged = mergeAllContext(drilldownRows);
@@ -67282,7 +69372,7 @@ function MarketingReport() {
   var _useParams = useParams(),
     id = _useParams.id,
     handle = _useParams.handle;
-  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.useSyncDomainFromRoute)(handle, setGlobalDomain);
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_10__.useSyncDomainFromRoute)(handle, setGlobalDomain);
   var settings = function () {
     try {
       return JSON.parse(localStorage.getItem("settings")) || {
@@ -67330,10 +69420,10 @@ function MarketingReport() {
     previousPeriod2 = _useState12[0],
     setPreviousPeriod2 = _useState12[1];
   var listDomainLabel = useMemo(function () {
-    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.consentsDomainFromRoute)(handle, currentDomain);
+    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_10__.consentsDomainFromRoute)(handle, currentDomain);
   }, [handle, currentDomain]);
   var domainsApiHeader = useMemo(function () {
-    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.toDomainsApiHeader)(listDomainLabel);
+    return (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_10__.toDomainsApiHeader)(listDomainLabel);
   }, [listDomainLabel]);
   var _useState13 = useState([]),
     _useState14 = _slicedToArray(_useState13, 2),
@@ -67412,6 +69502,26 @@ function MarketingReport() {
     _useState42 = _slicedToArray(_useState41, 2),
     timeseriesError = _useState42[0],
     setTimeseriesError = _useState42[1];
+  var _useState43 = useState(null),
+    _useState44 = _slicedToArray(_useState43, 2),
+    ga4DailyRows = _useState44[0],
+    setGa4DailyRows = _useState44[1];
+  var _useState45 = useState(null),
+    _useState46 = _slicedToArray(_useState45, 2),
+    ga4PlatformBreakdown = _useState46[0],
+    setGa4PlatformBreakdown = _useState46[1];
+  var _useState47 = useState(null),
+    _useState48 = _slicedToArray(_useState47, 2),
+    ga4Summary = _useState48[0],
+    setGa4Summary = _useState48[1];
+  var _useState49 = useState(null),
+    _useState50 = _slicedToArray(_useState49, 2),
+    ga4ChannelBreakdown = _useState50[0],
+    setGa4ChannelBreakdown = _useState50[1];
+  var _useState51 = useState(false),
+    _useState52 = _slicedToArray(_useState51, 2),
+    ga4Syncing = _useState52[0],
+    setGa4Syncing = _useState52[1];
   var endpoint = (_API$id = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) === null || _API$id === void 0 ? void 0 : _API$id.marketingAttribution;
   var timeseriesEndpoint = (_API$id2 = _API_api__WEBPACK_IMPORTED_MODULE_5__["default"][id]) === null || _API$id2 === void 0 ? void 0 : _API$id2.marketingAttributionTimeseries;
   var fetchReport = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
@@ -67516,7 +69626,7 @@ function MarketingReport() {
             _context.n = 9;
             break;
           }
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_14__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context.a(2);
         case 9:
@@ -67540,7 +69650,7 @@ function MarketingReport() {
             _context.n = 11;
             break;
           }
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_14__["default"].removeItem("globals");
           window.location.href = "/login";
           return _context.a(2);
         case 11:
@@ -67669,7 +69779,7 @@ function MarketingReport() {
                 _context2.n = 10;
                 break;
               }
-              _Functions_storage_js__WEBPACK_IMPORTED_MODULE_12__["default"].removeItem("globals");
+              _Functions_storage_js__WEBPACK_IMPORTED_MODULE_14__["default"].removeItem("globals");
               window.location.href = "/login";
               return _context2.a(2);
             case 10:
@@ -67708,6 +69818,62 @@ function MarketingReport() {
       cancelled = true;
     };
   }, [timeseriesEndpoint, domainsApiHeader, fromDate, toDate, compareRange, previousPeriod, previousPeriod2]);
+
+  // Fetch GA4 daily sessions when a GA4 connection exists for this domain
+  useEffect(function () {
+    var domain = listDomainLabel;
+    if (!domain || domain === "combined view") return;
+    var authToken = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_7__["default"].getToken();
+    var orgId = _Authentication_Auth__WEBPACK_IMPORTED_MODULE_7__["default"].getOrganisation();
+    if (!authToken || !orgId) return;
+    var fromYmd = toYmd(fromDate);
+    var toYmd2 = toYmd(toDate);
+    if (!fromYmd || !toYmd2) return;
+    var cancelled = false;
+    setGa4Syncing(true);
+    setGa4DailyRows(null);
+    setGa4PlatformBreakdown(null);
+    setGa4Summary(null);
+    setGa4ChannelBreakdown(null);
+    var headers = {
+      Authorization: authToken,
+      Organisation: String(orgId)
+    };
+
+    // Check if GA4 is connected for this domain, then fetch daily data
+    fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_6__.ScannerHost, "/api/ad-connections?domain=").concat(encodeURIComponent(domain)), {
+      headers: headers
+    }).then(function (r) {
+      return r.ok ? r.json() : null;
+    }).then(function (data) {
+      if (cancelled) return;
+      var hasGa4 = ((data === null || data === void 0 ? void 0 : data.connections) || []).some(function (c) {
+        return c.platform === "google_analytics" && c.account_id;
+      });
+      if (!hasGa4) {
+        setGa4Syncing(false);
+        return;
+      }
+      var qs = "platform=google_analytics&domain=".concat(encodeURIComponent(domain), "&fromDate=").concat(fromYmd, "&toDate=").concat(toYmd2);
+      return fetch("".concat(_API_host__WEBPACK_IMPORTED_MODULE_6__.ScannerHost, "/api/ad-daily-data?").concat(qs), {
+        headers: headers
+      }).then(function (r) {
+        return r.ok ? r.json() : null;
+      }).then(function (daily) {
+        var _daily$rows;
+        if (cancelled) return;
+        if (daily !== null && daily !== void 0 && (_daily$rows = daily.rows) !== null && _daily$rows !== void 0 && _daily$rows.length) setGa4DailyRows(daily.rows);
+        if (daily !== null && daily !== void 0 && daily.platformBreakdown) setGa4PlatformBreakdown(daily.platformBreakdown);
+        if (daily !== null && daily !== void 0 && daily.summary) setGa4Summary(daily.summary);
+        if (daily !== null && daily !== void 0 && daily.channelBreakdown) setGa4ChannelBreakdown(daily.channelBreakdown);
+      });
+    })["catch"](function () {})["finally"](function () {
+      if (!cancelled) setGa4Syncing(false);
+    });
+    return function () {
+      cancelled = true;
+    };
+  }, [listDomainLabel, fromDate, toDate]);
   var compareOn = useMemo(function () {
     return compareRangeActive(compareRange);
   }, [compareRange]);
@@ -67914,7 +70080,7 @@ function MarketingReport() {
     };
   }, [rows, drilldownRows, selectedChannel]);
   var invisibleSuggestions = useMemo(function () {
-    return (0,_marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_11__.buildInvisibleTrafficSuggestions)({
+    return (0,_marketingSuggestions_js__WEBPACK_IMPORTED_MODULE_13__.buildInvisibleTrafficSuggestions)({
       selectedChannel: selectedChannel,
       invisibleSharePct: invisibleSharePct,
       baselineInvisibleSharePct: baselineInvisibleSharePct,
@@ -68078,8 +70244,30 @@ function MarketingReport() {
         });
       }
     }
+    // GA4 coverage KPIs — only show on overview (not per-channel drilldown)
+    if (!selectedChannel && ga4Summary && ga4Summary.sessions > 0) {
+      var ga4Sess = ga4Summary.sessions;
+      var capturePct = Math.round(totalConsents / ga4Sess * 1000) / 10;
+      var darkZone = Math.max(0, ga4Sess - totalConsents);
+      cards.push({
+        key: "ga4-coverage",
+        label: "GA4 consent coverage",
+        value: Number.isFinite(capturePct) ? "".concat(capturePct, "%") : "—",
+        hint: "".concat(totalConsents.toLocaleString("de-DE"), " consent events from ").concat(ga4Sess.toLocaleString("de-DE"), " GA4 sessions. Sessions that did not generate a consent event are the dark zone."),
+        variant: capturePct < 15 ? "warn" : null,
+        compare: null
+      });
+      cards.push({
+        key: "ga4-dark-zone",
+        label: "Session dark zone",
+        value: darkZone.toLocaleString("de-DE"),
+        hint: "GA4 sessions that reached the site but generated no consent event. Includes returning visitors with prior consent, bounces before banner load, and bot traffic.",
+        variant: "warn",
+        compare: null
+      });
+    }
     return cards;
-  }, [totalConsents, drillConsents, summary, selectedChannel, drilldownRows.length, channelOverview.length, compareUi, drillBaselineCampaignCount, drillBaselineConsents, baselineChannelCount, totalBaselineConsents, measurementReadyCount, measurementReadySharePct, baselineMeasurementReadyCount, baselineMeasurementReadySharePct, invisibleConsents, invisibleSharePct, baselineInvisibleConsents]);
+  }, [totalConsents, drillConsents, summary, selectedChannel, drilldownRows.length, channelOverview.length, compareUi, drillBaselineCampaignCount, drillBaselineConsents, baselineChannelCount, totalBaselineConsents, measurementReadyCount, measurementReadySharePct, baselineMeasurementReadyCount, baselineMeasurementReadySharePct, invisibleConsents, invisibleSharePct, baselineInvisibleConsents, ga4Summary]);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav__WEBPACK_IMPORTED_MODULE_0__["default"], {
     links: _Reports__WEBPACK_IMPORTED_MODULE_3__.reportsLinks,
     title: "Reports"
@@ -68106,98 +70294,63 @@ function MarketingReport() {
     setCompareWindowEnd: setPreviousPeriod2
   }), /*#__PURE__*/React.createElement("div", {
     className: "dashboard-content marketing-report-page"
-  }, /*#__PURE__*/React.createElement("header", {
-    className: "marketing-report-hero"
-  }, /*#__PURE__*/React.createElement("h1", null, "Channel Analytics"), /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-hero__lede"
-  }, /*#__PURE__*/React.createElement("strong", null, "Start with Highlights"), " for what deserves attention in your selected period, then drill into channels and campaigns. ", /*#__PURE__*/React.createElement("strong", null, "Full-stack consent events"), " show how much of your tagged traffic actually accepted every optional category \u2014 a budget signal, not ROAS. Cookie choices (accept all, essential only, granular) explain how tags can fire; exports sit below if you need a spreadsheet."), compareOn ? /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-compare-banner"
-  }, "Period comparison is on: ", /*#__PURE__*/React.createElement("strong", null, formatPeriodRange(fromDate, toDate)), " vs", " ", /*#__PURE__*/React.createElement("strong", null, formatPeriodRange(previousPeriod, previousPeriod2)), ". Table deltas match rows by source, medium, campaign, and referrer host.") : null, compareBaselineNote ? /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-compare-warning",
-    role: "status"
-  }, compareBaselineNote, " Current-period figures are still shown; baseline deltas are hidden until the comparison request succeeds.") : null), error ? /*#__PURE__*/React.createElement("div", {
-    className: "marketing-report-error",
-    role: "alert"
-  }, error, /*#__PURE__*/React.createElement("pre", {
-    className: "marketing-report-code"
-  }, "Example row: { \"utm_source\": \"fb\", \"utm_medium\": \"paid\", \"utm_campaign\": \"spring_sale\", \"consents\": 120, \"acceptRate\": 72.5, \"acceptAll\": 72, \"essentialOnly\": 30, \"granular\": 18 }")) : null, !error && !(loading && rows.length === 0) ? /*#__PURE__*/React.createElement(MarketingHighlightsSection, {
-    highlights: highlights
-  }) : null, /*#__PURE__*/React.createElement("section", {
-    className: "marketing-report-section",
-    "aria-labelledby": "at-a-glance-heading"
-  }, /*#__PURE__*/React.createElement("h2", {
-    id: "at-a-glance-heading",
-    className: "marketing-report-section__title"
-  }, "At a glance"), /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-section__hint"
-  }, compareOn ? "Primary window ".concat(formatPeriodRange(fromDate, toDate), " \xB7 Baseline ").concat(formatPeriodRange(previousPeriod, previousPeriod2), ".") : "Quick counts for the same date range as the header filter.", " ", "Full-stack metrics use the API summary when available so totals stay correct even if the campaign table is paginated."), !error && rows.length > 0 && invisibleSharePct != null ? /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-visibility-narrative",
-    role: "note",
-    "aria-live": "polite"
-  }, selectedChannel ? /*#__PURE__*/React.createElement(React.Fragment, null, "In", " ", /*#__PURE__*/React.createElement("strong", null, selectedChannel), ",", " ", /*#__PURE__*/React.createElement("strong", null, invisibleConsents.toLocaleString("de-DE")), " ", "of", " ", /*#__PURE__*/React.createElement("strong", null, visibilityScopeTotal.toLocaleString("de-DE")), " ", "attributed consents") : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("strong", null, invisibleConsents.toLocaleString("de-DE")), " ", "of", " ", /*#__PURE__*/React.createElement("strong", null, visibilityScopeTotal.toLocaleString("de-DE")), " ", "attributed consents in this view"), " ", "(", /*#__PURE__*/React.createElement("strong", null, invisibleSharePct.toLocaleString("de-DE", {
-    maximumFractionDigits: 1
-  }), "%"), ") won't reach your analytics tools \u2014 those visits chose essential-only or granular categories, so GA4, Ads Manager, and the Meta pixel won't record them.") : null, /*#__PURE__*/React.createElement("div", {
-    className: "marketing-report-summary"
-  }, kpiCards.map(function (c) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: c.key || c.label,
-      className: ["marketing-report-kpi", c.variant ? "marketing-report-kpi--".concat(c.variant) : ""].filter(Boolean).join(" ")
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "marketing-report-kpi__label"
-    }, c.label), /*#__PURE__*/React.createElement("span", {
-      className: "marketing-report-kpi__value"
-    }, c.value), c.hint ? /*#__PURE__*/React.createElement("p", {
-      className: "marketing-report-kpi__hint"
-    }, c.hint) : null, c.compare ? /*#__PURE__*/React.createElement("div", {
-      className: "marketing-report-kpi__compare"
-    }, c.compare) : null);
-  }))), !error && rows.length > 0 && invisibleSuggestions.length > 0 ? /*#__PURE__*/React.createElement(_MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_10__["default"], {
-    suggestions: invisibleSuggestions,
-    domainKey: listDomainLabel
-  }) : null, !error && rows.length > 0 ? /*#__PURE__*/React.createElement("div", {
-    className: "marketing-reconciliation-cta"
-  }, /*#__PURE__*/React.createElement("p", {
-    className: "marketing-reconciliation-cta__text"
-  }, "Want to see how your paid traffic maps to consent visibility?"), /*#__PURE__*/React.createElement("a", {
-    href: (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_8__.reportsPath)(id, listDomainLabel, "/reconcile"),
-    className: "marketing-reconciliation-cta__link"
-  }, "Open Ad Reconciliation \u2192")) : null, !error && rows.length > 0 ? selectedChannel ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_9__.MarketingChannelCharts, {
-    channelName: selectedChannel,
-    drilldownRows: drilldownRows,
-    drillConsents: drillConsents,
-    mergedContext: mergedContext
-  }), /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_9__.MarketingTimeseriesChart, {
-    channelName: selectedChannel,
-    deriveChannel: deriveMarketingChannel,
-    timeseriesRows: timeseriesRows,
-    baselineTimeseriesRows: baselineTimeseriesRows,
-    fromDate: fromDate,
-    toDate: toDate,
-    compareEnabled: compareUi,
-    loading: timeseriesLoading,
-    errorMessage: timeseriesError
-  })) : /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_9__.MarketingOverviewCharts, {
-    channelOverview: channelOverview,
-    rows: rows
-  }) : null, /*#__PURE__*/React.createElement("section", {
-    className: "marketing-report-section",
-    "aria-labelledby": "exports-heading"
-  }, /*#__PURE__*/React.createElement("h2", {
-    id: "exports-heading",
-    className: "marketing-report-section__title"
-  }, "Exports & navigation"), /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-section__hint"
-  }, "Download CSV for stakeholders; use back to return to all channels."), /*#__PURE__*/React.createElement("div", {
-    className: "marketing-report-toolbar"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "marketing-report-toolbar__left"
-  }, selectedChannel ? /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "marketing-report-back",
+    className: "ca-page-header"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ca-page-header__left"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "ca-page-header__title"
+  }, selectedChannel ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+    className: "ca-back-btn",
     onClick: function onClick() {
       return setSelectedChannel(null);
     }
-  }, "\u2190 Channel overview") : null, rows.length > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
+  }, "\u2190 Channels"), /*#__PURE__*/React.createElement("span", {
+    className: "ca-page-header__channel"
+  }, selectedChannel)) : "Channel Analytics"), compareOn && /*#__PURE__*/React.createElement("span", {
+    className: "ca-compare-pill"
+  }, formatPeriodRange(fromDate, toDate), " vs ", formatPeriodRange(previousPeriod, previousPeriod2))), /*#__PURE__*/React.createElement("a", {
+    href: (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_10__.reportsPath)(id, listDomainLabel, "/reconcile"),
+    className: "ca-reconcile-link"
+  }, "Ad Reconciliation \u2192")), compareBaselineNote ? /*#__PURE__*/React.createElement("p", {
+    className: "marketing-report-compare-warning",
+    role: "status"
+  }, compareBaselineNote) : null, error ? /*#__PURE__*/React.createElement("div", {
+    className: "marketing-report-error",
+    role: "alert"
+  }, error) : null, !error && rows.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "ca-kpi-strip"
+  }, kpiCards.slice(0, 5).map(function (c) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: c.key || c.label,
+      className: ["ca-kpi", c.variant ? "ca-kpi--".concat(c.variant) : ""].filter(Boolean).join(" "),
+      title: c.hint || ""
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "ca-kpi__value"
+    }, c.value), /*#__PURE__*/React.createElement("span", {
+      className: "ca-kpi__label"
+    }, c.label), c.compare ? /*#__PURE__*/React.createElement("div", {
+      className: "ca-kpi__compare"
+    }, c.compare) : null);
+  })), !error && !(loading && rows.length === 0) ? /*#__PURE__*/React.createElement(MarketingHighlightsSection, {
+    highlights: highlights
+  }) : null, !error && rows.length > 0 && invisibleSuggestions.length > 0 ? /*#__PURE__*/React.createElement(_MarketingSuggestionsStrip_js__WEBPACK_IMPORTED_MODULE_12__["default"], {
+    suggestions: invisibleSuggestions,
+    domainKey: listDomainLabel
+  }) : null, /*#__PURE__*/React.createElement("section", {
+    className: "marketing-report-section ca-table-section",
+    "aria-labelledby": "detail-table-heading-top"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ca-table-header"
+  }, /*#__PURE__*/React.createElement("h2", {
+    id: "detail-table-heading-top",
+    className: "marketing-report-section__title",
+    style: {
+      margin: 0
+    }
+  }, selectedChannel ? "Campaigns \xB7 ".concat(selectedChannel) : "Channels & campaigns"), /*#__PURE__*/React.createElement("div", {
+    className: "ca-table-toolbar"
+  }, rows.length > 0 && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
     type: "button",
     className: "marketing-report-export",
     onClick: function onClick() {
@@ -68205,36 +70358,17 @@ function MarketingReport() {
       var slug = selectedChannel ? selectedChannel.replace(/[^\w\-]+/g, "_").slice(0, 48) : "";
       triggerCsvDownload("".concat(exportFilenameBase, "_campaigns").concat(slug ? "_".concat(slug) : "", ".csv"), buildMarketingCsvCampaignRows(data, exportCsvMeta));
     }
-  }, selectedChannel ? "Export this channel (campaigns) CSV" : "Export campaigns CSV"), /*#__PURE__*/React.createElement("button", {
+  }, selectedChannel ? "Export campaigns CSV" : "Export campaigns CSV"), /*#__PURE__*/React.createElement("button", {
     type: "button",
     className: "marketing-report-export marketing-report-export--secondary",
     onClick: function onClick() {
       return triggerCsvDownload("".concat(exportFilenameBase, "_channels.csv"), buildMarketingCsvChannelRows(sortedChannelOverview, exportCsvMeta));
     }
-  }, "Export channels CSV")) : null), /*#__PURE__*/React.createElement("span", {
+  }, "Export channels CSV")), /*#__PURE__*/React.createElement("span", {
     className: "marketing-report-toolbar__meta"
   }, loading ? "Loading…" : selectedChannel ? "".concat(drilldownRows.length, " campaign").concat(drilldownRows.length === 1 ? "" : "s", " \xB7 ").concat(drilldownRows.reduce(function (s, r) {
     return s + r.consents;
-  }, 0).toLocaleString("de-DE"), " consents in \u201C").concat(selectedChannel, "\u201D") : "".concat(channelOverview.length, " channel").concat(channelOverview.length === 1 ? "" : "s", " \xB7 ").concat(totalConsents.toLocaleString("de-DE"), " consents")))), /*#__PURE__*/React.createElement("section", {
-    className: "marketing-report-section",
-    "aria-labelledby": "perf-context-section-h"
-  }, /*#__PURE__*/React.createElement("h2", {
-    id: "perf-context-section-h",
-    className: "marketing-report-section__title"
-  }, "What's driving differences"), /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-section__hint"
-  }, "Geography, landing paths, and UTM variants (merged from campaign-level API slices)."), rows.length > 0 ? /*#__PURE__*/React.createElement(MarketingContextSection, {
-    heading: selectedChannel ? "".concat(selectedChannel, " \xB7 detail") : "All channels · detail",
-    rows: selectedChannel ? drilldownRows : rows
-  }) : null), /*#__PURE__*/React.createElement("section", {
-    className: "marketing-report-section",
-    "aria-labelledby": "detail-table-heading"
-  }, /*#__PURE__*/React.createElement("h2", {
-    id: "detail-table-heading",
-    className: "marketing-report-section__title"
-  }, selectedChannel ? "Campaigns \xB7 ".concat(selectedChannel) : "Channels & campaigns"), /*#__PURE__*/React.createElement("p", {
-    className: "marketing-report-section__hint"
-  }, selectedChannel ? compareUi ? "Per-campaign metrics vs the comparison window for matched rows. Choice columns are current period only." : "Per-campaign consent and cookie-choice mix for this channel." : compareUi ? "Channel totals vs the comparison window. Deltas use baseline traffic grouped the same way as the primary table." : "Open a channel row to see individual campaigns."), /*#__PURE__*/React.createElement("div", {
+  }, 0).toLocaleString("de-DE"), " consents") : "".concat(channelOverview.length, " channel").concat(channelOverview.length === 1 ? "" : "s", " \xB7 ").concat(totalConsents.toLocaleString("de-DE"), " consents")))), /*#__PURE__*/React.createElement("div", {
     className: "marketing-report-table-wrap"
   }, rows.length === 0 && !loading ? /*#__PURE__*/React.createElement("div", {
     className: "marketing-report-empty"
@@ -68443,7 +70577,42 @@ function MarketingReport() {
   })))), rows.length > 0 && unclassifiedConsents > 0 ? /*#__PURE__*/React.createElement("p", {
     className: "marketing-report-footnote",
     role: "note"
-  }, unclassifiedConsents.toLocaleString("de-DE"), " consent", unclassifiedConsents === 1 ? "" : "s", " in this period had no classifiable choice pattern (missing or legacy payload). They are included in ", /*#__PURE__*/React.createElement("strong", null, "Consents"), " but not in the three choice columns.") : null)));
+  }, unclassifiedConsents.toLocaleString("de-DE"), " consent", unclassifiedConsents === 1 ? "" : "s", " in this period had no classifiable choice pattern (missing or legacy payload). They are included in ", /*#__PURE__*/React.createElement("strong", null, "Consents"), " but not in the three choice columns.") : null, ((ga4DailyRows === null || ga4DailyRows === void 0 ? void 0 : ga4DailyRows.length) > 0 || ga4Syncing) && /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_11__.Ga4SessionsChart, {
+    rows: ga4DailyRows || [],
+    platformBreakdown: ga4PlatformBreakdown,
+    summary: ga4Summary,
+    channelBreakdown: ga4ChannelBreakdown,
+    totalConsents: totalConsents,
+    channelOverview: channelOverview,
+    syncing: ga4Syncing
+  }), !error && rows.length > 0 ? selectedChannel ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_11__.MarketingChannelCharts, {
+    channelName: selectedChannel,
+    drilldownRows: drilldownRows,
+    drillConsents: drillConsents,
+    mergedContext: mergedContext
+  }), /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_11__.MarketingTimeseriesChart, {
+    channelName: selectedChannel,
+    deriveChannel: deriveMarketingChannel,
+    timeseriesRows: timeseriesRows,
+    baselineTimeseriesRows: baselineTimeseriesRows,
+    fromDate: fromDate,
+    toDate: toDate,
+    compareEnabled: compareUi,
+    loading: timeseriesLoading,
+    errorMessage: timeseriesError
+  })) : /*#__PURE__*/React.createElement(_MarketingCharts_js__WEBPACK_IMPORTED_MODULE_11__.MarketingOverviewCharts, {
+    channelOverview: channelOverview,
+    rows: rows
+  }) : null, rows.length > 0 ? /*#__PURE__*/React.createElement("details", {
+    className: "ca-context-details"
+  }, /*#__PURE__*/React.createElement("summary", {
+    className: "ca-context-summary"
+  }, "What's driving differences", /*#__PURE__*/React.createElement("span", {
+    className: "ca-context-summary__hint"
+  }, "geography \xB7 landing paths \xB7 UTM variants")), /*#__PURE__*/React.createElement(MarketingContextSection, {
+    heading: selectedChannel ? "".concat(selectedChannel, " \xB7 detail") : "All channels · detail",
+    rows: selectedChannel ? drilldownRows : rows
+  })) : null)));
 }
 
 /***/ }),
@@ -68732,6 +70901,21 @@ var _React = React,
   useContext = _React.useContext,
   useMemo = _React.useMemo;
 var reportsLinks = [{
+  divider: true,
+  label: "Marketing",
+  requiresTier: 'growth'
+}, {
+  name: "Channel Analytics",
+  path: "/reports/marketing",
+  requiresTier: 'growth'
+}, {
+  name: "Ad Reconciliation",
+  path: "/reports/reconcile",
+  requiresTier: 'growth'
+}, {
+  divider: true,
+  label: "Compliance"
+}, {
   name: "Audit log",
   path: "/reports/user-consents",
   requiresTier: 'personal'
@@ -68743,14 +70927,6 @@ var reportsLinks = [{
   name: "DSR Portal",
   path: "/reports/dsr",
   requiresTier: 'personal'
-}, {
-  name: "Channel Analytics",
-  path: "/reports/marketing",
-  requiresTier: 'growth'
-}, {
-  name: "Ad Reconciliation",
-  path: "/reports/reconcile",
-  requiresTier: 'growth'
 }, {
   name: "Compliance overview",
   path: "/reports/compliance",
@@ -69057,6 +71233,7 @@ function AccountPickerModal(_ref) {
   var dialogRef = useRef(null);
   var platformLabels = {
     google_ads: "Google Ads",
+    google_analytics: "Google Analytics 4",
     meta_ads: "Meta Ads",
     linkedin_ads: "LinkedIn Ads",
     microsoft_ads: "Microsoft Ads"
@@ -69365,6 +71542,11 @@ function AdConnectionsSettings() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  function handleSelectAccount(platform, pendingId, domain) {
+    setPendingId(pendingId);
+    setPendingPlatform(platform);
+    setPendingDomain(domain || selectedDomain);
+  }
   function handlePickerDone(platform, accountName) {
     var platformLabels = {
       google_ads: "Google Ads",
@@ -69472,7 +71654,8 @@ function AdConnectionsSettings() {
     key: managerKey,
     domain: selectedDomain,
     orgId: orgId,
-    authToken: authToken
+    authToken: authToken,
+    onSelectAccount: handleSelectAccount
   })) : null))), pendingId && /*#__PURE__*/React.createElement(AccountPickerModal, {
     pendingId: pendingId,
     platform: pendingPlatform,
@@ -69686,6 +71869,337 @@ function AddUser() {
     type: "submit",
     className: "cta"
   }, "Add user"))));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/Settings/AnalyticsScript/index.js":
+/*!*****************************************************!*\
+  !*** ./src/Pages/Settings/AnalyticsScript/index.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AnalyticsScript)
+/* harmony export */ });
+/* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../Components/Header/SideNav.js */ "./src/Components/Header/SideNav.js");
+/* harmony import */ var _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../Components/Header/SideNavLinks/index.js */ "./src/Components/Header/SideNavLinks/index.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _API_host_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../API/host.js */ "./src/API/host.js");
+/* harmony import */ var _Style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Style.css */ "./src/Pages/Settings/Style.css");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _window$React = window.React,
+  useState = _window$React.useState,
+  useEffect = _window$React.useEffect,
+  useCallback = _window$React.useCallback;
+
+
+
+
+
+
+var INGEST_URL = "https://app.intastellarconsents.com/api/a";
+function readCachedDomains() {
+  try {
+    var raw = localStorage.getItem("domains");
+    if (!raw) return [];
+    var parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(function (d) {
+      return d && typeof d === "string" && d !== "combined view";
+    });
+  } catch (_unused) {
+    return [];
+  }
+}
+function CopyButton(_ref) {
+  var text = _ref.text,
+    _ref$label = _ref.label,
+    label = _ref$label === void 0 ? "Copy" : _ref$label;
+  var _useState = useState(false),
+    _useState2 = _slicedToArray(_useState, 2),
+    copied = _useState2[0],
+    setCopied = _useState2[1];
+  var copy = useCallback(function () {
+    navigator.clipboard.writeText(text).then(function () {
+      setCopied(true);
+      setTimeout(function () {
+        return setCopied(false);
+      }, 2000);
+    })["catch"](function () {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      setCopied(true);
+      setTimeout(function () {
+        return setCopied(false);
+      }, 2000);
+    });
+  }, [text]);
+  return /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "as-copy-btn" + (copied ? " as-copy-btn--done" : ""),
+    onClick: copy,
+    "aria-label": copied ? "Copied!" : label
+  }, copied ? "Copied!" : label);
+}
+function SnippetBox(_ref2) {
+  var siteKey = _ref2.siteKey;
+  var snippet = "<script src=\"".concat(INGEST_URL, "\" data-site=\"").concat(siteKey, "\" async defer></script>");
+  return /*#__PURE__*/React.createElement("div", {
+    className: "as-snippet"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "as-snippet__header"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "as-snippet__label"
+  }, "Embed snippet"), /*#__PURE__*/React.createElement(CopyButton, {
+    text: snippet,
+    label: "Copy snippet"
+  })), /*#__PURE__*/React.createElement("pre", {
+    className: "as-snippet__code"
+  }, snippet), /*#__PURE__*/React.createElement("p", {
+    className: "as-snippet__hint"
+  }, "Paste this into the ", /*#__PURE__*/React.createElement("code", null, "<head>"), " of every page. The script is a no-op until the visitor accepts ", /*#__PURE__*/React.createElement("strong", null, "statisticCookies"), " in your Intastellar banner."));
+}
+function AnalyticsScript() {
+  document.title = "Analytics Script | Settings | Intastellar Consents";
+  var domains = readCachedDomains();
+  var _useState3 = useState(domains[0] || ""),
+    _useState4 = _slicedToArray(_useState3, 2),
+    domain = _useState4[0],
+    setDomain = _useState4[1];
+  var _useState5 = useState(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    siteData = _useState6[0],
+    setSiteData = _useState6[1];
+  var _useState7 = useState(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    loading = _useState8[0],
+    setLoading = _useState8[1];
+  var _useState9 = useState(false),
+    _useState0 = _slicedToArray(_useState9, 2),
+    generating = _useState0[0],
+    setGenerating = _useState0[1];
+  var _useState1 = useState(null),
+    _useState10 = _slicedToArray(_useState1, 2),
+    error = _useState10[0],
+    setError = _useState10[1];
+  var authHeaders = {
+    Authorization: _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].getToken(),
+    Organisation: String(_Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_0__["default"].getOrganisation()),
+    "Content-Type": "application/json"
+  };
+  var loadSiteKey = useCallback(/*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(d) {
+      var r, _t, _t2, _t3;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.p = _context.n) {
+          case 0:
+            if (d) {
+              _context.n = 1;
+              break;
+            }
+            setSiteData(null);
+            return _context.a(2);
+          case 1:
+            setLoading(true);
+            setError(null);
+            _context.p = 2;
+            _context.n = 3;
+            return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_4__.ScannerHost, "/api/analytics-site?domain=").concat(encodeURIComponent(d)), {
+              headers: authHeaders
+            });
+          case 3:
+            r = _context.v;
+            if (!(r.status === 404)) {
+              _context.n = 4;
+              break;
+            }
+            setSiteData(null);
+            _context.n = 7;
+            break;
+          case 4:
+            if (!r.ok) {
+              _context.n = 6;
+              break;
+            }
+            _t = setSiteData;
+            _context.n = 5;
+            return r.json();
+          case 5:
+            _t2 = _context.v;
+            _t(_t2);
+            _context.n = 7;
+            break;
+          case 6:
+            setError("Failed to load site key.");
+          case 7:
+            _context.n = 9;
+            break;
+          case 8:
+            _context.p = 8;
+            _t3 = _context.v;
+            setError("Network error.");
+          case 9:
+            _context.p = 9;
+            setLoading(false);
+            return _context.f(9);
+          case 10:
+            return _context.a(2);
+        }
+      }, _callee, null, [[2, 8, 9, 10]]);
+    }));
+    return function (_x) {
+      return _ref3.apply(this, arguments);
+    };
+  }(), []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(function () {
+    loadSiteKey(domain);
+  }, [domain]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  var generateKey = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var r, _t4, _t5, _t6;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.p = _context2.n) {
+          case 0:
+            if (domain) {
+              _context2.n = 1;
+              break;
+            }
+            return _context2.a(2);
+          case 1:
+            setGenerating(true);
+            setError(null);
+            _context2.p = 2;
+            _context2.n = 3;
+            return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_4__.ScannerHost, "/api/analytics-site"), {
+              method: "POST",
+              headers: authHeaders,
+              body: JSON.stringify({
+                domain: domain
+              })
+            });
+          case 3:
+            r = _context2.v;
+            if (!r.ok) {
+              _context2.n = 5;
+              break;
+            }
+            _t4 = setSiteData;
+            _context2.n = 4;
+            return r.json();
+          case 4:
+            _t5 = _context2.v;
+            _t4(_t5);
+            _context2.n = 6;
+            break;
+          case 5:
+            setError("Failed to generate site key.");
+          case 6:
+            _context2.n = 8;
+            break;
+          case 7:
+            _context2.p = 7;
+            _t6 = _context2.v;
+            setError("Network error.");
+          case 8:
+            _context2.p = 8;
+            setGenerating(false);
+            return _context2.f(8);
+          case 9:
+            return _context2.a(2);
+        }
+      }, _callee2, null, [[2, 7, 8, 9]]);
+    }));
+    return function generateKey() {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_Components_Header_SideNav_js__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    links: _Components_Header_SideNavLinks_index_js__WEBPACK_IMPORTED_MODULE_2__.reportsLinks,
+    title: "Settings"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-content"
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Analytics Script"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "settings-section"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "as-intro"
+  }, /*#__PURE__*/React.createElement("p", null, "Embed this lightweight script on your website to collect first-party, consent-gated analytics. The script reads your Intastellar banner cookie and only activates when the visitor has accepted ", /*#__PURE__*/React.createElement("strong", null, "statisticCookies"), " \u2014 no consent, no data.")), domains.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "as-domain-row"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "as-label",
+    htmlFor: "as-domain-select"
+  }, "Domain"), /*#__PURE__*/React.createElement("select", {
+    id: "as-domain-select",
+    className: "as-select",
+    value: domain,
+    onChange: function onChange(e) {
+      return setDomain(e.target.value);
+    }
+  }, domains.map(function (d) {
+    return /*#__PURE__*/React.createElement("option", {
+      key: d,
+      value: d
+    }, d);
+  }))), error && /*#__PURE__*/React.createElement("p", {
+    className: "as-error"
+  }, error), loading && /*#__PURE__*/React.createElement("p", {
+    className: "as-loading"
+  }, "Loading\u2026"), !loading && domain && !siteData && /*#__PURE__*/React.createElement("div", {
+    className: "as-empty"
+  }, /*#__PURE__*/React.createElement("p", null, "No site key yet for ", /*#__PURE__*/React.createElement("strong", null, domain), "."), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "as-generate-btn",
+    onClick: generateKey,
+    disabled: generating
+  }, generating ? "Generating…" : "Generate site key")), !loading && siteData && /*#__PURE__*/React.createElement("div", {
+    className: "as-card"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "as-key-row"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
+    className: "as-label"
+  }, "Site key"), /*#__PURE__*/React.createElement("span", {
+    className: "as-key-value"
+  }, siteData.id)), /*#__PURE__*/React.createElement("div", {
+    className: "as-key-actions"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "as-status" + (siteData.active ? " as-status--active" : " as-status--inactive")
+  }, siteData.active ? "Active" : "Inactive"), /*#__PURE__*/React.createElement(CopyButton, {
+    text: siteData.id,
+    label: "Copy key"
+  }))), /*#__PURE__*/React.createElement(SnippetBox, {
+    siteKey: siteData.id
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "as-privacy-note"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "as-privacy-note__title"
+  }, "What we collect"), /*#__PURE__*/React.createElement("div", {
+    className: "as-privacy-note__cols"
+  }, /*#__PURE__*/React.createElement("ul", {
+    className: "as-privacy-note__list as-privacy-note__list--yes"
+  }, /*#__PURE__*/React.createElement("li", null, "Page path & query string"), /*#__PURE__*/React.createElement("li", null, "Page title"), /*#__PURE__*/React.createElement("li", null, "Referrer hostname"), /*#__PURE__*/React.createElement("li", null, "UTM parameters"), /*#__PURE__*/React.createElement("li", null, "Device type, screen dimensions"), /*#__PURE__*/React.createElement("li", null, "Browser & OS family"), /*#__PURE__*/React.createElement("li", null, "Country code (from IP \u2014 IP discarded)"), /*#__PURE__*/React.createElement("li", null, "Tab-scoped session ID (cleared on tab close)"), /*#__PURE__*/React.createElement("li", null, "Time on page")), /*#__PURE__*/React.createElement("ul", {
+    className: "as-privacy-note__list as-privacy-note__list--no"
+  }, /*#__PURE__*/React.createElement("li", null, "IP addresses"), /*#__PURE__*/React.createElement("li", null, "Full referrer URLs"), /*#__PURE__*/React.createElement("li", null, "User identifiers or email"), /*#__PURE__*/React.createElement("li", null, "Cross-session or cross-device tracking"), /*#__PURE__*/React.createElement("li", null, "Data without explicit statisticCookies consent"))))))));
 }
 
 /***/ }),

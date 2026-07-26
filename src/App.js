@@ -47,6 +47,7 @@ import ROPAEntry from "./Pages/Settings/ROPA/ROPAEntry";
 import DSR from "./Pages/DSR";
 import DSRDetail from "./Pages/DSR/DSRDetail";
 import AdConnectionsSettings from "./Pages/Settings/AdConnections";
+import AnalyticsScriptSettings from "./Pages/Settings/AnalyticsScript";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -413,6 +414,11 @@ export default function App() {
                                         <Route path="/settings/ad-connections" exact>
                                             <ErrorBoundary>
                                                 {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Connections" fullPage /> : <AdConnectionsSettings />}
+                                            </ErrorBoundary>
+                                        </Route>
+                                        <Route path="/settings/analytics-script" exact>
+                                            <ErrorBoundary>
+                                                {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Script" fullPage /> : <AnalyticsScriptSettings />}
                                             </ErrorBoundary>
                                         </Route>
                                         <Route path="/settings/plans" exact>
