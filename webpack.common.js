@@ -89,14 +89,6 @@ module.exports = (env, argv) => {
       hot: true,
       historyApiFallback: true,
       static: './dist',
-      proxy: [
-        {
-          context: ['/api'],
-          target: 'https://www.intastellarconsents.com',
-          changeOrigin: true,
-          secure: true,
-        },
-      ],
     };
   }
 

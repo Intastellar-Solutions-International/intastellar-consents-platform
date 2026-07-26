@@ -1,4 +1,5 @@
 const { useState, useEffect, useCallback } = React;
+import { ScannerHost } from "../../../API/host";
 
 const AD_PLATFORMS = [
     { id: "google_ads",    label: "Google Ads",                  color: "#4285f4", initial: "G" },
@@ -33,7 +34,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
         setLoadingConnections(true);
         try {
             const resp = await fetch(
-                `/api/ad-connections?domain=${encodeURIComponent(domain)}`,
+                `${ScannerHost}/api/ad-connections?domain=${encodeURIComponent(domain)}`,
                 { headers: { Authorization: authToken, Organisation: String(orgId) } }
             );
             if (!resp.ok) { setStatus("Could not load connections.", true); return; }
@@ -79,7 +80,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
         // Strip "Bearer " prefix to get the raw token for the URL param
         const rawToken = authToken.replace(/^Bearer\s+/i, "");
         const url = [
-            `/api/ad-oauth-start`,
+            `${ScannerHost}/api/ad-oauth-start`,
             `?platform=${encodeURIComponent(platformId)}`,
             `&domain=${encodeURIComponent(domain)}`,
             `&returnPath=${encodeURIComponent(returnPath)}`,
@@ -95,7 +96,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
         if (!window.confirm(`Disconnect ${label}?\nThis removes the connection from this domain. You can reconnect at any time.`)) return;
         try {
             await fetch(
-                `/api/ad-connections?platform=${platformId}&domain=${encodeURIComponent(domain)}`,
+                `${ScannerHost}/api/ad-connections?platform=${platformId}&domain=${encodeURIComponent(domain)}`,
                 { method: "DELETE", headers: { Authorization: authToken, Organisation: String(orgId) } }
             );
             setConnections(prev => prev.filter(c => c.platform !== platformId));
@@ -113,7 +114,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
         setImporting(platformId);
         try {
             const resp = await fetch(
-                `/api/ad-data-fetch?platform=${platformId}&domain=${encodeURIComponent(domain)}&fromDate=${fromDate}&toDate=${toDate}`,
+                `${ScannerHost}/api/ad-data-fetch?platform=${platformId}&domain=${encodeURIComponent(domain)}&fromDate=${fromDate}&toDate=${toDate}`,
                 { headers: { Authorization: authToken, Organisation: String(orgId) } }
             );
             const data = await resp.json();

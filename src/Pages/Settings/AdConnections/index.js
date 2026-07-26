@@ -1,4 +1,5 @@
 import AdConnectionManager from "../../Reports/MarketingReport/AdConnectionManager.js";
+import { ScannerHost } from "../../../API/host";
 import Authentication from "../../../Authentication/Auth";
 import SideNav from "../../../Components/Header/SideNav";
 import StickyPageTitle from "../../../Components/Header/Sticky";
@@ -43,7 +44,7 @@ function AccountPickerModal({ pendingId, platform, domain, orgId, authToken, onD
             setLoadError("Session missing. Please reconnect.");
             return;
         }
-        fetch(`/api/ad-connection-pending?id=${encodeURIComponent(pendingId)}`, {
+        fetch(`${ScannerHost}/api/ad-connection-pending?id=${encodeURIComponent(pendingId)}`, {
             headers: { Authorization: authToken, Organisation: String(orgId) },
         })
             .then(r => r.json())
@@ -66,7 +67,7 @@ function AccountPickerModal({ pendingId, platform, domain, orgId, authToken, onD
         setSaveError(null);
         try {
             const acct = accounts?.find(a => a.id === selected);
-            const resp = await fetch(`/api/ad-connection-pending?id=${encodeURIComponent(pendingId)}`, {
+            const resp = await fetch(`${ScannerHost}/api/ad-connection-pending?id=${encodeURIComponent(pendingId)}`, {
                 method: "POST",
                 headers: {
                     Authorization: authToken,

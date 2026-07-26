@@ -1,4 +1,5 @@
 const { useCallback, useEffect, useMemo, useState } = React;
+import { ScannerHost } from "../../../API/host";
 
 /*
  * MarketingReconciliationPanel
@@ -1274,7 +1275,7 @@ function NotificationBell({ domainKey, orgId, authToken }) {
         setLoading(true);
         try {
             const resp = await fetch(
-                `/api/ad-alerts?domain=${encodeURIComponent(domainKey)}&resource=notifications&limit=20`,
+                `${ScannerHost}/api/ad-alerts?domain=${encodeURIComponent(domainKey)}&resource=notifications&limit=20`,
                 { headers: { Authorization: authToken, Organisation: String(orgId) } }
             );
             if (resp.ok) {
@@ -1300,7 +1301,7 @@ function NotificationBell({ domainKey, orgId, authToken }) {
     }, [open]);
 
     async function markAllRead() {
-        await fetch("/api/ad-alerts", {
+        await fetch(`${ScannerHost}/api/ad-alerts`, {
             method: "POST",
             headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
             body: JSON.stringify({ domain: domainKey, action: "mark-read", id: "all" }),
@@ -1310,7 +1311,7 @@ function NotificationBell({ domainKey, orgId, authToken }) {
     }
 
     async function markRead(id) {
-        await fetch("/api/ad-alerts", {
+        await fetch(`${ScannerHost}/api/ad-alerts`, {
             method: "POST",
             headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
             body: JSON.stringify({ domain: domainKey, action: "mark-read", id }),
@@ -1413,7 +1414,7 @@ function AlertSettingsModal({ domainKey, orgId, authToken, currency, onClose }) 
 
     useEffect(() => {
         if (!authToken || !orgId || !domainKey) return;
-        fetch(`/api/ad-alerts?domain=${encodeURIComponent(domainKey)}&resource=rules`, {
+        fetch(`${ScannerHost}/api/ad-alerts?domain=${encodeURIComponent(domainKey)}&resource=rules`, {
             headers: { Authorization: authToken, Organisation: String(orgId) },
         })
             .then(r => r.ok ? r.json() : null)
@@ -1453,7 +1454,7 @@ function AlertSettingsModal({ domainKey, orgId, authToken, currency, onClose }) 
                 notify_push: updates.notify_push ?? rule.notify_push ?? false,
                 email_address: (updates.email_address ?? rule.email_address ?? email) || null,
             };
-            const resp = await fetch("/api/ad-alerts", {
+            const resp = await fetch(`${ScannerHost}/api/ad-alerts`, {
                 method: "POST",
                 headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
@@ -1478,7 +1479,7 @@ function AlertSettingsModal({ domainKey, orgId, authToken, currency, onClose }) 
         if (pushStatus === "subscribed" && pushSubscription) {
             setPushStatus("idle");
             await pushSubscription.unsubscribe().catch(() => {});
-            await fetch("/api/ad-alerts", {
+            await fetch(`${ScannerHost}/api/ad-alerts`, {
                 method: "POST",
                 headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
                 body: JSON.stringify({ domain: domainKey, action: "unsubscribe-push", subscription: { endpoint: pushSubscription.endpoint } }),
@@ -1496,7 +1497,7 @@ function AlertSettingsModal({ domainKey, orgId, authToken, currency, onClose }) 
                 applicationServerKey: vapidKey,
             });
             setPushSubscription(sub);
-            await fetch("/api/ad-alerts", {
+            await fetch(`${ScannerHost}/api/ad-alerts`, {
                 method: "POST",
                 headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
                 body: JSON.stringify({ domain: domainKey, action: "subscribe-push", subscription: sub.toJSON() }),
@@ -1762,7 +1763,7 @@ export default function MarketingReconciliationPanel({
         setSnapshots(local);
         // Then fetch from DB and merge (DB wins for anything it has)
         if (authToken && orgId && domainKey && domainKey !== "combined view") {
-            fetch(`/api/ad-snapshots?domain=${encodeURIComponent(domainKey)}`, {
+            fetch(`${ScannerHost}/api/ad-snapshots?domain=${encodeURIComponent(domainKey)}`, {
                 headers: { Authorization: authToken, Organisation: String(orgId) }
             }).then(r => r.ok ? r.json() : null)
               .then(data => {
@@ -1806,7 +1807,7 @@ export default function MarketingReconciliationPanel({
     // Keep an up-to-date list of which platforms have active connections for this domain
     useEffect(() => {
         if (!authToken || !orgId || !domainKey || domainKey === "combined view") return;
-        fetch(`/api/ad-connections?domain=${encodeURIComponent(domainKey)}`, {
+        fetch(`${ScannerHost}/api/ad-connections?domain=${encodeURIComponent(domainKey)}`, {
             headers: { Authorization: authToken, Organisation: String(orgId) },
         })
             .then(r => r.ok ? r.json() : null)
@@ -1820,7 +1821,7 @@ export default function MarketingReconciliationPanel({
         setSyncMsg(null);
         try {
             const resp = await fetch(
-                `/api/ad-data-fetch?platform=${inputs.platform}&domain=${encodeURIComponent(domainKey)}&fromDate=${fromDate}&toDate=${toDate}`,
+                `${ScannerHost}/api/ad-data-fetch?platform=${inputs.platform}&domain=${encodeURIComponent(domainKey)}&fromDate=${fromDate}&toDate=${toDate}`,
                 { headers: { Authorization: authToken, Organisation: String(orgId) } }
             );
             const data = await resp.json();
@@ -1855,7 +1856,7 @@ export default function MarketingReconciliationPanel({
         const returnPath = window.location.pathname + window.location.search;
         const rawToken = authToken.replace(/^Bearer\s+/i, "");
         const url = [
-            `/api/ad-oauth-start`,
+            `${ScannerHost}/api/ad-oauth-start`,
             `?platform=${encodeURIComponent(platform)}`,
             `&domain=${encodeURIComponent(domainKey)}`,
             `&returnPath=${encodeURIComponent(returnPath)}`,
@@ -2147,7 +2148,7 @@ export default function MarketingReconciliationPanel({
         setSavedFlash(true);
         // Also persist to DB
         if (authToken && orgId && domainKey && domainKey !== "combined view") {
-            fetch('/api/ad-snapshots', {
+            fetch(`${ScannerHost}/api/ad-snapshots`, {
                 method: 'POST',
                 headers: {
                     Authorization: authToken,
@@ -2189,7 +2190,7 @@ export default function MarketingReconciliationPanel({
     const handleDeleteSnapshot = useCallback((id) => {
         setSnapshots((prev) => prev.filter((s) => s.id !== id));
         if (authToken && orgId) {
-            fetch(`/api/ad-snapshots?id=${encodeURIComponent(id)}`, {
+            fetch(`${ScannerHost}/api/ad-snapshots?id=${encodeURIComponent(id)}`, {
                 method: 'DELETE',
                 headers: { Authorization: authToken, Organisation: String(orgId) }
             }).catch(() => {});
@@ -2204,7 +2205,7 @@ export default function MarketingReconciliationPanel({
         if (ok) {
             setSnapshots([]);
             if (authToken && orgId && domainKey) {
-                fetch(`/api/ad-snapshots?domain=${encodeURIComponent(domainKey)}&all=1`, {
+                fetch(`${ScannerHost}/api/ad-snapshots?domain=${encodeURIComponent(domainKey)}&all=1`, {
                     method: 'DELETE',
                     headers: { Authorization: authToken, Organisation: String(orgId) }
                 }).catch(() => {});

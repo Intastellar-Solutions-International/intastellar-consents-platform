@@ -4,6 +4,7 @@ import StickyPageTitle from "../../../Components/Header/Sticky";
 import { reportsLinks } from "../Reports";
 import { DomainContext } from "../../../App.js";
 import API from "../../../API/api";
+import { ScannerHost } from "../../../API/host";
 import Authentication from "../../../Authentication/Auth";
 import "../../Dashboard/Style.css";
 import "./MarketingReport.css";
@@ -28,7 +29,7 @@ function AccountPickerModal({ pendingId, platform, authToken, orgId, onDone, onE
     const [err, setErr] = useState(null);
 
     useEffect(() => {
-        fetch(`/api/ad-connection-pending?id=${encodeURIComponent(pendingId)}`, {
+        fetch(`${ScannerHost}/api/ad-connection-pending?id=${encodeURIComponent(pendingId)}`, {
             headers: { Authorization: authToken, Organisation: String(orgId) },
         })
             .then(r => r.json())
@@ -43,7 +44,7 @@ function AccountPickerModal({ pendingId, platform, authToken, orgId, onDone, onE
     async function selectAccount(acc) {
         setSaving(true);
         try {
-            const resp = await fetch(`/api/ad-connection-pending?id=${encodeURIComponent(pendingId)}`, {
+            const resp = await fetch(`${ScannerHost}/api/ad-connection-pending?id=${encodeURIComponent(pendingId)}`, {
                 method: "POST",
                 headers: { Authorization: authToken, Organisation: String(orgId), "Content-Type": "application/json" },
                 body: JSON.stringify({ accountId: acc.id, accountLabel: acc.name }),
