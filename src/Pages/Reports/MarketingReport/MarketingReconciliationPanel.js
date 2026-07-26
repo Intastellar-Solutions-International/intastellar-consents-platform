@@ -1124,132 +1124,6 @@ function SnapshotComboChart({ snapshots }) {
     );
 }
 
-/* ─── Ga4SessionsChart ───────────────────────────────────────────────────── */
-
-function Ga4SessionsChart({ rows, platformBreakdown, syncing }) {
-    if (!rows || rows.length === 0) return null;
-
-    const W = 620, H = 200;
-    const PAD = { top: 20, right: 16, bottom: 40, left: 52 };
-    const plotW = W - PAD.left - PAD.right;
-    const plotH = H - PAD.top - PAD.bottom;
-
-    const maxSessions = Math.max(...rows.map(r => Number(r.sessions) || 0), 1);
-    const barW = Math.max(4, Math.min(28, (plotW / rows.length) * 0.7));
-    const toX   = i => PAD.left + ((i + 0.5) / rows.length) * plotW;
-    const toY   = v => PAD.top + plotH - (Math.max(0, v) / maxSessions) * plotH;
-
-    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(maxSessions * f));
-    const xStep = Math.ceil(rows.length / 8);
-
-    // Server-side tracking detection
-    const hasSsTracking = platformBreakdown?.some(p => p.platform === "(other)" && p.sessions > 0);
-    const totalSessions = platformBreakdown?.reduce((s, p) => s + p.sessions, 0) || 0;
-    const ssPlatform = platformBreakdown?.find(p => p.platform === "(other)");
-    const ssShare = ssPlatform && totalSessions > 0
-        ? Math.round((ssPlatform.sessions / totalSessions) * 100)
-        : 0;
-
-    return (
-        <div className="ga4-sessions-chart">
-            <div className="ga4-sessions-chart__header">
-                <h3 className="marketing-reconciliation__section-title">GA4 Daily Sessions</h3>
-                {hasSsTracking && (
-                    <span className="ga4-ss-badge" title={`${ssShare}% of sessions come from server-side tracking (Measurement Protocol / sGTM)`}>
-                        Server-side events detected · {ssShare}%
-                    </span>
-                )}
-                {syncing && <span className="ga4-sessions-chart__syncing">syncing…</span>}
-            </div>
-            <p className="marketing-reconciliation__section-hint">
-                Daily session count from the connected GA4 property. Auto-synced by nightly cron.
-            </p>
-            <div className="recon-chart-scroll">
-                <svg viewBox={`0 0 ${W} ${H}`} className="marketing-reconciliation__trend-svg"
-                     role="img" aria-label="GA4 daily sessions bar chart">
-
-                    {/* Y-axis grid + labels */}
-                    {yTicks.map(v => (
-                        <g key={v}>
-                            <line x1={PAD.left} y1={toY(v)} x2={W - PAD.right} y2={toY(v)}
-                                  stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                            <text x={PAD.left - 6} y={toY(v) + 4} textAnchor="end"
-                                  fontSize="9" fill="rgba(160,175,200,0.5)">
-                                {v >= 1000 ? `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}k` : v}
-                            </text>
-                        </g>
-                    ))}
-
-                    {/* Session bars */}
-                    {rows.map((r, i) => {
-                        const sessions = Number(r.sessions) || 0;
-                        const x   = toX(i) - barW / 2;
-                        const top = toY(sessions);
-                        const ht  = PAD.top + plotH - top;
-                        return (
-                            <rect key={r.date} x={x} y={top} width={barW} height={Math.max(1, ht)}
-                                  rx="2" fill="rgba(227,116,0,0.72)" opacity="0.9">
-                                <title>{r.date}: {formatInt(sessions)} sessions</title>
-                            </rect>
-                        );
-                    })}
-
-                    {/* X-axis date labels */}
-                    {rows.filter((_, i) => i % xStep === 0 || i === rows.length - 1).map(r => {
-                        const i = rows.indexOf(r);
-                        const label = r.date ? r.date.slice(5) : ""; // MM-DD
-                        return (
-                            <text key={r.date} x={toX(i)} y={H - PAD.bottom + 14}
-                                  textAnchor="middle" fontSize="9" fill="rgba(160,175,200,0.55)">
-                                {label}
-                            </text>
-                        );
-                    })}
-
-                    {/* Y-axis label */}
-                    <text x={PAD.left - 38} y={PAD.top + plotH / 2} textAnchor="middle"
-                          fontSize="9" fill="rgba(150,165,190,0.5)"
-                          transform={`rotate(-90,${PAD.left - 38},${PAD.top + plotH / 2})`}>
-                        Sessions
-                    </text>
-                </svg>
-            </div>
-
-            {/* Platform breakdown / server-side tracking section */}
-            {platformBreakdown && platformBreakdown.length > 0 && (
-                <div className="ga4-platform-breakdown">
-                    <h4 className="ga4-platform-breakdown__title">Session source breakdown</h4>
-                    <div className="ga4-platform-breakdown__rows">
-                        {platformBreakdown.map(p => {
-                            const share = totalSessions > 0 ? (p.sessions / totalSessions) * 100 : 0;
-                            const isServerSide = p.platform === "(other)";
-                            return (
-                                <div key={p.platform} className={`ga4-pb-row${isServerSide ? " ga4-pb-row--ss" : ""}`}>
-                                    <span className="ga4-pb-row__name">
-                                        {isServerSide ? (
-                                            <>
-                                                <span className="ga4-pb-row__ss-icon" aria-hidden="true">⚡</span>
-                                                {p.platform}
-                                                <span className="ga4-pb-row__ss-hint"> — server-side / Measurement Protocol</span>
-                                            </>
-                                        ) : p.platform}
-                                    </span>
-                                    <div className="ga4-pb-row__bar-wrap">
-                                        <div className="ga4-pb-row__bar"
-                                             style={{ width: `${Math.max(1, share)}%`, background: isServerSide ? "rgba(99,102,241,0.7)" : "rgba(227,116,0,0.6)" }} />
-                                    </div>
-                                    <span className="ga4-pb-row__share">{share.toFixed(1)}%</span>
-                                    <span className="ga4-pb-row__count">{formatInt(p.sessions)}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-}
-
 /* ─── computeInsights ────────────────────────────────────────────────────── */
 
 function computeInsights({
@@ -1881,8 +1755,6 @@ export default function MarketingReconciliationPanel({
     const [syncMsg, setSyncMsg] = useState(null);
     const [ga4Sessions, setGa4Sessions] = useState(null);
     const [ga4Syncing, setGa4Syncing] = useState(false);
-    const [ga4DailyRows, setGa4DailyRows] = useState(null);       // [{ date, sessions }]
-    const [ga4PlatformBreakdown, setGa4PlatformBreakdown] = useState(null); // [{ platform, sessions }]
     const autoFetchedRef = React.useRef(new Set());
     const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
     const [connectingPlatform, setConnectingPlatform] = useState(false);
@@ -2025,17 +1897,10 @@ export default function MarketingReconciliationPanel({
         const qs = `platform=google_analytics&domain=${encodeURIComponent(domainKey)}&fromDate=${fromDate}&toDate=${toDate}`;
         const headers = { Authorization: authToken, Organisation: String(orgId) };
 
-        // Aggregate total + daily breakdown + platform breakdown — run in parallel
-        Promise.all([
-            fetch(`${ScannerHost}/api/ad-data-fetch?${qs}`, { headers })
-                .then(r => r.ok ? r.json() : null).catch(() => null),
-            fetch(`${ScannerHost}/api/ad-daily-data?${qs}`, { headers })
-                .then(r => r.ok ? r.json() : null).catch(() => null),
-        ]).then(([aggregate, daily]) => {
-            if (aggregate?.sessions != null) setGa4Sessions(aggregate.sessions);
-            if (daily?.rows?.length)         setGa4DailyRows(daily.rows);
-            if (daily?.platformBreakdown)    setGa4PlatformBreakdown(daily.platformBreakdown);
-        }).finally(() => setGa4Syncing(false));
+        fetch(`${ScannerHost}/api/ad-data-fetch?${qs}`, { headers })
+            .then(r => r.ok ? r.json() : null).catch(() => null)
+            .then(data => { if (data?.sessions != null) setGa4Sessions(data.sessions); })
+            .finally(() => setGa4Syncing(false));
     }, [connections, fromDate, toDate, authToken, orgId, domainKey]);
 
     const handleSync = useCallback(async () => {
@@ -2596,15 +2461,6 @@ export default function MarketingReconciliationPanel({
                     </div>
                 )}
             </div>
-
-            {/* ── GA4 sessions chart + server-side tracking ───────────────── */}
-            {(ga4DailyRows?.length > 0 || (ga4Syncing && ga4Sessions != null)) && (
-                <Ga4SessionsChart
-                    rows={ga4DailyRows || []}
-                    platformBreakdown={ga4PlatformBreakdown}
-                    syncing={ga4Syncing}
-                />
-            )}
 
             {/* ── Platform filter strip ───────────────────────────────────── */}
             {filterActive ? (

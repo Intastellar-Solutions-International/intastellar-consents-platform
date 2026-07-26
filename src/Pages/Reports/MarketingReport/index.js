@@ -5,6 +5,8 @@ import { defaultCompareWindowForPrimary } from "../../../Components/Filter/filte
 import { reportsLinks } from "../Reports";
 import { DomainContext } from "../../../App.js";
 import API from "../../../API/api";
+import { ScannerHost } from "../../../API/host";
+import Authentication from "../../../Authentication/Auth";
 import "../../Dashboard/Style.css";
 import "./MarketingReport.css";
 import {
@@ -17,6 +19,7 @@ import {
     MarketingOverviewCharts,
     MarketingChannelCharts,
     MarketingTimeseriesChart,
+    Ga4SessionsChart,
 } from "./MarketingCharts.js";
 import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
 import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
@@ -1616,6 +1619,10 @@ export default function MarketingReport() {
     const [timeseriesLoading, setTimeseriesLoading] = useState(false);
     const [timeseriesError, setTimeseriesError] = useState(null);
 
+    const [ga4DailyRows, setGa4DailyRows] = useState(null);
+    const [ga4PlatformBreakdown, setGa4PlatformBreakdown] = useState(null);
+    const [ga4Syncing, setGa4Syncing] = useState(false);
+
     const endpoint = API[id]?.marketingAttribution;
     const timeseriesEndpoint = API[id]?.marketingAttributionTimeseries;
 
@@ -1852,6 +1859,48 @@ export default function MarketingReport() {
         previousPeriod,
         previousPeriod2,
     ]);
+
+    // Fetch GA4 daily sessions when a GA4 connection exists for this domain
+    useEffect(() => {
+        const domain = listDomainLabel;
+        if (!domain || domain === "combined view") return;
+        const authToken = Authentication.getToken();
+        const orgId = Authentication.getOrganisation();
+        if (!authToken || !orgId) return;
+        const fromYmd = toYmd(fromDate);
+        const toYmd2  = toYmd(toDate);
+        if (!fromYmd || !toYmd2) return;
+
+        let cancelled = false;
+        setGa4Syncing(true);
+        setGa4DailyRows(null);
+        setGa4PlatformBreakdown(null);
+
+        const headers = { Authorization: authToken, Organisation: String(orgId) };
+
+        // Check if GA4 is connected for this domain, then fetch daily data
+        fetch(`${ScannerHost}/api/ad-connections?domain=${encodeURIComponent(domain)}`, { headers })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (cancelled) return;
+                const hasGa4 = (data?.connections || []).some(
+                    c => c.platform === "google_analytics" && c.account_id
+                );
+                if (!hasGa4) { setGa4Syncing(false); return; }
+                const qs = `platform=google_analytics&domain=${encodeURIComponent(domain)}&fromDate=${fromYmd}&toDate=${toYmd2}`;
+                return fetch(`${ScannerHost}/api/ad-daily-data?${qs}`, { headers })
+                    .then(r => r.ok ? r.json() : null)
+                    .then(daily => {
+                        if (cancelled) return;
+                        if (daily?.rows?.length)      setGa4DailyRows(daily.rows);
+                        if (daily?.platformBreakdown) setGa4PlatformBreakdown(daily.platformBreakdown);
+                    });
+            })
+            .catch(() => {})
+            .finally(() => { if (!cancelled) setGa4Syncing(false); });
+
+        return () => { cancelled = true; };
+    }, [listDomainLabel, fromDate, toDate]);
 
     const compareOn = useMemo(() => compareRangeActive(compareRange), [compareRange]);
     const compareUi = compareOn && !compareBaselineNote;
@@ -2469,6 +2518,14 @@ export default function MarketingReport() {
                             />
                         )
                     ) : null}
+
+                    {(ga4DailyRows?.length > 0 || ga4Syncing) && (
+                        <Ga4SessionsChart
+                            rows={ga4DailyRows || []}
+                            platformBreakdown={ga4PlatformBreakdown}
+                            syncing={ga4Syncing}
+                        />
+                    )}
 
                     <section className="marketing-report-section" aria-labelledby="exports-heading">
                         <h2 id="exports-heading" className="marketing-report-section__title">
