@@ -79,8 +79,7 @@ async function ensurePendingTable(db) {
 }
 
 async function fetchAllAccounts(platform, accessToken) {
-    try {
-        switch (platform) {
+    switch (platform) {
             case "google_ads": {
                 const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
 
@@ -197,10 +196,6 @@ async function fetchAllAccounts(platform, accessToken) {
 
             default:
                 return [];
-        }
-    } catch (err) {
-        console.error("[ad-account-reselect fetchAllAccounts]", platform, err.message);
-        return [];
     }
 }
 
@@ -215,6 +210,8 @@ export default async function handler(req, res) {
         req.headers.organisation || req.headers.organization || req.query.org || "0", 10
     );
     if (!orgId) return res.status(400).json({ error: "Organisation header or ?org param required" });
+
+    const db = getPool();
 
     if (req.method === "POST") {
         const { platform, domain, accountId, accountLabel } = req.body || {};
@@ -271,8 +268,6 @@ export default async function handler(req, res) {
 
     const { platform, domain } = req.query;
     if (!platform || !domain) return res.status(400).json({ error: "platform and domain are required" });
-
-    const db = getPool();
 
     // Look in finalized connections first, fall back to pending_ad_connections
     // (pending is where the token lives when accounts=[] was stored during OAuth callback)
