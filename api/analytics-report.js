@@ -228,7 +228,7 @@ export default async function handler(req, res) {
             full:           Number(t.full_count  || 0),
             uniqueSessions: Number(t.unique_sessions || 0),
             consentRate:    total > 0
-                ? Math.round((Number(t.full_count || 0) / total) * 1000) / 10
+                ? Math.round((Number(t.full_count || t.stat_yes || 0) / total) * 1000) / 10
                 : 0,
         },
         daily: dailyRes.rows.map(r => ({

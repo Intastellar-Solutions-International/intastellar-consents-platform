@@ -385,7 +385,7 @@ export default function SiteAnalytics() {
                                 icon={<IconShieldCheck />}
                                 label="Consent rate"
                                 value={data.totals.consentRate + "%"}
-                                sub="statisticCookies accepted"
+                                sub="statisticCookies or allCookies accepted"
                                 variant={data.totals.consentRate < 20 ? "warn" : null}
                             />
                             <KpiCard
