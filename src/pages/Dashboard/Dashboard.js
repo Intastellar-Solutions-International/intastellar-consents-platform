@@ -7,6 +7,7 @@ import Map from "../../Components/Charts/WorldMap/WorldMap.js";
 import { DomainContext, OrganisationContext, WorkspaceContext } from "../../App.js";
 import {
     reportsPath,
+    analyticsMarketingPath,
     consentsDomainFromRoute,
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
@@ -510,7 +511,7 @@ export default function Dashboard(props) {
                                 <span className="dashboard-compliance-link__arrow">→</span>
                             </Link>
                             <Link
-                                to={reportsPath(id, currentDomain, "/marketing")}
+                                to={analyticsMarketingPath(currentDomain)}
                                 className="dashboard-compliance-link"
                             >
                                 <span className="dashboard-compliance-link__label">Marketing recoil analysis</span>

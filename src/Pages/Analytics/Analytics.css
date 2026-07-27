@@ -1,7 +1,7 @@
 /* ── Site Analytics report page ─────────────────────────────────────────────── */
 
 .sa-page {
-    max-width: 1100px;
+    max-width: 1320px;
     padding: 4px 0 56px;
     display: flex;
     flex-direction: column;

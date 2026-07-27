@@ -13,12 +13,7 @@ const { useContext, useMemo } = React;
 export const reportsLinks = [
     {
         divider: true,
-        label: "Marketing",
-        requiresTier: 'growth',
-    },
-    {
-        name: "Channel Analytics",
-        path: "/reports/marketing",
+        label: "Advertising",
         requiresTier: 'growth',
     },
     {
@@ -76,14 +71,6 @@ const HUB_CARDS = [
             "Track access, erasure, and portability requests with automatic deadlines per regulation (GDPR, LGPD, CCPA, PDPA, POPIA).",
         leaf: "/dsr",
         minTier: 'personal',
-    },
-    {
-        key: "marketing",
-        title: "Channel Analytics",
-        description:
-            "Consent volume and acceptance by channel and campaign (UTMs and landing URL marketing parameters).",
-        leaf: "/marketing",
-        minTier: 'growth',
     },
 ];
 

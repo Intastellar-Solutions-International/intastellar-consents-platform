@@ -12,7 +12,7 @@ import {
     useSyncDomainFromRoute,
     consentsDomainFromRoute,
     toDomainsApiHeader,
-    reportsPath,
+    analyticsMarketingPath,
     isCombinedOrClearDomain,
 } from "../../../Functions/domainPathSegments.js";
 import MarketingReconciliationPanel from "./MarketingReconciliationPanel.js";
@@ -332,7 +332,7 @@ export default function ReconcilePage() {
         : totalConsents;
     const invisibleConsents = Math.max(0, visibilityScopeTotal - measurementReadyCount);
 
-    const channelAnalyticsPath = reportsPath(id, listDomainLabel, "/marketing");
+    const channelAnalyticsPath = analyticsMarketingPath(listDomainLabel);
 
     // Domain gate — reconciliation must be scoped to a specific domain
     const noDomain = isCombinedOrClearDomain(listDomainLabel);

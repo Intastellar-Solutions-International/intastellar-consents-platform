@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath, analyticsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -31,7 +31,7 @@ export default function Nav() {
     // ── Analytics mode: analytics + marketing links only ──────────────────
     if (mode === "analytics") {
         const overviewPath = analyticsPath(currentDomain);
-        const marketingPath = reportsPath(platform, currentDomain, "/marketing");
+        const marketingPath = analyticsMarketingPath(currentDomain);
         const overviewActive = !path.indexOf("/analytics") && path.indexOf("/marketing") === -1;
         const marketingActive = path.indexOf("/marketing") > -1;
 

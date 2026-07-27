@@ -48,7 +48,10 @@ export function decodeDomainPathSegment(handleParam) {
 
 /**
  * Extract raw :handle segment from pathname, or null.
- * Supports /:id/view/:handle and /:id/reports/view/:handle/...
+ * Supports /:id/view/:handle, /:id/reports/view/:handle/..., and
+ * /analytics/:handle(/marketing). Real domain segments always contain the
+ * punycode-dot marker "%2E", so a bare reserved word like "marketing" in
+ * the handle slot can never collide with an actual encoded domain.
  */
 export function parseHandleFromPath(pathname) {
     const parts = String(pathname || "")
@@ -60,8 +63,10 @@ export function parseHandleFromPath(pathname) {
     if (parts.length >= 3 && parts[1] === "view") {
         return parts[2];
     }
-    if (parts.length >= 2 && parts[0] === "analytics") {
-        return parts[1];
+    if (parts[0] === "analytics") {
+        if (parts.length >= 3) return parts[1];
+        if (parts.length === 2 && parts[1] !== "marketing") return parts[1];
+        return null;
     }
     return null;
 }
@@ -86,7 +91,6 @@ export function getReportsUrlLeaf(pathname) {
     if (pathname.includes("/audit-report")) return "/audit-report";
     if (pathname.includes("/user-consents")) return "/user-consents";
     if (pathname.includes("/reconcile")) return "/reconcile";
-    if (pathname.includes("/marketing")) return "/marketing";
     if (pathname.includes("/compliance")) return "/compliance";
     return "";
 }
@@ -98,10 +102,21 @@ export function analyticsPath(domainUnicode) {
     return `/analytics/${seg}`;
 }
 
+/** Channel Analytics (marketing/GA4) — part of the Analytics product, not the CMP. */
+export function analyticsMarketingPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/marketing";
+    return `/analytics/${seg}/marketing`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        history.push(analyticsPath(domainUnicode));
+        if (pathname.includes("/marketing")) {
+            history.push(analyticsMarketingPath(domainUnicode));
+        } else {
+            history.push(analyticsPath(domainUnicode));
+        }
         return;
     }
     const leaf = getReportsUrlLeaf(pathname);

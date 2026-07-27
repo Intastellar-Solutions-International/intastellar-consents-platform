@@ -4,9 +4,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
-import SideNav from "../../Components/Header/SideNav.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { analyticsLinks } from "./AnalyticsLinks.js";
 import "./Analytics.css";
 
 const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
@@ -313,7 +311,6 @@ export default function SiteAnalytics() {
 
     return (
         <>
-            <SideNav links={analyticsLinks} title="Analytics" />
             <div className="dashboard-content">
                 <StickyPageTitle
                     title="Site Analytics"

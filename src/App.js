@@ -222,6 +222,16 @@ export default function App() {
                                                 </>}
                                             </div>
                                         </Route>
+                                        <Route path="/analytics/:handle/marketing" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/marketing" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
+                                                {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
+                                            </ErrorBoundary>}
+                                        </Route>
                                         <Route path="/analytics/:handle" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
                                                 <SiteAnalytics />
@@ -312,11 +322,6 @@ export default function App() {
                                                 {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
                                             </ErrorBoundary>}
                                         </Route>
-                                        <Route path="/:id/reports/view/:handle/marketing" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
-                                            </ErrorBoundary>}
-                                        </Route>
                                         <Route path="/:id/reports/view/:handle/reconcile" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Reconciliation" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <ReconcilePage />}
@@ -355,11 +360,6 @@ export default function App() {
                                         <Route path="/:id/reports/audit-report" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('personal') ? <TierGate minTier="personal" featureName="Audit Report" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
-                                            </ErrorBoundary>}
-                                        </Route>
-                                        <Route path="/:id/reports/marketing" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
-                                                {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/:id/reports/reconcile" exact>

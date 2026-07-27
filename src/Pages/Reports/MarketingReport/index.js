@@ -1,8 +1,6 @@
 const { useState, useEffect, useMemo, useContext, useCallback } = React;
-import SideNav from "../../../Components/Header/SideNav";
 import StickyPageTitle from "../../../Components/Header/Sticky";
 import { defaultCompareWindowForPrimary } from "../../../Components/Filter/filterDatePresets.js";
-import { reportsLinks } from "../Reports";
 import { DomainContext } from "../../../App.js";
 import API from "../../../API/api";
 import { ScannerHost } from "../../../API/host";
@@ -1550,9 +1548,13 @@ function MarketingHighlightsSection({ highlights }) {
 }
 
 export default function MarketingReport() {
-    document.title = "Marketing | Reports | Intastellar Consents";
+    document.title = "Marketing | Analytics | Intastellar Consents";
     const [currentDomain, setGlobalDomain] = useContext(DomainContext);
-    const { id, handle } = useParams();
+    // Reached from /analytics/:handle/marketing, which carries no platform
+    // :id — fall back to the platform stashed at login time, same as the
+    // header and main nav do for other analytics-scoped routes.
+    const { id: routeId, handle } = useParams();
+    const id = routeId || localStorage.getItem("platform") || "gdpr";
     useSyncDomainFromRoute(handle, setGlobalDomain);
 
     const settings = (() => {
@@ -2371,7 +2373,6 @@ export default function MarketingReport() {
 
     return (
         <>
-            <SideNav links={reportsLinks} title="Reports" />
             <div style={{ flex: "1" }}>
                 <StickyPageTitle
                     loadingUpdated={loading}
