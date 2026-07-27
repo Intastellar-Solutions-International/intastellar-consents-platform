@@ -25007,6 +25007,267 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Site Analytics report page �
     gap: 16px;
 }
 
+/* ── Live view panel ─────────────────────────────────────────────────────────── */
+
+.sa-live {
+    border: 1px solid rgba(74,222,128,0.2);
+    border-radius: 14px;
+    background: rgba(20,30,20,0.7);
+    overflow: hidden;
+}
+
+.sa-live__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.sa-live__header:hover { background: rgba(255,255,255,0.02); }
+
+.sa-live__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sa-live__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);
+    animation: sa-pulse 1.8s ease-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes sa-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }
+    60%  { box-shadow: 0 0 0 7px rgba(74,222,128,0); }
+    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+}
+
+.sa-live__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4ade80;
+}
+
+.sa-live__window {
+    font-size: 0.72rem;
+    color: rgba(140,140,140,0.65);
+}
+
+.sa-live__right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sa-live__countdown {
+    font-size: 0.7rem;
+    color: rgba(120,120,120,0.6);
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-live__toggle {
+    background: none;
+    border: none;
+    color: rgba(140,140,140,0.6);
+    cursor: pointer;
+    padding: 2px 4px;
+    font-size: 0.75rem;
+    line-height: 1;
+    border-radius: 4px;
+}
+
+.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }
+
+.sa-live__body {
+    border-top: 1px solid rgba(74,222,128,0.12);
+    padding: 18px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* KPI strip inside live panel */
+.sa-live__kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.sa-live__kpi {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.sa-live__kpi-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(140,140,140,0.6);
+}
+
+.sa-live__kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ececec;
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.sa-live__kpi-sub {
+    font-size: 0.68rem;
+    color: rgba(120,120,120,0.6);
+}
+
+/* Per-minute sparkline */
+.sa-live__sparkline {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sa-live__spark-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(120,120,120,0.55);
+}
+
+.sa-live__spark-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 48px;
+}
+
+.sa-live__spark-bar {
+    flex: 1;
+    border-radius: 2px 2px 0 0;
+    background: rgba(74,222,128,0.35);
+    min-height: 2px;
+    transition: height 0.3s ease;
+}
+
+.sa-live__spark-bar--last {
+    background: rgba(74,222,128,0.75);
+}
+
+.sa-live__spark-times {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62rem;
+    color: rgba(110,110,110,0.55);
+}
+
+/* Two-column bottom: top pages + recent feed */
+.sa-live__bottom {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+@media (max-width: 700px) {
+    .sa-live__bottom { grid-template-columns: 1fr; }
+    .sa-live__kpis   { grid-template-columns: repeat(3, 1fr); }
+}
+
+.sa-live__section-title {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(120,120,120,0.55);
+    margin: 0 0 8px;
+}
+
+/* Recent events feed */
+.sa-live__feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sa-live__event {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    animation: sa-fade-in 0.4s ease;
+}
+
+.sa-live__event:last-child { border-bottom: none; }
+
+@keyframes sa-fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.sa-live__event-path {
+    font-family: "SF Mono","Fira Code","Cascadia Code",monospace;
+    font-size: 0.75rem;
+    color: rgba(180,210,180,0.85);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sa-live__event-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.sa-live__event-flag {
+    font-size: 0.7rem;
+    color: rgba(160,160,160,0.65);
+}
+
+.sa-live__event-level {
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sa-live__event-level--full {
+    background: rgba(74,222,128,0.14);
+    color: rgba(74,222,128,0.85);
+}
+
+.sa-live__event-level--minimal {
+    background: rgba(192,159,83,0.12);
+    color: rgba(192,159,83,0.75);
+}
+
+.sa-live__event-time {
+    font-size: 0.65rem;
+    color: rgba(110,110,110,0.55);
+    font-variant-numeric: tabular-nums;
+    min-width: 32px;
+    text-align: right;
+}
+
 /* ── Notices ─────────────────────────────────────────────────────────────────── */
 
 .sa-notice {
@@ -25545,7 +25806,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Site Analytics report page �
     padding: 1px 5px;
     color: #d4b896;
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Analytics/Analytics.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Site Analytics report page ─────────────────────────────────────────────── */\n\n.sa-page {\n    padding: 4px 0 64px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* ── Notices ─────────────────────────────────────────────────────────────────── */\n\n.sa-notice {\n    margin: 0;\n    padding: 18px 22px;\n    border-radius: 12px;\n    font-size: 0.9rem;\n    color: rgba(180,180,180,0.85);\n    background: rgba(0,0,0,0.15);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-notice--error {\n    background: rgba(220,80,80,0.08);\n    border-color: rgba(220,100,100,0.25);\n    color: #f5aeae;\n}\n\n/* ── Meta row ────────────────────────────────────────────────────────────────── */\n\n.sa-meta-row {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n}\n\n.sa-site-key-badge {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-site-key-badge code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.72rem;\n    color: rgba(180,180,180,0.7);\n    background: rgba(255,255,255,0.05);\n    padding: 1px 6px;\n    border-radius: 4px;\n}\n\n/* ── KPI row ─────────────────────────────────────────────────────────────────── */\n\n.sa-kpi-row {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 12px;\n}\n\n@media (max-width: 700px) {\n    .sa-kpi-row { grid-template-columns: repeat(2, 1fr); }\n}\n\n.sa-kpi {\n    position: relative;\n    padding: 18px 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.09);\n    background: rgba(30,30,34,0.8);\n    box-shadow: 0 2px 12px rgba(0,0,0,0.25);\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    overflow: hidden;\n}\n\n/* Coloured accent stripe across the top of each KPI card */\n.sa-kpi::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 3px;\n    background: rgba(192,159,83,0.6);\n    border-radius: 14px 14px 0 0;\n}\n\n.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }\n.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }\n.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }\n\n.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }\n\n.sa-kpi__head {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n}\n\n.sa-kpi__icon {\n    display: inline-flex;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }\n.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }\n.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }\n\n.sa-kpi__icon svg {\n    width: 14px;\n    height: 14px;\n}\n\n.sa-icon {\n    width: 14px;\n    height: 14px;\n    flex-shrink: 0;\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-kpi__label {\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.7);\n}\n\n.sa-kpi__value {\n    font-size: 2.1rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }\n\n.sa-kpi__sub {\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.4;\n}\n\n/* ── Chart section ───────────────────────────────────────────────────────────── */\n\n.sa-chart-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 24px 18px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.2);\n}\n\n.sa-chart-section__title {\n    margin: 0 0 16px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-chart {\n    width: 100%;\n    height: 200px;\n    position: relative;\n}\n\n.sa-chart--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n}\n\n.sa-chart__legend {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    margin-top: 8px;\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-chart__legend-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 2px;\n    flex-shrink: 0;\n}\n\n.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }\n.sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }\n\n/* ── Three-column data grid ──────────────────────────────────────────────────── */\n\n.sa-three-col {\n    display: grid;\n    grid-template-columns: 1.1fr 0.9fr 0.9fr;\n    gap: 12px;\n    align-items: start;\n}\n\n@media (max-width: 900px) {\n    .sa-three-col { grid-template-columns: 1fr 1fr; }\n}\n\n@media (max-width: 600px) {\n    .sa-three-col { grid-template-columns: 1fr; }\n}\n\n/* ── Two-column bottom row ───────────────────────────────────────────────────── */\n\n.sa-two-col {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px;\n    align-items: start;\n}\n\n@media (max-width: 700px) {\n    .sa-two-col { grid-template-columns: 1fr; }\n}\n\n/* ── Generic panel card ──────────────────────────────────────────────────────── */\n\n.sa-panel {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__title {\n    margin: 0 0 14px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n/* Divider between stacked sub-sections within a panel */\n.sa-panel__divider {\n    height: 1px;\n    background: rgba(255,255,255,0.06);\n    margin: 14px 0;\n}\n\n.sa-panel__sub-title {\n    margin: 0 0 10px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.55);\n}\n\n.sa-panel__consent-note {\n    font-size: 0.62rem;\n    font-weight: 500;\n    color: rgba(120,120,120,0.55);\n    text-transform: none;\n    letter-spacing: 0;\n    margin-left: 4px;\n}\n\n/* ── Tables ──────────────────────────────────────────────────────────────────── */\n\n.sa-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n\n.sa-table th {\n    text-align: left;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.6);\n    padding: 0 8px 8px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-table td {\n    padding: 7px 8px 7px 0;\n    color: rgba(210,210,210,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n\n.sa-table tbody tr:last-child td { border-bottom: none; }\n\n.sa-table__num {\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n    color: rgba(200,200,200,0.75);\n}\n\n.sa-table__path {\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.77rem;\n    color: rgba(180,210,180,0.85);\n}\n\n.sa-table__bar {\n    width: 72px;\n    padding-left: 10px !important;\n}\n\n/* ── Mini bar ────────────────────────────────────────────────────────────────── */\n\n.sa-mini-bar {\n    height: 5px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n}\n\n.sa-mini-bar__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.3s ease;\n}\n\n/* ── Consent + device bars ───────────────────────────────────────────────────── */\n\n.sa-consent-list {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n.sa-consent-row {\n    display: grid;\n    grid-template-columns: 76px 1fr 32px;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-consent-row__label {\n    font-size: 0.78rem;\n    color: rgba(185,185,185,0.85);\n    white-space: nowrap;\n}\n\n.sa-consent-row__pct {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(200,200,200,0.7);\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-bar {\n    height: 8px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n    display: flex;\n}\n\n.sa-bar__seg {\n    height: 100%;\n    transition: width 0.3s ease;\n}\n\n/* ── World map ───────────────────────────────────────────────────────────────── */\n\n.sa-map {\n    margin-bottom: 14px;\n}\n\n.sa-map__inner {\n    width: 100%;\n    height: 100%;\n    min-height: 220px;\n    border-radius: 8px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.12);\n    border: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-map__caption {\n    margin: 6px 2px 0;\n    font-size: 0.72rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 160px;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n    background: rgba(0,0,0,0.1);\n    border: 1px solid rgba(255,255,255,0.05);\n    border-radius: 8px;\n}\n\n/* ── Copy button ─────────────────────────────────────────────────────────────── */\n\n.sa-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.12);\n    background: rgba(255,255,255,0.05);\n    color: rgba(200,200,200,0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-copy-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }\n.sa-copy-btn--done { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3); color: #6ee7a0; }\n\n/* ── Setup / empty state card ────────────────────────────────────────────────── */\n\n.sa-setup {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    gap: 16px;\n    padding: 56px 32px;\n    border-radius: 16px;\n    border: 1px dashed rgba(255,255,255,0.1);\n    background: rgba(0,0,0,0.1);\n}\n\n.sa-setup__icon { color: rgba(192,159,83,0.8); }\n\n.sa-setup__icon svg {\n    width: 36px;\n    height: 36px;\n}\n\n.sa-setup__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #ececec;\n}\n\n.sa-setup__body {\n    margin: 0;\n    max-width: 520px;\n    font-size: 0.9rem;\n    line-height: 1.65;\n    color: rgba(175,175,175,0.85);\n}\n\n.sa-setup__loading {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-setup__gen-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 10px 24px;\n    border-radius: 10px;\n    border: 1px solid rgba(192,159,83,0.45);\n    background: rgba(192,159,83,0.1);\n    color: rgba(227,200,130,0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.sa-setup__gen-btn:hover:not(:disabled) {\n    background: rgba(192,159,83,0.2);\n    border-color: rgba(192,159,83,0.65);\n}\n\n.sa-setup__gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }\n\n.sa-setup__snippet-wrap {\n    width: 100%;\n    max-width: 640px;\n    text-align: left;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.sa-setup__snippet-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.sa-setup__snippet-label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-setup__snippet {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n    background: rgba(0,0,0,0.28);\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.78rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n\n.sa-setup__hint {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.5;\n}\n\n.sa-setup__hint code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.82em;\n    background: rgba(255,255,255,0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Pages/Analytics/Analytics.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Site Analytics report page ─────────────────────────────────────────────── */\n\n.sa-page {\n    padding: 4px 0 64px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* ── Live view panel ─────────────────────────────────────────────────────────── */\n\n.sa-live {\n    border: 1px solid rgba(74,222,128,0.2);\n    border-radius: 14px;\n    background: rgba(20,30,20,0.7);\n    overflow: hidden;\n}\n\n.sa-live__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 14px 20px;\n    gap: 12px;\n    cursor: pointer;\n    user-select: none;\n}\n\n.sa-live__header:hover { background: rgba(255,255,255,0.02); }\n\n.sa-live__title {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-live__dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: #4ade80;\n    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);\n    animation: sa-pulse 1.8s ease-out infinite;\n    flex-shrink: 0;\n}\n\n@keyframes sa-pulse {\n    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }\n    60%  { box-shadow: 0 0 0 7px rgba(74,222,128,0); }\n    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }\n}\n\n.sa-live__label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #4ade80;\n}\n\n.sa-live__window {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-live__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n}\n\n.sa-live__countdown {\n    font-size: 0.7rem;\n    color: rgba(120,120,120,0.6);\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-live__toggle {\n    background: none;\n    border: none;\n    color: rgba(140,140,140,0.6);\n    cursor: pointer;\n    padding: 2px 4px;\n    font-size: 0.75rem;\n    line-height: 1;\n    border-radius: 4px;\n}\n\n.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }\n\n.sa-live__body {\n    border-top: 1px solid rgba(74,222,128,0.12);\n    padding: 18px 20px 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n/* KPI strip inside live panel */\n.sa-live__kpis {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 10px;\n}\n\n.sa-live__kpi {\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n    padding: 12px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n\n.sa-live__kpi-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-live__kpi-value {\n    font-size: 1.6rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-live__kpi-sub {\n    font-size: 0.68rem;\n    color: rgba(120,120,120,0.6);\n}\n\n/* Per-minute sparkline */\n.sa-live__sparkline {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.sa-live__spark-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n}\n\n.sa-live__spark-bars {\n    display: flex;\n    align-items: flex-end;\n    gap: 2px;\n    height: 48px;\n}\n\n.sa-live__spark-bar {\n    flex: 1;\n    border-radius: 2px 2px 0 0;\n    background: rgba(74,222,128,0.35);\n    min-height: 2px;\n    transition: height 0.3s ease;\n}\n\n.sa-live__spark-bar--last {\n    background: rgba(74,222,128,0.75);\n}\n\n.sa-live__spark-times {\n    display: flex;\n    justify-content: space-between;\n    font-size: 0.62rem;\n    color: rgba(110,110,110,0.55);\n}\n\n/* Two-column bottom: top pages + recent feed */\n.sa-live__bottom {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 14px;\n}\n\n@media (max-width: 700px) {\n    .sa-live__bottom { grid-template-columns: 1fr; }\n    .sa-live__kpis   { grid-template-columns: repeat(3, 1fr); }\n}\n\n.sa-live__section-title {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n    margin: 0 0 8px;\n}\n\n/* Recent events feed */\n.sa-live__feed {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.sa-live__event {\n    display: grid;\n    grid-template-columns: 1fr auto;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    animation: sa-fade-in 0.4s ease;\n}\n\n.sa-live__event:last-child { border-bottom: none; }\n\n@keyframes sa-fade-in {\n    from { opacity: 0; transform: translateY(-4px); }\n    to   { opacity: 1; transform: translateY(0); }\n}\n\n.sa-live__event-path {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.75rem;\n    color: rgba(180,210,180,0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.sa-live__event-meta {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.sa-live__event-flag {\n    font-size: 0.7rem;\n    color: rgba(160,160,160,0.65);\n}\n\n.sa-live__event-level {\n    font-size: 0.6rem;\n    font-weight: 600;\n    padding: 1px 5px;\n    border-radius: 4px;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.sa-live__event-level--full {\n    background: rgba(74,222,128,0.14);\n    color: rgba(74,222,128,0.85);\n}\n\n.sa-live__event-level--minimal {\n    background: rgba(192,159,83,0.12);\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-live__event-time {\n    font-size: 0.65rem;\n    color: rgba(110,110,110,0.55);\n    font-variant-numeric: tabular-nums;\n    min-width: 32px;\n    text-align: right;\n}\n\n/* ── Notices ─────────────────────────────────────────────────────────────────── */\n\n.sa-notice {\n    margin: 0;\n    padding: 18px 22px;\n    border-radius: 12px;\n    font-size: 0.9rem;\n    color: rgba(180,180,180,0.85);\n    background: rgba(0,0,0,0.15);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-notice--error {\n    background: rgba(220,80,80,0.08);\n    border-color: rgba(220,100,100,0.25);\n    color: #f5aeae;\n}\n\n/* ── Meta row ────────────────────────────────────────────────────────────────── */\n\n.sa-meta-row {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n}\n\n.sa-site-key-badge {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-site-key-badge code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.72rem;\n    color: rgba(180,180,180,0.7);\n    background: rgba(255,255,255,0.05);\n    padding: 1px 6px;\n    border-radius: 4px;\n}\n\n/* ── KPI row ─────────────────────────────────────────────────────────────────── */\n\n.sa-kpi-row {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 12px;\n}\n\n@media (max-width: 700px) {\n    .sa-kpi-row { grid-template-columns: repeat(2, 1fr); }\n}\n\n.sa-kpi {\n    position: relative;\n    padding: 18px 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.09);\n    background: rgba(30,30,34,0.8);\n    box-shadow: 0 2px 12px rgba(0,0,0,0.25);\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    overflow: hidden;\n}\n\n/* Coloured accent stripe across the top of each KPI card */\n.sa-kpi::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 3px;\n    background: rgba(192,159,83,0.6);\n    border-radius: 14px 14px 0 0;\n}\n\n.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }\n.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }\n.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }\n\n.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }\n\n.sa-kpi__head {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n}\n\n.sa-kpi__icon {\n    display: inline-flex;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }\n.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }\n.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }\n\n.sa-kpi__icon svg {\n    width: 14px;\n    height: 14px;\n}\n\n.sa-icon {\n    width: 14px;\n    height: 14px;\n    flex-shrink: 0;\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-kpi__label {\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.7);\n}\n\n.sa-kpi__value {\n    font-size: 2.1rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }\n\n.sa-kpi__sub {\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.4;\n}\n\n/* ── Chart section ───────────────────────────────────────────────────────────── */\n\n.sa-chart-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 24px 18px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.2);\n}\n\n.sa-chart-section__title {\n    margin: 0 0 16px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-chart {\n    width: 100%;\n    height: 200px;\n    position: relative;\n}\n\n.sa-chart--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n}\n\n.sa-chart__legend {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    margin-top: 8px;\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-chart__legend-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 2px;\n    flex-shrink: 0;\n}\n\n.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }\n.sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }\n\n/* ── Three-column data grid ──────────────────────────────────────────────────── */\n\n.sa-three-col {\n    display: grid;\n    grid-template-columns: 1.1fr 0.9fr 0.9fr;\n    gap: 12px;\n    align-items: start;\n}\n\n@media (max-width: 900px) {\n    .sa-three-col { grid-template-columns: 1fr 1fr; }\n}\n\n@media (max-width: 600px) {\n    .sa-three-col { grid-template-columns: 1fr; }\n}\n\n/* ── Two-column bottom row ───────────────────────────────────────────────────── */\n\n.sa-two-col {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px;\n    align-items: start;\n}\n\n@media (max-width: 700px) {\n    .sa-two-col { grid-template-columns: 1fr; }\n}\n\n/* ── Generic panel card ──────────────────────────────────────────────────────── */\n\n.sa-panel {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__title {\n    margin: 0 0 14px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n/* Divider between stacked sub-sections within a panel */\n.sa-panel__divider {\n    height: 1px;\n    background: rgba(255,255,255,0.06);\n    margin: 14px 0;\n}\n\n.sa-panel__sub-title {\n    margin: 0 0 10px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.55);\n}\n\n.sa-panel__consent-note {\n    font-size: 0.62rem;\n    font-weight: 500;\n    color: rgba(120,120,120,0.55);\n    text-transform: none;\n    letter-spacing: 0;\n    margin-left: 4px;\n}\n\n/* ── Tables ──────────────────────────────────────────────────────────────────── */\n\n.sa-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n\n.sa-table th {\n    text-align: left;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.6);\n    padding: 0 8px 8px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-table td {\n    padding: 7px 8px 7px 0;\n    color: rgba(210,210,210,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n\n.sa-table tbody tr:last-child td { border-bottom: none; }\n\n.sa-table__num {\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n    color: rgba(200,200,200,0.75);\n}\n\n.sa-table__path {\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.77rem;\n    color: rgba(180,210,180,0.85);\n}\n\n.sa-table__bar {\n    width: 72px;\n    padding-left: 10px !important;\n}\n\n/* ── Mini bar ────────────────────────────────────────────────────────────────── */\n\n.sa-mini-bar {\n    height: 5px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n}\n\n.sa-mini-bar__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.3s ease;\n}\n\n/* ── Consent + device bars ───────────────────────────────────────────────────── */\n\n.sa-consent-list {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n.sa-consent-row {\n    display: grid;\n    grid-template-columns: 76px 1fr 32px;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-consent-row__label {\n    font-size: 0.78rem;\n    color: rgba(185,185,185,0.85);\n    white-space: nowrap;\n}\n\n.sa-consent-row__pct {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(200,200,200,0.7);\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-bar {\n    height: 8px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n    display: flex;\n}\n\n.sa-bar__seg {\n    height: 100%;\n    transition: width 0.3s ease;\n}\n\n/* ── World map ───────────────────────────────────────────────────────────────── */\n\n.sa-map {\n    margin-bottom: 14px;\n}\n\n.sa-map__inner {\n    width: 100%;\n    height: 100%;\n    min-height: 220px;\n    border-radius: 8px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.12);\n    border: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-map__caption {\n    margin: 6px 2px 0;\n    font-size: 0.72rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 160px;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n    background: rgba(0,0,0,0.1);\n    border: 1px solid rgba(255,255,255,0.05);\n    border-radius: 8px;\n}\n\n/* ── Copy button ─────────────────────────────────────────────────────────────── */\n\n.sa-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.12);\n    background: rgba(255,255,255,0.05);\n    color: rgba(200,200,200,0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-copy-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }\n.sa-copy-btn--done { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3); color: #6ee7a0; }\n\n/* ── Setup / empty state card ────────────────────────────────────────────────── */\n\n.sa-setup {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    gap: 16px;\n    padding: 56px 32px;\n    border-radius: 16px;\n    border: 1px dashed rgba(255,255,255,0.1);\n    background: rgba(0,0,0,0.1);\n}\n\n.sa-setup__icon { color: rgba(192,159,83,0.8); }\n\n.sa-setup__icon svg {\n    width: 36px;\n    height: 36px;\n}\n\n.sa-setup__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #ececec;\n}\n\n.sa-setup__body {\n    margin: 0;\n    max-width: 520px;\n    font-size: 0.9rem;\n    line-height: 1.65;\n    color: rgba(175,175,175,0.85);\n}\n\n.sa-setup__loading {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-setup__gen-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 10px 24px;\n    border-radius: 10px;\n    border: 1px solid rgba(192,159,83,0.45);\n    background: rgba(192,159,83,0.1);\n    color: rgba(227,200,130,0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.sa-setup__gen-btn:hover:not(:disabled) {\n    background: rgba(192,159,83,0.2);\n    border-color: rgba(192,159,83,0.65);\n}\n\n.sa-setup__gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }\n\n.sa-setup__snippet-wrap {\n    width: 100%;\n    max-width: 640px;\n    text-align: left;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.sa-setup__snippet-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.sa-setup__snippet-label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-setup__snippet {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n    background: rgba(0,0,0,0.28);\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.78rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n\n.sa-setup__hint {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.5;\n}\n\n.sa-setup__hint code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.82em;\n    background: rgba(255,255,255,0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -57387,14 +57648,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Conversions_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Conversions.js */ "./src/Pages/Analytics/Conversions.js");
 /* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
 /* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -57420,6 +57681,213 @@ var useParams = window.ReactRouterDOM.useParams;
 
 // removed: TabGroup — panels now show all data without tab-switching
 
+var LIVE_URL = "".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-live");
+var LIVE_INTERVAL = 30; // seconds between polls
+
+function timeAgo(isoString) {
+  var diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
+  if (diff < 60) return diff + "s";
+  return Math.floor(diff / 60) + "m";
+}
+function LivePanel(_ref) {
+  var _data$topPages, _data$recent;
+  var domain = _ref.domain;
+  var _useState = useState(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    data = _useState2[0],
+    setData = _useState2[1];
+  var _useState3 = useState(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    open = _useState4[0],
+    setOpen = _useState4[1];
+  var _useState5 = useState(LIVE_INTERVAL),
+    _useState6 = _slicedToArray(_useState5, 2),
+    countdown = _useState6[0],
+    setCountdown = _useState6[1];
+  var fetchLive = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+    var r, _t, _t2, _t3;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          if (domain) {
+            _context.n = 1;
+            break;
+          }
+          return _context.a(2);
+        case 1:
+          _context.p = 1;
+          _context.n = 2;
+          return fetch("".concat(LIVE_URL, "?domain=").concat(encodeURIComponent(domain)), {
+            headers: authHeaders()
+          });
+        case 2:
+          r = _context.v;
+          if (!r.ok) {
+            _context.n = 4;
+            break;
+          }
+          _t = setData;
+          _context.n = 3;
+          return r.json();
+        case 3:
+          _t2 = _context.v;
+          _t(_t2);
+        case 4:
+          _context.n = 6;
+          break;
+        case 5:
+          _context.p = 5;
+          _t3 = _context.v;
+        case 6:
+          setCountdown(LIVE_INTERVAL);
+        case 7:
+          return _context.a(2);
+      }
+    }, _callee, null, [[1, 5]]);
+  })), [domain]);
+
+  // Initial fetch + poll
+  useEffect(function () {
+    fetchLive();
+    var poll = setInterval(fetchLive, LIVE_INTERVAL * 1000);
+    return function () {
+      return clearInterval(poll);
+    };
+  }, [fetchLive]);
+
+  // Countdown ticker
+  useEffect(function () {
+    var tick = setInterval(function () {
+      return setCountdown(function (c) {
+        return Math.max(0, c - 1);
+      });
+    }, 1000);
+    return function () {
+      return clearInterval(tick);
+    };
+  }, []);
+  if (!domain || !data || data.noSiteKey) return null;
+  var maxBar = Math.max.apply(Math, _toConsumableArray(data.perMinute || [1]).concat([1]));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "sa-live"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__header",
+    onClick: function onClick() {
+      return setOpen(function (o) {
+        return !o;
+      });
+    },
+    role: "button",
+    "aria-expanded": open
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__title"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__dot"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__label"
+  }, "Live"), /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__window"
+  }, "\u2014 last 30 min")), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__right"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__countdown"
+  }, open ? "Refreshes in ".concat(countdown, "s") : "".concat(data.total, " events")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "sa-live__toggle",
+    "aria-label": open ? "Collapse" : "Expand"
+  }, open ? "▲" : "▼"))), open && /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__body"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__kpis"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__kpi"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-label"
+  }, "Events"), /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-value"
+  }, data.total.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-sub"
+  }, data.minimal, " minimal \xB7 ", data.full, " full")), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__kpi"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-label"
+  }, "Sessions"), /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-value"
+  }, data.sessions.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-sub"
+  }, "consent-gated only")), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__kpi"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-label"
+  }, "Consent rate"), /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-value"
+  }, data.total > 0 ? Math.round(data.full / data.total * 100) : 0, "%"), /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__kpi-sub"
+  }, "in this window"))), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__sparkline"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "sa-live__spark-label"
+  }, "Events per minute"), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__spark-bars"
+  }, (data.perMinute || []).map(function (v, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "sa-live__spark-bar" + (i === 29 ? " sa-live__spark-bar--last" : ""),
+      style: {
+        height: Math.max(4, Math.round(v / maxBar * 48)) + "px"
+      },
+      title: "".concat(v, " event").concat(v !== 1 ? "s" : "")
+    });
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__spark-times"
+  }, /*#__PURE__*/React.createElement("span", null, "\u221230m"), /*#__PURE__*/React.createElement("span", null, "\u221215m"), /*#__PURE__*/React.createElement("span", null, "now"))), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__bottom"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "sa-live__section-title"
+  }, "Top active pages"), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("tbody", null, (data.topPages || []).map(function (p) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: p.pathname
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__path",
+      title: p.pathname
+    }, p.pathname), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, p.views));
+  }), !((_data$topPages = data.topPages) !== null && _data$topPages !== void 0 && _data$topPages.length) && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 2,
+    style: {
+      color: "rgba(130,130,130,0.55)",
+      fontSize: "0.8rem"
+    }
+  }, "No events yet"))))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "sa-live__section-title"
+  }, "Recent events"), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__feed"
+  }, (data.recent || []).slice(0, 10).map(function (e, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "sa-live__event"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "sa-live__event-path"
+    }, e.path), /*#__PURE__*/React.createElement("div", {
+      className: "sa-live__event-meta"
+    }, e.country && /*#__PURE__*/React.createElement("span", {
+      className: "sa-live__event-flag"
+    }, e.country), /*#__PURE__*/React.createElement("span", {
+      className: "sa-live__event-level sa-live__event-level--" + e.level
+    }, e.level), /*#__PURE__*/React.createElement("span", {
+      className: "sa-live__event-time"
+    }, timeAgo(e.at))));
+  }), !((_data$recent = data.recent) !== null && _data$recent !== void 0 && _data$recent.length) && /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: "rgba(130,130,130,0.55)",
+      fontSize: "0.8rem",
+      margin: 0
+    }
+  }, "No events yet"))))));
+}
 var INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
 function authHeaders() {
   return {
@@ -57434,12 +57902,12 @@ function toIsoDate(d) {
 
 // ── small shared components ───────────────────────────────────────────────────
 
-function KpiCard(_ref) {
-  var icon = _ref.icon,
-    label = _ref.label,
-    value = _ref.value,
-    sub = _ref.sub,
-    variant = _ref.variant;
+function KpiCard(_ref3) {
+  var icon = _ref3.icon,
+    label = _ref3.label,
+    value = _ref3.value,
+    sub = _ref3.sub,
+    variant = _ref3.variant;
   return /*#__PURE__*/React.createElement("div", {
     className: "sa-kpi" + (variant ? " sa-kpi--" + variant : "")
   }, /*#__PURE__*/React.createElement("div", {
@@ -57455,12 +57923,12 @@ function KpiCard(_ref) {
     className: "sa-kpi__sub"
   }, sub));
 }
-function CopyButton(_ref2) {
-  var text = _ref2.text;
-  var _useState = useState(false),
-    _useState2 = _slicedToArray(_useState, 2),
-    copied = _useState2[0],
-    setCopied = _useState2[1];
+function CopyButton(_ref4) {
+  var text = _ref4.text;
+  var _useState7 = useState(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    copied = _useState8[0],
+    setCopied = _useState8[1];
   var copy = useCallback(function () {
     navigator.clipboard.writeText(text).then(function () {
       setCopied(true);
@@ -57475,10 +57943,10 @@ function CopyButton(_ref2) {
     onClick: copy
   }, copied ? "Copied!" : "Copy snippet");
 }
-function BarSegment(_ref3) {
-  var pct = _ref3.pct,
-    color = _ref3.color,
-    title = _ref3.title;
+function BarSegment(_ref5) {
+  var pct = _ref5.pct,
+    color = _ref5.color,
+    title = _ref5.title;
   return /*#__PURE__*/React.createElement("div", {
     className: "sa-bar__seg",
     style: {
@@ -57488,10 +57956,10 @@ function BarSegment(_ref3) {
     title: title
   });
 }
-function ConsentBar(_ref4) {
-  var label = _ref4.label,
-    yes = _ref4.yes,
-    no = _ref4.no;
+function ConsentBar(_ref6) {
+  var label = _ref6.label,
+    yes = _ref6.yes,
+    no = _ref6.no;
   var total = yes + no;
   if (!total) return null;
   var pct = Math.round(yes / total * 100);
@@ -57513,11 +57981,11 @@ function ConsentBar(_ref4) {
     className: "sa-consent-row__pct"
   }, pct, "%"));
 }
-function MiniBar(_ref5) {
-  var value = _ref5.value,
-    max = _ref5.max,
-    _ref5$color = _ref5.color,
-    color = _ref5$color === void 0 ? "rgba(192,159,83,0.7)" : _ref5$color;
+function MiniBar(_ref7) {
+  var value = _ref7.value,
+    max = _ref7.max,
+    _ref7$color = _ref7.color,
+    color = _ref7$color === void 0 ? "rgba(192,159,83,0.7)" : _ref7$color;
   var pct = max > 0 ? Math.round(value / max * 100) : 0;
   return /*#__PURE__*/React.createElement("div", {
     className: "sa-mini-bar"
@@ -57531,8 +57999,8 @@ function MiniBar(_ref5) {
 }
 
 // ── Daily stacked bar chart (SVG) ─────────────────────────────────────────────
-function DailyChart(_ref6) {
-  var daily = _ref6.daily;
+function DailyChart(_ref8) {
+  var daily = _ref8.daily;
   var W = 600,
     H = 200,
     PAD = {
@@ -57625,21 +58093,21 @@ function DailyChart(_ref6) {
 }
 
 // ── Setup card (shown when no site key or no data yet) ────────────────────────
-function SetupCard(_ref7) {
-  var domain = _ref7.domain,
-    onKeyGenerated = _ref7.onKeyGenerated;
-  var _useState3 = useState(null),
-    _useState4 = _slicedToArray(_useState3, 2),
-    siteKey = _useState4[0],
-    setSiteKey = _useState4[1];
-  var _useState5 = useState(true),
-    _useState6 = _slicedToArray(_useState5, 2),
-    loading = _useState6[0],
-    setLoading = _useState6[1];
-  var _useState7 = useState(false),
-    _useState8 = _slicedToArray(_useState7, 2),
-    generating = _useState8[0],
-    setGenerating = _useState8[1];
+function SetupCard(_ref9) {
+  var domain = _ref9.domain,
+    onKeyGenerated = _ref9.onKeyGenerated;
+  var _useState9 = useState(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    siteKey = _useState0[0],
+    setSiteKey = _useState0[1];
+  var _useState1 = useState(true),
+    _useState10 = _slicedToArray(_useState1, 2),
+    loading = _useState10[0],
+    setLoading = _useState10[1];
+  var _useState11 = useState(false),
+    _useState12 = _slicedToArray(_useState11, 2),
+    generating = _useState12[0],
+    setGenerating = _useState12[1];
   useEffect(function () {
     if (!domain) {
       setLoading(false);
@@ -57648,40 +58116,40 @@ function SetupCard(_ref7) {
     fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-site?domain=").concat(encodeURIComponent(domain)), {
       headers: authHeaders()
     }).then(/*#__PURE__*/function () {
-      var _ref8 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(r) {
+      var _ref0 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(r) {
         var d;
-        return _regenerator().w(function (_context) {
-          while (1) switch (_context.n) {
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.n) {
             case 0:
               if (!r.ok) {
-                _context.n = 2;
+                _context2.n = 2;
                 break;
               }
-              _context.n = 1;
+              _context2.n = 1;
               return r.json();
             case 1:
-              d = _context.v;
+              d = _context2.v;
               setSiteKey(d.id);
             case 2:
-              return _context.a(2);
+              return _context2.a(2);
           }
-        }, _callee);
+        }, _callee2);
       }));
       return function (_x) {
-        return _ref8.apply(this, arguments);
+        return _ref0.apply(this, arguments);
       };
     }())["catch"](function () {})["finally"](function () {
       return setLoading(false);
     });
   }, [domain]);
   var generate = /*#__PURE__*/function () {
-    var _ref9 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+    var _ref1 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
       var r, d;
-      return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.n) {
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.n) {
           case 0:
             setGenerating(true);
-            _context2.n = 1;
+            _context3.n = 1;
             return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-site"), {
               method: "POST",
               headers: authHeaders(),
@@ -57692,26 +58160,26 @@ function SetupCard(_ref7) {
               return null;
             });
           case 1:
-            r = _context2.v;
+            r = _context3.v;
             if (!(r !== null && r !== void 0 && r.ok)) {
-              _context2.n = 3;
+              _context3.n = 3;
               break;
             }
-            _context2.n = 2;
+            _context3.n = 2;
             return r.json();
           case 2:
-            d = _context2.v;
+            d = _context3.v;
             setSiteKey(d.id);
             onKeyGenerated === null || onKeyGenerated === void 0 || onKeyGenerated();
           case 3:
             setGenerating(false);
           case 4:
-            return _context2.a(2);
+            return _context3.a(2);
         }
-      }, _callee2);
+      }, _callee3);
     }));
     return function generate() {
-      return _ref9.apply(this, arguments);
+      return _ref1.apply(this, arguments);
     };
   }();
   var snippet = siteKey ? "<script src=\"".concat(INGEST_URL, "\" data-site=\"").concat(siteKey, "\" async defer></script>") : null;
@@ -57760,40 +58228,40 @@ function SiteAnalytics() {
     if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
     return String(globalDomain || "").trim().toLowerCase();
   }, [globalDomain]);
-  var _useState9 = useState(30),
-    _useState0 = _slicedToArray(_useState9, 2),
-    getLastDays = _useState0[0],
-    setLastDays = _useState0[1];
-  var _useState1 = useState(function () {
+  var _useState13 = useState(30),
+    _useState14 = _slicedToArray(_useState13, 2),
+    getLastDays = _useState14[0],
+    setLastDays = _useState14[1];
+  var _useState15 = useState(function () {
       var d = new Date();
       d.setDate(d.getDate() - 30);
       return d;
     }),
-    _useState10 = _slicedToArray(_useState1, 2),
-    fromDate = _useState10[0],
-    setFromDate = _useState10[1];
-  var _useState11 = useState(function () {
+    _useState16 = _slicedToArray(_useState15, 2),
+    fromDate = _useState16[0],
+    setFromDate = _useState16[1];
+  var _useState17 = useState(function () {
       return new Date();
     }),
-    _useState12 = _slicedToArray(_useState11, 2),
-    toDate = _useState12[0],
-    setToDate = _useState12[1];
-  var _useState13 = useState(null),
-    _useState14 = _slicedToArray(_useState13, 2),
-    data = _useState14[0],
-    setData = _useState14[1];
-  var _useState15 = useState(false),
-    _useState16 = _slicedToArray(_useState15, 2),
-    loading = _useState16[0],
-    setLoading = _useState16[1];
-  var _useState17 = useState(null),
     _useState18 = _slicedToArray(_useState17, 2),
-    error = _useState18[0],
-    setError = _useState18[1];
-  var _useState19 = useState(0),
+    toDate = _useState18[0],
+    setToDate = _useState18[1];
+  var _useState19 = useState(null),
     _useState20 = _slicedToArray(_useState19, 2),
-    tick = _useState20[0],
-    setTick = _useState20[1]; // force refetch after key generation
+    data = _useState20[0],
+    setData = _useState20[1];
+  var _useState21 = useState(false),
+    _useState22 = _slicedToArray(_useState21, 2),
+    loading = _useState22[0],
+    setLoading = _useState22[1];
+  var _useState23 = useState(null),
+    _useState24 = _slicedToArray(_useState23, 2),
+    error = _useState24[0],
+    setError = _useState24[1];
+  var _useState25 = useState(0),
+    _useState26 = _slicedToArray(_useState25, 2),
+    tick = _useState26[0],
+    setTick = _useState26[1]; // force refetch after key generation
 
   var fromIso = useMemo(function () {
     return toIsoDate(fromDate);
@@ -57816,30 +58284,30 @@ function SiteAnalytics() {
     fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-report?").concat(qs), {
       headers: authHeaders()
     }).then(/*#__PURE__*/function () {
-      var _ref0 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(r) {
-        var _t, _t2;
-        return _regenerator().w(function (_context3) {
-          while (1) switch (_context3.n) {
+      var _ref10 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(r) {
+        var _t4, _t5;
+        return _regenerator().w(function (_context4) {
+          while (1) switch (_context4.n) {
             case 0:
               if (r.ok) {
-                _context3.n = 1;
+                _context4.n = 1;
                 break;
               }
               throw new Error(r.status);
             case 1:
-              _t = setData;
-              _context3.n = 2;
+              _t4 = setData;
+              _context4.n = 2;
               return r.json();
             case 2:
-              _t2 = _context3.v;
-              _t(_t2);
+              _t5 = _context4.v;
+              _t4(_t5);
             case 3:
-              return _context3.a(2);
+              return _context4.a(2);
           }
-        }, _callee3);
+        }, _callee4);
       }));
       return function (_x2) {
-        return _ref0.apply(this, arguments);
+        return _ref10.apply(this, arguments);
       };
     }())["catch"](function () {
       return setError("Could not load analytics data.");
@@ -57932,7 +58400,9 @@ function SiteAnalytics() {
     label: "Countries",
     value: data.countries.length,
     sub: data.countries[0] ? "Top: ".concat(data.countries[0].code) : null
-  })), /*#__PURE__*/React.createElement("div", {
+  })), /*#__PURE__*/React.createElement(LivePanel, {
+    domain: domain
+  }), /*#__PURE__*/React.createElement("div", {
     className: "sa-chart-section"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "sa-chart-section__title"
