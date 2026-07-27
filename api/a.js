@@ -140,7 +140,6 @@ if(!el)try{
   for(var _i=_ss.length-1;_i>=0;_i--){if((_ss[_i].src||'').indexOf('analytics.consentsmanagement.com')!==-1){el=_ss[_i];break;}}
 }catch(e){}
 var SITE=el&&el.getAttribute('data-site');
-console.log('[IA v3] SITE:',SITE);
 if(!SITE)return;
 var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
 
@@ -187,18 +186,18 @@ function devType(){var w=screen.width;return w<768?'m':w<1024?'t':'d';}
 
 var t0=Date.now(),fullFired=false,exitSent=false;
 
-function send(payload,beacon){
+function send(payload){
+  // sendBeacon is the most reliable cross-site transport — it is not monkey-patched
+  // by third-party scripts the way fetch and XHR commonly are.
   var b=new Blob([payload],{type:'application/json'});
-  if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);return;}
-  // Use XHR instead of fetch — fetch is commonly monkey-patched by third-party
-  // scripts on customer sites, causing silent failures.
+  if(navigator.sendBeacon){navigator.sendBeacon(EP,b);return;}
+  // Fallback for very old browsers that lack sendBeacon.
   try{
     var xhr=new XMLHttpRequest();
     xhr.open('POST',EP,true);
     xhr.setRequestHeader('Content-Type','application/json');
     xhr.send(payload);
-    console.log('[IA v3] XHR sent');
-  }catch(e){console.error('[IA v3] XHR error:',e);}
+  }catch(e){}
 }
 
 function sendMinimal(c){
@@ -209,7 +208,7 @@ function sendMinimal(c){
     cs:hasStat(c)?1:0,
     cf:c&&c.functionalCookies?1:0,
     ca:c&&c.advertisementCookies?1:0
-  }),false);
+  }));
 }
 
 function sendFull(c,final){
@@ -226,7 +225,7 @@ function sendFull(c,final){
     cf:c&&c.functionalCookies?1:0,
     ca:c&&c.advertisementCookies?1:0,
     final:final?1:0
-  }),final||false);
+  }));
 }
 
 document.addEventListener('visibilitychange',function(){
@@ -310,7 +309,7 @@ function track(name,opts){
     cs:full?1:0,
     cf:c&&c.functionalCookies?1:0,
     ca:c&&c.advertisementCookies?1:0
-  }),false);
+  }));
 }
 window.intaAnalytics={track:track};
 })();`;
