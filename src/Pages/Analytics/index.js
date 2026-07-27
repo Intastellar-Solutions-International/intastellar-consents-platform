@@ -6,6 +6,17 @@ import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
+import {
+    IconBarChart,
+    IconUsers,
+    IconShieldCheck,
+    IconGlobe,
+    IconTrendingUp,
+    IconDocument,
+    IconLock,
+    IconMegaphone,
+    IconRadio,
+} from "./Icons.js";
 import "./Analytics.css";
 
 const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
@@ -217,7 +228,7 @@ function SetupCard({ domain, onKeyGenerated }) {
 
     return (
         <div className="sa-setup">
-            <div className="sa-setup__icon" aria-hidden="true">📡</div>
+            <div className="sa-setup__icon"><IconRadio /></div>
             <h3 className="sa-setup__title">No data yet for <strong>{domain}</strong></h3>
             <p className="sa-setup__body">
                 Embed the script below on every page of your site. The script reads the
@@ -358,26 +369,26 @@ export default function SiteAnalytics() {
                         {/* KPI row */}
                         <div className="sa-kpi-row">
                             <KpiCard
-                                icon="📊"
+                                icon={<IconBarChart />}
                                 label="Total events"
                                 value={data.totals.total.toLocaleString("de-DE")}
                                 sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
                             />
                             <KpiCard
-                                icon="👥"
+                                icon={<IconUsers />}
                                 label="Unique sessions"
                                 value={data.totals.uniqueSessions.toLocaleString("de-DE")}
                                 sub="consent-gated sessions only"
                             />
                             <KpiCard
-                                icon="✅"
+                                icon={<IconShieldCheck />}
                                 label="Consent rate"
                                 value={data.totals.consentRate + "%"}
                                 sub="statisticCookies accepted"
                                 variant={data.totals.consentRate < 20 ? "warn" : null}
                             />
                             <KpiCard
-                                icon="🌍"
+                                icon={<IconGlobe />}
                                 label="Countries"
                                 value={data.countries.length}
                                 sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
@@ -386,14 +397,14 @@ export default function SiteAnalytics() {
 
                         {/* Daily chart */}
                         <div className="sa-section sa-section--chart">
-                            <h3 className="sa-section__title"><span aria-hidden="true">📈</span> Events per day</h3>
+                            <h3 className="sa-section__title"><IconTrendingUp className="sa-icon" /> Events per day</h3>
                             <DailyChart daily={data.daily} />
                         </div>
 
                         {/* Two-column: top pages + consent/devices */}
                         <div className="sa-two-col">
                             <div className="sa-panel">
-                                <h3 className="sa-panel__title"><span aria-hidden="true">📄</span> Top pages</h3>
+                                <h3 className="sa-panel__title"><IconDocument className="sa-icon" /> Top pages</h3>
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
@@ -420,7 +431,7 @@ export default function SiteAnalytics() {
 
                             <div className="sa-panel">
                                 <div className="sa-panel__head">
-                                    <h3 className="sa-panel__title"><span aria-hidden="true">🔐</span> Audience</h3>
+                                    <h3 className="sa-panel__title"><IconLock className="sa-icon" /> Audience</h3>
                                     <TabGroup
                                         tabs={[
                                             { id: "consent", label: "Consent" },
@@ -475,7 +486,7 @@ export default function SiteAnalytics() {
                         {/* Countries / Browsers (tabbed) */}
                         <div className="sa-section">
                             <div className="sa-panel__head">
-                                <h3 className="sa-section__title"><span aria-hidden="true">🌐</span> Reach</h3>
+                                <h3 className="sa-section__title"><IconGlobe className="sa-icon" /> Reach</h3>
                                 <TabGroup
                                     tabs={[
                                         { id: "countries", label: "Countries" },
@@ -538,7 +549,7 @@ export default function SiteAnalytics() {
                         {data.utmSources.length > 0 && (
                             <div className="sa-section">
                                 <h3 className="sa-section__title">
-                                    <span aria-hidden="true">📣</span> UTM sources
+                                    <IconMegaphone className="sa-icon" /> UTM sources
                                     <span className="sa-panel__consent-note">full events only</span>
                                 </h3>
                                 <table className="sa-table">

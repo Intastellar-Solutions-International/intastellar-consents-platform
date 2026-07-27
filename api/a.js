@@ -90,6 +90,30 @@ async function ensureTables(db) {
         CREATE INDEX IF NOT EXISTS idx_ae_received   ON analytics_events (received_at);
         CREATE INDEX IF NOT EXISTS idx_ae_session    ON analytics_events (session_id);
         CREATE INDEX IF NOT EXISTS idx_ae_level      ON analytics_events (consent_level);
+        -- Custom conversion events (purchase / click / custom), fired via
+        -- window.intaAnalytics.track(name, opts) rather than automatically.
+        -- Same two-tier consent model as pageviews: minimal events never
+        -- carry a session_id, so they can't be linked across requests.
+        CREATE TABLE IF NOT EXISTS analytics_custom_events (
+            id              BIGSERIAL    PRIMARY KEY,
+            site_id         VARCHAR(32)  NOT NULL,
+            organisation_id INTEGER      NOT NULL,
+            session_id      VARCHAR(64),
+            received_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            consent_level   VARCHAR(8)   NOT NULL DEFAULT 'minimal',
+            consent_stat    BOOLEAN,
+            consent_func    BOOLEAN,
+            consent_adv     BOOLEAN,
+            name            VARCHAR(64)  NOT NULL,
+            value_cents     BIGINT,
+            currency        VARCHAR(3),
+            pathname        TEXT,
+            country_code    CHAR(2),
+            device_type     VARCHAR(8)
+        );
+        CREATE INDEX IF NOT EXISTS idx_ace_site     ON analytics_custom_events (site_id);
+        CREATE INDEX IF NOT EXISTS idx_ace_name     ON analytics_custom_events (name);
+        CREATE INDEX IF NOT EXISTS idx_ace_received ON analytics_custom_events (received_at);
     `);
     // Add columns to existing tables that pre-date this schema version
     await db.query(`
@@ -216,6 +240,29 @@ if(hasStat(c)){
     else if(++n>60){clearInterval(iv);}
   },500);
 }
+
+// ── Custom conversion events ────────────────────────────────────────────────
+// window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' })
+// Fires a minimal (unlinked) record always; upgrades to a session-linked
+// record only when the visitor has accepted statisticCookies.
+function track(name,opts){
+  if(!name||typeof name!=='string')return;
+  opts=opts||{};
+  var c=getConsents();
+  var full=hasStat(c);
+  send(JSON.stringify({
+    s:SITE,t:'ev',n:String(name).slice(0,64),
+    cl:full?'full':'minimal',
+    sid:full?getSid():undefined,
+    v:(typeof opts.value==='number'&&isFinite(opts.value))?opts.value:undefined,
+    cur:opts.currency?String(opts.currency).slice(0,3):undefined,
+    u:location.pathname,dt:devType(),
+    cs:c&&c.statisticCookies?1:0,
+    cf:c&&c.functionalCookies?1:0,
+    ca:c&&c.advertisementCookies?1:0
+  }),false);
+}
+window.intaAnalytics={track:track};
 })();`;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -246,29 +293,15 @@ export default async function handler(req, res) {
         return res.status(400).end();
     }
 
-    const { s: siteId, cl: consentLevel, sid, u: rawUrl, r: referrer, ti: title,
-            us, um, uc, uk, dt, sw, sh, dur, cs, cf, ca } = body;
+    const { s: siteId, t: eventType, cl: consentLevel, sid, u: rawUrl, r: referrer, ti: title,
+            us, um, uc, uk, dt, sw, sh, dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
         return res.status(400).end();
     }
 
     const isMinimal = consentLevel !== "full";
-
-    // For minimal events the URL is just a pathname; for full events it's the full href.
-    // Parse carefully — prepend a placeholder origin if needed.
-    let pathname, urlColumn;
-    if (isMinimal) {
-        // rawUrl is already a pathname (e.g. /pricing)
-        pathname  = ("/" + String(rawUrl).replace(/^\//, "")).slice(0, 2000);
-        urlColumn = pathname;
-    } else {
-        let parsedUrl;
-        try { parsedUrl = new URL(rawUrl); }
-        catch { return res.status(400).end(); }
-        pathname  = parsedUrl.pathname.slice(0, 2000);
-        urlColumn = (parsedUrl.pathname + parsedUrl.search).slice(0, 2000);
-    }
+    const isCustomEvent = eventType === "ev";
 
     const db = getPool();
 
@@ -289,6 +322,51 @@ export default async function handler(req, res) {
     const region  = (req.headers["x-vercel-ip-country-region"] || "").slice(0, 64) || null;
 
     const deviceType = dt === "m" ? "mobile" : dt === "t" ? "tablet" : "desktop";
+
+    // ── Custom conversion event (purchase / click / custom) ───────────────────
+    // `u` here is always a bare pathname (track() sends location.pathname
+    // regardless of consent tier), unlike pageviews where full events send
+    // the complete href — so this never goes through the URL parser below.
+    if (isCustomEvent) {
+        if (!eventName || typeof eventName !== "string") return res.status(400).end();
+
+        const evPathname = ("/" + String(rawUrl).replace(/^\//, "")).slice(0, 2000);
+        const valueCents = typeof eventValue === "number" && isFinite(eventValue)
+            ? Math.round(eventValue * 100)
+            : null;
+
+        await db.query(
+            `INSERT INTO analytics_custom_events
+             (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
+              name, value_cents, currency, pathname, country_code, device_type)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+            [
+                siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
+                isMinimal ? "minimal" : "full",
+                cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
+                String(eventName).slice(0, 64), valueCents,
+                eventCurrency ? String(eventCurrency).slice(0, 3).toUpperCase() : null,
+                evPathname, country, deviceType,
+            ]
+        ).catch(() => {});
+
+        return res.status(202).end();
+    }
+
+    // For minimal pageviews the URL is just a pathname; for full pageviews it's the full href.
+    // Parse carefully — prepend a placeholder origin if needed.
+    let pathname, urlColumn;
+    if (isMinimal) {
+        // rawUrl is already a pathname (e.g. /pricing)
+        pathname  = ("/" + String(rawUrl).replace(/^\//, "")).slice(0, 2000);
+        urlColumn = pathname;
+    } else {
+        let parsedUrl;
+        try { parsedUrl = new URL(rawUrl); }
+        catch { return res.status(400).end(); }
+        pathname  = parsedUrl.pathname.slice(0, 2000);
+        urlColumn = (parsedUrl.pathname + parsedUrl.search).slice(0, 2000);
+    }
 
     if (isMinimal) {
         // Minimal: no session, no UTMs, no referrer, no screen/browser — just path + consent state

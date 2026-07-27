@@ -95,7 +95,7 @@ export default async function handler(req, res) {
 
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
-           browsersRes, consentRes, utmRes] = await Promise.all([
+           browsersRes, consentRes, utmRes, conversionsRes, eventDefsRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -183,9 +183,33 @@ export default async function handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ),
 
+        db.query(`
+            SELECT
+                name,
+                COUNT(*)                                                          AS count,
+                COUNT(*) FILTER (WHERE consent_level = 'full')                   AS linked_count,
+                COALESCE(SUM(value_cents), 0)                                     AS value_cents,
+                (ARRAY_AGG(currency) FILTER (WHERE currency IS NOT NULL))[1]      AS currency
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            GROUP BY name ORDER BY count DESC LIMIT 30`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
+        db.query(`
+            SELECT name, kind, label FROM analytics_event_defs WHERE site_id = $1`,
+            [siteId]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(8).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(10).fill({ rows: [] });
         throw err;
     });
 
@@ -242,5 +266,30 @@ export default async function handler(req, res) {
             medium: r.utm_medium,
             events: Number(r.events || 0),
         })),
+        conversions: (() => {
+            const defsByName = new Map(eventDefsRes.rows.map(d => [d.name, d]));
+            const seen = new Set();
+            const rows = conversionsRes.rows.map(r => {
+                seen.add(r.name);
+                const def = defsByName.get(r.name);
+                return {
+                    name:        r.name,
+                    label:       def?.label || r.name,
+                    kind:        def?.kind || "custom",
+                    count:       Number(r.count || 0),
+                    linkedCount: Number(r.linked_count || 0),
+                    value:       Number(r.value_cents || 0) / 100,
+                    currency:    r.currency || null,
+                };
+            });
+            // Registered events with zero occurrences in this window still show up
+            eventDefsRes.rows
+                .filter(d => !seen.has(d.name))
+                .forEach(d => rows.push({
+                    name: d.name, label: d.label || d.name, kind: d.kind,
+                    count: 0, linkedCount: 0, value: 0, currency: null,
+                }));
+            return rows;
+        })(),
     });
 }

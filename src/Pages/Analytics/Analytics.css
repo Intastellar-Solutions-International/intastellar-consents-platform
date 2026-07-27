@@ -78,9 +78,21 @@
 }
 
 .sa-kpi__icon {
-    font-size: 0.85rem;
-    line-height: 1;
-    filter: grayscale(0.15);
+    display: inline-flex;
+    color: rgba(192,159,83,0.9);
+}
+
+.sa-kpi__icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+/* Inline icon used in section/panel titles, before the text */
+.sa-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: rgba(192,159,83,0.85);
 }
 
 .sa-kpi__label {
@@ -419,9 +431,12 @@
 }
 
 .sa-setup__icon {
-    font-size: 2.4rem;
-    line-height: 1;
-    filter: grayscale(0.3);
+    color: rgba(192,159,83,0.85);
+}
+
+.sa-setup__icon svg {
+    width: 36px;
+    height: 36px;
 }
 
 .sa-setup__title {
