@@ -157,13 +157,19 @@ function decode(raw){
 }
 
 function getConsents(){
+  try{
+    if(window.intaCookieConsents&&window.intaCookieConsents.consents)return window.intaCookieConsents.consents;
+  }catch(e){}
   var raw=gc(CK);
   if(!raw)return null;
   var obj=decode(raw);
   return(obj&&obj.consents)||null;
 }
 
-function hasStat(c){return !!(c&&c.statisticCookies===true);}
+// The banner writes the stat-consent key as "staticsticCookies" (its own typo,
+// not ours) — check that spelling primarily, with the correctly-spelled one as
+// a fallback in case the banner fixes it upstream later.
+function hasStat(c){return !!(c&&(c.staticsticCookies===true||c.statisticCookies===true));}
 
 function getSid(){
   try{
@@ -189,7 +195,7 @@ function sendMinimal(c){
     s:SITE,cl:'minimal',
     u:location.pathname,
     dt:devType(),
-    cs:c&&c.statisticCookies?1:0,
+    cs:hasStat(c)?1:0,
     cf:c&&c.functionalCookies?1:0,
     ca:c&&c.advertisementCookies?1:0
   }),false);
@@ -205,7 +211,7 @@ function sendFull(c,final){
     uc:utmp('utm_campaign'),uk:utmp('utm_content'),
     dt:devType(),sw:screen.width,sh:screen.height,
     dur:Math.round((Date.now()-t0)/1000),
-    cs:c&&c.statisticCookies?1:0,
+    cs:hasStat(c)?1:0,
     cf:c&&c.functionalCookies?1:0,
     ca:c&&c.advertisementCookies?1:0,
     final:final?1:0
@@ -290,7 +296,7 @@ function track(name,opts){
     v:(typeof opts.value==='number'&&isFinite(opts.value))?opts.value:undefined,
     cur:opts.currency?String(opts.currency).slice(0,3):undefined,
     u:location.pathname,dt:devType(),
-    cs:c&&c.statisticCookies?1:0,
+    cs:full?1:0,
     cf:c&&c.functionalCookies?1:0,
     ca:c&&c.advertisementCookies?1:0
   }),false);
