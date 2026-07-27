@@ -271,7 +271,7 @@ function DailyChart({ daily }) {
 
     return (
         <div className="sa-chart">
-            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", height: H + "px", display: "block" }}>
+            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
                 {/* Y grid */}
                 {yTicks.map((v, i) => {
                     const y = PAD.t + cH - (v / maxVal) * cH;
