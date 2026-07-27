@@ -126,9 +126,8 @@ async function ensureTables(db) {
 }
 
 // ── The embed script (served as application/javascript on GET) ────────────────
-// The site key is baked into the script at serve time via ?s=SITEKEY — avoids
-// the document.currentScript=null problem that affects all async/defer scripts.
-// Snippet format: <script src=".../api/a?s=SITEKEY" async defer></script>
+// Site key is read from the data-site attribute at runtime.
+// Snippet format: <script src=".../api/a" data-site="SITEKEY" async defer></script>
 const EMBED_SCRIPT = `(function(){
 'use strict';
 var CK='IntastellarConsentSolution';
@@ -141,8 +140,7 @@ if(!el)try{
   for(var _i=_ss.length-1;_i>=0;_i--){if((_ss[_i].src||'').indexOf('analytics.consentsmanagement.com')!==-1){el=_ss[_i];break;}}
 }catch(e){}
 var SITE=el&&el.getAttribute('data-site');
-console.log('[Intastellar Analytics] el:',el,'SITE:',SITE);
-if(!SITE){console.warn('[Intastellar Analytics] No data-site attribute found — script will not fire.');return;}
+if(!SITE)return;
 var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
 
 function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
@@ -189,10 +187,16 @@ function devType(){var w=screen.width;return w<768?'m':w<1024?'t':'d';}
 var t0=Date.now(),fullFired=false,exitSent=false;
 
 function send(payload,beacon){
-  console.log('[Intastellar Analytics] send() beacon:',beacon,'EP:',EP,'body:',payload.slice(0,80));
   var b=new Blob([payload],{type:'application/json'});
-  if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);}
-  else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).then(function(r){console.log('[Intastellar Analytics] fetch ok:',r.status);}).catch(function(e){console.error('[Intastellar Analytics] fetch error:',e);});}
+  if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);return;}
+  // Use XHR instead of fetch — fetch is commonly monkey-patched by third-party
+  // scripts on customer sites, causing silent failures.
+  try{
+    var xhr=new XMLHttpRequest();
+    xhr.open('POST',EP,true);
+    xhr.setRequestHeader('Content-Type','application/json');
+    xhr.send(payload);
+  }catch(e){}
 }
 
 function sendMinimal(c){
@@ -261,8 +265,6 @@ function hookConsentTrigger(name){
   };
   wrapped.__intaHooked=true;
   window[name]=wrapped;
-
-  console.log("[Intastellar Consents Analytics] Hooked consent trigger:", name);
 }
 function tryHooks(){
   hookConsentTrigger('IntaAcceptAll');
@@ -271,7 +273,6 @@ function tryHooks(){
 
 // Fire on load
 var c=getConsents();
-console.log('[Intastellar Analytics] consents:',JSON.stringify(c),'hasStat:',hasStat(c));
 tryHooks();
 if(hasStat(c)){
   sendFull(c,false);
