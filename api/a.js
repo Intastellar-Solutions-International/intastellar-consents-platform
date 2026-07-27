@@ -126,13 +126,9 @@ async function ensureTables(db) {
 }
 
 // ── The embed script (served as application/javascript on GET) ────────────────
-// Two-tier firing:
-//   MINIMAL (always, no consent needed): path only, consent choices, device type.
-//     No session ID — requests cannot be linked across page views.
-//     Legal basis: legitimate interest (consent record-keeping, aggregate counts).
-//   FULL (statisticCookies === true): enriched with session ID, UTMs, referrer,
-//     screen, browser/OS, duration.
-// If the user accepts mid-session the full event fires at that point (upgrade).
+// The site key is baked into the script at serve time via ?s=SITEKEY — avoids
+// the document.currentScript=null problem that affects all async/defer scripts.
+// Snippet format: <script src=".../api/a?s=SITEKEY" async defer></script>
 const EMBED_SCRIPT = `(function(){
 'use strict';
 var CK='IntastellarConsentSolution';
@@ -153,7 +149,7 @@ function decode(raw){
     var s='';
     for(var i=0;i<enc.length;i+=2)s+=String.fromCharCode(parseInt(enc.slice(i,i+2),base));
     return JSON.parse(s);
-  }catch(e){return e;}
+  }catch(e){return null;}
 }
 
 function getConsents(){
