@@ -186,6 +186,7 @@ var t0=Date.now(),fullFired=false,exitSent=false;
 
 function send(payload,beacon){
   var b=new Blob([payload],{type:'application/json'});
+  console.log("[Intastellar Consents Analytics] Sending event:", payload);
   if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);}
   else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).catch(function(e){console.error("[Intastellar Consents Analytics] Error sending event:", e);});}
 }
