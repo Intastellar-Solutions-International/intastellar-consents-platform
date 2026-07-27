@@ -159,19 +159,23 @@ function decode(raw){
 }
 
 function getConsents(){
-  try{
-    if(window.intaCookieConsents&&window.intaCookieConsents.consents)return window.intaCookieConsents.consents;
-  }catch(e){return null;}
+  // Cookie is the authoritative persistent record — check it first.
   var raw=gc(CK);
-  if(!raw)return null;
-  var obj=decode(raw);
-  return(obj&&obj.consents)||null;
+  if(raw){var obj=decode(raw);if(obj&&obj.consents)return obj.consents;}
+  // window.intaCookieConsents IS the consents object directly (no .consents wrapper).
+  // Used as a fallback for the brief window between accept-click and cookie write.
+  try{
+    if(window.intaCookieConsents&&typeof window.intaCookieConsents==='object')return window.intaCookieConsents;
+  }catch(e){}
+  return null;
 }
 
-// The banner writes the stat-consent key as "staticsticCookies" (its own typo,
-// not ours) — check that spelling primarily, with the correctly-spelled one as
-// a fallback in case the banner fixes it upstream later.
-function hasStat(c){return !!(c&&(c.staticsticCookies===true||c.statisticCookies===true));}
+// Banner stores boolean true (Accept All) or the string "checked" (individual saves).
+function ok(v){return v===true||v==='checked';}
+// "staticsticCookies" is the banner's own typo — check both spellings.
+function hasStat(c){return !!(c&&(ok(c.staticsticCookies)||ok(c.statisticCookies)));}
+function hasFun(c) {return !!(c&&ok(c.functionalCookies));}
+function hasAdv(c) {return !!(c&&ok(c.advertisementCookies));}
 
 function getSid(){
   try{
@@ -206,8 +210,8 @@ function sendMinimal(c){
     u:location.pathname,
     dt:devType(),
     cs:hasStat(c)?1:0,
-    cf:c&&c.functionalCookies?1:0,
-    ca:c&&c.advertisementCookies?1:0
+    cf:hasFun(c)?1:0,
+    ca:hasAdv(c)?1:0
   }));
 }
 
@@ -222,8 +226,8 @@ function sendFull(c,final){
     dt:devType(),sw:screen.width,sh:screen.height,
     dur:Math.round((Date.now()-t0)/1000),
     cs:hasStat(c)?1:0,
-    cf:c&&c.functionalCookies?1:0,
-    ca:c&&c.advertisementCookies?1:0,
+    cf:hasFun(c)?1:0,
+    ca:hasAdv(c)?1:0,
     final:final?1:0
   }));
 }
@@ -268,8 +272,8 @@ function hookConsentTrigger(name){
   window[name]=wrapped;
 }
 function tryHooks(){
-  hookConsentTrigger('IntaAcceptAll');
-  hookConsentTrigger('IntaSaveSettings');
+  hookConsentTrigger('acceptAllCookies'); // banner's actual Accept All function
+  hookConsentTrigger('saveConsent');      // banner's actual Save Settings function
 }
 
 // Fire on load
@@ -307,8 +311,8 @@ function track(name,opts){
     cur:opts.currency?String(opts.currency).slice(0,3):undefined,
     u:location.pathname,dt:devType(),
     cs:full?1:0,
-    cf:c&&c.functionalCookies?1:0,
-    ca:c&&c.advertisementCookies?1:0
+    cf:hasFun(c)?1:0,
+    ca:hasAdv(c)?1:0
   }));
 }
 window.intaAnalytics={track:track};
