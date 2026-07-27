@@ -132,9 +132,17 @@ async function ensureTables(db) {
 const EMBED_SCRIPT = `(function(){
 'use strict';
 var CK='IntastellarConsentSolution';
-var el=document.currentScript||document.querySelector('script[data-site]');
+// document.currentScript is null for async/defer scripts (per spec).
+// Walk all script tags as a fallback so GTM-injected or deferred embeds still work.
+var el=document.currentScript;
+if(!el)try{el=document.querySelector('script[data-site]');}catch(e){}
+if(!el)try{
+  var _ss=document.querySelectorAll('script');
+  for(var _i=_ss.length-1;_i>=0;_i--){if((_ss[_i].src||'').indexOf('analytics.consentsmanagement.com')!==-1){el=_ss[_i];break;}}
+}catch(e){}
 var SITE=el&&el.getAttribute('data-site');
-if(!SITE)return;
+console.log('[Intastellar Analytics] el:',el,'SITE:',SITE);
+if(!SITE){console.warn('[Intastellar Analytics] No data-site attribute found — script will not fire.');return;}
 var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
 
 function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
