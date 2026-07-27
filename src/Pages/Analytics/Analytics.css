@@ -8,41 +8,12 @@
     gap: 20px;
 }
 
-/* Controls */
-.sa-controls {
+/* Meta row */
+.sa-meta-row {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 16px;
-    flex-wrap: wrap;
-}
-
-.sa-range-group {
-    display: flex;
-    gap: 4px;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 3px;
-}
-
-.sa-range-btn {
-    padding: 5px 14px;
-    border-radius: 7px;
-    border: none;
-    background: transparent;
-    color: rgba(200,200,200,0.7);
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-}
-
-.sa-range-btn:hover { color: #ececec; background: rgba(255,255,255,0.05); }
-
-.sa-range-btn--active {
-    background: rgba(192,159,83,0.18);
-    color: rgba(227,200,130,0.95);
-    font-weight: 700;
 }
 
 .sa-site-key-badge {
@@ -100,6 +71,18 @@
 
 .sa-kpi--warn { border-color: rgba(239,68,68,0.25); }
 
+.sa-kpi__head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sa-kpi__icon {
+    font-size: 0.85rem;
+    line-height: 1;
+    filter: grayscale(0.15);
+}
+
 .sa-kpi__label {
     font-size: 0.7rem;
     font-weight: 700;
@@ -132,6 +115,10 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.14);
 }
 
+.sa-section--chart {
+    padding-bottom: 24px;
+}
+
 .sa-section__title {
     margin: 0 0 14px;
     font-size: 0.8rem;
@@ -142,6 +129,49 @@
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+/* Panel/section header row (title + tab switcher) */
+.sa-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.sa-panel__head .sa-panel__title,
+.sa-panel__head .sa-section__title {
+    margin: 0;
+}
+
+.sa-tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 9px;
+    padding: 3px;
+}
+
+.sa-tab {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: rgba(200,200,200,0.7);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.sa-tab:hover { color: #ececec; background: rgba(255,255,255,0.05); }
+
+.sa-tab--active {
+    background: rgba(192,159,83,0.18);
+    color: rgba(227,200,130,0.95);
 }
 
 .sa-two-col {

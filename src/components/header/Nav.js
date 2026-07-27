@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, analyticsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -25,10 +25,46 @@ export default function Nav() {
     const location = useLocation();
     const platform = localStorage.getItem("platform") || "gdpr";
     const isAdminOrg = Number(getOrg?.()?.id) === 1;
+    const path = location.pathname;
+    const mode = detectDashboardMode(path);
+
+    // ── Analytics mode: analytics + marketing links only ──────────────────
+    if (mode === "analytics") {
+        const overviewPath = analyticsPath(currentDomain);
+        const marketingPath = reportsPath(platform, currentDomain, "/marketing");
+        const overviewActive = !path.indexOf("/analytics") && path.indexOf("/marketing") === -1;
+        const marketingActive = path.indexOf("/marketing") > -1;
+
+        return (
+            <>
+                <div className="navOverlay">
+                    <aside className="sidebar">
+                        <nav className="collapsed">
+                            <Link className={"navItems" + (overviewActive ? " --active" : "")} to={overviewPath}><i className="dashboard-icons dashboard" style={{
+                                backgroundImage: `url(${dashboard})`
+                            }} data-icon={dashboard}></i> <span className="hiddenCollapsed">Overview</span></Link>
+                            <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}><i className="dashboard-icons reports" style={{
+                                backgroundImage: `url(${reports})`
+                            }} data-icon={reports}></i> <span className="hiddenCollapsed">Marketing</span></Link>
+                            <section className="navItems--bottom">
+                                <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
+                                    backgroundImage: `url(${settings})`
+                                }} data-icon={settings}></i> <span className="hiddenCollapsed">Settings</span></Link>
+                                <button className="navLogout" onClick={() => Authentication.Logout()}><i className="dashboard-icons logout" style={{
+                                    backgroundImage: `url(${logout})`
+                                }}></i> <span className="hiddenCollapsed" data-icon={logout}>Logout</span></button>
+                            </section>
+                        </nav>
+                    </aside>
+                </div>
+            </>
+        )
+    }
+
+    // ── CMP mode: original consent-management navigation ──────────────────
     const homePath = dashboardPath(platform, currentDomain);
     const reportsPathResolved = reportsPath(platform, currentDomain, "");
     const compliancePath = reportsPath(platform, currentDomain, "/compliance");
-    const path = location.pathname;
     // Dashboard: /:id/dashboard or /:id/view/:handle — not /:id/reports/view/... (that also contains "/view/")
     const homeActive =
         /\/[^/]+\/dashboard(\/|$|\?)/.test(path) || /^\/[^/]+\/view\//.test(path);
@@ -72,7 +108,7 @@ export default function Nav() {
                     </nav>
                 </aside>
                 {/* {(useLocation().pathname === "/reports") ? <>
-                    
+
                 </> : null} */}
             </div>
         </>

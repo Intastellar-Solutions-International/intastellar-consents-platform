@@ -10,11 +10,6 @@ import { analyticsLinks } from "./AnalyticsLinks.js";
 import "./Analytics.css";
 
 const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
-const RANGES = [
-    { label: "7 days",  days: 7  },
-    { label: "30 days", days: 30 },
-    { label: "90 days", days: 90 },
-];
 
 function authHeaders() {
     return {
@@ -24,18 +19,40 @@ function authHeaders() {
     };
 }
 
-function isoDate(offsetDays = 0) {
-    return new Date(Date.now() - offsetDays * 86400000).toISOString().slice(0, 10);
+function toIsoDate(d) {
+    return d.toISOString().slice(0, 10);
 }
 
 // ── small shared components ───────────────────────────────────────────────────
 
-function KpiCard({ label, value, sub, variant }) {
+function KpiCard({ icon, label, value, sub, variant }) {
     return (
         <div className={"sa-kpi" + (variant ? " sa-kpi--" + variant : "")}>
-            <span className="sa-kpi__label">{label}</span>
+            <div className="sa-kpi__head">
+                {icon && <span className="sa-kpi__icon" aria-hidden="true">{icon}</span>}
+                <span className="sa-kpi__label">{label}</span>
+            </div>
             <span className="sa-kpi__value">{value}</span>
             {sub && <span className="sa-kpi__sub">{sub}</span>}
+        </div>
+    );
+}
+
+function TabGroup({ tabs, active, onChange }) {
+    return (
+        <div className="sa-tabs" role="tablist">
+            {tabs.map((t) => (
+                <button
+                    key={t.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={active === t.id}
+                    className={"sa-tab" + (active === t.id ? " sa-tab--active" : "")}
+                    onClick={() => onChange(t.id)}
+                >
+                    {t.label}
+                </button>
+            ))}
         </div>
     );
 }
@@ -253,20 +270,28 @@ export default function SiteAnalytics() {
         return String(globalDomain || "").trim().toLowerCase();
     }, [globalDomain]);
 
-    const [rangeDays, setRangeDays] = useState(30);
+    const [getLastDays, setLastDays] = useState(30);
+    const [fromDate, setFromDate] = useState(() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 30);
+        return d;
+    });
+    const [toDate, setToDate] = useState(() => new Date());
     const [data,      setData]      = useState(null);
     const [loading,   setLoading]   = useState(false);
     const [error,     setError]     = useState(null);
     const [tick,      setTick]      = useState(0); // force refetch after key generation
+    const [rightTab,  setRightTab]  = useState("consent");
+    const [statsTab,  setStatsTab]  = useState("countries");
 
-    const fromDate = useMemo(() => isoDate(rangeDays), [rangeDays]);
-    const toDate   = useMemo(() => isoDate(0),         []);
+    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
+    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
 
     useEffect(() => {
         if (!domain) { setData(null); return; }
         setLoading(true);
         setError(null);
-        const qs = new URLSearchParams({ domain, from: fromDate, to: toDate }).toString();
+        const qs = new URLSearchParams({ domain, from: fromIso, to: toIso }).toString();
         fetch(`${ScannerHost}/api/analytics-report?${qs}`, { headers: authHeaders() })
             .then(async r => {
                 if (!r.ok) throw new Error(r.status);
@@ -274,7 +299,7 @@ export default function SiteAnalytics() {
             })
             .catch(() => setError("Could not load analytics data."))
             .finally(() => setLoading(false));
-    }, [domain, fromDate, toDate, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [domain, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const maxPageViews  = useMemo(() => Math.max(...(data?.topPages  || []).map(p => p.views),  1), [data]);
     const maxCountry    = useMemo(() => Math.max(...(data?.countries || []).map(c => c.events), 1), [data]);
@@ -290,29 +315,25 @@ export default function SiteAnalytics() {
         <>
             <SideNav links={analyticsLinks} title="Analytics" />
             <div className="dashboard-content">
-                <StickyPageTitle title="Site Analytics" />
+                <StickyPageTitle
+                    title="Site Analytics"
+                    numberofDays={setLastDays}
+                    getLastDays={getLastDays}
+                    fromDate={fromDate}
+                    toDate={toDate}
+                    setFromDate={setFromDate}
+                    setToDate={setToDate}
+                />
 
                 <div className="sa-page">
-                    {/* ── Controls ── */}
-                    <div className="sa-controls">
-                        <div className="sa-range-group">
-                            {RANGES.map(r => (
-                                <button
-                                    key={r.days}
-                                    type="button"
-                                    className={"sa-range-btn" + (rangeDays === r.days ? " sa-range-btn--active" : "")}
-                                    onClick={() => setRangeDays(r.days)}
-                                >
-                                    {r.label}
-                                </button>
-                            ))}
-                        </div>
-                        {data && !data.noSiteKey && (
+                    {/* ── Meta row ── */}
+                    {data && !data.noSiteKey && (
+                        <div className="sa-meta-row">
                             <span className="sa-site-key-badge">
                                 Site key: <code>{data.siteId}</code>
                             </span>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     {/* ── States ── */}
                     {!domain && (
@@ -339,22 +360,26 @@ export default function SiteAnalytics() {
                         {/* KPI row */}
                         <div className="sa-kpi-row">
                             <KpiCard
+                                icon="📊"
                                 label="Total events"
                                 value={data.totals.total.toLocaleString("de-DE")}
                                 sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
                             />
                             <KpiCard
+                                icon="👥"
                                 label="Unique sessions"
                                 value={data.totals.uniqueSessions.toLocaleString("de-DE")}
                                 sub="consent-gated sessions only"
                             />
                             <KpiCard
+                                icon="✅"
                                 label="Consent rate"
                                 value={data.totals.consentRate + "%"}
                                 sub="statisticCookies accepted"
                                 variant={data.totals.consentRate < 20 ? "warn" : null}
                             />
                             <KpiCard
+                                icon="🌍"
                                 label="Countries"
                                 value={data.countries.length}
                                 sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
@@ -362,15 +387,15 @@ export default function SiteAnalytics() {
                         </div>
 
                         {/* Daily chart */}
-                        <div className="sa-section">
-                            <h3 className="sa-section__title">Events per day</h3>
+                        <div className="sa-section sa-section--chart">
+                            <h3 className="sa-section__title"><span aria-hidden="true">📈</span> Events per day</h3>
                             <DailyChart daily={data.daily} />
                         </div>
 
-                        {/* Two-column: top pages + consent */}
+                        {/* Two-column: top pages + consent/devices */}
                         <div className="sa-two-col">
                             <div className="sa-panel">
-                                <h3 className="sa-panel__title">Top pages</h3>
+                                <h3 className="sa-panel__title"><span aria-hidden="true">📄</span> Top pages</h3>
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
@@ -396,50 +421,74 @@ export default function SiteAnalytics() {
                             </div>
 
                             <div className="sa-panel">
-                                <h3 className="sa-panel__title">Consent choices</h3>
-                                <p className="sa-panel__sub">Recorded on every visit, with or without consent</p>
-                                <div className="sa-consent-list">
-                                    <ConsentBar
-                                        label="Statistics"
-                                        yes={data.consent.stat.yes}
-                                        no={data.consent.stat.no}
-                                    />
-                                    <ConsentBar
-                                        label="Functional"
-                                        yes={data.consent.func.yes}
-                                        no={data.consent.func.no}
-                                    />
-                                    <ConsentBar
-                                        label="Advertising"
-                                        yes={data.consent.adv.yes}
-                                        no={data.consent.adv.no}
+                                <div className="sa-panel__head">
+                                    <h3 className="sa-panel__title"><span aria-hidden="true">🔐</span> Audience</h3>
+                                    <TabGroup
+                                        tabs={[
+                                            { id: "consent", label: "Consent" },
+                                            { id: "devices",  label: "Devices" },
+                                        ]}
+                                        active={rightTab}
+                                        onChange={setRightTab}
                                     />
                                 </div>
 
-                                {/* Device split */}
-                                <h3 className="sa-panel__title" style={{marginTop:"20px"}}>Devices</h3>
-                                {data.devices.map(d => (
-                                    <div key={d.type} className="sa-consent-row">
-                                        <span className="sa-consent-row__label" style={{textTransform:"capitalize"}}>{d.type}</span>
-                                        <div className="sa-bar">
-                                            <BarSegment
-                                                pct={deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0}
-                                                color="rgba(192,159,83,0.65)"
-                                                title={d.events + " events"}
-                                            />
-                                        </div>
-                                        <span className="sa-consent-row__pct">
-                                            {deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0}%
-                                        </span>
+                                {rightTab === "consent" && <>
+                                    <p className="sa-panel__sub">Recorded on every visit, with or without consent</p>
+                                    <div className="sa-consent-list">
+                                        <ConsentBar
+                                            label="Statistics"
+                                            yes={data.consent.stat.yes}
+                                            no={data.consent.stat.no}
+                                        />
+                                        <ConsentBar
+                                            label="Functional"
+                                            yes={data.consent.func.yes}
+                                            no={data.consent.func.no}
+                                        />
+                                        <ConsentBar
+                                            label="Advertising"
+                                            yes={data.consent.adv.yes}
+                                            no={data.consent.adv.no}
+                                        />
                                     </div>
-                                ))}
+                                </>}
+
+                                {rightTab === "devices" && <div className="sa-consent-list">
+                                    {data.devices.map(d => (
+                                        <div key={d.type} className="sa-consent-row">
+                                            <span className="sa-consent-row__label" style={{textTransform:"capitalize"}}>{d.type}</span>
+                                            <div className="sa-bar">
+                                                <BarSegment
+                                                    pct={deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0}
+                                                    color="rgba(192,159,83,0.65)"
+                                                    title={d.events + " events"}
+                                                />
+                                            </div>
+                                            <span className="sa-consent-row__pct">
+                                                {deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0}%
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>}
                             </div>
                         </div>
 
-                        {/* Two-column: countries + browsers */}
-                        <div className="sa-two-col">
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">Countries</h3>
+                        {/* Countries / Browsers (tabbed) */}
+                        <div className="sa-section">
+                            <div className="sa-panel__head">
+                                <h3 className="sa-section__title"><span aria-hidden="true">🌐</span> Reach</h3>
+                                <TabGroup
+                                    tabs={[
+                                        { id: "countries", label: "Countries" },
+                                        { id: "browsers",  label: "Browsers" },
+                                    ]}
+                                    active={statsTab}
+                                    onChange={setStatsTab}
+                                />
+                            </div>
+
+                            {statsTab === "countries" && (
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
@@ -460,14 +509,13 @@ export default function SiteAnalytics() {
                                         ))}
                                     </tbody>
                                 </table>
-                            </div>
+                            )}
 
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">Browsers <span className="sa-panel__consent-note">full events only</span></h3>
+                            {statsTab === "browsers" && (
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
-                                            <th>Browser</th>
+                                            <th>Browser <span className="sa-panel__consent-note">full events only</span></th>
                                             <th className="sa-table__num">Events</th>
                                             <th className="sa-table__bar" />
                                         </tr>
@@ -484,14 +532,14 @@ export default function SiteAnalytics() {
                                         ))}
                                     </tbody>
                                 </table>
-                            </div>
+                            )}
                         </div>
 
                         {/* UTM sources (full events only) */}
                         {data.utmSources.length > 0 && (
                             <div className="sa-section">
                                 <h3 className="sa-section__title">
-                                    UTM sources
+                                    <span aria-hidden="true">📣</span> UTM sources
                                     <span className="sa-panel__consent-note">full events only</span>
                                 </h3>
                                 <table className="sa-table">
