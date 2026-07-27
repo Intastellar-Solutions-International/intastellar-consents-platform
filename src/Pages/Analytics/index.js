@@ -20,6 +20,8 @@ import {
 } from "./Icons.js";
 import "./Analytics.css";
 
+// removed: TabGroup — panels now show all data without tab-switching
+
 const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
 
 function authHeaders() {
@@ -49,24 +51,6 @@ function KpiCard({ icon, label, value, sub, variant }) {
     );
 }
 
-function TabGroup({ tabs, active, onChange }) {
-    return (
-        <div className="sa-tabs" role="tablist">
-            {tabs.map((t) => (
-                <button
-                    key={t.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={active === t.id}
-                    className={"sa-tab" + (active === t.id ? " sa-tab--active" : "")}
-                    onClick={() => onChange(t.id)}
-                >
-                    {t.label}
-                </button>
-            ))}
-        </div>
-    );
-}
 
 function CopyButton({ text }) {
     const [copied, setCopied] = useState(false);
@@ -124,7 +108,7 @@ function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
 
 // ── Daily stacked bar chart (SVG) ─────────────────────────────────────────────
 function DailyChart({ daily }) {
-    const W = 600, H = 140, PAD = { t: 8, r: 8, b: 28, l: 36 };
+    const W = 600, H = 200, PAD = { t: 10, r: 8, b: 28, l: 36 };
     const cW = W - PAD.l - PAD.r;
     const cH = H - PAD.t - PAD.b;
 
@@ -292,8 +276,6 @@ export default function SiteAnalytics() {
     const [loading,   setLoading]   = useState(false);
     const [error,     setError]     = useState(null);
     const [tick,      setTick]      = useState(0); // force refetch after key generation
-    const [rightTab,  setRightTab]  = useState("consent");
-    const [statsTab,  setStatsTab]  = useState("countries");
 
     const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
@@ -323,7 +305,7 @@ export default function SiteAnalytics() {
     const showData  = !loading && data && !data.noSiteKey && !data.noData;
 
     return (
-        <>
+        <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle
                 title="Site Analytics"
                 numberofDays={setLastDays}
@@ -385,7 +367,7 @@ export default function SiteAnalytics() {
                                 icon={<IconShieldCheck />}
                                 label="Consent rate"
                                 value={data.totals.consentRate + "%"}
-                                sub="statisticCookies or allCookies accepted"
+                                sub="statisticCookies accepted"
                                 variant={data.totals.consentRate < 20 ? "warn" : null}
                             />
                             <KpiCard
@@ -396,14 +378,18 @@ export default function SiteAnalytics() {
                             />
                         </div>
 
-                        {/* Daily chart */}
-                        <div className="sa-section sa-section--chart">
-                            <h3 className="sa-section__title"><IconTrendingUp className="sa-icon" /> Events per day</h3>
+                        {/* Daily chart — full width, taller */}
+                        <div className="sa-chart-section">
+                            <h3 className="sa-chart-section__title">
+                                <IconTrendingUp className="sa-icon" /> Events per day
+                            </h3>
                             <DailyChart daily={data.daily} />
                         </div>
 
-                        {/* Two-column: top pages + consent/devices */}
-                        <div className="sa-two-col">
+                        {/* Three-column: top pages | consent + devices | countries */}
+                        <div className="sa-three-col">
+
+                            {/* Col 1 — Top pages */}
                             <div className="sa-panel">
                                 <h3 className="sa-panel__title"><IconDocument className="sa-icon" /> Top pages</h3>
                                 <table className="sa-table">
@@ -411,7 +397,6 @@ export default function SiteAnalytics() {
                                         <tr>
                                             <th>Page</th>
                                             <th className="sa-table__num">Views</th>
-                                            <th className="sa-table__num">Sessions</th>
                                             <th className="sa-table__bar" />
                                         </tr>
                                     </thead>
@@ -420,7 +405,6 @@ export default function SiteAnalytics() {
                                             <tr key={p.pathname}>
                                                 <td className="sa-table__path" title={p.pathname}>{p.pathname}</td>
                                                 <td className="sa-table__num">{p.views.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__num">{p.sessions.toLocaleString("de-DE")}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={p.views} max={maxPageViews} />
                                                 </td>
@@ -430,48 +414,26 @@ export default function SiteAnalytics() {
                                 </table>
                             </div>
 
+                            {/* Col 2 — Consent + Devices stacked, no tabs */}
                             <div className="sa-panel">
-                                <div className="sa-panel__head">
-                                    <h3 className="sa-panel__title"><IconLock className="sa-icon" /> Audience</h3>
-                                    <TabGroup
-                                        tabs={[
-                                            { id: "consent", label: "Consent" },
-                                            { id: "devices",  label: "Devices" },
-                                        ]}
-                                        active={rightTab}
-                                        onChange={setRightTab}
-                                    />
+                                <h3 className="sa-panel__title"><IconLock className="sa-icon" /> Consent</h3>
+                                <div className="sa-consent-list">
+                                    <ConsentBar label="Statistics" yes={data.consent.stat.yes} no={data.consent.stat.no} />
+                                    <ConsentBar label="Functional" yes={data.consent.func.yes} no={data.consent.func.no} />
+                                    <ConsentBar label="Advertising" yes={data.consent.adv.yes} no={data.consent.adv.no} />
                                 </div>
 
-                                {rightTab === "consent" && <>
-                                    <p className="sa-panel__sub">Recorded on every visit, with or without consent</p>
-                                    <div className="sa-consent-list">
-                                        <ConsentBar
-                                            label="Statistics"
-                                            yes={data.consent.stat.yes}
-                                            no={data.consent.stat.no}
-                                        />
-                                        <ConsentBar
-                                            label="Functional"
-                                            yes={data.consent.func.yes}
-                                            no={data.consent.func.no}
-                                        />
-                                        <ConsentBar
-                                            label="Advertising"
-                                            yes={data.consent.adv.yes}
-                                            no={data.consent.adv.no}
-                                        />
-                                    </div>
-                                </>}
+                                <div className="sa-panel__divider" />
 
-                                {rightTab === "devices" && <div className="sa-consent-list">
+                                <h3 className="sa-panel__sub-title">Devices</h3>
+                                <div className="sa-consent-list">
                                     {data.devices.map(d => (
                                         <div key={d.type} className="sa-consent-row">
                                             <span className="sa-consent-row__label" style={{textTransform:"capitalize"}}>{d.type}</span>
                                             <div className="sa-bar">
                                                 <BarSegment
                                                     pct={deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0}
-                                                    color="rgba(192,159,83,0.65)"
+                                                    color="rgba(192,159,83,0.55)"
                                                     title={d.events + " events"}
                                                 />
                                             </div>
@@ -480,26 +442,12 @@ export default function SiteAnalytics() {
                                             </span>
                                         </div>
                                     ))}
-                                </div>}
-                            </div>
-                        </div>
-
-                        {/* Countries / Browsers (tabbed) */}
-                        <div className="sa-section">
-                            <div className="sa-panel__head">
-                                <h3 className="sa-section__title"><IconGlobe className="sa-icon" /> Reach</h3>
-                                <TabGroup
-                                    tabs={[
-                                        { id: "countries", label: "Countries" },
-                                        { id: "browsers",  label: "Browsers" },
-                                    ]}
-                                    active={statsTab}
-                                    onChange={setStatsTab}
-                                />
+                                </div>
                             </div>
 
-                            {statsTab === "countries" && <>
-                                <AnalyticsWorldMap countries={data.countries} />
+                            {/* Col 3 — Countries */}
+                            <div className="sa-panel">
+                                <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Countries</h3>
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
@@ -514,19 +462,33 @@ export default function SiteAnalytics() {
                                                 <td>{c.code}</td>
                                                 <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
                                                 <td className="sa-table__bar">
-                                                    <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.6)" />
+                                                    <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
-                            </>}
+                            </div>
+                        </div>
 
-                            {statsTab === "browsers" && (
+                        {/* World map — full width below the 3-col grid */}
+                        {data.countries.length > 0 && (
+                            <div className="sa-panel">
+                                <AnalyticsWorldMap countries={data.countries} />
+                            </div>
+                        )}
+
+                        {/* Bottom row: Browsers + UTM sources side by side */}
+                        <div className="sa-two-col">
+                            <div className="sa-panel">
+                                <h3 className="sa-panel__title">
+                                    <IconGlobe className="sa-icon" /> Browsers
+                                    <span className="sa-panel__consent-note">full events only</span>
+                                </h3>
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
-                                            <th>Browser <span className="sa-panel__consent-note">full events only</span></th>
+                                            <th>Browser</th>
                                             <th className="sa-table__num">Events</th>
                                             <th className="sa-table__bar" />
                                         </tr>
@@ -537,50 +499,49 @@ export default function SiteAnalytics() {
                                                 <td>{b.name}</td>
                                                 <td className="sa-table__num">{b.events.toLocaleString("de-DE")}</td>
                                                 <td className="sa-table__bar">
-                                                    <MiniBar value={b.events} max={maxBrowser} color="rgba(167,139,250,0.65)" />
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            )}
-                        </div>
-
-                        {/* UTM sources (full events only) */}
-                        {data.utmSources.length > 0 && (
-                            <div className="sa-section">
-                                <h3 className="sa-section__title">
-                                    <IconMegaphone className="sa-icon" /> UTM sources
-                                    <span className="sa-panel__consent-note">full events only</span>
-                                </h3>
-                                <table className="sa-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Source</th>
-                                            <th>Medium</th>
-                                            <th className="sa-table__num">Events</th>
-                                            <th className="sa-table__bar" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.utmSources.map((u, i) => (
-                                            <tr key={i}>
-                                                <td>{u.source || "—"}</td>
-                                                <td>{u.medium || "—"}</td>
-                                                <td className="sa-table__num">{u.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__bar">
-                                                    <MiniBar value={u.events} max={maxUtm} color="rgba(251,146,60,0.65)" />
+                                                    <MiniBar value={b.events} max={maxBrowser} color="rgba(167,139,250,0.6)" />
                                                 </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
-                        )}
+
+                            {data.utmSources.length > 0 ? (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">
+                                        <IconMegaphone className="sa-icon" /> UTM sources
+                                        <span className="sa-panel__consent-note">full events only</span>
+                                    </h3>
+                                    <table className="sa-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Source</th>
+                                                <th>Medium</th>
+                                                <th className="sa-table__num">Events</th>
+                                                <th className="sa-table__bar" />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.utmSources.map((u, i) => (
+                                                <tr key={i}>
+                                                    <td>{u.source || "—"}</td>
+                                                    <td>{u.medium || "—"}</td>
+                                                    <td className="sa-table__num">{u.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__bar">
+                                                        <MiniBar value={u.events} max={maxUtm} color="rgba(251,146,60,0.6)" />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : <div />}
+                        </div>
 
                     </>}
                 </div>
             </div>
-        </>
+        </div>
     );
 }
