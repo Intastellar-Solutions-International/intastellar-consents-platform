@@ -258,7 +258,7 @@ function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
 
 // ── Daily stacked bar chart (SVG) ─────────────────────────────────────────────
 function DailyChart({ daily }) {
-    const W = 600, H = 200, PAD = { t: 10, r: 8, b: 28, l: 36 };
+    const W = 600, H = 160, PAD = { t: 10, r: 8, b: 28, l: 36 };
     const cW = W - PAD.l - PAD.r;
     const cH = H - PAD.t - PAD.b;
 
@@ -271,7 +271,7 @@ function DailyChart({ daily }) {
 
     return (
         <div className="sa-chart">
-            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
+            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", height: H + "px", display: "block" }}>
                 {/* Y grid */}
                 {yTicks.map((v, i) => {
                     const y = PAD.t + cH - (v / maxVal) * cH;
