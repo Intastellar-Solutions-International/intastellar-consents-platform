@@ -5,6 +5,7 @@ import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import "./Analytics.css";
 
 const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
@@ -485,7 +486,8 @@ export default function SiteAnalytics() {
                                 />
                             </div>
 
-                            {statsTab === "countries" && (
+                            {statsTab === "countries" && <>
+                                <AnalyticsWorldMap countries={data.countries} />
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
@@ -506,7 +508,7 @@ export default function SiteAnalytics() {
                                         ))}
                                     </tbody>
                                 </table>
-                            )}
+                            </>}
 
                             {statsTab === "browsers" && (
                                 <table className="sa-table">

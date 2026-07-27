@@ -13,11 +13,12 @@ import domains from "./icons/domain.svg";
 import expand from "./icons/expand.svg";
 import settings from "./icons/settings.svg";
 import logout from "./icons/logout.svg";
-import dashboard from "./icons/dashboard.svg";
 import experiments from "./icons/experiment.svg";
 import benchmark from "./icons/benchmark.svg";
 import compliance from "./icons/compliance.svg";
 import cookies from "./icons/cookies.svg";
+import analyticsOverview from "./icons/analytics-overview.svg";
+import marketing from "./icons/marketing.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -40,12 +41,12 @@ export default function Nav() {
                 <div className="navOverlay">
                     <aside className="sidebar">
                         <nav className="collapsed">
-                            <Link className={"navItems" + (overviewActive ? " --active" : "")} to={overviewPath}><i className="dashboard-icons dashboard" style={{
-                                backgroundImage: `url(${dashboard})`
-                            }} data-icon={dashboard}></i> <span className="hiddenCollapsed">Overview</span></Link>
-                            <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}><i className="dashboard-icons reports" style={{
-                                backgroundImage: `url(${reports})`
-                            }} data-icon={reports}></i> <span className="hiddenCollapsed">Marketing</span></Link>
+                            <Link className={"navItems" + (overviewActive ? " --active" : "")} to={overviewPath}><i className="dashboard-icons analytics-overview" style={{
+                                backgroundImage: `url(${analyticsOverview})`
+                            }} data-icon={analyticsOverview}></i> <span className="hiddenCollapsed">Overview</span></Link>
+                            <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}><i className="dashboard-icons marketing" style={{
+                                backgroundImage: `url(${marketing})`
+                            }} data-icon={marketing}></i> <span className="hiddenCollapsed">Marketing</span></Link>
                             <section className="navItems--bottom">
                                 <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
                                     backgroundImage: `url(${settings})`
