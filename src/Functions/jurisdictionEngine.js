@@ -1,4 +1,4 @@
-import { EU_EEA_UK, FRAMEWORK_IDS } from "../components/AuditSnapshotCard/complianceRegions.js";
+import { EU_EEA_UK, FRAMEWORK_IDS } from "../Components/AuditSnapshotCard/complianceRegions.js";
 
 const COUNTRY_FRAMEWORK_MAP = {
     BR: ["LGPD"],

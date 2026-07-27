@@ -3,7 +3,7 @@ import StickyPageTitle from "../../Components/Header/Sticky";
 import API from "../../API/api";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
-import experimentsIcon from "../../components/header/icons/experiment.svg";
+import experimentsIcon from "../../Components/Header/icons/experiment.svg";
 import ExperimentBuilder from "./ExperimentBuilder.js";
 import { getChannelById } from "./marketingChannels.js";
 import { DomainContext } from "../../App.js";

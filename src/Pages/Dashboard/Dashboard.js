@@ -21,8 +21,8 @@ import Crawler from "../../Components/Crawler";
 import Line from "../../Components/Charts/Line"
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
-import { LiveView } from "../../components/LiveView/index.js";
-import { DecisionBehaviourDrawer } from "../../components/DecisionBehaviourDrawer/index.js";
+import { LiveView } from "../../Components/LiveView/index.js";
+import { DecisionBehaviourDrawer } from "../../Components/DecisionBehaviourDrawer/index.js";
 import { PremiumTier, BasicTier, ProTier } from "../../Components/tiers/index.js";
 import Pie from "../../Components/Charts/Pie/index.js";
 import Widget from "../../Components/widget/widget.js";

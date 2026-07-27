@@ -1,6 +1,6 @@
 const { useState, useEffect, useContext, useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky";
-import AuditSnapshotCard from "../../components/AuditSnapshotCard/AuditSnapshotCard.js";
+import AuditSnapshotCard from "../../Components/AuditSnapshotCard/AuditSnapshotCard.js";
 import ComplianceFlowMap from "./ComplianceFlowMap.js";
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
 import { DomainContext, WorkspaceContext } from "../../App.js";

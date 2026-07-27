@@ -19,7 +19,7 @@ import {
     toDomainsApiHeader,
 } from "../../Functions/domainPathSegments.js";
 import { defaultCompareWindowForPrimary } from "../../Components/Filter/filterDatePresets.js";
-import { FRAMEWORK_IDS, frameworksForAuditRow } from "../../components/AuditSnapshotCard/complianceRegions.js";
+import { FRAMEWORK_IDS, frameworksForAuditRow } from "../../Components/AuditSnapshotCard/complianceRegions.js";
 import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
 

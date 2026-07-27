@@ -4,8 +4,8 @@ import {
     projectMercator,
     ringToPathD,
     topoToFeatures,
-} from "../../components/World/worldTopoShared.js";
-import { countryCoordinates } from "../../components/Charts/WorldMap/countryCodes.js";
+} from "../../Components/World/worldTopoShared.js";
+import { countryCoordinates } from "../../Components/Charts/WorldMap/countryCodes.js";
 import "./ComplianceFlowMap.css";
 
 const NS  = "http://www.w3.org/2000/svg";
