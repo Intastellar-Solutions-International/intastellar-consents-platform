@@ -6,6 +6,7 @@ import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
+import ConversionsPanel from "./Conversions.js";
 import {
     IconBarChart,
     IconUsers,
