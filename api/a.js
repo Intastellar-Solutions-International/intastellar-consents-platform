@@ -189,9 +189,10 @@ function devType(){var w=screen.width;return w<768?'m':w<1024?'t':'d';}
 var t0=Date.now(),fullFired=false,exitSent=false;
 
 function send(payload,beacon){
+  console.log('[Intastellar Analytics] send() beacon:',beacon,'EP:',EP,'body:',payload.slice(0,80));
   var b=new Blob([payload],{type:'application/json'});
   if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);}
-  else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).catch(function(e){});}
+  else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).then(function(r){console.log('[Intastellar Analytics] fetch ok:',r.status);}).catch(function(e){console.error('[Intastellar Analytics] fetch error:',e);});}
 }
 
 function sendMinimal(c){
@@ -270,6 +271,7 @@ function tryHooks(){
 
 // Fire on load
 var c=getConsents();
+console.log('[Intastellar Analytics] consents:',JSON.stringify(c),'hasStat:',hasStat(c));
 tryHooks();
 if(hasStat(c)){
   sendFull(c,false);
