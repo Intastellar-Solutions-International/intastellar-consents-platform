@@ -140,6 +140,7 @@ if(!el)try{
   for(var _i=_ss.length-1;_i>=0;_i--){if((_ss[_i].src||'').indexOf('analytics.consentsmanagement.com')!==-1){el=_ss[_i];break;}}
 }catch(e){}
 var SITE=el&&el.getAttribute('data-site');
+console.log('[IA v3] SITE:',SITE);
 if(!SITE)return;
 var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
 
@@ -196,7 +197,8 @@ function send(payload,beacon){
     xhr.open('POST',EP,true);
     xhr.setRequestHeader('Content-Type','application/json');
     xhr.send(payload);
-  }catch(e){}
+    console.log('[IA v3] XHR sent');
+  }catch(e){console.error('[IA v3] XHR error:',e);}
 }
 
 function sendMinimal(c){
