@@ -134,177 +134,176 @@ async function ensureTables(db) {
 //     screen, browser/OS, duration.
 // If the user accepts mid-session the full event fires at that point (upgrade).
 const EMBED_SCRIPT = `(function(){
-'use strict';
-var CK='IntastellarConsentSolution';
-var el=document.currentScript||document.querySelector('script[data-site]');
-var SITE=el&&el.getAttribute('data-site');
-if(!SITE)return;
-var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
+  'use strict';
+  var CK='IntastellarConsentSolution';
+  var el=document.currentScript||document.querySelector('script[data-site]');
+  var SITE=el&&el.getAttribute('data-site');
+  if(!SITE)return;
+  var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
 
-function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
+  function gc(n){var m=document.cookie.match(new RegExp('(?:^|;\\\\s*)'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 
-function decode(raw){
-  try{
-    var p=raw.split('.');
-    if(p.length<3||p[0]!=='__inta1')return null;
-    var base=parseInt(p[1],10);
-    if(!base||base<2)return null;
-    var enc=p[2].slice(1);
-    var s='';
-    for(var i=0;i<enc.length;i+=2)s+=String.fromCharCode(parseInt(enc.slice(i,i+2),base));
-    return JSON.parse(s);
-  }catch(e){return e;}
-}
-
-function getConsents(){
-  try{
-    if(window.intaCookieConsents&&window.intaCookieConsents.consents)return window.intaCookieConsents.consents;
-  }catch(e){console.error("[Intastellar Consents Analytics] Error getting consents:", e); return null;}
-  var raw=gc(CK);
-  if(!raw)return null;
-  var obj=decode(raw);
-  return(obj&&obj.consents)||null;
-}
-
-// The banner writes the stat-consent key as "staticsticCookies" (its own typo,
-// not ours) — check that spelling primarily, with the correctly-spelled one as
-// a fallback in case the banner fixes it upstream later.
-function hasStat(c){return !!(c&&(c.staticsticCookies===true||c.statisticCookies===true));}
-
-function getSid(){
-  try{
-    var k='_ia_s',v=sessionStorage.getItem(k);
-    if(!v){v=Math.random().toString(36).slice(2,10)+Date.now().toString(36);sessionStorage.setItem(k,v);}
-    return v;
-  }catch(e){console.error("[Intastellar Consents Analytics] Error getting session ID:", e); return Math.random().toString(36).slice(2,10);}
-}
-
-function utmp(p){try{return new URLSearchParams(location.search).get(p)||'';}catch(e){return '';}}
-function devType(){var w=screen.width;return w<768?'m':w<1024?'t':'d';}
-
-var t0=Date.now(),fullFired=false,exitSent=false;
-
-function send(payload,beacon){
-  var b=new Blob([payload],{type:'application/json'});
-  console.log("[Intastellar Consents Analytics] Sending event:", payload);
-  if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);}
-  else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).catch(function(e){console.error("[Intastellar Consents Analytics] Error sending event:", e);});}
-}
-
-function sendMinimal(c){
-  send(JSON.stringify({
-    s:SITE,cl:'minimal',
-    u:location.pathname,
-    dt:devType(),
-    cs:hasStat(c)?1:0,
-    cf:c&&c.functionalCookies?1:0,
-    ca:c&&c.advertisementCookies?1:0
-  }),false);
-}
-
-function sendFull(c,final){
-  fullFired=true;
-  send(JSON.stringify({
-    s:SITE,cl:'full',sid:getSid(),
-    u:location.href,r:document.referrer||'',
-    ti:(document.title||'').slice(0,200),
-    us:utmp('utm_source'),um:utmp('utm_medium'),
-    uc:utmp('utm_campaign'),uk:utmp('utm_content'),
-    dt:devType(),sw:screen.width,sh:screen.height,
-    dur:Math.round((Date.now()-t0)/1000),
-    cs:hasStat(c)?1:0,
-    cf:c&&c.functionalCookies?1:0,
-    ca:c&&c.advertisementCookies?1:0,
-    final:final?1:0
-  }),final||false);
-}
-
-document.addEventListener('visibilitychange',function(){
-  if(document.visibilityState==='hidden'&&fullFired&&!exitSent){
-    exitSent=true;
-    var c=getConsents();
-    if(hasStat(c))sendFull(c,true);
+  function decode(raw){
+    try{
+      var p=raw.split('.');
+      if(p.length<3||p[0]!=='__inta1')return null;
+      var base=parseInt(p[1],10);
+      if(!base||base<2)return null;
+      var enc=p[2].slice(1);
+      var s='';
+      for(var i=0;i<enc.length;i+=2)s+=String.fromCharCode(parseInt(enc.slice(i,i+2),base));
+      return JSON.parse(s);
+    }catch(e){return e;}
   }
-});
-window.addEventListener('pagehide',function(){
-  if(fullFired&&!exitSent){
-    exitSent=true;
-    var c=getConsents();
-    if(hasStat(c))sendFull(c,true);
+
+  function getConsents(){
+    try{
+      if(window.intaCookieConsents&&window.intaCookieConsents.consents)return window.intaCookieConsents.consents;
+    }catch(e){console.error("[Intastellar Consents Analytics] Error getting consents:", e); return null;}
+    var raw=gc(CK);
+    if(!raw)return null;
+    var obj=decode(raw);
+    return(obj&&obj.consents)||null;
   }
-});
 
-var iv=null;
+  // The banner writes the stat-consent key as "staticsticCookies" (its own typo,
+  // not ours) — check that spelling primarily, with the correctly-spelled one as
+  // a fallback in case the banner fixes it upstream later.
+  function hasStat(c){return !!(c&&(c.staticsticCookies===true||c.statisticCookies===true));}
 
-// React to the banner's own accept/save actions instead of only polling the
-// cookie — the poll gives up after 30s, so a slow visitor would otherwise
-// only get upgraded to "full" on their next page load.
-function onBannerAction(){
-  var c2=getConsents();
-  if(hasStat(c2)&&!fullFired){
-    if(iv){clearInterval(iv);iv=null;}
-    sendFull(c2,false);
+  function getSid(){
+    try{
+      var k='_ia_s',v=sessionStorage.getItem(k);
+      if(!v){v=Math.random().toString(36).slice(2,10)+Date.now().toString(36);sessionStorage.setItem(k,v);}
+      return v;
+    }catch(e){console.error("[Intastellar Consents Analytics] Error getting session ID:", e); return Math.random().toString(36).slice(2,10);}
   }
-}
-function hookConsentTrigger(name){
-  var fn=window[name];
-  if(typeof fn!=='function'||fn.__intaHooked)return;
-  var wrapped=function(){
-    var r=fn.apply(this,arguments);
-    onBannerAction();
-    setTimeout(onBannerAction,300); // safety re-check in case the cookie write is deferred
-    return r;
-  };
-  wrapped.__intaHooked=true;
-  window[name]=wrapped;
 
-  console.log("[Intastellar Consents Analytics] Hooked consent trigger:", name);
-}
-function tryHooks(){
-  hookConsentTrigger('IntaAcceptAll');
-  hookConsentTrigger('IntaSaveSettings');
-}
+  function utmp(p){try{return new URLSearchParams(location.search).get(p)||'';}catch(e){return '';}}
+  function devType(){var w=screen.width;return w<768?'m':w<1024?'t':'d';}
 
-// Fire on load
-var c=getConsents();
-tryHooks();
-if(hasStat(c)){
-  sendFull(c,false);
-}else{
-  sendMinimal(c);
-  // Poll fallback: covers cases where the banner script loads after this one
-  // (tryHooks() retries each tick) or exposes different trigger names.
-  var n=0;
-  iv=setInterval(function(){
-    tryHooks();
+  var t0=Date.now(),fullFired=false,exitSent=false;
+
+  function send(payload,beacon){
+    var b=new Blob([payload],{type:'application/json'});
+    if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b); console.log("[Intastellar Consents Analytics] Sent event via beacon:", payload);}
+    else{console.log("[Intastellar Consents Analytics] Sending event via fetch:", payload); fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).then(function(response){console.log("[Intastellar Consents Analytics] Sent event via fetch:", response);}).catch(function(e){console.error("[Intastellar Consents Analytics] Error sending event:", e);});}
+  }
+
+  function sendMinimal(c){
+    send(JSON.stringify({
+      s:SITE,cl:'minimal',
+      u:location.pathname,
+      dt:devType(),
+      cs:hasStat(c)?1:0,
+      cf:c&&c.functionalCookies?1:0,
+      ca:c&&c.advertisementCookies?1:0
+    }),false);
+  }
+
+  function sendFull(c,final){
+    fullFired=true;
+    send(JSON.stringify({
+      s:SITE,cl:'full',sid:getSid(),
+      u:location.href,r:document.referrer||'',
+      ti:(document.title||'').slice(0,200),
+      us:utmp('utm_source'),um:utmp('utm_medium'),
+      uc:utmp('utm_campaign'),uk:utmp('utm_content'),
+      dt:devType(),sw:screen.width,sh:screen.height,
+      dur:Math.round((Date.now()-t0)/1000),
+      cs:hasStat(c)?1:0,
+      cf:c&&c.functionalCookies?1:0,
+      ca:c&&c.advertisementCookies?1:0,
+      final:final?1:0
+    }),final||false);
+  }
+
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden'&&fullFired&&!exitSent){
+      exitSent=true;
+      var c=getConsents();
+      if(hasStat(c))sendFull(c,true);
+    }
+  });
+  window.addEventListener('pagehide',function(){
+    if(fullFired&&!exitSent){
+      exitSent=true;
+      var c=getConsents();
+      if(hasStat(c))sendFull(c,true);
+    }
+  });
+
+  var iv=null;
+
+  // React to the banner's own accept/save actions instead of only polling the
+  // cookie — the poll gives up after 30s, so a slow visitor would otherwise
+  // only get upgraded to "full" on their next page load.
+  function onBannerAction(){
     var c2=getConsents();
-    if(hasStat(c2)){clearInterval(iv);iv=null;sendFull(c2,false);}
-    else if(++n>60){clearInterval(iv);iv=null;}
-  },500);
-}
+    if(hasStat(c2)&&!fullFired){
+      if(iv){clearInterval(iv);iv=null;}
+      sendFull(c2,false);
+    }
+  }
+  function hookConsentTrigger(name){
+    var fn=window[name];
+    if(typeof fn!=='function'||fn.__intaHooked)return;
+    var wrapped=function(){
+      var r=fn.apply(this,arguments);
+      onBannerAction();
+      setTimeout(onBannerAction,300); // safety re-check in case the cookie write is deferred
+      return r;
+    };
+    wrapped.__intaHooked=true;
+    window[name]=wrapped;
 
-// ── Custom conversion events ────────────────────────────────────────────────
-// window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' })
-// Fires a minimal (unlinked) record always; upgrades to a session-linked
-// record only when the visitor has accepted statisticCookies.
-function track(name,opts){
-  if(!name||typeof name!=='string')return;
-  opts=opts||{};
+    console.log("[Intastellar Consents Analytics] Hooked consent trigger:", name);
+  }
+  function tryHooks(){
+    hookConsentTrigger('IntaAcceptAll');
+    hookConsentTrigger('IntaSaveSettings');
+  }
+
+  // Fire on load
   var c=getConsents();
-  var full=hasStat(c);
-  send(JSON.stringify({
-    s:SITE,t:'ev',n:String(name).slice(0,64),
-    cl:full?'full':'minimal',
-    sid:full?getSid():undefined,
-    v:(typeof opts.value==='number'&&isFinite(opts.value))?opts.value:undefined,
-    cur:opts.currency?String(opts.currency).slice(0,3):undefined,
-    u:location.pathname,dt:devType(),
-    cs:full?1:0,
-    cf:c&&c.functionalCookies?1:0,
-    ca:c&&c.advertisementCookies?1:0
-  }),false);
-}
-window.intaAnalytics={track:track};
+  tryHooks();
+  if(hasStat(c)){
+    sendFull(c,false);
+  }else{
+    sendMinimal(c);
+    // Poll fallback: covers cases where the banner script loads after this one
+    // (tryHooks() retries each tick) or exposes different trigger names.
+    var n=0;
+    iv=setInterval(function(){
+      tryHooks();
+      var c2=getConsents();
+      if(hasStat(c2)){clearInterval(iv);iv=null;sendFull(c2,false);}
+      else if(++n>60){clearInterval(iv);iv=null;}
+    },500);
+  }
+
+  // ── Custom conversion events ────────────────────────────────────────────────
+  // window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' })
+  // Fires a minimal (unlinked) record always; upgrades to a session-linked
+  // record only when the visitor has accepted statisticCookies.
+  function track(name,opts){
+    if(!name||typeof name!=='string')return;
+    opts=opts||{};
+    var c=getConsents();
+    var full=hasStat(c);
+    send(JSON.stringify({
+      s:SITE,t:'ev',n:String(name).slice(0,64),
+      cl:full?'full':'minimal',
+      sid:full?getSid():undefined,
+      v:(typeof opts.value==='number'&&isFinite(opts.value))?opts.value:undefined,
+      cur:opts.currency?String(opts.currency).slice(0,3):undefined,
+      u:location.pathname,dt:devType(),
+      cs:full?1:0,
+      cf:c&&c.functionalCookies?1:0,
+      ca:c&&c.advertisementCookies?1:0
+    }),false);
+  }
+  window.intaAnalytics={track:track};
 })();`;
 
 // ─────────────────────────────────────────────────────────────────────────────
