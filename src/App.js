@@ -48,7 +48,7 @@ import DSR from "./Pages/DSR";
 import DSRDetail from "./Pages/DSR/DSRDetail";
 import AdConnectionsSettings from "./Pages/Settings/AdConnections";
 import AnalyticsScriptSettings from "./Pages/Settings/AnalyticsScript";
-import SiteAnalytics from "./Pages/Reports/SiteAnalytics";
+import SiteAnalytics from "./Pages/Analytics";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -302,11 +302,6 @@ export default function App() {
                                                 {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
                                             </ErrorBoundary>}
                                         </Route>
-                                        <Route path="/:id/reports/view/:handle/site-analytics" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
-                                                <SiteAnalytics />
-                                            </ErrorBoundary>}
-                                        </Route>
                                         <Route path="/:id/reports/view/:handle/marketing" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
@@ -352,11 +347,6 @@ export default function App() {
                                                 {domainError ? <AddDomain /> : <AuditReport organisations={organisations} />}
                                             </ErrorBoundary>}
                                         </Route>
-                                        <Route path="/:id/reports/site-analytics" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
-                                                <SiteAnalytics />
-                                            </ErrorBoundary>}
-                                        </Route>
                                         <Route path="/:id/reports/marketing" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <MarketingReport organisations={organisations} />}
@@ -365,6 +355,16 @@ export default function App() {
                                         <Route path="/:id/reports/reconcile" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Reconciliation" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <ReconcilePage />}
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/view/:handle" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
+                                                <SiteAnalytics />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
+                                                <SiteAnalytics />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/dashboard">

@@ -1,13 +1,13 @@
 const { useState, useEffect, useContext, useMemo, useCallback } = React;
 const useParams = window.ReactRouterDOM.useParams;
-import { DomainContext } from "../../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../../Functions/domainPathSegments.js";
-import { ScannerHost } from "../../../API/host.js";
-import Authentication from "../../../Authentication/Auth.js";
-import SideNav from "../../../Components/Header/SideNav.js";
-import StickyPageTitle from "../../../Components/Header/Sticky/index.js";
-import { reportsLinks } from "../../../Pages/Reports/Reports.js";
-import "./SiteAnalytics.css";
+import { DomainContext } from "../../App.js";
+import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+import { ScannerHost } from "../../API/host.js";
+import Authentication from "../../Authentication/Auth.js";
+import SideNav from "../../Components/Header/SideNav.js";
+import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import { analyticsLinks } from "./AnalyticsLinks.js";
+import "./Analytics.css";
 
 const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
 const RANGES = [
@@ -242,7 +242,7 @@ function SetupCard({ domain, onKeyGenerated }) {
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function SiteAnalytics() {
-    document.title = "Site Analytics | Reports | Intastellar Consents";
+    document.title = "Site Analytics | Intastellar Consents";
 
     const { handle, id } = useParams();
     const [globalDomain, setGlobalDomain] = useContext(DomainContext);
@@ -288,7 +288,7 @@ export default function SiteAnalytics() {
 
     return (
         <>
-            <SideNav links={reportsLinks} title="Reports" />
+            <SideNav links={analyticsLinks} title="Analytics" />
             <div className="dashboard-content">
                 <StickyPageTitle title="Site Analytics" />
 

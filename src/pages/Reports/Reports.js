@@ -17,11 +17,6 @@ export const reportsLinks = [
         requiresTier: 'growth',
     },
     {
-        name: "Site Analytics",
-        path: "/reports/site-analytics",
-        requiresTier: 'starter',
-    },
-    {
         name: "Channel Analytics",
         path: "/reports/marketing",
         requiresTier: 'growth',

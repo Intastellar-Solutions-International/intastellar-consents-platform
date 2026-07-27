@@ -222,7 +222,7 @@ function domainLabelForHeader(pathname, globalDomain) {
         const decoded = decodeDomainPathSegment(pathHandle);
         return decoded != null ? decoded : "combined view";
     }
-    if (/\/[^/]+\/(?:reports|dashboard)(?:\/|$)/.test(pathname)) {
+    if (/\/[^/]+\/(?:reports|dashboard)(?:\/|$)/.test(pathname) || /^\/analytics(?:\/|$)/.test(pathname)) {
         return "combined view";
     }
     return globalDomain || "combined view";

@@ -88,8 +88,19 @@ export function getReportsUrlLeaf(pathname) {
     return "";
 }
 
+/** Site Analytics lives at its own top-level path, independent of platform id. */
+export function analyticsPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics";
+    return `/analytics/view/${seg}`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
+    if (String(pathname || "").indexOf("/analytics") === 0) {
+        history.push(analyticsPath(domainUnicode));
+        return;
+    }
     const leaf = getReportsUrlLeaf(pathname);
     if (pathname.includes("/reports")) {
         history.push(reportsPath(platformId, domainUnicode, leaf));
@@ -100,13 +111,13 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
 
 /** Which dashboard mode a pathname currently belongs to. */
 export function detectDashboardMode(pathname) {
-    return String(pathname || "").includes("/site-analytics") ? "analytics" : "cmp";
+    return String(pathname || "").indexOf("/analytics") === 0 ? "analytics" : "cmp";
 }
 
 /** Path for a dashboard mode ("cmp" | "analytics") at the given domain. */
 export function modePath(mode, platformId, domainUnicode) {
     if (mode === "analytics") {
-        return reportsPath(platformId, domainUnicode, "/site-analytics");
+        return analyticsPath(domainUnicode);
     }
     return dashboardPath(platformId, domainUnicode);
 }
