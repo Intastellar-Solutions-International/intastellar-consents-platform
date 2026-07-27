@@ -31,7 +31,7 @@ function timeAgo(isoString) {
     return Math.floor(diff / 60) + "m";
 }
 
-function LivePanel({ domain }) {
+function LivePanel({ domain, className }) {
     const [data,      setData]    = useState(null);
     const [open,      setOpen]    = useState(true);
     const [countdown, setCountdown] = useState(LIVE_INTERVAL);
@@ -66,7 +66,7 @@ function LivePanel({ domain }) {
     const maxBar = Math.max(...(data.perMinute || [1]), 1);
 
     return (
-        <div className="sa-live">
+        <div className={"sa-live" + (className ? " " + className : "")}>
             <div className="sa-live__header" onClick={() => setOpen(o => !o)} role="button" aria-expanded={open}>
                 <div className="sa-live__title">
                     <span className="sa-live__dot" />
@@ -188,9 +188,9 @@ function toIsoDate(d) {
 
 // ── small shared components ───────────────────────────────────────────────────
 
-function KpiCard({ icon, label, value, sub, variant }) {
+function KpiCard({ icon, label, value, sub, variant, className }) {
     return (
-        <div className={"sa-kpi" + (variant ? " sa-kpi--" + variant : "")}>
+        <div className={"sa-kpi" + (variant ? " sa-kpi--" + variant : "") + (className ? " " + className : "")}>
             <div className="sa-kpi__head">
                 {icon && <span className="sa-kpi__icon" aria-hidden="true">{icon}</span>}
                 <span className="sa-kpi__label">{label}</span>
@@ -496,54 +496,50 @@ export default function SiteAnalytics() {
                         />
                     )}
 
-                    {/* ── Data ── */}
-                    {showData && <>
+                    {/* ── Data: single CSS grid, every panel has a named area ── */}
+                    {showData && (
+                        <div className={"sa-dashboard-grid" + (!data.utmSources.length ? " sa-dashboard-grid--no-utm" : "")}>
 
-                        {/* KPI row */}
-                        <div className="sa-kpi-row">
-                            <KpiCard
+                            {/* KPIs — each occupies its own named area */}
+                            <KpiCard className="sa-ga-kpi1"
                                 icon={<IconBarChart />}
                                 label="Total events"
                                 value={data.totals.total.toLocaleString("de-DE")}
                                 sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
                             />
-                            <KpiCard
+                            <KpiCard className="sa-ga-kpi2"
                                 icon={<IconUsers />}
                                 label="Unique sessions"
                                 value={data.totals.uniqueSessions.toLocaleString("de-DE")}
                                 sub="consent-gated sessions only"
                             />
-                            <KpiCard
+                            <KpiCard className="sa-ga-kpi3"
                                 icon={<IconShieldCheck />}
                                 label="Consent rate"
                                 value={data.totals.consentRate + "%"}
                                 sub="statisticCookies accepted"
                                 variant={data.totals.consentRate < 20 ? "warn" : null}
                             />
-                            <KpiCard
+                            <KpiCard className="sa-ga-kpi4"
                                 icon={<IconGlobe />}
                                 label="Countries"
                                 value={data.countries.length}
                                 sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
                             />
-                        </div>
 
-                        {/* Live view */}
-                        <LivePanel domain={domain} />
+                            {/* Chart */}
+                            <div className="sa-chart-section sa-ga-chart">
+                                <h3 className="sa-chart-section__title">
+                                    <IconTrendingUp className="sa-icon" /> Events per day
+                                </h3>
+                                <DailyChart daily={data.daily} />
+                            </div>
 
-                        {/* Daily chart — full width, taller */}
-                        <div className="sa-chart-section">
-                            <h3 className="sa-chart-section__title">
-                                <IconTrendingUp className="sa-icon" /> Events per day
-                            </h3>
-                            <DailyChart daily={data.daily} />
-                        </div>
+                            {/* Live view — sidebar slot */}
+                            <LivePanel domain={domain} className="sa-ga-live" />
 
-                        {/* Three-column: top pages | consent + devices | countries */}
-                        <div className="sa-three-col">
-
-                            {/* Col 1 — Top pages */}
-                            <div className="sa-panel">
+                            {/* Top pages */}
+                            <div className="sa-panel sa-ga-pages">
                                 <h3 className="sa-panel__title"><IconDocument className="sa-icon" /> Top pages</h3>
                                 <table className="sa-table">
                                     <thead>
@@ -567,17 +563,15 @@ export default function SiteAnalytics() {
                                 </table>
                             </div>
 
-                            {/* Col 2 — Consent + Devices stacked, no tabs */}
-                            <div className="sa-panel">
+                            {/* Consent + Devices */}
+                            <div className="sa-panel sa-ga-consent">
                                 <h3 className="sa-panel__title"><IconLock className="sa-icon" /> Consent</h3>
                                 <div className="sa-consent-list">
                                     <ConsentBar label="Statistics" yes={data.consent.stat.yes} no={data.consent.stat.no} />
-                                    <ConsentBar label="Functional" yes={data.consent.func.yes} no={data.consent.func.no} />
-                                    <ConsentBar label="Advertising" yes={data.consent.adv.yes} no={data.consent.adv.no} />
+                                    <ConsentBar label="Functional"  yes={data.consent.func.yes} no={data.consent.func.no} />
+                                    <ConsentBar label="Advertising" yes={data.consent.adv.yes}  no={data.consent.adv.no}  />
                                 </div>
-
                                 <div className="sa-panel__divider" />
-
                                 <h3 className="sa-panel__sub-title">Devices</h3>
                                 <div className="sa-consent-list">
                                     {data.devices.map(d => (
@@ -598,9 +592,10 @@ export default function SiteAnalytics() {
                                 </div>
                             </div>
 
-                            {/* Col 3 — Countries */}
-                            <div className="sa-panel">
+                            {/* Countries */}
+                            <div className="sa-panel sa-ga-countries">
                                 <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Countries</h3>
+                                {data.countries.length > 0 && <AnalyticsWorldMap countries={data.countries} />}
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
@@ -622,18 +617,9 @@ export default function SiteAnalytics() {
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
 
-                        {/* World map — full width below the 3-col grid */}
-                        {data.countries.length > 0 && (
-                            <div className="sa-panel">
-                                <AnalyticsWorldMap countries={data.countries} />
-                            </div>
-                        )}
-
-                        {/* Bottom row: Browsers + UTM sources side by side */}
-                        <div className="sa-two-col">
-                            <div className="sa-panel">
+                            {/* Browsers */}
+                            <div className="sa-panel sa-ga-brows">
                                 <h3 className="sa-panel__title">
                                     <IconGlobe className="sa-icon" /> Browsers
                                     <span className="sa-panel__consent-note">full events only</span>
@@ -660,8 +646,9 @@ export default function SiteAnalytics() {
                                 </table>
                             </div>
 
-                            {data.utmSources.length > 0 ? (
-                                <div className="sa-panel">
+                            {/* UTM sources — only rendered when data exists, grid hides area via --no-utm modifier */}
+                            {data.utmSources.length > 0 && (
+                                <div className="sa-panel sa-ga-utm">
                                     <h3 className="sa-panel__title">
                                         <IconMegaphone className="sa-icon" /> UTM sources
                                         <span className="sa-panel__consent-note">full events only</span>
@@ -689,10 +676,10 @@ export default function SiteAnalytics() {
                                         </tbody>
                                     </table>
                                 </div>
-                            ) : <div />}
-                        </div>
+                            )}
 
-                    </>}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

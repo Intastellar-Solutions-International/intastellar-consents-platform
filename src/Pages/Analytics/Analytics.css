@@ -175,16 +175,11 @@
     color: rgba(110,110,110,0.55);
 }
 
-/* Two-column bottom: top pages + recent feed */
+/* Single-column bottom — live panel lives in a narrow grid slot */
 .sa-live__bottom {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 14px;
-}
-
-@media (max-width: 700px) {
-    .sa-live__bottom { grid-template-columns: 1fr; }
-    .sa-live__kpis   { grid-template-columns: repeat(3, 1fr); }
 }
 
 .sa-live__section-title {
@@ -308,17 +303,7 @@
     border-radius: 4px;
 }
 
-/* ── KPI row ─────────────────────────────────────────────────────────────────── */
-
-.sa-kpi-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-
-@media (max-width: 700px) {
-    .sa-kpi-row { grid-template-columns: repeat(2, 1fr); }
-}
+/* ── KPI cards (each is a direct grid child with its own area) ───────────────── */
 
 .sa-kpi {
     position: relative;
@@ -455,34 +440,76 @@
 .sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }
 .sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }
 
-/* ── Three-column data grid ──────────────────────────────────────────────────── */
+/* ── Dashboard grid ──────────────────────────────────────────────────────────── */
 
-.sa-three-col {
+.sa-dashboard-grid {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr 0.9fr;
     gap: 12px;
     align-items: start;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+        "kpi1   kpi2    kpi3      kpi4"
+        "chart  chart   chart     live"
+        "pages  pages   consent   countries"
+        "brows  brows   utm       utm";
 }
 
-@media (max-width: 900px) {
-    .sa-three-col { grid-template-columns: 1fr 1fr; }
+.sa-dashboard-grid--no-utm {
+    grid-template-areas:
+        "kpi1   kpi2    kpi3      kpi4"
+        "chart  chart   chart     live"
+        "pages  pages   consent   countries"
+        "brows  brows   brows     brows";
 }
 
-@media (max-width: 600px) {
-    .sa-three-col { grid-template-columns: 1fr; }
+/* Grid area assignments */
+.sa-ga-kpi1      { grid-area: kpi1; }
+.sa-ga-kpi2      { grid-area: kpi2; }
+.sa-ga-kpi3      { grid-area: kpi3; }
+.sa-ga-kpi4      { grid-area: kpi4; }
+.sa-ga-chart     { grid-area: chart; }
+.sa-ga-live      { grid-area: live; }
+.sa-ga-pages     { grid-area: pages; }
+.sa-ga-consent   { grid-area: consent; }
+.sa-ga-countries { grid-area: countries; }
+.sa-ga-brows     { grid-area: brows; }
+.sa-ga-utm       { grid-area: utm; }
+
+@media (max-width: 1100px) {
+    .sa-dashboard-grid,
+    .sa-dashboard-grid--no-utm {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "kpi1    kpi2"
+            "kpi3    kpi4"
+            "chart   chart"
+            "live    live"
+            "pages   pages"
+            "consent countries"
+            "brows   utm";
+    }
+    .sa-dashboard-grid--no-utm {
+        grid-template-areas:
+            "kpi1    kpi2"
+            "kpi3    kpi4"
+            "chart   chart"
+            "live    live"
+            "pages   pages"
+            "consent countries"
+            "brows   brows";
+    }
 }
 
-/* ── Two-column bottom row ───────────────────────────────────────────────────── */
-
-.sa-two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    align-items: start;
-}
-
-@media (max-width: 700px) {
-    .sa-two-col { grid-template-columns: 1fr; }
+@media (max-width: 620px) {
+    .sa-dashboard-grid,
+    .sa-dashboard-grid--no-utm {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "kpi1" "kpi2" "kpi3" "kpi4"
+            "chart" "live"
+            "pages" "consent" "countries"
+            "brows" "utm";
+    }
 }
 
 /* ── Generic panel card ──────────────────────────────────────────────────────── */
