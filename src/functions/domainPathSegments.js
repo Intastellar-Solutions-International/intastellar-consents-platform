@@ -98,6 +98,19 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
     history.push(dashboardPath(platformId, domainUnicode));
 }
 
+/** Which dashboard mode a pathname currently belongs to. */
+export function detectDashboardMode(pathname) {
+    return String(pathname || "").includes("/site-analytics") ? "analytics" : "cmp";
+}
+
+/** Path for a dashboard mode ("cmp" | "analytics") at the given domain. */
+export function modePath(mode, platformId, domainUnicode) {
+    if (mode === "analytics") {
+        return reportsPath(platformId, domainUnicode, "/site-analytics");
+    }
+    return dashboardPath(platformId, domainUnicode);
+}
+
 /** Keep DomainContext aligned with :handle on report + dashboard routes */
 export function useSyncDomainFromRoute(handle, setCurrentDomain) {
     useEffect(() => {

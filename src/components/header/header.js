@@ -4,17 +4,16 @@ import logo from "./logo.svg";
 import Fetch from "../../Functions/fetch";
 import API from "../../API/api";
 import Authentication from "../../Authentication/Auth";
-import Select from "../SelectInput/Selector";
 import IntastellarAccounts from "../IntastellarAccounts/IntastellarAccounts";
+import PropertySelector from "./PropertySelector.js";
 import {
     parseHandleFromPath,
     decodeDomainPathSegment,
     navigateWithDomain,
+    detectDashboardMode,
+    modePath,
 } from "../../Functions/domainPathSegments.js";
-import {
-    isDomainVerified,
-    isVerificationExpired,
-} from "../../Functions/domainVerification.js";
+import { pushRecentDomain } from "../../Functions/domainFavourites.js";
 import { canAccess } from "../../Functions/tier.js";
 import punycode from "punycode";
 import appStorage from '../../Functions/storage.js';
@@ -294,33 +293,6 @@ function readAgencyWorkspaces() {
 }
 
 /**
- * Get primary domain from a workspace
- */
-function getPrimaryDomainFromWorkspace(ws) {
-    if (!ws.domains || ws.domains.length === 0) {
-        return ws.domain || null;
-    }
-    const primary = ws.domains.find((d) => d.isPrimary);
-    return primary?.domain || ws.domains[0]?.domain || null;
-}
-
-/**
- * Get verification status for dropdown display
- */
-function getDomainVerificationStatus(domain, orgId) {
-    if (!orgId || !domain || domain === "combined view") {
-        return null;
-    }
-    if (isDomainVerified(domain, orgId)) {
-        return "verified";
-    }
-    if (isVerificationExpired(domain, orgId)) {
-        return "expired";
-    }
-    return "unverified";
-}
-
-/**
  * Get current organisation ID for verification checks
  */
 function getCurrentOrgId() {
@@ -362,7 +334,6 @@ export default function Header(props) {
     );
     const [currentDomain, setCurrentDomain] = useState(displayDomain);
     const profileImage = JSON.parse(appStorage.getItem("globals"))?.user?.avatar;
-    let domainList = null;
     const history = useHistory();
     const platformId = props.id || window.location.pathname.split("/").filter(Boolean)[0] || "gdpr";
     const [allOrganisations, setallOrganisations] = useState(null);
@@ -462,106 +433,63 @@ export default function Header(props) {
     }, []);
 
 
-    // Build domain list based on whether a workspace is active
-    domainList = [];
     const orgId = getCurrentOrgId();
+    const dashboardMode = detectDashboardMode(location.pathname);
 
-    if (activeWorkspace) {
-        // When workspace is active, show only workspace domains
-        domainList.push({
-            name: `${activeWorkspace.name}`,
-            disabled: true,
-            type: "separator"
-        });
-
-        // Add combined view for workspace (aggregates all workspace domains)
-        domainList.push({
-            icon: null,
-            name: "combined view",
-            label: "All domains (combined)",
-            type: "workspace-combined",
-            workspaceId: activeWorkspace.id,
-            workspaceDomains: activeWorkspace.domains?.map(d => d.domain) || []
-        });
-
-        // Add workspace domains with verification status
-        if (activeWorkspace.domains && activeWorkspace.domains.length > 0) {
-            activeWorkspace.domains.forEach((d) => {
-                const verifyStatus = getDomainVerificationStatus(d.domain, orgId);
-                domainList.push({
-                    icon: null,
-                    name: d.domain,
-                    type: "workspace-domain",
-                    isPrimary: d.isPrimary,
-                    verificationStatus: verifyStatus
-                });
-            });
+    function handlePropertySelect(action) {
+        if (action.type === "exit-workspace") {
+            setActiveWorkspace(null);
+            setCurrentWorkspace(null);
+            clearWorkspaceFilter();
+            setCurrentDomain("combined view");
+            setGlobalDomain("combined view");
+            navigateWithDomain(history, platformId, "combined view", location.pathname);
+            return;
         }
 
-        // Add option to exit workspace
-        domainList.push({
-            name: "Exit Workspace",
-            disabled: true,
-            type: "separator"
-        });
-        domainList.push({
-            icon: null,
-            name: "combined view",
-            label: "← Back to all domains",
-            type: "exit-workspace"
-        });
-    } else {
-        // Normal mode: show workspaces first, then all domains
-
-        // For agency users, add client workspaces at the top
-        if (hasAgencySubscription()) {
-            if (agencyWorkspaces.length > 0) {
-                // Add workspaces header
-                domainList.push({
-                    name: "Client Workspaces",
-                    disabled: true,
-                    type: "separator"
-                });
-                // Add workspaces to the list
-                agencyWorkspaces.forEach((ws) => {
-                    const primaryDomain = getPrimaryDomainFromWorkspace(ws);
-                    const domainCount = ws.domains?.length || 1;
-                    domainList.push({
-                        icon: null,
-                        name: primaryDomain || ws.name,
-                        label: ws.name,
-                        sublabel: domainCount > 1 ? `${domainCount} domains` : primaryDomain,
-                        type: "workspace",
-                        workspaceId: ws.id,
-                        workspaceData: ws
-                    });
-                });
-            }
+        if (action.type === "workspace-combined") {
+            setWorkspaceFilter(action.workspaceDomains);
+            setCurrentDomain("combined view");
+            setGlobalDomain("combined view");
+            navigateWithDomain(history, platformId, "combined view", location.pathname);
+            return;
         }
 
-        // Add domains from API with verification status
-        const apiDomains = domains?.map((d) => {
-            const domainName = punycode.toUnicode(d.domain);
-            const verifyStatus = getDomainVerificationStatus(domainName, orgId);
-            return {
-                icon: d.icon || null,
-                name: domainName,
-                type: "domain",
-                verificationStatus: verifyStatus
-            }
-        }) || [];
-
-        if (apiDomains.length > 0) {
-            // Add separator if we have workspaces above
-            if (domainList.length > 0) {
-                domainList.push({
-                    name: "Your Domains",
-                    disabled: true,
-                    type: "separator"
-                });
-            }
-            domainList.push(...apiDomains);
+        if (action.type === "workspace-domain") {
+            clearWorkspaceFilter();
+            setCurrentDomain(action.name);
+            setGlobalDomain(action.name);
+            pushRecentDomain(action.name);
+            navigateWithDomain(history, platformId, action.name, location.pathname);
+            return;
         }
+
+        setCurrentDomain(action.name);
+        setGlobalDomain(action.name);
+
+        if (action.type === "workspace") {
+            let ws = action.workspaceData;
+            if (!ws) {
+                const workspaces = readAgencyWorkspaces();
+                ws = workspaces.find((w) => w.id === action.id);
+            }
+            if (ws) {
+                setActiveWorkspace(ws);
+                setCurrentWorkspace(ws);
+                setWorkspaceFilter(ws.domains?.map((d) => d.domain) || []);
+            }
+        } else {
+            setActiveWorkspace(null);
+            setCurrentWorkspace(null);
+            clearWorkspaceFilter();
+            pushRecentDomain(action.name);
+        }
+
+        navigateWithDomain(history, platformId, action.name, location.pathname);
+    }
+
+    function handleModeChange(mode) {
+        history.push(modePath(mode, platformId, currentDomain));
     }
 
     return (
@@ -580,116 +508,27 @@ export default function Header(props) {
                             <img className="dashboard-logo" src={logo} alt="Intastellar Solutions Logo" />
                         </section>
                         <section className="company_container">
-                            {(allOrganisations && Organisation) ? (
-                                <Select
-                                    defaultValue={Organisation}
-                                    onChange={(e) => {
-                                        setOrganisation(e);
-                                        appStorage.setItem("organisation", e);
-                                        window.location.reload();
+                            {(domains && currentDomain && allOrganisations && Organisation) ? (
+                                <PropertySelector
+                                    mode={dashboardMode}
+                                    onModeChange={handleModeChange}
+                                    currentDomain={currentDomain}
+                                    domains={domains}
+                                    activeWorkspace={activeWorkspace}
+                                    agencyWorkspaces={agencyWorkspaces}
+                                    hasAgency={hasAgencySubscription()}
+                                    orgId={orgId}
+                                    organisation={{
+                                        current: Organisation,
+                                        all: allOrganisations,
+                                        onChange: (e) => {
+                                            setOrganisation(e);
+                                            appStorage.setItem("organisation", e);
+                                            window.location.reload();
+                                        },
                                     }}
-                                    items={allOrganisations}
-                                    align="right"
+                                    onSelect={handlePropertySelect}
                                 />
-                            ) : (
-                                <div className="selector selector--placeholder" aria-hidden="true" />
-                            )}
-                            {domains && currentDomain ? (
-                                <>
-                                    <Select
-                                        key={`domain-${location.pathname}`}
-                                        defaultValue={currentDomain}
-                                        onChange={(e) => {
-                                            const parsed = JSON.parse(e);
-                                            const domain = parsed.name;
-
-                                            // Handle exit workspace
-                                            if (parsed.type === "exit-workspace") {
-                                                setActiveWorkspace(null);
-                                                setCurrentWorkspace(null);
-                                                clearWorkspaceFilter();
-                                                setCurrentDomain("combined view");
-                                                setGlobalDomain("combined view");
-                                                navigateWithDomain(history, platformId, "combined view", location.pathname);
-                                                return;
-                                            }
-
-                                            // Handle workspace combined view
-                                            if (parsed.type === "workspace-combined") {
-                                                // Store workspace domains for API filtering
-                                                setWorkspaceFilter(parsed.workspaceDomains);
-                                                setCurrentDomain("combined view");
-                                                setGlobalDomain("combined view");
-                                                navigateWithDomain(history, platformId, "combined view", location.pathname);
-                                                return;
-                                            }
-
-                                            // Handle workspace domain selection
-                                            if (parsed.type === "workspace-domain") {
-                                                // Clear workspace filter when selecting single domain
-                                                clearWorkspaceFilter();
-                                                setCurrentDomain(domain);
-                                                setGlobalDomain(domain);
-                                                navigateWithDomain(history, platformId, domain, location.pathname);
-                                                return;
-                                            }
-
-                                            setCurrentDomain(domain);
-                                            setGlobalDomain(domain);
-
-                                            // Track workspace selection
-                                            if (parsed.type === "workspace") {
-                                                // Use workspaceData if available, otherwise fetch from storage
-                                                let ws = parsed.workspaceData;
-                                                if (!ws) {
-                                                    const workspaces = readAgencyWorkspaces();
-                                                    ws = workspaces.find(w => w.id === parsed.id);
-                                                }
-                                                if (ws) {
-                                                    setActiveWorkspace(ws);
-                                                    setCurrentWorkspace(ws);
-                                                    // Set workspace filter for combined view by default
-                                                    const wsDomains = ws.domains?.map(d => d.domain) || [];
-                                                    setWorkspaceFilter(wsDomains);
-                                                }
-                                            } else {
-                                                // Selecting regular domain clears workspace
-                                                setActiveWorkspace(null);
-                                                setCurrentWorkspace(null);
-                                                clearWorkspaceFilter();
-                                            }
-
-                                            navigateWithDomain(history, platformId, domain, location.pathname);
-                                        }}
-                                        items={domainList}
-                                        align="left"
-                                    />
-                                    {activeWorkspace && (
-                                        <div className="workspace-indicator">
-                                            <span className="workspace-indicator__badge">Workspace</span>
-                                            <span className="workspace-indicator__name">{activeWorkspace.name}</span>
-                                            {activeWorkspace.domains?.length > 1 && (
-                                                <span className="workspace-indicator__domains">
-                                                    {activeWorkspace.domains.length} domains
-                                                </span>
-                                            )}
-                                            <button
-                                                className="workspace-indicator__exit"
-                                                onClick={() => {
-                                                    setActiveWorkspace(null);
-                                                    setCurrentWorkspace(null);
-                                                    clearWorkspaceFilter();
-                                                    setCurrentDomain("combined view");
-                                                    setGlobalDomain("combined view");
-                                                    navigateWithDomain(history, platformId, "combined view", location.pathname);
-                                                }}
-                                                title="Exit workspace"
-                                            >
-                                                ×
-                                            </button>
-                                        </div>
-                                    )}
-                                </>
                             ) : (
                                 <div className="selector selector--placeholder" aria-hidden="true" />
                             )}
