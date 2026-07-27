@@ -312,16 +312,16 @@ export default function SiteAnalytics() {
 
     return (
         <>
+            <StickyPageTitle
+                title="Site Analytics"
+                numberofDays={setLastDays}
+                getLastDays={getLastDays}
+                fromDate={fromDate}
+                toDate={toDate}
+                setFromDate={setFromDate}
+                setToDate={setToDate}
+            />
             <div className="dashboard-content">
-                <StickyPageTitle
-                    title="Site Analytics"
-                    numberofDays={setLastDays}
-                    getLastDays={getLastDays}
-                    fromDate={fromDate}
-                    toDate={toDate}
-                    setFromDate={setFromDate}
-                    setToDate={setToDate}
-                />
 
                 <div className="sa-page">
                     {/* ── Meta row ── */}
