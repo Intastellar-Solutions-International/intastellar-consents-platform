@@ -277,7 +277,8 @@
 .property-selector__columns {
     display: grid;
     grid-template-columns: 200px 1fr;
-    max-height: min(60vh, 380px);
+    height: min(60vh, 380px);
+    overflow: hidden;
 }
 
 .property-selector__col {

@@ -104,7 +104,7 @@ export default function SideNav(props) {
                         const url = (() => {
                             if (link.path.indexOf("/analytics") === 0) {
                                 if (!handle) return link.path;
-                                return link.path.replace(/^\/analytics/, `/analytics/view/${handle}`);
+                                return link.path.replace(/^\/analytics/, `/analytics/${handle}`);
                             }
                             if (link.path.indexOf("reports") === -1) {
                                 return link.path;

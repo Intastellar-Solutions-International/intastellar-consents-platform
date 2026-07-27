@@ -222,6 +222,16 @@ export default function App() {
                                                 </>}
                                             </div>
                                         </Route>
+                                        <Route path="/analytics/:handle" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
+                                                <SiteAnalytics />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
+                                                <SiteAnalytics />
+                                            </ErrorBoundary>}
+                                        </Route>
                                         <Route path='/:id/view/:handle'>
                                             <div style={{ flex: "1" }}>
                                                 {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Dashboard" fullPage /> : <>
@@ -355,16 +365,6 @@ export default function App() {
                                         <Route path="/:id/reports/reconcile" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Reconciliation" fullPage /> : <ErrorBoundary>
                                                 {domainError ? <AddDomain /> : <ReconcilePage />}
-                                            </ErrorBoundary>}
-                                        </Route>
-                                        <Route path="/analytics/view/:handle" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
-                                                <SiteAnalytics />
-                                            </ErrorBoundary>}
-                                        </Route>
-                                        <Route path="/analytics" exact>
-                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Site Analytics" fullPage /> : <ErrorBoundary>
-                                                <SiteAnalytics />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/dashboard">

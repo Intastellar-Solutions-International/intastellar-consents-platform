@@ -60,6 +60,9 @@ export function parseHandleFromPath(pathname) {
     if (parts.length >= 3 && parts[1] === "view") {
         return parts[2];
     }
+    if (parts.length >= 2 && parts[0] === "analytics") {
+        return parts[1];
+    }
     return null;
 }
 
@@ -92,7 +95,7 @@ export function getReportsUrlLeaf(pathname) {
 export function analyticsPath(domainUnicode) {
     const seg = encodeDomainPathSegment(domainUnicode);
     if (!seg) return "/analytics";
-    return `/analytics/view/${seg}`;
+    return `/analytics/${seg}`;
 }
 
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
