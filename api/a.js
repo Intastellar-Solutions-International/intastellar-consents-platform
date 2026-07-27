@@ -153,13 +153,13 @@ function decode(raw){
     var s='';
     for(var i=0;i<enc.length;i+=2)s+=String.fromCharCode(parseInt(enc.slice(i,i+2),base));
     return JSON.parse(s);
-  }catch(e){return null;}
+  }catch(e){return e;}
 }
 
 function getConsents(){
   try{
     if(window.intaCookieConsents&&window.intaCookieConsents.consents)return window.intaCookieConsents.consents;
-  }catch(e){}
+  }catch(e){console.error("[Intastellar Consents Analytics] Error getting consents:", e); return null;}
   var raw=gc(CK);
   if(!raw)return null;
   var obj=decode(raw);
@@ -176,7 +176,7 @@ function getSid(){
     var k='_ia_s',v=sessionStorage.getItem(k);
     if(!v){v=Math.random().toString(36).slice(2,10)+Date.now().toString(36);sessionStorage.setItem(k,v);}
     return v;
-  }catch(e){return Math.random().toString(36).slice(2,10);}
+  }catch(e){console.error("[Intastellar Consents Analytics] Error getting session ID:", e); return Math.random().toString(36).slice(2,10);}
 }
 
 function utmp(p){try{return new URLSearchParams(location.search).get(p)||'';}catch(e){return '';}}
@@ -187,7 +187,7 @@ var t0=Date.now(),fullFired=false,exitSent=false;
 function send(payload,beacon){
   var b=new Blob([payload],{type:'application/json'});
   if(beacon&&navigator.sendBeacon){navigator.sendBeacon(EP,b);}
-  else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).catch(function(){});}
+  else{fetch(EP,{method:'POST',body:payload,headers:{'Content-Type':'application/json'},keepalive:true}).catch(function(e){console.error("[Intastellar Consents Analytics] Error sending event:", e);});}
 }
 
 function sendMinimal(c){
