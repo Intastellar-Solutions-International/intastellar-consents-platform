@@ -14,8 +14,29 @@ const MarketingCheckBox = document.querySelector("#marketing");
 
 ## Global trigger functions
 
-- `IntaAcceptAll()` — accepts all cookie categories at once (equivalent to clicking "Accept All"; sets `statisticCookies`, `functionalCookies`, `advertisementCookies` all to true in the resulting cookie).
+- `IntaAcceptAll()` — accepts all cookie categories at once (equivalent to clicking "Accept All"; sets all three categories to true).
 - `IntaSaveSettings()` — saves whatever the current checkbox states are (granular save, for a user who selected only some categories).
+
+## Live consent object — `window.intaCookieConsents`
+
+Also persisted into the `IntastellarConsentSolution` cookie (`__inta1.`-encoded, same shape):
+
+```js
+{
+    consents: {
+        staticsticCookies: false,   // NOTE: banner's own typo — "staticstic", not "statistic" — see analytics_consent_check.md
+        functionalCookies: false,
+        advertisementCookies: false,
+    },
+    time: new Date().toGMTString(),
+    uid: Math.random().toString(16).slice(2),
+    domain: window?.INTA?.settings?.rootDomain || window.location.host,
+    sharingDomains: [],
+    tcString: null,
+}
+```
+
+The `staticsticCookies` typo caused a real production bug in `api/a.js` — don't "correct" it back to `statisticCookies` when reading the banner's actual data, that field genuinely doesn't exist there. See [analytics_consent_check.md](analytics_consent_check.md).
 
 ## Why this matters
 
