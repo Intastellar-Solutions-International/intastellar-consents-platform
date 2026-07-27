@@ -227,17 +227,50 @@ window.addEventListener('pagehide',function(){
   }
 });
 
+var iv=null;
+
+// React to the banner's own accept/save actions instead of only polling the
+// cookie — the poll gives up after 30s, so a slow visitor would otherwise
+// only get upgraded to "full" on their next page load.
+function onBannerAction(){
+  var c2=getConsents();
+  if(hasStat(c2)&&!fullFired){
+    if(iv){clearInterval(iv);iv=null;}
+    sendFull(c2,false);
+  }
+}
+function hookConsentTrigger(name){
+  var fn=window[name];
+  if(typeof fn!=='function'||fn.__intaHooked)return;
+  var wrapped=function(){
+    var r=fn.apply(this,arguments);
+    onBannerAction();
+    setTimeout(onBannerAction,300); // safety re-check in case the cookie write is deferred
+    return r;
+  };
+  wrapped.__intaHooked=true;
+  window[name]=wrapped;
+}
+function tryHooks(){
+  hookConsentTrigger('IntaAcceptAll');
+  hookConsentTrigger('IntaSaveSettings');
+}
+
 // Fire on load
 var c=getConsents();
+tryHooks();
 if(hasStat(c)){
   sendFull(c,false);
 }else{
   sendMinimal(c);
-  // Poll: if consent is given mid-session, send the full upgrade event
-  var n=0,iv=setInterval(function(){
+  // Poll fallback: covers cases where the banner script loads after this one
+  // (tryHooks() retries each tick) or exposes different trigger names.
+  var n=0;
+  iv=setInterval(function(){
+    tryHooks();
     var c2=getConsents();
-    if(hasStat(c2)){clearInterval(iv);sendFull(c2,false);}
-    else if(++n>60){clearInterval(iv);}
+    if(hasStat(c2)){clearInterval(iv);iv=null;sendFull(c2,false);}
+    else if(++n>60){clearInterval(iv);iv=null;}
   },500);
 }
 

@@ -1,0 +1,2 @@
+- [Analytics consent check](analytics_consent_check.md) — api/a.js gates on statisticCookies bool; Live View vs Analytics dashboard are unreconciled data sources
+- [CMP banner interface](cmp_banner_interface.md) — #functional/#statics/#marketing checkboxes, IntaAcceptAll(), IntaSaveSettings() — banner script isn't in this repo
