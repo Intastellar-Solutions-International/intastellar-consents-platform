@@ -256,6 +256,8 @@ function hookConsentTrigger(name){
   };
   wrapped.__intaHooked=true;
   window[name]=wrapped;
+
+  console.log("[Intastellar Consents Analytics] Hooked consent trigger:", name);
 }
 function tryHooks(){
   hookConsentTrigger('IntaAcceptAll');
