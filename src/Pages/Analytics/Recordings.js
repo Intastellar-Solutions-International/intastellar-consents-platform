@@ -19,7 +19,7 @@ function fmtDuration(sec) {
     return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-function useRecordingList(domain, fromIso, toIso) {
+function useRecordingList(domain, fromIso, toIso, tick = 0) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
     const [error,   setError]   = useState(null);
@@ -36,7 +36,7 @@ function useRecordingList(domain, fromIso, toIso) {
             })
             .catch(() => setError("Could not load recordings."))
             .finally(() => setLoading(false));
-    }, [domain, fromIso, toIso]);
+    }, [domain, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return { data, loading, error };
 }

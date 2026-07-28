@@ -81,12 +81,15 @@ export default async function handler(req, res) {
     const db = getPool();
 
     const { rows: siteRows } = await db.query(
-        `SELECT id FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
+        `SELECT id, recording_enabled, recording_sample_rate
+         FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
         [orgId, domain]
     ).catch(() => ({ rows: [] }));
 
     if (!siteRows.length) return res.status(200).json({ noSiteKey: true });
     const siteId = siteRows[0].id;
+    const recordingEnabled = siteRows[0].recording_enabled === true;
+    const sampleRate = Number(siteRows[0].recording_sample_rate ?? 20);
 
     const recordingId = (req.query.id || "").trim() || null;
 
@@ -153,6 +156,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
         siteId,
         domain,
+        recordingEnabled,
+        sampleRate,
         recordings: rows.map(r => ({
             id:            r.id,
             startedAt:     r.started_at,
