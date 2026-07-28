@@ -838,3 +838,155 @@
     padding: 1px 5px;
     color: #d4b896;
 }
+
+/* ── Sub-page navigation ─────────────────────────────────────────────────────── */
+
+.sa-subnav {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    width: fit-content;
+    flex-wrap: wrap;
+}
+
+.sa-subnav__link {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(160,160,160,0.7);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.sa-subnav__link:hover {
+    background: rgba(255,255,255,0.07);
+    color: rgba(220,220,220,0.9);
+}
+
+.sa-subnav__link--active {
+    background: rgba(192,159,83,0.15);
+    color: rgba(227,200,130,0.95);
+    border: 1px solid rgba(192,159,83,0.25);
+}
+
+/* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */
+
+.sa-dashboard-grid--overview {
+    grid-template-areas:
+        "kpi1  kpi2  kpi3  kpi4"
+        "chart chart chart live"
+        "pages pages pages pages";
+}
+
+@media (max-width: 1100px) {
+    .sa-dashboard-grid--overview {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "kpi1  kpi2"
+            "kpi3  kpi4"
+            "chart chart"
+            "live  live"
+            "pages pages";
+    }
+}
+
+@media (max-width: 620px) {
+    .sa-dashboard-grid--overview {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "kpi1" "kpi2" "kpi3" "kpi4"
+            "chart" "live" "pages";
+    }
+}
+
+/* ── Audience sub-page grid ──────────────────────────────────────────────────── */
+
+.sa-audience-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+        "countries  countries"
+        "browsers   os"
+        "screens    devices"
+        "lang       tz";
+}
+
+.sa-aud-countries { grid-area: countries; }
+.sa-aud-browsers  { grid-area: browsers;  }
+.sa-aud-os        { grid-area: os;        }
+.sa-aud-devices   { grid-area: devices;   }
+.sa-aud-screens   { grid-area: screens;   }
+.sa-aud-lang      { grid-area: lang;      }
+.sa-aud-tz        { grid-area: tz;        }
+
+@media (max-width: 620px) {
+    .sa-audience-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "countries" "browsers" "os"
+            "devices" "screens" "lang" "tz";
+    }
+}
+
+/* ── Acquisition sub-page grid ───────────────────────────────────────────────── */
+
+.sa-acq-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas: "pages utm";
+}
+
+.sa-acq-pages { grid-area: pages; }
+.sa-acq-utm   { grid-area: utm;   }
+
+@media (max-width: 760px) {
+    .sa-acq-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: "pages" "utm";
+    }
+}
+
+/* ── Consent sub-page grid ───────────────────────────────────────────────────── */
+
+.sa-consent-page-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+        "kpi1 kpi2 kpi3 kpi4"
+        "bars bars bars bars";
+}
+
+.sa-cg-kpi1 { grid-area: kpi1; }
+.sa-cg-kpi2 { grid-area: kpi2; }
+.sa-cg-kpi3 { grid-area: kpi3; }
+.sa-cg-kpi4 { grid-area: kpi4; }
+.sa-cg-bars { grid-area: bars; }
+
+@media (max-width: 1100px) {
+    .sa-consent-page-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "kpi1 kpi2"
+            "kpi3 kpi4"
+            "bars bars";
+    }
+}
+
+@media (max-width: 620px) {
+    .sa-consent-page-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "kpi1" "kpi2" "kpi3" "kpi4" "bars";
+    }
+}

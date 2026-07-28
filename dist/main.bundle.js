@@ -25838,7 +25838,159 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Site Analytics report page �
     padding: 1px 5px;
     color: #d4b896;
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Analytics/Analytics.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Site Analytics report page ─────────────────────────────────────────────── */\n\n.sa-page {\n    padding: 4px 0 64px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* ── Live view panel ─────────────────────────────────────────────────────────── */\n\n.sa-live {\n    border: 1px solid rgba(74,222,128,0.2);\n    border-radius: 14px;\n    background: rgba(20,30,20,0.7);\n    overflow: hidden;\n}\n\n.sa-live__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 14px 20px;\n    gap: 12px;\n    cursor: pointer;\n    user-select: none;\n}\n\n.sa-live__header:hover { background: rgba(255,255,255,0.02); }\n\n.sa-live__title {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-live__dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: #4ade80;\n    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);\n    animation: sa-pulse 1.8s ease-out infinite;\n    flex-shrink: 0;\n}\n\n@keyframes sa-pulse {\n    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }\n    60%  { box-shadow: 0 0 0 7px rgba(74,222,128,0); }\n    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }\n}\n\n.sa-live__label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #4ade80;\n}\n\n.sa-live__window {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-live__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n}\n\n.sa-live__countdown {\n    font-size: 0.7rem;\n    color: rgba(120,120,120,0.6);\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-live__toggle {\n    background: none;\n    border: none;\n    color: rgba(140,140,140,0.6);\n    cursor: pointer;\n    padding: 2px 4px;\n    font-size: 0.75rem;\n    line-height: 1;\n    border-radius: 4px;\n}\n\n.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }\n\n.sa-live__body {\n    border-top: 1px solid rgba(74,222,128,0.12);\n    padding: 18px 20px 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n/* KPI strip inside live panel */\n.sa-live__kpis {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 10px;\n}\n\n.sa-live__kpi {\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n    padding: 12px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n\n.sa-live__kpi-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-live__kpi-value {\n    font-size: 1.6rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-live__kpi-sub {\n    font-size: 0.68rem;\n    color: rgba(120,120,120,0.6);\n}\n\n/* Per-minute sparkline */\n.sa-live__sparkline {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.sa-live__spark-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n}\n\n.sa-live__spark-bars {\n    display: flex;\n    align-items: flex-end;\n    gap: 2px;\n    height: 48px;\n}\n\n.sa-live__spark-bar {\n    flex: 1;\n    border-radius: 2px 2px 0 0;\n    background: rgba(74,222,128,0.35);\n    min-height: 2px;\n    transition: height 0.3s ease;\n}\n\n.sa-live__spark-bar--last {\n    background: rgba(74,222,128,0.75);\n}\n\n.sa-live__spark-times {\n    display: flex;\n    justify-content: space-between;\n    font-size: 0.62rem;\n    color: rgba(110,110,110,0.55);\n}\n\n/* Single-column bottom — live panel lives in a narrow grid slot */\n.sa-live__bottom {\n    display: flex;\n    flex-direction: column;\n    gap: 14px;\n}\n\n.sa-live__section-title {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n    margin: 0 0 8px;\n}\n\n/* Recent events feed */\n.sa-live__feed {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.sa-live__event {\n    display: grid;\n    grid-template-columns: 1fr auto;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    animation: sa-fade-in 0.4s ease;\n}\n\n.sa-live__event:last-child { border-bottom: none; }\n\n@keyframes sa-fade-in {\n    from { opacity: 0; transform: translateY(-4px); }\n    to   { opacity: 1; transform: translateY(0); }\n}\n\n.sa-live__event-path {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.75rem;\n    color: rgba(180,210,180,0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.sa-live__event-meta {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.sa-live__event-flag {\n    font-size: 0.7rem;\n    color: rgba(160,160,160,0.65);\n}\n\n.sa-live__event-level {\n    font-size: 0.6rem;\n    font-weight: 600;\n    padding: 1px 5px;\n    border-radius: 4px;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.sa-live__event-level--full {\n    background: rgba(74,222,128,0.14);\n    color: rgba(74,222,128,0.85);\n}\n\n.sa-live__event-level--minimal {\n    background: rgba(192,159,83,0.12);\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-live__event-time {\n    font-size: 0.65rem;\n    color: rgba(110,110,110,0.55);\n    font-variant-numeric: tabular-nums;\n    min-width: 32px;\n    text-align: right;\n}\n\n/* ── Notices ─────────────────────────────────────────────────────────────────── */\n\n.sa-notice {\n    margin: 0;\n    padding: 18px 22px;\n    border-radius: 12px;\n    font-size: 0.9rem;\n    color: rgba(180,180,180,0.85);\n    background: rgba(0,0,0,0.15);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-notice--error {\n    background: rgba(220,80,80,0.08);\n    border-color: rgba(220,100,100,0.25);\n    color: #f5aeae;\n}\n\n/* ── Meta row ────────────────────────────────────────────────────────────────── */\n\n.sa-meta-row {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n}\n\n.sa-site-key-badge {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-site-key-badge code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.72rem;\n    color: rgba(180,180,180,0.7);\n    background: rgba(255,255,255,0.05);\n    padding: 1px 6px;\n    border-radius: 4px;\n}\n\n/* ── KPI cards (each is a direct grid child with its own area) ───────────────── */\n\n.sa-kpi {\n    position: relative;\n    padding: 18px 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.09);\n    background: rgba(30,30,34,0.8);\n    box-shadow: 0 2px 12px rgba(0,0,0,0.25);\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    overflow: hidden;\n}\n\n/* Coloured accent stripe across the top of each KPI card */\n.sa-kpi::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 3px;\n    background: rgba(192,159,83,0.6);\n    border-radius: 14px 14px 0 0;\n}\n\n.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }\n.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }\n.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }\n\n.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }\n\n.sa-kpi__head {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n}\n\n.sa-kpi__icon {\n    display: inline-flex;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }\n.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }\n.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }\n\n.sa-kpi__icon svg {\n    width: 14px;\n    height: 14px;\n}\n\n.sa-icon {\n    width: 14px;\n    height: 14px;\n    flex-shrink: 0;\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-kpi__label {\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.7);\n}\n\n.sa-kpi__value {\n    font-size: 2.1rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }\n\n.sa-kpi__sub {\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.4;\n}\n\n/* ── Chart section ───────────────────────────────────────────────────────────── */\n\n.sa-chart-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 24px 18px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.2);\n}\n\n.sa-chart-section__title {\n    margin: 0 0 16px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-chart {\n    width: 100%;\n    height: auto;\n    position: relative;\n}\n\n.sa-chart--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n}\n\n.sa-chart__legend {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    margin-top: 8px;\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-chart__legend-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 2px;\n    flex-shrink: 0;\n}\n\n.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }\n.sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }\n\n/* ── Dashboard grid ──────────────────────────────────────────────────────────── */\n\n.sa-dashboard-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   utm       utm\"\n        \"os     os      screens   screens\";\n}\n\n.sa-dashboard-grid--no-utm {\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   os        screens\";\n}\n\n/* Grid area assignments */\n.sa-ga-kpi1      { grid-area: kpi1; }\n.sa-ga-kpi2      { grid-area: kpi2; }\n.sa-ga-kpi3      { grid-area: kpi3; }\n.sa-ga-kpi4      { grid-area: kpi4; }\n.sa-ga-chart     { grid-area: chart; align-self: start; }\n.sa-ga-live      { grid-area: live; }\n.sa-ga-pages     { grid-area: pages; }\n.sa-ga-consent   { grid-area: consent; }\n.sa-ga-countries { grid-area: countries; }\n.sa-ga-brows     { grid-area: brows; }\n.sa-ga-utm       { grid-area: utm; }\n.sa-ga-os        { grid-area: os; }\n.sa-ga-screens   { grid-area: screens; }\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   utm\"\n            \"os      screens\";\n    }\n    .sa-dashboard-grid--no-utm {\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   brows\"\n            \"os      screens\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\"\n            \"pages\" \"consent\" \"countries\"\n            \"brows\" \"utm\" \"os\" \"screens\";\n    }\n}\n\n/* ── Generic panel card ──────────────────────────────────────────────────────── */\n\n.sa-panel {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__title {\n    margin: 0 0 14px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n/* Divider between stacked sub-sections within a panel */\n.sa-panel__divider {\n    height: 1px;\n    background: rgba(255,255,255,0.06);\n    margin: 14px 0;\n}\n\n.sa-panel__sub-title {\n    margin: 0 0 10px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.55);\n}\n\n.sa-panel__consent-note {\n    font-size: 0.62rem;\n    font-weight: 500;\n    color: rgba(120,120,120,0.55);\n    text-transform: none;\n    letter-spacing: 0;\n    margin-left: 4px;\n}\n\n/* ── Tables ──────────────────────────────────────────────────────────────────── */\n\n.sa-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n\n.sa-table th {\n    text-align: left;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.6);\n    padding: 0 8px 8px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-table td {\n    padding: 7px 8px 7px 0;\n    color: rgba(210,210,210,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n\n.sa-table tbody tr:last-child td { border-bottom: none; }\n\n.sa-table__num {\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n    color: rgba(200,200,200,0.75);\n}\n\n.sa-table__path {\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.77rem;\n    color: rgba(180,210,180,0.85);\n}\n\n.sa-table__bar {\n    width: 72px;\n    padding-left: 10px !important;\n}\n\n/* ── Mini bar ────────────────────────────────────────────────────────────────── */\n\n.sa-mini-bar {\n    height: 5px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n}\n\n.sa-mini-bar__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.3s ease;\n}\n\n/* ── Consent + device bars ───────────────────────────────────────────────────── */\n\n.sa-consent-list {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n.sa-consent-row {\n    display: grid;\n    grid-template-columns: 76px 1fr 32px;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-consent-row__label {\n    font-size: 0.78rem;\n    color: rgba(185,185,185,0.85);\n    white-space: nowrap;\n}\n\n.sa-consent-row__pct {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(200,200,200,0.7);\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-bar {\n    height: 8px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n    display: flex;\n}\n\n.sa-bar__seg {\n    height: 100%;\n    transition: width 0.3s ease;\n}\n\n/* ── World map ───────────────────────────────────────────────────────────────── */\n\n.sa-map {\n    margin-bottom: 14px;\n}\n\n.sa-map__inner {\n    width: 100%;\n    height: 100%;\n    min-height: 220px;\n    border-radius: 8px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.12);\n    border: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-map__caption {\n    margin: 6px 2px 0;\n    font-size: 0.72rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 160px;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n    background: rgba(0,0,0,0.1);\n    border: 1px solid rgba(255,255,255,0.05);\n    border-radius: 8px;\n}\n\n/* ── Copy button ─────────────────────────────────────────────────────────────── */\n\n.sa-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.12);\n    background: rgba(255,255,255,0.05);\n    color: rgba(200,200,200,0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-copy-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }\n.sa-copy-btn--done { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3); color: #6ee7a0; }\n\n/* ── Setup / empty state card ────────────────────────────────────────────────── */\n\n.sa-setup {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    gap: 16px;\n    padding: 56px 32px;\n    border-radius: 16px;\n    border: 1px dashed rgba(255,255,255,0.1);\n    background: rgba(0,0,0,0.1);\n}\n\n.sa-setup__icon { color: rgba(192,159,83,0.8); }\n\n.sa-setup__icon svg {\n    width: 36px;\n    height: 36px;\n}\n\n.sa-setup__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #ececec;\n}\n\n.sa-setup__body {\n    margin: 0;\n    max-width: 520px;\n    font-size: 0.9rem;\n    line-height: 1.65;\n    color: rgba(175,175,175,0.85);\n}\n\n.sa-setup__loading {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-setup__gen-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 10px 24px;\n    border-radius: 10px;\n    border: 1px solid rgba(192,159,83,0.45);\n    background: rgba(192,159,83,0.1);\n    color: rgba(227,200,130,0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.sa-setup__gen-btn:hover:not(:disabled) {\n    background: rgba(192,159,83,0.2);\n    border-color: rgba(192,159,83,0.65);\n}\n\n.sa-setup__gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }\n\n.sa-setup__snippet-wrap {\n    width: 100%;\n    max-width: 640px;\n    text-align: left;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.sa-setup__snippet-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.sa-setup__snippet-label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-setup__snippet {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n    background: rgba(0,0,0,0.28);\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.78rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n\n.sa-setup__hint {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.5;\n}\n\n.sa-setup__hint code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.82em;\n    background: rgba(255,255,255,0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n"],"sourceRoot":""}]);
+
+/* ── Sub-page navigation ─────────────────────────────────────────────────────── */
+
+.sa-subnav {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    width: fit-content;
+    flex-wrap: wrap;
+}
+
+.sa-subnav__link {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(160,160,160,0.7);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.sa-subnav__link:hover {
+    background: rgba(255,255,255,0.07);
+    color: rgba(220,220,220,0.9);
+}
+
+.sa-subnav__link--active {
+    background: rgba(192,159,83,0.15);
+    color: rgba(227,200,130,0.95);
+    border: 1px solid rgba(192,159,83,0.25);
+}
+
+/* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */
+
+.sa-dashboard-grid--overview {
+    grid-template-areas:
+        "kpi1  kpi2  kpi3  kpi4"
+        "chart chart chart live"
+        "pages pages pages pages";
+}
+
+@media (max-width: 1100px) {
+    .sa-dashboard-grid--overview {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "kpi1  kpi2"
+            "kpi3  kpi4"
+            "chart chart"
+            "live  live"
+            "pages pages";
+    }
+}
+
+@media (max-width: 620px) {
+    .sa-dashboard-grid--overview {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "kpi1" "kpi2" "kpi3" "kpi4"
+            "chart" "live" "pages";
+    }
+}
+
+/* ── Audience sub-page grid ──────────────────────────────────────────────────── */
+
+.sa-audience-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+        "countries  countries"
+        "browsers   os"
+        "screens    devices"
+        "lang       tz";
+}
+
+.sa-aud-countries { grid-area: countries; }
+.sa-aud-browsers  { grid-area: browsers;  }
+.sa-aud-os        { grid-area: os;        }
+.sa-aud-devices   { grid-area: devices;   }
+.sa-aud-screens   { grid-area: screens;   }
+.sa-aud-lang      { grid-area: lang;      }
+.sa-aud-tz        { grid-area: tz;        }
+
+@media (max-width: 620px) {
+    .sa-audience-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "countries" "browsers" "os"
+            "devices" "screens" "lang" "tz";
+    }
+}
+
+/* ── Acquisition sub-page grid ───────────────────────────────────────────────── */
+
+.sa-acq-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas: "pages utm";
+}
+
+.sa-acq-pages { grid-area: pages; }
+.sa-acq-utm   { grid-area: utm;   }
+
+@media (max-width: 760px) {
+    .sa-acq-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: "pages" "utm";
+    }
+}
+
+/* ── Consent sub-page grid ───────────────────────────────────────────────────── */
+
+.sa-consent-page-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+        "kpi1 kpi2 kpi3 kpi4"
+        "bars bars bars bars";
+}
+
+.sa-cg-kpi1 { grid-area: kpi1; }
+.sa-cg-kpi2 { grid-area: kpi2; }
+.sa-cg-kpi3 { grid-area: kpi3; }
+.sa-cg-kpi4 { grid-area: kpi4; }
+.sa-cg-bars { grid-area: bars; }
+
+@media (max-width: 1100px) {
+    .sa-consent-page-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "kpi1 kpi2"
+            "kpi3 kpi4"
+            "bars bars";
+    }
+}
+
+@media (max-width: 620px) {
+    .sa-consent-page-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "kpi1" "kpi2" "kpi3" "kpi4" "bars";
+    }
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/Analytics/Analytics.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Site Analytics report page ─────────────────────────────────────────────── */\n\n.sa-page {\n    padding: 4px 0 64px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* ── Live view panel ─────────────────────────────────────────────────────────── */\n\n.sa-live {\n    border: 1px solid rgba(74,222,128,0.2);\n    border-radius: 14px;\n    background: rgba(20,30,20,0.7);\n    overflow: hidden;\n}\n\n.sa-live__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 14px 20px;\n    gap: 12px;\n    cursor: pointer;\n    user-select: none;\n}\n\n.sa-live__header:hover { background: rgba(255,255,255,0.02); }\n\n.sa-live__title {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-live__dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: #4ade80;\n    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);\n    animation: sa-pulse 1.8s ease-out infinite;\n    flex-shrink: 0;\n}\n\n@keyframes sa-pulse {\n    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }\n    60%  { box-shadow: 0 0 0 7px rgba(74,222,128,0); }\n    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }\n}\n\n.sa-live__label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #4ade80;\n}\n\n.sa-live__window {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-live__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n}\n\n.sa-live__countdown {\n    font-size: 0.7rem;\n    color: rgba(120,120,120,0.6);\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-live__toggle {\n    background: none;\n    border: none;\n    color: rgba(140,140,140,0.6);\n    cursor: pointer;\n    padding: 2px 4px;\n    font-size: 0.75rem;\n    line-height: 1;\n    border-radius: 4px;\n}\n\n.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }\n\n.sa-live__body {\n    border-top: 1px solid rgba(74,222,128,0.12);\n    padding: 18px 20px 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n/* KPI strip inside live panel */\n.sa-live__kpis {\n    display: grid;\n    grid-template-columns: repeat(3, 1fr);\n    gap: 10px;\n}\n\n.sa-live__kpi {\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n    padding: 12px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n\n.sa-live__kpi-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-live__kpi-value {\n    font-size: 1.6rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-live__kpi-sub {\n    font-size: 0.68rem;\n    color: rgba(120,120,120,0.6);\n}\n\n/* Per-minute sparkline */\n.sa-live__sparkline {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.sa-live__spark-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n}\n\n.sa-live__spark-bars {\n    display: flex;\n    align-items: flex-end;\n    gap: 2px;\n    height: 48px;\n}\n\n.sa-live__spark-bar {\n    flex: 1;\n    border-radius: 2px 2px 0 0;\n    background: rgba(74,222,128,0.35);\n    min-height: 2px;\n    transition: height 0.3s ease;\n}\n\n.sa-live__spark-bar--last {\n    background: rgba(74,222,128,0.75);\n}\n\n.sa-live__spark-times {\n    display: flex;\n    justify-content: space-between;\n    font-size: 0.62rem;\n    color: rgba(110,110,110,0.55);\n}\n\n/* Single-column bottom — live panel lives in a narrow grid slot */\n.sa-live__bottom {\n    display: flex;\n    flex-direction: column;\n    gap: 14px;\n}\n\n.sa-live__section-title {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n    margin: 0 0 8px;\n}\n\n/* Recent events feed */\n.sa-live__feed {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.sa-live__event {\n    display: grid;\n    grid-template-columns: 1fr auto;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    animation: sa-fade-in 0.4s ease;\n}\n\n.sa-live__event:last-child { border-bottom: none; }\n\n@keyframes sa-fade-in {\n    from { opacity: 0; transform: translateY(-4px); }\n    to   { opacity: 1; transform: translateY(0); }\n}\n\n.sa-live__event-path {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.75rem;\n    color: rgba(180,210,180,0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.sa-live__event-meta {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.sa-live__event-flag {\n    font-size: 0.7rem;\n    color: rgba(160,160,160,0.65);\n}\n\n.sa-live__event-level {\n    font-size: 0.6rem;\n    font-weight: 600;\n    padding: 1px 5px;\n    border-radius: 4px;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.sa-live__event-level--full {\n    background: rgba(74,222,128,0.14);\n    color: rgba(74,222,128,0.85);\n}\n\n.sa-live__event-level--minimal {\n    background: rgba(192,159,83,0.12);\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-live__event-time {\n    font-size: 0.65rem;\n    color: rgba(110,110,110,0.55);\n    font-variant-numeric: tabular-nums;\n    min-width: 32px;\n    text-align: right;\n}\n\n/* ── Notices ─────────────────────────────────────────────────────────────────── */\n\n.sa-notice {\n    margin: 0;\n    padding: 18px 22px;\n    border-radius: 12px;\n    font-size: 0.9rem;\n    color: rgba(180,180,180,0.85);\n    background: rgba(0,0,0,0.15);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-notice--error {\n    background: rgba(220,80,80,0.08);\n    border-color: rgba(220,100,100,0.25);\n    color: #f5aeae;\n}\n\n/* ── Meta row ────────────────────────────────────────────────────────────────── */\n\n.sa-meta-row {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n}\n\n.sa-site-key-badge {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-site-key-badge code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.72rem;\n    color: rgba(180,180,180,0.7);\n    background: rgba(255,255,255,0.05);\n    padding: 1px 6px;\n    border-radius: 4px;\n}\n\n/* ── KPI cards (each is a direct grid child with its own area) ───────────────── */\n\n.sa-kpi {\n    position: relative;\n    padding: 18px 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.09);\n    background: rgba(30,30,34,0.8);\n    box-shadow: 0 2px 12px rgba(0,0,0,0.25);\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    overflow: hidden;\n}\n\n/* Coloured accent stripe across the top of each KPI card */\n.sa-kpi::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 3px;\n    background: rgba(192,159,83,0.6);\n    border-radius: 14px 14px 0 0;\n}\n\n.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }\n.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }\n.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }\n\n.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }\n\n.sa-kpi__head {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n}\n\n.sa-kpi__icon {\n    display: inline-flex;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }\n.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }\n.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }\n\n.sa-kpi__icon svg {\n    width: 14px;\n    height: 14px;\n}\n\n.sa-icon {\n    width: 14px;\n    height: 14px;\n    flex-shrink: 0;\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-kpi__label {\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.7);\n}\n\n.sa-kpi__value {\n    font-size: 2.1rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }\n\n.sa-kpi__sub {\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.4;\n}\n\n/* ── Chart section ───────────────────────────────────────────────────────────── */\n\n.sa-chart-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 24px 18px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.2);\n}\n\n.sa-chart-section__title {\n    margin: 0 0 16px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-chart {\n    width: 100%;\n    height: auto;\n    position: relative;\n}\n\n.sa-chart--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n}\n\n.sa-chart__legend {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    margin-top: 8px;\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-chart__legend-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 2px;\n    flex-shrink: 0;\n}\n\n.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }\n.sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }\n\n/* ── Dashboard grid ──────────────────────────────────────────────────────────── */\n\n.sa-dashboard-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   utm       utm\"\n        \"os     os      screens   screens\";\n}\n\n.sa-dashboard-grid--no-utm {\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   os        screens\";\n}\n\n/* Grid area assignments */\n.sa-ga-kpi1      { grid-area: kpi1; }\n.sa-ga-kpi2      { grid-area: kpi2; }\n.sa-ga-kpi3      { grid-area: kpi3; }\n.sa-ga-kpi4      { grid-area: kpi4; }\n.sa-ga-chart     { grid-area: chart; align-self: start; }\n.sa-ga-live      { grid-area: live; }\n.sa-ga-pages     { grid-area: pages; }\n.sa-ga-consent   { grid-area: consent; }\n.sa-ga-countries { grid-area: countries; }\n.sa-ga-brows     { grid-area: brows; }\n.sa-ga-utm       { grid-area: utm; }\n.sa-ga-os        { grid-area: os; }\n.sa-ga-screens   { grid-area: screens; }\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   utm\"\n            \"os      screens\";\n    }\n    .sa-dashboard-grid--no-utm {\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   brows\"\n            \"os      screens\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\"\n            \"pages\" \"consent\" \"countries\"\n            \"brows\" \"utm\" \"os\" \"screens\";\n    }\n}\n\n/* ── Generic panel card ──────────────────────────────────────────────────────── */\n\n.sa-panel {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__title {\n    margin: 0 0 14px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n/* Divider between stacked sub-sections within a panel */\n.sa-panel__divider {\n    height: 1px;\n    background: rgba(255,255,255,0.06);\n    margin: 14px 0;\n}\n\n.sa-panel__sub-title {\n    margin: 0 0 10px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.55);\n}\n\n.sa-panel__consent-note {\n    font-size: 0.62rem;\n    font-weight: 500;\n    color: rgba(120,120,120,0.55);\n    text-transform: none;\n    letter-spacing: 0;\n    margin-left: 4px;\n}\n\n/* ── Tables ──────────────────────────────────────────────────────────────────── */\n\n.sa-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n\n.sa-table th {\n    text-align: left;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.6);\n    padding: 0 8px 8px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-table td {\n    padding: 7px 8px 7px 0;\n    color: rgba(210,210,210,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n\n.sa-table tbody tr:last-child td { border-bottom: none; }\n\n.sa-table__num {\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n    color: rgba(200,200,200,0.75);\n}\n\n.sa-table__path {\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.77rem;\n    color: rgba(180,210,180,0.85);\n}\n\n.sa-table__bar {\n    width: 72px;\n    padding-left: 10px !important;\n}\n\n/* ── Mini bar ────────────────────────────────────────────────────────────────── */\n\n.sa-mini-bar {\n    height: 5px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n}\n\n.sa-mini-bar__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.3s ease;\n}\n\n/* ── Consent + device bars ───────────────────────────────────────────────────── */\n\n.sa-consent-list {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n.sa-consent-row {\n    display: grid;\n    grid-template-columns: 76px 1fr 32px;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-consent-row__label {\n    font-size: 0.78rem;\n    color: rgba(185,185,185,0.85);\n    white-space: nowrap;\n}\n\n.sa-consent-row__pct {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(200,200,200,0.7);\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-bar {\n    height: 8px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n    display: flex;\n}\n\n.sa-bar__seg {\n    height: 100%;\n    transition: width 0.3s ease;\n}\n\n/* ── World map ───────────────────────────────────────────────────────────────── */\n\n.sa-map {\n    margin-bottom: 14px;\n}\n\n.sa-map__inner {\n    width: 100%;\n    height: 100%;\n    min-height: 220px;\n    border-radius: 8px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.12);\n    border: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-map__caption {\n    margin: 6px 2px 0;\n    font-size: 0.72rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 160px;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n    background: rgba(0,0,0,0.1);\n    border: 1px solid rgba(255,255,255,0.05);\n    border-radius: 8px;\n}\n\n/* ── Copy button ─────────────────────────────────────────────────────────────── */\n\n.sa-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.12);\n    background: rgba(255,255,255,0.05);\n    color: rgba(200,200,200,0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-copy-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }\n.sa-copy-btn--done { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3); color: #6ee7a0; }\n\n/* ── Setup / empty state card ────────────────────────────────────────────────── */\n\n.sa-setup {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    gap: 16px;\n    padding: 56px 32px;\n    border-radius: 16px;\n    border: 1px dashed rgba(255,255,255,0.1);\n    background: rgba(0,0,0,0.1);\n}\n\n.sa-setup__icon { color: rgba(192,159,83,0.8); }\n\n.sa-setup__icon svg {\n    width: 36px;\n    height: 36px;\n}\n\n.sa-setup__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #ececec;\n}\n\n.sa-setup__body {\n    margin: 0;\n    max-width: 520px;\n    font-size: 0.9rem;\n    line-height: 1.65;\n    color: rgba(175,175,175,0.85);\n}\n\n.sa-setup__loading {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-setup__gen-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 10px 24px;\n    border-radius: 10px;\n    border: 1px solid rgba(192,159,83,0.45);\n    background: rgba(192,159,83,0.1);\n    color: rgba(227,200,130,0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.sa-setup__gen-btn:hover:not(:disabled) {\n    background: rgba(192,159,83,0.2);\n    border-color: rgba(192,159,83,0.65);\n}\n\n.sa-setup__gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }\n\n.sa-setup__snippet-wrap {\n    width: 100%;\n    max-width: 640px;\n    text-align: left;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.sa-setup__snippet-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.sa-setup__snippet-label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-setup__snippet {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n    background: rgba(0,0,0,0.28);\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.78rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n\n.sa-setup__hint {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.5;\n}\n\n.sa-setup__hint code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.82em;\n    background: rgba(255,255,255,0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n\n/* ── Sub-page navigation ─────────────────────────────────────────────────────── */\n\n.sa-subnav {\n    display: flex;\n    gap: 4px;\n    padding: 4px;\n    border-radius: 12px;\n    background: rgba(255,255,255,0.04);\n    border: 1px solid rgba(255,255,255,0.07);\n    width: fit-content;\n    flex-wrap: wrap;\n}\n\n.sa-subnav__link {\n    padding: 6px 16px;\n    border-radius: 8px;\n    font-size: 0.78rem;\n    font-weight: 600;\n    color: rgba(160,160,160,0.7);\n    text-decoration: none;\n    transition: background 0.15s, color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-subnav__link:hover {\n    background: rgba(255,255,255,0.07);\n    color: rgba(220,220,220,0.9);\n}\n\n.sa-subnav__link--active {\n    background: rgba(192,159,83,0.15);\n    color: rgba(227,200,130,0.95);\n    border: 1px solid rgba(192,159,83,0.25);\n}\n\n/* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */\n\n.sa-dashboard-grid--overview {\n    grid-template-areas:\n        \"kpi1  kpi2  kpi3  kpi4\"\n        \"chart chart chart live\"\n        \"pages pages pages pages\";\n}\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1  kpi2\"\n            \"kpi3  kpi4\"\n            \"chart chart\"\n            \"live  live\"\n            \"pages pages\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\" \"pages\";\n    }\n}\n\n/* ── Audience sub-page grid ──────────────────────────────────────────────────── */\n\n.sa-audience-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas:\n        \"countries  countries\"\n        \"browsers   os\"\n        \"screens    devices\"\n        \"lang       tz\";\n}\n\n.sa-aud-countries { grid-area: countries; }\n.sa-aud-browsers  { grid-area: browsers;  }\n.sa-aud-os        { grid-area: os;        }\n.sa-aud-devices   { grid-area: devices;   }\n.sa-aud-screens   { grid-area: screens;   }\n.sa-aud-lang      { grid-area: lang;      }\n.sa-aud-tz        { grid-area: tz;        }\n\n@media (max-width: 620px) {\n    .sa-audience-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"countries\" \"browsers\" \"os\"\n            \"devices\" \"screens\" \"lang\" \"tz\";\n    }\n}\n\n/* ── Acquisition sub-page grid ───────────────────────────────────────────────── */\n\n.sa-acq-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas: \"pages utm\";\n}\n\n.sa-acq-pages { grid-area: pages; }\n.sa-acq-utm   { grid-area: utm;   }\n\n@media (max-width: 760px) {\n    .sa-acq-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"pages\" \"utm\";\n    }\n}\n\n/* ── Consent sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-consent-page-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1 kpi2 kpi3 kpi4\"\n        \"bars bars bars bars\";\n}\n\n.sa-cg-kpi1 { grid-area: kpi1; }\n.sa-cg-kpi2 { grid-area: kpi2; }\n.sa-cg-kpi3 { grid-area: kpi3; }\n.sa-cg-kpi4 { grid-area: kpi4; }\n.sa-cg-bars { grid-area: bars; }\n\n@media (max-width: 1100px) {\n    .sa-consent-page-grid {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1 kpi2\"\n            \"kpi3 kpi4\"\n            \"bars bars\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-consent-page-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\" \"bars\";\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -40604,14 +40756,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./Pages/Settings/AdConnections */ "./src/Pages/Settings/AdConnections/index.js");
 /* harmony import */ var _Pages_Settings_AnalyticsScript__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Pages/Settings/AnalyticsScript */ "./src/Pages/Settings/AnalyticsScript/index.js");
 /* harmony import */ var _Pages_Analytics__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Pages/Analytics */ "./src/Pages/Analytics/index.js");
-Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Audience.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Acquisition.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Consent.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
-/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
-/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
-/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _Pages_Analytics_Audience_js__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./Pages/Analytics/Audience.js */ "./src/Pages/Analytics/Audience.js");
+/* harmony import */ var _Pages_Analytics_Acquisition_js__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Pages/Analytics/Acquisition.js */ "./src/Pages/Analytics/Acquisition.js");
+/* harmony import */ var _Pages_Analytics_Consent_js__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./Pages/Analytics/Consent.js */ "./src/Pages/Analytics/Consent.js");
+/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
+/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
+/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -40689,7 +40841,7 @@ var Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
-var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("organisation"));
+var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].getItem("organisation"));
 var AllOrg = createContext(null);
 var DomainContext = createContext(null);
 var WorkspaceContext = createContext([null, function () {}]);
@@ -40698,7 +40850,7 @@ function App() {
     _useState2 = _slicedToArray(_useState, 2),
     dashboardView = _useState2[0],
     setDashboardView = _useState2[1];
-  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("organisation") : null),
+  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].getItem("organisation") : null),
     _useState4 = _slicedToArray(_useState3, 2),
     organisation = _useState4[0],
     setOrganisation = _useState4[1];
@@ -40730,7 +40882,7 @@ function App() {
     domainError = _useState12[0],
     setDomainError = _useState12[1];
   var _useState13 = useState(function () {
-      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("subscription");
+      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].getItem("subscription");
       if (cached) {
         try {
           return JSON.parse(cached);
@@ -40751,14 +40903,14 @@ function App() {
     setId = _useState16[1];
   var navigate = window.ReactRouterDOM.useHistory();
   useEffect(function () {
-    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("globals");
+    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].getItem("globals");
     var path = window.location.pathname;
     var isApiRoute = path === "/api" || path.startsWith("/api/");
     if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
       window.location.replace("/login");
     }
   }, []);
-  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("globals") != null) {
+  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].getItem("globals") != null) {
     var _getOrg2;
     var path = window.location.pathname;
     // Only redirect if id is present and not already on dashboard
@@ -40776,7 +40928,7 @@ function App() {
         organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
@@ -40784,15 +40936,15 @@ function App() {
       });
       (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.headers, JSON.stringify({
         user: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId(),
-        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
+        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
         setSubscriptionStatus(data);
-        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].setItem("subscription", JSON.stringify(data));
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].setItem("subscription", JSON.stringify(data));
       });
       if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
         (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.headers).then(function (data) {
@@ -40835,7 +40987,7 @@ function App() {
         });
       }
     }, []);
-    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
+    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
     var isDevOrg = Number(orgId) === 1;
     var hasNoSubscription = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" || typeof (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.message) === "string" && subscriptionStatus.message.includes("Subscription not found");
     var subscriptionLoading = !isDevOrg && !hasNoSubscription && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
@@ -40864,7 +41016,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -40874,28 +41026,28 @@ function App() {
       }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/audience",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Audience Analytics",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Audience.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()), null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Audience_js__WEBPACK_IMPORTED_MODULE_51__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/acquisition",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Acquisition Analytics",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Acquisition.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()), null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Acquisition_js__WEBPACK_IMPORTED_MODULE_52__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/consent",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Consent Analytics",
         fullPage: true
-      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Consent.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()), null))), /*#__PURE__*/React.createElement(Route, {
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Consent_js__WEBPACK_IMPORTED_MODULE_53__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -40904,7 +41056,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -40913,14 +41065,14 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Site Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics__WEBPACK_IMPORTED_MODULE_50__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Site Analytics",
         fullPage: true
@@ -40930,7 +41082,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -40951,11 +41103,11 @@ function App() {
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
@@ -40964,7 +41116,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -40973,7 +41125,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -40982,7 +41134,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -40991,28 +41143,28 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport_ReconcilePage__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -41021,7 +41173,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -41030,7 +41182,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -41039,7 +41191,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -41048,7 +41200,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -41057,7 +41209,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
@@ -41065,7 +41217,7 @@ function App() {
         path: "/dashboard"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
-        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
+        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/login",
         exact: true
@@ -41073,56 +41225,56 @@ function App() {
         path: "/auth-login"
       }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/config-gdpr"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Jurisdiction Configuration",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_42__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/legal-basis"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "Legal Basis Tracking",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_43__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa/:entryId"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_45__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_44__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr/:requestId",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR__WEBPACK_IMPORTED_MODULE_46__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/blacklist-ip"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org) {
-        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("organisation");
+        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__["default"].getItem("organisation");
         var org = null;
         try {
           org = JSON.parse(orgRaw);
         } catch (_unused4) {/* ignore */}
         var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
-        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
           minTier: "agency-pro",
           featureName: "Client Workspaces",
           fullPage: true
@@ -41136,14 +41288,14 @@ function App() {
       }())), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ad-connections",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "Ad Connections",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/analytics-script",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "starter",
         featureName: "Analytics Script",
         fullPage: true
@@ -41152,13 +41304,13 @@ function App() {
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_57__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_55__["default"], {
         minTier: "growth",
         featureName: "Portfolio Benchmark",
         fullPage: true
@@ -41173,7 +41325,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/cookie-database",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_52__["default"], null) : /*#__PURE__*/React.createElement("p", {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_58__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_54__["default"], null) : /*#__PURE__*/React.createElement("p", {
         style: {
           padding: "40px",
           color: "#999"
@@ -41192,7 +41344,7 @@ function App() {
       }, /*#__PURE__*/React.createElement("img", {
         src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
         className: "crawlerPage-logo"
-      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_54__["default"], null)));
+      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_56__["default"], null)));
     }
   } else {
     return /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
@@ -56985,6 +57137,202 @@ function Login() {
 
 /***/ }),
 
+/***/ "./src/Pages/Analytics/Acquisition.js":
+/*!********************************************!*\
+  !*** ./src/Pages/Analytics/Acquisition.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AnalyticsAcquisition)
+/* harmony export */ });
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _shared_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./_shared.js */ "./src/Pages/Analytics/_shared.js");
+/* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
+/* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useContext = _React.useContext,
+  useMemo = _React.useMemo;
+var useParams = window.ReactRouterDOM.useParams;
+
+
+
+
+
+
+function AnalyticsAcquisition() {
+  document.title = "Acquisition | Site Analytics";
+  var _useParams = useParams(),
+    handle = _useParams.handle;
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_0__.DomainContext),
+    _useContext2 = _slicedToArray(_useContext, 2),
+    globalDomain = _useContext2[0],
+    setGlobalDomain = _useContext2[1];
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.useSyncDomainFromRoute)(handle, setGlobalDomain);
+  var domain = useMemo(function () {
+    if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
+    return String(globalDomain || "").trim().toLowerCase();
+  }, [globalDomain]);
+  var _useState = useState(30),
+    _useState2 = _slicedToArray(_useState, 2),
+    getLastDays = _useState2[0],
+    setLastDays = _useState2[1];
+  var _useState3 = useState(function () {
+      var d = new Date();
+      d.setDate(d.getDate() - 30);
+      return d;
+    }),
+    _useState4 = _slicedToArray(_useState3, 2),
+    fromDate = _useState4[0],
+    setFromDate = _useState4[1];
+  var _useState5 = useState(function () {
+      return new Date();
+    }),
+    _useState6 = _slicedToArray(_useState5, 2),
+    toDate = _useState6[0],
+    setToDate = _useState6[1];
+  var fromIso = useMemo(function () {
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_3__.toIsoDate)(fromDate);
+  }, [fromDate]);
+  var toIso = useMemo(function () {
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_3__.toIsoDate)(toDate);
+  }, [toDate]);
+  var _useAnalyticsReport = (0,_shared_js__WEBPACK_IMPORTED_MODULE_3__.useAnalyticsReport)(domain, fromIso, toIso),
+    data = _useAnalyticsReport.data,
+    loading = _useAnalyticsReport.loading,
+    error = _useAnalyticsReport.error;
+  var maxUtm = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.utmSources) || []).map(function (u) {
+      return u.events;
+    })).concat([1]));
+  }, [data]);
+  var maxPages = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.topPages) || []).map(function (p) {
+      return p.views;
+    })).concat([1]));
+  }, [data]);
+  var showData = !loading && data && !data.noSiteKey && !data.noData;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1",
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    title: "Acquisition",
+    numberofDays: setLastDays,
+    getLastDays: getLastDays,
+    fromDate: fromDate,
+    toDate: toDate,
+    setFromDate: setFromDate,
+    setToDate: setToDate
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-content"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-page"
+  }, data && !data.noSiteKey && /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.AnalyticsSubNav, {
+    handle: handle
+  }), !domain && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "Select a domain in the header to view acquisition data."), domain && loading && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "Loading\u2026"), domain && error && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice sa-notice--error"
+  }, error), domain && !loading && (data === null || data === void 0 ? void 0 : data.noSiteKey) && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "No analytics set up for this domain yet."), domain && !loading && (data === null || data === void 0 ? void 0 : data.noData) && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "No data for the selected period."), showData && /*#__PURE__*/React.createElement("div", {
+    className: "sa-acq-grid"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-acq-pages"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconTrendingUp, {
+    className: "sa-icon"
+  }), " Top pages"), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Page"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Views"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Sessions"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.topPages.map(function (p) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: p.pathname
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__path",
+      title: p.pathname
+    }, p.pathname), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, p.views.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, p.sessions.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.MiniBar, {
+      value: p.views,
+      max: maxPages,
+      color: "rgba(192,159,83,0.6)"
+    })));
+  })))), data.utmSources.length > 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-acq-utm"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconMegaphone, {
+    className: "sa-icon"
+  }), " UTM sources", /*#__PURE__*/React.createElement("span", {
+    className: "sa-panel__consent-note"
+  }, "full events only")), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Source"), /*#__PURE__*/React.createElement("th", null, "Medium"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Events"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.utmSources.map(function (u, i) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: i
+    }, /*#__PURE__*/React.createElement("td", null, u.source || "—"), /*#__PURE__*/React.createElement("td", null, u.medium || "—"), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, u.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.MiniBar, {
+      value: u.events,
+      max: maxUtm,
+      color: "rgba(251,146,60,0.6)"
+    })));
+  })))) : /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-acq-utm"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconMegaphone, {
+    className: "sa-icon"
+  }), " UTM sources", /*#__PURE__*/React.createElement("span", {
+    className: "sa-panel__consent-note"
+  }, "full events only")), /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: "rgba(130,130,130,0.55)",
+      fontSize: "0.82rem",
+      margin: 0
+    }
+  }, "No UTM-tagged traffic in this period. Add ", /*#__PURE__*/React.createElement("code", null, "?utm_source="), " parameters to your campaign links to see data here."))))));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Analytics/Analytics.css":
 /*!*******************************************!*\
   !*** ./src/Pages/Analytics/Analytics.css ***!
@@ -57168,23 +57516,27 @@ function AnalyticsWorldMap(_ref3) {
 
 /***/ }),
 
-/***/ "./src/Pages/Analytics/Conversions.js":
-/*!********************************************!*\
-  !*** ./src/Pages/Analytics/Conversions.js ***!
-  \********************************************/
+/***/ "./src/Pages/Analytics/Audience.js":
+/*!*****************************************!*\
+  !*** ./src/Pages/Analytics/Audience.js ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ ConversionsPanel)
+/* harmony export */   "default": () => (/* binding */ AnalyticsAudience)
 /* harmony export */ });
-/* harmony import */ var _API_host_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../API/host.js */ "./src/API/host.js");
-/* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _AnalyticsWorldMap_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AnalyticsWorldMap.js */ "./src/Pages/Analytics/AnalyticsWorldMap.js");
+/* harmony import */ var _shared_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_shared.js */ "./src/Pages/Analytics/_shared.js");
+/* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
+/* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -57193,324 +57545,516 @@ function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" !=
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 var _React = React,
   useState = _React.useState,
-  useEffect = _React.useEffect,
-  useCallback = _React.useCallback,
+  useContext = _React.useContext,
   useMemo = _React.useMemo;
+var useParams = window.ReactRouterDOM.useParams;
 
 
 
-function authHeaders() {
-  return {
-    Authorization: _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
-    Organisation: String(_Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation()),
-    "Content-Type": "application/json"
-  };
-}
-var KIND_ICON = {
-  purchase: _Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconCash,
-  click: _Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconCursorClick,
-  custom: _Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconTarget
-};
-var KIND_LABEL = {
-  purchase: "Purchase",
-  click: "Click",
-  custom: "Custom"
-};
-function snippetFor(name, kind) {
-  if (kind === "purchase") {
-    return "intaAnalytics.track('".concat(name, "', { value: 49.99, currency: 'EUR' });");
-  }
-  return "intaAnalytics.track('".concat(name, "');");
-}
 
-/**
- * Conversion event registry + live counts. Definitions are purely for
- * labelling — the ingest endpoint accepts any event name a site sends,
- * so events fired without being "registered" here still show up (flagged
- * as unregistered) rather than being silently dropped.
- */
-function ConversionsPanel(_ref) {
-  var domain = _ref.domain,
-    conversions = _ref.conversions,
-    onDefsChanged = _ref.onDefsChanged;
-  var _useState = useState([]),
+
+
+
+function AnalyticsAudience() {
+  var _data$screens, _data$languages, _data$timezones;
+  document.title = "Audience | Site Analytics";
+  var _useParams = useParams(),
+    handle = _useParams.handle;
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_0__.DomainContext),
+    _useContext2 = _slicedToArray(_useContext, 2),
+    globalDomain = _useContext2[0],
+    setGlobalDomain = _useContext2[1];
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.useSyncDomainFromRoute)(handle, setGlobalDomain);
+  var domain = useMemo(function () {
+    if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
+    return String(globalDomain || "").trim().toLowerCase();
+  }, [globalDomain]);
+  var _useState = useState(30),
     _useState2 = _slicedToArray(_useState, 2),
-    defs = _useState2[0],
-    setDefs = _useState2[1];
-  var _useState3 = useState(true),
+    getLastDays = _useState2[0],
+    setLastDays = _useState2[1];
+  var _useState3 = useState(function () {
+      var d = new Date();
+      d.setDate(d.getDate() - 30);
+      return d;
+    }),
     _useState4 = _slicedToArray(_useState3, 2),
-    loading = _useState4[0],
-    setLoading = _useState4[1];
-  var _useState5 = useState(false),
+    fromDate = _useState4[0],
+    setFromDate = _useState4[1];
+  var _useState5 = useState(function () {
+      return new Date();
+    }),
     _useState6 = _slicedToArray(_useState5, 2),
-    showForm = _useState6[0],
-    setShowForm = _useState6[1];
-  var _useState7 = useState(""),
-    _useState8 = _slicedToArray(_useState7, 2),
-    name = _useState8[0],
-    setName = _useState8[1];
-  var _useState9 = useState("custom"),
-    _useState0 = _slicedToArray(_useState9, 2),
-    kind = _useState0[0],
-    setKind = _useState0[1];
-  var _useState1 = useState(""),
-    _useState10 = _slicedToArray(_useState1, 2),
-    label = _useState10[0],
-    setLabel = _useState10[1];
-  var _useState11 = useState(false),
-    _useState12 = _slicedToArray(_useState11, 2),
-    saving = _useState12[0],
-    setSaving = _useState12[1];
-  var _useState13 = useState(null),
-    _useState14 = _slicedToArray(_useState13, 2),
-    error = _useState14[0],
-    setError = _useState14[1];
-  var _useState15 = useState(null),
-    _useState16 = _slicedToArray(_useState15, 2),
-    openSnippet = _useState16[0],
-    setOpenSnippet = _useState16[1];
-  var fetchDefs = useCallback(function () {
-    if (!domain) {
-      setDefs([]);
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/analytics-events?domain=").concat(encodeURIComponent(domain)), {
-      headers: authHeaders()
-    }).then(function (r) {
-      return r.ok ? r.json() : {
-        events: []
-      };
-    }).then(function (d) {
-      return setDefs(d.events || []);
-    })["catch"](function () {
-      return setDefs([]);
-    })["finally"](function () {
-      return setLoading(false);
-    });
-  }, [domain]);
-  useEffect(function () {
-    fetchDefs();
-  }, [fetchDefs]);
-  var createDef = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
-      var r;
-      return _regenerator().w(function (_context) {
-        while (1) switch (_context.n) {
-          case 0:
-            e.preventDefault();
-            if (!(!name.trim() || !domain)) {
-              _context.n = 1;
-              break;
-            }
-            return _context.a(2);
-          case 1:
-            setSaving(true);
-            setError(null);
-            _context.n = 2;
-            return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/analytics-events"), {
-              method: "POST",
-              headers: authHeaders(),
-              body: JSON.stringify({
-                domain: domain,
-                name: name.trim(),
-                kind: kind,
-                label: label.trim()
-              })
-            })["catch"](function () {
-              return null;
-            });
-          case 2:
-            r = _context.v;
-            setSaving(false);
-            if (r !== null && r !== void 0 && r.ok) {
-              _context.n = 3;
-              break;
-            }
-            setError("Could not create event — check the domain has a site key yet.");
-            return _context.a(2);
-          case 3:
-            setName("");
-            setLabel("");
-            setKind("custom");
-            setShowForm(false);
-            fetchDefs();
-            onDefsChanged === null || onDefsChanged === void 0 || onDefsChanged();
-          case 4:
-            return _context.a(2);
-        }
-      }, _callee);
-    }));
-    return function createDef(_x) {
-      return _ref2.apply(this, arguments);
-    };
-  }();
-  var removeDef = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(defName) {
-      return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.n) {
-          case 0:
-            _context2.n = 1;
-            return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/analytics-events?domain=").concat(encodeURIComponent(domain), "&name=").concat(encodeURIComponent(defName)), {
-              method: "DELETE",
-              headers: authHeaders()
-            })["catch"](function () {
-              return null;
-            });
-          case 1:
-            fetchDefs();
-            onDefsChanged === null || onDefsChanged === void 0 || onDefsChanged();
-          case 2:
-            return _context2.a(2);
-        }
-      }, _callee2);
-    }));
-    return function removeDef(_x2) {
-      return _ref3.apply(this, arguments);
-    };
-  }();
-  var rows = useMemo(function () {
-    var byName = new Map((conversions || []).map(function (c) {
-      return [c.name, c];
-    }));
-    var out = defs.map(function (d) {
-      var live = byName.get(d.name);
-      return {
-        name: d.name,
-        label: d.label || d.name,
-        kind: d.kind,
-        count: (live === null || live === void 0 ? void 0 : live.count) || 0,
-        linkedCount: (live === null || live === void 0 ? void 0 : live.linkedCount) || 0,
-        value: (live === null || live === void 0 ? void 0 : live.value) || 0,
-        currency: (live === null || live === void 0 ? void 0 : live.currency) || null,
-        registered: true
-      };
-    });
-    var knownNames = new Set(defs.map(function (d) {
-      return d.name;
-    }));
-    (conversions || []).forEach(function (c) {
-      if (!knownNames.has(c.name)) {
-        out.push({
-          name: c.name,
-          label: c.label,
-          kind: c.kind,
-          count: c.count,
-          linkedCount: c.linkedCount,
-          value: c.value,
-          currency: c.currency,
-          registered: false
-        });
-      }
-    });
-    return out;
-  }, [defs, conversions]);
+    toDate = _useState6[0],
+    setToDate = _useState6[1];
+  var fromIso = useMemo(function () {
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(fromDate);
+  }, [fromDate]);
+  var toIso = useMemo(function () {
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(toDate);
+  }, [toDate]);
+  var _useAnalyticsReport = (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.useAnalyticsReport)(domain, fromIso, toIso),
+    data = _useAnalyticsReport.data,
+    loading = _useAnalyticsReport.loading,
+    error = _useAnalyticsReport.error;
+  var maxCountry = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.countries) || []).map(function (c) {
+      return c.events;
+    })).concat([1]));
+  }, [data]);
+  var maxBrowser = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.browsers) || []).map(function (b) {
+      return b.events;
+    })).concat([1]));
+  }, [data]);
+  var maxOs = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.os) || []).map(function (o) {
+      return o.events;
+    })).concat([1]));
+  }, [data]);
+  var maxScreens = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.screens) || []).map(function (s) {
+      return s.events;
+    })).concat([1]));
+  }, [data]);
+  var maxLang = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.languages) || []).map(function (l) {
+      return l.events;
+    })).concat([1]));
+  }, [data]);
+  var maxTz = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.timezones) || []).map(function (t) {
+      return t.events;
+    })).concat([1]));
+  }, [data]);
+  var deviceTotal = useMemo(function () {
+    return ((data === null || data === void 0 ? void 0 : data.devices) || []).reduce(function (s, d) {
+      return s + d.events;
+    }, 0);
+  }, [data]);
+  var showData = !loading && data && !data.noSiteKey && !data.noData;
   return /*#__PURE__*/React.createElement("div", {
-    className: "sa-section"
+    style: {
+      flex: "1",
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    title: "Audience",
+    numberofDays: setLastDays,
+    getLastDays: getLastDays,
+    fromDate: fromDate,
+    toDate: toDate,
+    setFromDate: setFromDate,
+    setToDate: setToDate
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-content"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "sa-panel__head"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "sa-section__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconTarget, {
-    className: "sa-icon"
-  }), " Conversions"), /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    className: "sa-add-event-btn",
-    onClick: function onClick() {
-      return setShowForm(function (s) {
-        return !s;
-      });
-    }
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconPlus, {
-    className: "sa-icon"
-  }), " Add event")), showForm && /*#__PURE__*/React.createElement("form", {
-    className: "sa-event-form",
-    onSubmit: createDef
-  }, /*#__PURE__*/React.createElement("input", {
-    type: "text",
-    className: "sa-event-form__input",
-    placeholder: "event name, e.g. purchase",
-    value: name,
-    onChange: function onChange(e) {
-      return setName(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""));
-    },
-    maxLength: 64,
-    required: true
-  }), /*#__PURE__*/React.createElement("select", {
-    className: "sa-event-form__select",
-    value: kind,
-    onChange: function onChange(e) {
-      return setKind(e.target.value);
-    }
-  }, /*#__PURE__*/React.createElement("option", {
-    value: "purchase"
-  }, "Purchase"), /*#__PURE__*/React.createElement("option", {
-    value: "click"
-  }, "Click"), /*#__PURE__*/React.createElement("option", {
-    value: "custom"
-  }, "Custom")), /*#__PURE__*/React.createElement("input", {
-    type: "text",
-    className: "sa-event-form__input",
-    placeholder: "display label (optional)",
-    value: label,
-    onChange: function onChange(e) {
-      return setLabel(e.target.value);
-    },
-    maxLength: 120
-  }), /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    className: "sa-event-form__submit",
-    disabled: saving
-  }, saving ? "Saving…" : "Create")), error && /*#__PURE__*/React.createElement("p", {
+    className: "sa-page"
+  }, data && !data.noSiteKey && /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.AnalyticsSubNav, {
+    handle: handle
+  }), !domain && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "Select a domain in the header to view audience data."), domain && loading && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "Loading\u2026"), domain && error && /*#__PURE__*/React.createElement("p", {
     className: "sa-notice sa-notice--error"
-  }, error), !loading && rows.length === 0 && /*#__PURE__*/React.createElement("p", {
-    className: "sa-panel__sub"
-  }, "No conversion events yet. Add one above, then fire it from your site with", " ", /*#__PURE__*/React.createElement("code", null, "intaAnalytics.track('name')"), "."), rows.length > 0 && /*#__PURE__*/React.createElement("div", {
-    className: "sa-events-list"
-  }, rows.map(function (r) {
-    var Icon = KIND_ICON[r.kind] || _Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconTarget;
+  }, error), domain && !loading && (data === null || data === void 0 ? void 0 : data.noSiteKey) && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "No analytics set up for this domain yet."), domain && !loading && (data === null || data === void 0 ? void 0 : data.noData) && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "No data for the selected period."), showData && /*#__PURE__*/React.createElement("div", {
+    className: "sa-audience-grid"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-aud-countries"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconGlobe, {
+    className: "sa-icon"
+  }), " Countries"), data.countries.length > 0 && /*#__PURE__*/React.createElement(_AnalyticsWorldMap_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    countries: data.countries
+  }), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Events"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.countries.map(function (c) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: c.code
+    }, /*#__PURE__*/React.createElement("td", null, c.code), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, c.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
+      value: c.events,
+      max: maxCountry,
+      color: "rgba(99,179,237,0.55)"
+    })));
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-aud-devices"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconUsers, {
+    className: "sa-icon"
+  }), " Devices"), /*#__PURE__*/React.createElement("div", {
+    className: "sa-consent-list"
+  }, data.devices.map(function (d) {
+    var pct = deviceTotal > 0 ? Math.round(d.events / deviceTotal * 100) : 0;
     return /*#__PURE__*/React.createElement("div", {
-      key: r.name,
-      className: "sa-event-row"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "sa-event-row__icon"
-    }, /*#__PURE__*/React.createElement(Icon, null)), /*#__PURE__*/React.createElement("div", {
-      className: "sa-event-row__body"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "sa-event-row__top"
+      key: d.type,
+      className: "sa-consent-row"
     }, /*#__PURE__*/React.createElement("span", {
-      className: "sa-event-row__name"
-    }, r.label), /*#__PURE__*/React.createElement("span", {
-      className: "sa-event-row__kind"
-    }, KIND_LABEL[r.kind] || "Custom"), !r.registered && /*#__PURE__*/React.createElement("span", {
-      className: "sa-event-row__unregistered"
-    }, "not registered")), /*#__PURE__*/React.createElement("div", {
-      className: "sa-event-row__stats"
-    }, /*#__PURE__*/React.createElement("span", null, r.count.toLocaleString("de-DE"), " events"), r.value > 0 && /*#__PURE__*/React.createElement("span", null, r.value.toLocaleString("de-DE", {
-      style: "currency",
-      currency: r.currency || "EUR"
-    })), /*#__PURE__*/React.createElement("span", {
-      className: "sa-event-row__consent-note"
-    }, r.linkedCount.toLocaleString("de-DE"), "/", r.count.toLocaleString("de-DE"), " consent-linked")), /*#__PURE__*/React.createElement("button", {
-      type: "button",
-      className: "sa-event-row__snippet-toggle",
-      onClick: function onClick() {
-        return setOpenSnippet(function (s) {
-          return s === r.name ? null : r.name;
-        });
+      className: "sa-consent-row__label",
+      style: {
+        textTransform: "capitalize"
       }
-    }, openSnippet === r.name ? "Hide snippet" : "Show snippet"), openSnippet === r.name && /*#__PURE__*/React.createElement("pre", {
-      className: "sa-event-row__snippet"
-    }, snippetFor(r.name, r.kind))), r.registered && /*#__PURE__*/React.createElement("button", {
-      type: "button",
-      className: "sa-event-row__delete",
-      onClick: function onClick() {
-        return removeDef(r.name);
+    }, d.type), /*#__PURE__*/React.createElement("div", {
+      className: "sa-bar"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "sa-bar__seg",
+      style: {
+        width: pct + "%",
+        background: "rgba(192,159,83,0.55)"
       },
-      "aria-label": "Remove ".concat(r.name)
-    }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconTrash, null)));
-  })));
+      title: d.events + " events"
+    })), /*#__PURE__*/React.createElement("span", {
+      className: "sa-consent-row__pct"
+    }, pct, "%"));
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-aud-browsers"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconGlobe, {
+    className: "sa-icon"
+  }), " Browsers", /*#__PURE__*/React.createElement("span", {
+    className: "sa-panel__consent-note"
+  }, "full events only")), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Browser"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Events"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.browsers.map(function (b) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: b.name
+    }, /*#__PURE__*/React.createElement("td", null, b.name), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, b.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
+      value: b.events,
+      max: maxBrowser,
+      color: "rgba(167,139,250,0.6)"
+    })));
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-aud-os"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconRadio, {
+    className: "sa-icon"
+  }), " Operating systems", /*#__PURE__*/React.createElement("span", {
+    className: "sa-panel__consent-note"
+  }, "full events only")), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "OS"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Events"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, (data.os || []).map(function (o) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: o.name
+    }, /*#__PURE__*/React.createElement("td", null, o.name), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, o.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
+      value: o.events,
+      max: maxOs,
+      color: "rgba(129,140,248,0.6)"
+    })));
+  })))), ((_data$screens = data.screens) === null || _data$screens === void 0 ? void 0 : _data$screens.length) > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-aud-screens"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconRadio, {
+    className: "sa-icon"
+  }), " Screen resolutions", /*#__PURE__*/React.createElement("span", {
+    className: "sa-panel__consent-note"
+  }, "full events only")), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Resolution"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Events"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.screens.map(function (s, i) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: i
+    }, /*#__PURE__*/React.createElement("td", null, s.width, "\u2009\xD7\u2009", s.height), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, s.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
+      value: s.events,
+      max: maxScreens,
+      color: "rgba(52,211,153,0.6)"
+    })));
+  })))), ((_data$languages = data.languages) === null || _data$languages === void 0 ? void 0 : _data$languages.length) > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-aud-lang"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconGlobe, {
+    className: "sa-icon"
+  }), " Languages", /*#__PURE__*/React.createElement("span", {
+    className: "sa-panel__consent-note"
+  }, "full events only")), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Language"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Events"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.languages.map(function (l) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: l.lang
+    }, /*#__PURE__*/React.createElement("td", null, l.lang), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, l.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
+      value: l.events,
+      max: maxLang,
+      color: "rgba(251,146,60,0.55)"
+    })));
+  })))), ((_data$timezones = data.timezones) === null || _data$timezones === void 0 ? void 0 : _data$timezones.length) > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-aud-tz"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconGlobe, {
+    className: "sa-icon"
+  }), " Timezones", /*#__PURE__*/React.createElement("span", {
+    className: "sa-panel__consent-note"
+  }, "full events only")), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Timezone"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Events"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.timezones.map(function (t) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: t.tz
+    }, /*#__PURE__*/React.createElement("td", null, t.tz), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, t.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
+      value: t.events,
+      max: maxTz,
+      color: "rgba(248,113,113,0.5)"
+    })));
+  }))))))));
+}
+
+/***/ }),
+
+/***/ "./src/Pages/Analytics/Consent.js":
+/*!****************************************!*\
+  !*** ./src/Pages/Analytics/Consent.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AnalyticsConsent)
+/* harmony export */ });
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _shared_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./_shared.js */ "./src/Pages/Analytics/_shared.js");
+/* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
+/* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useContext = _React.useContext,
+  useMemo = _React.useMemo;
+var useParams = window.ReactRouterDOM.useParams;
+
+
+
+
+
+
+function AnalyticsConsent() {
+  document.title = "Consent | Site Analytics";
+  var _useParams = useParams(),
+    handle = _useParams.handle;
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_0__.DomainContext),
+    _useContext2 = _slicedToArray(_useContext, 2),
+    globalDomain = _useContext2[0],
+    setGlobalDomain = _useContext2[1];
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.useSyncDomainFromRoute)(handle, setGlobalDomain);
+  var domain = useMemo(function () {
+    if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
+    return String(globalDomain || "").trim().toLowerCase();
+  }, [globalDomain]);
+  var _useState = useState(30),
+    _useState2 = _slicedToArray(_useState, 2),
+    getLastDays = _useState2[0],
+    setLastDays = _useState2[1];
+  var _useState3 = useState(function () {
+      var d = new Date();
+      d.setDate(d.getDate() - 30);
+      return d;
+    }),
+    _useState4 = _slicedToArray(_useState3, 2),
+    fromDate = _useState4[0],
+    setFromDate = _useState4[1];
+  var _useState5 = useState(function () {
+      return new Date();
+    }),
+    _useState6 = _slicedToArray(_useState5, 2),
+    toDate = _useState6[0],
+    setToDate = _useState6[1];
+  var fromIso = useMemo(function () {
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_3__.toIsoDate)(fromDate);
+  }, [fromDate]);
+  var toIso = useMemo(function () {
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_3__.toIsoDate)(toDate);
+  }, [toDate]);
+  var _useAnalyticsReport = (0,_shared_js__WEBPACK_IMPORTED_MODULE_3__.useAnalyticsReport)(domain, fromIso, toIso),
+    data = _useAnalyticsReport.data,
+    loading = _useAnalyticsReport.loading,
+    error = _useAnalyticsReport.error;
+  var showData = !loading && data && !data.noSiteKey && !data.noData;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1",
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    title: "Consent",
+    numberofDays: setLastDays,
+    getLastDays: getLastDays,
+    fromDate: fromDate,
+    toDate: toDate,
+    setFromDate: setFromDate,
+    setToDate: setToDate
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-content"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-page"
+  }, data && !data.noSiteKey && /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.AnalyticsSubNav, {
+    handle: handle
+  }), !domain && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "Select a domain in the header to view consent data."), domain && loading && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "Loading\u2026"), domain && error && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice sa-notice--error"
+  }, error), domain && !loading && (data === null || data === void 0 ? void 0 : data.noSiteKey) && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "No analytics set up for this domain yet."), domain && !loading && (data === null || data === void 0 ? void 0 : data.noData) && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "No data for the selected period."), showData && function () {
+    var _data$consent = data.consent,
+      stat = _data$consent.stat,
+      func = _data$consent.func,
+      adv = _data$consent.adv;
+    var total = data.totals.total;
+    var statRate = stat.yes + stat.no > 0 ? Math.round(stat.yes / (stat.yes + stat.no) * 100) : 0;
+    var funcRate = func.yes + func.no > 0 ? Math.round(func.yes / (func.yes + func.no) * 100) : 0;
+    var advRate = adv.yes + adv.no > 0 ? Math.round(adv.yes / (adv.yes + adv.no) * 100) : 0;
+    return /*#__PURE__*/React.createElement("div", {
+      className: "sa-consent-page-grid"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.KpiCard, {
+      className: "sa-cg-kpi1",
+      icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconShieldCheck, null),
+      label: "Statistics consent",
+      value: statRate + "%",
+      sub: "".concat(stat.yes.toLocaleString("de-DE"), " yes \xB7 ").concat(stat.no.toLocaleString("de-DE"), " no"),
+      variant: statRate < 20 ? "warn" : null
+    }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.KpiCard, {
+      className: "sa-cg-kpi2",
+      icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconShieldCheck, null),
+      label: "Functional consent",
+      value: funcRate + "%",
+      sub: "".concat(func.yes.toLocaleString("de-DE"), " yes \xB7 ").concat(func.no.toLocaleString("de-DE"), " no"),
+      variant: funcRate < 20 ? "warn" : null
+    }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.KpiCard, {
+      className: "sa-cg-kpi3",
+      icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconShieldCheck, null),
+      label: "Advertising consent",
+      value: advRate + "%",
+      sub: "".concat(adv.yes.toLocaleString("de-DE"), " yes \xB7 ").concat(adv.no.toLocaleString("de-DE"), " no"),
+      variant: advRate < 20 ? "warn" : null
+    }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.KpiCard, {
+      className: "sa-cg-kpi4",
+      icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconBarChart, null),
+      label: "Total events",
+      value: total.toLocaleString("de-DE"),
+      sub: "".concat(data.totals.minimal.toLocaleString("de-DE"), " minimal \xB7 ").concat(data.totals.full.toLocaleString("de-DE"), " full")
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "sa-panel sa-cg-bars"
+    }, /*#__PURE__*/React.createElement("h3", {
+      className: "sa-panel__title"
+    }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconShieldCheck, {
+      className: "sa-icon"
+    }), " Consent rates"), /*#__PURE__*/React.createElement("div", {
+      className: "sa-consent-list"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.ConsentBar, {
+      label: "Statistics",
+      yes: stat.yes,
+      no: stat.no
+    }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.ConsentBar, {
+      label: "Functional",
+      yes: func.yes,
+      no: func.no
+    }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_3__.ConsentBar, {
+      label: "Advertising",
+      yes: adv.yes,
+      no: adv.no
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "sa-panel__divider"
+    }), /*#__PURE__*/React.createElement("h3", {
+      className: "sa-panel__sub-title"
+    }, "Event breakdown"), /*#__PURE__*/React.createElement("div", {
+      className: "sa-consent-list"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "sa-consent-row"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "sa-consent-row__label"
+    }, "With consent"), /*#__PURE__*/React.createElement("div", {
+      className: "sa-bar"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "sa-bar__seg",
+      style: {
+        width: total > 0 ? Math.round(data.totals.full / total * 100) + "%" : "0%",
+        background: "rgba(74,222,128,0.75)"
+      },
+      title: "Full: ".concat(data.totals.full)
+    })), /*#__PURE__*/React.createElement("span", {
+      className: "sa-consent-row__pct"
+    }, total > 0 ? Math.round(data.totals.full / total * 100) : 0, "%")), /*#__PURE__*/React.createElement("div", {
+      className: "sa-consent-row"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "sa-consent-row__label"
+    }, "Minimal only"), /*#__PURE__*/React.createElement("div", {
+      className: "sa-bar"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "sa-bar__seg",
+      style: {
+        width: total > 0 ? Math.round(data.totals.minimal / total * 100) + "%" : "0%",
+        background: "rgba(192,159,83,0.55)"
+      },
+      title: "Minimal: ".concat(data.totals.minimal)
+    })), /*#__PURE__*/React.createElement("span", {
+      className: "sa-consent-row__pct"
+    }, total > 0 ? Math.round(data.totals.minimal / total * 100) : 0, "%")))));
+  }())));
 }
 
 /***/ }),
@@ -57688,6 +58232,227 @@ function IconTrash(props) {
 
 /***/ }),
 
+/***/ "./src/Pages/Analytics/_shared.js":
+/*!****************************************!*\
+  !*** ./src/Pages/Analytics/_shared.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AnalyticsSubNav: () => (/* binding */ AnalyticsSubNav),
+/* harmony export */   BarSegment: () => (/* binding */ BarSegment),
+/* harmony export */   ConsentBar: () => (/* binding */ ConsentBar),
+/* harmony export */   KpiCard: () => (/* binding */ KpiCard),
+/* harmony export */   MiniBar: () => (/* binding */ MiniBar),
+/* harmony export */   authHeaders: () => (/* binding */ authHeaders),
+/* harmony export */   toIsoDate: () => (/* binding */ toIsoDate),
+/* harmony export */   useAnalyticsReport: () => (/* binding */ useAnalyticsReport)
+/* harmony export */ });
+/* harmony import */ var _API_host_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../API/host.js */ "./src/API/host.js");
+/* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useMemo = _React.useMemo;
+var NavLink = window.ReactRouterDOM.NavLink;
+
+
+function authHeaders() {
+  return {
+    Authorization: _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+    Organisation: String(_Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation()),
+    "Content-Type": "application/json"
+  };
+}
+function toIsoDate(d) {
+  return d.toISOString().slice(0, 10);
+}
+function useAnalyticsReport(domain, fromIso, toIso) {
+  var tick = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+  var _useState = useState(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    data = _useState2[0],
+    setData = _useState2[1];
+  var _useState3 = useState(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = useState(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    error = _useState6[0],
+    setError = _useState6[1];
+  useEffect(function () {
+    if (!domain) {
+      setData(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    var qs = new URLSearchParams({
+      domain: domain,
+      from: fromIso,
+      to: toIso
+    }).toString();
+    fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/analytics-report?").concat(qs), {
+      headers: authHeaders()
+    }).then(/*#__PURE__*/function () {
+      var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(r) {
+        var _t, _t2;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.n) {
+            case 0:
+              if (r.ok) {
+                _context.n = 1;
+                break;
+              }
+              throw new Error(r.status);
+            case 1:
+              _t = setData;
+              _context.n = 2;
+              return r.json();
+            case 2:
+              _t2 = _context.v;
+              _t(_t2);
+            case 3:
+              return _context.a(2);
+          }
+        }, _callee);
+      }));
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }())["catch"](function () {
+      return setError("Could not load analytics data.");
+    })["finally"](function () {
+      return setLoading(false);
+    });
+  }, [domain, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return {
+    data: data,
+    loading: loading,
+    error: error
+  };
+}
+function KpiCard(_ref2) {
+  var icon = _ref2.icon,
+    label = _ref2.label,
+    value = _ref2.value,
+    sub = _ref2.sub,
+    variant = _ref2.variant,
+    className = _ref2.className;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "sa-kpi" + (variant ? " sa-kpi--" + variant : "") + (className ? " " + className : "")
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-kpi__head"
+  }, icon && /*#__PURE__*/React.createElement("span", {
+    className: "sa-kpi__icon",
+    "aria-hidden": "true"
+  }, icon), /*#__PURE__*/React.createElement("span", {
+    className: "sa-kpi__label"
+  }, label)), /*#__PURE__*/React.createElement("span", {
+    className: "sa-kpi__value"
+  }, value), sub && /*#__PURE__*/React.createElement("span", {
+    className: "sa-kpi__sub"
+  }, sub));
+}
+function BarSegment(_ref3) {
+  var pct = _ref3.pct,
+    color = _ref3.color,
+    title = _ref3.title;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "sa-bar__seg",
+    style: {
+      width: pct + "%",
+      background: color
+    },
+    title: title
+  });
+}
+function ConsentBar(_ref4) {
+  var label = _ref4.label,
+    yes = _ref4.yes,
+    no = _ref4.no;
+  var total = yes + no;
+  if (!total) return null;
+  var pct = Math.round(yes / total * 100);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "sa-consent-row"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "sa-consent-row__label"
+  }, label), /*#__PURE__*/React.createElement("div", {
+    className: "sa-bar"
+  }, /*#__PURE__*/React.createElement(BarSegment, {
+    pct: pct,
+    color: "rgba(74,222,128,0.75)",
+    title: "Yes: ".concat(yes)
+  }), /*#__PURE__*/React.createElement(BarSegment, {
+    pct: 100 - pct,
+    color: "rgba(239,68,68,0.3)",
+    title: "No: ".concat(no)
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "sa-consent-row__pct"
+  }, pct, "%"));
+}
+function MiniBar(_ref5) {
+  var value = _ref5.value,
+    max = _ref5.max,
+    _ref5$color = _ref5.color,
+    color = _ref5$color === void 0 ? "rgba(192,159,83,0.7)" : _ref5$color;
+  var pct = max > 0 ? Math.round(value / max * 100) : 0;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "sa-mini-bar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-mini-bar__fill",
+    style: {
+      width: pct + "%",
+      background: color
+    }
+  }));
+}
+function AnalyticsSubNav(_ref6) {
+  var handle = _ref6.handle;
+  if (!handle) return null;
+  var base = "/analytics/".concat(handle);
+  return /*#__PURE__*/React.createElement("nav", {
+    className: "sa-subnav"
+  }, /*#__PURE__*/React.createElement(NavLink, {
+    to: base,
+    exact: true,
+    className: "sa-subnav__link",
+    activeClassName: "sa-subnav__link--active"
+  }, "Overview"), /*#__PURE__*/React.createElement(NavLink, {
+    to: "".concat(base, "/audience"),
+    className: "sa-subnav__link",
+    activeClassName: "sa-subnav__link--active"
+  }, "Audience"), /*#__PURE__*/React.createElement(NavLink, {
+    to: "".concat(base, "/acquisition"),
+    className: "sa-subnav__link",
+    activeClassName: "sa-subnav__link--active"
+  }, "Acquisition"), /*#__PURE__*/React.createElement(NavLink, {
+    to: "".concat(base, "/consent"),
+    className: "sa-subnav__link",
+    activeClassName: "sa-subnav__link--active"
+  }, "Consent"), /*#__PURE__*/React.createElement(NavLink, {
+    to: "".concat(base, "/marketing"),
+    className: "sa-subnav__link",
+    activeClassName: "sa-subnav__link--active"
+  }, "Marketing"));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Analytics/index.js":
 /*!**************************************!*\
   !*** ./src/Pages/Analytics/index.js ***!
@@ -57701,12 +58466,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
 /* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
 /* harmony import */ var _API_host_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../API/host.js */ "./src/API/host.js");
-/* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
-/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
-/* harmony import */ var _AnalyticsWorldMap_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./AnalyticsWorldMap.js */ "./src/Pages/Analytics/AnalyticsWorldMap.js");
-/* harmony import */ var _Conversions_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Conversions.js */ "./src/Pages/Analytics/Conversions.js");
-/* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
-/* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _shared_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_shared.js */ "./src/Pages/Analytics/_shared.js");
+/* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
+/* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
@@ -57735,14 +58498,8 @@ var useParams = window.ReactRouterDOM.useParams;
 
 
 
-
-
-
-// removed: TabGroup — panels now show all data without tab-switching
-
 var LIVE_URL = "".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-live");
-var LIVE_INTERVAL = 30; // seconds between polls
-
+var LIVE_INTERVAL = 30;
 function timeAgo(isoString) {
   var diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
   if (diff < 60) return diff + "s";
@@ -57778,7 +58535,7 @@ function LivePanel(_ref) {
           _context.p = 1;
           _context.n = 2;
           return fetch("".concat(LIVE_URL, "?domain=").concat(encodeURIComponent(domain)), {
-            headers: authHeaders()
+            headers: (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.authHeaders)()
           });
         case 2:
           r = _context.v;
@@ -57805,8 +58562,6 @@ function LivePanel(_ref) {
       }
     }, _callee, null, [[1, 5]]);
   })), [domain]);
-
-  // Initial fetch + poll
   useEffect(function () {
     fetchLive();
     var poll = setInterval(fetchLive, LIVE_INTERVAL * 1000);
@@ -57814,8 +58569,6 @@ function LivePanel(_ref) {
       return clearInterval(poll);
     };
   }, [fetchLive]);
-
-  // Countdown ticker
   useEffect(function () {
     var tick = setInterval(function () {
       return setCountdown(function (c) {
@@ -57949,43 +58702,8 @@ function LivePanel(_ref) {
   }, "No events yet"))))));
 }
 var INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
-function authHeaders() {
-  return {
-    Authorization: _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_3__["default"].getToken(),
-    Organisation: String(_Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_3__["default"].getOrganisation()),
-    "Content-Type": "application/json"
-  };
-}
-function toIsoDate(d) {
-  return d.toISOString().slice(0, 10);
-}
-
-// ── small shared components ───────────────────────────────────────────────────
-
-function KpiCard(_ref3) {
-  var icon = _ref3.icon,
-    label = _ref3.label,
-    value = _ref3.value,
-    sub = _ref3.sub,
-    variant = _ref3.variant,
-    className = _ref3.className;
-  return /*#__PURE__*/React.createElement("div", {
-    className: "sa-kpi" + (variant ? " sa-kpi--" + variant : "") + (className ? " " + className : "")
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "sa-kpi__head"
-  }, icon && /*#__PURE__*/React.createElement("span", {
-    className: "sa-kpi__icon",
-    "aria-hidden": "true"
-  }, icon), /*#__PURE__*/React.createElement("span", {
-    className: "sa-kpi__label"
-  }, label)), /*#__PURE__*/React.createElement("span", {
-    className: "sa-kpi__value"
-  }, value), sub && /*#__PURE__*/React.createElement("span", {
-    className: "sa-kpi__sub"
-  }, sub));
-}
-function CopyButton(_ref4) {
-  var text = _ref4.text;
+function CopyButton(_ref3) {
+  var text = _ref3.text;
   var _useState7 = useState(false),
     _useState8 = _slicedToArray(_useState7, 2),
     copied = _useState8[0],
@@ -58004,64 +58722,8 @@ function CopyButton(_ref4) {
     onClick: copy
   }, copied ? "Copied!" : "Copy snippet");
 }
-function BarSegment(_ref5) {
-  var pct = _ref5.pct,
-    color = _ref5.color,
-    title = _ref5.title;
-  return /*#__PURE__*/React.createElement("div", {
-    className: "sa-bar__seg",
-    style: {
-      width: pct + "%",
-      background: color
-    },
-    title: title
-  });
-}
-function ConsentBar(_ref6) {
-  var label = _ref6.label,
-    yes = _ref6.yes,
-    no = _ref6.no;
-  var total = yes + no;
-  if (!total) return null;
-  var pct = Math.round(yes / total * 100);
-  return /*#__PURE__*/React.createElement("div", {
-    className: "sa-consent-row"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "sa-consent-row__label"
-  }, label), /*#__PURE__*/React.createElement("div", {
-    className: "sa-bar"
-  }, /*#__PURE__*/React.createElement(BarSegment, {
-    pct: pct,
-    color: "rgba(74,222,128,0.75)",
-    title: "Yes: ".concat(yes)
-  }), /*#__PURE__*/React.createElement(BarSegment, {
-    pct: 100 - pct,
-    color: "rgba(239,68,68,0.3)",
-    title: "No: ".concat(no)
-  })), /*#__PURE__*/React.createElement("span", {
-    className: "sa-consent-row__pct"
-  }, pct, "%"));
-}
-function MiniBar(_ref7) {
-  var value = _ref7.value,
-    max = _ref7.max,
-    _ref7$color = _ref7.color,
-    color = _ref7$color === void 0 ? "rgba(192,159,83,0.7)" : _ref7$color;
-  var pct = max > 0 ? Math.round(value / max * 100) : 0;
-  return /*#__PURE__*/React.createElement("div", {
-    className: "sa-mini-bar"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "sa-mini-bar__fill",
-    style: {
-      width: pct + "%",
-      background: color
-    }
-  }));
-}
-
-// ── Daily stacked bar chart (SVG) ─────────────────────────────────────────────
-function DailyChart(_ref8) {
-  var daily = _ref8.daily;
+function DailyChart(_ref4) {
+  var daily = _ref4.daily;
   var W = 600,
     H = 160,
     PAD = {
@@ -58135,7 +58797,6 @@ function DailyChart(_ref8) {
   }).map(function (i) {
     var d = daily[i];
     var x = PAD.l + i / daily.length * cW + cW / daily.length / 2;
-    var label = d.date.slice(5); // MM-DD
     return /*#__PURE__*/React.createElement("text", {
       key: d.date,
       x: x,
@@ -58143,7 +58804,7 @@ function DailyChart(_ref8) {
       textAnchor: "middle",
       fontSize: "9",
       fill: "rgba(160,160,160,0.7)"
-    }, label);
+    }, d.date.slice(5));
   })), /*#__PURE__*/React.createElement("div", {
     className: "sa-chart__legend"
   }, /*#__PURE__*/React.createElement("span", {
@@ -58152,11 +58813,9 @@ function DailyChart(_ref8) {
     className: "sa-chart__legend-dot sa-chart__legend-dot--minimal"
   }), /*#__PURE__*/React.createElement("span", null, "No consent (minimal)")));
 }
-
-// ── Setup card (shown when no site key or no data yet) ────────────────────────
-function SetupCard(_ref9) {
-  var domain = _ref9.domain,
-    onKeyGenerated = _ref9.onKeyGenerated;
+function SetupCard(_ref5) {
+  var domain = _ref5.domain,
+    onKeyGenerated = _ref5.onKeyGenerated;
   var _useState9 = useState(null),
     _useState0 = _slicedToArray(_useState9, 2),
     siteKey = _useState0[0],
@@ -58175,9 +58834,9 @@ function SetupCard(_ref9) {
       return;
     }
     fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-site?domain=").concat(encodeURIComponent(domain)), {
-      headers: authHeaders()
+      headers: (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.authHeaders)()
     }).then(/*#__PURE__*/function () {
-      var _ref0 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(r) {
+      var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(r) {
         var d;
         return _regenerator().w(function (_context2) {
           while (1) switch (_context2.n) {
@@ -58197,14 +58856,14 @@ function SetupCard(_ref9) {
         }, _callee2);
       }));
       return function (_x) {
-        return _ref0.apply(this, arguments);
+        return _ref6.apply(this, arguments);
       };
     }())["catch"](function () {})["finally"](function () {
       return setLoading(false);
     });
   }, [domain]);
   var generate = /*#__PURE__*/function () {
-    var _ref1 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+    var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
       var r, d;
       return _regenerator().w(function (_context3) {
         while (1) switch (_context3.n) {
@@ -58213,7 +58872,7 @@ function SetupCard(_ref9) {
             _context3.n = 1;
             return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-site"), {
               method: "POST",
-              headers: authHeaders(),
+              headers: (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.authHeaders)(),
               body: JSON.stringify({
                 domain: domain
               })
@@ -58240,7 +58899,7 @@ function SetupCard(_ref9) {
       }, _callee3);
     }));
     return function generate() {
-      return _ref1.apply(this, arguments);
+      return _ref7.apply(this, arguments);
     };
   }();
   var snippet = siteKey ? "<script src=\"".concat(INGEST_URL, "\" data-site=\"").concat(siteKey, "\" async defer></script>") : null;
@@ -58248,7 +58907,7 @@ function SetupCard(_ref9) {
     className: "sa-setup"
   }, /*#__PURE__*/React.createElement("div", {
     className: "sa-setup__icon"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconRadio, null)), /*#__PURE__*/React.createElement("h3", {
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconRadio, null)), /*#__PURE__*/React.createElement("h3", {
     className: "sa-setup__title"
   }, "No data yet for ", /*#__PURE__*/React.createElement("strong", null, domain)), /*#__PURE__*/React.createElement("p", {
     className: "sa-setup__body"
@@ -58274,13 +58933,11 @@ function SetupCard(_ref9) {
   }, "Paste into the ", /*#__PURE__*/React.createElement("code", null, "<head>"), " of every page. Data will appear here within a few minutes of the first visitor.")));
 }
 
-// ── Main page ─────────────────────────────────────────────────────────────────
+// ── Main overview page ────────────────────────────────────────────────────────
 function SiteAnalytics() {
-  var _data$os, _data$screens;
   document.title = "Site Analytics | Intastellar Consents";
   var _useParams = useParams(),
-    handle = _useParams.handle,
-    id = _useParams.id;
+    handle = _useParams.handle;
   var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_0__.DomainContext),
     _useContext2 = _slicedToArray(_useContext, 2),
     globalDomain = _useContext2[0],
@@ -58308,110 +58965,24 @@ function SiteAnalytics() {
     _useState18 = _slicedToArray(_useState17, 2),
     toDate = _useState18[0],
     setToDate = _useState18[1];
-  var _useState19 = useState(null),
+  var _useState19 = useState(0),
     _useState20 = _slicedToArray(_useState19, 2),
-    data = _useState20[0],
-    setData = _useState20[1];
-  var _useState21 = useState(false),
-    _useState22 = _slicedToArray(_useState21, 2),
-    loading = _useState22[0],
-    setLoading = _useState22[1];
-  var _useState23 = useState(null),
-    _useState24 = _slicedToArray(_useState23, 2),
-    error = _useState24[0],
-    setError = _useState24[1];
-  var _useState25 = useState(0),
-    _useState26 = _slicedToArray(_useState25, 2),
-    tick = _useState26[0],
-    setTick = _useState26[1]; // force refetch after key generation
-
+    tick = _useState20[0],
+    setTick = _useState20[1];
   var fromIso = useMemo(function () {
-    return toIsoDate(fromDate);
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(fromDate);
   }, [fromDate]);
   var toIso = useMemo(function () {
-    return toIsoDate(toDate);
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(toDate);
   }, [toDate]);
-  useEffect(function () {
-    if (!domain) {
-      setData(null);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    var qs = new URLSearchParams({
-      domain: domain,
-      from: fromIso,
-      to: toIso
-    }).toString();
-    fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-report?").concat(qs), {
-      headers: authHeaders()
-    }).then(/*#__PURE__*/function () {
-      var _ref10 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(r) {
-        var _t4, _t5;
-        return _regenerator().w(function (_context4) {
-          while (1) switch (_context4.n) {
-            case 0:
-              if (r.ok) {
-                _context4.n = 1;
-                break;
-              }
-              throw new Error(r.status);
-            case 1:
-              _t4 = setData;
-              _context4.n = 2;
-              return r.json();
-            case 2:
-              _t5 = _context4.v;
-              _t4(_t5);
-            case 3:
-              return _context4.a(2);
-          }
-        }, _callee4);
-      }));
-      return function (_x2) {
-        return _ref10.apply(this, arguments);
-      };
-    }())["catch"](function () {
-      return setError("Could not load analytics data.");
-    })["finally"](function () {
-      return setLoading(false);
-    });
-  }, [domain, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  var _useAnalyticsReport = (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.useAnalyticsReport)(domain, fromIso, toIso, tick),
+    data = _useAnalyticsReport.data,
+    loading = _useAnalyticsReport.loading,
+    error = _useAnalyticsReport.error;
   var maxPageViews = useMemo(function () {
     return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.topPages) || []).map(function (p) {
       return p.views;
     })).concat([1]));
-  }, [data]);
-  var maxCountry = useMemo(function () {
-    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.countries) || []).map(function (c) {
-      return c.events;
-    })).concat([1]));
-  }, [data]);
-  var maxBrowser = useMemo(function () {
-    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.browsers) || []).map(function (b) {
-      return b.events;
-    })).concat([1]));
-  }, [data]);
-  var maxUtm = useMemo(function () {
-    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.utmSources) || []).map(function (u) {
-      return u.events;
-    })).concat([1]));
-  }, [data]);
-  var maxOs = useMemo(function () {
-    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.os) || []).map(function (o) {
-      return o.events;
-    })).concat([1]));
-  }, [data]);
-  var maxScreens = useMemo(function () {
-    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.screens) || []).map(function (s) {
-      return s.events;
-    })).concat([1]));
-  }, [data]);
-  var deviceTotal = useMemo(function () {
-    return ((data === null || data === void 0 ? void 0 : data.devices) || []).reduce(function (s, d) {
-      return s + d.events;
-    }, 0);
   }, [data]);
   var showSetup = !loading && data && (data.noSiteKey || data.noData);
   var showData = !loading && data && !data.noSiteKey && !data.noData;
@@ -58420,7 +58991,7 @@ function SiteAnalytics() {
       flex: "1",
       minWidth: 0
     }
-  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
     title: "Site Analytics",
     numberofDays: setLastDays,
     getLastDays: getLastDays,
@@ -58436,7 +59007,9 @@ function SiteAnalytics() {
     className: "sa-meta-row"
   }, /*#__PURE__*/React.createElement("span", {
     className: "sa-site-key-badge"
-  }, "Site key: ", /*#__PURE__*/React.createElement("code", null, data.siteId))), !domain && /*#__PURE__*/React.createElement("p", {
+  }, "Site key: ", /*#__PURE__*/React.createElement("code", null, data.siteId))), data && !data.noSiteKey && /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.AnalyticsSubNav, {
+    handle: handle
+  }), !domain && /*#__PURE__*/React.createElement("p", {
     className: "sa-notice"
   }, "Select a specific domain in the header to view analytics."), domain && loading && /*#__PURE__*/React.createElement("p", {
     className: "sa-notice"
@@ -58450,29 +59023,29 @@ function SiteAnalytics() {
       });
     }
   }), showData && /*#__PURE__*/React.createElement("div", {
-    className: "sa-dashboard-grid" + (!data.utmSources.length ? " sa-dashboard-grid--no-utm" : "")
-  }, /*#__PURE__*/React.createElement(KpiCard, {
+    className: "sa-dashboard-grid sa-dashboard-grid--overview"
+  }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.KpiCard, {
     className: "sa-ga-kpi1",
-    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconBarChart, null),
+    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconBarChart, null),
     label: "Total events",
     value: data.totals.total.toLocaleString("de-DE"),
     sub: "".concat(data.totals.minimal.toLocaleString("de-DE"), " minimal \xB7 ").concat(data.totals.full.toLocaleString("de-DE"), " full")
-  }), /*#__PURE__*/React.createElement(KpiCard, {
+  }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.KpiCard, {
     className: "sa-ga-kpi2",
-    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconUsers, null),
+    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconUsers, null),
     label: "Unique sessions",
     value: data.totals.uniqueSessions.toLocaleString("de-DE"),
     sub: "consent-gated sessions only"
-  }), /*#__PURE__*/React.createElement(KpiCard, {
+  }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.KpiCard, {
     className: "sa-ga-kpi3",
-    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconShieldCheck, null),
+    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconShieldCheck, null),
     label: "Consent rate",
     value: data.totals.consentRate + "%",
     sub: "statisticCookies accepted",
     variant: data.totals.consentRate < 20 ? "warn" : null
-  }), /*#__PURE__*/React.createElement(KpiCard, {
+  }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.KpiCard, {
     className: "sa-ga-kpi4",
-    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconGlobe, null),
+    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconGlobe, null),
     label: "Countries",
     value: data.countries.length,
     sub: data.countries[0] ? "Top: ".concat(data.countries[0].code) : null
@@ -58480,7 +59053,7 @@ function SiteAnalytics() {
     className: "sa-chart-section sa-ga-chart"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "sa-chart-section__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconTrendingUp, {
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconTrendingUp, {
     className: "sa-icon"
   }), " Events per day"), /*#__PURE__*/React.createElement(DailyChart, {
     daily: data.daily
@@ -58491,7 +59064,7 @@ function SiteAnalytics() {
     className: "sa-panel sa-ga-pages"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "sa-panel__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconDocument, {
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconDocument, {
     className: "sa-icon"
   }), " Top pages"), /*#__PURE__*/React.createElement("table", {
     className: "sa-table"
@@ -58509,183 +59082,9 @@ function SiteAnalytics() {
       className: "sa-table__num"
     }, p.views.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
       className: "sa-table__bar"
-    }, /*#__PURE__*/React.createElement(MiniBar, {
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
       value: p.views,
       max: maxPageViews
-    })));
-  })))), /*#__PURE__*/React.createElement("div", {
-    className: "sa-panel sa-ga-consent"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "sa-panel__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconLock, {
-    className: "sa-icon"
-  }), " Consent"), /*#__PURE__*/React.createElement("div", {
-    className: "sa-consent-list"
-  }, /*#__PURE__*/React.createElement(ConsentBar, {
-    label: "Statistics",
-    yes: data.consent.stat.yes,
-    no: data.consent.stat.no
-  }), /*#__PURE__*/React.createElement(ConsentBar, {
-    label: "Functional",
-    yes: data.consent.func.yes,
-    no: data.consent.func.no
-  }), /*#__PURE__*/React.createElement(ConsentBar, {
-    label: "Advertising",
-    yes: data.consent.adv.yes,
-    no: data.consent.adv.no
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "sa-panel__divider"
-  }), /*#__PURE__*/React.createElement("h3", {
-    className: "sa-panel__sub-title"
-  }, "Devices"), /*#__PURE__*/React.createElement("div", {
-    className: "sa-consent-list"
-  }, data.devices.map(function (d) {
-    return /*#__PURE__*/React.createElement("div", {
-      key: d.type,
-      className: "sa-consent-row"
-    }, /*#__PURE__*/React.createElement("span", {
-      className: "sa-consent-row__label",
-      style: {
-        textTransform: "capitalize"
-      }
-    }, d.type), /*#__PURE__*/React.createElement("div", {
-      className: "sa-bar"
-    }, /*#__PURE__*/React.createElement(BarSegment, {
-      pct: deviceTotal > 0 ? Math.round(d.events / deviceTotal * 100) : 0,
-      color: "rgba(192,159,83,0.55)",
-      title: d.events + " events"
-    })), /*#__PURE__*/React.createElement("span", {
-      className: "sa-consent-row__pct"
-    }, deviceTotal > 0 ? Math.round(d.events / deviceTotal * 100) : 0, "%"));
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "sa-panel sa-ga-countries"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "sa-panel__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconGlobe, {
-    className: "sa-icon"
-  }), " Countries"), data.countries.length > 0 && /*#__PURE__*/React.createElement(_AnalyticsWorldMap_js__WEBPACK_IMPORTED_MODULE_5__["default"], {
-    countries: data.countries
-  }), /*#__PURE__*/React.createElement("table", {
-    className: "sa-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Country"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__num"
-  }, "Events"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__bar"
-  }))), /*#__PURE__*/React.createElement("tbody", null, data.countries.map(function (c) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: c.code
-    }, /*#__PURE__*/React.createElement("td", null, c.code), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__num"
-    }, c.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__bar"
-    }, /*#__PURE__*/React.createElement(MiniBar, {
-      value: c.events,
-      max: maxCountry,
-      color: "rgba(99,179,237,0.55)"
-    })));
-  })))), /*#__PURE__*/React.createElement("div", {
-    className: "sa-panel sa-ga-brows"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "sa-panel__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconGlobe, {
-    className: "sa-icon"
-  }), " Browsers", /*#__PURE__*/React.createElement("span", {
-    className: "sa-panel__consent-note"
-  }, "full events only")), /*#__PURE__*/React.createElement("table", {
-    className: "sa-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Browser"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__num"
-  }, "Events"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__bar"
-  }))), /*#__PURE__*/React.createElement("tbody", null, data.browsers.map(function (b) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: b.name
-    }, /*#__PURE__*/React.createElement("td", null, b.name), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__num"
-    }, b.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__bar"
-    }, /*#__PURE__*/React.createElement(MiniBar, {
-      value: b.events,
-      max: maxBrowser,
-      color: "rgba(167,139,250,0.6)"
-    })));
-  })))), data.utmSources.length > 0 && /*#__PURE__*/React.createElement("div", {
-    className: "sa-panel sa-ga-utm"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "sa-panel__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconMegaphone, {
-    className: "sa-icon"
-  }), " UTM sources", /*#__PURE__*/React.createElement("span", {
-    className: "sa-panel__consent-note"
-  }, "full events only")), /*#__PURE__*/React.createElement("table", {
-    className: "sa-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Source"), /*#__PURE__*/React.createElement("th", null, "Medium"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__num"
-  }, "Events"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__bar"
-  }))), /*#__PURE__*/React.createElement("tbody", null, data.utmSources.map(function (u, i) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: i
-    }, /*#__PURE__*/React.createElement("td", null, u.source || "—"), /*#__PURE__*/React.createElement("td", null, u.medium || "—"), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__num"
-    }, u.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__bar"
-    }, /*#__PURE__*/React.createElement(MiniBar, {
-      value: u.events,
-      max: maxUtm,
-      color: "rgba(251,146,60,0.6)"
-    })));
-  })))), ((_data$os = data.os) === null || _data$os === void 0 ? void 0 : _data$os.length) > 0 && /*#__PURE__*/React.createElement("div", {
-    className: "sa-panel sa-ga-os"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "sa-panel__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconGlobe, {
-    className: "sa-icon"
-  }), " Operating systems", /*#__PURE__*/React.createElement("span", {
-    className: "sa-panel__consent-note"
-  }, "full events only")), /*#__PURE__*/React.createElement("table", {
-    className: "sa-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "OS"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__num"
-  }, "Events"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__bar"
-  }))), /*#__PURE__*/React.createElement("tbody", null, data.os.map(function (o) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: o.name
-    }, /*#__PURE__*/React.createElement("td", null, o.name), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__num"
-    }, o.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__bar"
-    }, /*#__PURE__*/React.createElement(MiniBar, {
-      value: o.events,
-      max: maxOs,
-      color: "rgba(129,140,248,0.6)"
-    })));
-  })))), ((_data$screens = data.screens) === null || _data$screens === void 0 ? void 0 : _data$screens.length) > 0 && /*#__PURE__*/React.createElement("div", {
-    className: "sa-panel sa-ga-screens"
-  }, /*#__PURE__*/React.createElement("h3", {
-    className: "sa-panel__title"
-  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_7__.IconRadio, {
-    className: "sa-icon"
-  }), " Screen resolutions", /*#__PURE__*/React.createElement("span", {
-    className: "sa-panel__consent-note"
-  }, "full events only")), /*#__PURE__*/React.createElement("table", {
-    className: "sa-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Resolution"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__num"
-  }, "Events"), /*#__PURE__*/React.createElement("th", {
-    className: "sa-table__bar"
-  }))), /*#__PURE__*/React.createElement("tbody", null, data.screens.map(function (s, i) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: i
-    }, /*#__PURE__*/React.createElement("td", null, s.width, " \xD7 ", s.height), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__num"
-    }, s.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
-      className: "sa-table__bar"
-    }, /*#__PURE__*/React.createElement(MiniBar, {
-      value: s.events,
-      max: maxScreens,
-      color: "rgba(52,211,153,0.6)"
     })));
   }))))))));
 }

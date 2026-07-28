@@ -1,0 +1,100 @@
+const { useState, useEffect, useMemo } = React;
+const { NavLink } = window.ReactRouterDOM;
+import { ScannerHost } from "../../API/host.js";
+import Authentication from "../../Authentication/Auth.js";
+
+export function authHeaders() {
+    return {
+        Authorization: Authentication.getToken(),
+        Organisation:  String(Authentication.getOrganisation()),
+        "Content-Type": "application/json",
+    };
+}
+
+export function toIsoDate(d) {
+    return d.toISOString().slice(0, 10);
+}
+
+export function useAnalyticsReport(domain, fromIso, toIso, tick = 0) {
+    const [data,    setData]    = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error,   setError]   = useState(null);
+
+    useEffect(() => {
+        if (!domain) { setData(null); return; }
+        setLoading(true);
+        setError(null);
+        const qs = new URLSearchParams({ domain, from: fromIso, to: toIso }).toString();
+        fetch(`${ScannerHost}/api/analytics-report?${qs}`, { headers: authHeaders() })
+            .then(async r => {
+                if (!r.ok) throw new Error(r.status);
+                setData(await r.json());
+            })
+            .catch(() => setError("Could not load analytics data."))
+            .finally(() => setLoading(false));
+    }, [domain, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    return { data, loading, error };
+}
+
+export function KpiCard({ icon, label, value, sub, variant, className }) {
+    return (
+        <div className={"sa-kpi" + (variant ? " sa-kpi--" + variant : "") + (className ? " " + className : "")}>
+            <div className="sa-kpi__head">
+                {icon && <span className="sa-kpi__icon" aria-hidden="true">{icon}</span>}
+                <span className="sa-kpi__label">{label}</span>
+            </div>
+            <span className="sa-kpi__value">{value}</span>
+            {sub && <span className="sa-kpi__sub">{sub}</span>}
+        </div>
+    );
+}
+
+export function BarSegment({ pct, color, title }) {
+    return (
+        <div
+            className="sa-bar__seg"
+            style={{ width: pct + "%", background: color }}
+            title={title}
+        />
+    );
+}
+
+export function ConsentBar({ label, yes, no }) {
+    const total = yes + no;
+    if (!total) return null;
+    const pct = Math.round((yes / total) * 100);
+    return (
+        <div className="sa-consent-row">
+            <span className="sa-consent-row__label">{label}</span>
+            <div className="sa-bar">
+                <BarSegment pct={pct}       color="rgba(74,222,128,0.75)" title={`Yes: ${yes}`} />
+                <BarSegment pct={100 - pct} color="rgba(239,68,68,0.3)"   title={`No: ${no}`}  />
+            </div>
+            <span className="sa-consent-row__pct">{pct}%</span>
+        </div>
+    );
+}
+
+export function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
+    const pct = max > 0 ? Math.round((value / max) * 100) : 0;
+    return (
+        <div className="sa-mini-bar">
+            <div className="sa-mini-bar__fill" style={{ width: pct + "%", background: color }} />
+        </div>
+    );
+}
+
+export function AnalyticsSubNav({ handle }) {
+    if (!handle) return null;
+    const base = `/analytics/${handle}`;
+    return (
+        <nav className="sa-subnav">
+            <NavLink to={base} exact className="sa-subnav__link" activeClassName="sa-subnav__link--active">Overview</NavLink>
+            <NavLink to={`${base}/audience`} className="sa-subnav__link" activeClassName="sa-subnav__link--active">Audience</NavLink>
+            <NavLink to={`${base}/acquisition`} className="sa-subnav__link" activeClassName="sa-subnav__link--active">Acquisition</NavLink>
+            <NavLink to={`${base}/consent`} className="sa-subnav__link" activeClassName="sa-subnav__link--active">Consent</NavLink>
+            <NavLink to={`${base}/marketing`} className="sa-subnav__link" activeClassName="sa-subnav__link--active">Marketing</NavLink>
+        </nav>
+    );
+}

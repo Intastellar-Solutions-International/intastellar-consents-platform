@@ -3,10 +3,10 @@ const useParams = window.ReactRouterDOM.useParams;
 import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
-import Authentication from "../../Authentication/Auth.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import ConversionsPanel from "./Conversions.js";
+import {
+    authHeaders, toIsoDate, KpiCard, MiniBar, useAnalyticsReport, AnalyticsSubNav,
+} from "./_shared.js";
 import {
     IconBarChart,
     IconUsers,
@@ -14,16 +14,12 @@ import {
     IconGlobe,
     IconTrendingUp,
     IconDocument,
-    IconLock,
-    IconMegaphone,
     IconRadio,
 } from "./Icons.js";
 import "./Analytics.css";
 
-// removed: TabGroup — panels now show all data without tab-switching
-
 const LIVE_URL = `${ScannerHost}/api/analytics-live`;
-const LIVE_INTERVAL = 30; // seconds between polls
+const LIVE_INTERVAL = 30;
 
 function timeAgo(isoString) {
     const diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
@@ -48,14 +44,12 @@ function LivePanel({ domain, className }) {
         setCountdown(LIVE_INTERVAL);
     }, [domain]);
 
-    // Initial fetch + poll
     useEffect(() => {
         fetchLive();
         const poll = setInterval(fetchLive, LIVE_INTERVAL * 1000);
         return () => clearInterval(poll);
     }, [fetchLive]);
 
-    // Countdown ticker
     useEffect(() => {
         const tick = setInterval(() => setCountdown(c => Math.max(0, c - 1)), 1000);
         return () => clearInterval(tick);
@@ -85,7 +79,6 @@ function LivePanel({ domain, className }) {
 
             {open && (
                 <div className="sa-live__body">
-                    {/* KPI strip */}
                     <div className="sa-live__kpis">
                         <div className="sa-live__kpi">
                             <span className="sa-live__kpi-label">Events</span>
@@ -106,7 +99,6 @@ function LivePanel({ domain, className }) {
                         </div>
                     </div>
 
-                    {/* Per-minute sparkline */}
                     <div className="sa-live__sparkline">
                         <span className="sa-live__spark-label">Events per minute</span>
                         <div className="sa-live__spark-bars">
@@ -126,7 +118,6 @@ function LivePanel({ domain, className }) {
                         </div>
                     </div>
 
-                    {/* Bottom: top pages + recent feed */}
                     <div className="sa-live__bottom">
                         <div>
                             <p className="sa-live__section-title">Top active pages</p>
@@ -174,34 +165,6 @@ function LivePanel({ domain, className }) {
 
 const INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
 
-function authHeaders() {
-    return {
-        Authorization: Authentication.getToken(),
-        Organisation:  String(Authentication.getOrganisation()),
-        "Content-Type": "application/json",
-    };
-}
-
-function toIsoDate(d) {
-    return d.toISOString().slice(0, 10);
-}
-
-// ── small shared components ───────────────────────────────────────────────────
-
-function KpiCard({ icon, label, value, sub, variant, className }) {
-    return (
-        <div className={"sa-kpi" + (variant ? " sa-kpi--" + variant : "") + (className ? " " + className : "")}>
-            <div className="sa-kpi__head">
-                {icon && <span className="sa-kpi__icon" aria-hidden="true">{icon}</span>}
-                <span className="sa-kpi__label">{label}</span>
-            </div>
-            <span className="sa-kpi__value">{value}</span>
-            {sub && <span className="sa-kpi__sub">{sub}</span>}
-        </div>
-    );
-}
-
-
 function CopyButton({ text }) {
     const [copied, setCopied] = useState(false);
     const copy = useCallback(() => {
@@ -221,42 +184,6 @@ function CopyButton({ text }) {
     );
 }
 
-function BarSegment({ pct, color, title }) {
-    return (
-        <div
-            className="sa-bar__seg"
-            style={{ width: pct + "%", background: color }}
-            title={title}
-        />
-    );
-}
-
-function ConsentBar({ label, yes, no }) {
-    const total = yes + no;
-    if (!total) return null;
-    const pct = Math.round((yes / total) * 100);
-    return (
-        <div className="sa-consent-row">
-            <span className="sa-consent-row__label">{label}</span>
-            <div className="sa-bar">
-                <BarSegment pct={pct}       color="rgba(74,222,128,0.75)" title={`Yes: ${yes}`} />
-                <BarSegment pct={100 - pct} color="rgba(239,68,68,0.3)"   title={`No: ${no}`}  />
-            </div>
-            <span className="sa-consent-row__pct">{pct}%</span>
-        </div>
-    );
-}
-
-function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
-    const pct = max > 0 ? Math.round((value / max) * 100) : 0;
-    return (
-        <div className="sa-mini-bar">
-            <div className="sa-mini-bar__fill" style={{ width: pct + "%", background: color }} />
-        </div>
-    );
-}
-
-// ── Daily stacked bar chart (SVG) ─────────────────────────────────────────────
 function DailyChart({ daily }) {
     const W = 600, H = 160, PAD = { t: 10, r: 8, b: 28, l: 36 };
     const cW = W - PAD.l - PAD.r;
@@ -266,13 +193,11 @@ function DailyChart({ daily }) {
 
     const maxVal = Math.max(...daily.map(d => d.minimal + d.full), 1);
     const barW   = Math.max(2, Math.floor(cW / daily.length) - 2);
-
     const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(maxVal * f));
 
     return (
         <div className="sa-chart">
             <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
-                {/* Y grid */}
                 {yTicks.map((v, i) => {
                     const y = PAD.t + cH - (v / maxVal) * cH;
                     return (
@@ -285,14 +210,12 @@ function DailyChart({ daily }) {
                     );
                 })}
 
-                {/* Bars */}
                 {daily.map((d, i) => {
                     const x  = PAD.l + (i / daily.length) * cW + (cW / daily.length - barW) / 2;
                     const hF = (d.full    / maxVal) * cH;
                     const hM = (d.minimal / maxVal) * cH;
                     return (
                         <g key={d.date}>
-                            {/* full (green) on top of minimal (amber) */}
                             <rect x={x} y={PAD.t + cH - hM - hF} width={barW} height={hF}
                                 fill="rgba(74,222,128,0.75)" rx="1" />
                             <rect x={x} y={PAD.t + cH - hM}      width={barW} height={hM}
@@ -301,17 +224,15 @@ function DailyChart({ daily }) {
                     );
                 })}
 
-                {/* X labels — show first, middle, last */}
                 {[0, Math.floor(daily.length / 2), daily.length - 1]
                     .filter((v, i, a) => a.indexOf(v) === i && v < daily.length)
                     .map(i => {
                         const d = daily[i];
                         const x = PAD.l + (i / daily.length) * cW + (cW / daily.length) / 2;
-                        const label = d.date.slice(5); // MM-DD
                         return (
                             <text key={d.date} x={x} y={H - PAD.b + 14}
                                 textAnchor="middle" fontSize="9" fill="rgba(160,160,160,0.7)">
-                                {label}
+                                {d.date.slice(5)}
                             </text>
                         );
                     })
@@ -327,10 +248,9 @@ function DailyChart({ daily }) {
     );
 }
 
-// ── Setup card (shown when no site key or no data yet) ────────────────────────
 function SetupCard({ domain, onKeyGenerated }) {
-    const [siteKey, setSiteKey] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [siteKey,    setSiteKey]    = useState(null);
+    const [loading,    setLoading]    = useState(true);
     const [generating, setGenerating] = useState(false);
 
     useEffect(() => {
@@ -402,11 +322,11 @@ function SetupCard({ domain, onKeyGenerated }) {
     );
 }
 
-// ── Main page ─────────────────────────────────────────────────────────────────
+// ── Main overview page ────────────────────────────────────────────────────────
 export default function SiteAnalytics() {
     document.title = "Site Analytics | Intastellar Consents";
 
-    const { handle, id } = useParams();
+    const { handle } = useParams();
     const [globalDomain, setGlobalDomain] = useContext(DomainContext);
     useSyncDomainFromRoute(handle, setGlobalDomain);
 
@@ -422,36 +342,14 @@ export default function SiteAnalytics() {
         return d;
     });
     const [toDate, setToDate] = useState(() => new Date());
-    const [data,      setData]      = useState(null);
-    const [loading,   setLoading]   = useState(false);
-    const [error,     setError]     = useState(null);
-    const [tick,      setTick]      = useState(0); // force refetch after key generation
+    const [tick,   setTick]   = useState(0);
 
     const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
 
-    useEffect(() => {
-        if (!domain) { setData(null); return; }
-        setLoading(true);
-        setError(null);
-        const qs = new URLSearchParams({ domain, from: fromIso, to: toIso }).toString();
-        fetch(`${ScannerHost}/api/analytics-report?${qs}`, { headers: authHeaders() })
-            .then(async r => {
-                if (!r.ok) throw new Error(r.status);
-                setData(await r.json());
-            })
-            .catch(() => setError("Could not load analytics data."))
-            .finally(() => setLoading(false));
-    }, [domain, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+    const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
 
-    const maxPageViews  = useMemo(() => Math.max(...(data?.topPages  || []).map(p => p.views),  1), [data]);
-    const maxCountry    = useMemo(() => Math.max(...(data?.countries || []).map(c => c.events), 1), [data]);
-    const maxBrowser    = useMemo(() => Math.max(...(data?.browsers  || []).map(b => b.events), 1), [data]);
-    const maxUtm        = useMemo(() => Math.max(...(data?.utmSources|| []).map(u => u.events), 1), [data]);
-    const maxOs         = useMemo(() => Math.max(...(data?.os        || []).map(o => o.events), 1), [data]);
-    const maxScreens    = useMemo(() => Math.max(...(data?.screens   || []).map(s => s.events), 1), [data]);
-
-    const deviceTotal   = useMemo(() => (data?.devices  || []).reduce((s, d) => s + d.events, 0), [data]);
+    const maxPageViews = useMemo(() => Math.max(...(data?.topPages || []).map(p => p.views), 1), [data]);
 
     const showSetup = !loading && data && (data.noSiteKey || data.noData);
     const showData  = !loading && data && !data.noSiteKey && !data.noData;
@@ -468,9 +366,8 @@ export default function SiteAnalytics() {
                 setToDate={setToDate}
             />
             <div className="dashboard-content">
-
                 <div className="sa-page">
-                    {/* ── Meta row ── */}
+
                     {data && !data.noSiteKey && (
                         <div className="sa-meta-row">
                             <span className="sa-site-key-badge">
@@ -479,7 +376,8 @@ export default function SiteAnalytics() {
                         </div>
                     )}
 
-                    {/* ── States ── */}
+                    {data && !data.noSiteKey && <AnalyticsSubNav handle={handle} />}
+
                     {!domain && (
                         <p className="sa-notice">Select a specific domain in the header to view analytics.</p>
                     )}
@@ -490,7 +388,6 @@ export default function SiteAnalytics() {
                         <p className="sa-notice sa-notice--error">{error}</p>
                     )}
 
-                    {/* ── Setup / empty state ── */}
                     {domain && showSetup && (
                         <SetupCard
                             domain={domain}
@@ -498,11 +395,9 @@ export default function SiteAnalytics() {
                         />
                     )}
 
-                    {/* ── Data: single CSS grid, every panel has a named area ── */}
                     {showData && (
-                        <div className={"sa-dashboard-grid" + (!data.utmSources.length ? " sa-dashboard-grid--no-utm" : "")}>
+                        <div className="sa-dashboard-grid sa-dashboard-grid--overview">
 
-                            {/* KPIs — each occupies its own named area */}
                             <KpiCard className="sa-ga-kpi1"
                                 icon={<IconBarChart />}
                                 label="Total events"
@@ -529,7 +424,6 @@ export default function SiteAnalytics() {
                                 sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
                             />
 
-                            {/* Chart */}
                             <div className="sa-chart-section sa-ga-chart">
                                 <h3 className="sa-chart-section__title">
                                     <IconTrendingUp className="sa-icon" /> Events per day
@@ -537,10 +431,8 @@ export default function SiteAnalytics() {
                                 <DailyChart daily={data.daily} />
                             </div>
 
-                            {/* Live view — sidebar slot */}
                             <LivePanel domain={domain} className="sa-ga-live" />
 
-                            {/* Top pages */}
                             <div className="sa-panel sa-ga-pages">
                                 <h3 className="sa-panel__title"><IconDocument className="sa-icon" /> Top pages</h3>
                                 <table className="sa-table">
@@ -564,181 +456,6 @@ export default function SiteAnalytics() {
                                     </tbody>
                                 </table>
                             </div>
-
-                            {/* Consent + Devices */}
-                            <div className="sa-panel sa-ga-consent">
-                                <h3 className="sa-panel__title"><IconLock className="sa-icon" /> Consent</h3>
-                                <div className="sa-consent-list">
-                                    <ConsentBar label="Statistics" yes={data.consent.stat.yes} no={data.consent.stat.no} />
-                                    <ConsentBar label="Functional"  yes={data.consent.func.yes} no={data.consent.func.no} />
-                                    <ConsentBar label="Advertising" yes={data.consent.adv.yes}  no={data.consent.adv.no}  />
-                                </div>
-                                <div className="sa-panel__divider" />
-                                <h3 className="sa-panel__sub-title">Devices</h3>
-                                <div className="sa-consent-list">
-                                    {data.devices.map(d => (
-                                        <div key={d.type} className="sa-consent-row">
-                                            <span className="sa-consent-row__label" style={{textTransform:"capitalize"}}>{d.type}</span>
-                                            <div className="sa-bar">
-                                                <BarSegment
-                                                    pct={deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0}
-                                                    color="rgba(192,159,83,0.55)"
-                                                    title={d.events + " events"}
-                                                />
-                                            </div>
-                                            <span className="sa-consent-row__pct">
-                                                {deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0}%
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Countries */}
-                            <div className="sa-panel sa-ga-countries">
-                                <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Countries</h3>
-                                {data.countries.length > 0 && <AnalyticsWorldMap countries={data.countries} />}
-                                <table className="sa-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Country</th>
-                                            <th className="sa-table__num">Events</th>
-                                            <th className="sa-table__bar" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.countries.map(c => (
-                                            <tr key={c.code}>
-                                                <td>{c.code}</td>
-                                                <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__bar">
-                                                    <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            {/* Browsers */}
-                            <div className="sa-panel sa-ga-brows">
-                                <h3 className="sa-panel__title">
-                                    <IconGlobe className="sa-icon" /> Browsers
-                                    <span className="sa-panel__consent-note">full events only</span>
-                                </h3>
-                                <table className="sa-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Browser</th>
-                                            <th className="sa-table__num">Events</th>
-                                            <th className="sa-table__bar" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.browsers.map(b => (
-                                            <tr key={b.name}>
-                                                <td>{b.name}</td>
-                                                <td className="sa-table__num">{b.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__bar">
-                                                    <MiniBar value={b.events} max={maxBrowser} color="rgba(167,139,250,0.6)" />
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            {/* UTM sources — only rendered when data exists, grid hides area via --no-utm modifier */}
-                            {data.utmSources.length > 0 && (
-                                <div className="sa-panel sa-ga-utm">
-                                    <h3 className="sa-panel__title">
-                                        <IconMegaphone className="sa-icon" /> UTM sources
-                                        <span className="sa-panel__consent-note">full events only</span>
-                                    </h3>
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Source</th>
-                                                <th>Medium</th>
-                                                <th className="sa-table__num">Events</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.utmSources.map((u, i) => (
-                                                <tr key={i}>
-                                                    <td>{u.source || "—"}</td>
-                                                    <td>{u.medium || "—"}</td>
-                                                    <td className="sa-table__num">{u.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={u.events} max={maxUtm} color="rgba(251,146,60,0.6)" />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-
-                            {/* Operating systems */}
-                            {data.os?.length > 0 && (
-                                <div className="sa-panel sa-ga-os">
-                                    <h3 className="sa-panel__title">
-                                        <IconGlobe className="sa-icon" /> Operating systems
-                                        <span className="sa-panel__consent-note">full events only</span>
-                                    </h3>
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>OS</th>
-                                                <th className="sa-table__num">Events</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.os.map(o => (
-                                                <tr key={o.name}>
-                                                    <td>{o.name}</td>
-                                                    <td className="sa-table__num">{o.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={o.events} max={maxOs} color="rgba(129,140,248,0.6)" />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
-
-                            {/* Screen resolutions */}
-                            {data.screens?.length > 0 && (
-                                <div className="sa-panel sa-ga-screens">
-                                    <h3 className="sa-panel__title">
-                                        <IconRadio className="sa-icon" /> Screen resolutions
-                                        <span className="sa-panel__consent-note">full events only</span>
-                                    </h3>
-                                    <table className="sa-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Resolution</th>
-                                                <th className="sa-table__num">Events</th>
-                                                <th className="sa-table__bar" />
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.screens.map((s, i) => (
-                                                <tr key={i}>
-                                                    <td>{s.width} × {s.height}</td>
-                                                    <td className="sa-table__num">{s.events.toLocaleString("de-DE")}</td>
-                                                    <td className="sa-table__bar">
-                                                        <MiniBar value={s.events} max={maxScreens} color="rgba(52,211,153,0.6)" />
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
 
                         </div>
                     )}
