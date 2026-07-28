@@ -863,7 +863,7 @@
     grid-template-columns: repeat(5, 1fr);
     grid-template-areas:
         "kpi0  kpi1  kpi2  kpi3  kpi4"
-        "chart chart chart chart live"
+        "chart chart chart live live"
         "pages pages pages pages pages";
 }
 
