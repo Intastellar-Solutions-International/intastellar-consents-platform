@@ -163,6 +163,10 @@
       "memory": 256,
       "maxDuration": 15
     },
+    "api/analytics-datalayer-rules.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
     "api/analytics-site-config.js": {
       "memory": 256,
       "maxDuration": 10

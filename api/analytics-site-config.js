@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 
     const { rows } = await db.query(
         `SELECT heatmaps_enabled, recording_enabled, recording_sample_rate,
-                recording_block_selectors, recording_mask_selectors
+                recording_block_selectors, recording_mask_selectors, datalayer_enabled
          FROM analytics_sites WHERE id = $1 AND active = true LIMIT 1`,
         [siteId]
     ).catch(() => ({ rows: [] }));
@@ -50,15 +50,35 @@ export default async function handler(req, res) {
         return res.status(200).json({
             heatmapsEnabled: false, recordingEnabled: false,
             sampleRate: 0, blockSelectors: [], maskSelectors: [],
+            datalayerEnabled: false, datalayerRules: [],
         });
     }
 
     const site = rows[0];
+    let datalayerRules = [];
+    if (site.datalayer_enabled === true) {
+        const { rows: ruleRows } = await db.query(
+            `SELECT datalayer_event, maps_to_name, kind, value_path, currency_path, transaction_id_path
+             FROM analytics_datalayer_rules WHERE site_id = $1 AND enabled = true`,
+            [siteId]
+        ).catch(() => ({ rows: [] }));
+        datalayerRules = ruleRows.map(r => ({
+            datalayerEvent:    r.datalayer_event,
+            mapsToName:        r.maps_to_name,
+            kind:              r.kind,
+            valuePath:         r.value_path,
+            currencyPath:      r.currency_path,
+            transactionIdPath: r.transaction_id_path,
+        }));
+    }
+
     return res.status(200).json({
         heatmapsEnabled:  site.heatmaps_enabled !== false,
         recordingEnabled: site.recording_enabled === true,
         sampleRate:       Number(site.recording_sample_rate ?? 20),
         blockSelectors:   Array.isArray(site.recording_block_selectors) ? site.recording_block_selectors : [],
         maskSelectors:    Array.isArray(site.recording_mask_selectors)  ? site.recording_mask_selectors  : [],
+        datalayerEnabled: site.datalayer_enabled === true,
+        datalayerRules,
     });
 }

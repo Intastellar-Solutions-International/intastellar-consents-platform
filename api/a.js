@@ -221,9 +221,13 @@ async function ensureTables(db) {
             name            VARCHAR(64)  NOT NULL,
             value_cents     BIGINT,
             currency        VARCHAR(3),
+            transaction_id  VARCHAR(64),
             pathname        TEXT,
             country_code    CHAR(2),
-            device_type     VARCHAR(8)
+            device_type     VARCHAR(8),
+            -- 'manual' = window.intaAnalytics.track() called directly by site code;
+            -- 'datalayer' = auto-forwarded from window.dataLayer by a configured rule.
+            source          VARCHAR(10)  NOT NULL DEFAULT 'manual'
         );
         CREATE INDEX IF NOT EXISTS idx_ace_site     ON analytics_custom_events (site_id);
         CREATE INDEX IF NOT EXISTS idx_ace_name     ON analytics_custom_events (name);
@@ -292,6 +296,8 @@ async function ensureTables(db) {
         -- pageview, inflating event counts and showing duplicate-looking
         -- entries in the Live View feed for a single visitor.
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS pageview_id      VARCHAR(40);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS transaction_id VARCHAR(64);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS source         VARCHAR(10) NOT NULL DEFAULT 'manual';
     `).catch(() => {});
     await db.query(`
         CREATE UNIQUE INDEX IF NOT EXISTS idx_ae_pageview_id ON analytics_events (pageview_id);
@@ -306,6 +312,34 @@ async function ensureTables(db) {
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmap_retention_days    SMALLINT NOT NULL DEFAULT 90;
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_block_selectors TEXT[]   NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_mask_selectors  TEXT[]   NOT NULL DEFAULT '{}';
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS datalayer_enabled         BOOLEAN  NOT NULL DEFAULT false;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_quality_enabled      BOOLEAN  NOT NULL DEFAULT false;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_require_engaged      BOOLEAN  NOT NULL DEFAULT true;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_pages     TEXT[]   NOT NULL DEFAULT '{}';
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_events    TEXT[]   NOT NULL DEFAULT '{}';
+    `).catch(() => {});
+    // dataLayer -> intaAnalytics.track() mapping rules. Deliberately only three
+    // fixed, typed extraction slots (value/currency/transaction_id) rather than
+    // a generic field mapper — a rule can only ever point at *where* those three
+    // safe values live in a pushed object, never introduce a new field name, so
+    // a misconfigured path can't accidentally exfiltrate something like an email
+    // address sitting elsewhere in the same dataLayer push.
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS analytics_datalayer_rules (
+            id                 BIGSERIAL    PRIMARY KEY,
+            site_id            VARCHAR(32)  NOT NULL,
+            organisation_id    INTEGER      NOT NULL,
+            datalayer_event    VARCHAR(64)  NOT NULL,
+            maps_to_name       VARCHAR(64)  NOT NULL,
+            kind               VARCHAR(16)  NOT NULL DEFAULT 'custom',
+            value_path         VARCHAR(120),
+            currency_path      VARCHAR(120),
+            transaction_id_path VARCHAR(120),
+            enabled            BOOLEAN      NOT NULL DEFAULT true,
+            created_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            UNIQUE (site_id, datalayer_event)
+        );
+        CREATE INDEX IF NOT EXISTS idx_adr_site ON analytics_datalayer_rules (site_id);
     `).catch(() => {});
 }
 
@@ -432,15 +466,64 @@ function startClickTracking(){
   clickFlushIv=setInterval(sendClicks,5000);
 }
 
-// ── Session recording bootstrap (rrweb, lazy-loaded) ────────────────────────
-// Kept entirely out of this hand-minified embed — only fetched/run for sites
-// with recording enabled AND a visitor sampled into the per-session roll, so
-// the vast majority of pageviews never pay rrweb's download/runtime cost.
-var recordingBootstrapped=false;
+// ── Session recording bootstrap (rrweb, lazy-loaded) + dataLayer bridge ─────
+// One site-config fetch drives both features. Recording is kept entirely out
+// of this hand-minified embed — only fetched/run for sites with recording
+// enabled AND a visitor sampled into the per-session roll, so the vast
+// majority of pageviews never pay rrweb's download/runtime cost.
+var siteFeaturesBootstrapped=false;
 
-function maybeStartRecording(){
-  if(recordingBootstrapped)return;
-  recordingBootstrapped=true;
+// Dot-path walk into a dataLayer push, capped at 4 segments — never returns
+// nested objects/arrays, only whatever primitive sits at that exact path.
+function getPath(obj,path,maxDepth){
+  if(!path)return undefined;
+  var parts=String(path).split('.').slice(0,maxDepth||4);
+  var cur=obj;
+  for(var i=0;i<parts.length;i++){
+    if(cur==null||typeof cur!=='object')return undefined;
+    cur=cur[parts[i]];
+  }
+  return cur;
+}
+function safeNum(v){return (typeof v==='number'&&isFinite(v))?v:undefined;}
+function safeStr(v,max){return (typeof v==='string')?v.slice(0,max):undefined;}
+
+var dlRules=null;
+// Only three fixed, typed extraction slots — a rule can only ever point at
+// *where* value/currency/transaction_id live in a pushed object, never
+// introduce a new field name, so a misconfigured path can't exfiltrate
+// something else (e.g. an email) sitting elsewhere in the same push.
+function handleDataLayerEntry(entry){
+  if(!entry||typeof entry!=='object'||!entry.event||!dlRules)return;
+  for(var i=0;i<dlRules.length;i++){
+    var r=dlRules[i];
+    if(r.datalayerEvent!==entry.event)continue;
+    track(r.mapsToName,{
+      value:safeNum(getPath(entry,r.valuePath)),
+      currency:safeStr(getPath(entry,r.currencyPath),10),
+      transactionId:safeStr(getPath(entry,r.transactionIdPath),64),
+      _source:'datalayer'
+    });
+  }
+}
+function installDataLayerListener(rules){
+  dlRules=rules;
+  try{
+    window.dataLayer=window.dataLayer||[];
+    var dl=window.dataLayer;
+    // Entries pushed before we got here (e.g. GTM initialised first) still count.
+    for(var j=0;j<dl.length;j++){try{handleDataLayerEntry(dl[j]);}catch(e){}}
+    var origPush=dl.push.bind(dl);
+    dl.push=function(){
+      for(var k=0;k<arguments.length;k++){try{handleDataLayerEntry(arguments[k]);}catch(e){}}
+      return origPush.apply(dl,arguments);
+    };
+  }catch(e){}
+}
+
+function bootstrapSiteFeatures(){
+  if(siteFeaturesBootstrapped)return;
+  siteFeaturesBootstrapped=true;
   try{
     var xhr=new XMLHttpRequest();
     xhr.open('GET','https://analytics.consentsmanagement.com/api/analytics-site-config?site='+encodeURIComponent(SITE),true);
@@ -448,7 +531,13 @@ function maybeStartRecording(){
       if(xhr.status<200||xhr.status>=300)return;
       var cfg;
       try{cfg=JSON.parse(xhr.responseText);}catch(e){return;}
-      if(!cfg||!cfg.recordingEnabled)return;
+      if(!cfg)return;
+
+      if(cfg.datalayerEnabled&&cfg.datalayerRules&&cfg.datalayerRules.length){
+        installDataLayerListener(cfg.datalayerRules);
+      }
+
+      if(!cfg.recordingEnabled)return;
 
       var rk='_ia_rec',roll;
       try{roll=sessionStorage.getItem(rk);}catch(e){roll=null;}
@@ -508,7 +597,7 @@ function sendMinimal(c){
 function sendFull(c,final){
   fullFired=true;
   startClickTracking();
-  if(!final)maybeStartRecording();
+  if(!final)bootstrapSiteFeatures();
   send(JSON.stringify({
     s:SITE,cl:'full',sid:getSid(),pv:pvid,
     u:location.href,r:document.referrer||'',
@@ -614,6 +703,8 @@ function track(name,opts){
     sid:full?getSid():undefined,
     v:(typeof opts.value==='number'&&isFinite(opts.value))?opts.value:undefined,
     cur:opts.currency?String(opts.currency).slice(0,3):undefined,
+    txn:opts.transactionId?String(opts.transactionId).slice(0,64):undefined,
+    src:opts._source==='datalayer'?'datalayer':'manual',
     u:location.pathname,dt:devType(),
     cs:full?1:0,
     cf:hasFun(c)?1:0,
@@ -653,7 +744,8 @@ export default async function handler(req, res) {
 
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
-            dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency } = body;
+            dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency,
+            txn: eventTransactionId, src: eventSource } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
         return res.status(400).end();
@@ -717,15 +809,17 @@ export default async function handler(req, res) {
         await db.query(
             `INSERT INTO analytics_custom_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
-              name, value_cents, currency, pathname, country_code, device_type)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,
+              name, value_cents, currency, transaction_id, pathname, country_code, device_type, source)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
                 isMinimal ? "minimal" : "full",
                 cs === 1 || cs === true, cf === 1 || cf === true, ca === 1 || ca === true,
                 String(eventName).slice(0, 64), valueCents,
                 eventCurrency ? String(eventCurrency).slice(0, 3).toUpperCase() : null,
+                eventTransactionId ? String(eventTransactionId).slice(0, 64) : null,
                 evPathname, country, deviceType,
+                eventSource === "datalayer" ? "datalayer" : "manual",
             ]
         ).catch(() => {});
 
