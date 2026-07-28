@@ -191,7 +191,7 @@ export default function AnalyticsAcquisition() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.hosts.map((h, i) => (
+                                        {data?.hosts?.map((h, i) => (
                                             <tr key={i}>
                                                 <td className="sa-table__path" title={h.host}>
                                                     {h.host}
@@ -206,7 +206,7 @@ export default function AnalyticsAcquisition() {
                                                 </td>
                                             </tr>
                                         ))}
-                                        {!data.hosts.length && (
+                                        {!data?.hosts?.length && (
                                             <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
                                         )}
                                     </tbody>
