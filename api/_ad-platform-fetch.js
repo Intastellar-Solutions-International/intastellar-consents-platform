@@ -91,7 +91,7 @@ async function fetchGoogleAds(conn, fromDate, toDate) {
     if (conn.login_customer_id) headers["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
 
     const post = (query) => fetch(
-        `https://googleads.googleapis.com/v18/customers/${customerId}/googleAds:search`,
+        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
         { method: "POST", headers, body: JSON.stringify({ query }) }
     );
 
@@ -242,7 +242,7 @@ async function fetchGoogleAdsDaily(conn, fromDate, toDate) {
           AND campaign.status != 'REMOVED'
     `;
     const resp = await fetch(
-        `https://googleads.googleapis.com/v18/customers/${customerId}/googleAds:search`,
+        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
         { method: "POST", headers, body: JSON.stringify({ query }) }
     );
     if (!resp.ok) {

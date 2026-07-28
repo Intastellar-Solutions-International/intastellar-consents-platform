@@ -114,13 +114,13 @@ async function fetchAllAccounts(platform, accessToken) {
                     };
                     if (loginCustomerId) headers["login-customer-id"] = String(loginCustomerId);
                     return fetch(
-                        `https://googleads.googleapis.com/v18/customers/${customerId}/googleAds:search`,
+                        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
                         { method: "POST", headers, body: JSON.stringify({ query }) }
                     ).then(r => r.json()).catch(() => ({ results: [] }));
                 };
 
                 const listResp = await fetch(
-                    "https://googleads.googleapis.com/v18/customers:listAccessibleCustomers",
+                    "https://googleads.googleapis.com/v25/customers:listAccessibleCustomers",
                     { headers: { Authorization: `Bearer ${accessToken}`, "developer-token": devToken } }
                 );
                 if (!listResp.ok) return [];
