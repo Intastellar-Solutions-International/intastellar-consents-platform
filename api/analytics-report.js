@@ -97,7 +97,7 @@ export default async function handler(req, res) {
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
            browsersRes, consentRes, utmRes, conversionsRes, eventDefsRes,
-           osRes, screensRes, languagesRes, timezonesRes] = await Promise.all([
+           osRes, screensRes, languagesRes, timezonesRes, engagedRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -249,9 +249,37 @@ export default async function handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ),
 
+        // "Active users" — distinct sessions that actually engaged, not just
+        // showed up: lasted >=10s (the standard "engaged session" threshold),
+        // viewed more than one page, or clicked something. Filters out instant
+        // bounces / bot-like single-ping visits that slipped past detectBot().
+        db.query(`
+            WITH session_stats AS (
+                SELECT session_id, MAX(duration_sec) AS max_duration, COUNT(*) AS pageviews
+                FROM analytics_events
+                WHERE site_id = $1 AND consent_level = 'full'
+                  AND received_at >= $2 AND received_at < $3
+                  AND session_id IS NOT NULL
+                GROUP BY session_id
+            )
+            SELECT COUNT(*) AS engaged
+            FROM session_stats s
+            WHERE s.max_duration >= 10
+               OR s.pageviews > 1
+               OR EXISTS (
+                    SELECT 1 FROM analytics_clicks c
+                    WHERE c.site_id = $1 AND c.session_id = s.session_id
+                      AND c.received_at >= $2 AND c.received_at < $3
+               )`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(14).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(15).fill({ rows: [] });
         throw err;
     });
 
@@ -269,6 +297,7 @@ export default async function handler(req, res) {
             minimal:        Number(t.minimal     || 0),
             full:           Number(t.full_count  || 0),
             uniqueSessions: Number(t.unique_sessions || 0),
+            engagedUsers:   Number(engagedRes.rows[0]?.engaged || 0),
             consentRate:    total > 0
                 ? Math.round((Number(t.full_count || t.stat_yes || 0) / total) * 1000) / 10
                 : 0,

@@ -79,7 +79,7 @@ export default async function handler(req, res) {
 
     const siteId = siteRows[0].id;
 
-    const [totalsRes, minutesRes, pagesRes, recentRes, activeRes] = await Promise.all([
+    const [totalsRes, minutesRes, pagesRes, recentRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -126,19 +126,7 @@ export default async function handler(req, res) {
             [siteId]
         ),
 
-        // "Active users" — a tighter, genuinely-concurrent window than the
-        // 30-minute "Sessions" figure above: distinct sessions seen in the
-        // last 5 minutes, i.e. people plausibly on the site right now.
-        db.query(`
-            SELECT COUNT(DISTINCT session_id) AS active
-            FROM analytics_events
-            WHERE site_id = $1
-              AND session_id IS NOT NULL
-              AND received_at >= NOW() - INTERVAL '5 minutes'`,
-            [siteId]
-        ),
-
-    ]).catch(() => Array(5).fill({ rows: [] }));
+    ]).catch(() => Array(4).fill({ rows: [] }));
 
     const t = totalsRes.rows[0] || {};
 
@@ -163,7 +151,6 @@ export default async function handler(req, res) {
         minimal:  parseInt(t.minimal  || 0),
         full:     parseInt(t.full_count || 0),
         sessions: parseInt(t.sessions || 0),
-        activeUsers: parseInt(activeRes.rows[0]?.active || 0),
         perMinute,
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname,

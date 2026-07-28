@@ -27,30 +27,8 @@ function timeAgo(isoString) {
     return Math.floor(diff / 60) + "m";
 }
 
-// Lightweight, independent poll of the same live endpoint LivePanel uses —
-// kept separate so the top-level "Active users" KPI card stays visible even
-// while the collapsible live panel below it is collapsed.
-function useActiveUsers(domain) {
-    const [activeUsers, setActiveUsers] = useState(null);
 
-    useEffect(() => {
-        if (!domain) { setActiveUsers(null); return; }
-        let cancelled = false;
-        const fetchActive = () => {
-            fetch(`${LIVE_URL}?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
-                .then(async r => (r.ok ? r.json() : null))
-                .then(d => { if (!cancelled && d && !d.noSiteKey) setActiveUsers(d.activeUsers ?? 0); })
-                .catch(() => {});
-        };
-        fetchActive();
-        const poll = setInterval(fetchActive, LIVE_INTERVAL * 1000);
-        return () => { cancelled = true; clearInterval(poll); };
-    }, [domain]);
-
-    return activeUsers;
-}
-
-function LivePanel({ domain, className }) {
+function LivePanel({ domain, className, engagedUsers }) {
     const [data,      setData]    = useState(null);
     const [open,      setOpen]    = useState(true);
     const [countdown, setCountdown] = useState(LIVE_INTERVAL);
@@ -105,8 +83,8 @@ function LivePanel({ domain, className }) {
                     <div className="sa-live__kpis">
                         <div className="sa-live__kpi">
                             <span className="sa-live__kpi-label">Active users</span>
-                            <span className="sa-live__kpi-value">{(data.activeUsers || 0).toLocaleString("de-DE")}</span>
-                            <span className="sa-live__kpi-sub">last 5 min · distinct people</span>
+                            <span className="sa-live__kpi-value">{(engagedUsers ?? 0).toLocaleString("de-DE")}</span>
+                            <span className="sa-live__kpi-sub">engaged in selected period</span>
                         </div>
                         <div className="sa-live__kpi">
                             <span className="sa-live__kpi-label">Events</span>
@@ -376,7 +354,6 @@ export default function SiteAnalytics() {
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
 
     const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
-    const activeUsers = useActiveUsers(domain);
 
     const maxPageViews = useMemo(() => Math.max(...(data?.topPages || []).map(p => p.views), 1), [data]);
 
@@ -428,8 +405,8 @@ export default function SiteAnalytics() {
                             <KpiCard className="sa-ga-kpi0"
                                 icon={<IconRadio />}
                                 label="Active users"
-                                value={(activeUsers ?? 0).toLocaleString("de-DE")}
-                                sub="last 5 min · distinct people"
+                                value={data.totals.engagedUsers.toLocaleString("de-DE")}
+                                sub="engaged: 10s+, clicked, or 2+ pages"
                                 variant="live"
                             />
                             <KpiCard className="sa-ga-kpi1"
@@ -465,7 +442,7 @@ export default function SiteAnalytics() {
                                 <DailyChart daily={data.daily} />
                             </div>
 
-                            <LivePanel domain={domain} className="sa-ga-live" />
+                            <LivePanel domain={domain} className="sa-ga-live" engagedUsers={data.totals.engagedUsers} />
 
                             <div className="sa-panel sa-ga-pages">
                                 <h3 className="sa-panel__title"><IconDocument className="sa-icon" /> Top pages</h3>

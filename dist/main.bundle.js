@@ -76816,106 +76816,63 @@ function timeAgo(isoString) {
   if (diff < 60) return diff + "s";
   return Math.floor(diff / 60) + "m";
 }
-
-// Lightweight, independent poll of the same live endpoint LivePanel uses —
-// kept separate so the top-level "Active users" KPI card stays visible even
-// while the collapsible live panel below it is collapsed.
-function useActiveUsers(domain) {
+function LivePanel(_ref) {
+  var _data$topPages, _data$recent;
+  var domain = _ref.domain,
+    className = _ref.className,
+    engagedUsers = _ref.engagedUsers;
   var _useState = useState(null),
     _useState2 = _slicedToArray(_useState, 2),
-    activeUsers = _useState2[0],
-    setActiveUsers = _useState2[1];
-  useEffect(function () {
-    if (!domain) {
-      setActiveUsers(null);
-      return;
-    }
-    var cancelled = false;
-    var fetchActive = function fetchActive() {
-      fetch("".concat(LIVE_URL, "?domain=").concat(encodeURIComponent(domain)), {
-        headers: (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.authHeaders)()
-      }).then(/*#__PURE__*/function () {
-        var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(r) {
-          return _regenerator().w(function (_context) {
-            while (1) switch (_context.n) {
-              case 0:
-                return _context.a(2, r.ok ? r.json() : null);
-            }
-          }, _callee);
-        }));
-        return function (_x) {
-          return _ref.apply(this, arguments);
-        };
-      }()).then(function (d) {
-        var _d$activeUsers;
-        if (!cancelled && d && !d.noSiteKey) setActiveUsers((_d$activeUsers = d.activeUsers) !== null && _d$activeUsers !== void 0 ? _d$activeUsers : 0);
-      })["catch"](function () {});
-    };
-    fetchActive();
-    var poll = setInterval(fetchActive, LIVE_INTERVAL * 1000);
-    return function () {
-      cancelled = true;
-      clearInterval(poll);
-    };
-  }, [domain]);
-  return activeUsers;
-}
-function LivePanel(_ref2) {
-  var _data$topPages, _data$recent;
-  var domain = _ref2.domain,
-    className = _ref2.className;
-  var _useState3 = useState(null),
+    data = _useState2[0],
+    setData = _useState2[1];
+  var _useState3 = useState(true),
     _useState4 = _slicedToArray(_useState3, 2),
-    data = _useState4[0],
-    setData = _useState4[1];
-  var _useState5 = useState(true),
+    open = _useState4[0],
+    setOpen = _useState4[1];
+  var _useState5 = useState(LIVE_INTERVAL),
     _useState6 = _slicedToArray(_useState5, 2),
-    open = _useState6[0],
-    setOpen = _useState6[1];
-  var _useState7 = useState(LIVE_INTERVAL),
-    _useState8 = _slicedToArray(_useState7, 2),
-    countdown = _useState8[0],
-    setCountdown = _useState8[1];
-  var fetchLive = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+    countdown = _useState6[0],
+    setCountdown = _useState6[1];
+  var fetchLive = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
     var r, _t, _t2, _t3;
-    return _regenerator().w(function (_context2) {
-      while (1) switch (_context2.p = _context2.n) {
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
         case 0:
           if (domain) {
-            _context2.n = 1;
+            _context.n = 1;
             break;
           }
-          return _context2.a(2);
+          return _context.a(2);
         case 1:
-          _context2.p = 1;
-          _context2.n = 2;
+          _context.p = 1;
+          _context.n = 2;
           return fetch("".concat(LIVE_URL, "?domain=").concat(encodeURIComponent(domain)), {
             headers: (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.authHeaders)()
           });
         case 2:
-          r = _context2.v;
+          r = _context.v;
           if (!r.ok) {
-            _context2.n = 4;
+            _context.n = 4;
             break;
           }
           _t = setData;
-          _context2.n = 3;
+          _context.n = 3;
           return r.json();
         case 3:
-          _t2 = _context2.v;
+          _t2 = _context.v;
           _t(_t2);
         case 4:
-          _context2.n = 6;
+          _context.n = 6;
           break;
         case 5:
-          _context2.p = 5;
-          _t3 = _context2.v;
+          _context.p = 5;
+          _t3 = _context.v;
         case 6:
           setCountdown(LIVE_INTERVAL);
         case 7:
-          return _context2.a(2);
+          return _context.a(2);
       }
-    }, _callee2, null, [[1, 5]]);
+    }, _callee, null, [[1, 5]]);
   })), [domain]);
   useEffect(function () {
     fetchLive();
@@ -76973,9 +76930,9 @@ function LivePanel(_ref2) {
     className: "sa-live__kpi-label"
   }, "Active users"), /*#__PURE__*/React.createElement("span", {
     className: "sa-live__kpi-value"
-  }, (data.activeUsers || 0).toLocaleString("de-DE")), /*#__PURE__*/React.createElement("span", {
+  }, (engagedUsers !== null && engagedUsers !== void 0 ? engagedUsers : 0).toLocaleString("de-DE")), /*#__PURE__*/React.createElement("span", {
     className: "sa-live__kpi-sub"
-  }, "last 5 min \xB7 distinct people")), /*#__PURE__*/React.createElement("div", {
+  }, "engaged in selected period")), /*#__PURE__*/React.createElement("div", {
     className: "sa-live__kpi"
   }, /*#__PURE__*/React.createElement("span", {
     className: "sa-live__kpi-label"
@@ -77065,12 +77022,12 @@ function LivePanel(_ref2) {
   }, "No events yet"))))));
 }
 var INGEST_URL = "https://analytics.consentsmanagement.com/api/a";
-function CopyButton(_ref4) {
-  var text = _ref4.text;
-  var _useState9 = useState(false),
-    _useState0 = _slicedToArray(_useState9, 2),
-    copied = _useState0[0],
-    setCopied = _useState0[1];
+function CopyButton(_ref3) {
+  var text = _ref3.text;
+  var _useState7 = useState(false),
+    _useState8 = _slicedToArray(_useState7, 2),
+    copied = _useState8[0],
+    setCopied = _useState8[1];
   var copy = useCallback(function () {
     navigator.clipboard.writeText(text).then(function () {
       setCopied(true);
@@ -77085,8 +77042,8 @@ function CopyButton(_ref4) {
     onClick: copy
   }, copied ? "Copied!" : "Copy snippet");
 }
-function DailyChart(_ref5) {
-  var daily = _ref5.daily;
+function DailyChart(_ref4) {
+  var daily = _ref4.daily;
   var W = 600,
     H = 160,
     PAD = {
@@ -77176,21 +77133,21 @@ function DailyChart(_ref5) {
     className: "sa-chart__legend-dot sa-chart__legend-dot--minimal"
   }), /*#__PURE__*/React.createElement("span", null, "No consent (minimal)")));
 }
-function SetupCard(_ref6) {
-  var domain = _ref6.domain,
-    onKeyGenerated = _ref6.onKeyGenerated;
-  var _useState1 = useState(null),
+function SetupCard(_ref5) {
+  var domain = _ref5.domain,
+    onKeyGenerated = _ref5.onKeyGenerated;
+  var _useState9 = useState(null),
+    _useState0 = _slicedToArray(_useState9, 2),
+    siteKey = _useState0[0],
+    setSiteKey = _useState0[1];
+  var _useState1 = useState(true),
     _useState10 = _slicedToArray(_useState1, 2),
-    siteKey = _useState10[0],
-    setSiteKey = _useState10[1];
-  var _useState11 = useState(true),
+    loading = _useState10[0],
+    setLoading = _useState10[1];
+  var _useState11 = useState(false),
     _useState12 = _slicedToArray(_useState11, 2),
-    loading = _useState12[0],
-    setLoading = _useState12[1];
-  var _useState13 = useState(false),
-    _useState14 = _slicedToArray(_useState13, 2),
-    generating = _useState14[0],
-    setGenerating = _useState14[1];
+    generating = _useState12[0],
+    setGenerating = _useState12[1];
   useEffect(function () {
     if (!domain) {
       setLoading(false);
@@ -77199,40 +77156,40 @@ function SetupCard(_ref6) {
     fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-site?domain=").concat(encodeURIComponent(domain)), {
       headers: (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.authHeaders)()
     }).then(/*#__PURE__*/function () {
-      var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(r) {
+      var _ref6 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(r) {
         var d;
-        return _regenerator().w(function (_context3) {
-          while (1) switch (_context3.n) {
+        return _regenerator().w(function (_context2) {
+          while (1) switch (_context2.n) {
             case 0:
               if (!r.ok) {
-                _context3.n = 2;
+                _context2.n = 2;
                 break;
               }
-              _context3.n = 1;
+              _context2.n = 1;
               return r.json();
             case 1:
-              d = _context3.v;
+              d = _context2.v;
               setSiteKey(d.id);
             case 2:
-              return _context3.a(2);
+              return _context2.a(2);
           }
-        }, _callee3);
+        }, _callee2);
       }));
-      return function (_x2) {
-        return _ref7.apply(this, arguments);
+      return function (_x) {
+        return _ref6.apply(this, arguments);
       };
     }())["catch"](function () {})["finally"](function () {
       return setLoading(false);
     });
   }, [domain]);
   var generate = /*#__PURE__*/function () {
-    var _ref8 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4() {
+    var _ref7 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
       var r, d;
-      return _regenerator().w(function (_context4) {
-        while (1) switch (_context4.n) {
+      return _regenerator().w(function (_context3) {
+        while (1) switch (_context3.n) {
           case 0:
             setGenerating(true);
-            _context4.n = 1;
+            _context3.n = 1;
             return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-site"), {
               method: "POST",
               headers: (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.authHeaders)(),
@@ -77243,26 +77200,26 @@ function SetupCard(_ref6) {
               return null;
             });
           case 1:
-            r = _context4.v;
+            r = _context3.v;
             if (!(r !== null && r !== void 0 && r.ok)) {
-              _context4.n = 3;
+              _context3.n = 3;
               break;
             }
-            _context4.n = 2;
+            _context3.n = 2;
             return r.json();
           case 2:
-            d = _context4.v;
+            d = _context3.v;
             setSiteKey(d.id);
             onKeyGenerated === null || onKeyGenerated === void 0 || onKeyGenerated();
           case 3:
             setGenerating(false);
           case 4:
-            return _context4.a(2);
+            return _context3.a(2);
         }
-      }, _callee4);
+      }, _callee3);
     }));
     return function generate() {
-      return _ref8.apply(this, arguments);
+      return _ref7.apply(this, arguments);
     };
   }();
   var snippet = siteKey ? "<script src=\"".concat(INGEST_URL, "\" data-site=\"").concat(siteKey, "\" async defer></script>") : null;
@@ -77310,28 +77267,28 @@ function SiteAnalytics() {
     if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
     return String(globalDomain || "").trim().toLowerCase();
   }, [globalDomain]);
-  var _useState15 = useState(30),
-    _useState16 = _slicedToArray(_useState15, 2),
-    getLastDays = _useState16[0],
-    setLastDays = _useState16[1];
-  var _useState17 = useState(function () {
+  var _useState13 = useState(30),
+    _useState14 = _slicedToArray(_useState13, 2),
+    getLastDays = _useState14[0],
+    setLastDays = _useState14[1];
+  var _useState15 = useState(function () {
       var d = new Date();
       d.setDate(d.getDate() - 30);
       return d;
     }),
-    _useState18 = _slicedToArray(_useState17, 2),
-    fromDate = _useState18[0],
-    setFromDate = _useState18[1];
-  var _useState19 = useState(function () {
+    _useState16 = _slicedToArray(_useState15, 2),
+    fromDate = _useState16[0],
+    setFromDate = _useState16[1];
+  var _useState17 = useState(function () {
       return new Date();
     }),
+    _useState18 = _slicedToArray(_useState17, 2),
+    toDate = _useState18[0],
+    setToDate = _useState18[1];
+  var _useState19 = useState(0),
     _useState20 = _slicedToArray(_useState19, 2),
-    toDate = _useState20[0],
-    setToDate = _useState20[1];
-  var _useState21 = useState(0),
-    _useState22 = _slicedToArray(_useState21, 2),
-    tick = _useState22[0],
-    setTick = _useState22[1];
+    tick = _useState20[0],
+    setTick = _useState20[1];
   var fromIso = useMemo(function () {
     return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(fromDate);
   }, [fromDate]);
@@ -77342,7 +77299,6 @@ function SiteAnalytics() {
     data = _useAnalyticsReport.data,
     loading = _useAnalyticsReport.loading,
     error = _useAnalyticsReport.error;
-  var activeUsers = useActiveUsers(domain);
   var maxPageViews = useMemo(function () {
     return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.topPages) || []).map(function (p) {
       return p.views;
@@ -77390,8 +77346,8 @@ function SiteAnalytics() {
     className: "sa-ga-kpi0",
     icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconRadio, null),
     label: "Active users",
-    value: (activeUsers !== null && activeUsers !== void 0 ? activeUsers : 0).toLocaleString("de-DE"),
-    sub: "last 5 min \xB7 distinct people",
+    value: data.totals.engagedUsers.toLocaleString("de-DE"),
+    sub: "engaged: 10s+, clicked, or 2+ pages",
     variant: "live"
   }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.KpiCard, {
     className: "sa-ga-kpi1",
@@ -77428,7 +77384,8 @@ function SiteAnalytics() {
     daily: data.daily
   })), /*#__PURE__*/React.createElement(LivePanel, {
     domain: domain,
-    className: "sa-ga-live"
+    className: "sa-ga-live",
+    engagedUsers: data.totals.engagedUsers
   }), /*#__PURE__*/React.createElement("div", {
     className: "sa-panel sa-ga-pages"
   }, /*#__PURE__*/React.createElement("h3", {
