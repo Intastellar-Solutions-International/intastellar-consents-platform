@@ -42,18 +42,39 @@ function useRecordingList(domain, fromIso, toIso, tick = 0) {
 }
 
 function EnableRecordingCard({ domain, onEnabled }) {
-    const [saving, setSaving] = useState(false);
+    const [saving,      setSaving]      = useState(false);
+    const [justEnabled, setJustEnabled] = useState(false);
+    const [error,       setError]       = useState(null);
 
     const enable = useCallback(async () => {
         setSaving(true);
+        setError(null);
         const r = await fetch(`${SITE_URL}?domain=${encodeURIComponent(domain)}`, {
             method: "PATCH",
             headers: authHeaders(),
             body: JSON.stringify({ recordingEnabled: true }),
         }).catch(() => null);
         setSaving(false);
-        if (r?.ok) onEnabled?.();
+        if (r?.ok) {
+            setJustEnabled(true);
+            onEnabled?.();
+        } else {
+            setError("Could not enable recording — please try again.");
+        }
     }, [domain, onEnabled]);
+
+    if (justEnabled) {
+        return (
+            <div className="sa-setup">
+                <div className="sa-setup__icon"><IconVideo /></div>
+                <h3 className="sa-setup__title">Recording enabled for <strong>{domain}</strong></h3>
+                <p className="sa-setup__body">
+                    New consented visits will now be sampled in for recording. Recordings
+                    appear here once a session finishes — this can take a few minutes.
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="sa-setup">
@@ -67,6 +88,7 @@ function EnableRecordingCard({ domain, onEnabled }) {
             <button type="button" className="sa-setup__gen-btn" onClick={enable} disabled={saving}>
                 {saving ? "Enabling…" : "Enable recording"}
             </button>
+            {error && <p className="sa-notice sa-notice--error" style={{ marginTop: 12 }}>{error}</p>}
         </div>
     );
 }

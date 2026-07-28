@@ -75797,12 +75797,21 @@ function EnableRecordingCard(_ref2) {
     _useState8 = _slicedToArray(_useState7, 2),
     saving = _useState8[0],
     setSaving = _useState8[1];
+  var _useState9 = useState(false),
+    _useState0 = _slicedToArray(_useState9, 2),
+    justEnabled = _useState0[0],
+    setJustEnabled = _useState0[1];
+  var _useState1 = useState(null),
+    _useState10 = _slicedToArray(_useState1, 2),
+    error = _useState10[0],
+    setError = _useState10[1];
   var enable = useCallback(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
     var r;
     return _regenerator().w(function (_context2) {
       while (1) switch (_context2.n) {
         case 0:
           setSaving(true);
+          setError(null);
           _context2.n = 1;
           return fetch("".concat(SITE_URL, "?domain=").concat(encodeURIComponent(domain)), {
             method: "PATCH",
@@ -75816,12 +75825,28 @@ function EnableRecordingCard(_ref2) {
         case 1:
           r = _context2.v;
           setSaving(false);
-          if (r !== null && r !== void 0 && r.ok) onEnabled === null || onEnabled === void 0 || onEnabled();
+          if (r !== null && r !== void 0 && r.ok) {
+            setJustEnabled(true);
+            onEnabled === null || onEnabled === void 0 || onEnabled();
+          } else {
+            setError("Could not enable recording — please try again.");
+          }
         case 2:
           return _context2.a(2);
       }
     }, _callee2);
   })), [domain, onEnabled]);
+  if (justEnabled) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "sa-setup"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "sa-setup__icon"
+    }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconVideo, null)), /*#__PURE__*/React.createElement("h3", {
+      className: "sa-setup__title"
+    }, "Recording enabled for ", /*#__PURE__*/React.createElement("strong", null, domain)), /*#__PURE__*/React.createElement("p", {
+      className: "sa-setup__body"
+    }, "New consented visits will now be sampled in for recording. Recordings appear here once a session finishes \u2014 this can take a few minutes."));
+  }
   return /*#__PURE__*/React.createElement("div", {
     className: "sa-setup"
   }, /*#__PURE__*/React.createElement("div", {
@@ -75835,7 +75860,12 @@ function EnableRecordingCard(_ref2) {
     className: "sa-setup__gen-btn",
     onClick: enable,
     disabled: saving
-  }, saving ? "Enabling…" : "Enable recording"));
+  }, saving ? "Enabling…" : "Enable recording"), error && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice sa-notice--error",
+    style: {
+      marginTop: 12
+    }
+  }, error));
 }
 function AnalyticsRecordings() {
   document.title = "Recordings | Site Analytics";
@@ -75850,34 +75880,34 @@ function AnalyticsRecordings() {
     if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
     return String(globalDomain || "").trim().toLowerCase();
   }, [globalDomain]);
-  var _useState9 = useState(30),
-    _useState0 = _slicedToArray(_useState9, 2),
-    getLastDays = _useState0[0],
-    setLastDays = _useState0[1];
-  var _useState1 = useState(function () {
+  var _useState11 = useState(30),
+    _useState12 = _slicedToArray(_useState11, 2),
+    getLastDays = _useState12[0],
+    setLastDays = _useState12[1];
+  var _useState13 = useState(function () {
       var d = new Date();
       d.setDate(d.getDate() - 30);
       return d;
     }),
-    _useState10 = _slicedToArray(_useState1, 2),
-    fromDate = _useState10[0],
-    setFromDate = _useState10[1];
-  var _useState11 = useState(function () {
+    _useState14 = _slicedToArray(_useState13, 2),
+    fromDate = _useState14[0],
+    setFromDate = _useState14[1];
+  var _useState15 = useState(function () {
       return new Date();
     }),
-    _useState12 = _slicedToArray(_useState11, 2),
-    toDate = _useState12[0],
-    setToDate = _useState12[1];
+    _useState16 = _slicedToArray(_useState15, 2),
+    toDate = _useState16[0],
+    setToDate = _useState16[1];
   var fromIso = useMemo(function () {
     return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(fromDate);
   }, [fromDate]);
   var toIso = useMemo(function () {
     return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(toDate);
   }, [toDate]);
-  var _useState13 = useState(0),
-    _useState14 = _slicedToArray(_useState13, 2),
-    tick = _useState14[0],
-    setTick = _useState14[1];
+  var _useState17 = useState(0),
+    _useState18 = _slicedToArray(_useState17, 2),
+    tick = _useState18[0],
+    setTick = _useState18[1];
   var _useRecordingList = useRecordingList(domain, fromIso, toIso),
     data = _useRecordingList.data,
     loading = _useRecordingList.loading,
@@ -75957,18 +75987,18 @@ function AnalyticsRecordingDetail() {
     if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
     return String(globalDomain || "").trim().toLowerCase();
   }, [globalDomain]);
-  var _useState15 = useState(null),
-    _useState16 = _slicedToArray(_useState15, 2),
-    data = _useState16[0],
-    setData = _useState16[1];
-  var _useState17 = useState(false),
-    _useState18 = _slicedToArray(_useState17, 2),
-    loading = _useState18[0],
-    setLoading = _useState18[1];
   var _useState19 = useState(null),
     _useState20 = _slicedToArray(_useState19, 2),
-    error = _useState20[0],
-    setError = _useState20[1];
+    data = _useState20[0],
+    setData = _useState20[1];
+  var _useState21 = useState(false),
+    _useState22 = _slicedToArray(_useState21, 2),
+    loading = _useState22[0],
+    setLoading = _useState22[1];
+  var _useState23 = useState(null),
+    _useState24 = _slicedToArray(_useState23, 2),
+    error = _useState24[0],
+    setError = _useState24[1];
   useEffect(function () {
     if (!domain || !recordingId) return;
     setLoading(true);
