@@ -95,7 +95,8 @@ export default async function handler(req, res) {
 
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
-           browsersRes, consentRes, utmRes, conversionsRes, eventDefsRes] = await Promise.all([
+           browsersRes, consentRes, utmRes, conversionsRes, eventDefsRes,
+           osRes, screensRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -207,6 +208,26 @@ export default async function handler(req, res) {
             throw err;
         }),
 
+        db.query(`
+            SELECT os_family, COUNT(*) AS events
+            FROM analytics_events
+            WHERE site_id = $1 AND consent_level = 'full'
+              AND received_at >= $2 AND received_at < $3
+              AND os_family IS NOT NULL AND os_family != 'other'
+            GROUP BY os_family ORDER BY events DESC LIMIT 8`,
+            [siteId, fromDate, toDateExclusive]
+        ),
+
+        db.query(`
+            SELECT screen_width, screen_height, COUNT(*) AS events
+            FROM analytics_events
+            WHERE site_id = $1 AND consent_level = 'full'
+              AND received_at >= $2 AND received_at < $3
+              AND screen_width IS NOT NULL
+            GROUP BY screen_width, screen_height ORDER BY events DESC LIMIT 10`,
+            [siteId, fromDate, toDateExclusive]
+        ),
+
     ]).catch((err) => {
         // Table may not exist yet
         if (err?.message?.includes("does not exist")) return Array(10).fill({ rows: [] });
@@ -251,6 +272,15 @@ export default async function handler(req, res) {
         })),
         browsers: browsersRes.rows.map(r => ({
             name:   r.browser_family,
+            events: Number(r.events || 0),
+        })),
+        os: osRes.rows.map(r => ({
+            name:   r.os_family,
+            events: Number(r.events || 0),
+        })),
+        screens: screensRes.rows.map(r => ({
+            width:  Number(r.screen_width),
+            height: Number(r.screen_height),
             events: Number(r.events || 0),
         })),
         consent: (() => {

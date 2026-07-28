@@ -451,7 +451,8 @@
         "kpi1   kpi2    kpi3      kpi4"
         "chart  chart   chart     live"
         "pages  pages   consent   countries"
-        "brows  brows   utm       utm";
+        "brows  brows   utm       utm"
+        "os     os      screens   screens";
 }
 
 .sa-dashboard-grid--no-utm {
@@ -459,7 +460,7 @@
         "kpi1   kpi2    kpi3      kpi4"
         "chart  chart   chart     live"
         "pages  pages   consent   countries"
-        "brows  brows   brows     brows";
+        "brows  brows   os        screens";
 }
 
 /* Grid area assignments */
@@ -474,6 +475,8 @@
 .sa-ga-countries { grid-area: countries; }
 .sa-ga-brows     { grid-area: brows; }
 .sa-ga-utm       { grid-area: utm; }
+.sa-ga-os        { grid-area: os; }
+.sa-ga-screens   { grid-area: screens; }
 
 @media (max-width: 1100px) {
     .sa-dashboard-grid,
@@ -486,7 +489,8 @@
             "live    live"
             "pages   pages"
             "consent countries"
-            "brows   utm";
+            "brows   utm"
+            "os      screens";
     }
     .sa-dashboard-grid--no-utm {
         grid-template-areas:
@@ -496,7 +500,8 @@
             "live    live"
             "pages   pages"
             "consent countries"
-            "brows   brows";
+            "brows   brows"
+            "os      screens";
     }
 }
 
@@ -508,7 +513,7 @@
             "kpi1" "kpi2" "kpi3" "kpi4"
             "chart" "live"
             "pages" "consent" "countries"
-            "brows" "utm";
+            "brows" "utm" "os" "screens";
     }
 }
 

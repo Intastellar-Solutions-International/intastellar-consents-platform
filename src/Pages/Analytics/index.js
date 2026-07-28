@@ -448,6 +448,8 @@ export default function SiteAnalytics() {
     const maxCountry    = useMemo(() => Math.max(...(data?.countries || []).map(c => c.events), 1), [data]);
     const maxBrowser    = useMemo(() => Math.max(...(data?.browsers  || []).map(b => b.events), 1), [data]);
     const maxUtm        = useMemo(() => Math.max(...(data?.utmSources|| []).map(u => u.events), 1), [data]);
+    const maxOs         = useMemo(() => Math.max(...(data?.os        || []).map(o => o.events), 1), [data]);
+    const maxScreens    = useMemo(() => Math.max(...(data?.screens   || []).map(s => s.events), 1), [data]);
 
     const deviceTotal   = useMemo(() => (data?.devices  || []).reduce((s, d) => s + d.events, 0), [data]);
 
@@ -670,6 +672,66 @@ export default function SiteAnalytics() {
                                                     <td className="sa-table__num">{u.events.toLocaleString("de-DE")}</td>
                                                     <td className="sa-table__bar">
                                                         <MiniBar value={u.events} max={maxUtm} color="rgba(251,146,60,0.6)" />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+
+                            {/* Operating systems */}
+                            {data.os?.length > 0 && (
+                                <div className="sa-panel sa-ga-os">
+                                    <h3 className="sa-panel__title">
+                                        <IconGlobe className="sa-icon" /> Operating systems
+                                        <span className="sa-panel__consent-note">full events only</span>
+                                    </h3>
+                                    <table className="sa-table">
+                                        <thead>
+                                            <tr>
+                                                <th>OS</th>
+                                                <th className="sa-table__num">Events</th>
+                                                <th className="sa-table__bar" />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.os.map(o => (
+                                                <tr key={o.name}>
+                                                    <td>{o.name}</td>
+                                                    <td className="sa-table__num">{o.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__bar">
+                                                        <MiniBar value={o.events} max={maxOs} color="rgba(129,140,248,0.6)" />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+
+                            {/* Screen resolutions */}
+                            {data.screens?.length > 0 && (
+                                <div className="sa-panel sa-ga-screens">
+                                    <h3 className="sa-panel__title">
+                                        <IconRadio className="sa-icon" /> Screen resolutions
+                                        <span className="sa-panel__consent-note">full events only</span>
+                                    </h3>
+                                    <table className="sa-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Resolution</th>
+                                                <th className="sa-table__num">Events</th>
+                                                <th className="sa-table__bar" />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {data.screens.map((s, i) => (
+                                                <tr key={i}>
+                                                    <td>{s.width} × {s.height}</td>
+                                                    <td className="sa-table__num">{s.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__bar">
+                                                        <MiniBar value={s.events} max={maxScreens} color="rgba(52,211,153,0.6)" />
                                                     </td>
                                                 </tr>
                                             ))}
