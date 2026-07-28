@@ -12,7 +12,7 @@ import pkg from "pg";
 const { Pool } = pkg;
 
 // Check https://developers.google.com/google-ads/api/docs/release-notes for the latest supported version.
-const GADS_API_VERSION = "v19";
+const GADS_API_VERSION = "v25";
 
 let pool;
 function getPool() {

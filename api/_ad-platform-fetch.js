@@ -8,7 +8,7 @@
  */
 
 // Check https://developers.google.com/google-ads/api/docs/release-notes for the latest supported version.
-const GADS_API_VERSION = "v19";
+const GADS_API_VERSION = "v25";
 
 export async function tryRefreshToken(db, conn) {
     if (!conn.token_expires_at) return conn;
