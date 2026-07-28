@@ -11,6 +11,9 @@
 import pkg from "pg";
 const { Pool } = pkg;
 
+// Check https://developers.google.com/google-ads/api/docs/release-notes for the latest supported version.
+const GADS_API_VERSION = "v19";
+
 let pool;
 function getPool() {
     if (!pool) {
@@ -91,13 +94,13 @@ async function fetchAllAccounts(platform, accessToken) {
                     };
                     if (loginCustomerId) headers["login-customer-id"] = String(loginCustomerId);
                     return fetch(
-                        `https://googleads.googleapis.com/v18/customers/${customerId}/googleAds:search`,
+                        `https://googleads.googleapis.com/${GADS_API_VERSION}/customers/${customerId}/googleAds:search`,
                         { method: "POST", headers, body: JSON.stringify({ query }) }
                     ).then(r => r.json()).catch(() => ({ results: [] }));
                 };
 
                 const listResp = await fetch(
-                    "https://googleads.googleapis.com/v18/customers:listAccessibleCustomers",
+                    `https://googleads.googleapis.com/${GADS_API_VERSION}/customers:listAccessibleCustomers`,
                     { headers: { Authorization: `Bearer ${accessToken}`, "developer-token": devToken } }
                 );
                 if (!listResp.ok) {
