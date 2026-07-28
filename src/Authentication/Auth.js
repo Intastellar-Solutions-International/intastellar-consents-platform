@@ -187,4 +187,39 @@ const Authentication = {
         };
     },
 }
+
+// ── Global 401 handling ──────────────────────────────────────────────────────
+// Any request that carried an Authorization header and comes back 401 means
+// the token is expired/invalid (or the account was deactivated, or the
+// signature no longer validates — 401 is the right universal signal for all
+// of those, not just plain expiry) — log the user out immediately rather than
+// leaving every page to handle (or silently ignore) it individually.
+// Installed once here, patching window.fetch, so it covers every existing
+// fetch call across the app plus any new one added later with no per-call-site
+// changes needed. Requests without an Authorization header (login, signup)
+// are left alone — a 401 there doesn't mean an expired session.
+function hasAuthHeader(input, init) {
+    const headers = init?.headers || (input && typeof input === "object" ? input.headers : null);
+    if (!headers) return false;
+    if (typeof Headers !== "undefined" && headers instanceof Headers) return headers.has("Authorization");
+    if (Array.isArray(headers)) return headers.some(([k]) => String(k).toLowerCase() === "authorization");
+    return Object.keys(headers).some(k => k.toLowerCase() === "authorization");
+}
+
+if (typeof window !== "undefined" && window.fetch && !window.fetch.__intaAuthPatched) {
+    const originalFetch = window.fetch.bind(window);
+    let loggingOut = false;
+    const patchedFetch = function (input, init) {
+        return originalFetch(input, init).then((response) => {
+            if (response && response.status === 401 && hasAuthHeader(input, init) && !loggingOut) {
+                loggingOut = true;
+                Authentication.Logout();
+            }
+            return response;
+        });
+    };
+    patchedFetch.__intaAuthPatched = true;
+    window.fetch = patchedFetch;
+}
+
 export default Authentication;
