@@ -1126,3 +1126,196 @@
             "kpi1" "kpi2" "category" "list" "pages" "recent";
     }
 }
+
+/* ── Conversions section (ConversionsPanel, embedded on the Overview page) ───── */
+
+.sa-section {
+    background: rgba(26,26,30,0.75);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+
+.sa-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.sa-section__title {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(160,160,160,0.65);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sa-panel__sub {
+    color: rgba(130,130,130,0.55);
+    font-size: 0.82rem;
+    margin: 0;
+}
+
+.sa-add-event-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(192,159,83,0.12);
+    border: 1px solid rgba(192,159,83,0.3);
+    color: rgba(230,210,160,0.95);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sa-add-event-btn:hover {
+    background: rgba(192,159,83,0.2);
+}
+
+.sa-event-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px;
+    margin-bottom: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+}
+
+.sa-event-form__input,
+.sa-event-form__select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: rgba(220,220,220,0.9);
+    font-size: 0.82rem;
+    padding: 7px 10px;
+}
+
+.sa-event-form__input {
+    flex: 1;
+    min-width: 160px;
+}
+
+.sa-event-form__submit {
+    background: rgba(192,159,83,0.55);
+    border: none;
+    color: #1a1a1e;
+    font-weight: 600;
+    font-size: 0.82rem;
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sa-event-form__submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.sa-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sa-event-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sa-event-row:last-child { border-bottom: none; }
+
+.sa-event-row__icon {
+    color: rgba(192,159,83,0.8);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.sa-event-row__icon svg { width: 18px; height: 18px; }
+
+.sa-event-row__body { flex: 1; min-width: 0; }
+
+.sa-event-row__top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sa-event-row__name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(220,220,220,0.92);
+}
+
+.sa-event-row__kind {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(150,150,150,0.65);
+    background: rgba(255,255,255,0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.sa-event-row__unregistered {
+    font-size: 0.68rem;
+    color: rgba(220,160,60,0.85);
+}
+
+.sa-event-row__stats {
+    display: flex;
+    gap: 14px;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: rgba(180,180,180,0.75);
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-event-row__consent-note {
+    color: rgba(120,120,120,0.55);
+}
+
+.sa-event-row__snippet-toggle {
+    background: none;
+    border: none;
+    color: rgba(150,180,220,0.75);
+    font-size: 0.72rem;
+    padding: 0;
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.sa-event-row__snippet {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 6px;
+    font-family: "SF Mono","Fira Code","Cascadia Code",monospace;
+    font-size: 0.74rem;
+    color: rgba(180,210,180,0.85);
+    overflow-x: auto;
+}
+
+.sa-event-row__delete {
+    background: none;
+    border: none;
+    color: rgba(200,120,120,0.6);
+    cursor: pointer;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.sa-event-row__delete:hover { color: rgba(230,140,140,0.9); }
+.sa-event-row__delete svg { width: 16px; height: 16px; }

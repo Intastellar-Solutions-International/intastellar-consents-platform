@@ -16,6 +16,7 @@ import {
     IconDocument,
     IconRadio,
 } from "./Icons.js";
+import ConversionsPanel from "./Conversions.js";
 import "./Analytics.css";
 
 const LIVE_URL = `${ScannerHost}/api/analytics-live`;
@@ -469,6 +470,14 @@ export default function SiteAnalytics() {
                             </div>
 
                         </div>
+                    )}
+
+                    {showData && (
+                        <ConversionsPanel
+                            domain={domain}
+                            conversions={data.conversions}
+                            onDefsChanged={() => setTick(t => t + 1)}
+                        />
                     )}
                 </div>
             </div>

@@ -26695,7 +26695,200 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Site Analytics report page �
             "kpi1" "kpi2" "category" "list" "pages" "recent";
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Analytics/Analytics.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Site Analytics report page ─────────────────────────────────────────────── */\n\n.sa-page {\n    padding: 4px 0 64px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* ── Live view panel ─────────────────────────────────────────────────────────── */\n\n.sa-live {\n    border: 1px solid rgba(74,222,128,0.2);\n    border-radius: 14px;\n    background: rgba(20,30,20,0.7);\n    overflow: hidden;\n}\n\n.sa-live__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 14px 20px;\n    gap: 12px;\n    cursor: pointer;\n    user-select: none;\n}\n\n.sa-aud-countries-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px;\n    padding: 12px;\n    border-radius: 10px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-live__header:hover { background: rgba(255,255,255,0.02); }\n\n.sa-live__title {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-live__dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: #4ade80;\n    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);\n    animation: sa-pulse 1.8s ease-out infinite;\n    flex-shrink: 0;\n}\n\n@keyframes sa-pulse {\n    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }\n    60%  { box-shadow: 0 0 0 7px rgba(74,222,128,0); }\n    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }\n}\n\n.sa-live__label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #4ade80;\n}\n\n.sa-live__window {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-live__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n}\n\n.sa-live__countdown {\n    font-size: 0.7rem;\n    color: rgba(120,120,120,0.6);\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-live__toggle {\n    background: none;\n    border: none;\n    color: rgba(140,140,140,0.6);\n    cursor: pointer;\n    padding: 2px 4px;\n    font-size: 0.75rem;\n    line-height: 1;\n    border-radius: 4px;\n}\n\n.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }\n\n.sa-live__body {\n    border-top: 1px solid rgba(74,222,128,0.12);\n    padding: 18px 20px 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n/* KPI strip inside live panel */\n.sa-live__kpis {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 10px;\n}\n\n@media (max-width: 620px) {\n    .sa-live__kpis {\n        grid-template-columns: repeat(2, 1fr);\n    }\n}\n\n.sa-live__kpi {\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n    padding: 12px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n\n.sa-live__kpi-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-live__kpi-value {\n    font-size: 1.6rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-live__kpi-sub {\n    font-size: 0.68rem;\n    color: rgba(120,120,120,0.6);\n}\n\n/* Per-minute sparkline */\n.sa-live__sparkline {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.sa-live__spark-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n}\n\n.sa-live__spark-bars {\n    display: flex;\n    align-items: flex-end;\n    gap: 2px;\n    height: 48px;\n}\n\n.sa-live__spark-bar {\n    flex: 1;\n    border-radius: 2px 2px 0 0;\n    background: rgba(74,222,128,0.35);\n    min-height: 2px;\n    transition: height 0.3s ease;\n}\n\n.sa-live__spark-bar--last {\n    background: rgba(74,222,128,0.75);\n}\n\n.sa-live__spark-times {\n    display: flex;\n    justify-content: space-between;\n    font-size: 0.62rem;\n    color: rgba(110,110,110,0.55);\n}\n\n/* Single-column bottom — live panel lives in a narrow grid slot */\n.sa-live__bottom {\n    display: flex;\n    flex-direction: column;\n    gap: 14px;\n}\n\n.sa-live__section-title {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n    margin: 0 0 8px;\n}\n\n/* Recent events feed */\n.sa-live__feed {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.sa-live__event {\n    display: grid;\n    grid-template-columns: 1fr auto;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    animation: sa-fade-in 0.4s ease;\n}\n\n.sa-live__event:last-child { border-bottom: none; }\n\n@keyframes sa-fade-in {\n    from { opacity: 0; transform: translateY(-4px); }\n    to   { opacity: 1; transform: translateY(0); }\n}\n\n.sa-live__event-path {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.75rem;\n    color: rgba(180,210,180,0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.sa-live__event-meta {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.sa-live__event-flag {\n    font-size: 0.7rem;\n    color: rgba(160,160,160,0.65);\n}\n\n.sa-live__event-level {\n    font-size: 0.6rem;\n    font-weight: 600;\n    padding: 1px 5px;\n    border-radius: 4px;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.sa-live__event-level--full {\n    background: rgba(74,222,128,0.14);\n    color: rgba(74,222,128,0.85);\n}\n\n.sa-live__event-level--minimal {\n    background: rgba(192,159,83,0.12);\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-live__event-time {\n    font-size: 0.65rem;\n    color: rgba(110,110,110,0.55);\n    font-variant-numeric: tabular-nums;\n    min-width: 32px;\n    text-align: right;\n}\n\n/* ── Notices ─────────────────────────────────────────────────────────────────── */\n\n.sa-notice {\n    margin: 0;\n    padding: 18px 22px;\n    border-radius: 12px;\n    font-size: 0.9rem;\n    color: rgba(180,180,180,0.85);\n    background: rgba(0,0,0,0.15);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-notice--error {\n    background: rgba(220,80,80,0.08);\n    border-color: rgba(220,100,100,0.25);\n    color: #f5aeae;\n}\n\n/* ── Meta row ────────────────────────────────────────────────────────────────── */\n\n.sa-meta-row {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n}\n\n.sa-site-key-badge {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-site-key-badge code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.72rem;\n    color: rgba(180,180,180,0.7);\n    background: rgba(255,255,255,0.05);\n    padding: 1px 6px;\n    border-radius: 4px;\n}\n\n/* ── KPI cards (each is a direct grid child with its own area) ───────────────── */\n\n.sa-kpi {\n    position: relative;\n    padding: 18px 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.09);\n    background: rgba(30,30,34,0.8);\n    box-shadow: 0 2px 12px rgba(0,0,0,0.25);\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    overflow: hidden;\n}\n\n/* Coloured accent stripe across the top of each KPI card */\n.sa-kpi::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 3px;\n    background: rgba(192,159,83,0.6);\n    border-radius: 14px 14px 0 0;\n}\n\n.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }\n.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }\n.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }\n\n.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }\n.sa-kpi--live::before { background: rgba(74,222,128,0.7)  !important; }\n\n.sa-kpi__head {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n}\n\n.sa-kpi__icon {\n    display: inline-flex;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }\n.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }\n.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }\n\n.sa-kpi__icon svg {\n    width: 14px;\n    height: 14px;\n}\n\n.sa-icon {\n    width: 14px;\n    height: 14px;\n    flex-shrink: 0;\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-kpi__label {\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.7);\n}\n\n.sa-kpi__value {\n    font-size: 2.1rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }\n\n.sa-kpi__sub {\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.4;\n}\n\n/* ── Chart section ───────────────────────────────────────────────────────────── */\n\n.sa-chart-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 24px 18px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.2);\n}\n\n.sa-chart-section__title {\n    margin: 0 0 16px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-chart {\n    width: 100%;\n    height: auto;\n    position: relative;\n}\n\n.sa-chart--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n}\n\n.sa-chart__legend {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    margin-top: 8px;\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-chart__legend-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 2px;\n    flex-shrink: 0;\n}\n\n.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }\n.sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }\n\n/* ── Dashboard grid ──────────────────────────────────────────────────────────── */\n\n.sa-dashboard-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   utm       utm\"\n        \"os     os      screens   screens\";\n}\n\n.sa-dashboard-grid--no-utm {\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   os        screens\";\n}\n\n/* Grid area assignments */\n.sa-ga-kpi0      { grid-area: kpi0; }\n.sa-ga-kpi1      { grid-area: kpi1; }\n.sa-ga-kpi2      { grid-area: kpi2; }\n.sa-ga-kpi3      { grid-area: kpi3; }\n.sa-ga-kpi4      { grid-area: kpi4; }\n.sa-ga-chart     { grid-area: chart; align-self: start; }\n.sa-ga-live      { grid-area: live; }\n.sa-ga-pages     { grid-area: pages; }\n.sa-ga-consent   { grid-area: consent; }\n.sa-ga-countries { grid-area: countries; }\n.sa-ga-brows     { grid-area: brows; }\n.sa-ga-utm       { grid-area: utm; }\n.sa-ga-os        { grid-area: os; }\n.sa-ga-screens   { grid-area: screens; }\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   utm\"\n            \"os      screens\";\n    }\n    .sa-dashboard-grid--no-utm {\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   brows\"\n            \"os      screens\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\"\n            \"pages\" \"consent\" \"countries\"\n            \"brows\" \"utm\" \"os\" \"screens\";\n    }\n}\n\n/* ── Generic panel card ──────────────────────────────────────────────────────── */\n\n.sa-panel {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__title {\n    margin: 0 0 14px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n/* Divider between stacked sub-sections within a panel */\n.sa-panel__divider {\n    height: 1px;\n    background: rgba(255,255,255,0.06);\n    margin: 14px 0;\n}\n\n.sa-panel__sub-title {\n    margin: 0 0 10px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.55);\n}\n\n.sa-panel__consent-note {\n    font-size: 0.62rem;\n    font-weight: 500;\n    color: rgba(120,120,120,0.55);\n    text-transform: none;\n    letter-spacing: 0;\n    margin-left: 4px;\n}\n\n/* ── Tables ──────────────────────────────────────────────────────────────────── */\n\n.sa-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n\n.sa-table th {\n    text-align: left;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.6);\n    padding: 0 8px 8px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-table td {\n    padding: 7px 8px 7px 0;\n    color: rgba(210,210,210,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n\n.sa-table tbody tr:last-child td { border-bottom: none; }\n\n.sa-table__num {\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n    color: rgba(200,200,200,0.75);\n}\n\n.sa-table__path {\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.77rem;\n    color: rgba(180,210,180,0.85);\n}\n\n.sa-table__bar {\n    width: 72px;\n    padding-left: 10px !important;\n}\n\n/* ── Mini bar ────────────────────────────────────────────────────────────────── */\n\n.sa-mini-bar {\n    height: 5px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n}\n\n.sa-mini-bar__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.3s ease;\n}\n\n/* ── Consent + device bars ───────────────────────────────────────────────────── */\n\n.sa-consent-list {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n.sa-consent-row {\n    display: grid;\n    grid-template-columns: 76px 1fr 32px;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-consent-row__label {\n    font-size: 0.78rem;\n    color: rgba(185,185,185,0.85);\n    white-space: nowrap;\n}\n\n.sa-consent-row__pct {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(200,200,200,0.7);\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-bar {\n    height: 8px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n    display: flex;\n}\n\n.sa-bar__seg {\n    height: 100%;\n    transition: width 0.3s ease;\n}\n\n/* ── World map ───────────────────────────────────────────────────────────────── */\n\n.sa-map {\n    margin-bottom: 14px;\n}\n\n.sa-map__inner {\n    width: 100%;\n    height: 100%;\n    min-height: 220px;\n    border-radius: 8px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.12);\n    border: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-map__caption {\n    margin: 6px 2px 0;\n    font-size: 0.72rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 160px;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n    background: rgba(0,0,0,0.1);\n    border: 1px solid rgba(255,255,255,0.05);\n    border-radius: 8px;\n}\n\n/* ── Copy button ─────────────────────────────────────────────────────────────── */\n\n.sa-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.12);\n    background: rgba(255,255,255,0.05);\n    color: rgba(200,200,200,0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-copy-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }\n.sa-copy-btn--done { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3); color: #6ee7a0; }\n\n/* ── Setup / empty state card ────────────────────────────────────────────────── */\n\n.sa-setup {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    gap: 16px;\n    padding: 56px 32px;\n    border-radius: 16px;\n    border: 1px dashed rgba(255,255,255,0.1);\n    background: rgba(0,0,0,0.1);\n}\n\n.sa-setup__icon { color: rgba(192,159,83,0.8); }\n\n.sa-setup__icon svg {\n    width: 36px;\n    height: 36px;\n}\n\n.sa-setup__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #ececec;\n}\n\n.sa-setup__body {\n    margin: 0;\n    max-width: 520px;\n    font-size: 0.9rem;\n    line-height: 1.65;\n    color: rgba(175,175,175,0.85);\n}\n\n.sa-setup__loading {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-setup__gen-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 10px 24px;\n    border-radius: 10px;\n    border: 1px solid rgba(192,159,83,0.45);\n    background: rgba(192,159,83,0.1);\n    color: rgba(227,200,130,0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.sa-setup__gen-btn:hover:not(:disabled) {\n    background: rgba(192,159,83,0.2);\n    border-color: rgba(192,159,83,0.65);\n}\n\n.sa-setup__gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }\n\n.sa-setup__snippet-wrap {\n    width: 100%;\n    max-width: 640px;\n    text-align: left;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.sa-setup__snippet-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.sa-setup__snippet-label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-setup__snippet {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n    background: rgba(0,0,0,0.28);\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.78rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n\n.sa-setup__hint {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.5;\n}\n\n.sa-setup__hint code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.82em;\n    background: rgba(255,255,255,0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n\n/* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */\n\n.sa-dashboard-grid--overview {\n    grid-template-columns: repeat(5, 1fr);\n    grid-template-areas:\n        \"kpi0  kpi1  kpi2  kpi3  kpi4\"\n        \"chart chart chart chart live\"\n        \"pages pages pages pages pages\";\n}\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi0  kpi1\"\n            \"kpi2  kpi3\"\n            \"kpi4  kpi4\"\n            \"chart chart\"\n            \"live  live\"\n            \"pages pages\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi0\" \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\" \"pages\";\n    }\n}\n\n/* ── Audience sub-page grid ──────────────────────────────────────────────────── */\n\n.sa-audience-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas:\n        \"countries  countries\"\n        \"browsers   os\"\n        \"screens    devices\"\n        \"lang       tz\";\n}\n\n.sa-aud-countries { grid-area: countries; }\n.sa-aud-browsers  { grid-area: browsers;  }\n.sa-aud-os        { grid-area: os;        }\n.sa-aud-devices   { grid-area: devices;   }\n.sa-aud-screens   { grid-area: screens;   }\n.sa-aud-lang      { grid-area: lang;      }\n.sa-aud-tz        { grid-area: tz;        }\n\n@media (max-width: 620px) {\n    .sa-audience-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"countries\" \"browsers\" \"os\"\n            \"devices\" \"screens\" \"lang\" \"tz\";\n    }\n}\n\n/* ── Acquisition sub-page grid ───────────────────────────────────────────────── */\n\n.sa-acq-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas: \"pages utm\";\n}\n\n.sa-acq-pages { grid-area: pages; }\n.sa-acq-utm   { grid-area: utm;   }\n\n@media (max-width: 760px) {\n    .sa-acq-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"pages\" \"utm\";\n    }\n}\n\n/* ── Consent sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-consent-page-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1 kpi2 kpi3 kpi4\"\n        \"bars bars bars bars\";\n}\n\n.sa-cg-kpi1 { grid-area: kpi1; }\n.sa-cg-kpi2 { grid-area: kpi2; }\n.sa-cg-kpi3 { grid-area: kpi3; }\n.sa-cg-kpi4 { grid-area: kpi4; }\n.sa-cg-bars { grid-area: bars; }\n\n@media (max-width: 1100px) {\n    .sa-consent-page-grid {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1 kpi2\"\n            \"kpi3 kpi4\"\n            \"bars bars\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-consent-page-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\" \"bars\";\n    }\n}\n\n/* ── Heatmap sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-heatmap-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: 2fr 1fr;\n    grid-template-areas:\n        \"controls controls\"\n        \"viewport scroll\"\n        \"viewport elements\";\n}\n\n.sa-heatmap__controls { grid-area: controls; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }\n.sa-heatmap__viewport { grid-area: viewport; }\n.sa-heatmap__scroll   { grid-area: scroll;   }\n.sa-heatmap__elements { grid-area: elements; }\n\n@media (max-width: 900px) {\n    .sa-heatmap-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"controls\" \"viewport\" \"scroll\" \"elements\";\n    }\n}\n\n.sa-select {\n    background: rgba(255,255,255,0.05);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 8px;\n    color: rgba(220,220,220,0.9);\n    font-size: 0.82rem;\n    padding: 7px 10px;\n    min-width: 220px;\n}\n\n.sa-heatmap__device-tabs {\n    display: flex;\n    gap: 4px;\n    background: rgba(255,255,255,0.04);\n    border-radius: 8px;\n    padding: 3px;\n}\n\n.sa-heatmap__device-tab {\n    background: transparent;\n    border: none;\n    color: rgba(180,180,180,0.7);\n    font-size: 0.76rem;\n    padding: 6px 12px;\n    border-radius: 6px;\n    cursor: pointer;\n}\n\n.sa-heatmap__device-tab.--active {\n    background: rgba(192,159,83,0.18);\n    color: rgba(230,210,160,0.95);\n}\n\n.sa-heatmap__frame-wrap {\n    position: relative;\n    width: 100%;\n    aspect-ratio: 4 / 3;\n    border-radius: 10px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.25);\n    border: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-heatmap__frame {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    height: 100%;\n    border: none;\n    pointer-events: none;\n}\n\n.sa-heatmap__frame-fallback {\n    position: absolute;\n    inset: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    text-align: center;\n    padding: 24px;\n    font-size: 0.8rem;\n    color: rgba(150,150,150,0.6);\n}\n\n.sa-heatmap__overlay {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    height: 100%;\n}\n\n.sa-scroll-funnel {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n/* ── Recording player ────────────────────────────────────────────────────────── */\n\n.sa-recording-player {\n    width: 100%;\n    min-height: 520px;\n    display: flex;\n    justify-content: center;\n}\n\n/* ── Bots sub-page grid ──────────────────────────────────────────────────────── */\n\n.sa-bots-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1  kpi2  category category\"\n        \"list  list  list     list\"\n        \"pages pages recent   recent\";\n}\n\n.sa-bots-kpi1     { grid-area: kpi1;     }\n.sa-bots-kpi2     { grid-area: kpi2;     }\n.sa-bots-category { grid-area: category; }\n.sa-bots-list     { grid-area: list;     }\n.sa-bots-pages    { grid-area: pages;    }\n.sa-bots-recent   { grid-area: recent;   }\n\n@media (max-width: 1100px) {\n    .sa-bots-grid {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1     kpi2\"\n            \"category category\"\n            \"list     list\"\n            \"pages    pages\"\n            \"recent   recent\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-bots-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"category\" \"list\" \"pages\" \"recent\";\n    }\n}\n"],"sourceRoot":""}]);
+
+/* ── Conversions section (ConversionsPanel, embedded on the Overview page) ───── */
+
+.sa-section {
+    background: rgba(26,26,30,0.75);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+
+.sa-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.sa-section__title {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(160,160,160,0.65);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sa-panel__sub {
+    color: rgba(130,130,130,0.55);
+    font-size: 0.82rem;
+    margin: 0;
+}
+
+.sa-add-event-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(192,159,83,0.12);
+    border: 1px solid rgba(192,159,83,0.3);
+    color: rgba(230,210,160,0.95);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sa-add-event-btn:hover {
+    background: rgba(192,159,83,0.2);
+}
+
+.sa-event-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px;
+    margin-bottom: 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+}
+
+.sa-event-form__input,
+.sa-event-form__select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: rgba(220,220,220,0.9);
+    font-size: 0.82rem;
+    padding: 7px 10px;
+}
+
+.sa-event-form__input {
+    flex: 1;
+    min-width: 160px;
+}
+
+.sa-event-form__submit {
+    background: rgba(192,159,83,0.55);
+    border: none;
+    color: #1a1a1e;
+    font-weight: 600;
+    font-size: 0.82rem;
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sa-event-form__submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.sa-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sa-event-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sa-event-row:last-child { border-bottom: none; }
+
+.sa-event-row__icon {
+    color: rgba(192,159,83,0.8);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.sa-event-row__icon svg { width: 18px; height: 18px; }
+
+.sa-event-row__body { flex: 1; min-width: 0; }
+
+.sa-event-row__top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.sa-event-row__name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(220,220,220,0.92);
+}
+
+.sa-event-row__kind {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(150,150,150,0.65);
+    background: rgba(255,255,255,0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.sa-event-row__unregistered {
+    font-size: 0.68rem;
+    color: rgba(220,160,60,0.85);
+}
+
+.sa-event-row__stats {
+    display: flex;
+    gap: 14px;
+    margin-top: 4px;
+    font-size: 0.78rem;
+    color: rgba(180,180,180,0.75);
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-event-row__consent-note {
+    color: rgba(120,120,120,0.55);
+}
+
+.sa-event-row__snippet-toggle {
+    background: none;
+    border: none;
+    color: rgba(150,180,220,0.75);
+    font-size: 0.72rem;
+    padding: 0;
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.sa-event-row__snippet {
+    margin-top: 6px;
+    padding: 8px 10px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 6px;
+    font-family: "SF Mono","Fira Code","Cascadia Code",monospace;
+    font-size: 0.74rem;
+    color: rgba(180,210,180,0.85);
+    overflow-x: auto;
+}
+
+.sa-event-row__delete {
+    background: none;
+    border: none;
+    color: rgba(200,120,120,0.6);
+    cursor: pointer;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.sa-event-row__delete:hover { color: rgba(230,140,140,0.9); }
+.sa-event-row__delete svg { width: 16px; height: 16px; }
+`, "",{"version":3,"sources":["webpack://./src/Pages/Analytics/Analytics.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Site Analytics report page ─────────────────────────────────────────────── */\n\n.sa-page {\n    padding: 4px 0 64px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* ── Live view panel ─────────────────────────────────────────────────────────── */\n\n.sa-live {\n    border: 1px solid rgba(74,222,128,0.2);\n    border-radius: 14px;\n    background: rgba(20,30,20,0.7);\n    overflow: hidden;\n}\n\n.sa-live__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 14px 20px;\n    gap: 12px;\n    cursor: pointer;\n    user-select: none;\n}\n\n.sa-aud-countries-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px;\n    padding: 12px;\n    border-radius: 10px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-live__header:hover { background: rgba(255,255,255,0.02); }\n\n.sa-live__title {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-live__dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: #4ade80;\n    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);\n    animation: sa-pulse 1.8s ease-out infinite;\n    flex-shrink: 0;\n}\n\n@keyframes sa-pulse {\n    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }\n    60%  { box-shadow: 0 0 0 7px rgba(74,222,128,0); }\n    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }\n}\n\n.sa-live__label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #4ade80;\n}\n\n.sa-live__window {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-live__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n}\n\n.sa-live__countdown {\n    font-size: 0.7rem;\n    color: rgba(120,120,120,0.6);\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-live__toggle {\n    background: none;\n    border: none;\n    color: rgba(140,140,140,0.6);\n    cursor: pointer;\n    padding: 2px 4px;\n    font-size: 0.75rem;\n    line-height: 1;\n    border-radius: 4px;\n}\n\n.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }\n\n.sa-live__body {\n    border-top: 1px solid rgba(74,222,128,0.12);\n    padding: 18px 20px 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n/* KPI strip inside live panel */\n.sa-live__kpis {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 10px;\n}\n\n@media (max-width: 620px) {\n    .sa-live__kpis {\n        grid-template-columns: repeat(2, 1fr);\n    }\n}\n\n.sa-live__kpi {\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n    padding: 12px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n\n.sa-live__kpi-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-live__kpi-value {\n    font-size: 1.6rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-live__kpi-sub {\n    font-size: 0.68rem;\n    color: rgba(120,120,120,0.6);\n}\n\n/* Per-minute sparkline */\n.sa-live__sparkline {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.sa-live__spark-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n}\n\n.sa-live__spark-bars {\n    display: flex;\n    align-items: flex-end;\n    gap: 2px;\n    height: 48px;\n}\n\n.sa-live__spark-bar {\n    flex: 1;\n    border-radius: 2px 2px 0 0;\n    background: rgba(74,222,128,0.35);\n    min-height: 2px;\n    transition: height 0.3s ease;\n}\n\n.sa-live__spark-bar--last {\n    background: rgba(74,222,128,0.75);\n}\n\n.sa-live__spark-times {\n    display: flex;\n    justify-content: space-between;\n    font-size: 0.62rem;\n    color: rgba(110,110,110,0.55);\n}\n\n/* Single-column bottom — live panel lives in a narrow grid slot */\n.sa-live__bottom {\n    display: flex;\n    flex-direction: column;\n    gap: 14px;\n}\n\n.sa-live__section-title {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n    margin: 0 0 8px;\n}\n\n/* Recent events feed */\n.sa-live__feed {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.sa-live__event {\n    display: grid;\n    grid-template-columns: 1fr auto;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    animation: sa-fade-in 0.4s ease;\n}\n\n.sa-live__event:last-child { border-bottom: none; }\n\n@keyframes sa-fade-in {\n    from { opacity: 0; transform: translateY(-4px); }\n    to   { opacity: 1; transform: translateY(0); }\n}\n\n.sa-live__event-path {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.75rem;\n    color: rgba(180,210,180,0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.sa-live__event-meta {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.sa-live__event-flag {\n    font-size: 0.7rem;\n    color: rgba(160,160,160,0.65);\n}\n\n.sa-live__event-level {\n    font-size: 0.6rem;\n    font-weight: 600;\n    padding: 1px 5px;\n    border-radius: 4px;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.sa-live__event-level--full {\n    background: rgba(74,222,128,0.14);\n    color: rgba(74,222,128,0.85);\n}\n\n.sa-live__event-level--minimal {\n    background: rgba(192,159,83,0.12);\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-live__event-time {\n    font-size: 0.65rem;\n    color: rgba(110,110,110,0.55);\n    font-variant-numeric: tabular-nums;\n    min-width: 32px;\n    text-align: right;\n}\n\n/* ── Notices ─────────────────────────────────────────────────────────────────── */\n\n.sa-notice {\n    margin: 0;\n    padding: 18px 22px;\n    border-radius: 12px;\n    font-size: 0.9rem;\n    color: rgba(180,180,180,0.85);\n    background: rgba(0,0,0,0.15);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-notice--error {\n    background: rgba(220,80,80,0.08);\n    border-color: rgba(220,100,100,0.25);\n    color: #f5aeae;\n}\n\n/* ── Meta row ────────────────────────────────────────────────────────────────── */\n\n.sa-meta-row {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n}\n\n.sa-site-key-badge {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-site-key-badge code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.72rem;\n    color: rgba(180,180,180,0.7);\n    background: rgba(255,255,255,0.05);\n    padding: 1px 6px;\n    border-radius: 4px;\n}\n\n/* ── KPI cards (each is a direct grid child with its own area) ───────────────── */\n\n.sa-kpi {\n    position: relative;\n    padding: 18px 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.09);\n    background: rgba(30,30,34,0.8);\n    box-shadow: 0 2px 12px rgba(0,0,0,0.25);\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    overflow: hidden;\n}\n\n/* Coloured accent stripe across the top of each KPI card */\n.sa-kpi::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 3px;\n    background: rgba(192,159,83,0.6);\n    border-radius: 14px 14px 0 0;\n}\n\n.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }\n.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }\n.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }\n\n.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }\n.sa-kpi--live::before { background: rgba(74,222,128,0.7)  !important; }\n\n.sa-kpi__head {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n}\n\n.sa-kpi__icon {\n    display: inline-flex;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }\n.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }\n.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }\n\n.sa-kpi__icon svg {\n    width: 14px;\n    height: 14px;\n}\n\n.sa-icon {\n    width: 14px;\n    height: 14px;\n    flex-shrink: 0;\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-kpi__label {\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.7);\n}\n\n.sa-kpi__value {\n    font-size: 2.1rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }\n\n.sa-kpi__sub {\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.4;\n}\n\n/* ── Chart section ───────────────────────────────────────────────────────────── */\n\n.sa-chart-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 24px 18px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.2);\n}\n\n.sa-chart-section__title {\n    margin: 0 0 16px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-chart {\n    width: 100%;\n    height: auto;\n    position: relative;\n}\n\n.sa-chart--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n}\n\n.sa-chart__legend {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    margin-top: 8px;\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-chart__legend-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 2px;\n    flex-shrink: 0;\n}\n\n.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }\n.sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }\n\n/* ── Dashboard grid ──────────────────────────────────────────────────────────── */\n\n.sa-dashboard-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   utm       utm\"\n        \"os     os      screens   screens\";\n}\n\n.sa-dashboard-grid--no-utm {\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   os        screens\";\n}\n\n/* Grid area assignments */\n.sa-ga-kpi0      { grid-area: kpi0; }\n.sa-ga-kpi1      { grid-area: kpi1; }\n.sa-ga-kpi2      { grid-area: kpi2; }\n.sa-ga-kpi3      { grid-area: kpi3; }\n.sa-ga-kpi4      { grid-area: kpi4; }\n.sa-ga-chart     { grid-area: chart; align-self: start; }\n.sa-ga-live      { grid-area: live; }\n.sa-ga-pages     { grid-area: pages; }\n.sa-ga-consent   { grid-area: consent; }\n.sa-ga-countries { grid-area: countries; }\n.sa-ga-brows     { grid-area: brows; }\n.sa-ga-utm       { grid-area: utm; }\n.sa-ga-os        { grid-area: os; }\n.sa-ga-screens   { grid-area: screens; }\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   utm\"\n            \"os      screens\";\n    }\n    .sa-dashboard-grid--no-utm {\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   brows\"\n            \"os      screens\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\"\n            \"pages\" \"consent\" \"countries\"\n            \"brows\" \"utm\" \"os\" \"screens\";\n    }\n}\n\n/* ── Generic panel card ──────────────────────────────────────────────────────── */\n\n.sa-panel {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__title {\n    margin: 0 0 14px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n/* Divider between stacked sub-sections within a panel */\n.sa-panel__divider {\n    height: 1px;\n    background: rgba(255,255,255,0.06);\n    margin: 14px 0;\n}\n\n.sa-panel__sub-title {\n    margin: 0 0 10px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.55);\n}\n\n.sa-panel__consent-note {\n    font-size: 0.62rem;\n    font-weight: 500;\n    color: rgba(120,120,120,0.55);\n    text-transform: none;\n    letter-spacing: 0;\n    margin-left: 4px;\n}\n\n/* ── Tables ──────────────────────────────────────────────────────────────────── */\n\n.sa-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n\n.sa-table th {\n    text-align: left;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.6);\n    padding: 0 8px 8px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-table td {\n    padding: 7px 8px 7px 0;\n    color: rgba(210,210,210,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n\n.sa-table tbody tr:last-child td { border-bottom: none; }\n\n.sa-table__num {\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n    color: rgba(200,200,200,0.75);\n}\n\n.sa-table__path {\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.77rem;\n    color: rgba(180,210,180,0.85);\n}\n\n.sa-table__bar {\n    width: 72px;\n    padding-left: 10px !important;\n}\n\n/* ── Mini bar ────────────────────────────────────────────────────────────────── */\n\n.sa-mini-bar {\n    height: 5px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n}\n\n.sa-mini-bar__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.3s ease;\n}\n\n/* ── Consent + device bars ───────────────────────────────────────────────────── */\n\n.sa-consent-list {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n.sa-consent-row {\n    display: grid;\n    grid-template-columns: 76px 1fr 32px;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-consent-row__label {\n    font-size: 0.78rem;\n    color: rgba(185,185,185,0.85);\n    white-space: nowrap;\n}\n\n.sa-consent-row__pct {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(200,200,200,0.7);\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-bar {\n    height: 8px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n    display: flex;\n}\n\n.sa-bar__seg {\n    height: 100%;\n    transition: width 0.3s ease;\n}\n\n/* ── World map ───────────────────────────────────────────────────────────────── */\n\n.sa-map {\n    margin-bottom: 14px;\n}\n\n.sa-map__inner {\n    width: 100%;\n    height: 100%;\n    min-height: 220px;\n    border-radius: 8px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.12);\n    border: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-map__caption {\n    margin: 6px 2px 0;\n    font-size: 0.72rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 160px;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n    background: rgba(0,0,0,0.1);\n    border: 1px solid rgba(255,255,255,0.05);\n    border-radius: 8px;\n}\n\n/* ── Copy button ─────────────────────────────────────────────────────────────── */\n\n.sa-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.12);\n    background: rgba(255,255,255,0.05);\n    color: rgba(200,200,200,0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-copy-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }\n.sa-copy-btn--done { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3); color: #6ee7a0; }\n\n/* ── Setup / empty state card ────────────────────────────────────────────────── */\n\n.sa-setup {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    gap: 16px;\n    padding: 56px 32px;\n    border-radius: 16px;\n    border: 1px dashed rgba(255,255,255,0.1);\n    background: rgba(0,0,0,0.1);\n}\n\n.sa-setup__icon { color: rgba(192,159,83,0.8); }\n\n.sa-setup__icon svg {\n    width: 36px;\n    height: 36px;\n}\n\n.sa-setup__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #ececec;\n}\n\n.sa-setup__body {\n    margin: 0;\n    max-width: 520px;\n    font-size: 0.9rem;\n    line-height: 1.65;\n    color: rgba(175,175,175,0.85);\n}\n\n.sa-setup__loading {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-setup__gen-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 10px 24px;\n    border-radius: 10px;\n    border: 1px solid rgba(192,159,83,0.45);\n    background: rgba(192,159,83,0.1);\n    color: rgba(227,200,130,0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.sa-setup__gen-btn:hover:not(:disabled) {\n    background: rgba(192,159,83,0.2);\n    border-color: rgba(192,159,83,0.65);\n}\n\n.sa-setup__gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }\n\n.sa-setup__snippet-wrap {\n    width: 100%;\n    max-width: 640px;\n    text-align: left;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.sa-setup__snippet-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.sa-setup__snippet-label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-setup__snippet {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n    background: rgba(0,0,0,0.28);\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.78rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n\n.sa-setup__hint {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.5;\n}\n\n.sa-setup__hint code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.82em;\n    background: rgba(255,255,255,0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n\n/* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */\n\n.sa-dashboard-grid--overview {\n    grid-template-columns: repeat(5, 1fr);\n    grid-template-areas:\n        \"kpi0  kpi1  kpi2  kpi3  kpi4\"\n        \"chart chart chart chart live\"\n        \"pages pages pages pages pages\";\n}\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi0  kpi1\"\n            \"kpi2  kpi3\"\n            \"kpi4  kpi4\"\n            \"chart chart\"\n            \"live  live\"\n            \"pages pages\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi0\" \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\" \"pages\";\n    }\n}\n\n/* ── Audience sub-page grid ──────────────────────────────────────────────────── */\n\n.sa-audience-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas:\n        \"countries  countries\"\n        \"browsers   os\"\n        \"screens    devices\"\n        \"lang       tz\";\n}\n\n.sa-aud-countries { grid-area: countries; }\n.sa-aud-browsers  { grid-area: browsers;  }\n.sa-aud-os        { grid-area: os;        }\n.sa-aud-devices   { grid-area: devices;   }\n.sa-aud-screens   { grid-area: screens;   }\n.sa-aud-lang      { grid-area: lang;      }\n.sa-aud-tz        { grid-area: tz;        }\n\n@media (max-width: 620px) {\n    .sa-audience-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"countries\" \"browsers\" \"os\"\n            \"devices\" \"screens\" \"lang\" \"tz\";\n    }\n}\n\n/* ── Acquisition sub-page grid ───────────────────────────────────────────────── */\n\n.sa-acq-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas: \"pages utm\";\n}\n\n.sa-acq-pages { grid-area: pages; }\n.sa-acq-utm   { grid-area: utm;   }\n\n@media (max-width: 760px) {\n    .sa-acq-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"pages\" \"utm\";\n    }\n}\n\n/* ── Consent sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-consent-page-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1 kpi2 kpi3 kpi4\"\n        \"bars bars bars bars\";\n}\n\n.sa-cg-kpi1 { grid-area: kpi1; }\n.sa-cg-kpi2 { grid-area: kpi2; }\n.sa-cg-kpi3 { grid-area: kpi3; }\n.sa-cg-kpi4 { grid-area: kpi4; }\n.sa-cg-bars { grid-area: bars; }\n\n@media (max-width: 1100px) {\n    .sa-consent-page-grid {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1 kpi2\"\n            \"kpi3 kpi4\"\n            \"bars bars\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-consent-page-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\" \"bars\";\n    }\n}\n\n/* ── Heatmap sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-heatmap-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: 2fr 1fr;\n    grid-template-areas:\n        \"controls controls\"\n        \"viewport scroll\"\n        \"viewport elements\";\n}\n\n.sa-heatmap__controls { grid-area: controls; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }\n.sa-heatmap__viewport { grid-area: viewport; }\n.sa-heatmap__scroll   { grid-area: scroll;   }\n.sa-heatmap__elements { grid-area: elements; }\n\n@media (max-width: 900px) {\n    .sa-heatmap-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"controls\" \"viewport\" \"scroll\" \"elements\";\n    }\n}\n\n.sa-select {\n    background: rgba(255,255,255,0.05);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 8px;\n    color: rgba(220,220,220,0.9);\n    font-size: 0.82rem;\n    padding: 7px 10px;\n    min-width: 220px;\n}\n\n.sa-heatmap__device-tabs {\n    display: flex;\n    gap: 4px;\n    background: rgba(255,255,255,0.04);\n    border-radius: 8px;\n    padding: 3px;\n}\n\n.sa-heatmap__device-tab {\n    background: transparent;\n    border: none;\n    color: rgba(180,180,180,0.7);\n    font-size: 0.76rem;\n    padding: 6px 12px;\n    border-radius: 6px;\n    cursor: pointer;\n}\n\n.sa-heatmap__device-tab.--active {\n    background: rgba(192,159,83,0.18);\n    color: rgba(230,210,160,0.95);\n}\n\n.sa-heatmap__frame-wrap {\n    position: relative;\n    width: 100%;\n    aspect-ratio: 4 / 3;\n    border-radius: 10px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.25);\n    border: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-heatmap__frame {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    height: 100%;\n    border: none;\n    pointer-events: none;\n}\n\n.sa-heatmap__frame-fallback {\n    position: absolute;\n    inset: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    text-align: center;\n    padding: 24px;\n    font-size: 0.8rem;\n    color: rgba(150,150,150,0.6);\n}\n\n.sa-heatmap__overlay {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    height: 100%;\n}\n\n.sa-scroll-funnel {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n/* ── Recording player ────────────────────────────────────────────────────────── */\n\n.sa-recording-player {\n    width: 100%;\n    min-height: 520px;\n    display: flex;\n    justify-content: center;\n}\n\n/* ── Bots sub-page grid ──────────────────────────────────────────────────────── */\n\n.sa-bots-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1  kpi2  category category\"\n        \"list  list  list     list\"\n        \"pages pages recent   recent\";\n}\n\n.sa-bots-kpi1     { grid-area: kpi1;     }\n.sa-bots-kpi2     { grid-area: kpi2;     }\n.sa-bots-category { grid-area: category; }\n.sa-bots-list     { grid-area: list;     }\n.sa-bots-pages    { grid-area: pages;    }\n.sa-bots-recent   { grid-area: recent;   }\n\n@media (max-width: 1100px) {\n    .sa-bots-grid {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1     kpi2\"\n            \"category category\"\n            \"list     list\"\n            \"pages    pages\"\n            \"recent   recent\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-bots-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"category\" \"list\" \"pages\" \"recent\";\n    }\n}\n\n/* ── Conversions section (ConversionsPanel, embedded on the Overview page) ───── */\n\n.sa-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__head {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    margin-bottom: 14px;\n}\n\n.sa-section__title {\n    margin: 0;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-panel__sub {\n    color: rgba(130,130,130,0.55);\n    font-size: 0.82rem;\n    margin: 0;\n}\n\n.sa-add-event-btn {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    background: rgba(192,159,83,0.12);\n    border: 1px solid rgba(192,159,83,0.3);\n    color: rgba(230,210,160,0.95);\n    font-size: 0.78rem;\n    font-weight: 600;\n    padding: 7px 12px;\n    border-radius: 8px;\n    cursor: pointer;\n}\n\n.sa-add-event-btn:hover {\n    background: rgba(192,159,83,0.2);\n}\n\n.sa-event-form {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 8px;\n    padding: 14px;\n    margin-bottom: 14px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n}\n\n.sa-event-form__input,\n.sa-event-form__select {\n    background: rgba(255,255,255,0.05);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 8px;\n    color: rgba(220,220,220,0.9);\n    font-size: 0.82rem;\n    padding: 7px 10px;\n}\n\n.sa-event-form__input {\n    flex: 1;\n    min-width: 160px;\n}\n\n.sa-event-form__submit {\n    background: rgba(192,159,83,0.55);\n    border: none;\n    color: #1a1a1e;\n    font-weight: 600;\n    font-size: 0.82rem;\n    padding: 7px 16px;\n    border-radius: 8px;\n    cursor: pointer;\n}\n\n.sa-event-form__submit:disabled { opacity: 0.5; cursor: not-allowed; }\n\n.sa-events-list {\n    display: flex;\n    flex-direction: column;\n    gap: 2px;\n}\n\n.sa-event-row {\n    display: flex;\n    align-items: flex-start;\n    gap: 12px;\n    padding: 12px 4px;\n    border-bottom: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-event-row:last-child { border-bottom: none; }\n\n.sa-event-row__icon {\n    color: rgba(192,159,83,0.8);\n    flex-shrink: 0;\n    margin-top: 2px;\n}\n\n.sa-event-row__icon svg { width: 18px; height: 18px; }\n\n.sa-event-row__body { flex: 1; min-width: 0; }\n\n.sa-event-row__top {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    flex-wrap: wrap;\n}\n\n.sa-event-row__name {\n    font-size: 0.88rem;\n    font-weight: 600;\n    color: rgba(220,220,220,0.92);\n}\n\n.sa-event-row__kind {\n    font-size: 0.62rem;\n    font-weight: 700;\n    letter-spacing: 0.05em;\n    text-transform: uppercase;\n    color: rgba(150,150,150,0.65);\n    background: rgba(255,255,255,0.05);\n    padding: 2px 6px;\n    border-radius: 4px;\n}\n\n.sa-event-row__unregistered {\n    font-size: 0.68rem;\n    color: rgba(220,160,60,0.85);\n}\n\n.sa-event-row__stats {\n    display: flex;\n    gap: 14px;\n    margin-top: 4px;\n    font-size: 0.78rem;\n    color: rgba(180,180,180,0.75);\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-event-row__consent-note {\n    color: rgba(120,120,120,0.55);\n}\n\n.sa-event-row__snippet-toggle {\n    background: none;\n    border: none;\n    color: rgba(150,180,220,0.75);\n    font-size: 0.72rem;\n    padding: 0;\n    margin-top: 6px;\n    cursor: pointer;\n}\n\n.sa-event-row__snippet {\n    margin-top: 6px;\n    padding: 8px 10px;\n    background: rgba(0,0,0,0.25);\n    border-radius: 6px;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.74rem;\n    color: rgba(180,210,180,0.85);\n    overflow-x: auto;\n}\n\n.sa-event-row__delete {\n    background: none;\n    border: none;\n    color: rgba(200,120,120,0.6);\n    cursor: pointer;\n    padding: 4px;\n    flex-shrink: 0;\n}\n\n.sa-event-row__delete:hover { color: rgba(230,140,140,0.9); }\n.sa-event-row__delete svg { width: 16px; height: 16px; }\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -75526,6 +75719,353 @@ function AnalyticsConsent() {
 
 /***/ }),
 
+/***/ "./src/Pages/Analytics/Conversions.js":
+/*!********************************************!*\
+  !*** ./src/Pages/Analytics/Conversions.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ConversionsPanel)
+/* harmony export */ });
+/* harmony import */ var _API_host_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../API/host.js */ "./src/API/host.js");
+/* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
+/* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useCallback = _React.useCallback,
+  useMemo = _React.useMemo;
+
+
+
+function authHeaders() {
+  return {
+    Authorization: _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__["default"].getToken(),
+    Organisation: String(_Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_1__["default"].getOrganisation()),
+    "Content-Type": "application/json"
+  };
+}
+var KIND_ICON = {
+  purchase: _Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconCash,
+  click: _Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconCursorClick,
+  custom: _Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconTarget
+};
+var KIND_LABEL = {
+  purchase: "Purchase",
+  click: "Click",
+  custom: "Custom"
+};
+function snippetFor(name, kind) {
+  if (kind === "purchase") {
+    return "intaAnalytics.track('".concat(name, "', { value: 49.99, currency: 'EUR' });");
+  }
+  return "intaAnalytics.track('".concat(name, "');");
+}
+
+/**
+ * Conversion event registry + live counts. Definitions are purely for
+ * labelling — the ingest endpoint accepts any event name a site sends,
+ * so events fired without being "registered" here still show up (flagged
+ * as unregistered) rather than being silently dropped.
+ */
+function ConversionsPanel(_ref) {
+  var domain = _ref.domain,
+    conversions = _ref.conversions,
+    onDefsChanged = _ref.onDefsChanged;
+  var _useState = useState([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    defs = _useState2[0],
+    setDefs = _useState2[1];
+  var _useState3 = useState(true),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = useState(false),
+    _useState6 = _slicedToArray(_useState5, 2),
+    showForm = _useState6[0],
+    setShowForm = _useState6[1];
+  var _useState7 = useState(""),
+    _useState8 = _slicedToArray(_useState7, 2),
+    name = _useState8[0],
+    setName = _useState8[1];
+  var _useState9 = useState("custom"),
+    _useState0 = _slicedToArray(_useState9, 2),
+    kind = _useState0[0],
+    setKind = _useState0[1];
+  var _useState1 = useState(""),
+    _useState10 = _slicedToArray(_useState1, 2),
+    label = _useState10[0],
+    setLabel = _useState10[1];
+  var _useState11 = useState(false),
+    _useState12 = _slicedToArray(_useState11, 2),
+    saving = _useState12[0],
+    setSaving = _useState12[1];
+  var _useState13 = useState(null),
+    _useState14 = _slicedToArray(_useState13, 2),
+    error = _useState14[0],
+    setError = _useState14[1];
+  var _useState15 = useState(null),
+    _useState16 = _slicedToArray(_useState15, 2),
+    openSnippet = _useState16[0],
+    setOpenSnippet = _useState16[1];
+  var fetchDefs = useCallback(function () {
+    if (!domain) {
+      setDefs([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/analytics-events?domain=").concat(encodeURIComponent(domain)), {
+      headers: authHeaders()
+    }).then(function (r) {
+      return r.ok ? r.json() : {
+        events: []
+      };
+    }).then(function (d) {
+      return setDefs(d.events || []);
+    })["catch"](function () {
+      return setDefs([]);
+    })["finally"](function () {
+      return setLoading(false);
+    });
+  }, [domain]);
+  useEffect(function () {
+    fetchDefs();
+  }, [fetchDefs]);
+  var createDef = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(e) {
+      var r;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.n) {
+          case 0:
+            e.preventDefault();
+            if (!(!name.trim() || !domain)) {
+              _context.n = 1;
+              break;
+            }
+            return _context.a(2);
+          case 1:
+            setSaving(true);
+            setError(null);
+            _context.n = 2;
+            return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/analytics-events"), {
+              method: "POST",
+              headers: authHeaders(),
+              body: JSON.stringify({
+                domain: domain,
+                name: name.trim(),
+                kind: kind,
+                label: label.trim()
+              })
+            })["catch"](function () {
+              return null;
+            });
+          case 2:
+            r = _context.v;
+            setSaving(false);
+            if (r !== null && r !== void 0 && r.ok) {
+              _context.n = 3;
+              break;
+            }
+            setError("Could not create event — check the domain has a site key yet.");
+            return _context.a(2);
+          case 3:
+            setName("");
+            setLabel("");
+            setKind("custom");
+            setShowForm(false);
+            fetchDefs();
+            onDefsChanged === null || onDefsChanged === void 0 || onDefsChanged();
+          case 4:
+            return _context.a(2);
+        }
+      }, _callee);
+    }));
+    return function createDef(_x) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+  var removeDef = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(defName) {
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.n) {
+          case 0:
+            _context2.n = 1;
+            return fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_0__.ScannerHost, "/api/analytics-events?domain=").concat(encodeURIComponent(domain), "&name=").concat(encodeURIComponent(defName)), {
+              method: "DELETE",
+              headers: authHeaders()
+            })["catch"](function () {
+              return null;
+            });
+          case 1:
+            fetchDefs();
+            onDefsChanged === null || onDefsChanged === void 0 || onDefsChanged();
+          case 2:
+            return _context2.a(2);
+        }
+      }, _callee2);
+    }));
+    return function removeDef(_x2) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+  var rows = useMemo(function () {
+    var byName = new Map((conversions || []).map(function (c) {
+      return [c.name, c];
+    }));
+    var out = defs.map(function (d) {
+      var live = byName.get(d.name);
+      return {
+        name: d.name,
+        label: d.label || d.name,
+        kind: d.kind,
+        count: (live === null || live === void 0 ? void 0 : live.count) || 0,
+        linkedCount: (live === null || live === void 0 ? void 0 : live.linkedCount) || 0,
+        value: (live === null || live === void 0 ? void 0 : live.value) || 0,
+        currency: (live === null || live === void 0 ? void 0 : live.currency) || null,
+        registered: true
+      };
+    });
+    var knownNames = new Set(defs.map(function (d) {
+      return d.name;
+    }));
+    (conversions || []).forEach(function (c) {
+      if (!knownNames.has(c.name)) {
+        out.push({
+          name: c.name,
+          label: c.label,
+          kind: c.kind,
+          count: c.count,
+          linkedCount: c.linkedCount,
+          value: c.value,
+          currency: c.currency,
+          registered: false
+        });
+      }
+    });
+    return out;
+  }, [defs, conversions]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "sa-section"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel__head"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-section__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconTarget, {
+    className: "sa-icon"
+  }), " Conversions"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "sa-add-event-btn",
+    onClick: function onClick() {
+      return setShowForm(function (s) {
+        return !s;
+      });
+    }
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconPlus, {
+    className: "sa-icon"
+  }), " Add event")), showForm && /*#__PURE__*/React.createElement("form", {
+    className: "sa-event-form",
+    onSubmit: createDef
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "sa-event-form__input",
+    placeholder: "event name, e.g. purchase",
+    value: name,
+    onChange: function onChange(e) {
+      return setName(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""));
+    },
+    maxLength: 64,
+    required: true
+  }), /*#__PURE__*/React.createElement("select", {
+    className: "sa-event-form__select",
+    value: kind,
+    onChange: function onChange(e) {
+      return setKind(e.target.value);
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "purchase"
+  }, "Purchase"), /*#__PURE__*/React.createElement("option", {
+    value: "click"
+  }, "Click"), /*#__PURE__*/React.createElement("option", {
+    value: "custom"
+  }, "Custom")), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "sa-event-form__input",
+    placeholder: "display label (optional)",
+    value: label,
+    onChange: function onChange(e) {
+      return setLabel(e.target.value);
+    },
+    maxLength: 120
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "sa-event-form__submit",
+    disabled: saving
+  }, saving ? "Saving…" : "Create")), error && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice sa-notice--error"
+  }, error), !loading && rows.length === 0 && /*#__PURE__*/React.createElement("p", {
+    className: "sa-panel__sub"
+  }, "No conversion events yet. Add one above, then fire it from your site with", " ", /*#__PURE__*/React.createElement("code", null, "intaAnalytics.track('name')"), "."), rows.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "sa-events-list"
+  }, rows.map(function (r) {
+    var Icon = KIND_ICON[r.kind] || _Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconTarget;
+    return /*#__PURE__*/React.createElement("div", {
+      key: r.name,
+      className: "sa-event-row"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "sa-event-row__icon"
+    }, /*#__PURE__*/React.createElement(Icon, null)), /*#__PURE__*/React.createElement("div", {
+      className: "sa-event-row__body"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "sa-event-row__top"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "sa-event-row__name"
+    }, r.label), /*#__PURE__*/React.createElement("span", {
+      className: "sa-event-row__kind"
+    }, KIND_LABEL[r.kind] || "Custom"), !r.registered && /*#__PURE__*/React.createElement("span", {
+      className: "sa-event-row__unregistered"
+    }, "not registered")), /*#__PURE__*/React.createElement("div", {
+      className: "sa-event-row__stats"
+    }, /*#__PURE__*/React.createElement("span", null, r.count.toLocaleString("de-DE"), " events"), r.value > 0 && /*#__PURE__*/React.createElement("span", null, r.value.toLocaleString("de-DE", {
+      style: "currency",
+      currency: r.currency || "EUR"
+    })), /*#__PURE__*/React.createElement("span", {
+      className: "sa-event-row__consent-note"
+    }, r.linkedCount.toLocaleString("de-DE"), "/", r.count.toLocaleString("de-DE"), " consent-linked")), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "sa-event-row__snippet-toggle",
+      onClick: function onClick() {
+        return setOpenSnippet(function (s) {
+          return s === r.name ? null : r.name;
+        });
+      }
+    }, openSnippet === r.name ? "Hide snippet" : "Show snippet"), openSnippet === r.name && /*#__PURE__*/React.createElement("pre", {
+      className: "sa-event-row__snippet"
+    }, snippetFor(r.name, r.kind))), r.registered && /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      className: "sa-event-row__delete",
+      onClick: function onClick() {
+        return removeDef(r.name);
+      },
+      "aria-label": "Remove ".concat(r.name)
+    }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_2__.IconTrash, null)));
+  })));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Analytics/Heatmap.js":
 /*!****************************************!*\
   !*** ./src/Pages/Analytics/Heatmap.js ***!
@@ -76916,7 +77456,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
 /* harmony import */ var _shared_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_shared.js */ "./src/Pages/Analytics/_shared.js");
 /* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
-/* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
+/* harmony import */ var _Conversions_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Conversions.js */ "./src/Pages/Analytics/Conversions.js");
+/* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
@@ -76938,6 +77479,7 @@ var _React = React,
   useMemo = _React.useMemo,
   useCallback = _React.useCallback;
 var useParams = window.ReactRouterDOM.useParams;
+
 
 
 
@@ -77548,7 +78090,15 @@ function SiteAnalytics() {
       value: p.views,
       max: maxPageViews
     })));
-  }))))))));
+  }))))), showData && /*#__PURE__*/React.createElement(_Conversions_js__WEBPACK_IMPORTED_MODULE_6__["default"], {
+    domain: domain,
+    conversions: data.conversions,
+    onDefsChanged: function onDefsChanged() {
+      return setTick(function (t) {
+        return t + 1;
+      });
+    }
+  }))));
 }
 
 /***/ }),
