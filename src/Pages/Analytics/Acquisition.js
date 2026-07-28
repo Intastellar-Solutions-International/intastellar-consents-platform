@@ -33,6 +33,7 @@ export default function AnalyticsAcquisition() {
     const maxUtm       = useMemo(() => Math.max(...(data?.utmSources || []).map(u => u.events), 1), [data]);
     const maxPages     = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
     const maxReferrer  = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
+    const maxHost      = useMemo(() => Math.max(...(data?.hosts      || []).map(h => h.events), 1), [data]);
 
     const showData = !loading && data && !data.noSiteKey && !data.noData;
 
@@ -164,6 +165,48 @@ export default function AnalyticsAcquisition() {
                                             </tr>
                                         ))}
                                         {!data.referrers.length && (
+                                            <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Hosts — the hostname the embed actually ran on, as opposed to
+                                the domain the site key was registered under. A booking widget
+                                or white-label host embedded under the same site key (e.g. a
+                                separate booking-system domain) shows up here as its own row,
+                                which is what surfaces that kind of cross-site tracking. */}
+                            <div className="sa-panel sa-acq-hosts">
+                                <h3 className="sa-panel__title">
+                                    <IconGlobe className="sa-icon" /> Hosts
+                                    <span className="sa-panel__consent-note">where the tracker actually ran</span>
+                                </h3>
+                                <table className="sa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Host</th>
+                                            <th className="sa-table__num">Events</th>
+                                            <th className="sa-table__num">Sessions</th>
+                                            <th className="sa-table__bar" />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.hosts.map((h, i) => (
+                                            <tr key={i}>
+                                                <td className="sa-table__path" title={h.host}>
+                                                    {h.host}
+                                                    {h.host !== domain && h.host !== "(unknown)" && (
+                                                        <span className="sa-panel__consent-note"> · cross-site</span>
+                                                    )}
+                                                </td>
+                                                <td className="sa-table__num">{h.events.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{h.sessions.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__bar">
+                                                    <MiniBar value={h.events} max={maxHost} color="rgba(192,159,83,0.6)" />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {!data.hosts.length && (
                                             <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
                                         )}
                                     </tbody>

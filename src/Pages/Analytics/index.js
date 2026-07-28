@@ -148,7 +148,9 @@ function LivePanel({ domain, className, engagedUsers }) {
                             <div className="sa-live__feed">
                                 {(data.recent || []).slice(0, 10).map((e, i) => (
                                     <div key={i} className="sa-live__event">
-                                        <span className="sa-live__event-path">{e.path}</span>
+                                        <span className="sa-live__event-path" title={e.host ? `${e.host}${e.path}` : e.path}>
+                                            {e.host && e.host !== domain ? `${e.host}` : ""}{e.path}
+                                        </span>
                                         <div className="sa-live__event-meta">
                                             {e.country && <span className="sa-live__event-flag">{e.country}</span>}
                                             <span className={"sa-live__event-level sa-live__event-level--" + e.level}>
@@ -164,6 +166,25 @@ function LivePanel({ domain, className, engagedUsers }) {
                             </div>
                         </div>
                     </div>
+
+                    {data.topHosts && data.topHosts.length > 1 && (
+                        <div className="sa-live__hosts">
+                            <p className="sa-live__section-title">
+                                Hosts serving this site key
+                                <span className="sa-panel__consent-note"> — cross-site traffic detected</span>
+                            </p>
+                            <table className="sa-table">
+                                <tbody>
+                                    {data.topHosts.map(h => (
+                                        <tr key={h.host}>
+                                            <td className="sa-table__path" title={h.host}>{h.host}</td>
+                                            <td className="sa-table__num">{h.views}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

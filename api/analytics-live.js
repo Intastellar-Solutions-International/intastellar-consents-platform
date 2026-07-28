@@ -79,7 +79,7 @@ export default async function handler(req, res) {
 
     const siteId = siteRows[0].id;
 
-    const [totalsRes, minutesRes, pagesRes, recentRes] = await Promise.all([
+    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -116,8 +116,20 @@ export default async function handler(req, res) {
             [siteId]
         ),
 
+        // Hosts actually serving this site key in the last 30 min — a booking
+        // widget/white-label host embedded under the same site key shows up
+        // here as separate traffic from the registered domain.
         db.query(`
-            SELECT received_at, pathname, country_code, device_type, consent_level
+            SELECT COALESCE(page_host, '(unknown)') AS host, COUNT(*) AS events
+            FROM analytics_events
+            WHERE site_id = $1
+              AND received_at >= NOW() - INTERVAL '30 minutes'
+            GROUP BY host ORDER BY events DESC LIMIT 10`,
+            [siteId]
+        ).catch(() => ({ rows: [] })),
+
+        db.query(`
+            SELECT received_at, pathname, page_host, country_code, device_type, consent_level
             FROM analytics_events
             WHERE site_id = $1
               AND received_at >= NOW() - INTERVAL '30 minutes'
@@ -126,7 +138,7 @@ export default async function handler(req, res) {
             [siteId]
         ),
 
-    ]).catch(() => Array(4).fill({ rows: [] }));
+    ]).catch(() => Array(5).fill({ rows: [] }));
 
     const t = totalsRes.rows[0] || {};
 
@@ -156,9 +168,14 @@ export default async function handler(req, res) {
             pathname: r.pathname,
             views:    parseInt(r.views),
         })),
+        topHosts: hostsRes.rows.map(r => ({
+            host:  r.host,
+            views: parseInt(r.events),
+        })),
         recent: recentRes.rows.map(r => ({
             at:      r.received_at,
             path:    r.pathname,
+            host:    r.page_host,
             country: r.country_code,
             device:  r.device_type,
             level:   r.consent_level,

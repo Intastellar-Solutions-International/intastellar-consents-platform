@@ -198,6 +198,10 @@
     gap: 14px;
 }
 
+.sa-live__hosts {
+    margin-top: 14px;
+}
+
 .sa-live__section-title {
     font-size: 0.65rem;
     font-weight: 700;
@@ -929,17 +933,18 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-areas:
         "pages     utm"
-        "referrers referrers";
+        "referrers hosts";
 }
 
 .sa-acq-pages     { grid-area: pages;     }
 .sa-acq-utm       { grid-area: utm;       }
 .sa-acq-referrers { grid-area: referrers; }
+.sa-acq-hosts     { grid-area: hosts;     }
 
 @media (max-width: 760px) {
     .sa-acq-grid {
         grid-template-columns: 1fr;
-        grid-template-areas: "pages" "utm" "referrers";
+        grid-template-areas: "pages" "utm" "referrers" "hosts";
     }
 }
 

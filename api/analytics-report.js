@@ -101,7 +101,7 @@ export default async function handler(req, res) {
 
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
-           browsersRes, consentRes, utmRes, referrersRes, conversionsRes, eventDefsRes,
+           browsersRes, consentRes, utmRes, referrersRes, hostsRes, conversionsRes, eventDefsRes,
            conversionCountriesRes, convertedSessionsRes,
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes] = await Promise.all([
 
@@ -204,6 +204,25 @@ export default async function handler(req, res) {
             WHERE site_id = $1 AND consent_level = 'full'
               AND received_at >= $2 AND received_at < $3
             GROUP BY referrer ORDER BY events DESC LIMIT 20`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
+        // Hosts — the hostname the embed actually ran on (location.hostname),
+        // not the site's registered domain. Normally a single row matching
+        // `domain`, but a site key embedded on a booking widget / white-label
+        // subdomain (e.g. a booking system on a different host than the main
+        // site) shows up here as separate cross-site traffic under the same
+        // site key, which referrer_host/topPages alone wouldn't surface.
+        db.query(`
+            SELECT COALESCE(page_host, '(unknown)') AS host,
+                   COUNT(*)                                                          AS events,
+                   COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL)  AS sessions
+            FROM analytics_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            GROUP BY host ORDER BY events DESC LIMIT 20`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
             if (err?.message?.includes("does not exist")) return { rows: [] };
@@ -374,7 +393,7 @@ export default async function handler(req, res) {
 
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(19).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(20).fill({ rows: [] });
         throw err;
     });
 
@@ -461,6 +480,11 @@ export default async function handler(req, res) {
         })),
         referrers: referrersRes.rows.map(r => ({
             referrer: r.referrer,
+            events:   Number(r.events   || 0),
+            sessions: Number(r.sessions || 0),
+        })),
+        hosts: hostsRes.rows.map(r => ({
+            host:     r.host,
             events:   Number(r.events   || 0),
             sessions: Number(r.sessions || 0),
         })),
