@@ -109,8 +109,14 @@
 /* KPI strip inside live panel */
 .sa-live__kpis {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
+}
+
+@media (max-width: 620px) {
+    .sa-live__kpis {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 .sa-live__kpi {
@@ -343,6 +349,7 @@
 .sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }
 
 .sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }
+.sa-kpi--live::before { background: rgba(74,222,128,0.7)  !important; }
 
 .sa-kpi__head {
     display: flex;
@@ -474,6 +481,7 @@
 }
 
 /* Grid area assignments */
+.sa-ga-kpi0      { grid-area: kpi0; }
 .sa-ga-kpi1      { grid-area: kpi1; }
 .sa-ga-kpi2      { grid-area: kpi2; }
 .sa-ga-kpi3      { grid-area: kpi3; }
@@ -852,18 +860,20 @@
 /* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */
 
 .sa-dashboard-grid--overview {
+    grid-template-columns: repeat(5, 1fr);
     grid-template-areas:
-        "kpi1  kpi2  kpi3  kpi4"
-        "chart chart chart live"
-        "pages pages pages pages";
+        "kpi0  kpi1  kpi2  kpi3  kpi4"
+        "chart chart chart chart live"
+        "pages pages pages pages pages";
 }
 
 @media (max-width: 1100px) {
     .sa-dashboard-grid--overview {
         grid-template-columns: repeat(2, 1fr);
         grid-template-areas:
-            "kpi1  kpi2"
-            "kpi3  kpi4"
+            "kpi0  kpi1"
+            "kpi2  kpi3"
+            "kpi4  kpi4"
             "chart chart"
             "live  live"
             "pages pages";
@@ -874,7 +884,7 @@
     .sa-dashboard-grid--overview {
         grid-template-columns: 1fr;
         grid-template-areas:
-            "kpi1" "kpi2" "kpi3" "kpi4"
+            "kpi0" "kpi1" "kpi2" "kpi3" "kpi4"
             "chart" "live" "pages";
     }
 }

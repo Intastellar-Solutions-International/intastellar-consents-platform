@@ -156,6 +156,15 @@ async function ensureTables(db) {
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS scroll_depth     SMALLINT;
         ALTER TABLE analytics_events ALTER COLUMN session_id DROP NOT NULL;
         ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS target_text      VARCHAR(80);
+        -- Client-generated per-pageload id. The embed sends a full event twice
+        -- (once on load, once on exit with duration/scroll_depth filled in) —
+        -- without this, that was landing as two separate rows per real
+        -- pageview, inflating event counts and showing duplicate-looking
+        -- entries in the Live View feed for a single visitor.
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS pageview_id      VARCHAR(40);
+    `).catch(() => {});
+    await db.query(`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_ae_pageview_id ON analytics_events (pageview_id);
     `).catch(() => {});
     // Per-site behavior-analytics configuration (heatmaps default on/cheap,
     // recording defaults off/expensive — see api/analytics-site-config.js).
@@ -236,6 +245,9 @@ function getLang(){try{return(navigator.language||'').slice(0,20);}catch(e){retu
 function getTz(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){return '';}}
 
 var t0=Date.now(),fullFired=false,exitSent=false,maxScroll=0;
+// One id per page load, sent on both the entry and exit full-event calls so
+// the server can upsert a single row per pageview instead of inserting twice.
+var pvid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
 
 // Track max scroll depth as a percentage
 (function(){
@@ -368,7 +380,7 @@ function sendFull(c,final){
   startClickTracking();
   if(!final)maybeStartRecording();
   send(JSON.stringify({
-    s:SITE,cl:'full',sid:getSid(),
+    s:SITE,cl:'full',sid:getSid(),pv:pvid,
     u:location.href,r:document.referrer||'',
     ti:(document.title||'').slice(0,200),
     us:utmp('utm_source'),um:utmp('utm_medium'),
@@ -509,7 +521,7 @@ export default async function handler(req, res) {
         return res.status(400).end();
     }
 
-    const { s: siteId, t: eventType, cl: consentLevel, sid, u: rawUrl, r: referrer, ti: title,
+    const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
             dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency } = body;
 
@@ -655,6 +667,12 @@ export default async function handler(req, res) {
         try { if (referrer) referrerHost = new URL(referrer).hostname.slice(0, 255); }
         catch {}
 
+        // A full pageview is sent twice per page load (once on entry, once on
+        // exit with duration/scroll_depth filled in) — upserting on the
+        // client-generated pageview_id keeps that to one row instead of two.
+        // A NULL pageview_id (only possible from a still-cached pre-upgrade
+        // embed script) never conflicts with anything, so this degrades to a
+        // plain insert for that transition window rather than erroring.
         await db.query(
             `INSERT INTO analytics_events
              (site_id, organisation_id, session_id, consent_level,
@@ -664,8 +682,11 @@ export default async function handler(req, res) {
               country_code, region, device_type,
               screen_width, screen_height, viewport_width, viewport_height,
               browser_family, os_family, language, timezone,
-              duration_sec, scroll_depth)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27)`,
+              duration_sec, scroll_depth, pageview_id)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
+             ON CONFLICT (pageview_id) DO UPDATE SET
+               duration_sec = EXCLUDED.duration_sec,
+               scroll_depth = COALESCE(EXCLUDED.scroll_depth, analytics_events.scroll_depth)`,
             [
                 siteId, orgId, String(sid).slice(0, 64),           // $1 $2 $3
                 cs === 1 || cs === true,                            // $4 consent_stat
@@ -685,6 +706,7 @@ export default async function handler(req, res) {
                 (tz   || "").slice(0, 60) || null,                  // $25 timezone
                 Math.min(Number(dur) || 0, 86400),                  // $26 duration_sec
                 (sd != null && sd >= 0 && sd <= 100) ? Number(sd) : null, // $27 scroll_depth
+                pageviewId ? String(pageviewId).slice(0, 40) : null,      // $28 pageview_id
             ]
         ).catch(() => {});
     }
