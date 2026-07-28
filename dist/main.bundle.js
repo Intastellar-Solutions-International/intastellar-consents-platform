@@ -74941,6 +74941,7 @@ var CATEGORY_LABELS = {
   search_engine: "Search engine",
   social_preview: "Social preview",
   seo_tool: "SEO tool",
+  data_aggregator: "Data aggregator",
   uptime_monitor: "Uptime monitor",
   other: "Other"
 };

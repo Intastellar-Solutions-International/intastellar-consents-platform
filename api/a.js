@@ -77,6 +77,23 @@ const BOT_PATTERNS = [
     { re: /omgili/i,             name: "omgilibot",          category: "ai_crawler" },
 
     // Search engines
+    // Google runs several distinct crawlers beyond the main web crawler — most
+    // share the "Googlebot" substring (so the more specific ones must be
+    // checked first), but a few (AdsBot, Mediapartners/AdSense, APIs-Google,
+    // Storebot) don't contain "Googlebot" or even "bot" consistently and would
+    // otherwise fall through to "other" — or be missed entirely.
+    { re: /Googlebot-Image/i,      name: "Googlebot-Image",       category: "search_engine" },
+    { re: /Googlebot-Video/i,      name: "Googlebot-Video",       category: "search_engine" },
+    { re: /Googlebot-News/i,       name: "Googlebot-News",        category: "search_engine" },
+    { re: /AdsBot-Google-Mobile/i, name: "AdsBot-Google-Mobile",  category: "search_engine" },
+    { re: /AdsBot-Google/i,        name: "AdsBot-Google",         category: "search_engine" },
+    { re: /Mediapartners-Google/i, name: "Mediapartners-Google (AdSense)", category: "search_engine" },
+    { re: /APIs-Google/i,          name: "APIs-Google",           category: "search_engine" },
+    { re: /Storebot-Google/i,      name: "Storebot-Google",       category: "search_engine" },
+    { re: /FeedFetcher-Google/i,   name: "FeedFetcher-Google",    category: "search_engine" },
+    { re: /Google-InspectionTool/i,name: "Google-InspectionTool", category: "search_engine" },
+    { re: /Google-Read-Aloud/i,    name: "Google-Read-Aloud",     category: "search_engine" },
+    { re: /Google-Site-Verification/i, name: "Google-Site-Verification", category: "search_engine" },
     { re: /Googlebot/i,          name: "Googlebot",          category: "search_engine" },
     { re: /bingbot/i,            name: "Bingbot",             category: "search_engine" },
     { re: /Slurp/,               name: "Yahoo Slurp",        category: "search_engine" },
@@ -105,6 +122,11 @@ const BOT_PATTERNS = [
     { re: /DotBot/i,             name: "DotBot",             category: "seo_tool" },
     { re: /BLEXBot/i,            name: "BLEXBot",            category: "seo_tool" },
     { re: /DataForSeoBot/i,      name: "DataForSeoBot",      category: "seo_tool" },
+
+    // Data aggregators / company registries — crawlers that harvest business
+    // sites to power a company-data API (analytics/developer use cases),
+    // rather than for search ranking, ad relevance, or AI training.
+    { re: /DatapublicaBot/i,     name: "DatapublicaBot",     category: "data_aggregator" },
 
     // Uptime / synthetic monitors
     { re: /UptimeRobot/i,        name: "UptimeRobot",        category: "uptime_monitor" },
