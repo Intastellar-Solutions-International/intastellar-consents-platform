@@ -927,16 +927,19 @@
     gap: 12px;
     align-items: start;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-areas: "pages utm";
+    grid-template-areas:
+        "pages     utm"
+        "referrers referrers";
 }
 
-.sa-acq-pages { grid-area: pages; }
-.sa-acq-utm   { grid-area: utm;   }
+.sa-acq-pages     { grid-area: pages;     }
+.sa-acq-utm       { grid-area: utm;       }
+.sa-acq-referrers { grid-area: referrers; }
 
 @media (max-width: 760px) {
     .sa-acq-grid {
         grid-template-columns: 1fr;
-        grid-template-areas: "pages" "utm";
+        grid-template-areas: "pages" "utm" "referrers";
     }
 }
 

@@ -4,7 +4,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsReport, toIsoDate, MiniBar } from "./_shared.js";
-import { IconMegaphone, IconTrendingUp } from "./Icons.js";
+import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import "./Analytics.css";
 
 export default function AnalyticsAcquisition() {
@@ -30,8 +30,9 @@ export default function AnalyticsAcquisition() {
 
     const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso);
 
-    const maxUtm     = useMemo(() => Math.max(...(data?.utmSources || []).map(u => u.events), 1), [data]);
-    const maxPages   = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
+    const maxUtm       = useMemo(() => Math.max(...(data?.utmSources || []).map(u => u.events), 1), [data]);
+    const maxPages     = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
+    const maxReferrer  = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
 
     const showData = !loading && data && !data.noSiteKey && !data.noData;
 
@@ -133,6 +134,41 @@ export default function AnalyticsAcquisition() {
                                     </p>
                                 </div>
                             )}
+
+                            {/* Referrers — where traffic came from, tagged or not (third-party
+                                sites, social shares, search results without UTMs). Un-referred
+                                traffic shows as "(direct)". */}
+                            <div className="sa-panel sa-acq-referrers">
+                                <h3 className="sa-panel__title">
+                                    <IconGlobe className="sa-icon" /> Referrers
+                                    <span className="sa-panel__consent-note">full events only</span>
+                                </h3>
+                                <table className="sa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Referrer</th>
+                                            <th className="sa-table__num">Events</th>
+                                            <th className="sa-table__num">Sessions</th>
+                                            <th className="sa-table__bar" />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.referrers.map((r, i) => (
+                                            <tr key={i}>
+                                                <td className="sa-table__path" title={r.referrer}>{r.referrer}</td>
+                                                <td className="sa-table__num">{r.events.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{r.sessions.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__bar">
+                                                    <MiniBar value={r.events} max={maxReferrer} color="rgba(99,179,237,0.55)" />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {!data.referrers.length && (
+                                            <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
 
                         </div>
                     )}
