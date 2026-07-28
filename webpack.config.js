@@ -65,6 +65,13 @@ const client = {
         use: ["style-loader", "css-loader"],
       },
       {
+        // rrweb-player ships its own stylesheet (node_modules), outside the
+        // src-only rule above.
+        test: /\.(css)$/,
+        include: path.resolve(__dirname, 'node_modules/rrweb-player'),
+        use: ["style-loader", "css-loader"],
+      },
+      {
         test: /\.(png|jpe?g|gif|svg)$/i,
         use: [
           {

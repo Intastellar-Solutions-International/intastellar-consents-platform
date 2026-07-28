@@ -59661,7 +59661,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   IconTarget: () => (/* binding */ IconTarget),
 /* harmony export */   IconTrash: () => (/* binding */ IconTrash),
 /* harmony export */   IconTrendingUp: () => (/* binding */ IconTrendingUp),
-/* harmony export */   IconUsers: () => (/* binding */ IconUsers)
+/* harmony export */   IconUsers: () => (/* binding */ IconUsers),
+/* harmony export */   IconVideo: () => (/* binding */ IconVideo)
 /* harmony export */ });
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 var svgProps = {
@@ -59808,6 +59809,17 @@ function IconTrash(props) {
     d: "M9 7V4h6v3"
   }), /*#__PURE__*/React.createElement("path", {
     d: "M6 7l1 13h10l1-13"
+  }));
+}
+function IconVideo(props) {
+  return /*#__PURE__*/React.createElement("svg", _extends({}, svgProps, props), /*#__PURE__*/React.createElement("rect", {
+    x: "3",
+    y: "6",
+    width: "13",
+    height: "12",
+    rx: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 10.5 21 7v10l-5-3.5Z"
   }));
 }
 
