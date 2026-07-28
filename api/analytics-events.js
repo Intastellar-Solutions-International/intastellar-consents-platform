@@ -36,7 +36,7 @@ const ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ];
 
-const ALLOWED_KINDS = new Set(["purchase", "click", "custom"]);
+const ALLOWED_KINDS = new Set(["purchase", "click", "custom", "view_basket", "begin_checkout", "checkout"]);
 const NAME_RE = /^[a-z0-9_-]{1,64}$/i;
 
 function setCors(req, res) {
