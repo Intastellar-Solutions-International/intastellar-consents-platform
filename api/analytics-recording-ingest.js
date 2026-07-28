@@ -80,9 +80,16 @@ function parseUA(ua = "") {
 }
 
 export default async function handler(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    // See api/a.js for why this reflects the origin dynamically instead of
+    // using a static wildcard: the final flush uses navigator.sendBeacon(),
+    // which always sends a credentialed CORS request, and a wildcard
+    // Access-Control-Allow-Origin is rejected by browsers on such requests.
+    const origin = req.headers.origin || "*";
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Vary", "Origin");
 
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "POST") return res.status(405).end();
