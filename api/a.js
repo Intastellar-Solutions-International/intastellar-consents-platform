@@ -286,6 +286,48 @@ function startClickTracking(){
   clickFlushIv=setInterval(sendClicks,5000);
 }
 
+// ── Session recording bootstrap (rrweb, lazy-loaded) ────────────────────────
+// Kept entirely out of this hand-minified embed — only fetched/run for sites
+// with recording enabled AND a visitor sampled into the per-session roll, so
+// the vast majority of pageviews never pay rrweb's download/runtime cost.
+var recordingBootstrapped=false;
+
+function apiBase(){return EP.replace(/\/api\/a$/,'');}
+
+function maybeStartRecording(){
+  if(recordingBootstrapped)return;
+  recordingBootstrapped=true;
+  try{
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET',apiBase()+'/api/analytics-site-config?site='+encodeURIComponent(SITE),true);
+    xhr.onload=function(){
+      if(xhr.status<200||xhr.status>=300)return;
+      var cfg;
+      try{cfg=JSON.parse(xhr.responseText);}catch(e){return;}
+      if(!cfg||!cfg.recordingEnabled)return;
+
+      var rk='_ia_rec',roll;
+      try{roll=sessionStorage.getItem(rk);}catch(e){roll=null;}
+      if(roll===null){
+        roll=(Math.random()*100<Number(cfg.sampleRate||0))?'1':'0';
+        try{sessionStorage.setItem(rk,roll);}catch(e){}
+      }
+      if(roll!=='1')return;
+
+      window.__intaRecCfg={
+        s:SITE,sid:getSid(),
+        ep:apiBase()+'/api/analytics-recording-ingest',
+        block:cfg.blockSelectors||[],mask:cfg.maskSelectors||[]
+      };
+      var s=document.createElement('script');
+      s.src=apiBase()+'/r.js';
+      s.async=true;
+      document.head.appendChild(s);
+    };
+    xhr.send();
+  }catch(e){}
+}
+
 function send(payload){
   // sendBeacon is the most reliable cross-site transport — it is not monkey-patched
   // by third-party scripts the way fetch and XHR commonly are.
@@ -314,6 +356,7 @@ function sendMinimal(c){
 function sendFull(c,final){
   fullFired=true;
   startClickTracking();
+  if(!final)maybeStartRecording();
   send(JSON.stringify({
     s:SITE,cl:'full',sid:getSid(),
     u:location.href,r:document.referrer||'',
@@ -362,6 +405,11 @@ function onBannerAction(){
   if(hasStat(c2)&&!fullFired){
     if(iv){clearInterval(iv);iv=null;}
     sendFull(c2,false);
+  }else if(!hasStat(c2)&&fullFired){
+    // Defensive: hard-stop and discard any in-progress recording immediately
+    // if consent is downgraded mid-session, regardless of whether the banner
+    // itself is known to support live downgrade without a page reload.
+    try{window.__intaRecStop&&window.__intaRecStop();}catch(e){}
   }
 }
 function hookConsentTrigger(name){

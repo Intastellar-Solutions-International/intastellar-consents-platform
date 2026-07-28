@@ -76,7 +76,33 @@ const client = {
   },
 };
 
-
+// Standalone session-recording bundle (src/recorder-entry.js), served as a
+// static /r.js asset alongside the SPA's own build output — NOT part of the
+// dashboard bundle, and lazily loaded on customer sites by the embed script
+// (api/a.js) only when recording is enabled and the visit is sampled in.
+// Bundles rrweb fully (no externals) since it runs standalone on third-party
+// pages, not inside this app.
+const recorder = {
+  entry: path.resolve(__dirname, 'src/recorder-entry.js'),
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'r.js',
+    publicPath: '/',
+  },
+  mode: 'production',
+  module: {
+    rules: [
+      {
+        test: /\.(js|ts)$/,
+        include: path.resolve(__dirname, 'src'),
+        use: [{
+          loader: 'babel-loader',
+          options: { presets: ['@babel/preset-env'] },
+        }],
+      },
+    ],
+  },
+};
 
 module.exports = (env, argv) => {
   if (argv.mode === 'development') {
@@ -110,5 +136,5 @@ module.exports = (env, argv) => {
 
   }
 
-  return [client];
+  return [client, recorder];
 };

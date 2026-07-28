@@ -25,6 +25,7 @@
   "dependencies": {
     "@intastellar/signin-sdk-react": "^1.0.21",
     "@sparticuz/chromium": "^147.0.0",
+    "@vercel/blob": "^2.6.1",
     "chart.js": "^4.4.0",
     "chrome-aws-lambda": "^10.1.0",
     "cors": "^2.8.5",
@@ -35,6 +36,8 @@
     "pg": "^8.22.0",
     "puppeteer-core": "^10.4.0",
     "react-chartjs-2": "^5.2.0",
+    "rrweb": "^2.1.1",
+    "rrweb-player": "^2.1.1",
     "web-push": "^3.6.7",
     "webpack-node-externals": "^3.0.0"
   },
