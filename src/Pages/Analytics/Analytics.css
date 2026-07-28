@@ -1319,3 +1319,22 @@
 
 .sa-event-row__delete:hover { color: rgba(230,140,140,0.9); }
 .sa-event-row__delete svg { width: 16px; height: 16px; }
+
+/* ── Quality leads KPI (only rendered once lead quality is configured) ───────── */
+
+.sa-lead-kpi-wrap {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.sa-lead-kpi-wrap > .sa-kpi {
+    grid-column: span 1;
+}
+
+@media (max-width: 1100px) {
+    .sa-lead-kpi-wrap { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 620px) {
+    .sa-lead-kpi-wrap { grid-template-columns: 1fr; }
+}

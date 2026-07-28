@@ -117,7 +117,10 @@ export default async function handler(req, res) {
             `SELECT id, domain, active, created_at,
                     heatmaps_enabled, recording_enabled, recording_sample_rate,
                     recording_retention_days, heatmap_retention_days,
-                    recording_block_selectors, recording_mask_selectors
+                    recording_block_selectors, recording_mask_selectors,
+                    datalayer_enabled,
+                    lead_quality_enabled, lead_require_engaged,
+                    lead_qualifying_pages, lead_qualifying_events
              FROM analytics_sites
              WHERE organisation_id = $1 AND domain = $2
              LIMIT 1`,
@@ -166,6 +169,26 @@ export default async function handler(req, res) {
             sets.push(`recording_mask_selectors = $${i++}`);
             params.push(body.maskSelectors.map(s => String(s).slice(0, 200)).slice(0, 50));
         }
+        if (typeof body.datalayerEnabled === "boolean") {
+            sets.push(`datalayer_enabled = $${i++}`);
+            params.push(body.datalayerEnabled);
+        }
+        if (typeof body.leadQualityEnabled === "boolean") {
+            sets.push(`lead_quality_enabled = $${i++}`);
+            params.push(body.leadQualityEnabled);
+        }
+        if (typeof body.leadRequireEngaged === "boolean") {
+            sets.push(`lead_require_engaged = $${i++}`);
+            params.push(body.leadRequireEngaged);
+        }
+        if (Array.isArray(body.leadQualifyingPages)) {
+            sets.push(`lead_qualifying_pages = $${i++}`);
+            params.push(body.leadQualifyingPages.map(s => String(s).slice(0, 200)).slice(0, 50));
+        }
+        if (Array.isArray(body.leadQualifyingEvents)) {
+            sets.push(`lead_qualifying_events = $${i++}`);
+            params.push(body.leadQualifyingEvents.map(s => String(s).slice(0, 64)).slice(0, 50));
+        }
 
         if (!sets.length) return res.status(400).json({ error: "No valid fields to update" });
 
@@ -174,7 +197,9 @@ export default async function handler(req, res) {
              WHERE organisation_id = $1 AND domain = $2
              RETURNING id, domain, active, heatmaps_enabled, recording_enabled,
                        recording_sample_rate, recording_retention_days, heatmap_retention_days,
-                       recording_block_selectors, recording_mask_selectors`,
+                       recording_block_selectors, recording_mask_selectors,
+                       datalayer_enabled, lead_quality_enabled, lead_require_engaged,
+                       lead_qualifying_pages, lead_qualifying_events`,
             params
         ).catch(() => ({ rows: [] }));
 

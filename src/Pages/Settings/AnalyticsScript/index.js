@@ -49,6 +49,259 @@ function CopyButton({ text, label = "Copy" }) {
     );
 }
 
+const KIND_OPTIONS = ["purchase", "click", "custom"];
+
+function DataLayerSection({ domain, datalayerEnabled, onToggle }) {
+    const [rules, setRules] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [showForm, setShowForm] = useState(false);
+    const [form, setForm] = useState({
+        datalayerEvent: "purchase", mapsToName: "purchase", kind: "purchase",
+        valuePath: "ecommerce.value", currencyPath: "ecommerce.currency", transactionIdPath: "ecommerce.transaction_id",
+    });
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
+
+    const authHeaders = {
+        Authorization: Authentication.getToken(),
+        Organisation: String(Authentication.getOrganisation()),
+        "Content-Type": "application/json",
+    };
+
+    const fetchRules = useCallback(() => {
+        if (!domain) { setRules([]); setLoading(false); return; }
+        setLoading(true);
+        fetch(`${ScannerHost}/api/analytics-datalayer-rules?domain=${encodeURIComponent(domain)}`, { headers: authHeaders })
+            .then(r => r.ok ? r.json() : { rules: [] })
+            .then(d => setRules(d.rules || []))
+            .catch(() => setRules([]))
+            .finally(() => setLoading(false));
+    }, [domain]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => { fetchRules(); }, [fetchRules]);
+
+    const addRule = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+        setError(null);
+        const r = await fetch(`${ScannerHost}/api/analytics-datalayer-rules`, {
+            method: "POST",
+            headers: authHeaders,
+            body: JSON.stringify({ domain, ...form }),
+        }).catch(() => null);
+        setSaving(false);
+        if (!r?.ok) { setError("Could not save rule — check the paths are valid (letters/numbers/underscore, max 4 levels)."); return; }
+        setShowForm(false);
+        fetchRules();
+    };
+
+    const removeRule = async (datalayerEvent) => {
+        await fetch(
+            `${ScannerHost}/api/analytics-datalayer-rules?domain=${encodeURIComponent(domain)}&datalayerEvent=${encodeURIComponent(datalayerEvent)}`,
+            { method: "DELETE", headers: authHeaders }
+        ).catch(() => null);
+        fetchRules();
+    };
+
+    return (
+        <div className="as-card">
+            <div className="as-section-head">
+                <h3 className="as-section-title">Automatic event tracking (dataLayer)</h3>
+                <label className="as-toggle">
+                    <input type="checkbox" checked={datalayerEnabled} onChange={e => onToggle(e.target.checked)} />
+                    <span className="as-toggle__track"><span className="as-toggle__thumb" /></span>
+                </label>
+            </div>
+            <p className="as-section-hint">
+                Listens to your site&rsquo;s <code>window.dataLayer</code> (GTM/GA4) and maps matching pushes to{" "}
+                <code>intaAnalytics.track()</code> automatically. Only three fixed fields are ever read from a
+                matched push &mdash; <strong>value</strong>, <strong>currency</strong>, and <strong>transaction ID</strong> &mdash;
+                nothing else in the pushed object is ever captured or stored.
+            </p>
+
+            {datalayerEnabled && (
+                <>
+                    {loading && <p className="as-loading">Loading&hellip;</p>}
+
+                    {!loading && rules.map(r => (
+                        <div className="as-rule-row" key={r.datalayerEvent}>
+                            <div className="as-rule-row__body">
+                                <span className="as-rule-row__name">
+                                    dataLayer <code>{r.datalayerEvent}</code> &rarr; <code>{r.mapsToName}</code>
+                                </span>
+                                <span className="as-rule-row__paths">
+                                    {r.valuePath && <span>value: <code>{r.valuePath}</code></span>}
+                                    {r.currencyPath && <span>currency: <code>{r.currencyPath}</code></span>}
+                                    {r.transactionIdPath && <span>txn id: <code>{r.transactionIdPath}</code></span>}
+                                </span>
+                            </div>
+                            <button type="button" className="as-rule-row__delete" onClick={() => removeRule(r.datalayerEvent)}>
+                                Remove
+                            </button>
+                        </div>
+                    ))}
+
+                    {!loading && !rules.length && !showForm && (
+                        <p className="as-panel__sub">No rules yet — add one below (the defaults match GA4&rsquo;s standard purchase schema).</p>
+                    )}
+
+                    {!showForm && (
+                        <button type="button" className="as-generate-btn" style={{ marginTop: 12 }} onClick={() => setShowForm(true)}>
+                            + Add mapping rule
+                        </button>
+                    )}
+
+                    {showForm && (
+                        <form className="as-rule-form" onSubmit={addRule}>
+                            <div className="as-rule-form__row">
+                                <label>dataLayer event name</label>
+                                <input value={form.datalayerEvent} onChange={e => setForm(f => ({ ...f, datalayerEvent: e.target.value }))} placeholder="purchase" required />
+                            </div>
+                            <div className="as-rule-form__row">
+                                <label>Maps to (our event name)</label>
+                                <input value={form.mapsToName} onChange={e => setForm(f => ({ ...f, mapsToName: e.target.value }))} placeholder="purchase" required />
+                            </div>
+                            <div className="as-rule-form__row">
+                                <label>Kind</label>
+                                <select value={form.kind} onChange={e => setForm(f => ({ ...f, kind: e.target.value }))}>
+                                    {KIND_OPTIONS.map(k => <option key={k} value={k}>{k}</option>)}
+                                </select>
+                            </div>
+                            <div className="as-rule-form__row">
+                                <label>Value path</label>
+                                <input value={form.valuePath} onChange={e => setForm(f => ({ ...f, valuePath: e.target.value }))} placeholder="ecommerce.value" />
+                            </div>
+                            <div className="as-rule-form__row">
+                                <label>Currency path</label>
+                                <input value={form.currencyPath} onChange={e => setForm(f => ({ ...f, currencyPath: e.target.value }))} placeholder="ecommerce.currency" />
+                            </div>
+                            <div className="as-rule-form__row">
+                                <label>Transaction ID path</label>
+                                <input value={form.transactionIdPath} onChange={e => setForm(f => ({ ...f, transactionIdPath: e.target.value }))} placeholder="ecommerce.transaction_id" />
+                            </div>
+                            {error && <p className="as-error">{error}</p>}
+                            <div className="as-rule-form__actions">
+                                <button type="submit" className="as-generate-btn" disabled={saving}>{saving ? "Saving…" : "Save rule"}</button>
+                                <button type="button" className="as-cancel-btn" onClick={() => setShowForm(false)}>Cancel</button>
+                            </div>
+                        </form>
+                    )}
+                </>
+            )}
+        </div>
+    );
+}
+
+function TagListEditor({ items, onChange, placeholder }) {
+    const [draft, setDraft] = useState("");
+    const add = () => {
+        const v = draft.trim();
+        if (!v || items.includes(v)) return;
+        onChange([...items, v]);
+        setDraft("");
+    };
+    return (
+        <div className="as-tag-editor">
+            <div className="as-tag-list">
+                {items.map(v => (
+                    <span key={v} className="as-tag">
+                        {v}
+                        <button type="button" onClick={() => onChange(items.filter(x => x !== v))} aria-label={`Remove ${v}`}>&times;</button>
+                    </span>
+                ))}
+                {!items.length && <span className="as-tag-list__empty">None yet</span>}
+            </div>
+            <div className="as-tag-add">
+                <input
+                    value={draft}
+                    onChange={e => setDraft(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+                    placeholder={placeholder}
+                />
+                <button type="button" onClick={add}>Add</button>
+            </div>
+        </div>
+    );
+}
+
+function LeadQualitySection({ domain, site, onSaved }) {
+    const [enabled, setEnabled] = useState(site.lead_quality_enabled === true);
+    const [requireEngaged, setRequireEngaged] = useState(site.lead_require_engaged !== false);
+    const [pages, setPages] = useState(site.lead_qualifying_pages || []);
+    const [events, setEvents] = useState(site.lead_qualifying_events || []);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
+    const [saved, setSaved] = useState(false);
+
+    const authHeaders = {
+        Authorization: Authentication.getToken(),
+        Organisation: String(Authentication.getOrganisation()),
+        "Content-Type": "application/json",
+    };
+
+    const save = async () => {
+        setSaving(true);
+        setError(null);
+        setSaved(false);
+        const r = await fetch(`${ScannerHost}/api/analytics-site?domain=${encodeURIComponent(domain)}`, {
+            method: "PATCH",
+            headers: authHeaders,
+            body: JSON.stringify({
+                leadQualityEnabled: enabled,
+                leadRequireEngaged: requireEngaged,
+                leadQualifyingPages: pages,
+                leadQualifyingEvents: events,
+            }),
+        }).catch(() => null);
+        setSaving(false);
+        if (!r?.ok) { setError("Could not save lead-quality settings."); return; }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+        onSaved?.();
+    };
+
+    return (
+        <div className="as-card">
+            <div className="as-section-head">
+                <h3 className="as-section-title">Lead quality</h3>
+                <label className="as-toggle">
+                    <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} />
+                    <span className="as-toggle__track"><span className="as-toggle__thumb" /></span>
+                </label>
+            </div>
+            <p className="as-section-hint">
+                Define what counts as a &ldquo;quality lead&rdquo;: a session qualifies when it&rsquo;s engaged
+                (10s+, 2+ pages, or a click) <em>and</em> either visited one of the pages below or fired one of
+                the events below.
+            </p>
+
+            {enabled && (
+                <>
+                    <label className="as-checkbox-row">
+                        <input type="checkbox" checked={requireEngaged} onChange={e => setRequireEngaged(e.target.checked)} />
+                        Require the session to be engaged
+                    </label>
+
+                    <div className="as-field-group">
+                        <span className="as-label">Qualifying pages</span>
+                        <TagListEditor items={pages} onChange={setPages} placeholder="/pricing" />
+                    </div>
+
+                    <div className="as-field-group">
+                        <span className="as-label">Qualifying events</span>
+                        <TagListEditor items={events} onChange={setEvents} placeholder="purchase" />
+                    </div>
+
+                    {error && <p className="as-error">{error}</p>}
+                    <button type="button" className="as-generate-btn" onClick={save} disabled={saving}>
+                        {saving ? "Saving…" : saved ? "Saved!" : "Save lead-quality settings"}
+                    </button>
+                </>
+            )}
+        </div>
+    );
+}
+
 function SnippetBox({ siteKey }) {
     const snippet = `<script src="${INGEST_URL}" data-site="${siteKey}" async defer></script>`;
     return (
@@ -114,6 +367,16 @@ export default function AnalyticsScript() {
             else { setError("Failed to generate site key."); }
         } catch { setError("Network error."); }
         finally { setGenerating(false); }
+    };
+
+    const toggleDatalayer = async (checked) => {
+        setSiteData(sd => ({ ...sd, datalayer_enabled: checked }));
+        const r = await fetch(`${ScannerHost}/api/analytics-site?domain=${encodeURIComponent(domain)}`, {
+            method: "PATCH",
+            headers: authHeaders,
+            body: JSON.stringify({ datalayerEnabled: checked }),
+        }).catch(() => null);
+        if (!r?.ok) { setSiteData(sd => ({ ...sd, datalayer_enabled: !checked })); }
     };
 
     return (
@@ -213,6 +476,22 @@ export default function AnalyticsScript() {
                                 </div>
                             </div>
                         </div>
+                    )}
+
+                    {!loading && siteData && (
+                        <DataLayerSection
+                            domain={domain}
+                            datalayerEnabled={siteData.datalayer_enabled === true}
+                            onToggle={toggleDatalayer}
+                        />
+                    )}
+
+                    {!loading && siteData && (
+                        <LeadQualitySection
+                            domain={domain}
+                            site={siteData}
+                            onSaved={() => loadSiteKey(domain)}
+                        />
                     )}
                 </div>
             </div>

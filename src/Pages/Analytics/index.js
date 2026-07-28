@@ -15,6 +15,7 @@ import {
     IconTrendingUp,
     IconDocument,
     IconRadio,
+    IconTarget,
 } from "./Icons.js";
 import ConversionsPanel from "./Conversions.js";
 import "./Analytics.css";
@@ -469,6 +470,18 @@ export default function SiteAnalytics() {
                                 </table>
                             </div>
 
+                        </div>
+                    )}
+
+                    {showData && data.totals.qualityLeads !== null && (
+                        <div className="sa-lead-kpi-wrap">
+                            <KpiCard
+                                icon={<IconTarget />}
+                                label="Quality leads"
+                                value={data.totals.qualityLeads.toLocaleString("de-DE")}
+                                sub="engaged + page/event match (see Settings)"
+                                variant="live"
+                            />
                         </div>
                     )}
 

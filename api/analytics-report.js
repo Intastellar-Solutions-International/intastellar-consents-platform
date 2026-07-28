@@ -84,7 +84,8 @@ export default async function handler(req, res) {
 
     // Look up site key for this org+domain
     const { rows: siteRows } = await db.query(
-        `SELECT id FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
+        `SELECT id, lead_quality_enabled, lead_require_engaged, lead_qualifying_pages, lead_qualifying_events
+         FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
         [orgId, domain]
     ).catch(() => ({ rows: [] }));
 
@@ -93,11 +94,15 @@ export default async function handler(req, res) {
     }
 
     const siteId = siteRows[0].id;
+    const leadQualityEnabled = siteRows[0].lead_quality_enabled === true;
+    const leadRequireEngaged = siteRows[0].lead_require_engaged !== false;
+    const leadQualifyingPages = Array.isArray(siteRows[0].lead_qualifying_pages) ? siteRows[0].lead_qualifying_pages : [];
+    const leadQualifyingEvents = Array.isArray(siteRows[0].lead_qualifying_events) ? siteRows[0].lead_qualifying_events : [];
 
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
            browsersRes, consentRes, utmRes, conversionsRes, eventDefsRes,
-           osRes, screensRes, languagesRes, timezonesRes, engagedRes] = await Promise.all([
+           osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -277,9 +282,52 @@ export default async function handler(req, res) {
             throw err;
         }),
 
+        // "Quality leads" — only computed when the site has configured it
+        // (see Settings > Analytics Script > Lead quality). A session counts
+        // when it's engaged (same criteria as engagedUsers, skipped if the
+        // site didn't require it) AND it either visited one of the
+        // configured pages or fired one of the configured events. Empty
+        // page/event lists mean "no sessions qualify" here, not "everyone
+        // qualifies" — lead quality has to actually be configured to count.
+        leadQualityEnabled
+            ? db.query(`
+                WITH session_stats AS (
+                    SELECT session_id, MAX(duration_sec) AS max_duration, COUNT(*) AS pageviews
+                    FROM analytics_events
+                    WHERE site_id = $1 AND consent_level = 'full'
+                      AND received_at >= $2 AND received_at < $3
+                      AND session_id IS NOT NULL
+                    GROUP BY session_id
+                )
+                SELECT COUNT(*) AS leads
+                FROM session_stats s
+                WHERE ($4::boolean = false
+                       OR s.max_duration >= 10
+                       OR s.pageviews > 1
+                       OR EXISTS (SELECT 1 FROM analytics_clicks c
+                                  WHERE c.site_id = $1 AND c.session_id = s.session_id
+                                    AND c.received_at >= $2 AND c.received_at < $3))
+                  AND (
+                    (cardinality($5::text[]) > 0 AND EXISTS (
+                        SELECT 1 FROM analytics_events pe
+                        WHERE pe.site_id = $1 AND pe.session_id = s.session_id
+                          AND pe.pathname = ANY($5) AND pe.received_at >= $2 AND pe.received_at < $3))
+                    OR
+                    (cardinality($6::text[]) > 0 AND EXISTS (
+                        SELECT 1 FROM analytics_custom_events ce
+                        WHERE ce.site_id = $1 AND ce.session_id = s.session_id
+                          AND ce.name = ANY($6) AND ce.received_at >= $2 AND ce.received_at < $3))
+                  )`,
+                [siteId, fromDate, toDateExclusive, leadRequireEngaged, leadQualifyingPages, leadQualifyingEvents]
+            ).catch((err) => {
+                if (err?.message?.includes("does not exist")) return { rows: [] };
+                throw err;
+            })
+            : Promise.resolve({ rows: [] }),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(15).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(16).fill({ rows: [] });
         throw err;
     });
 
@@ -298,6 +346,7 @@ export default async function handler(req, res) {
             full:           Number(t.full_count  || 0),
             uniqueSessions: Number(t.unique_sessions || 0),
             engagedUsers:   Number(engagedRes.rows[0]?.engaged || 0),
+            qualityLeads:   leadQualityEnabled ? Number(leadRes.rows[0]?.leads || 0) : null,
             consentRate:    total > 0
                 ? Math.round((Number(t.full_count || t.stat_yes || 0) / total) * 1000) / 10
                 : 0,
