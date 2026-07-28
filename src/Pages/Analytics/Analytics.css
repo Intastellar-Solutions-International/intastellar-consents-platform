@@ -955,3 +955,105 @@
             "kpi1" "kpi2" "kpi3" "kpi4" "bars";
     }
 }
+
+/* ── Heatmap sub-page grid ───────────────────────────────────────────────────── */
+
+.sa-heatmap-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas:
+        "controls controls"
+        "viewport scroll"
+        "viewport elements";
+}
+
+.sa-heatmap__controls { grid-area: controls; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.sa-heatmap__viewport { grid-area: viewport; }
+.sa-heatmap__scroll   { grid-area: scroll;   }
+.sa-heatmap__elements { grid-area: elements; }
+
+@media (max-width: 900px) {
+    .sa-heatmap-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: "controls" "viewport" "scroll" "elements";
+    }
+}
+
+.sa-select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: rgba(220,220,220,0.9);
+    font-size: 0.82rem;
+    padding: 7px 10px;
+    min-width: 220px;
+}
+
+.sa-heatmap__device-tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.sa-heatmap__device-tab {
+    background: transparent;
+    border: none;
+    color: rgba(180,180,180,0.7);
+    font-size: 0.76rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.sa-heatmap__device-tab.--active {
+    background: rgba(192,159,83,0.18);
+    color: rgba(230,210,160,0.95);
+}
+
+.sa-heatmap__frame-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.sa-heatmap__frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none;
+}
+
+.sa-heatmap__frame-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    font-size: 0.8rem;
+    color: rgba(150,150,150,0.6);
+}
+
+.sa-heatmap__overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.sa-scroll-funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
