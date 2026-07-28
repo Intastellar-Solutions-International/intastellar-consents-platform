@@ -292,14 +292,12 @@ function startClickTracking(){
 // the vast majority of pageviews never pay rrweb's download/runtime cost.
 var recordingBootstrapped=false;
 
-function apiBase(){return EP.replace(/\/api\/a$/,'');}
-
 function maybeStartRecording(){
   if(recordingBootstrapped)return;
   recordingBootstrapped=true;
   try{
     var xhr=new XMLHttpRequest();
-    xhr.open('GET',apiBase()+'/api/analytics-site-config?site='+encodeURIComponent(SITE),true);
+    xhr.open('GET','https://analytics.consentsmanagement.com/api/analytics-site-config?site='+encodeURIComponent(SITE),true);
     xhr.onload=function(){
       if(xhr.status<200||xhr.status>=300)return;
       var cfg;
@@ -316,11 +314,11 @@ function maybeStartRecording(){
 
       window.__intaRecCfg={
         s:SITE,sid:getSid(),
-        ep:apiBase()+'/api/analytics-recording-ingest',
+        ep:'https://analytics.consentsmanagement.com/api/analytics-recording-ingest',
         block:cfg.blockSelectors||[],mask:cfg.maskSelectors||[]
       };
       var s=document.createElement('script');
-      s.src=apiBase()+'/r.js';
+      s.src='https://analytics.consentsmanagement.com/r.js';
       s.async=true;
       document.head.appendChild(s);
     };
