@@ -102,6 +102,7 @@ export default async function handler(req, res) {
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
            browsersRes, consentRes, utmRes, conversionsRes, eventDefsRes,
+           conversionCountriesRes, convertedSessionsRes,
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes] = await Promise.all([
 
         db.query(`
@@ -209,6 +210,33 @@ export default async function handler(req, res) {
         db.query(`
             SELECT name, kind, label FROM analytics_event_defs WHERE site_id = $1`,
             [siteId]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
+        // Where conversions happen geographically — same {code, events} shape
+        // as the general `countries` query so AnalyticsWorldMap can reuse it.
+        db.query(`
+            SELECT country_code, COUNT(*) AS events
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+              AND country_code IS NOT NULL
+            GROUP BY country_code ORDER BY events DESC LIMIT 15`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
+        // Distinct sessions that fired at least one conversion event — the
+        // numerator for conversion rate (denominator is unique_sessions above).
+        db.query(`
+            SELECT COUNT(DISTINCT session_id) AS converted
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND session_id IS NOT NULL
+              AND received_at >= $2 AND received_at < $3`,
+            [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
             if (err?.message?.includes("does not exist")) return { rows: [] };
             throw err;
@@ -327,7 +355,7 @@ export default async function handler(req, res) {
 
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(16).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(18).fill({ rows: [] });
         throw err;
     });
 
@@ -350,6 +378,10 @@ export default async function handler(req, res) {
             consentRate:    total > 0
                 ? Math.round((Number(t.full_count || t.stat_yes || 0) / total) * 1000) / 10
                 : 0,
+            convertedSessions: Number(convertedSessionsRes.rows[0]?.converted || 0),
+            conversionRate: Number(t.unique_sessions || 0) > 0
+                ? Math.round((Number(convertedSessionsRes.rows[0]?.converted || 0) / Number(t.unique_sessions)) * 1000) / 10
+                : 0,
         },
         daily: dailyRes.rows.map(r => ({
             date:     r.date,
@@ -362,6 +394,10 @@ export default async function handler(req, res) {
             sessions: Number(r.sessions || 0),
         })),
         countries: countriesRes.rows.map(r => ({
+            code:   r.country_code,
+            events: Number(r.events || 0),
+        })),
+        conversionCountries: conversionCountriesRes.rows.map(r => ({
             code:   r.country_code,
             events: Number(r.events || 0),
         })),

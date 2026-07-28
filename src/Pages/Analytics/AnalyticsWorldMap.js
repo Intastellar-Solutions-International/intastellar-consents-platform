@@ -20,7 +20,8 @@ function colorForShare(pct) {
 
 /** Lightweight events-by-country map for Site Analytics — no drawer/compare,
  *  just a color-scaled world view plus a click-to-inspect caption. */
-export default function AnalyticsWorldMap({ countries }) {
+export default function AnalyticsWorldMap({ countries, metricLabel = "Events" }) {
+    const metricLower = metricLabel.toLowerCase();
     const rows = useMemo(() => (countries || []).filter((c) => c.code), [countries]);
     const max = useMemo(() => Math.max(...rows.map((c) => c.events), 1), [rows]);
     const [selected, setSelected] = useState(null);
@@ -47,7 +48,7 @@ export default function AnalyticsWorldMap({ countries }) {
             data: {
                 data: {
                     events: {
-                        name: "Events",
+                        name: metricLabel,
                         format: "{0}",
                         thousandSeparator: ".",
                         thresholdMax: max,
@@ -69,7 +70,7 @@ export default function AnalyticsWorldMap({ countries }) {
         };
         el.addEventListener("click", onMapClick);
         return () => el.removeEventListener("click", onMapClick);
-    }, [rows, values, max]);
+    }, [rows, values, max, metricLabel]);
 
     if (!rows.length) {
         return <div className="sa-map sa-map--empty">No geographic data for this period.</div>;
@@ -82,8 +83,8 @@ export default function AnalyticsWorldMap({ countries }) {
             <div id={MAP_ID} className="sa-map__inner" />
             <p className="sa-map__caption">
                 {selectedRow
-                    ? `${CODE_TO_NAME[selectedRow.code] || selectedRow.code}: ${selectedRow.events.toLocaleString("de-DE")} events`
-                    : "Darker regions had more events in this period. Click a country for its total."}
+                    ? `${CODE_TO_NAME[selectedRow.code] || selectedRow.code}: ${selectedRow.events.toLocaleString("de-DE")} ${metricLower}`
+                    : `Darker regions had more ${metricLower} in this period. Click a country for its total.`}
             </p>
         </div>
     );

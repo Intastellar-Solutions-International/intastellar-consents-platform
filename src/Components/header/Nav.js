@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsConversionsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -25,6 +25,7 @@ import consentIcon from "./icons/compliance.svg";
 import heatmapIcon from "./icons/heatmap.svg";
 import recordingsIcon from "./icons/recordings.svg";
 import botsIcon from "./icons/bots.svg";
+import conversionsIcon from "./icons/conversions.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -45,8 +46,9 @@ export default function Nav() {
         const heatmapPath     = analyticsHeatmapPath(currentDomain);
         const recordingsPath  = analyticsRecordingsPath(currentDomain);
         const botsPath        = analyticsBotsPath(currentDomain);
+        const conversionsPath = analyticsConversionsPath(currentDomain);
 
-        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots"].find(s => path.includes(s));
+        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions"].find(s => path.includes(s));
         const overviewActive    = path.indexOf("/analytics") === 0 && !sub;
         const audienceActive    = sub === "/audience";
         const acquisitionActive = sub === "/acquisition";
@@ -55,6 +57,7 @@ export default function Nav() {
         const heatmapActive     = sub === "/heatmap";
         const recordingsActive  = sub === "/recordings";
         const botsActive        = sub === "/bots";
+        const conversionsActive = sub === "/conversions";
 
         return (
             <>
@@ -88,6 +91,10 @@ export default function Nav() {
                             <Link className={"navItems" + (botsActive ? " --active" : "")} to={botsPath}>
                                 <i className="dashboard-icons bots" style={{ backgroundImage: `url(${botsIcon})` }} data-icon={botsIcon}></i>
                                 <span className="hiddenCollapsed">Bots</span>
+                            </Link>
+                            <Link className={"navItems" + (conversionsActive ? " --active" : "")} to={conversionsPath}>
+                                <i className="dashboard-icons conversions" style={{ backgroundImage: `url(${conversionsIcon})` }} data-icon={conversionsIcon}></i>
+                                <span className="hiddenCollapsed">Conversions</span>
                             </Link>
                             <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}>
                                 <i className="dashboard-icons marketing" style={{ backgroundImage: `url(${marketing})` }} data-icon={marketing}></i>

@@ -1338,3 +1338,28 @@
 @media (max-width: 620px) {
     .sa-lead-kpi-wrap { grid-template-columns: 1fr; }
 }
+
+/* ── Conversions sub-page grid ────────────────────────────────────────────────── */
+
+.sa-conv-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas:
+        "kpi1 kpi2"
+        "map  map"
+        "list list";
+}
+
+.sa-conv-kpi1 { grid-area: kpi1; }
+.sa-conv-kpi2 { grid-area: kpi2; }
+.sa-conv-map  { grid-area: map;  }
+.sa-conv-list { grid-area: list; }
+
+@media (max-width: 620px) {
+    .sa-conv-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: "kpi1" "kpi2" "map" "list";
+    }
+}

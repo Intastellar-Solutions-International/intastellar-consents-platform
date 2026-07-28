@@ -55,6 +55,7 @@ import AnalyticsConsent from "./Pages/Analytics/Consent.js";
 import AnalyticsHeatmap from "./Pages/Analytics/Heatmap.js";
 import AnalyticsRecordings, { AnalyticsRecordingDetail } from "./Pages/Analytics/Recordings.js";
 import AnalyticsBots from "./Pages/Analytics/Bots.js";
+import AnalyticsConversionsOverview from "./Pages/Analytics/ConversionsOverview.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -261,6 +262,11 @@ export default function App() {
                                         <Route path="/analytics/:handle/bots" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Bot Traffic" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsBots />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/conversions" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Conversions" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsConversionsOverview />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/marketing" exact>
