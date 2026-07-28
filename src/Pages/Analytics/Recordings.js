@@ -114,10 +114,12 @@ export default function AnalyticsRecordings() {
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
 
     const [tick, setTick] = useState(0);
-    const { data, loading, error } = useRecordingList(domain, fromIso, toIso);
+    const { data, loading, error } = useRecordingList(domain, fromIso, toIso, tick);
 
     const recordings = data?.recordings || [];
-    const showEmptyEnable = !loading && data && !data.noSiteKey && recordings.length === 0;
+    const recordingIsOn   = !!data?.recordingEnabled;
+    const showEnableCard  = !loading && data && !data.noSiteKey && !recordingIsOn;
+    const showWaitingEmpty = !loading && data && !data.noSiteKey && recordingIsOn && recordings.length === 0;
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -141,8 +143,15 @@ export default function AnalyticsRecordings() {
                         <p className="sa-notice">No analytics set up for this domain yet.</p>
                     )}
 
-                    {domain && showEmptyEnable && (
+                    {domain && showEnableCard && (
                         <EnableRecordingCard domain={domain} onEnabled={() => setTick(t => t + 1)} />
+                    )}
+
+                    {domain && showWaitingEmpty && (
+                        <p className="sa-notice">
+                            Recording is enabled for <strong>{domain}</strong> — recordings will
+                            appear here once a sampled-in visitor's session finishes.
+                        </p>
                     )}
 
                     {domain && !!recordings.length && (
