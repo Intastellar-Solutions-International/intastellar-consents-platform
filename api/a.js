@@ -472,9 +472,20 @@ window.intaAnalytics={track:track};
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    // Reflect the caller's origin rather than a static wildcard, and mark
+    // credentials as allowed. navigator.sendBeacon() — send()'s primary
+    // transport below — always issues its request with a credentialed CORS
+    // mode per the Beacon spec, and browsers reject a wildcard
+    // Access-Control-Allow-Origin on a credentialed request's response even
+    // though this endpoint never actually relies on cookies (the site_id in
+    // the payload, validated against analytics_sites, is the real trust
+    // boundary) — so reflecting any origin back here is safe.
+    const origin = req.headers.origin || "*";
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Vary", "Origin");
 
     if (req.method === "OPTIONS") return res.status(204).end();
 
