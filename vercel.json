@@ -8,7 +8,7 @@
         { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Cache-Control, Authorization, X-Requested-With, Accept, Origin" }
       ]
-    },
+    }
   ],
   "rewrites": [
     { "source": "/((?!api/|sw\\.js$).*)", "destination": "/index.html" }
