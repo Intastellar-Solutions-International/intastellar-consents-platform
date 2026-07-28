@@ -137,6 +137,7 @@ async function ensureTables(db) {
             target_tag      VARCHAR(20),
             target_id       VARCHAR(150),
             target_class    VARCHAR(300),
+            target_text     VARCHAR(80),
             source          VARCHAR(8)   NOT NULL DEFAULT 'native'
         );
         CREATE INDEX IF NOT EXISTS idx_acl_site_path ON analytics_clicks (site_id, pathname);
@@ -154,6 +155,7 @@ async function ensureTables(db) {
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS timezone         VARCHAR(60);
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS scroll_depth     SMALLINT;
         ALTER TABLE analytics_events ALTER COLUMN session_id DROP NOT NULL;
+        ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS target_text      VARCHAR(80);
     `).catch(() => {});
     // Per-site behavior-analytics configuration (heatmaps default on/cheap,
     // recording defaults off/expensive — see api/analytics-site-config.js).
@@ -274,7 +276,9 @@ function onClick(e){
     var tag=(t.tagName||'').toLowerCase().slice(0,20);
     var id=(t.id||'').slice(0,150);
     var cls=(typeof t.className==='string'?t.className:'').slice(0,300);
-    clickBuf.push([Math.round(x*100)/100,Math.round(y*100)/100,w,tag,id,cls]);
+    var txt='';
+    try{txt=(t.innerText||t.textContent||'').replace(/\s+/g,' ').trim().slice(0,80);}catch(e2){}
+    clickBuf.push([Math.round(x*100)/100,Math.round(y*100)/100,w,tag,id,cls,txt]);
     if(clickBuf.length>=25)sendClicks();
   }catch(err){}
 }
@@ -571,7 +575,7 @@ export default async function handler(req, res) {
     // Full-consent-only — always session-linked, unlike pageviews/custom events
     // which have a minimal (unlinked) variant. `u` is a bare pathname like
     // custom events. Coordinates arrive as compact arrays to match this file's
-    // key-shortened wire format: [x_pct, y_pct, viewport_width, tag, id, class].
+    // key-shortened wire format: [x_pct, y_pct, viewport_width, tag, id, class, text].
     if (isClickBatch) {
         if (!sid || !Array.isArray(ck) || !ck.length) return res.status(400).end();
 
@@ -584,8 +588,8 @@ export default async function handler(req, res) {
         let i = 1;
         for (const row of ck.slice(0, 25)) {
             if (!Array.isArray(row) || row.length < 6) continue;
-            const [x, y, w, tag, tId, cls] = row;
-            values.push(`($${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++})`);
+            const [x, y, w, tag, tId, cls, text] = row;
+            values.push(`($${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++})`);
             params.push(
                 siteId, orgId, sessionId,
                 ckPathname, deviceType,
@@ -595,6 +599,7 @@ export default async function handler(req, res) {
                 String(tag || "").slice(0, 20)  || null,
                 String(tId || "").slice(0, 150) || null,
                 String(cls || "").slice(0, 300) || null,
+                String(text || "").slice(0, 80) || null,
             );
         }
 
@@ -602,7 +607,7 @@ export default async function handler(req, res) {
             await db.query(
                 `INSERT INTO analytics_clicks
                  (site_id, organisation_id, session_id, pathname, device_type,
-                  viewport_width, page_height, x_pct, y_pct, target_tag, target_id, target_class)
+                  viewport_width, page_height, x_pct, y_pct, target_tag, target_id, target_class, target_text)
                  VALUES ${values.join(",")}`,
                 params
             ).catch(() => {});

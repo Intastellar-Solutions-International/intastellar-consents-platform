@@ -139,11 +139,11 @@ export default async function handler(req, res) {
         ).catch(() => ({ rows: [] })),
 
         db.query(
-            `SELECT target_tag, target_id, target_class, COUNT(*) AS n
+            `SELECT target_tag, target_id, target_class, target_text, COUNT(*) AS n
              FROM analytics_clicks
              WHERE site_id = $1 AND pathname = $${clickParams.length + 1}
                AND received_at >= $2 AND received_at < $3 ${deviceClause}
-             GROUP BY target_tag, target_id, target_class
+             GROUP BY target_tag, target_id, target_class, target_text
              ORDER BY n DESC LIMIT 30`,
             [...clickParams, pathname]
         ).catch(() => ({ rows: [] })),
@@ -185,7 +185,8 @@ export default async function handler(req, res) {
             gx: Number(r.gx), gy: Number(r.gy), n: Number(r.n || 0),
         })),
         topElements: elementsRes.rows.map(r => ({
-            tag: r.target_tag, id: r.target_id, className: r.target_class, n: Number(r.n || 0),
+            tag: r.target_tag, id: r.target_id, className: r.target_class,
+            text: r.target_text, n: Number(r.n || 0),
         })),
         scrollDepth: scrollRes.rows.map(r => ({
             bucket: Number(r.bucket), n: Number(r.n || 0),

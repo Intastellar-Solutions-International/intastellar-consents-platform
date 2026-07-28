@@ -1,5 +1,4 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./node_modules/@intastellar/signin-sdk-react/dist/IntastellarButton.js":
@@ -8,6 +7,7 @@
   \******************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -75,6 +75,7 @@ exports.IntastellarButton = IntastellarButton;
   \****************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -235,6 +236,7 @@ exports.IntastellarAPI = IntastellarAPI;
   \******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -271,6 +273,7 @@ Object.defineProperty(exports, "IntastellarAPI", ({ enumerable: true, get: funct
   \******************************************************************/
 /***/ (function(__unused_webpack_module, exports) {
 
+"use strict";
 
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -309,6 +312,7 @@ exports.IntastellarError = IntastellarError;
   \***************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
+"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -552,6 +556,7 @@ function useIntastellar(config) {
   \******************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Color: () => (/* binding */ Color),
@@ -1175,6 +1180,7 @@ function index_esm(input) {
   \*********************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Animation: () => (/* binding */ Animation),
@@ -12826,6 +12832,7 @@ const registerables = [
   \**************************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   $: () => (/* binding */ unclipArea),
@@ -15748,123 +15755,13 @@ function getDatasetClipArea(chart, meta) {
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/rrweb-player/dist/style.css":
-/*!****************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/rrweb-player/dist/style.css ***!
-  \****************************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
-/* harmony import */ var _css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../css-loader/dist/runtime/getUrl.js */ "./node_modules/css-loader/dist/runtime/getUrl.js");
-/* harmony import */ var _css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2__);
-// Imports
-
-
-
-var ___CSS_LOADER_URL_IMPORT_0___ = new URL(/* asset import */ __webpack_require__(/*! data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDUwIDUwIiB4PSIwcHgiIHk9IjBweCI+PHRpdGxlPkRlc2lnbl90bnA8L3RpdGxlPjxwYXRoIGQ9Ik00OC43MSw0Mi45MUwzNC4wOCwyOC4yOSw0NC4zMywxOEExLDEsMCwwLDAsNDQsMTYuMzlMMi4zNSwxLjA2QTEsMSwwLDAsMCwxLjA2LDIuMzVMMTYuMzksNDRhMSwxLDAsMCwwLDEuNjUuMzZMMjguMjksMzQuMDgsNDIuOTEsNDguNzFhMSwxLDAsMCwwLDEuNDEsMGw0LjM4LTQuMzhBMSwxLDAsMCwwLDQ4LjcxLDQyLjkxWm0tNS4wOSwzLjY3TDI5LDMyYTEsMSwwLDAsMC0xLjQxLDBsLTkuODUsOS44NUwzLjY5LDMuNjlsMzguMTIsMTRMMzIsMjcuNThBMSwxLDAsMCwwLDMyLDI5TDQ2LjU5LDQzLjYyWiI+PC9wYXRoPjwvc3ZnPg== */ "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDUwIDUwIiB4PSIwcHgiIHk9IjBweCI+PHRpdGxlPkRlc2lnbl90bnA8L3RpdGxlPjxwYXRoIGQ9Ik00OC43MSw0Mi45MUwzNC4wOCwyOC4yOSw0NC4zMywxOEExLDEsMCwwLDAsNDQsMTYuMzlMMi4zNSwxLjA2QTEsMSwwLDAsMCwxLjA2LDIuMzVMMTYuMzksNDRhMSwxLDAsMCwwLDEuNjUuMzZMMjguMjksMzQuMDgsNDIuOTEsNDguNzFhMSwxLDAsMCwwLDEuNDEsMGw0LjM4LTQuMzhBMSwxLDAsMCwwLDQ4LjcxLDQyLjkxWm0tNS4wOSwzLjY3TDI5LDMyYTEsMSwwLDAsMC0xLjQxLDBsLTkuODUsOS44NUwzLjY5LDMuNjlsMzguMTIsMTRMMzIsMjcuNThBMSwxLDAsMCwwLDMyLDI5TDQ2LjU5LDQzLjYyWiI+PC9wYXRoPjwvc3ZnPg=="), __webpack_require__.b);
-var ___CSS_LOADER_EXPORT___ = _css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
-var ___CSS_LOADER_URL_REPLACEMENT_0___ = _css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_2___default()(___CSS_LOADER_URL_IMPORT_0___);
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, `.switch.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{height:1em;display:flex;align-items:center}.switch.disabled.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{opacity:0.5}.label.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{margin:0 8px}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7.svelte-a6h7w7{position:absolute;opacity:0}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7{width:2em;height:1em;position:relative;cursor:pointer;display:block}.switch.disabled.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7{cursor:not-allowed}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7:before{content:'';position:absolute;width:2em;height:1em;left:0.1em;transition:background 0.1s ease;background:rgba(73, 80, 246, 0.5);border-radius:50px}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7:after{content:'';position:absolute;width:1em;height:1em;border-radius:50px;left:0;transition:all 0.2s ease;box-shadow:0px 2px 5px 0px rgba(0, 0, 0, 0.3);background:#fcfff4;animation:switch-off 0.2s ease-out;z-index:2}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7:checked+label.svelte-a6h7w7:before{background:rgb(73, 80, 246)}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7:checked+label.svelte-a6h7w7:after{animation:switch-on 0.2s ease-out;left:1.1em}.rr-controller.svelte-189zk2r.svelte-189zk2r{width:100%;height:80px;background:#fff;display:flex;flex-direction:column;justify-content:space-around;align-items:center;border-radius:0 0 5px 5px}.rr-timeline.svelte-189zk2r.svelte-189zk2r{width:80%;display:flex;align-items:center}.rr-timeline__time.svelte-189zk2r.svelte-189zk2r{display:inline-block;width:100px;text-align:center;color:#11103e}.rr-progress.svelte-189zk2r.svelte-189zk2r{flex:1;height:12px;background:#eee;position:relative;border-radius:3px;cursor:pointer;box-sizing:border-box;border-top:solid 4px #fff;border-bottom:solid 4px #fff}.rr-progress.disabled.svelte-189zk2r.svelte-189zk2r{cursor:not-allowed}.rr-progress__step.svelte-189zk2r.svelte-189zk2r{height:100%;position:absolute;left:0;top:0;background:#e0e1fe}.rr-progress__handler.svelte-189zk2r.svelte-189zk2r{width:20px;height:20px;border-radius:10px;position:absolute;top:2px;transform:translate(-50%, -50%);background:rgb(73, 80, 246)}.rr-controller__btns.svelte-189zk2r.svelte-189zk2r{display:flex;align-items:center;justify-content:center;font-size:13px}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r{width:32px;height:32px;display:flex;padding:0;align-items:center;justify-content:center;background:none;border:none;border-radius:50%;cursor:pointer}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r:active{background:#e0e1fe}.rr-controller__btns.svelte-189zk2r button.active.svelte-189zk2r{color:#fff;background:rgb(73, 80, 246)}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r:disabled{cursor:not-allowed}.replayer-wrapper {
-  position: relative;
-}
-.replayer-mouse {
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  transition: left 0.05s linear, top 0.05s linear;
-  background-size: contain;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-image: url(${___CSS_LOADER_URL_REPLACEMENT_0___});
-  border-color: transparent;  /* otherwise we transition from black when .touch-device class is added */
-}
-.replayer-mouse::after {
-  content: '';
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background: rgb(73, 80, 246);
-  border-radius: 100%;
-  transform: translate(-50%, -50%);
-  opacity: 0.3;
-}
-.replayer-mouse.active::after {
-  animation: click 0.2s ease-in-out 1;
-}
-.replayer-mouse.touch-device {
-  background-image: none;  /* there's no passive cursor on touch-only screens */
-  width: 70px;
-  height: 70px;
-  border-width: 4px;
-  border-style: solid;
-  border-radius: 100%;
-  margin-left: -37px;
-  margin-top: -37px;
-  border-color: rgba(73, 80, 246, 0);
-  transition: left 0s linear, top 0s linear, border-color 0.2s ease-in-out;
-}
-.replayer-mouse.touch-device.touch-active {
-  border-color: rgba(73, 80, 246, 1);
-  transition: left 0.25s linear, top 0.25s linear, border-color 0.2s ease-in-out;
-}
-.replayer-mouse.touch-device::after {
-  opacity: 0;  /* there's no passive cursor on touch-only screens */
-}
-.replayer-mouse.touch-device.active::after {
-  animation: touch-click 0.2s ease-in-out 1;
-}
-.replayer-mouse-tail {
-  position: absolute;
-  pointer-events: none;
-}
-@keyframes click {
-  0% {
-    opacity: 0.3;
-    width: 20px;
-    height: 20px;
-  }
-  50% {
-    opacity: 0.5;
-    width: 10px;
-    height: 10px;
-  }
-}
-@keyframes touch-click {
-  0% {
-    opacity: 0;
-    width: 20px;
-    height: 20px;
-  }
-  50% {
-    opacity: 0.5;
-    width: 10px;
-    height: 10px;
-  }
-}
-.rr-player{position:relative;background:white;float:left;border-radius:5px;box-shadow:0 24px 48px rgba(17, 16, 62, 0.12)}
-.rr-player__frame{overflow:hidden}
-.replayer-wrapper{float:left;clear:both;transform-origin:top left;left:50%;top:50%}
-.replayer-wrapper>iframe{border:none}`, "",{"version":3,"sources":["webpack://./node_modules/rrweb-player/dist/style.css"],"names":[],"mappings":"AAAA,kDAAkD,UAAU,CAAC,YAAY,CAAC,kBAAkB,CAAC,2DAA2D,WAAW,CAAC,iDAAiD,YAAY,CAAC,yEAAyE,iBAAiB,CAAC,SAAS,CAAC,wDAAwD,SAAS,CAAC,UAAU,CAAC,iBAAiB,CAAC,cAAc,CAAC,aAAa,CAAC,iEAAiE,kBAAkB,CAAC,+DAA+D,UAAU,CAAC,iBAAiB,CAAC,SAAS,CAAC,UAAU,CAAC,UAAU,CAAC,+BAA+B,CAAC,iCAAiC,CAAC,kBAAkB,CAAC,8DAA8D,UAAU,CAAC,iBAAiB,CAAC,SAAS,CAAC,UAAU,CAAC,kBAAkB,CAAC,MAAM,CAAC,wBAAwB,CAAC,6CAA6C,CAAC,kBAAkB,CAAC,kCAAkC,CAAC,SAAS,CAAC,8FAA8F,2BAA2B,CAAC,6FAA6F,iCAAiC,CAAC,UAAU,CAAC,6CAA6C,UAAU,CAAC,WAAW,CAAC,eAAe,CAAC,YAAY,CAAC,qBAAqB,CAAC,4BAA4B,CAAC,kBAAkB,CAAC,yBAAyB,CAAC,2CAA2C,SAAS,CAAC,YAAY,CAAC,kBAAkB,CAAC,iDAAiD,oBAAoB,CAAC,WAAW,CAAC,iBAAiB,CAAC,aAAa,CAAC,2CAA2C,MAAM,CAAC,WAAW,CAAC,eAAe,CAAC,iBAAiB,CAAC,iBAAiB,CAAC,cAAc,CAAC,qBAAqB,CAAC,yBAAyB,CAAC,4BAA4B,CAAC,oDAAoD,kBAAkB,CAAC,iDAAiD,WAAW,CAAC,iBAAiB,CAAC,MAAM,CAAC,KAAK,CAAC,kBAAkB,CAAC,oDAAoD,UAAU,CAAC,WAAW,CAAC,kBAAkB,CAAC,iBAAiB,CAAC,OAAO,CAAC,+BAA+B,CAAC,2BAA2B,CAAC,mDAAmD,YAAY,CAAC,kBAAkB,CAAC,sBAAsB,CAAC,cAAc,CAAC,0DAA0D,UAAU,CAAC,WAAW,CAAC,YAAY,CAAC,SAAS,CAAC,kBAAkB,CAAC,sBAAsB,CAAC,eAAe,CAAC,WAAW,CAAC,iBAAiB,CAAC,cAAc,CAAC,iEAAiE,kBAAkB,CAAC,iEAAiE,UAAU,CAAC,2BAA2B,CAAC,mEAAmE,kBAAkB,CAAC;EACrxF,kBAAkB;AACpB;AACA;EACE,kBAAkB;EAClB,WAAW;EACX,YAAY;EACZ,+CAA+C;EAC/C,wBAAwB;EACxB,kCAAkC;EAClC,4BAA4B;EAC5B,yDAA+qB;EAC/qB,yBAAyB,GAAG,yEAAyE;AACvG;AACA;EACE,WAAW;EACX,qBAAqB;EACrB,WAAW;EACX,YAAY;EACZ,4BAA4B;EAC5B,mBAAmB;EACnB,gCAAgC;EAChC,YAAY;AACd;AACA;EACE,mCAAmC;AACrC;AACA;EACE,sBAAsB,GAAG,oDAAoD;EAC7E,WAAW;EACX,YAAY;EACZ,iBAAiB;EACjB,mBAAmB;EACnB,mBAAmB;EACnB,kBAAkB;EAClB,iBAAiB;EACjB,kCAAkC;EAClC,wEAAwE;AAC1E;AACA;EACE,kCAAkC;EAClC,8EAA8E;AAChF;AACA;EACE,UAAU,GAAG,oDAAoD;AACnE;AACA;EACE,yCAAyC;AAC3C;AACA;EACE,kBAAkB;EAClB,oBAAoB;AACtB;AACA;EACE;IACE,YAAY;IACZ,WAAW;IACX,YAAY;EACd;EACA;IACE,YAAY;IACZ,WAAW;IACX,YAAY;EACd;AACF;AACA;EACE;IACE,UAAU;IACV,WAAW;IACX,YAAY;EACd;EACA;IACE,YAAY;IACZ,WAAW;IACX,YAAY;EACd;AACF;AACA,WAAW,iBAAiB,CAAC,gBAAgB,CAAC,UAAU,CAAC,iBAAiB,CAAC,6CAA6C;AACxH,kBAAkB,eAAe;AACjC,kBAAkB,UAAU,CAAC,UAAU,CAAC,yBAAyB,CAAC,QAAQ,CAAC,OAAO;AAClF,yBAAyB,WAAW","sourcesContent":[".switch.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{height:1em;display:flex;align-items:center}.switch.disabled.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{opacity:0.5}.label.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{margin:0 8px}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7.svelte-a6h7w7{position:absolute;opacity:0}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7{width:2em;height:1em;position:relative;cursor:pointer;display:block}.switch.disabled.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7{cursor:not-allowed}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7:before{content:'';position:absolute;width:2em;height:1em;left:0.1em;transition:background 0.1s ease;background:rgba(73, 80, 246, 0.5);border-radius:50px}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7:after{content:'';position:absolute;width:1em;height:1em;border-radius:50px;left:0;transition:all 0.2s ease;box-shadow:0px 2px 5px 0px rgba(0, 0, 0, 0.3);background:#fcfff4;animation:switch-off 0.2s ease-out;z-index:2}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7:checked+label.svelte-a6h7w7:before{background:rgb(73, 80, 246)}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7:checked+label.svelte-a6h7w7:after{animation:switch-on 0.2s ease-out;left:1.1em}.rr-controller.svelte-189zk2r.svelte-189zk2r{width:100%;height:80px;background:#fff;display:flex;flex-direction:column;justify-content:space-around;align-items:center;border-radius:0 0 5px 5px}.rr-timeline.svelte-189zk2r.svelte-189zk2r{width:80%;display:flex;align-items:center}.rr-timeline__time.svelte-189zk2r.svelte-189zk2r{display:inline-block;width:100px;text-align:center;color:#11103e}.rr-progress.svelte-189zk2r.svelte-189zk2r{flex:1;height:12px;background:#eee;position:relative;border-radius:3px;cursor:pointer;box-sizing:border-box;border-top:solid 4px #fff;border-bottom:solid 4px #fff}.rr-progress.disabled.svelte-189zk2r.svelte-189zk2r{cursor:not-allowed}.rr-progress__step.svelte-189zk2r.svelte-189zk2r{height:100%;position:absolute;left:0;top:0;background:#e0e1fe}.rr-progress__handler.svelte-189zk2r.svelte-189zk2r{width:20px;height:20px;border-radius:10px;position:absolute;top:2px;transform:translate(-50%, -50%);background:rgb(73, 80, 246)}.rr-controller__btns.svelte-189zk2r.svelte-189zk2r{display:flex;align-items:center;justify-content:center;font-size:13px}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r{width:32px;height:32px;display:flex;padding:0;align-items:center;justify-content:center;background:none;border:none;border-radius:50%;cursor:pointer}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r:active{background:#e0e1fe}.rr-controller__btns.svelte-189zk2r button.active.svelte-189zk2r{color:#fff;background:rgb(73, 80, 246)}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r:disabled{cursor:not-allowed}.replayer-wrapper {\n  position: relative;\n}\n.replayer-mouse {\n  position: absolute;\n  width: 20px;\n  height: 20px;\n  transition: left 0.05s linear, top 0.05s linear;\n  background-size: contain;\n  background-position: center center;\n  background-repeat: no-repeat;\n  background-image: url('data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDUwIDUwIiB4PSIwcHgiIHk9IjBweCI+PHRpdGxlPkRlc2lnbl90bnA8L3RpdGxlPjxwYXRoIGQ9Ik00OC43MSw0Mi45MUwzNC4wOCwyOC4yOSw0NC4zMywxOEExLDEsMCwwLDAsNDQsMTYuMzlMMi4zNSwxLjA2QTEsMSwwLDAsMCwxLjA2LDIuMzVMMTYuMzksNDRhMSwxLDAsMCwwLDEuNjUuMzZMMjguMjksMzQuMDgsNDIuOTEsNDguNzFhMSwxLDAsMCwwLDEuNDEsMGw0LjM4LTQuMzhBMSwxLDAsMCwwLDQ4LjcxLDQyLjkxWm0tNS4wOSwzLjY3TDI5LDMyYTEsMSwwLDAsMC0xLjQxLDBsLTkuODUsOS44NUwzLjY5LDMuNjlsMzguMTIsMTRMMzIsMjcuNThBMSwxLDAsMCwwLDMyLDI5TDQ2LjU5LDQzLjYyWiI+PC9wYXRoPjwvc3ZnPg==');\n  border-color: transparent;  /* otherwise we transition from black when .touch-device class is added */\n}\n.replayer-mouse::after {\n  content: '';\n  display: inline-block;\n  width: 20px;\n  height: 20px;\n  background: rgb(73, 80, 246);\n  border-radius: 100%;\n  transform: translate(-50%, -50%);\n  opacity: 0.3;\n}\n.replayer-mouse.active::after {\n  animation: click 0.2s ease-in-out 1;\n}\n.replayer-mouse.touch-device {\n  background-image: none;  /* there's no passive cursor on touch-only screens */\n  width: 70px;\n  height: 70px;\n  border-width: 4px;\n  border-style: solid;\n  border-radius: 100%;\n  margin-left: -37px;\n  margin-top: -37px;\n  border-color: rgba(73, 80, 246, 0);\n  transition: left 0s linear, top 0s linear, border-color 0.2s ease-in-out;\n}\n.replayer-mouse.touch-device.touch-active {\n  border-color: rgba(73, 80, 246, 1);\n  transition: left 0.25s linear, top 0.25s linear, border-color 0.2s ease-in-out;\n}\n.replayer-mouse.touch-device::after {\n  opacity: 0;  /* there's no passive cursor on touch-only screens */\n}\n.replayer-mouse.touch-device.active::after {\n  animation: touch-click 0.2s ease-in-out 1;\n}\n.replayer-mouse-tail {\n  position: absolute;\n  pointer-events: none;\n}\n@keyframes click {\n  0% {\n    opacity: 0.3;\n    width: 20px;\n    height: 20px;\n  }\n  50% {\n    opacity: 0.5;\n    width: 10px;\n    height: 10px;\n  }\n}\n@keyframes touch-click {\n  0% {\n    opacity: 0;\n    width: 20px;\n    height: 20px;\n  }\n  50% {\n    opacity: 0.5;\n    width: 10px;\n    height: 10px;\n  }\n}\n.rr-player{position:relative;background:white;float:left;border-radius:5px;box-shadow:0 24px 48px rgba(17, 16, 62, 0.12)}\n.rr-player__frame{overflow:hidden}\n.replayer-wrapper{float:left;clear:both;transform-origin:top left;left:50%;top:50%}\n.replayer-wrapper>iframe{border:none}"],"sourceRoot":""}]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
 /***/ "./node_modules/css-loader/dist/cjs.js!./src/App.css":
 /*!***********************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./src/App.css ***!
   \***********************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -16069,6 +15966,7 @@ body{
   \**************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -16099,6 +15997,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.grid{
   \***********************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -16226,6 +16125,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.audit-compliance-map {
   \************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -16294,6 +16194,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.audit-compliance-world-map {
   \********************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -16430,6 +16331,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.audit-map-detail-panel {
   \******************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -16850,6 +16752,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Audit log — link to UserConsents 
   \**************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -17249,6 +17152,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Backdrop ──────�
   \***********************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -17601,6 +17505,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.device-interactions {
   \************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -17700,6 +17605,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.chart {
   \****************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -18440,6 +18346,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.top-countries{
   \********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -18510,6 +18417,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.crawler-intro{
   \************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -18672,6 +18580,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.behaviour-drawer-backdrop {
   \****************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -18824,6 +18733,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.dev-tier {
   \****************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -18882,6 +18792,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.copyCta{
   \*****************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -19312,6 +19223,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar-grid button {
   \***************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -19864,6 +19776,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.calendar {
   \*******************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -20169,6 +20082,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.footer {
   \******************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -20696,6 +20610,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.property-selector {
   \********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -21718,6 +21633,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.dashboard-header {
   \************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -21770,6 +21686,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `h2:has(.highlight) {
   \************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -21827,6 +21744,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.intInput{
   \********************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -22295,6 +22213,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Legacy panel (unused in app; kept f
   \*********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -22646,6 +22565,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.liveView-content-title {
   \***************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -22699,6 +22619,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.loading-spinner{
   \****************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -22742,6 +22663,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.platform{
   \************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -23209,6 +23131,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.selector {
   \************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -23262,6 +23185,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.sideCart{
   \************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -23651,6 +23575,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Plans page ─────�
   \**************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -23690,6 +23615,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.successWindow{
   \******************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -23748,6 +23674,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.table{
   \*********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -23882,6 +23809,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Full-page gate ────�
   \*********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -23979,6 +23907,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.bigNumIsLoading{
   \********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -24519,6 +24448,7 @@ a.widget:hover {
   \*******************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -25537,6 +25467,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `body {
   \*********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -26641,6 +26572,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Site Analytics report page �
   \******************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -26734,6 +26666,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.cfm {
   \******************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -28128,6 +28061,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Hero map — full-width ─�
   \**********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -28403,6 +28337,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.cdb-tabs {
   \*****************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -28429,6 +28364,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ``, "",{"version":3,"sources":[],"names
   \***********************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -28554,6 +28490,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.dsr-modal {
   \*****************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -29197,6 +29134,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.grid-3 {
   \***************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -29227,6 +29165,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.domainIcon{
   \*************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -30951,6 +30890,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ——— Experiments page (list + 
   \**********************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -31217,6 +31157,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Audit reports hub — matches Compa
   \*****************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -35443,6 +35384,7 @@ details[open] .ca-context-summary::before { content: "▾"; }
   \*****************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -35608,6 +35550,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.reports-hub {
   \***************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -36184,6 +36127,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Portfolio benchmark (Compare) — a
   \****************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37650,6 +37594,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.settingsNavItem {
   \********************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -38145,6 +38090,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.filter {
   \*****************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 /*
@@ -38239,6 +38185,7 @@ module.exports = function (cssWithMappingToString) {
   \********************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 module.exports = function (url, options) {
@@ -38274,6 +38221,7 @@ module.exports = function (url, options) {
   \************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 module.exports = function (item) {
@@ -38299,6 +38247,7 @@ module.exports = function (item) {
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   decode: () => (/* binding */ decode),
@@ -38763,6 +38712,7 @@ const punycode = {
   \****************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Bar: () => (/* binding */ Bar),
@@ -38970,6 +38920,7 @@ const Scatter = /* #__PURE__ */ createTypedChart('scatter', chart_js__WEBPACK_IM
   \*****************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 /**
  * @license React
  * react-jsx-runtime.development.js
@@ -40313,6 +40264,7 @@ exports.jsxs = jsxs;
   \*******************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+"use strict";
 
 
 if (false) // removed by dead control flow
@@ -40329,6 +40281,7 @@ if (false) // removed by dead control flow
   \********************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Player: () => (/* binding */ Player2),
@@ -55856,51 +55809,9 @@ class Player2 extends Player$1 {
 /*!**************************************************!*\
   !*** ./node_modules/rrweb-player/dist/style.css ***!
   \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (() => {
 
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
-/* harmony import */ var _style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
-/* harmony import */ var _style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
-/* harmony import */ var _style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
-/* harmony import */ var _style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
-/* harmony import */ var _style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _css_loader_dist_cjs_js_style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../css-loader/dist/cjs.js!./style.css */ "./node_modules/css-loader/dist/cjs.js!./node_modules/rrweb-player/dist/style.css");
-
-      
-      
-      
-      
-      
-      
-      
-      
-      
-
-var options = {};
-
-options.styleTagTransform = (_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
-options.setAttributes = (_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
-options.insert = _style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
-options.domAPI = (_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
-options.insertStyleElement = (_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
-
-var update = _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_css_loader_dist_cjs_js_style_css__WEBPACK_IMPORTED_MODULE_6__["default"], options);
-
-
-
-
-       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_css_loader_dist_cjs_js_style_css__WEBPACK_IMPORTED_MODULE_6__["default"] && _css_loader_dist_cjs_js_style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _css_loader_dist_cjs_js_style_css__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
-
+throw new Error("Module parse failed: Unexpected token (1:0)\nYou may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders\n> .switch.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{height:1em;display:flex;align-items:center}.switch.disabled.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{opacity:0.5}.label.svelte-a6h7w7.svelte-a6h7w7.svelte-a6h7w7{margin:0 8px}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7.svelte-a6h7w7{position:absolute;opacity:0}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7{width:2em;height:1em;position:relative;cursor:pointer;display:block}.switch.disabled.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7{cursor:not-allowed}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7:before{content:'';position:absolute;width:2em;height:1em;left:0.1em;transition:background 0.1s ease;background:rgba(73, 80, 246, 0.5);border-radius:50px}.switch.svelte-a6h7w7 label.svelte-a6h7w7.svelte-a6h7w7:after{content:'';position:absolute;width:1em;height:1em;border-radius:50px;left:0;transition:all 0.2s ease;box-shadow:0px 2px 5px 0px rgba(0, 0, 0, 0.3);background:#fcfff4;animation:switch-off 0.2s ease-out;z-index:2}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7:checked+label.svelte-a6h7w7:before{background:rgb(73, 80, 246)}.switch.svelte-a6h7w7 input[type='checkbox'].svelte-a6h7w7:checked+label.svelte-a6h7w7:after{animation:switch-on 0.2s ease-out;left:1.1em}.rr-controller.svelte-189zk2r.svelte-189zk2r{width:100%;height:80px;background:#fff;display:flex;flex-direction:column;justify-content:space-around;align-items:center;border-radius:0 0 5px 5px}.rr-timeline.svelte-189zk2r.svelte-189zk2r{width:80%;display:flex;align-items:center}.rr-timeline__time.svelte-189zk2r.svelte-189zk2r{display:inline-block;width:100px;text-align:center;color:#11103e}.rr-progress.svelte-189zk2r.svelte-189zk2r{flex:1;height:12px;background:#eee;position:relative;border-radius:3px;cursor:pointer;box-sizing:border-box;border-top:solid 4px #fff;border-bottom:solid 4px #fff}.rr-progress.disabled.svelte-189zk2r.svelte-189zk2r{cursor:not-allowed}.rr-progress__step.svelte-189zk2r.svelte-189zk2r{height:100%;position:absolute;left:0;top:0;background:#e0e1fe}.rr-progress__handler.svelte-189zk2r.svelte-189zk2r{width:20px;height:20px;border-radius:10px;position:absolute;top:2px;transform:translate(-50%, -50%);background:rgb(73, 80, 246)}.rr-controller__btns.svelte-189zk2r.svelte-189zk2r{display:flex;align-items:center;justify-content:center;font-size:13px}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r{width:32px;height:32px;display:flex;padding:0;align-items:center;justify-content:center;background:none;border:none;border-radius:50%;cursor:pointer}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r:active{background:#e0e1fe}.rr-controller__btns.svelte-189zk2r button.active.svelte-189zk2r{color:#fff;background:rgb(73, 80, 246)}.rr-controller__btns.svelte-189zk2r button.svelte-189zk2r:disabled{cursor:not-allowed}.replayer-wrapper {\n|   position: relative;\n| }");
 
 /***/ }),
 
@@ -55910,6 +55821,7 @@ var update = _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMP
   \****************************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 var stylesInDOM = [];
@@ -56003,6 +55915,7 @@ module.exports = function (list, options) {
   \********************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 var memo = {};
@@ -56046,6 +55959,7 @@ module.exports = insertBySelector;
   \**********************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 /* istanbul ignore next  */
@@ -56065,6 +55979,7 @@ module.exports = insertStyleElement;
   \**********************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+"use strict";
 
 
 /* istanbul ignore next  */
@@ -56084,6 +55999,7 @@ module.exports = setAttributesWithoutAttributes;
   \***************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 /* istanbul ignore next  */
@@ -56154,6 +56070,7 @@ module.exports = domAPI;
   \*********************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 /* istanbul ignore next  */
@@ -56177,6 +56094,7 @@ module.exports = styleTagTransform;
   \************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -56845,6 +56763,7 @@ var API = {
   \*************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   LoginHost: () => (/* binding */ LoginHost),
@@ -56864,6 +56783,7 @@ var ScannerHost = "https://www.intastellarconsents.com";
   \*********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -56916,6 +56836,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   AllOrg: () => (/* binding */ AllOrg),
@@ -57621,6 +57542,7 @@ function App() {
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -57820,6 +57742,7 @@ var Authentication = {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -57872,6 +57795,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AddDomain)
@@ -57964,6 +57888,7 @@ function AddDomain(_ref) {
   \*********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -58016,6 +57941,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AuditComplianceMiniMap)
@@ -58107,6 +58033,7 @@ function AuditComplianceMiniMap(_ref) {
   \**********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -58159,6 +58086,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AuditComplianceWorldMap)
@@ -58697,6 +58625,7 @@ function AuditComplianceWorldMap(_ref) {
   \******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -58749,6 +58678,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AuditMapDetailPanel)
@@ -58831,6 +58761,7 @@ function AuditMapDetailPanel(_ref) {
   \****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -58883,6 +58814,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AuditSnapshotCard)
@@ -59628,6 +59560,7 @@ function AuditSnapshotCard(props) {
   \***********************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   auditMapCountryDisplayName: () => (/* binding */ auditMapCountryDisplayName),
@@ -59781,6 +59714,7 @@ function buildMapDetailWarnings(selection, ctx) {
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EU_EEA_UK: () => (/* binding */ EU_EEA_UK),
@@ -59969,6 +59903,7 @@ function deriveComplianceRegionStatus(rows, riskFromApi) {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -60021,6 +59956,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ BugReport)
@@ -60430,6 +60366,7 @@ function BugReport() {
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Button)
@@ -60452,6 +60389,7 @@ function Button(props) {
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ BarChart)
@@ -60535,6 +60473,7 @@ function BarChart(_ref) {
   \*********************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -60587,6 +60526,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ DeviceTypeInteractions)
@@ -60919,6 +60859,7 @@ function DeviceTypeInteractions(_ref2) {
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -60971,6 +60912,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Line)
@@ -61230,6 +61172,7 @@ function Line(_ref) {
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Pie)
@@ -61285,6 +61228,7 @@ function Pie(_ref) {
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ CountryDetailDrawer)
@@ -61499,6 +61443,7 @@ function CountryDetailDrawer(_ref) {
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -61551,6 +61496,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Map)
@@ -62156,6 +62102,7 @@ function Map(props) {
   \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   countryCodes: () => (/* binding */ countryCodes),
@@ -63405,6 +63352,7 @@ var countryCoordinates = {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -63457,6 +63405,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Crawler)
@@ -63603,6 +63552,7 @@ function Crawler(_ref) {
   \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -63655,6 +63605,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   DecisionBehaviourDrawer: () => (/* binding */ DecisionBehaviourDrawer)
@@ -63814,6 +63765,7 @@ function DecisionBehaviourDrawer(_ref) {
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -63866,6 +63818,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ DevTierSwitcher)
@@ -63967,6 +63920,7 @@ function DevTierSwitcher() {
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -64019,6 +63973,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ DomainList)
@@ -64210,6 +64165,7 @@ function DomainList(props) {
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ErrorBoundary)
@@ -64270,6 +64226,7 @@ var ErrorBoundary = /*#__PURE__*/function (_React$Component) {
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Unknown)
@@ -64294,6 +64251,7 @@ function Unknown(props) {
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Unknown)
@@ -64320,6 +64278,7 @@ function Unknown(props) {
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Calendar)
@@ -64509,6 +64468,7 @@ function Calendar(_ref) {
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Months)
@@ -64715,6 +64675,7 @@ function Months(_ref) {
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -64767,6 +64728,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -64819,6 +64781,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   addDays: () => (/* binding */ addDays),
@@ -65006,6 +64969,7 @@ function defaultCompareWindowForPrimary(primaryStart, primaryEnd) {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Filter)
@@ -65438,6 +65402,7 @@ function Filter(_ref) {
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -65490,6 +65455,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   LPFooter: () => (/* binding */ LPFooter),
@@ -65651,6 +65617,7 @@ function LPFooter() {
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Nav)
@@ -65674,8 +65641,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icons_audience_svg__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./icons/audience.svg */ "./src/Components/Header/icons/audience.svg");
 /* harmony import */ var _icons_acquisition_svg__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./icons/acquisition.svg */ "./src/Components/Header/icons/acquisition.svg");
 /* harmony import */ var _icons_heatmap_svg__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./icons/heatmap.svg */ "./src/Components/Header/icons/heatmap.svg");
-/* harmony import */ var _icons_recordings_svg__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./icons/recordings.svg */ "./src/Components/Header/icons/recordings.svg");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -65707,7 +65673,6 @@ var useContext = React.useContext;
 
 
 
-
 function Nav() {
   var _getOrg;
   var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_2__.DomainContext),
@@ -65715,7 +65680,7 @@ function Nav() {
     currentDomain = _useContext2[0];
   var location = useLocation();
   var platform = localStorage.getItem("platform") || "gdpr";
-  var isAdminOrg = Number(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_20__.getOrg === null || _Functions_storage_js__WEBPACK_IMPORTED_MODULE_20__.getOrg === void 0 || (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_20__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id) === 1;
+  var isAdminOrg = Number(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_19__.getOrg === null || _Functions_storage_js__WEBPACK_IMPORTED_MODULE_19__.getOrg === void 0 || (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_19__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id) === 1;
   var path = location.pathname;
   var mode = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.detectDashboardMode)(path);
 
@@ -65727,8 +65692,7 @@ function Nav() {
     var consentPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.analyticsConsentPath)(currentDomain);
     var marketingPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.analyticsMarketingPath)(currentDomain);
     var heatmapPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.analyticsHeatmapPath)(currentDomain);
-    var recordingsPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.analyticsRecordingsPath)(currentDomain);
-    var sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings"].find(function (s) {
+    var sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap"].find(function (s) {
       return path.includes(s);
     });
     var overviewActive = path.indexOf("/analytics") === 0 && !sub;
@@ -65737,7 +65701,6 @@ function Nav() {
     var consentActive = sub === "/consent";
     var marketingActive = sub === "/marketing";
     var heatmapActive = sub === "/heatmap";
-    var recordingsActive = sub === "/recordings";
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
       className: "navOverlay"
     }, /*#__PURE__*/React.createElement("aside", {
@@ -65800,17 +65763,6 @@ function Nav() {
     }), /*#__PURE__*/React.createElement("span", {
       className: "hiddenCollapsed"
     }, "Heatmap")), /*#__PURE__*/React.createElement(Link, {
-      className: "navItems" + (recordingsActive ? " --active" : ""),
-      to: recordingsPath
-    }, /*#__PURE__*/React.createElement("i", {
-      className: "dashboard-icons recordings",
-      style: {
-        backgroundImage: "url(".concat(_icons_recordings_svg__WEBPACK_IMPORTED_MODULE_19__["default"], ")")
-      },
-      "data-icon": _icons_recordings_svg__WEBPACK_IMPORTED_MODULE_19__["default"]
-    }), /*#__PURE__*/React.createElement("span", {
-      className: "hiddenCollapsed"
-    }, "Recordings")), /*#__PURE__*/React.createElement(Link, {
       className: "navItems" + (marketingActive ? " --active" : ""),
       to: marketingPath
     }, /*#__PURE__*/React.createElement("i", {
@@ -65965,6 +65917,7 @@ function Nav() {
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -66017,6 +65970,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ PropertySelector)
@@ -66458,6 +66412,7 @@ function PropertySelector(props) {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SideNav)
@@ -66619,6 +66574,7 @@ function SideNav(props) {
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   experimentsLinks: () => (/* binding */ experimentsLinks),
@@ -66688,6 +66644,7 @@ var experimentsLinks = [{
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ StickyPageTitle)
@@ -66810,6 +66767,7 @@ function StickyPageTitle(_ref) {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -66862,6 +66820,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Header),
@@ -67628,6 +67587,7 @@ function Header(props) {
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67642,6 +67602,7 @@ __webpack_require__.r(__webpack_exports__);
   \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67656,6 +67617,7 @@ __webpack_require__.r(__webpack_exports__);
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67670,6 +67632,7 @@ __webpack_require__.r(__webpack_exports__);
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67684,6 +67647,7 @@ __webpack_require__.r(__webpack_exports__);
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67698,6 +67662,7 @@ __webpack_require__.r(__webpack_exports__);
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67712,6 +67677,7 @@ __webpack_require__.r(__webpack_exports__);
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67726,6 +67692,7 @@ __webpack_require__.r(__webpack_exports__);
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67740,6 +67707,7 @@ __webpack_require__.r(__webpack_exports__);
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67754,6 +67722,7 @@ __webpack_require__.r(__webpack_exports__);
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67768,11 +67737,12 @@ __webpack_require__.r(__webpack_exports__);
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "167c5f860117bc35eecfcb47645132eb.svg");
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "7baa2254853cd17582f029b76e49cd4e.svg");
 
 /***/ }),
 
@@ -67782,6 +67752,7 @@ __webpack_require__.r(__webpack_exports__);
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67796,6 +67767,7 @@ __webpack_require__.r(__webpack_exports__);
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67810,25 +67782,12 @@ __webpack_require__.r(__webpack_exports__);
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "70f77c8641791cfc098db11a6afa9071.svg");
-
-/***/ }),
-
-/***/ "./src/Components/Header/icons/recordings.svg":
-/*!****************************************************!*\
-  !*** ./src/Components/Header/icons/recordings.svg ***!
-  \****************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "ece0a8207e4665622bed4515811c05c7.svg");
 
 /***/ }),
 
@@ -67838,6 +67797,7 @@ __webpack_require__.r(__webpack_exports__);
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67852,6 +67812,7 @@ __webpack_require__.r(__webpack_exports__);
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67866,6 +67827,7 @@ __webpack_require__.r(__webpack_exports__);
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67880,6 +67842,7 @@ __webpack_require__.r(__webpack_exports__);
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67894,6 +67857,7 @@ __webpack_require__.r(__webpack_exports__);
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67908,6 +67872,7 @@ __webpack_require__.r(__webpack_exports__);
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Highlighter)
@@ -67928,6 +67893,7 @@ function Highlighter(props) {
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -67980,6 +67946,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Email)
@@ -68010,6 +67977,7 @@ function Email(props) {
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ PasswordInput)
@@ -68040,6 +68008,7 @@ function PasswordInput(props) {
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -68092,6 +68061,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Text)
@@ -68122,6 +68092,7 @@ function Text(props) {
   \*******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Account)
@@ -68280,6 +68251,7 @@ function Account(props) {
   \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -68332,6 +68304,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -68384,6 +68357,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   LiveView: () => (/* binding */ LiveView)
@@ -68923,6 +68897,7 @@ function LiveView(props) {
   \*************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getApproxLastInteractionIsoFromLiveData: () => (/* binding */ getApproxLastInteractionIsoFromLiveData)
@@ -68980,6 +68955,7 @@ function getApproxLastInteractionIsoFromLiveData(liveData) {
   \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ LoadingSpinner)
@@ -69002,6 +68978,7 @@ function LoadingSpinner() {
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -69054,6 +69031,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ NotAllowed)
@@ -69072,6 +69050,7 @@ function NotAllowed() {
   \**************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -69124,6 +69103,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ PlatformSelector)
@@ -69210,6 +69190,7 @@ function PlatformSelector(props) {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Select)
@@ -69533,6 +69514,7 @@ function Select(props) {
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -69585,6 +69567,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -69637,6 +69620,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SideCart)
@@ -69677,6 +69661,7 @@ function SideCart(_ref) {
   \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ CheckoutForm)
@@ -69760,6 +69745,7 @@ function CheckoutForm(_ref) {
   \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -69812,6 +69798,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SubscriptionPlans)
@@ -70051,6 +70038,7 @@ function SubscriptionPlans() {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -70103,6 +70091,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SuccessWindow)
@@ -70148,6 +70137,7 @@ function SuccessWindow(props) {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -70200,6 +70190,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Table)
@@ -70262,6 +70253,7 @@ function Table(props) {
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -70314,6 +70306,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ TierGate)
@@ -70394,6 +70387,7 @@ function TierGate(_ref) {
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   PROJECTED_MAP_VIEWBOX: () => (/* binding */ PROJECTED_MAP_VIEWBOX),
@@ -70547,6 +70541,7 @@ function topoToFeatures(topo, objName) {
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ BasicTier)
@@ -70565,6 +70560,7 @@ function BasicTier() {}
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ PremiumTier)
@@ -70649,6 +70645,7 @@ function PremiumTier(props) {
   \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ProTier)
@@ -70701,6 +70698,7 @@ function ProTier(props) {
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BasicTier: () => (/* reexport safe */ _Basic_js__WEBPACK_IMPORTED_MODULE_1__["default"]),
@@ -70723,6 +70721,7 @@ __webpack_require__.r(__webpack_exports__);
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -70775,6 +70774,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CurrentPageLoading: () => (/* binding */ CurrentPageLoading),
@@ -70832,6 +70832,7 @@ function LoadingBar() {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -70884,6 +70885,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Widget)
@@ -71177,6 +71179,7 @@ function Widget(props) {
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ useFetch),
@@ -71344,6 +71347,7 @@ function useEventSource(url) {
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   addAuditReportEntry: () => (/* binding */ addAuditReportEntry),
@@ -71401,6 +71405,7 @@ function replaceAuditReportIndex(orgId, domain, entries) {
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   lockBodyScroll: () => (/* binding */ lockBodyScroll),
@@ -71435,6 +71440,7 @@ function unlockBodyScroll() {
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   getFavouriteDomains: () => (/* binding */ getFavouriteDomains),
@@ -71496,6 +71502,7 @@ function pushRecentDomain(name) {
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   analyticsAcquisitionPath: () => (/* binding */ analyticsAcquisitionPath),
@@ -71712,6 +71719,7 @@ function useSyncDomainFromRoute(handle, setCurrentDomain) {
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   checkDomainVerification: () => (/* binding */ checkDomainVerification),
@@ -72096,6 +72104,7 @@ function getDomainsNeedingReverification() {
   \********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -72268,6 +72277,7 @@ function _downloadPDF() {
   \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   isJson: () => (/* binding */ isJson)
@@ -72289,6 +72299,7 @@ function isJson(str) {
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   NUMERIC_TO_ALPHA2: () => (/* binding */ NUMERIC_TO_ALPHA2),
@@ -72568,6 +72579,7 @@ function numericToAlpha2(num) {
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BANNER_TYPE_BY_FRAMEWORK: () => (/* binding */ BANNER_TYPE_BY_FRAMEWORK),
@@ -72711,6 +72723,7 @@ function getFrameworksForCountry(alpha2) {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   DEFAULT_LEGAL_BASIS: () => (/* binding */ DEFAULT_LEGAL_BASIS),
@@ -73147,6 +73160,7 @@ var DEFAULT_LEGAL_BASIS = {
   \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
@@ -73260,6 +73274,7 @@ function getOrg() {
   \*******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   FEATURE_TIERS: () => (/* binding */ FEATURE_TIERS),
@@ -73361,6 +73376,7 @@ function hasFeature(feature) {
   \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   USER_SETTINGS_CHANGED: () => (/* binding */ USER_SETTINGS_CHANGED),
@@ -73427,6 +73443,7 @@ function useUserLocale() {
   \********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AuthLogin)
@@ -73503,6 +73520,7 @@ function AuthLogin() {
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -73555,6 +73573,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Login)
@@ -73916,6 +73935,7 @@ function Login() {
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Login)
@@ -74041,6 +74061,7 @@ function Login() {
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AnalyticsAcquisition)
@@ -74235,6 +74256,7 @@ function AnalyticsAcquisition() {
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -74287,6 +74309,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AnalyticsWorldMap)
@@ -74418,6 +74441,7 @@ function AnalyticsWorldMap(_ref3) {
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AnalyticsAudience)
@@ -74757,6 +74781,7 @@ function AnalyticsAudience() {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AnalyticsConsent)
@@ -74959,6 +74984,7 @@ function AnalyticsConsent() {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AnalyticsHeatmap)
@@ -74994,7 +75020,9 @@ var _React = React,
   useState = _React.useState,
   useEffect = _React.useEffect,
   useContext = _React.useContext,
-  useMemo = _React.useMemo;
+  useMemo = _React.useMemo,
+  useRef = _React.useRef,
+  useLayoutEffect = _React.useLayoutEffect;
 var useParams = window.ReactRouterDOM.useParams;
 
 
@@ -75146,10 +75174,32 @@ function useHeatmapDetail(domain, pathname, device, fromIso, toIso) {
     error: error
   };
 }
+
+// Representative viewport sizes so the preview actually triggers the target
+// site's responsive breakpoints — the device tabs only filtered click/scroll
+// *data* before; the <iframe> itself always rendered at the panel's own
+// width, so a "desktop" and "mobile" preview looked identical regardless of
+// which tab was selected. Rendered at true pixel size, then CSS-scaled down
+// to fit the panel (same trick browser devtools device emulation uses).
+var DEVICE_DIMENSIONS = {
+  desktop: {
+    width: 1440,
+    height: 900
+  },
+  tablet: {
+    width: 820,
+    height: 1180
+  },
+  mobile: {
+    width: 390,
+    height: 844
+  }
+};
 function ClickOverlay(_ref3) {
   var domain = _ref3.domain,
     pathname = _ref3.pathname,
-    clicks = _ref3.clicks;
+    clicks = _ref3.clicks,
+    device = _ref3.device;
   var maxN = useMemo(function () {
     return Math.max.apply(Math, _toConsumableArray(clicks.map(function (c) {
       return c.n;
@@ -75160,14 +75210,47 @@ function ClickOverlay(_ref3) {
     _useState12 = _slicedToArray(_useState11, 2),
     frameFailed = _useState12[0],
     setFrameFailed = _useState12[1];
+  var outerRef = useRef(null);
+  var _useState13 = useState(1),
+    _useState14 = _slicedToArray(_useState13, 2),
+    scale = _useState14[0],
+    setScale = _useState14[1];
+
+  // "All devices" has no single representative width — default to desktop.
+  var dims = DEVICE_DIMENSIONS[device] || DEVICE_DIMENSIONS.desktop;
   useEffect(function () {
     return setFrameFailed(false);
   }, [src]);
+  useLayoutEffect(function () {
+    function updateScale() {
+      var _outerRef$current;
+      var availableWidth = ((_outerRef$current = outerRef.current) === null || _outerRef$current === void 0 ? void 0 : _outerRef$current.clientWidth) || dims.width;
+      setScale(Math.min(1, availableWidth / dims.width));
+    }
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return function () {
+      return window.removeEventListener("resize", updateScale);
+    };
+  }, [dims.width]);
   return /*#__PURE__*/React.createElement("div", {
-    className: "sa-heatmap__frame-wrap"
+    ref: outerRef,
+    className: "sa-heatmap__frame-outer",
+    style: {
+      height: Math.round(dims.height * scale)
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-heatmap__frame-wrap",
+    style: {
+      width: dims.width,
+      height: dims.height,
+      transform: "scale(".concat(scale, ")")
+    }
   }, src && !frameFailed && /*#__PURE__*/React.createElement("iframe", {
     className: "sa-heatmap__frame",
     src: src,
+    width: dims.width,
+    height: dims.height,
     title: "Page preview",
     loading: "lazy",
     referrerPolicy: "no-referrer",
@@ -75189,7 +75272,7 @@ function ClickOverlay(_ref3) {
       r: 2.2,
       fill: intensityColor(c.n / maxN)
     }, /*#__PURE__*/React.createElement("title", null, c.n, " click", c.n !== 1 ? "s" : ""));
-  })));
+  }))));
 }
 function ScrollFunnel(_ref4) {
   var scrollDepth = _ref4.scrollDepth;
@@ -75252,24 +75335,24 @@ function AnalyticsHeatmap() {
     if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
     return String(globalDomain || "").trim().toLowerCase();
   }, [globalDomain]);
-  var _useState13 = useState(30),
-    _useState14 = _slicedToArray(_useState13, 2),
-    getLastDays = _useState14[0],
-    setLastDays = _useState14[1];
-  var _useState15 = useState(function () {
+  var _useState15 = useState(30),
+    _useState16 = _slicedToArray(_useState15, 2),
+    getLastDays = _useState16[0],
+    setLastDays = _useState16[1];
+  var _useState17 = useState(function () {
       var d = new Date();
       d.setDate(d.getDate() - 30);
       return d;
     }),
-    _useState16 = _slicedToArray(_useState15, 2),
-    fromDate = _useState16[0],
-    setFromDate = _useState16[1];
-  var _useState17 = useState(function () {
+    _useState18 = _slicedToArray(_useState17, 2),
+    fromDate = _useState18[0],
+    setFromDate = _useState18[1];
+  var _useState19 = useState(function () {
       return new Date();
     }),
-    _useState18 = _slicedToArray(_useState17, 2),
-    toDate = _useState18[0],
-    setToDate = _useState18[1];
+    _useState20 = _slicedToArray(_useState19, 2),
+    toDate = _useState20[0],
+    setToDate = _useState20[1];
   var fromIso = useMemo(function () {
     return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(fromDate);
   }, [fromDate]);
@@ -75280,14 +75363,14 @@ function AnalyticsHeatmap() {
     paths = _usePaths.paths,
     pathsLoading = _usePaths.loading,
     noSiteKey = _usePaths.noSiteKey;
-  var _useState19 = useState(null),
-    _useState20 = _slicedToArray(_useState19, 2),
-    selectedPath = _useState20[0],
-    setSelectedPath = _useState20[1];
-  var _useState21 = useState(""),
+  var _useState21 = useState(null),
     _useState22 = _slicedToArray(_useState21, 2),
-    device = _useState22[0],
-    setDevice = _useState22[1];
+    selectedPath = _useState22[0],
+    setSelectedPath = _useState22[1];
+  var _useState23 = useState(""),
+    _useState24 = _slicedToArray(_useState23, 2),
+    device = _useState24[0],
+    setDevice = _useState24[1];
   useEffect(function () {
     if (!selectedPath && paths.length) setSelectedPath(paths[0].pathname);
   }, [paths, selectedPath]);
@@ -75361,7 +75444,8 @@ function AnalyticsHeatmap() {
   }, "No click data for this page/device combination.") : /*#__PURE__*/React.createElement(ClickOverlay, {
     domain: domain,
     pathname: selectedPath,
-    clicks: data.clicks
+    clicks: data.clicks,
+    device: device
   })), /*#__PURE__*/React.createElement("div", {
     className: "sa-panel sa-heatmap__scroll"
   }, /*#__PURE__*/React.createElement("h3", {
@@ -75378,16 +75462,19 @@ function AnalyticsHeatmap() {
     className: "sa-icon"
   }), " Top clicked elements"), /*#__PURE__*/React.createElement("table", {
     className: "sa-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Element"), /*#__PURE__*/React.createElement("th", {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Element"), /*#__PURE__*/React.createElement("th", null, "Text"), /*#__PURE__*/React.createElement("th", {
     className: "sa-table__num"
   }, "Clicks"))), /*#__PURE__*/React.createElement("tbody", null, (data.topElements || []).map(function (el, i) {
     return /*#__PURE__*/React.createElement("tr", {
       key: i
     }, /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("code", null, el.tag || "?", el.id ? "#".concat(el.id) : "", el.className ? ".".concat(String(el.className).split(/\s+/).join(".")) : "")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__path",
+      title: el.text || ""
+    }, el.text || "—"), /*#__PURE__*/React.createElement("td", {
       className: "sa-table__num"
     }, el.n.toLocaleString("de-DE")));
   }), !((_data$topElements = data.topElements) !== null && _data$topElements !== void 0 && _data$topElements.length) && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
-    colSpan: 2,
+    colSpan: 3,
     style: {
       color: "rgba(130,130,130,0.55)",
       fontSize: "0.8rem"
@@ -75403,6 +75490,7 @@ function AnalyticsHeatmap() {
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   IconBarChart: () => (/* binding */ IconBarChart),
@@ -75588,12 +75676,14 @@ function IconVideo(props) {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ RecordingPlayer)
 /* harmony export */ });
 /* harmony import */ var rrweb_player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rrweb-player */ "./node_modules/rrweb-player/dist/rrweb-player.js");
 /* harmony import */ var rrweb_player_dist_style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rrweb-player/dist/style.css */ "./node_modules/rrweb-player/dist/style.css");
+/* harmony import */ var rrweb_player_dist_style_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(rrweb_player_dist_style_css__WEBPACK_IMPORTED_MODULE_1__);
 var _React = React,
   useEffect = _React.useEffect,
   useRef = _React.useRef;
@@ -75645,6 +75735,7 @@ function RecordingPlayer(_ref) {
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   AnalyticsRecordingDetail: () => (/* binding */ AnalyticsRecordingDetail),
@@ -76050,6 +76141,7 @@ function AnalyticsRecordingDetail() {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BarSegment: () => (/* binding */ BarSegment),
@@ -76240,6 +76332,7 @@ function MiniBar(_ref5) {
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SiteAnalytics)
@@ -76876,6 +76969,7 @@ function SiteAnalytics() {
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -76928,6 +77022,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ComplianceFlowMap)
@@ -77172,6 +77267,7 @@ function ComplianceFlowMap(_ref) {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -77224,6 +77320,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ CompliancePage)
@@ -78492,6 +78589,7 @@ function CompliancePage() {
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -78544,6 +78642,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ CookieDatabase)
@@ -79262,6 +79361,7 @@ function CookieDatabase() {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ UserConsents)
@@ -79349,6 +79449,7 @@ function UserConsents(props) {
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -79401,6 +79502,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ DSRDetail)
@@ -79728,6 +79830,7 @@ function DSRDetail() {
   \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -79780,6 +79883,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ DSR)
@@ -80207,6 +80311,7 @@ function DSR() {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Dashboard)
@@ -80808,6 +80913,7 @@ function Dashboard(props) {
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ DomainDashbord)
@@ -81319,6 +81425,7 @@ function DomainDashbord(props) {
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -81371,6 +81478,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ FerryDashboard)
@@ -81389,6 +81497,7 @@ function FerryDashboard() {
   \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -81441,6 +81550,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Websites)
@@ -81547,6 +81657,7 @@ function Websites() {
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   __TEST__: () => (/* binding */ __TEST__),
@@ -82386,6 +82497,7 @@ var __TEST__ = {
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -82438,6 +82550,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Experiments)
@@ -83758,6 +83871,7 @@ function Experiments() {
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   KNOWN_CHANNELS: () => (/* binding */ KNOWN_CHANNELS),
@@ -83961,6 +84075,7 @@ function findChannelFromHint(hint) {
   \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -84013,6 +84128,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AuditReport)
@@ -84537,6 +84653,7 @@ function AuditReport() {
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Compare)
@@ -85070,6 +85187,7 @@ function Compare(_ref) {
   \******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AdConnectionManager)
@@ -85676,6 +85794,7 @@ function AdConnectionManager(_ref) {
   \**************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Ga4SessionsChart: () => (/* binding */ Ga4SessionsChart),
@@ -86498,6 +86617,7 @@ function Ga4SessionsChart(_ref11) {
   \***************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ MarketingReconciliationPanel)
@@ -89907,6 +90027,7 @@ function MarketingReconciliationPanel(_ref23) {
   \***************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -89959,6 +90080,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ MarketingSuggestionsStrip)
@@ -90140,6 +90262,7 @@ function MarketingSuggestionsStrip(_ref5) {
   \************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ReconcilePage)
@@ -90786,6 +90909,7 @@ function ReconcilePage() {
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ MarketingReport)
@@ -93549,6 +93673,7 @@ function MarketingReport() {
   \*******************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   __TEST__: () => (/* binding */ __TEST__),
@@ -93738,6 +93863,7 @@ var __TEST__ = {
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -93790,6 +93916,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Reports),
@@ -93960,6 +94087,7 @@ function Reports() {
   \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -94012,6 +94140,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ UserAgents)
@@ -94067,6 +94196,7 @@ function UserAgents() {
   \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AdConnectionsSettings)
@@ -94591,6 +94721,7 @@ function AdConnectionsSettings() {
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ SettingsAddDomain)
@@ -94627,6 +94758,7 @@ function SettingsAddDomain() {
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AddUser)
@@ -94795,6 +94927,7 @@ function AddUser() {
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ AnalyticsScript)
@@ -95137,6 +95270,7 @@ function AnalyticsScript() {
   \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ BlacklistIp)
@@ -95330,6 +95464,7 @@ function BlacklistIp() {
   \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ CreateOrganisation)
@@ -95437,6 +95572,7 @@ function CreateOrganisation() {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ CreateUser)
@@ -95746,6 +95882,7 @@ function CreateUser() {
   \**************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ JurisdictionConfig)
@@ -96081,6 +96218,7 @@ function JurisdictionConfig() {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ LegalBasis)
@@ -96305,6 +96443,7 @@ function LegalBasis() {
   \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ROPAEntry)
@@ -97009,6 +97148,7 @@ function ROPAEntry() {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ROPA)
@@ -97319,6 +97459,7 @@ function ROPA() {
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -97371,6 +97512,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ UserPreferences)
@@ -97592,6 +97734,7 @@ function UserPreferences() {
   \*******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ViewOrg)
@@ -97930,6 +98073,7 @@ function ViewOrg() {
   \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ViewUsers)
@@ -98302,6 +98446,7 @@ function ViewUsers() {
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Workspaces)
@@ -99560,6 +99705,7 @@ function Workspaces() {
   \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ Settings)
@@ -99673,6 +99819,7 @@ function Settings() {
   \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -99725,6 +99872,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ UserConsents)
@@ -100710,6 +100858,7 @@ function UserConsents(props) {
   \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   DEMO_REGULATIONS: () => (/* binding */ DEMO_REGULATIONS),
@@ -100805,6 +100954,7 @@ function buildDemoConsentList() {
   \****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clearTextfield: () => (/* binding */ clearTextfield),
@@ -100835,17 +100985,8 @@ function extractHostname(url) {
   \**************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = "data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2712%27 height=%2712%27 viewBox=%270 0 24 24%27 fill=%27none%27 stroke=%27rgba%28180,185,200,0.7%29%27 stroke-width=%272%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27%3E%3Cpolyline points=%276 9 12 15 18 9%27/%3E%3C/svg%3E";
-
-/***/ }),
-
-/***/ "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDUwIDUwIiB4PSIwcHgiIHk9IjBweCI+PHRpdGxlPkRlc2lnbl90bnA8L3RpdGxlPjxwYXRoIGQ9Ik00OC43MSw0Mi45MUwzNC4wOCwyOC4yOSw0NC4zMywxOEExLDEsMCwwLDAsNDQsMTYuMzlMMi4zNSwxLjA2QTEsMSwwLDAsMCwxLjA2LDIuMzVMMTYuMzksNDRhMSwxLDAsMCwwLDEuNjUuMzZMMjguMjksMzQuMDgsNDIuOTEsNDguNzFhMSwxLDAsMCwwLDEuNDEsMGw0LjM4LTQuMzhBMSwxLDAsMCwwLDQ4LjcxLDQyLjkxWm0tNS4wOSwzLjY3TDI5LDMyYTEsMSwwLDAsMC0xLjQxLDBsLTkuODUsOS44NUwzLjY5LDMuNjlsMzguMTIsMTRMMzIsMjcuNThBMSwxLDAsMCwwLDMyLDI5TDQ2LjU5LDQzLjYyWiI+PC9wYXRoPjwvc3ZnPg==":
-/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDUwIDUwIiB4PSIwcHgiIHk9IjBweCI+PHRpdGxlPkRlc2lnbl90bnA8L3RpdGxlPjxwYXRoIGQ9Ik00OC43MSw0Mi45MUwzNC4wOCwyOC4yOSw0NC4zMywxOEExLDEsMCwwLDAsNDQsMTYuMzlMMi4zNSwxLjA2QTEsMSwwLDAsMCwxLjA2LDIuMzVMMTYuMzksNDRhMSwxLDAsMCwwLDEuNjUuMzZMMjguMjksMzQuMDgsNDIuOTEsNDguNzFhMSwxLDAsMCwwLDEuNDEsMGw0LjM4LTQuMzhBMSwxLDAsMCwwLDQ4LjcxLDQyLjkxWm0tNS4wOSwzLjY3TDI5LDMyYTEsMSwwLDAsMC0xLjQxLDBsLTkuODUsOS44NUwzLjY5LDMuNjlsMzguMTIsMTRMMzIsMjcuNThBMSwxLDAsMCwwLDMyLDI5TDQ2LjU5LDQzLjYyWiI+PC9wYXRoPjwvc3ZnPg== ***!
-  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((module) => {
-
-module.exports = "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0nMzAwcHgnICBmaWxsPSIjMDAwMDAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDUwIDUwIiB4PSIwcHgiIHk9IjBweCI+PHRpdGxlPkRlc2lnbl90bnA8L3RpdGxlPjxwYXRoIGQ9Ik00OC43MSw0Mi45MUwzNC4wOCwyOC4yOSw0NC4zMywxOEExLDEsMCwwLDAsNDQsMTYuMzlMMi4zNSwxLjA2QTEsMSwwLDAsMCwxLjA2LDIuMzVMMTYuMzksNDRhMSwxLDAsMCwwLDEuNjUuMzZMMjguMjksMzQuMDgsNDIuOTEsNDguNzFhMSwxLDAsMCwwLDEuNDEsMGw0LjM4LTQuMzhBMSwxLDAsMCwwLDQ4LjcxLDQyLjkxWm0tNS4wOSwzLjY3TDI5LDMyYTEsMSwwLDAsMC0xLjQxLDBsLTkuODUsOS44NUwzLjY5LDMuNjlsMzguMTIsMTRMMzIsMjcuNThBMSwxLDAsMCwwLDMyLDI5TDQ2LjU5LDQzLjYyWiI+PC9wYXRoPjwvc3ZnPg==";
 
 /***/ }),
 
@@ -100855,6 +100996,7 @@ module.exports = "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9JzMwMHB4JyB3aWR0aD0n
   \************************/
 /***/ ((module) => {
 
+"use strict";
 module.exports = React;
 
 /***/ })
@@ -100967,8 +101109,9 @@ module.exports = React;
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
 (() => {
+"use strict";
 /*!******************!*\
   !*** ./index.js ***!
   \******************/

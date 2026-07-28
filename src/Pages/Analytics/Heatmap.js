@@ -1,4 +1,4 @@
-const { useState, useEffect, useContext, useMemo } = React;
+const { useState, useEffect, useContext, useMemo, useRef, useLayoutEffect } = React;
 const useParams = window.ReactRouterDOM.useParams;
 import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
@@ -71,44 +71,78 @@ function useHeatmapDetail(domain, pathname, device, fromIso, toIso) {
     return { data, loading, error };
 }
 
-function ClickOverlay({ domain, pathname, clicks }) {
+// Representative viewport sizes so the preview actually triggers the target
+// site's responsive breakpoints — the device tabs only filtered click/scroll
+// *data* before; the <iframe> itself always rendered at the panel's own
+// width, so a "desktop" and "mobile" preview looked identical regardless of
+// which tab was selected. Rendered at true pixel size, then CSS-scaled down
+// to fit the panel (same trick browser devtools device emulation uses).
+const DEVICE_DIMENSIONS = {
+    desktop: { width: 1440, height: 900 },
+    tablet:  { width: 820,  height: 1180 },
+    mobile:  { width: 390,  height: 844 },
+};
+
+function ClickOverlay({ domain, pathname, clicks, device }) {
     const maxN = useMemo(() => Math.max(...clicks.map(c => c.n), 1), [clicks]);
     const src  = pathname ? `https://${domain}${pathname}` : null;
     const [frameFailed, setFrameFailed] = useState(false);
+    const outerRef = useRef(null);
+    const [scale, setScale] = useState(1);
+
+    // "All devices" has no single representative width — default to desktop.
+    const dims = DEVICE_DIMENSIONS[device] || DEVICE_DIMENSIONS.desktop;
 
     useEffect(() => setFrameFailed(false), [src]);
 
+    useLayoutEffect(() => {
+        function updateScale() {
+            const availableWidth = outerRef.current?.clientWidth || dims.width;
+            setScale(Math.min(1, availableWidth / dims.width));
+        }
+        updateScale();
+        window.addEventListener("resize", updateScale);
+        return () => window.removeEventListener("resize", updateScale);
+    }, [dims.width]);
+
     return (
-        <div className="sa-heatmap__frame-wrap">
-            {src && !frameFailed && (
-                <iframe
-                    className="sa-heatmap__frame"
-                    src={src}
-                    title="Page preview"
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                    sandbox="allow-same-origin"
-                    onError={() => setFrameFailed(true)}
-                />
-            )}
-            {(!src || frameFailed) && (
-                <div className="sa-heatmap__frame-fallback">
-                    Preview unavailable — the page may block embedding, or hasn't loaded yet.
-                </div>
-            )}
-            <svg className="sa-heatmap__overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
-                {clicks.map((c, i) => (
-                    <circle
-                        key={i}
-                        cx={c.gx}
-                        cy={c.gy}
-                        r={2.2}
-                        fill={intensityColor(c.n / maxN)}
-                    >
-                        <title>{c.n} click{c.n !== 1 ? "s" : ""}</title>
-                    </circle>
-                ))}
-            </svg>
+        <div ref={outerRef} className="sa-heatmap__frame-outer" style={{ height: Math.round(dims.height * scale) }}>
+            <div
+                className="sa-heatmap__frame-wrap"
+                style={{ width: dims.width, height: dims.height, transform: `scale(${scale})` }}
+            >
+                {src && !frameFailed && (
+                    <iframe
+                        className="sa-heatmap__frame"
+                        src={src}
+                        width={dims.width}
+                        height={dims.height}
+                        title="Page preview"
+                        loading="lazy"
+                        referrerPolicy="no-referrer"
+                        sandbox="allow-same-origin"
+                        onError={() => setFrameFailed(true)}
+                    />
+                )}
+                {(!src || frameFailed) && (
+                    <div className="sa-heatmap__frame-fallback">
+                        Preview unavailable — the page may block embedding, or hasn't loaded yet.
+                    </div>
+                )}
+                <svg className="sa-heatmap__overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    {clicks.map((c, i) => (
+                        <circle
+                            key={i}
+                            cx={c.gx}
+                            cy={c.gy}
+                            r={2.2}
+                            fill={intensityColor(c.n / maxN)}
+                        >
+                            <title>{c.n} click{c.n !== 1 ? "s" : ""}</title>
+                        </circle>
+                    ))}
+                </svg>
+            </div>
         </div>
     );
 }
@@ -237,7 +271,7 @@ export default function AnalyticsHeatmap() {
                                         {data.noData ? (
                                             <p className="sa-notice">No click data for this page/device combination.</p>
                                         ) : (
-                                            <ClickOverlay domain={domain} pathname={selectedPath} clicks={data.clicks} />
+                                            <ClickOverlay domain={domain} pathname={selectedPath} clicks={data.clicks} device={device} />
                                         )}
                                     </div>
 
@@ -252,6 +286,7 @@ export default function AnalyticsHeatmap() {
                                             <thead>
                                                 <tr>
                                                     <th>Element</th>
+                                                    <th>Text</th>
                                                     <th className="sa-table__num">Clicks</th>
                                                 </tr>
                                             </thead>
@@ -265,11 +300,12 @@ export default function AnalyticsHeatmap() {
                                                                 {el.className ? `.${String(el.className).split(/\s+/).join(".")}` : ""}
                                                             </code>
                                                         </td>
+                                                        <td className="sa-table__path" title={el.text || ""}>{el.text || "—"}</td>
                                                         <td className="sa-table__num">{el.n.toLocaleString("de-DE")}</td>
                                                     </tr>
                                                 ))}
                                                 {!data.topElements?.length && (
-                                                    <tr><td colSpan={2} style={{color:"rgba(130,130,130,0.55)",fontSize:"0.8rem"}}>No clicks recorded</td></tr>
+                                                    <tr><td colSpan={3} style={{color:"rgba(130,130,130,0.55)",fontSize:"0.8rem"}}>No clicks recorded</td></tr>
                                                 )}
                                             </tbody>
                                         </table>
