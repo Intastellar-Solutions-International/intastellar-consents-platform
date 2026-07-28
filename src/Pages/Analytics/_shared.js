@@ -1,5 +1,4 @@
 const { useState, useEffect, useMemo } = React;
-const { NavLink } = window.ReactRouterDOM;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 
@@ -85,16 +84,3 @@ export function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
     );
 }
 
-export function AnalyticsSubNav({ handle }) {
-    if (!handle) return null;
-    const base = `/analytics/${handle}`;
-    return (
-        <nav className="sa-subnav">
-            <NavLink to={base} exact className="sa-subnav__link" activeClassName="sa-subnav__link--active">Overview</NavLink>
-            <NavLink to={`${base}/audience`} className="sa-subnav__link" activeClassName="sa-subnav__link--active">Audience</NavLink>
-            <NavLink to={`${base}/acquisition`} className="sa-subnav__link" activeClassName="sa-subnav__link--active">Acquisition</NavLink>
-            <NavLink to={`${base}/consent`} className="sa-subnav__link" activeClassName="sa-subnav__link--active">Consent</NavLink>
-            <NavLink to={`${base}/marketing`} className="sa-subnav__link" activeClassName="sa-subnav__link--active">Marketing</NavLink>
-        </nav>
-    );
-}

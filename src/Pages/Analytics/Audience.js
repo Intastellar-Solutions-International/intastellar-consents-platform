@@ -4,7 +4,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import { useAnalyticsReport, toIsoDate, MiniBar, AnalyticsSubNav } from "./_shared.js";
+import { useAnalyticsReport, toIsoDate, MiniBar } from "./_shared.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
 import "./Analytics.css";
 
@@ -54,8 +54,6 @@ export default function AnalyticsAudience() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
-                    {data && !data.noSiteKey && <AnalyticsSubNav handle={handle} />}
-
                     {!domain && (
                         <p className="sa-notice">Select a domain in the header to view audience data.</p>
                     )}

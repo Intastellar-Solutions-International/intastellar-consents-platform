@@ -109,14 +109,33 @@ export function analyticsMarketingPath(domainUnicode) {
     return `/analytics/${seg}/marketing`;
 }
 
+export function analyticsAudiencePath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/audience";
+    return `/analytics/${seg}/audience`;
+}
+
+export function analyticsAcquisitionPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/acquisition";
+    return `/analytics/${seg}/acquisition`;
+}
+
+export function analyticsConsentPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/consent";
+    return `/analytics/${seg}/consent`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        if (pathname.includes("/marketing")) {
-            history.push(analyticsMarketingPath(domainUnicode));
-        } else {
-            history.push(analyticsPath(domainUnicode));
-        }
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent"].find(s => pathname.includes(s));
+        if (leaf === "/marketing")    history.push(analyticsMarketingPath(domainUnicode));
+        else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
+        else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
+        else if (leaf === "/consent")     history.push(analyticsConsentPath(domainUnicode));
+        else                              history.push(analyticsPath(domainUnicode));
         return;
     }
     const leaf = getReportsUrlLeaf(pathname);

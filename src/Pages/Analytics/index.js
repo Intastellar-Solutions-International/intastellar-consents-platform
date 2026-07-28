@@ -5,7 +5,7 @@ import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import {
-    authHeaders, toIsoDate, KpiCard, MiniBar, useAnalyticsReport, AnalyticsSubNav,
+    authHeaders, toIsoDate, KpiCard, MiniBar, useAnalyticsReport,
 } from "./_shared.js";
 import {
     IconBarChart,
@@ -375,8 +375,6 @@ export default function SiteAnalytics() {
                             </span>
                         </div>
                     )}
-
-                    {data && !data.noSiteKey && <AnalyticsSubNav handle={handle} />}
 
                     {!domain && (
                         <p className="sa-notice">Select a specific domain in the header to view analytics.</p>

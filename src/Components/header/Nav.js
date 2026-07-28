@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -19,6 +19,9 @@ import compliance from "./icons/compliance.svg";
 import cookies from "./icons/cookies.svg";
 import analyticsOverview from "./icons/analytics-overview.svg";
 import marketing from "./icons/marketing.svg";
+import audience from "./icons/audience.svg";
+import acquisition from "./icons/acquisition.svg";
+import consentIcon from "./icons/compliance.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -31,29 +34,53 @@ export default function Nav() {
 
     // ── Analytics mode: analytics + marketing links only ──────────────────
     if (mode === "analytics") {
-        const overviewPath = analyticsPath(currentDomain);
-        const marketingPath = analyticsMarketingPath(currentDomain);
-        const overviewActive = !path.indexOf("/analytics") && path.indexOf("/marketing") === -1;
-        const marketingActive = path.indexOf("/marketing") > -1;
+        const overviewPath    = analyticsPath(currentDomain);
+        const audiencePath    = analyticsAudiencePath(currentDomain);
+        const acquisitionPath = analyticsAcquisitionPath(currentDomain);
+        const consentPath     = analyticsConsentPath(currentDomain);
+        const marketingPath   = analyticsMarketingPath(currentDomain);
+
+        const sub = ["/audience", "/acquisition", "/consent", "/marketing"].find(s => path.includes(s));
+        const overviewActive    = path.indexOf("/analytics") === 0 && !sub;
+        const audienceActive    = sub === "/audience";
+        const acquisitionActive = sub === "/acquisition";
+        const consentActive     = sub === "/consent";
+        const marketingActive   = sub === "/marketing";
 
         return (
             <>
                 <div className="navOverlay">
                     <aside className="sidebar">
                         <nav className="collapsed">
-                            <Link className={"navItems" + (overviewActive ? " --active" : "")} to={overviewPath}><i className="dashboard-icons analytics-overview" style={{
-                                backgroundImage: `url(${analyticsOverview})`
-                            }} data-icon={analyticsOverview}></i> <span className="hiddenCollapsed">Overview</span></Link>
-                            <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}><i className="dashboard-icons marketing" style={{
-                                backgroundImage: `url(${marketing})`
-                            }} data-icon={marketing}></i> <span className="hiddenCollapsed">Marketing</span></Link>
+                            <Link className={"navItems" + (overviewActive ? " --active" : "")} to={overviewPath}>
+                                <i className="dashboard-icons analytics-overview" style={{ backgroundImage: `url(${analyticsOverview})` }} data-icon={analyticsOverview}></i>
+                                <span className="hiddenCollapsed">Overview</span>
+                            </Link>
+                            <Link className={"navItems" + (audienceActive ? " --active" : "")} to={audiencePath}>
+                                <i className="dashboard-icons audience" style={{ backgroundImage: `url(${audience})` }} data-icon={audience}></i>
+                                <span className="hiddenCollapsed">Audience</span>
+                            </Link>
+                            <Link className={"navItems" + (acquisitionActive ? " --active" : "")} to={acquisitionPath}>
+                                <i className="dashboard-icons acquisition" style={{ backgroundImage: `url(${acquisition})` }} data-icon={acquisition}></i>
+                                <span className="hiddenCollapsed">Acquisition</span>
+                            </Link>
+                            <Link className={"navItems" + (consentActive ? " --active" : "")} to={consentPath}>
+                                <i className="dashboard-icons consent-nav" style={{ backgroundImage: `url(${consentIcon})` }} data-icon={consentIcon}></i>
+                                <span className="hiddenCollapsed">Consent</span>
+                            </Link>
+                            <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}>
+                                <i className="dashboard-icons marketing" style={{ backgroundImage: `url(${marketing})` }} data-icon={marketing}></i>
+                                <span className="hiddenCollapsed">Marketing</span>
+                            </Link>
                             <section className="navItems--bottom">
-                                <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}><i className="dashboard-icons settings" style={{
-                                    backgroundImage: `url(${settings})`
-                                }} data-icon={settings}></i> <span className="hiddenCollapsed">Settings</span></Link>
-                                <button className="navLogout" onClick={() => Authentication.Logout()}><i className="dashboard-icons logout" style={{
-                                    backgroundImage: `url(${logout})`
-                                }}></i> <span className="hiddenCollapsed" data-icon={logout}>Logout</span></button>
+                                <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}>
+                                    <i className="dashboard-icons settings" style={{ backgroundImage: `url(${settings})` }} data-icon={settings}></i>
+                                    <span className="hiddenCollapsed">Settings</span>
+                                </Link>
+                                <button className="navLogout" onClick={() => Authentication.Logout()}>
+                                    <i className="dashboard-icons logout" style={{ backgroundImage: `url(${logout})` }}></i>
+                                    <span className="hiddenCollapsed" data-icon={logout}>Logout</span>
+                                </button>
                             </section>
                         </nav>
                     </aside>

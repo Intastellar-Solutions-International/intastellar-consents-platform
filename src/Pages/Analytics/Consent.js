@@ -3,7 +3,7 @@ const useParams = window.ReactRouterDOM.useParams;
 import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsReport, toIsoDate, KpiCard, ConsentBar, AnalyticsSubNav } from "./_shared.js";
+import { useAnalyticsReport, toIsoDate, KpiCard, ConsentBar } from "./_shared.js";
 import { IconShieldCheck, IconBarChart } from "./Icons.js";
 import "./Analytics.css";
 
@@ -45,8 +45,6 @@ export default function AnalyticsConsent() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
-                    {data && !data.noSiteKey && <AnalyticsSubNav handle={handle} />}
-
                     {!domain && (
                         <p className="sa-notice">Select a domain in the header to view consent data.</p>
                     )}

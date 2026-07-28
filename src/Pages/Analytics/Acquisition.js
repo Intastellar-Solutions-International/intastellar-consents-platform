@@ -3,7 +3,7 @@ const useParams = window.ReactRouterDOM.useParams;
 import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsReport, toIsoDate, MiniBar, AnalyticsSubNav } from "./_shared.js";
+import { useAnalyticsReport, toIsoDate, MiniBar } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp } from "./Icons.js";
 import "./Analytics.css";
 
@@ -48,8 +48,6 @@ export default function AnalyticsAcquisition() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
-                    {data && !data.noSiteKey && <AnalyticsSubNav handle={handle} />}
-
                     {!domain && (
                         <p className="sa-notice">Select a domain in the header to view acquisition data.</p>
                     )}

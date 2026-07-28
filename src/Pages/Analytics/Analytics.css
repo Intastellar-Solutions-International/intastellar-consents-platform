@@ -839,41 +839,6 @@
     color: #d4b896;
 }
 
-/* ── Sub-page navigation ─────────────────────────────────────────────────────── */
-
-.sa-subnav {
-    display: flex;
-    gap: 4px;
-    padding: 4px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
-    width: fit-content;
-    flex-wrap: wrap;
-}
-
-.sa-subnav__link {
-    padding: 6px 16px;
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: rgba(160,160,160,0.7);
-    text-decoration: none;
-    transition: background 0.15s, color 0.15s;
-    white-space: nowrap;
-}
-
-.sa-subnav__link:hover {
-    background: rgba(255,255,255,0.07);
-    color: rgba(220,220,220,0.9);
-}
-
-.sa-subnav__link--active {
-    background: rgba(192,159,83,0.15);
-    color: rgba(227,200,130,0.95);
-    border: 1px solid rgba(192,159,83,0.25);
-}
-
 /* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */
 
 .sa-dashboard-grid--overview {
