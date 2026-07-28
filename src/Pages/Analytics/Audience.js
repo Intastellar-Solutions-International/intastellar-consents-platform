@@ -72,27 +72,29 @@ export default function AnalyticsAudience() {
                             {/* Countries */}
                             <div className="sa-panel sa-aud-countries">
                                 <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Countries</h3>
-                                {data.countries.length > 0 && <AnalyticsWorldMap countries={data.countries} />}
-                                <table className="sa-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Country</th>
-                                            <th className="sa-table__num">Events</th>
-                                            <th className="sa-table__bar" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.countries.map(c => (
-                                            <tr key={c.code}>
-                                                <td>{c.code}</td>
-                                                <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
-                                                <td className="sa-table__bar">
-                                                    <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
-                                                </td>
+                                <div className="sa-aud-countries-grid">
+                                    {data.countries.length > 0 && <AnalyticsWorldMap countries={data.countries} />}
+                                    <table className="sa-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Country</th>
+                                                <th className="sa-table__num">Events</th>
+                                                <th className="sa-table__bar" />
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {data.countries.map(c => (
+                                                <tr key={c.code}>
+                                                    <td>{c.code}</td>
+                                                    <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
+                                                    <td className="sa-table__bar">
+                                                        <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                             {/* Devices */}

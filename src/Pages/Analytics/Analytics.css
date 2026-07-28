@@ -26,6 +26,16 @@
     user-select: none;
 }
 
+.sa-aud-countries-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
 .sa-live__header:hover { background: rgba(255,255,255,0.02); }
 
 .sa-live__title {
