@@ -74284,18 +74284,18 @@ function AnalyticsAcquisition() {
     className: "sa-panel__title"
   }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconMegaphone, {
     className: "sa-icon"
-  }), " UTM sources", /*#__PURE__*/React.createElement("span", {
+  }), " Campaigns", /*#__PURE__*/React.createElement("span", {
     className: "sa-panel__consent-note"
   }, "full events only")), /*#__PURE__*/React.createElement("table", {
     className: "sa-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Source"), /*#__PURE__*/React.createElement("th", null, "Medium"), /*#__PURE__*/React.createElement("th", {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Campaign"), /*#__PURE__*/React.createElement("th", null, "Source"), /*#__PURE__*/React.createElement("th", null, "Medium"), /*#__PURE__*/React.createElement("th", {
     className: "sa-table__num"
   }, "Events"), /*#__PURE__*/React.createElement("th", {
     className: "sa-table__bar"
   }))), /*#__PURE__*/React.createElement("tbody", null, data.utmSources.map(function (u, i) {
     return /*#__PURE__*/React.createElement("tr", {
       key: i
-    }, /*#__PURE__*/React.createElement("td", null, u.source || "—"), /*#__PURE__*/React.createElement("td", null, u.medium || "—"), /*#__PURE__*/React.createElement("td", {
+    }, /*#__PURE__*/React.createElement("td", null, u.campaign || "—"), /*#__PURE__*/React.createElement("td", null, u.source || "—"), /*#__PURE__*/React.createElement("td", null, u.medium || "—"), /*#__PURE__*/React.createElement("td", {
       className: "sa-table__num"
     }, u.events.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
       className: "sa-table__bar"
@@ -74310,7 +74310,7 @@ function AnalyticsAcquisition() {
     className: "sa-panel__title"
   }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_4__.IconMegaphone, {
     className: "sa-icon"
-  }), " UTM sources", /*#__PURE__*/React.createElement("span", {
+  }), " Campaigns", /*#__PURE__*/React.createElement("span", {
     className: "sa-panel__consent-note"
   }, "full events only")), /*#__PURE__*/React.createElement("p", {
     style: {
@@ -74318,7 +74318,7 @@ function AnalyticsAcquisition() {
       fontSize: "0.82rem",
       margin: 0
     }
-  }, "No UTM-tagged traffic in this period. Add ", /*#__PURE__*/React.createElement("code", null, "?utm_source="), " parameters to your campaign links to see data here."))))));
+  }, "No UTM-tagged traffic in this period. Add ", /*#__PURE__*/React.createElement("code", null, "?utm_source=&utm_campaign="), " parameters to your campaign links to see data here."))))));
 }
 
 /***/ }),

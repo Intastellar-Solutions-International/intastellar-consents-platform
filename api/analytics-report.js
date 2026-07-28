@@ -176,12 +176,12 @@ export default async function handler(req, res) {
         ),
 
         db.query(`
-            SELECT utm_source, utm_medium, COUNT(*) AS events
+            SELECT utm_source, utm_medium, utm_campaign, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
               AND received_at >= $2 AND received_at < $3
               AND utm_source IS NOT NULL AND utm_source != ''
-            GROUP BY utm_source, utm_medium ORDER BY events DESC LIMIT 15`,
+            GROUP BY utm_source, utm_medium, utm_campaign ORDER BY events DESC LIMIT 20`,
             [siteId, fromDate, toDateExclusive]
         ),
 
@@ -321,9 +321,10 @@ export default async function handler(req, res) {
             };
         })(),
         utmSources: utmRes.rows.map(r => ({
-            source: r.utm_source,
-            medium: r.utm_medium,
-            events: Number(r.events || 0),
+            source:   r.utm_source,
+            medium:   r.utm_medium,
+            campaign: r.utm_campaign || null,
+            events:   Number(r.events || 0),
         })),
         conversions: (() => {
             const defsByName = new Map(eventDefsRes.rows.map(d => [d.name, d]));

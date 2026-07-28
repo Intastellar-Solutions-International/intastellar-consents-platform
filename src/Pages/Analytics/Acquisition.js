@@ -90,16 +90,17 @@ export default function AnalyticsAcquisition() {
                                 </table>
                             </div>
 
-                            {/* UTM sources */}
+                            {/* Campaigns (UTM source / medium / campaign) */}
                             {data.utmSources.length > 0 ? (
                                 <div className="sa-panel sa-acq-utm">
                                     <h3 className="sa-panel__title">
-                                        <IconMegaphone className="sa-icon" /> UTM sources
+                                        <IconMegaphone className="sa-icon" /> Campaigns
                                         <span className="sa-panel__consent-note">full events only</span>
                                     </h3>
                                     <table className="sa-table">
                                         <thead>
                                             <tr>
+                                                <th>Campaign</th>
                                                 <th>Source</th>
                                                 <th>Medium</th>
                                                 <th className="sa-table__num">Events</th>
@@ -109,6 +110,7 @@ export default function AnalyticsAcquisition() {
                                         <tbody>
                                             {data.utmSources.map((u, i) => (
                                                 <tr key={i}>
+                                                    <td>{u.campaign || "—"}</td>
                                                     <td>{u.source || "—"}</td>
                                                     <td>{u.medium || "—"}</td>
                                                     <td className="sa-table__num">{u.events.toLocaleString("de-DE")}</td>
@@ -123,11 +125,11 @@ export default function AnalyticsAcquisition() {
                             ) : (
                                 <div className="sa-panel sa-acq-utm">
                                     <h3 className="sa-panel__title">
-                                        <IconMegaphone className="sa-icon" /> UTM sources
+                                        <IconMegaphone className="sa-icon" /> Campaigns
                                         <span className="sa-panel__consent-note">full events only</span>
                                     </h3>
                                     <p style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.82rem", margin: 0 }}>
-                                        No UTM-tagged traffic in this period. Add <code>?utm_source=</code> parameters to your campaign links to see data here.
+                                        No UTM-tagged traffic in this period. Add <code>?utm_source=&amp;utm_campaign=</code> parameters to your campaign links to see data here.
                                     </p>
                                 </div>
                             )}
