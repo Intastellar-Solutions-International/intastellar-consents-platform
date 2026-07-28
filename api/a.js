@@ -44,6 +44,93 @@ function parseUA(ua = "") {
     return { browser, os };
 }
 
+// ── Bot / crawler detection ──────────────────────────────────────────────────
+// UA-based detection only catches bots that self-identify (which is virtually
+// all legitimate search engines, AI crawlers, and social-preview fetchers —
+// they need to for robots.txt compliance / allowlisting). It won't catch a
+// scraper that deliberately spoofs a normal browser UA; that's a fundamentally
+// different problem (fingerprinting/rate-limiting), out of scope here.
+// Order matters — more specific patterns (e.g. "Applebot-Extended") must come
+// before substrings they contain (e.g. "Applebot").
+const BOT_PATTERNS = [
+    // AI crawlers / LLM data collectors — checked first since several share
+    // substrings with the search-engine bots below (Applebot-Extended vs Applebot).
+    { re: /GPTBot/i,             name: "GPTBot",             category: "ai_crawler" },
+    { re: /ChatGPT-User/i,       name: "ChatGPT-User",       category: "ai_crawler" },
+    { re: /OAI-SearchBot/i,      name: "OAI-SearchBot",      category: "ai_crawler" },
+    { re: /ClaudeBot/i,          name: "ClaudeBot",          category: "ai_crawler" },
+    { re: /Claude-Web/i,         name: "Claude-Web",         category: "ai_crawler" },
+    { re: /anthropic-ai/i,       name: "anthropic-ai",       category: "ai_crawler" },
+    { re: /PerplexityBot/i,      name: "PerplexityBot",      category: "ai_crawler" },
+    { re: /Perplexity-User/i,    name: "Perplexity-User",    category: "ai_crawler" },
+    { re: /Google-Extended/i,    name: "Google-Extended",    category: "ai_crawler" },
+    { re: /Applebot-Extended/i,  name: "Applebot-Extended",  category: "ai_crawler" },
+    { re: /CCBot/i,              name: "CCBot",              category: "ai_crawler" },
+    { re: /Bytespider/i,         name: "Bytespider",         category: "ai_crawler" },
+    { re: /Amazonbot/i,          name: "Amazonbot",          category: "ai_crawler" },
+    { re: /cohere-ai/i,          name: "cohere-ai",          category: "ai_crawler" },
+    { re: /Diffbot/i,            name: "Diffbot",            category: "ai_crawler" },
+    { re: /meta-externalagent/i, name: "Meta-ExternalAgent", category: "ai_crawler" },
+    { re: /ImagesiftBot/i,       name: "ImagesiftBot",       category: "ai_crawler" },
+    { re: /Timpibot/i,           name: "Timpibot",           category: "ai_crawler" },
+    { re: /YouBot/i,             name: "YouBot",             category: "ai_crawler" },
+    { re: /omgili/i,             name: "omgilibot",          category: "ai_crawler" },
+
+    // Search engines
+    { re: /Googlebot/i,          name: "Googlebot",          category: "search_engine" },
+    { re: /bingbot/i,            name: "Bingbot",             category: "search_engine" },
+    { re: /Slurp/,               name: "Yahoo Slurp",        category: "search_engine" },
+    { re: /DuckDuckBot/i,        name: "DuckDuckBot",        category: "search_engine" },
+    { re: /Baiduspider/i,        name: "Baiduspider",        category: "search_engine" },
+    { re: /YandexBot/i,          name: "YandexBot",          category: "search_engine" },
+    { re: /Applebot/i,           name: "Applebot",           category: "search_engine" },
+    { re: /SeznamBot/i,          name: "SeznamBot",          category: "search_engine" },
+
+    // Social-share link preview fetchers
+    { re: /facebookexternalhit/i, name: "Facebook",          category: "social_preview" },
+    { re: /Twitterbot/i,          name: "Twitterbot",        category: "social_preview" },
+    { re: /LinkedInBot/i,         name: "LinkedInBot",       category: "social_preview" },
+    { re: /WhatsApp/i,            name: "WhatsApp",          category: "social_preview" },
+    { re: /TelegramBot/i,         name: "TelegramBot",       category: "social_preview" },
+    { re: /Slackbot/i,            name: "Slackbot",          category: "social_preview" },
+    { re: /Discordbot/i,          name: "Discordbot",        category: "social_preview" },
+    { re: /redditbot/i,           name: "redditbot",         category: "social_preview" },
+    { re: /SkypeUriPreview/i,     name: "Skype",             category: "social_preview" },
+    { re: /Pinterest/i,           name: "Pinterest",         category: "social_preview" },
+
+    // SEO / backlink crawlers
+    { re: /AhrefsBot/i,          name: "AhrefsBot",          category: "seo_tool" },
+    { re: /SemrushBot/i,         name: "SemrushBot",         category: "seo_tool" },
+    { re: /MJ12bot/i,            name: "MJ12bot",            category: "seo_tool" },
+    { re: /DotBot/i,             name: "DotBot",             category: "seo_tool" },
+    { re: /BLEXBot/i,            name: "BLEXBot",            category: "seo_tool" },
+    { re: /DataForSeoBot/i,      name: "DataForSeoBot",      category: "seo_tool" },
+
+    // Uptime / synthetic monitors
+    { re: /UptimeRobot/i,        name: "UptimeRobot",        category: "uptime_monitor" },
+    { re: /Pingdom/i,            name: "Pingdom",            category: "uptime_monitor" },
+    { re: /StatusCake/i,         name: "StatusCake",         category: "uptime_monitor" },
+    { re: /Site24x7/i,           name: "Site24x7",           category: "uptime_monitor" },
+];
+
+function detectBot(ua) {
+    if (!ua) return null;
+    for (const p of BOT_PATTERNS) if (p.re.test(ua)) return { name: p.name, category: p.category };
+    // Generic fallback for anything unlisted that still self-identifies as automated.
+    if (/bot|spider|crawler|crawling/i.test(ua)) return { name: ua.slice(0, 60), category: "other" };
+    return null;
+}
+
+// Full href or bare pathname, depending on event type — bot-checking happens
+// before we know which branch a request will take, so this needs to handle both.
+function extractPathnameLoose(rawUrl) {
+    const str = String(rawUrl || "");
+    if (/^https?:\/\//i.test(str)) {
+        try { return new URL(str).pathname.slice(0, 2000); } catch {}
+    }
+    return ("/" + str.replace(/^\//, "")).slice(0, 2000);
+}
+
 // ── Tables (auto-created / migrated on first use) ────────────────────────────
 async function ensureTables(db) {
     await db.query(`
@@ -142,6 +229,27 @@ async function ensureTables(db) {
         );
         CREATE INDEX IF NOT EXISTS idx_acl_site_path ON analytics_clicks (site_id, pathname);
         CREATE INDEX IF NOT EXISTS idx_acl_received  ON analytics_clicks (received_at);
+        -- Bot/crawler traffic, logged separately rather than flagged inline on
+        -- analytics_events — keeps every existing report/live/heatmap query
+        -- automatically bot-free with no changes, since bots never reach those
+        -- inserts at all (see the detectBot() check early in the POST handler).
+        -- The raw user_agent is kept here (unlike analytics_events, which never
+        -- stores it) since a bot isn't a data subject in the GDPR sense, and it
+        -- helps refine BOT_PATTERNS later for anything landing in "other".
+        CREATE TABLE IF NOT EXISTS analytics_bot_visits (
+            id              BIGSERIAL    PRIMARY KEY,
+            site_id         VARCHAR(32)  NOT NULL,
+            organisation_id INTEGER      NOT NULL,
+            received_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            bot_name        VARCHAR(64)  NOT NULL,
+            bot_category    VARCHAR(24)  NOT NULL,
+            pathname        TEXT         NOT NULL,
+            country_code    CHAR(2),
+            user_agent      VARCHAR(500)
+        );
+        CREATE INDEX IF NOT EXISTS idx_abv_site     ON analytics_bot_visits (site_id);
+        CREATE INDEX IF NOT EXISTS idx_abv_name     ON analytics_bot_visits (bot_name);
+        CREATE INDEX IF NOT EXISTS idx_abv_received ON analytics_bot_visits (received_at);
     `);
     // Add columns to existing tables that pre-date this schema version
     await db.query(`
@@ -552,6 +660,25 @@ export default async function handler(req, res) {
     const region  = (req.headers["x-vercel-ip-country-region"] || "").slice(0, 64) || null;
 
     const deviceType = dt === "m" ? "mobile" : dt === "t" ? "tablet" : "desktop";
+
+    // ── Bot / crawler traffic — logged separately, never counted as a real
+    // visit. Checked before any of the branches below (minimal pageviews fire
+    // unconditionally pre-consent, so this has to run before that path too,
+    // not just for full/enriched events).
+    const bot = detectBot(req.headers["user-agent"]);
+    if (bot) {
+        await db.query(
+            `INSERT INTO analytics_bot_visits
+             (site_id, organisation_id, bot_name, bot_category, pathname, country_code, user_agent)
+             VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+            [
+                siteId, orgId, bot.name, bot.category,
+                extractPathnameLoose(rawUrl), country,
+                String(req.headers["user-agent"] || "").slice(0, 500),
+            ]
+        ).catch(() => {});
+        return res.status(202).end();
+    }
 
     // ── Custom conversion event (purchase / click / custom) ───────────────────
     // `u` here is always a bare pathname (track() sends location.pathname

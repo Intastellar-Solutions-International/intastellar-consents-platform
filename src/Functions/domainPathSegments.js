@@ -139,16 +139,23 @@ export function analyticsRecordingsPath(domainUnicode) {
     return `/analytics/${seg}/recordings`;
 }
 
+export function analyticsBotsPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/bots";
+    return `/analytics/${seg}/bots`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
         else if (leaf === "/consent")     history.push(analyticsConsentPath(domainUnicode));
         else if (leaf === "/heatmap")     history.push(analyticsHeatmapPath(domainUnicode));
         else if (leaf === "/recordings")  history.push(analyticsRecordingsPath(domainUnicode));
+        else if (leaf === "/bots")        history.push(analyticsBotsPath(domainUnicode));
         else                              history.push(analyticsPath(domainUnicode));
         return;
     }

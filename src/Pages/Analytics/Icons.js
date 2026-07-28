@@ -152,3 +152,16 @@ export function IconVideo(props) {
         </svg>
     );
 }
+
+export function IconBot(props) {
+    return (
+        <svg {...svgProps} {...props}>
+            <rect x="4" y="8" width="16" height="12" rx="3" />
+            <path d="M12 8V4" />
+            <circle cx="12" cy="3" r="1" fill="currentColor" stroke="none" />
+            <circle cx="9" cy="14" r="1.2" fill="currentColor" stroke="none" />
+            <circle cx="15" cy="14" r="1.2" fill="currentColor" stroke="none" />
+            <path d="M8 18v1M16 18v1" />
+        </svg>
+    );
+}

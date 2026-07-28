@@ -26638,7 +26638,47 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* ── Site Analytics report page �
     display: flex;
     justify-content: center;
 }
-`, "",{"version":3,"sources":["webpack://./src/Pages/Analytics/Analytics.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Site Analytics report page ─────────────────────────────────────────────── */\n\n.sa-page {\n    padding: 4px 0 64px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* ── Live view panel ─────────────────────────────────────────────────────────── */\n\n.sa-live {\n    border: 1px solid rgba(74,222,128,0.2);\n    border-radius: 14px;\n    background: rgba(20,30,20,0.7);\n    overflow: hidden;\n}\n\n.sa-live__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 14px 20px;\n    gap: 12px;\n    cursor: pointer;\n    user-select: none;\n}\n\n.sa-aud-countries-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px;\n    padding: 12px;\n    border-radius: 10px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-live__header:hover { background: rgba(255,255,255,0.02); }\n\n.sa-live__title {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-live__dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: #4ade80;\n    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);\n    animation: sa-pulse 1.8s ease-out infinite;\n    flex-shrink: 0;\n}\n\n@keyframes sa-pulse {\n    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }\n    60%  { box-shadow: 0 0 0 7px rgba(74,222,128,0); }\n    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }\n}\n\n.sa-live__label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #4ade80;\n}\n\n.sa-live__window {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-live__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n}\n\n.sa-live__countdown {\n    font-size: 0.7rem;\n    color: rgba(120,120,120,0.6);\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-live__toggle {\n    background: none;\n    border: none;\n    color: rgba(140,140,140,0.6);\n    cursor: pointer;\n    padding: 2px 4px;\n    font-size: 0.75rem;\n    line-height: 1;\n    border-radius: 4px;\n}\n\n.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }\n\n.sa-live__body {\n    border-top: 1px solid rgba(74,222,128,0.12);\n    padding: 18px 20px 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n/* KPI strip inside live panel */\n.sa-live__kpis {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 10px;\n}\n\n@media (max-width: 620px) {\n    .sa-live__kpis {\n        grid-template-columns: repeat(2, 1fr);\n    }\n}\n\n.sa-live__kpi {\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n    padding: 12px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n\n.sa-live__kpi-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-live__kpi-value {\n    font-size: 1.6rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-live__kpi-sub {\n    font-size: 0.68rem;\n    color: rgba(120,120,120,0.6);\n}\n\n/* Per-minute sparkline */\n.sa-live__sparkline {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.sa-live__spark-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n}\n\n.sa-live__spark-bars {\n    display: flex;\n    align-items: flex-end;\n    gap: 2px;\n    height: 48px;\n}\n\n.sa-live__spark-bar {\n    flex: 1;\n    border-radius: 2px 2px 0 0;\n    background: rgba(74,222,128,0.35);\n    min-height: 2px;\n    transition: height 0.3s ease;\n}\n\n.sa-live__spark-bar--last {\n    background: rgba(74,222,128,0.75);\n}\n\n.sa-live__spark-times {\n    display: flex;\n    justify-content: space-between;\n    font-size: 0.62rem;\n    color: rgba(110,110,110,0.55);\n}\n\n/* Single-column bottom — live panel lives in a narrow grid slot */\n.sa-live__bottom {\n    display: flex;\n    flex-direction: column;\n    gap: 14px;\n}\n\n.sa-live__section-title {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n    margin: 0 0 8px;\n}\n\n/* Recent events feed */\n.sa-live__feed {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.sa-live__event {\n    display: grid;\n    grid-template-columns: 1fr auto;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    animation: sa-fade-in 0.4s ease;\n}\n\n.sa-live__event:last-child { border-bottom: none; }\n\n@keyframes sa-fade-in {\n    from { opacity: 0; transform: translateY(-4px); }\n    to   { opacity: 1; transform: translateY(0); }\n}\n\n.sa-live__event-path {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.75rem;\n    color: rgba(180,210,180,0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.sa-live__event-meta {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.sa-live__event-flag {\n    font-size: 0.7rem;\n    color: rgba(160,160,160,0.65);\n}\n\n.sa-live__event-level {\n    font-size: 0.6rem;\n    font-weight: 600;\n    padding: 1px 5px;\n    border-radius: 4px;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.sa-live__event-level--full {\n    background: rgba(74,222,128,0.14);\n    color: rgba(74,222,128,0.85);\n}\n\n.sa-live__event-level--minimal {\n    background: rgba(192,159,83,0.12);\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-live__event-time {\n    font-size: 0.65rem;\n    color: rgba(110,110,110,0.55);\n    font-variant-numeric: tabular-nums;\n    min-width: 32px;\n    text-align: right;\n}\n\n/* ── Notices ─────────────────────────────────────────────────────────────────── */\n\n.sa-notice {\n    margin: 0;\n    padding: 18px 22px;\n    border-radius: 12px;\n    font-size: 0.9rem;\n    color: rgba(180,180,180,0.85);\n    background: rgba(0,0,0,0.15);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-notice--error {\n    background: rgba(220,80,80,0.08);\n    border-color: rgba(220,100,100,0.25);\n    color: #f5aeae;\n}\n\n/* ── Meta row ────────────────────────────────────────────────────────────────── */\n\n.sa-meta-row {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n}\n\n.sa-site-key-badge {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-site-key-badge code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.72rem;\n    color: rgba(180,180,180,0.7);\n    background: rgba(255,255,255,0.05);\n    padding: 1px 6px;\n    border-radius: 4px;\n}\n\n/* ── KPI cards (each is a direct grid child with its own area) ───────────────── */\n\n.sa-kpi {\n    position: relative;\n    padding: 18px 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.09);\n    background: rgba(30,30,34,0.8);\n    box-shadow: 0 2px 12px rgba(0,0,0,0.25);\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    overflow: hidden;\n}\n\n/* Coloured accent stripe across the top of each KPI card */\n.sa-kpi::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 3px;\n    background: rgba(192,159,83,0.6);\n    border-radius: 14px 14px 0 0;\n}\n\n.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }\n.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }\n.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }\n\n.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }\n.sa-kpi--live::before { background: rgba(74,222,128,0.7)  !important; }\n\n.sa-kpi__head {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n}\n\n.sa-kpi__icon {\n    display: inline-flex;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }\n.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }\n.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }\n\n.sa-kpi__icon svg {\n    width: 14px;\n    height: 14px;\n}\n\n.sa-icon {\n    width: 14px;\n    height: 14px;\n    flex-shrink: 0;\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-kpi__label {\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.7);\n}\n\n.sa-kpi__value {\n    font-size: 2.1rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }\n\n.sa-kpi__sub {\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.4;\n}\n\n/* ── Chart section ───────────────────────────────────────────────────────────── */\n\n.sa-chart-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 24px 18px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.2);\n}\n\n.sa-chart-section__title {\n    margin: 0 0 16px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-chart {\n    width: 100%;\n    height: auto;\n    position: relative;\n}\n\n.sa-chart--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n}\n\n.sa-chart__legend {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    margin-top: 8px;\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-chart__legend-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 2px;\n    flex-shrink: 0;\n}\n\n.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }\n.sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }\n\n/* ── Dashboard grid ──────────────────────────────────────────────────────────── */\n\n.sa-dashboard-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   utm       utm\"\n        \"os     os      screens   screens\";\n}\n\n.sa-dashboard-grid--no-utm {\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   os        screens\";\n}\n\n/* Grid area assignments */\n.sa-ga-kpi0      { grid-area: kpi0; }\n.sa-ga-kpi1      { grid-area: kpi1; }\n.sa-ga-kpi2      { grid-area: kpi2; }\n.sa-ga-kpi3      { grid-area: kpi3; }\n.sa-ga-kpi4      { grid-area: kpi4; }\n.sa-ga-chart     { grid-area: chart; align-self: start; }\n.sa-ga-live      { grid-area: live; }\n.sa-ga-pages     { grid-area: pages; }\n.sa-ga-consent   { grid-area: consent; }\n.sa-ga-countries { grid-area: countries; }\n.sa-ga-brows     { grid-area: brows; }\n.sa-ga-utm       { grid-area: utm; }\n.sa-ga-os        { grid-area: os; }\n.sa-ga-screens   { grid-area: screens; }\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   utm\"\n            \"os      screens\";\n    }\n    .sa-dashboard-grid--no-utm {\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   brows\"\n            \"os      screens\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\"\n            \"pages\" \"consent\" \"countries\"\n            \"brows\" \"utm\" \"os\" \"screens\";\n    }\n}\n\n/* ── Generic panel card ──────────────────────────────────────────────────────── */\n\n.sa-panel {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__title {\n    margin: 0 0 14px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n/* Divider between stacked sub-sections within a panel */\n.sa-panel__divider {\n    height: 1px;\n    background: rgba(255,255,255,0.06);\n    margin: 14px 0;\n}\n\n.sa-panel__sub-title {\n    margin: 0 0 10px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.55);\n}\n\n.sa-panel__consent-note {\n    font-size: 0.62rem;\n    font-weight: 500;\n    color: rgba(120,120,120,0.55);\n    text-transform: none;\n    letter-spacing: 0;\n    margin-left: 4px;\n}\n\n/* ── Tables ──────────────────────────────────────────────────────────────────── */\n\n.sa-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n\n.sa-table th {\n    text-align: left;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.6);\n    padding: 0 8px 8px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-table td {\n    padding: 7px 8px 7px 0;\n    color: rgba(210,210,210,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n\n.sa-table tbody tr:last-child td { border-bottom: none; }\n\n.sa-table__num {\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n    color: rgba(200,200,200,0.75);\n}\n\n.sa-table__path {\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.77rem;\n    color: rgba(180,210,180,0.85);\n}\n\n.sa-table__bar {\n    width: 72px;\n    padding-left: 10px !important;\n}\n\n/* ── Mini bar ────────────────────────────────────────────────────────────────── */\n\n.sa-mini-bar {\n    height: 5px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n}\n\n.sa-mini-bar__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.3s ease;\n}\n\n/* ── Consent + device bars ───────────────────────────────────────────────────── */\n\n.sa-consent-list {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n.sa-consent-row {\n    display: grid;\n    grid-template-columns: 76px 1fr 32px;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-consent-row__label {\n    font-size: 0.78rem;\n    color: rgba(185,185,185,0.85);\n    white-space: nowrap;\n}\n\n.sa-consent-row__pct {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(200,200,200,0.7);\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-bar {\n    height: 8px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n    display: flex;\n}\n\n.sa-bar__seg {\n    height: 100%;\n    transition: width 0.3s ease;\n}\n\n/* ── World map ───────────────────────────────────────────────────────────────── */\n\n.sa-map {\n    margin-bottom: 14px;\n}\n\n.sa-map__inner {\n    width: 100%;\n    height: 100%;\n    min-height: 220px;\n    border-radius: 8px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.12);\n    border: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-map__caption {\n    margin: 6px 2px 0;\n    font-size: 0.72rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 160px;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n    background: rgba(0,0,0,0.1);\n    border: 1px solid rgba(255,255,255,0.05);\n    border-radius: 8px;\n}\n\n/* ── Copy button ─────────────────────────────────────────────────────────────── */\n\n.sa-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.12);\n    background: rgba(255,255,255,0.05);\n    color: rgba(200,200,200,0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-copy-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }\n.sa-copy-btn--done { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3); color: #6ee7a0; }\n\n/* ── Setup / empty state card ────────────────────────────────────────────────── */\n\n.sa-setup {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    gap: 16px;\n    padding: 56px 32px;\n    border-radius: 16px;\n    border: 1px dashed rgba(255,255,255,0.1);\n    background: rgba(0,0,0,0.1);\n}\n\n.sa-setup__icon { color: rgba(192,159,83,0.8); }\n\n.sa-setup__icon svg {\n    width: 36px;\n    height: 36px;\n}\n\n.sa-setup__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #ececec;\n}\n\n.sa-setup__body {\n    margin: 0;\n    max-width: 520px;\n    font-size: 0.9rem;\n    line-height: 1.65;\n    color: rgba(175,175,175,0.85);\n}\n\n.sa-setup__loading {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-setup__gen-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 10px 24px;\n    border-radius: 10px;\n    border: 1px solid rgba(192,159,83,0.45);\n    background: rgba(192,159,83,0.1);\n    color: rgba(227,200,130,0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.sa-setup__gen-btn:hover:not(:disabled) {\n    background: rgba(192,159,83,0.2);\n    border-color: rgba(192,159,83,0.65);\n}\n\n.sa-setup__gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }\n\n.sa-setup__snippet-wrap {\n    width: 100%;\n    max-width: 640px;\n    text-align: left;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.sa-setup__snippet-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.sa-setup__snippet-label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-setup__snippet {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n    background: rgba(0,0,0,0.28);\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.78rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n\n.sa-setup__hint {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.5;\n}\n\n.sa-setup__hint code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.82em;\n    background: rgba(255,255,255,0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n\n/* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */\n\n.sa-dashboard-grid--overview {\n    grid-template-columns: repeat(5, 1fr);\n    grid-template-areas:\n        \"kpi0  kpi1  kpi2  kpi3  kpi4\"\n        \"chart chart chart chart live\"\n        \"pages pages pages pages pages\";\n}\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi0  kpi1\"\n            \"kpi2  kpi3\"\n            \"kpi4  kpi4\"\n            \"chart chart\"\n            \"live  live\"\n            \"pages pages\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi0\" \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\" \"pages\";\n    }\n}\n\n/* ── Audience sub-page grid ──────────────────────────────────────────────────── */\n\n.sa-audience-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas:\n        \"countries  countries\"\n        \"browsers   os\"\n        \"screens    devices\"\n        \"lang       tz\";\n}\n\n.sa-aud-countries { grid-area: countries; }\n.sa-aud-browsers  { grid-area: browsers;  }\n.sa-aud-os        { grid-area: os;        }\n.sa-aud-devices   { grid-area: devices;   }\n.sa-aud-screens   { grid-area: screens;   }\n.sa-aud-lang      { grid-area: lang;      }\n.sa-aud-tz        { grid-area: tz;        }\n\n@media (max-width: 620px) {\n    .sa-audience-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"countries\" \"browsers\" \"os\"\n            \"devices\" \"screens\" \"lang\" \"tz\";\n    }\n}\n\n/* ── Acquisition sub-page grid ───────────────────────────────────────────────── */\n\n.sa-acq-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas: \"pages utm\";\n}\n\n.sa-acq-pages { grid-area: pages; }\n.sa-acq-utm   { grid-area: utm;   }\n\n@media (max-width: 760px) {\n    .sa-acq-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"pages\" \"utm\";\n    }\n}\n\n/* ── Consent sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-consent-page-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1 kpi2 kpi3 kpi4\"\n        \"bars bars bars bars\";\n}\n\n.sa-cg-kpi1 { grid-area: kpi1; }\n.sa-cg-kpi2 { grid-area: kpi2; }\n.sa-cg-kpi3 { grid-area: kpi3; }\n.sa-cg-kpi4 { grid-area: kpi4; }\n.sa-cg-bars { grid-area: bars; }\n\n@media (max-width: 1100px) {\n    .sa-consent-page-grid {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1 kpi2\"\n            \"kpi3 kpi4\"\n            \"bars bars\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-consent-page-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\" \"bars\";\n    }\n}\n\n/* ── Heatmap sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-heatmap-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: 2fr 1fr;\n    grid-template-areas:\n        \"controls controls\"\n        \"viewport scroll\"\n        \"viewport elements\";\n}\n\n.sa-heatmap__controls { grid-area: controls; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }\n.sa-heatmap__viewport { grid-area: viewport; }\n.sa-heatmap__scroll   { grid-area: scroll;   }\n.sa-heatmap__elements { grid-area: elements; }\n\n@media (max-width: 900px) {\n    .sa-heatmap-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"controls\" \"viewport\" \"scroll\" \"elements\";\n    }\n}\n\n.sa-select {\n    background: rgba(255,255,255,0.05);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 8px;\n    color: rgba(220,220,220,0.9);\n    font-size: 0.82rem;\n    padding: 7px 10px;\n    min-width: 220px;\n}\n\n.sa-heatmap__device-tabs {\n    display: flex;\n    gap: 4px;\n    background: rgba(255,255,255,0.04);\n    border-radius: 8px;\n    padding: 3px;\n}\n\n.sa-heatmap__device-tab {\n    background: transparent;\n    border: none;\n    color: rgba(180,180,180,0.7);\n    font-size: 0.76rem;\n    padding: 6px 12px;\n    border-radius: 6px;\n    cursor: pointer;\n}\n\n.sa-heatmap__device-tab.--active {\n    background: rgba(192,159,83,0.18);\n    color: rgba(230,210,160,0.95);\n}\n\n.sa-heatmap__frame-wrap {\n    position: relative;\n    width: 100%;\n    aspect-ratio: 4 / 3;\n    border-radius: 10px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.25);\n    border: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-heatmap__frame {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    height: 100%;\n    border: none;\n    pointer-events: none;\n}\n\n.sa-heatmap__frame-fallback {\n    position: absolute;\n    inset: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    text-align: center;\n    padding: 24px;\n    font-size: 0.8rem;\n    color: rgba(150,150,150,0.6);\n}\n\n.sa-heatmap__overlay {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    height: 100%;\n}\n\n.sa-scroll-funnel {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n/* ── Recording player ────────────────────────────────────────────────────────── */\n\n.sa-recording-player {\n    width: 100%;\n    min-height: 520px;\n    display: flex;\n    justify-content: center;\n}\n"],"sourceRoot":""}]);
+
+/* ── Bots sub-page grid ──────────────────────────────────────────────────────── */
+
+.sa-bots-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+        "kpi1  kpi2  category category"
+        "list  list  list     list"
+        "pages pages recent   recent";
+}
+
+.sa-bots-kpi1     { grid-area: kpi1;     }
+.sa-bots-kpi2     { grid-area: kpi2;     }
+.sa-bots-category { grid-area: category; }
+.sa-bots-list     { grid-area: list;     }
+.sa-bots-pages    { grid-area: pages;    }
+.sa-bots-recent   { grid-area: recent;   }
+
+@media (max-width: 1100px) {
+    .sa-bots-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "kpi1     kpi2"
+            "category category"
+            "list     list"
+            "pages    pages"
+            "recent   recent";
+    }
+}
+
+@media (max-width: 620px) {
+    .sa-bots-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "kpi1" "kpi2" "category" "list" "pages" "recent";
+    }
+}
+`, "",{"version":3,"sources":["webpack://./src/Pages/Analytics/Analytics.css"],"names":[],"mappings":"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","sourcesContent":["/* ── Site Analytics report page ─────────────────────────────────────────────── */\n\n.sa-page {\n    padding: 4px 0 64px;\n    display: flex;\n    flex-direction: column;\n    gap: 16px;\n}\n\n/* ── Live view panel ─────────────────────────────────────────────────────────── */\n\n.sa-live {\n    border: 1px solid rgba(74,222,128,0.2);\n    border-radius: 14px;\n    background: rgba(20,30,20,0.7);\n    overflow: hidden;\n}\n\n.sa-live__header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n    padding: 14px 20px;\n    gap: 12px;\n    cursor: pointer;\n    user-select: none;\n}\n\n.sa-aud-countries-grid {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n    gap: 12px;\n    padding: 12px;\n    border-radius: 10px;\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-live__header:hover { background: rgba(255,255,255,0.02); }\n\n.sa-live__title {\n    display: flex;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-live__dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 50%;\n    background: #4ade80;\n    box-shadow: 0 0 0 0 rgba(74,222,128,0.6);\n    animation: sa-pulse 1.8s ease-out infinite;\n    flex-shrink: 0;\n}\n\n@keyframes sa-pulse {\n    0%   { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }\n    60%  { box-shadow: 0 0 0 7px rgba(74,222,128,0); }\n    100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }\n}\n\n.sa-live__label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.1em;\n    text-transform: uppercase;\n    color: #4ade80;\n}\n\n.sa-live__window {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-live__right {\n    display: flex;\n    align-items: center;\n    gap: 16px;\n}\n\n.sa-live__countdown {\n    font-size: 0.7rem;\n    color: rgba(120,120,120,0.6);\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-live__toggle {\n    background: none;\n    border: none;\n    color: rgba(140,140,140,0.6);\n    cursor: pointer;\n    padding: 2px 4px;\n    font-size: 0.75rem;\n    line-height: 1;\n    border-radius: 4px;\n}\n\n.sa-live__toggle:hover { background: rgba(255,255,255,0.06); color: #ccc; }\n\n.sa-live__body {\n    border-top: 1px solid rgba(74,222,128,0.12);\n    padding: 18px 20px 20px;\n    display: flex;\n    flex-direction: column;\n    gap: 18px;\n}\n\n/* KPI strip inside live panel */\n.sa-live__kpis {\n    display: grid;\n    grid-template-columns: repeat(4, 1fr);\n    gap: 10px;\n}\n\n@media (max-width: 620px) {\n    .sa-live__kpis {\n        grid-template-columns: repeat(2, 1fr);\n    }\n}\n\n.sa-live__kpi {\n    background: rgba(255,255,255,0.03);\n    border: 1px solid rgba(255,255,255,0.07);\n    border-radius: 10px;\n    padding: 12px 14px;\n    display: flex;\n    flex-direction: column;\n    gap: 3px;\n}\n\n.sa-live__kpi-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-live__kpi-value {\n    font-size: 1.6rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-live__kpi-sub {\n    font-size: 0.68rem;\n    color: rgba(120,120,120,0.6);\n}\n\n/* Per-minute sparkline */\n.sa-live__sparkline {\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n}\n\n.sa-live__spark-label {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n}\n\n.sa-live__spark-bars {\n    display: flex;\n    align-items: flex-end;\n    gap: 2px;\n    height: 48px;\n}\n\n.sa-live__spark-bar {\n    flex: 1;\n    border-radius: 2px 2px 0 0;\n    background: rgba(74,222,128,0.35);\n    min-height: 2px;\n    transition: height 0.3s ease;\n}\n\n.sa-live__spark-bar--last {\n    background: rgba(74,222,128,0.75);\n}\n\n.sa-live__spark-times {\n    display: flex;\n    justify-content: space-between;\n    font-size: 0.62rem;\n    color: rgba(110,110,110,0.55);\n}\n\n/* Single-column bottom — live panel lives in a narrow grid slot */\n.sa-live__bottom {\n    display: flex;\n    flex-direction: column;\n    gap: 14px;\n}\n\n.sa-live__section-title {\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(120,120,120,0.55);\n    margin: 0 0 8px;\n}\n\n/* Recent events feed */\n.sa-live__feed {\n    display: flex;\n    flex-direction: column;\n    gap: 0;\n}\n\n.sa-live__event {\n    display: grid;\n    grid-template-columns: 1fr auto;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    animation: sa-fade-in 0.4s ease;\n}\n\n.sa-live__event:last-child { border-bottom: none; }\n\n@keyframes sa-fade-in {\n    from { opacity: 0; transform: translateY(-4px); }\n    to   { opacity: 1; transform: translateY(0); }\n}\n\n.sa-live__event-path {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.75rem;\n    color: rgba(180,210,180,0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.sa-live__event-meta {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    flex-shrink: 0;\n}\n\n.sa-live__event-flag {\n    font-size: 0.7rem;\n    color: rgba(160,160,160,0.65);\n}\n\n.sa-live__event-level {\n    font-size: 0.6rem;\n    font-weight: 600;\n    padding: 1px 5px;\n    border-radius: 4px;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\n\n.sa-live__event-level--full {\n    background: rgba(74,222,128,0.14);\n    color: rgba(74,222,128,0.85);\n}\n\n.sa-live__event-level--minimal {\n    background: rgba(192,159,83,0.12);\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-live__event-time {\n    font-size: 0.65rem;\n    color: rgba(110,110,110,0.55);\n    font-variant-numeric: tabular-nums;\n    min-width: 32px;\n    text-align: right;\n}\n\n/* ── Notices ─────────────────────────────────────────────────────────────────── */\n\n.sa-notice {\n    margin: 0;\n    padding: 18px 22px;\n    border-radius: 12px;\n    font-size: 0.9rem;\n    color: rgba(180,180,180,0.85);\n    background: rgba(0,0,0,0.15);\n    border: 1px solid rgba(255,255,255,0.07);\n}\n\n.sa-notice--error {\n    background: rgba(220,80,80,0.08);\n    border-color: rgba(220,100,100,0.25);\n    color: #f5aeae;\n}\n\n/* ── Meta row ────────────────────────────────────────────────────────────────── */\n\n.sa-meta-row {\n    display: flex;\n    align-items: center;\n    justify-content: flex-end;\n}\n\n.sa-site-key-badge {\n    font-size: 0.72rem;\n    color: rgba(140,140,140,0.6);\n}\n\n.sa-site-key-badge code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.72rem;\n    color: rgba(180,180,180,0.7);\n    background: rgba(255,255,255,0.05);\n    padding: 1px 6px;\n    border-radius: 4px;\n}\n\n/* ── KPI cards (each is a direct grid child with its own area) ───────────────── */\n\n.sa-kpi {\n    position: relative;\n    padding: 18px 20px 16px;\n    border-radius: 14px;\n    border: 1px solid rgba(255,255,255,0.09);\n    background: rgba(30,30,34,0.8);\n    box-shadow: 0 2px 12px rgba(0,0,0,0.25);\n    display: flex;\n    flex-direction: column;\n    gap: 6px;\n    overflow: hidden;\n}\n\n/* Coloured accent stripe across the top of each KPI card */\n.sa-kpi::before {\n    content: '';\n    position: absolute;\n    top: 0; left: 0; right: 0;\n    height: 3px;\n    background: rgba(192,159,83,0.6);\n    border-radius: 14px 14px 0 0;\n}\n\n.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }\n.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }\n.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }\n\n.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }\n.sa-kpi--live::before { background: rgba(74,222,128,0.7)  !important; }\n\n.sa-kpi__head {\n    display: flex;\n    align-items: center;\n    gap: 7px;\n}\n\n.sa-kpi__icon {\n    display: inline-flex;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }\n.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }\n.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }\n\n.sa-kpi__icon svg {\n    width: 14px;\n    height: 14px;\n}\n\n.sa-icon {\n    width: 14px;\n    height: 14px;\n    flex-shrink: 0;\n    color: rgba(192,159,83,0.75);\n}\n\n.sa-kpi__label {\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.7);\n}\n\n.sa-kpi__value {\n    font-size: 2.1rem;\n    font-weight: 700;\n    color: #ececec;\n    line-height: 1;\n    letter-spacing: -0.02em;\n}\n\n.sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }\n\n.sa-kpi__sub {\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.4;\n}\n\n/* ── Chart section ───────────────────────────────────────────────────────────── */\n\n.sa-chart-section {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 20px 24px 18px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.2);\n}\n\n.sa-chart-section__title {\n    margin: 0 0 16px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n.sa-chart {\n    width: 100%;\n    height: auto;\n    position: relative;\n}\n\n.sa-chart--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n}\n\n.sa-chart__legend {\n    display: flex;\n    align-items: center;\n    gap: 6px;\n    margin-top: 8px;\n    font-size: 0.7rem;\n    color: rgba(140,140,140,0.65);\n}\n\n.sa-chart__legend-dot {\n    width: 8px;\n    height: 8px;\n    border-radius: 2px;\n    flex-shrink: 0;\n}\n\n.sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }\n.sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }\n\n/* ── Dashboard grid ──────────────────────────────────────────────────────────── */\n\n.sa-dashboard-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   utm       utm\"\n        \"os     os      screens   screens\";\n}\n\n.sa-dashboard-grid--no-utm {\n    grid-template-areas:\n        \"kpi1   kpi2    kpi3      kpi4\"\n        \"chart  chart   chart     live\"\n        \"pages  pages   consent   countries\"\n        \"brows  brows   os        screens\";\n}\n\n/* Grid area assignments */\n.sa-ga-kpi0      { grid-area: kpi0; }\n.sa-ga-kpi1      { grid-area: kpi1; }\n.sa-ga-kpi2      { grid-area: kpi2; }\n.sa-ga-kpi3      { grid-area: kpi3; }\n.sa-ga-kpi4      { grid-area: kpi4; }\n.sa-ga-chart     { grid-area: chart; align-self: start; }\n.sa-ga-live      { grid-area: live; }\n.sa-ga-pages     { grid-area: pages; }\n.sa-ga-consent   { grid-area: consent; }\n.sa-ga-countries { grid-area: countries; }\n.sa-ga-brows     { grid-area: brows; }\n.sa-ga-utm       { grid-area: utm; }\n.sa-ga-os        { grid-area: os; }\n.sa-ga-screens   { grid-area: screens; }\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   utm\"\n            \"os      screens\";\n    }\n    .sa-dashboard-grid--no-utm {\n        grid-template-areas:\n            \"kpi1    kpi2\"\n            \"kpi3    kpi4\"\n            \"chart   chart\"\n            \"live    live\"\n            \"pages   pages\"\n            \"consent countries\"\n            \"brows   brows\"\n            \"os      screens\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid,\n    .sa-dashboard-grid--no-utm {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\"\n            \"pages\" \"consent\" \"countries\"\n            \"brows\" \"utm\" \"os\" \"screens\";\n    }\n}\n\n/* ── Generic panel card ──────────────────────────────────────────────────────── */\n\n.sa-panel {\n    background: rgba(26,26,30,0.75);\n    border: 1px solid rgba(255,255,255,0.08);\n    border-radius: 14px;\n    padding: 18px 20px;\n    box-shadow: 0 2px 12px rgba(0,0,0,0.18);\n}\n\n.sa-panel__title {\n    margin: 0 0 14px;\n    font-size: 0.72rem;\n    font-weight: 700;\n    letter-spacing: 0.08em;\n    text-transform: uppercase;\n    color: rgba(160,160,160,0.65);\n    display: flex;\n    align-items: center;\n    gap: 8px;\n}\n\n/* Divider between stacked sub-sections within a panel */\n.sa-panel__divider {\n    height: 1px;\n    background: rgba(255,255,255,0.06);\n    margin: 14px 0;\n}\n\n.sa-panel__sub-title {\n    margin: 0 0 10px;\n    font-size: 0.68rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.55);\n}\n\n.sa-panel__consent-note {\n    font-size: 0.62rem;\n    font-weight: 500;\n    color: rgba(120,120,120,0.55);\n    text-transform: none;\n    letter-spacing: 0;\n    margin-left: 4px;\n}\n\n/* ── Tables ──────────────────────────────────────────────────────────────────── */\n\n.sa-table {\n    width: 100%;\n    border-collapse: collapse;\n    font-size: 0.82rem;\n}\n\n.sa-table th {\n    text-align: left;\n    font-size: 0.65rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(130,130,130,0.6);\n    padding: 0 8px 8px 0;\n    border-bottom: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-table td {\n    padding: 7px 8px 7px 0;\n    color: rgba(210,210,210,0.88);\n    border-bottom: 1px solid rgba(255,255,255,0.04);\n    vertical-align: middle;\n}\n\n.sa-table tbody tr:last-child td { border-bottom: none; }\n\n.sa-table__num {\n    text-align: right !important;\n    font-variant-numeric: tabular-nums;\n    white-space: nowrap;\n    color: rgba(200,200,200,0.75);\n}\n\n.sa-table__path {\n    max-width: 200px;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.77rem;\n    color: rgba(180,210,180,0.85);\n}\n\n.sa-table__bar {\n    width: 72px;\n    padding-left: 10px !important;\n}\n\n/* ── Mini bar ────────────────────────────────────────────────────────────────── */\n\n.sa-mini-bar {\n    height: 5px;\n    border-radius: 3px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n}\n\n.sa-mini-bar__fill {\n    height: 100%;\n    border-radius: 3px;\n    transition: width 0.3s ease;\n}\n\n/* ── Consent + device bars ───────────────────────────────────────────────────── */\n\n.sa-consent-list {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n.sa-consent-row {\n    display: grid;\n    grid-template-columns: 76px 1fr 32px;\n    align-items: center;\n    gap: 10px;\n}\n\n.sa-consent-row__label {\n    font-size: 0.78rem;\n    color: rgba(185,185,185,0.85);\n    white-space: nowrap;\n}\n\n.sa-consent-row__pct {\n    font-size: 0.75rem;\n    font-weight: 600;\n    color: rgba(200,200,200,0.7);\n    text-align: right;\n    font-variant-numeric: tabular-nums;\n}\n\n.sa-bar {\n    height: 8px;\n    border-radius: 4px;\n    background: rgba(255,255,255,0.05);\n    overflow: hidden;\n    display: flex;\n}\n\n.sa-bar__seg {\n    height: 100%;\n    transition: width 0.3s ease;\n}\n\n/* ── World map ───────────────────────────────────────────────────────────────── */\n\n.sa-map {\n    margin-bottom: 14px;\n}\n\n.sa-map__inner {\n    width: 100%;\n    height: 100%;\n    min-height: 220px;\n    border-radius: 8px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.12);\n    border: 1px solid rgba(255,255,255,0.05);\n}\n\n.sa-map__caption {\n    margin: 6px 2px 0;\n    font-size: 0.72rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-map--empty {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    min-height: 160px;\n    font-size: 0.875rem;\n    color: rgba(130,130,130,0.6);\n    background: rgba(0,0,0,0.1);\n    border: 1px solid rgba(255,255,255,0.05);\n    border-radius: 8px;\n}\n\n/* ── Copy button ─────────────────────────────────────────────────────────────── */\n\n.sa-copy-btn {\n    padding: 5px 13px;\n    border-radius: 8px;\n    border: 1px solid rgba(255,255,255,0.12);\n    background: rgba(255,255,255,0.05);\n    color: rgba(200,200,200,0.9);\n    font-size: 0.8rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s, border-color 0.15s;\n    white-space: nowrap;\n}\n\n.sa-copy-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }\n.sa-copy-btn--done { background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.3); color: #6ee7a0; }\n\n/* ── Setup / empty state card ────────────────────────────────────────────────── */\n\n.sa-setup {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    text-align: center;\n    gap: 16px;\n    padding: 56px 32px;\n    border-radius: 16px;\n    border: 1px dashed rgba(255,255,255,0.1);\n    background: rgba(0,0,0,0.1);\n}\n\n.sa-setup__icon { color: rgba(192,159,83,0.8); }\n\n.sa-setup__icon svg {\n    width: 36px;\n    height: 36px;\n}\n\n.sa-setup__title {\n    margin: 0;\n    font-size: 1.1rem;\n    font-weight: 600;\n    color: #ececec;\n}\n\n.sa-setup__body {\n    margin: 0;\n    max-width: 520px;\n    font-size: 0.9rem;\n    line-height: 1.65;\n    color: rgba(175,175,175,0.85);\n}\n\n.sa-setup__loading {\n    margin: 0;\n    font-size: 0.875rem;\n    color: rgba(150,150,150,0.65);\n}\n\n.sa-setup__gen-btn {\n    display: inline-flex;\n    align-items: center;\n    padding: 10px 24px;\n    border-radius: 10px;\n    border: 1px solid rgba(192,159,83,0.45);\n    background: rgba(192,159,83,0.1);\n    color: rgba(227,200,130,0.95);\n    font-size: 0.9rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.2s, border-color 0.2s;\n}\n\n.sa-setup__gen-btn:hover:not(:disabled) {\n    background: rgba(192,159,83,0.2);\n    border-color: rgba(192,159,83,0.65);\n}\n\n.sa-setup__gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }\n\n.sa-setup__snippet-wrap {\n    width: 100%;\n    max-width: 640px;\n    text-align: left;\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n}\n\n.sa-setup__snippet-header {\n    display: flex;\n    align-items: center;\n    justify-content: space-between;\n}\n\n.sa-setup__snippet-label {\n    font-size: 0.7rem;\n    font-weight: 700;\n    letter-spacing: 0.07em;\n    text-transform: uppercase;\n    color: rgba(192,159,83,0.8);\n}\n\n.sa-setup__snippet {\n    margin: 0;\n    padding: 14px 16px;\n    border-radius: 10px;\n    border: 1px solid rgba(255,255,255,0.07);\n    background: rgba(0,0,0,0.28);\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.78rem;\n    line-height: 1.7;\n    color: #c9e9a0;\n    white-space: pre-wrap;\n    word-break: break-all;\n}\n\n.sa-setup__hint {\n    margin: 0;\n    font-size: 0.78rem;\n    color: rgba(140,140,140,0.65);\n    line-height: 1.5;\n}\n\n.sa-setup__hint code {\n    font-family: \"SF Mono\",\"Fira Code\",\"Cascadia Code\",monospace;\n    font-size: 0.82em;\n    background: rgba(255,255,255,0.07);\n    border-radius: 4px;\n    padding: 1px 5px;\n    color: #d4b896;\n}\n\n/* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */\n\n.sa-dashboard-grid--overview {\n    grid-template-columns: repeat(5, 1fr);\n    grid-template-areas:\n        \"kpi0  kpi1  kpi2  kpi3  kpi4\"\n        \"chart chart chart chart live\"\n        \"pages pages pages pages pages\";\n}\n\n@media (max-width: 1100px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi0  kpi1\"\n            \"kpi2  kpi3\"\n            \"kpi4  kpi4\"\n            \"chart chart\"\n            \"live  live\"\n            \"pages pages\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-dashboard-grid--overview {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi0\" \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\"\n            \"chart\" \"live\" \"pages\";\n    }\n}\n\n/* ── Audience sub-page grid ──────────────────────────────────────────────────── */\n\n.sa-audience-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas:\n        \"countries  countries\"\n        \"browsers   os\"\n        \"screens    devices\"\n        \"lang       tz\";\n}\n\n.sa-aud-countries { grid-area: countries; }\n.sa-aud-browsers  { grid-area: browsers;  }\n.sa-aud-os        { grid-area: os;        }\n.sa-aud-devices   { grid-area: devices;   }\n.sa-aud-screens   { grid-area: screens;   }\n.sa-aud-lang      { grid-area: lang;      }\n.sa-aud-tz        { grid-area: tz;        }\n\n@media (max-width: 620px) {\n    .sa-audience-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"countries\" \"browsers\" \"os\"\n            \"devices\" \"screens\" \"lang\" \"tz\";\n    }\n}\n\n/* ── Acquisition sub-page grid ───────────────────────────────────────────────── */\n\n.sa-acq-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(2, 1fr);\n    grid-template-areas: \"pages utm\";\n}\n\n.sa-acq-pages { grid-area: pages; }\n.sa-acq-utm   { grid-area: utm;   }\n\n@media (max-width: 760px) {\n    .sa-acq-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"pages\" \"utm\";\n    }\n}\n\n/* ── Consent sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-consent-page-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1 kpi2 kpi3 kpi4\"\n        \"bars bars bars bars\";\n}\n\n.sa-cg-kpi1 { grid-area: kpi1; }\n.sa-cg-kpi2 { grid-area: kpi2; }\n.sa-cg-kpi3 { grid-area: kpi3; }\n.sa-cg-kpi4 { grid-area: kpi4; }\n.sa-cg-bars { grid-area: bars; }\n\n@media (max-width: 1100px) {\n    .sa-consent-page-grid {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1 kpi2\"\n            \"kpi3 kpi4\"\n            \"bars bars\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-consent-page-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"kpi3\" \"kpi4\" \"bars\";\n    }\n}\n\n/* ── Heatmap sub-page grid ───────────────────────────────────────────────────── */\n\n.sa-heatmap-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: 2fr 1fr;\n    grid-template-areas:\n        \"controls controls\"\n        \"viewport scroll\"\n        \"viewport elements\";\n}\n\n.sa-heatmap__controls { grid-area: controls; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }\n.sa-heatmap__viewport { grid-area: viewport; }\n.sa-heatmap__scroll   { grid-area: scroll;   }\n.sa-heatmap__elements { grid-area: elements; }\n\n@media (max-width: 900px) {\n    .sa-heatmap-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas: \"controls\" \"viewport\" \"scroll\" \"elements\";\n    }\n}\n\n.sa-select {\n    background: rgba(255,255,255,0.05);\n    border: 1px solid rgba(255,255,255,0.1);\n    border-radius: 8px;\n    color: rgba(220,220,220,0.9);\n    font-size: 0.82rem;\n    padding: 7px 10px;\n    min-width: 220px;\n}\n\n.sa-heatmap__device-tabs {\n    display: flex;\n    gap: 4px;\n    background: rgba(255,255,255,0.04);\n    border-radius: 8px;\n    padding: 3px;\n}\n\n.sa-heatmap__device-tab {\n    background: transparent;\n    border: none;\n    color: rgba(180,180,180,0.7);\n    font-size: 0.76rem;\n    padding: 6px 12px;\n    border-radius: 6px;\n    cursor: pointer;\n}\n\n.sa-heatmap__device-tab.--active {\n    background: rgba(192,159,83,0.18);\n    color: rgba(230,210,160,0.95);\n}\n\n.sa-heatmap__frame-wrap {\n    position: relative;\n    width: 100%;\n    aspect-ratio: 4 / 3;\n    border-radius: 10px;\n    overflow: hidden;\n    background: rgba(0,0,0,0.25);\n    border: 1px solid rgba(255,255,255,0.06);\n}\n\n.sa-heatmap__frame {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    height: 100%;\n    border: none;\n    pointer-events: none;\n}\n\n.sa-heatmap__frame-fallback {\n    position: absolute;\n    inset: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    text-align: center;\n    padding: 24px;\n    font-size: 0.8rem;\n    color: rgba(150,150,150,0.6);\n}\n\n.sa-heatmap__overlay {\n    position: absolute;\n    inset: 0;\n    width: 100%;\n    height: 100%;\n}\n\n.sa-scroll-funnel {\n    display: flex;\n    flex-direction: column;\n    gap: 9px;\n}\n\n/* ── Recording player ────────────────────────────────────────────────────────── */\n\n.sa-recording-player {\n    width: 100%;\n    min-height: 520px;\n    display: flex;\n    justify-content: center;\n}\n\n/* ── Bots sub-page grid ──────────────────────────────────────────────────────── */\n\n.sa-bots-grid {\n    display: grid;\n    gap: 12px;\n    align-items: start;\n    grid-template-columns: repeat(4, 1fr);\n    grid-template-areas:\n        \"kpi1  kpi2  category category\"\n        \"list  list  list     list\"\n        \"pages pages recent   recent\";\n}\n\n.sa-bots-kpi1     { grid-area: kpi1;     }\n.sa-bots-kpi2     { grid-area: kpi2;     }\n.sa-bots-category { grid-area: category; }\n.sa-bots-list     { grid-area: list;     }\n.sa-bots-pages    { grid-area: pages;    }\n.sa-bots-recent   { grid-area: recent;   }\n\n@media (max-width: 1100px) {\n    .sa-bots-grid {\n        grid-template-columns: repeat(2, 1fr);\n        grid-template-areas:\n            \"kpi1     kpi2\"\n            \"category category\"\n            \"list     list\"\n            \"pages    pages\"\n            \"recent   recent\";\n    }\n}\n\n@media (max-width: 620px) {\n    .sa-bots-grid {\n        grid-template-columns: 1fr;\n        grid-template-areas:\n            \"kpi1\" \"kpi2\" \"category\" \"list\" \"pages\" \"recent\";\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -56990,17 +57030,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pages_Analytics_Consent_js__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./Pages/Analytics/Consent.js */ "./src/Pages/Analytics/Consent.js");
 /* harmony import */ var _Pages_Analytics_Heatmap_js__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./Pages/Analytics/Heatmap.js */ "./src/Pages/Analytics/Heatmap.js");
 /* harmony import */ var _Pages_Analytics_Recordings_js__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./Pages/Analytics/Recordings.js */ "./src/Pages/Analytics/Recordings.js");
-/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
-/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_57__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
-/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_58__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
-/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _Pages_Analytics_Bots_js__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./Pages/Analytics/Bots.js */ "./src/Pages/Analytics/Bots.js");
+/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_57__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
+/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_58__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
+/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_59__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -57074,7 +57116,7 @@ var Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
-var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].getItem("organisation"));
+var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].getItem("organisation"));
 var AllOrg = createContext(null);
 var DomainContext = createContext(null);
 var WorkspaceContext = createContext([null, function () {}]);
@@ -57083,7 +57125,7 @@ function App() {
     _useState2 = _slicedToArray(_useState, 2),
     dashboardView = _useState2[0],
     setDashboardView = _useState2[1];
-  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].getItem("organisation") : null),
+  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].getItem("organisation") : null),
     _useState4 = _slicedToArray(_useState3, 2),
     organisation = _useState4[0],
     setOrganisation = _useState4[1];
@@ -57115,7 +57157,7 @@ function App() {
     domainError = _useState12[0],
     setDomainError = _useState12[1];
   var _useState13 = useState(function () {
-      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].getItem("subscription");
+      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].getItem("subscription");
       if (cached) {
         try {
           return JSON.parse(cached);
@@ -57136,14 +57178,14 @@ function App() {
     setId = _useState16[1];
   var navigate = window.ReactRouterDOM.useHistory();
   useEffect(function () {
-    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].getItem("globals");
+    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].getItem("globals");
     var path = window.location.pathname;
     var isApiRoute = path === "/api" || path.startsWith("/api/");
     if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
       window.location.replace("/login");
     }
   }, []);
-  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].getItem("globals") != null) {
+  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].getItem("globals") != null) {
     var _getOrg2;
     var path = window.location.pathname;
     // Only redirect if id is present and not already on dashboard
@@ -57161,7 +57203,7 @@ function App() {
         organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
@@ -57169,15 +57211,15 @@ function App() {
       });
       (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.headers, JSON.stringify({
         user: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId(),
-        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
+        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
         setSubscriptionStatus(data);
-        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].setItem("subscription", JSON.stringify(data));
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].setItem("subscription", JSON.stringify(data));
       });
       if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
         (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.headers).then(function (data) {
@@ -57220,7 +57262,7 @@ function App() {
         });
       }
     }, []);
-    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
+    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
     var isDevOrg = Number(orgId) === 1;
     var hasNoSubscription = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" || typeof (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.message) === "string" && subscriptionStatus.message.includes("Subscription not found");
     var subscriptionLoading = !isDevOrg && !hasNoSubscription && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
@@ -57249,7 +57291,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -57259,49 +57301,56 @@ function App() {
       }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/audience",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Audience Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Audience_js__WEBPACK_IMPORTED_MODULE_51__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/acquisition",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Acquisition Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Acquisition_js__WEBPACK_IMPORTED_MODULE_52__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/consent",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Consent Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Consent_js__WEBPACK_IMPORTED_MODULE_53__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/heatmap",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Heatmap Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Heatmap_js__WEBPACK_IMPORTED_MODULE_54__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/recordings/:recordingId",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Session Recordings",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Recordings_js__WEBPACK_IMPORTED_MODULE_55__.AnalyticsRecordingDetail, null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/recordings",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Session Recordings",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Recordings_js__WEBPACK_IMPORTED_MODULE_55__["default"], null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/analytics/:handle/bots",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
+        minTier: "starter",
+        featureName: "Bot Traffic",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics_Bots_js__WEBPACK_IMPORTED_MODULE_56__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -57310,7 +57359,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -57319,14 +57368,14 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Site Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics__WEBPACK_IMPORTED_MODULE_50__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Site Analytics",
         fullPage: true
@@ -57336,7 +57385,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -57357,11 +57406,11 @@ function App() {
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
@@ -57370,7 +57419,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -57379,7 +57428,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -57388,7 +57437,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -57397,28 +57446,28 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport_ReconcilePage__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -57427,7 +57476,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -57436,7 +57485,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -57445,7 +57494,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -57454,7 +57503,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -57463,7 +57512,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
@@ -57471,7 +57520,7 @@ function App() {
         path: "/dashboard"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
-        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
+        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/login",
         exact: true
@@ -57479,56 +57528,56 @@ function App() {
         path: "/auth-login"
       }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/config-gdpr"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Jurisdiction Configuration",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_42__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/legal-basis"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Legal Basis Tracking",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_43__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa/:entryId"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_45__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_44__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr/:requestId",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR__WEBPACK_IMPORTED_MODULE_46__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/blacklist-ip"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org) {
-        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__["default"].getItem("organisation");
+        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__["default"].getItem("organisation");
         var org = null;
         try {
           org = JSON.parse(orgRaw);
         } catch (_unused4) {/* ignore */}
         var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
-        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
           minTier: "agency-pro",
           featureName: "Client Workspaces",
           fullPage: true
@@ -57542,14 +57591,14 @@ function App() {
       }())), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ad-connections",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Ad Connections",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/analytics-script",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "starter",
         featureName: "Analytics Script",
         fullPage: true
@@ -57558,13 +57607,13 @@ function App() {
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_59__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_57__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_60__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_58__["default"], {
         minTier: "growth",
         featureName: "Portfolio Benchmark",
         fullPage: true
@@ -57579,7 +57628,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/cookie-database",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_60__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_56__["default"], null) : /*#__PURE__*/React.createElement("p", {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_61__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_57__["default"], null) : /*#__PURE__*/React.createElement("p", {
         style: {
           padding: "40px",
           color: "#999"
@@ -57598,7 +57647,7 @@ function App() {
       }, /*#__PURE__*/React.createElement("img", {
         src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
         className: "crawlerPage-logo"
-      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_58__["default"], null)));
+      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_59__["default"], null)));
     }
   } else {
     return /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
@@ -65685,7 +65734,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icons_acquisition_svg__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./icons/acquisition.svg */ "./src/Components/Header/icons/acquisition.svg");
 /* harmony import */ var _icons_heatmap_svg__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./icons/heatmap.svg */ "./src/Components/Header/icons/heatmap.svg");
 /* harmony import */ var _icons_recordings_svg__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./icons/recordings.svg */ "./src/Components/Header/icons/recordings.svg");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
+/* harmony import */ var _icons_bots_svg__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./icons/bots.svg */ "./src/Components/Header/icons/bots.svg");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ../../Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -65718,6 +65768,7 @@ var useContext = React.useContext;
 
 
 
+
 function Nav() {
   var _getOrg;
   var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_2__.DomainContext),
@@ -65725,7 +65776,7 @@ function Nav() {
     currentDomain = _useContext2[0];
   var location = useLocation();
   var platform = localStorage.getItem("platform") || "gdpr";
-  var isAdminOrg = Number(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_20__.getOrg === null || _Functions_storage_js__WEBPACK_IMPORTED_MODULE_20__.getOrg === void 0 || (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_20__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id) === 1;
+  var isAdminOrg = Number(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__.getOrg === null || _Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__.getOrg === void 0 || (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_21__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id) === 1;
   var path = location.pathname;
   var mode = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.detectDashboardMode)(path);
 
@@ -65738,7 +65789,8 @@ function Nav() {
     var marketingPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.analyticsMarketingPath)(currentDomain);
     var heatmapPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.analyticsHeatmapPath)(currentDomain);
     var recordingsPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.analyticsRecordingsPath)(currentDomain);
-    var sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings"].find(function (s) {
+    var botsPath = (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_3__.analyticsBotsPath)(currentDomain);
+    var sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots"].find(function (s) {
       return path.includes(s);
     });
     var overviewActive = path.indexOf("/analytics") === 0 && !sub;
@@ -65748,6 +65800,7 @@ function Nav() {
     var marketingActive = sub === "/marketing";
     var heatmapActive = sub === "/heatmap";
     var recordingsActive = sub === "/recordings";
+    var botsActive = sub === "/bots";
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
       className: "navOverlay"
     }, /*#__PURE__*/React.createElement("aside", {
@@ -65821,6 +65874,17 @@ function Nav() {
     }), /*#__PURE__*/React.createElement("span", {
       className: "hiddenCollapsed"
     }, "Recordings")), /*#__PURE__*/React.createElement(Link, {
+      className: "navItems" + (botsActive ? " --active" : ""),
+      to: botsPath
+    }, /*#__PURE__*/React.createElement("i", {
+      className: "dashboard-icons bots",
+      style: {
+        backgroundImage: "url(".concat(_icons_bots_svg__WEBPACK_IMPORTED_MODULE_20__["default"], ")")
+      },
+      "data-icon": _icons_bots_svg__WEBPACK_IMPORTED_MODULE_20__["default"]
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "hiddenCollapsed"
+    }, "Bots")), /*#__PURE__*/React.createElement(Link, {
       className: "navItems" + (marketingActive ? " --active" : ""),
       to: marketingPath
     }, /*#__PURE__*/React.createElement("i", {
@@ -67685,6 +67749,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "ee9b54e32592c74e0fa4a76769f29090.svg");
+
+/***/ }),
+
+/***/ "./src/Components/Header/icons/bots.svg":
+/*!**********************************************!*\
+  !*** ./src/Components/Header/icons/bots.svg ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + "5ee5d2dab921ea0cdb1638c0241c48a7.svg");
 
 /***/ }),
 
@@ -71510,6 +71588,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   analyticsAcquisitionPath: () => (/* binding */ analyticsAcquisitionPath),
 /* harmony export */   analyticsAudiencePath: () => (/* binding */ analyticsAudiencePath),
+/* harmony export */   analyticsBotsPath: () => (/* binding */ analyticsBotsPath),
 /* harmony export */   analyticsConsentPath: () => (/* binding */ analyticsConsentPath),
 /* harmony export */   analyticsHeatmapPath: () => (/* binding */ analyticsHeatmapPath),
 /* harmony export */   analyticsMarketingPath: () => (/* binding */ analyticsMarketingPath),
@@ -71663,14 +71742,19 @@ function analyticsRecordingsPath(domainUnicode) {
   if (!seg) return "/analytics/recordings";
   return "/analytics/".concat(seg, "/recordings");
 }
+function analyticsBotsPath(domainUnicode) {
+  var seg = encodeDomainPathSegment(domainUnicode);
+  if (!seg) return "/analytics/bots";
+  return "/analytics/".concat(seg, "/bots");
+}
 
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 function navigateWithDomain(history, platformId, domainUnicode, pathname) {
   if (String(pathname || "").indexOf("/analytics") === 0) {
-    var _leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings"].find(function (s) {
+    var _leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots"].find(function (s) {
       return pathname.includes(s);
     });
-    if (_leaf === "/marketing") history.push(analyticsMarketingPath(domainUnicode));else if (_leaf === "/audience") history.push(analyticsAudiencePath(domainUnicode));else if (_leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));else if (_leaf === "/consent") history.push(analyticsConsentPath(domainUnicode));else if (_leaf === "/heatmap") history.push(analyticsHeatmapPath(domainUnicode));else if (_leaf === "/recordings") history.push(analyticsRecordingsPath(domainUnicode));else history.push(analyticsPath(domainUnicode));
+    if (_leaf === "/marketing") history.push(analyticsMarketingPath(domainUnicode));else if (_leaf === "/audience") history.push(analyticsAudiencePath(domainUnicode));else if (_leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));else if (_leaf === "/consent") history.push(analyticsConsentPath(domainUnicode));else if (_leaf === "/heatmap") history.push(analyticsHeatmapPath(domainUnicode));else if (_leaf === "/recordings") history.push(analyticsRecordingsPath(domainUnicode));else if (_leaf === "/bots") history.push(analyticsBotsPath(domainUnicode));else history.push(analyticsPath(domainUnicode));
     return;
   }
   var leaf = getReportsUrlLeaf(pathname);
@@ -74761,6 +74845,349 @@ function AnalyticsAudience() {
 
 /***/ }),
 
+/***/ "./src/Pages/Analytics/Bots.js":
+/*!*************************************!*\
+  !*** ./src/Pages/Analytics/Bots.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AnalyticsBots)
+/* harmony export */ });
+/* harmony import */ var _App_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../App.js */ "./src/App.js");
+/* harmony import */ var _Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../Functions/domainPathSegments.js */ "./src/Functions/domainPathSegments.js");
+/* harmony import */ var _API_host_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../API/host.js */ "./src/API/host.js");
+/* harmony import */ var _Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Components/Header/Sticky/index.js */ "./src/Components/Header/Sticky/index.js");
+/* harmony import */ var _shared_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./_shared.js */ "./src/Pages/Analytics/_shared.js");
+/* harmony import */ var _Icons_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Icons.js */ "./src/Pages/Analytics/Icons.js");
+/* harmony import */ var _Analytics_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Analytics.css */ "./src/Pages/Analytics/Analytics.css");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+var _React = React,
+  useState = _React.useState,
+  useEffect = _React.useEffect,
+  useContext = _React.useContext,
+  useMemo = _React.useMemo;
+var useParams = window.ReactRouterDOM.useParams;
+
+
+
+
+
+
+
+var BOTS_URL = "".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_2__.ScannerHost, "/api/analytics-bots");
+var CATEGORY_LABELS = {
+  ai_crawler: "AI crawler",
+  search_engine: "Search engine",
+  social_preview: "Social preview",
+  seo_tool: "SEO tool",
+  uptime_monitor: "Uptime monitor",
+  other: "Other"
+};
+function timeAgo(isoString) {
+  var diff = Math.floor((Date.now() - new Date(isoString)) / 1000);
+  if (diff < 60) return diff + "s";
+  if (diff < 3600) return Math.floor(diff / 60) + "m";
+  return Math.floor(diff / 3600) + "h";
+}
+function useBotReport(domain, fromIso, toIso) {
+  var _useState = useState(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    data = _useState2[0],
+    setData = _useState2[1];
+  var _useState3 = useState(false),
+    _useState4 = _slicedToArray(_useState3, 2),
+    loading = _useState4[0],
+    setLoading = _useState4[1];
+  var _useState5 = useState(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    error = _useState6[0],
+    setError = _useState6[1];
+  useEffect(function () {
+    if (!domain) {
+      setData(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    var qs = new URLSearchParams({
+      domain: domain,
+      from: fromIso,
+      to: toIso
+    }).toString();
+    fetch("".concat(BOTS_URL, "?").concat(qs), {
+      headers: (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.authHeaders)()
+    }).then(/*#__PURE__*/function () {
+      var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(r) {
+        var _t, _t2;
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.n) {
+            case 0:
+              if (r.ok) {
+                _context.n = 1;
+                break;
+              }
+              throw new Error(r.status);
+            case 1:
+              _t = setData;
+              _context.n = 2;
+              return r.json();
+            case 2:
+              _t2 = _context.v;
+              _t(_t2);
+            case 3:
+              return _context.a(2);
+          }
+        }, _callee);
+      }));
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }())["catch"](function () {
+      return setError("Could not load bot traffic.");
+    })["finally"](function () {
+      return setLoading(false);
+    });
+  }, [domain, fromIso, toIso]);
+  return {
+    data: data,
+    loading: loading,
+    error: error
+  };
+}
+function AnalyticsBots() {
+  document.title = "Bots | Site Analytics";
+  var _useParams = useParams(),
+    handle = _useParams.handle;
+  var _useContext = useContext(_App_js__WEBPACK_IMPORTED_MODULE_0__.DomainContext),
+    _useContext2 = _slicedToArray(_useContext, 2),
+    globalDomain = _useContext2[0],
+    setGlobalDomain = _useContext2[1];
+  (0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.useSyncDomainFromRoute)(handle, setGlobalDomain);
+  var domain = useMemo(function () {
+    if ((0,_Functions_domainPathSegments_js__WEBPACK_IMPORTED_MODULE_1__.isCombinedOrClearDomain)(globalDomain)) return null;
+    return String(globalDomain || "").trim().toLowerCase();
+  }, [globalDomain]);
+  var _useState7 = useState(30),
+    _useState8 = _slicedToArray(_useState7, 2),
+    getLastDays = _useState8[0],
+    setLastDays = _useState8[1];
+  var _useState9 = useState(function () {
+      var d = new Date();
+      d.setDate(d.getDate() - 30);
+      return d;
+    }),
+    _useState0 = _slicedToArray(_useState9, 2),
+    fromDate = _useState0[0],
+    setFromDate = _useState0[1];
+  var _useState1 = useState(function () {
+      return new Date();
+    }),
+    _useState10 = _slicedToArray(_useState1, 2),
+    toDate = _useState10[0],
+    setToDate = _useState10[1];
+  var fromIso = useMemo(function () {
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(fromDate);
+  }, [fromDate]);
+  var toIso = useMemo(function () {
+    return (0,_shared_js__WEBPACK_IMPORTED_MODULE_4__.toIsoDate)(toDate);
+  }, [toDate]);
+  var _useBotReport = useBotReport(domain, fromIso, toIso),
+    data = _useBotReport.data,
+    loading = _useBotReport.loading,
+    error = _useBotReport.error;
+  var maxCategory = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.byCategory) || []).map(function (c) {
+      return c.n;
+    })).concat([1]));
+  }, [data]);
+  var maxBot = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.topBots) || []).map(function (b) {
+      return b.n;
+    })).concat([1]));
+  }, [data]);
+  var maxPage = useMemo(function () {
+    return Math.max.apply(Math, _toConsumableArray(((data === null || data === void 0 ? void 0 : data.topPages) || []).map(function (p) {
+      return p.n;
+    })).concat([1]));
+  }, [data]);
+  var showData = !loading && data && !data.noSiteKey && !data.noData;
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: "1",
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement(_Components_Header_Sticky_index_js__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    title: "Bots",
+    numberofDays: setLastDays,
+    getLastDays: getLastDays,
+    fromDate: fromDate,
+    toDate: toDate,
+    setFromDate: setFromDate,
+    setToDate: setToDate
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "dashboard-content"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sa-page"
+  }, !domain && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "Select a domain in the header to view bot traffic."), domain && loading && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "Loading\u2026"), domain && error && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice sa-notice--error"
+  }, error), domain && !loading && (data === null || data === void 0 ? void 0 : data.noSiteKey) && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "No analytics set up for this domain yet."), domain && !loading && (data === null || data === void 0 ? void 0 : data.noData) && !(data !== null && data !== void 0 && data.noSiteKey) && /*#__PURE__*/React.createElement("p", {
+    className: "sa-notice"
+  }, "No known bot/crawler traffic detected in this period \u2014 real visitor numbers elsewhere are unaffected either way."), showData && /*#__PURE__*/React.createElement("div", {
+    className: "sa-bots-grid"
+  }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.KpiCard, {
+    className: "sa-bots-kpi1",
+    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconBot, null),
+    label: "Bot hits",
+    value: data.totals.total.toLocaleString("de-DE"),
+    sub: "excluded from all other analytics"
+  }), /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.KpiCard, {
+    className: "sa-bots-kpi2",
+    icon: /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconGlobe, null),
+    label: "Distinct bots seen",
+    value: data.totals.uniqueBots.toLocaleString("de-DE"),
+    sub: "in this period"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-bots-category"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconRadio, {
+    className: "sa-icon"
+  }), " By category"), /*#__PURE__*/React.createElement("div", {
+    className: "sa-consent-list"
+  }, data.byCategory.map(function (c) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: c.category,
+      className: "sa-consent-row"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "sa-consent-row__label"
+    }, CATEGORY_LABELS[c.category] || c.category), /*#__PURE__*/React.createElement("div", {
+      className: "sa-bar"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "sa-bar__seg",
+      style: {
+        width: Math.round(c.n / maxCategory * 100) + "%",
+        background: "rgba(192,159,83,0.55)"
+      },
+      title: "".concat(c.n, " hits")
+    })), /*#__PURE__*/React.createElement("span", {
+      className: "sa-consent-row__pct"
+    }, c.n.toLocaleString("de-DE")));
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-bots-list"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconBot, {
+    className: "sa-icon"
+  }), " Top bots"), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Bot"), /*#__PURE__*/React.createElement("th", null, "Category"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Hits"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.topBots.map(function (b) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: b.name
+    }, /*#__PURE__*/React.createElement("td", null, b.name), /*#__PURE__*/React.createElement("td", {
+      style: {
+        color: "rgba(150,150,150,0.7)",
+        fontSize: "0.78rem"
+      }
+    }, CATEGORY_LABELS[b.category] || b.category), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, b.n.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
+      value: b.n,
+      max: maxBot
+    })));
+  }), !data.topBots.length && /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", {
+    colSpan: 4,
+    style: {
+      color: "rgba(130,130,130,0.55)",
+      fontSize: "0.8rem"
+    }
+  }, "No bot hits recorded"))))), /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-bots-pages"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconDocument, {
+    className: "sa-icon"
+  }), " Most-crawled pages"), /*#__PURE__*/React.createElement("table", {
+    className: "sa-table"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Page"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__num"
+  }, "Hits"), /*#__PURE__*/React.createElement("th", {
+    className: "sa-table__bar"
+  }))), /*#__PURE__*/React.createElement("tbody", null, data.topPages.map(function (p) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: p.pathname
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__path",
+      title: p.pathname
+    }, p.pathname), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__num"
+    }, p.n.toLocaleString("de-DE")), /*#__PURE__*/React.createElement("td", {
+      className: "sa-table__bar"
+    }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.MiniBar, {
+      value: p.n,
+      max: maxPage,
+      color: "rgba(167,139,250,0.6)"
+    })));
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "sa-panel sa-bots-recent"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "sa-panel__title"
+  }, /*#__PURE__*/React.createElement(_Icons_js__WEBPACK_IMPORTED_MODULE_5__.IconRadio, {
+    className: "sa-icon"
+  }), " Recent hits"), /*#__PURE__*/React.createElement("div", {
+    className: "sa-live__feed"
+  }, data.recent.map(function (e, i) {
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "sa-live__event"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "sa-live__event-path"
+    }, e.name, " \xB7 ", e.pathname), /*#__PURE__*/React.createElement("div", {
+      className: "sa-live__event-meta"
+    }, e.country && /*#__PURE__*/React.createElement("span", {
+      className: "sa-live__event-flag"
+    }, e.country), /*#__PURE__*/React.createElement("span", {
+      className: "sa-live__event-level sa-live__event-level--minimal"
+    }, CATEGORY_LABELS[e.category] || e.category), /*#__PURE__*/React.createElement("span", {
+      className: "sa-live__event-time"
+    }, timeAgo(e.at))));
+  }), !data.recent.length && /*#__PURE__*/React.createElement("p", {
+    style: {
+      color: "rgba(130,130,130,0.55)",
+      fontSize: "0.8rem",
+      margin: 0
+    }
+  }, "No recent hits")))))));
+}
+
+/***/ }),
+
 /***/ "./src/Pages/Analytics/Consent.js":
 /*!****************************************!*\
   !*** ./src/Pages/Analytics/Consent.js ***!
@@ -75477,6 +75904,7 @@ function AnalyticsHeatmap() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   IconBarChart: () => (/* binding */ IconBarChart),
+/* harmony export */   IconBot: () => (/* binding */ IconBot),
 /* harmony export */   IconCash: () => (/* binding */ IconCash),
 /* harmony export */   IconCursorClick: () => (/* binding */ IconCursorClick),
 /* harmony export */   IconDocument: () => (/* binding */ IconDocument),
@@ -75648,6 +76076,37 @@ function IconVideo(props) {
     rx: "2"
   }), /*#__PURE__*/React.createElement("path", {
     d: "M16 10.5 21 7v10l-5-3.5Z"
+  }));
+}
+function IconBot(props) {
+  return /*#__PURE__*/React.createElement("svg", _extends({}, svgProps, props), /*#__PURE__*/React.createElement("rect", {
+    x: "4",
+    y: "8",
+    width: "16",
+    height: "12",
+    rx: "3"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M12 8V4"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "12",
+    cy: "3",
+    r: "1",
+    fill: "currentColor",
+    stroke: "none"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "9",
+    cy: "14",
+    r: "1.2",
+    fill: "currentColor",
+    stroke: "none"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "15",
+    cy: "14",
+    r: "1.2",
+    fill: "currentColor",
+    stroke: "none"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 18v1M16 18v1"
   }));
 }
 
