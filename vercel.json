@@ -16,6 +16,22 @@
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
       ]
+    },
+    {
+      "source": "/api/analytics-site-config",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin",  "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+      ]
+    },
+    {
+      "source": "/api/analytics-recording-ingest",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin",  "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+      ]
     }
   ],
   "rewrites": [
@@ -37,6 +53,10 @@
     {
       "path": "/api/cron-ad-sync",
       "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron-cleanup-recordings",
+      "schedule": "0 5 * * *"
     }
   ],
   "functions": {
@@ -150,6 +170,26 @@
     "api/analytics-live.js": {
       "memory": 256,
       "maxDuration": 10
+    },
+    "api/analytics-heatmap.js": {
+      "memory": 256,
+      "maxDuration": 15
+    },
+    "api/analytics-site-config.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/analytics-recording-ingest.js": {
+      "memory": 256,
+      "maxDuration": 15
+    },
+    "api/analytics-recordings.js": {
+      "memory": 512,
+      "maxDuration": 30
+    },
+    "api/cron-cleanup-recordings.js": {
+      "memory": 256,
+      "maxDuration": 60
     }
   }
 }

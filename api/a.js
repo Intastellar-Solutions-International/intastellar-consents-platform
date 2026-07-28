@@ -119,6 +119,28 @@ async function ensureTables(db) {
         CREATE INDEX IF NOT EXISTS idx_ace_site     ON analytics_custom_events (site_id);
         CREATE INDEX IF NOT EXISTS idx_ace_name     ON analytics_custom_events (name);
         CREATE INDEX IF NOT EXISTS idx_ace_received ON analytics_custom_events (received_at);
+        -- Click coordinates for heatmaps. Full-consent-only (session_id always set).
+        -- 'source' distinguishes the lightweight native click listener from clicks
+        -- derived from an rrweb recording, once session recording is active.
+        CREATE TABLE IF NOT EXISTS analytics_clicks (
+            id              BIGSERIAL    PRIMARY KEY,
+            site_id         VARCHAR(32)  NOT NULL,
+            organisation_id INTEGER      NOT NULL,
+            session_id      VARCHAR(64)  NOT NULL,
+            received_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            pathname        TEXT         NOT NULL,
+            device_type     VARCHAR(8),
+            viewport_width  SMALLINT,
+            page_height     INTEGER,
+            x_pct           NUMERIC(5,2),
+            y_pct           NUMERIC(5,2),
+            target_tag      VARCHAR(20),
+            target_id       VARCHAR(150),
+            target_class    VARCHAR(300),
+            source          VARCHAR(8)   NOT NULL DEFAULT 'native'
+        );
+        CREATE INDEX IF NOT EXISTS idx_acl_site_path ON analytics_clicks (site_id, pathname);
+        CREATE INDEX IF NOT EXISTS idx_acl_received  ON analytics_clicks (received_at);
     `);
     // Add columns to existing tables that pre-date this schema version
     await db.query(`
@@ -132,6 +154,17 @@ async function ensureTables(db) {
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS timezone         VARCHAR(60);
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS scroll_depth     SMALLINT;
         ALTER TABLE analytics_events ALTER COLUMN session_id DROP NOT NULL;
+    `).catch(() => {});
+    // Per-site behavior-analytics configuration (heatmaps default on/cheap,
+    // recording defaults off/expensive — see api/analytics-site-config.js).
+    await db.query(`
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmaps_enabled          BOOLEAN  NOT NULL DEFAULT true;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_enabled         BOOLEAN  NOT NULL DEFAULT false;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_sample_rate     SMALLINT NOT NULL DEFAULT 20;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_retention_days  SMALLINT NOT NULL DEFAULT 30;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmap_retention_days    SMALLINT NOT NULL DEFAULT 90;
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_block_selectors TEXT[]   NOT NULL DEFAULT '{}';
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_mask_selectors  TEXT[]   NOT NULL DEFAULT '{}';
     `).catch(() => {});
 }
 
@@ -212,6 +245,47 @@ var t0=Date.now(),fullFired=false,exitSent=false,maxScroll=0;
   try{window.addEventListener('scroll',onScroll,{passive:true});}catch(e){}
 })();
 
+// ── Click tracking for heatmaps (full-consent only) ────────────────────────
+// Started once full consent is confirmed (see sendFull()). Buffers clicks and
+// flushes in small batches so the heatmap read side can bucket them cheaply
+// with SQL rather than re-parsing anything at render time.
+var clickBuf=[],clickTrackingStarted=false,clickFlushIv=null;
+
+function pageHeight(){
+  var h=document.documentElement,b=document.body;
+  return Math.max(h&&h.scrollHeight||0,b&&b.scrollHeight||0,h&&h.clientHeight||0,1);
+}
+
+function sendClicks(){
+  if(!clickBuf.length)return;
+  var batch=clickBuf.splice(0,clickBuf.length);
+  send(JSON.stringify({s:SITE,t:'ck',sid:getSid(),u:location.pathname,dt:devType(),ph:pageHeight(),ck:batch}));
+}
+
+function onClick(e){
+  try{
+    var t=e.target;
+    if(!t||t.nodeType!==1)return;
+    var w=document.documentElement.clientWidth||window.innerWidth||1;
+    var ph=pageHeight();
+    var scrollY=window.pageYOffset||document.documentElement.scrollTop||0;
+    var x=Math.min(100,Math.max(0,(e.clientX/w)*100));
+    var y=Math.min(100,Math.max(0,((e.clientY+scrollY)/ph)*100));
+    var tag=(t.tagName||'').toLowerCase().slice(0,20);
+    var id=(t.id||'').slice(0,150);
+    var cls=(typeof t.className==='string'?t.className:'').slice(0,300);
+    clickBuf.push([Math.round(x*100)/100,Math.round(y*100)/100,w,tag,id,cls]);
+    if(clickBuf.length>=25)sendClicks();
+  }catch(err){}
+}
+
+function startClickTracking(){
+  if(clickTrackingStarted)return;
+  clickTrackingStarted=true;
+  try{document.addEventListener('click',onClick,{capture:true,passive:true});}catch(e){}
+  clickFlushIv=setInterval(sendClicks,5000);
+}
+
 function send(payload){
   // sendBeacon is the most reliable cross-site transport — it is not monkey-patched
   // by third-party scripts the way fetch and XHR commonly are.
@@ -239,6 +313,7 @@ function sendMinimal(c){
 
 function sendFull(c,final){
   fullFired=true;
+  startClickTracking();
   send(JSON.stringify({
     s:SITE,cl:'full',sid:getSid(),
     u:location.href,r:document.referrer||'',
@@ -261,6 +336,8 @@ function sendFull(c,final){
 document.addEventListener('visibilitychange',function(){
   if(document.visibilityState==='hidden'&&fullFired&&!exitSent){
     exitSent=true;
+    if(clickFlushIv){clearInterval(clickFlushIv);clickFlushIv=null;}
+    sendClicks();
     var c=getConsents();
     if(hasStat(c))sendFull(c,true);
   }
@@ -268,6 +345,8 @@ document.addEventListener('visibilitychange',function(){
 window.addEventListener('pagehide',function(){
   if(fullFired&&!exitSent){
     exitSent=true;
+    if(clickFlushIv){clearInterval(clickFlushIv);clickFlushIv=null;}
+    sendClicks();
     var c=getConsents();
     if(hasStat(c))sendFull(c,true);
   }
@@ -373,7 +452,7 @@ export default async function handler(req, res) {
     }
 
     const { s: siteId, t: eventType, cl: consentLevel, sid, u: rawUrl, r: referrer, ti: title,
-            us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd,
+            us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
             dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
@@ -382,6 +461,7 @@ export default async function handler(req, res) {
 
     const isMinimal = consentLevel !== "full";
     const isCustomEvent = eventType === "ev";
+    const isClickBatch = eventType === "ck";
 
     const db = getPool();
 
@@ -429,6 +509,50 @@ export default async function handler(req, res) {
                 evPathname, country, deviceType,
             ]
         ).catch(() => {});
+
+        return res.status(202).end();
+    }
+
+    // ── Click batch (heatmap data) ────────────────────────────────────────────
+    // Full-consent-only — always session-linked, unlike pageviews/custom events
+    // which have a minimal (unlinked) variant. `u` is a bare pathname like
+    // custom events. Coordinates arrive as compact arrays to match this file's
+    // key-shortened wire format: [x_pct, y_pct, viewport_width, tag, id, class].
+    if (isClickBatch) {
+        if (!sid || !Array.isArray(ck) || !ck.length) return res.status(400).end();
+
+        const ckPathname = ("/" + String(rawUrl).replace(/^\//, "")).slice(0, 2000);
+        const sessionId  = String(sid).slice(0, 64);
+        const pageH      = Number(ph) || null;
+
+        const values = [];
+        const params = [];
+        let i = 1;
+        for (const row of ck.slice(0, 25)) {
+            if (!Array.isArray(row) || row.length < 6) continue;
+            const [x, y, w, tag, tId, cls] = row;
+            values.push(`($${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++})`);
+            params.push(
+                siteId, orgId, sessionId,
+                ckPathname, deviceType,
+                Number(w) || null, pageH,
+                (typeof x === "number" && isFinite(x) && x >= 0 && x <= 100) ? x : null,
+                (typeof y === "number" && isFinite(y) && y >= 0 && y <= 100) ? y : null,
+                String(tag || "").slice(0, 20)  || null,
+                String(tId || "").slice(0, 150) || null,
+                String(cls || "").slice(0, 300) || null,
+            );
+        }
+
+        if (values.length) {
+            await db.query(
+                `INSERT INTO analytics_clicks
+                 (site_id, organisation_id, session_id, pathname, device_type,
+                  viewport_width, page_height, x_pct, y_pct, target_tag, target_id, target_class)
+                 VALUES ${values.join(",")}`,
+                params
+            ).catch(() => {});
+        }
 
         return res.status(202).end();
     }
