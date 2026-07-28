@@ -1067,3 +1067,12 @@
     flex-direction: column;
     gap: 9px;
 }
+
+/* ── Recording player ────────────────────────────────────────────────────────── */
+
+.sa-recording-player {
+    width: 100%;
+    min-height: 520px;
+    display: flex;
+    justify-content: center;
+}

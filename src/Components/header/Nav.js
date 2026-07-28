@@ -23,6 +23,7 @@ import audience from "./icons/audience.svg";
 import acquisition from "./icons/acquisition.svg";
 import consentIcon from "./icons/compliance.svg";
 import heatmapIcon from "./icons/heatmap.svg";
+import recordingsIcon from "./icons/recordings.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -41,14 +42,16 @@ export default function Nav() {
         const consentPath     = analyticsConsentPath(currentDomain);
         const marketingPath   = analyticsMarketingPath(currentDomain);
         const heatmapPath     = analyticsHeatmapPath(currentDomain);
+        const recordingsPath  = analyticsRecordingsPath(currentDomain);
 
-        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap"].find(s => path.includes(s));
+        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings"].find(s => path.includes(s));
         const overviewActive    = path.indexOf("/analytics") === 0 && !sub;
         const audienceActive    = sub === "/audience";
         const acquisitionActive = sub === "/acquisition";
         const consentActive     = sub === "/consent";
         const marketingActive   = sub === "/marketing";
         const heatmapActive     = sub === "/heatmap";
+        const recordingsActive  = sub === "/recordings";
 
         return (
             <>
@@ -74,6 +77,10 @@ export default function Nav() {
                             <Link className={"navItems" + (heatmapActive ? " --active" : "")} to={heatmapPath}>
                                 <i className="dashboard-icons heatmap" style={{ backgroundImage: `url(${heatmapIcon})` }} data-icon={heatmapIcon}></i>
                                 <span className="hiddenCollapsed">Heatmap</span>
+                            </Link>
+                            <Link className={"navItems" + (recordingsActive ? " --active" : "")} to={recordingsPath}>
+                                <i className="dashboard-icons recordings" style={{ backgroundImage: `url(${recordingsIcon})` }} data-icon={recordingsIcon}></i>
+                                <span className="hiddenCollapsed">Recordings</span>
                             </Link>
                             <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}>
                                 <i className="dashboard-icons marketing" style={{ backgroundImage: `url(${marketing})` }} data-icon={marketing}></i>

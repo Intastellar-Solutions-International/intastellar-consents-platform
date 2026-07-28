@@ -35,17 +35,18 @@ import { record } from "rrweb";
             final: !!final, pathname: pathnames[pathnames.length - 1],
             pathnames: pathnames, events: batch,
         });
+        // fetch+keepalive (not sendBeacon) — see api/a.js's send() for why:
+        // sendBeacon's spec-mandated credentialed CORS mode is incompatible
+        // with this endpoint's wildcard Access-Control-Allow-Origin, and
+        // credentials:'omit' sidesteps the mismatch instead of loosening CORS.
         try {
-            if (final && navigator.sendBeacon) {
-                navigator.sendBeacon(cfg.ep, new Blob([payload], { type: "application/json" }));
-            } else {
-                fetch(cfg.ep, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: payload,
-                    keepalive: !!final,
-                }).catch(function () {});
-            }
+            fetch(cfg.ep, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: payload,
+                keepalive: true,
+                credentials: "omit",
+            }).catch(function () {});
         } catch (e) {}
     }
 
