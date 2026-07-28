@@ -327,11 +327,19 @@ function maybeStartRecording(){
 }
 
 function send(payload){
-  // sendBeacon is the most reliable cross-site transport — it is not monkey-patched
-  // by third-party scripts the way fetch and XHR commonly are.
-  var b=new Blob([payload],{type:'application/json'});
-  if(navigator.sendBeacon){navigator.sendBeacon(EP,b);return;}
-  // Fallback for very old browsers that lack sendBeacon.
+  // fetch+keepalive survives page unload much like sendBeacon, but without
+  // sendBeacon's spec-mandated credentialed CORS mode — a credentialed
+  // request's response can never use a wildcard Access-Control-Allow-Origin,
+  // and this endpoint has no use for cookies anyway (site_id in the payload
+  // is the real trust boundary), so credentials:'omit' avoids that mismatch
+  // entirely rather than loosening CORS to accommodate it.
+  try{
+    if(window.fetch){
+      fetch(EP,{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true,credentials:'omit'}).catch(function(){});
+      return;
+    }
+  }catch(e){}
+  // Fallback for browsers without fetch.
   try{
     var xhr=new XMLHttpRequest();
     xhr.open('POST',EP,true);
@@ -472,20 +480,9 @@ window.intaAnalytics={track:track};
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
-    // Reflect the caller's origin rather than a static wildcard, and mark
-    // credentials as allowed. navigator.sendBeacon() — send()'s primary
-    // transport below — always issues its request with a credentialed CORS
-    // mode per the Beacon spec, and browsers reject a wildcard
-    // Access-Control-Allow-Origin on a credentialed request's response even
-    // though this endpoint never actually relies on cookies (the site_id in
-    // the payload, validated against analytics_sites, is the real trust
-    // boundary) — so reflecting any origin back here is safe.
-    const origin = req.headers.origin || "*";
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    res.setHeader("Vary", "Origin");
 
     if (req.method === "OPTIONS") return res.status(204).end();
 
