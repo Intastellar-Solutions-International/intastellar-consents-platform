@@ -78408,7 +78408,7 @@ function SiteAnalytics() {
   }), showData && /*#__PURE__*/React.createElement("div", {
     className: "sa-dashboard-grid sa-dashboard-grid--overview",
     style: {
-      gridTemplateColumns: data.totals.qualityLeads !== null ? "repeat(5, 1fr)" : "repeat(4, 1fr)"
+      gridTemplateColumns: data.totals.qualityLeads !== null ? "repeat(6, 1fr)" : "repeat(5, 1fr)"
     }
   }, /*#__PURE__*/React.createElement(_shared_js__WEBPACK_IMPORTED_MODULE_4__.KpiCard, {
     className: "sa-ga-kpi0",

@@ -401,7 +401,7 @@ export default function SiteAnalytics() {
                     )}
 
                     {showData && (
-                        <div className="sa-dashboard-grid sa-dashboard-grid--overview" style={{gridTemplateColumns: data.totals.qualityLeads !== null ? "repeat(5, 1fr)" : "repeat(4, 1fr)"}}>
+                        <div className="sa-dashboard-grid sa-dashboard-grid--overview" style={{gridTemplateColumns: data.totals.qualityLeads !== null ? "repeat(6, 1fr)" : "repeat(5, 1fr)"}}>
 
                             <KpiCard className="sa-ga-kpi0"
                                 icon={<IconRadio />}
