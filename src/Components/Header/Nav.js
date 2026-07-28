@@ -12,7 +12,7 @@ import reports from "./icons/reports.svg";
 import domains from "./icons/domain.svg";
 import expand from "./icons/expand.svg";
 import settings from "./icons/settings.svg";
-import logout from "./icons/logout.svg";
+import logout from "./icons/Logout.svg";
 import experiments from "./icons/experiment.svg";
 import benchmark from "./icons/benchmark.svg";
 import compliance from "./icons/compliance.svg";
