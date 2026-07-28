@@ -431,6 +431,23 @@
     color: #f0a8a0;
 }
 
+.property-selector__analytics-badge {
+    color: #7dd590;
+    font-size: 0.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* Domain has no analytics site key yet — still fully clickable (to open and
+   enable it), just visually de-emphasised so the eye lands on active ones. */
+.property-selector__row--no-analytics {
+    opacity: 0.55;
+}
+
+.property-selector__row--no-analytics:hover {
+    opacity: 0.85;
+}
+
 .property-selector__primary-tag {
     font-size: 0.5625rem;
     font-weight: 700;

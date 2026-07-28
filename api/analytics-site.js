@@ -94,6 +94,20 @@ export default async function handler(req, res) {
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_mask_selectors  TEXT[]   NOT NULL DEFAULT '{}';
     `).catch(() => {});
 
+    // ── GET (list mode): which of this org's domains have analytics set up ────
+    // Used by the property selector to highlight/filter domains with an active
+    // site key, without a per-domain round trip for every entry in the list.
+    if (req.method === "GET" && (req.query.list === "1" || req.query.list === "true")) {
+        const { rows } = await db.query(
+            `SELECT domain, active FROM analytics_sites WHERE organisation_id = $1`,
+            [orgId]
+        ).catch(() => ({ rows: [] }));
+
+        return res.status(200).json({
+            sites: rows.map(r => ({ domain: r.domain, active: r.active })),
+        });
+    }
+
     // ── GET: return existing site key for a domain ────────────────────────────
     if (req.method === "GET") {
         const domain = (req.query.domain || "").trim().toLowerCase();

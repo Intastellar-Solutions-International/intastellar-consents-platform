@@ -20615,6 +20615,23 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.property-selector {
     color: #f0a8a0;
 }
 
+.property-selector__analytics-badge {
+    color: #7dd590;
+    font-size: 0.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* Domain has no analytics site key yet — still fully clickable (to open and
+   enable it), just visually de-emphasised so the eye lands on active ones. */
+.property-selector__row--no-analytics {
+    opacity: 0.55;
+}
+
+.property-selector__row--no-analytics:hover {
+    opacity: 0.85;
+}
+
 .property-selector__primary-tag {
     font-size: 0.5625rem;
     font-weight: 700;
@@ -20683,7 +20700,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.property-selector {
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 }
-`, "",{"version":3,"sources":["webpack://./src/Components/Header/PropertySelector.css"],"names":[],"mappings":"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","sourcesContent":[".property-selector {\n    position: relative;\n    display: inline-flex;\n}\n\n.property-selector__trigger {\n    display: inline-flex;\n    align-items: center;\n    gap: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    color: #f0f0f0;\n    padding: 6px 12px 6px 10px;\n    border-radius: 10px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    cursor: pointer;\n    max-width: 320px;\n    transition: border-color 0.2s ease, background 0.2s ease;\n}\n\n.property-selector__trigger:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.property-selector__mode-icon {\n    width: 26px;\n    height: 26px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.18);\n}\n\n.property-selector__mode-icon img {\n    width: 16px;\n    height: 16px;\n    filter: brightness(0) saturate(100%) invert(78%) sepia(24%) saturate(500%) hue-rotate(357deg) brightness(95%);\n}\n\n.property-selector__trigger-text {\n    display: flex;\n    flex-direction: column;\n    min-width: 0;\n    text-align: left;\n    line-height: 1.25;\n}\n\n.property-selector__trigger-context {\n    font-size: 0.625rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.5);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__trigger-domain {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__caret {\n    width: 7px;\n    height: 7px;\n    flex-shrink: 0;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n}\n\n.property-selector__panel {\n    position: absolute;\n    top: calc(100% + 8px);\n    left: 0;\n    z-index: 220;\n    width: min(640px, calc(100vw - 24px));\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.property-selector__mode-row {\n    display: flex;\n    gap: 6px;\n    padding: 10px 12px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.property-selector__mode-btn {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 12px;\n    border: 1px solid transparent;\n    border-radius: 8px;\n    background: transparent;\n    color: rgba(255, 255, 255, 0.65);\n    font-size: 0.75rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;\n}\n\n.property-selector__mode-btn img {\n    width: 16px;\n    height: 16px;\n    filter: brightness(0) invert(1) opacity(0.65);\n}\n\n.property-selector__mode-btn:hover {\n    background: rgba(255, 255, 255, 0.06);\n    color: #fff;\n}\n\n.property-selector__mode-btn--active {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.4);\n    color: #f0f0f0;\n}\n\n.property-selector__mode-btn--active img {\n    filter: brightness(0) saturate(100%) invert(78%) sepia(24%) saturate(500%) hue-rotate(357deg) brightness(95%);\n}\n\n.property-selector__org-row {\n    position: relative;\n    padding: 8px 12px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.property-selector__org-btn {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    width: 100%;\n    border: none;\n    background: transparent;\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    padding: 4px 2px;\n    cursor: pointer;\n    text-align: left;\n}\n\n.property-selector__org-badge {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 18px;\n    height: 18px;\n    border-radius: 50%;\n    background: #d0463c;\n    color: #fff;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    flex-shrink: 0;\n}\n\n.property-selector__org-name {\n    flex: 1;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__org-list {\n    position: absolute;\n    top: calc(100% + 2px);\n    left: 12px;\n    right: 12px;\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    background: rgba(24, 24, 26, 0.98);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);\n    max-height: 220px;\n    overflow-y: auto;\n    z-index: 5;\n}\n\n.property-selector__org-list button {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    width: 100%;\n    border: none;\n    background: transparent;\n    color: #e4e4e4;\n    font-size: 0.8125rem;\n    padding: 8px 12px;\n    cursor: pointer;\n    text-align: left;\n}\n\n.property-selector__org-list button:hover {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n}\n\n.property-selector__org-list img {\n    width: 20px;\n    height: 20px;\n    border-radius: 4px;\n    object-fit: contain;\n}\n\n.property-selector__search-row {\n    padding: 10px 12px 8px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.15);\n}\n\n.property-selector__search {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n}\n\n.property-selector__search::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.property-selector__search:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.property-selector__tabs {\n    display: flex;\n    gap: 4px;\n    padding: 8px 12px 0;\n}\n\n.property-selector__tab {\n    border: none;\n    background: transparent;\n    color: rgba(255, 255, 255, 0.55);\n    font-size: 0.75rem;\n    font-weight: 600;\n    padding: 6px 10px;\n    border-bottom: 2px solid transparent;\n    cursor: pointer;\n}\n\n.property-selector__tab:hover {\n    color: #fff;\n}\n\n.property-selector__tab--active {\n    color: #c0a053;\n    border-bottom-color: #c0a053;\n}\n\n.property-selector__columns {\n    display: grid;\n    grid-template-columns: 200px 1fr;\n    height: min(60vh, 380px);\n    overflow: hidden;\n}\n\n.property-selector__col {\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n    border-right: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.property-selector__col:last-child {\n    border-right: none;\n}\n\n.property-selector__col-title {\n    padding: 10px 14px 6px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85);\n    flex-shrink: 0;\n}\n\n.property-selector__list {\n    margin: 0;\n    padding: 0 6px 8px;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n}\n\n.property-selector__row {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    width: 100%;\n    border: none;\n    background: transparent;\n    color: #e4e4e4;\n    font-size: 0.8125rem;\n    padding: 8px 8px;\n    border-radius: 8px;\n    cursor: pointer;\n    text-align: left;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.property-selector__row:hover {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n}\n\n.property-selector__row--active {\n    background: rgba(192, 159, 83, 0.2);\n    color: #fff;\n}\n\n.property-selector__ws-icon {\n    width: 22px;\n    height: 22px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.6875rem;\n    font-weight: 700;\n}\n\n.property-selector__ws-icon--all {\n    background: rgba(255, 255, 255, 0.08);\n    border-color: rgba(255, 255, 255, 0.16);\n    color: rgba(255, 255, 255, 0.8);\n}\n\n.property-selector__row-text {\n    display: flex;\n    flex-direction: column;\n    gap: 1px;\n    min-width: 0;\n}\n\n.property-selector__row-name {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__row-name--mono {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    flex: 1;\n}\n\n.property-selector__row-sub {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__row--domain {\n    justify-content: flex-start;\n}\n\n.property-selector__check {\n    color: #7dd590;\n    font-size: 0.75rem;\n    flex-shrink: 0;\n}\n\n.property-selector__favicon {\n    width: 18px;\n    height: 18px;\n    border-radius: 4px;\n    object-fit: contain;\n    flex-shrink: 0;\n}\n\n.property-selector__verify {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 16px;\n    height: 16px;\n    border-radius: 50%;\n    font-size: 0.5625rem;\n    font-weight: 700;\n    flex-shrink: 0;\n}\n\n.property-selector__verify--verified {\n    background: rgba(80, 180, 100, 0.2);\n    border: 1px solid rgba(80, 180, 100, 0.4);\n    color: #7dd590;\n}\n\n.property-selector__verify--unverified {\n    background: rgba(220, 160, 60, 0.2);\n    border: 1px solid rgba(220, 160, 60, 0.4);\n    color: #e8c76a;\n}\n\n.property-selector__verify--expired {\n    background: rgba(220, 100, 80, 0.2);\n    border: 1px solid rgba(220, 100, 80, 0.4);\n    color: #f0a8a0;\n}\n\n.property-selector__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    flex-shrink: 0;\n}\n\n.property-selector__star {\n    margin-left: auto;\n    border: none;\n    background: transparent;\n    color: rgba(255, 255, 255, 0.3);\n    font-size: 0.9rem;\n    line-height: 1;\n    cursor: pointer;\n    padding: 2px;\n    flex-shrink: 0;\n}\n\n.property-selector__star:hover {\n    color: rgba(192, 159, 83, 0.8);\n}\n\n.property-selector__star--active {\n    color: #c0a053;\n}\n\n.property-selector__empty {\n    padding: 14px 12px;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.4);\n    text-align: center;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .property-selector {\n        width: 100%;\n    }\n\n    .property-selector__trigger {\n        width: 100%;\n        max-width: none;\n    }\n\n    .property-selector__panel {\n        left: 0;\n        right: 0;\n        width: 100%;\n    }\n\n    .property-selector__columns {\n        grid-template-columns: 1fr;\n        grid-auto-rows: min-content;\n        max-height: min(70vh, 480px);\n        overflow-y: auto;\n    }\n\n    .property-selector__col {\n        border-right: none;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    }\n}\n"],"sourceRoot":""}]);
+`, "",{"version":3,"sources":["webpack://./src/Components/Header/PropertySelector.css"],"names":[],"mappings":"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","sourcesContent":[".property-selector {\n    position: relative;\n    display: inline-flex;\n}\n\n.property-selector__trigger {\n    display: inline-flex;\n    align-items: center;\n    gap: 10px;\n    border: 1px solid rgba(255, 255, 255, 0.14);\n    background: rgba(0, 0, 0, 0.2);\n    color: #f0f0f0;\n    padding: 6px 12px 6px 10px;\n    border-radius: 10px;\n    font-family: system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Arial, sans-serif;\n    cursor: pointer;\n    max-width: 320px;\n    transition: border-color 0.2s ease, background 0.2s ease;\n}\n\n.property-selector__trigger:hover {\n    border-color: rgba(192, 159, 83, 0.35);\n    background: rgba(192, 159, 83, 0.08);\n}\n\n.property-selector__mode-icon {\n    width: 26px;\n    height: 26px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.18);\n}\n\n.property-selector__mode-icon img {\n    width: 16px;\n    height: 16px;\n    filter: brightness(0) saturate(100%) invert(78%) sepia(24%) saturate(500%) hue-rotate(357deg) brightness(95%);\n}\n\n.property-selector__trigger-text {\n    display: flex;\n    flex-direction: column;\n    min-width: 0;\n    text-align: left;\n    line-height: 1.25;\n}\n\n.property-selector__trigger-context {\n    font-size: 0.625rem;\n    font-weight: 600;\n    letter-spacing: 0.02em;\n    text-transform: uppercase;\n    color: rgba(255, 255, 255, 0.5);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__trigger-domain {\n    font-size: 0.8125rem;\n    font-weight: 600;\n    color: #f0f0f0;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__caret {\n    width: 7px;\n    height: 7px;\n    flex-shrink: 0;\n    border-right: 2px solid rgba(255, 255, 255, 0.45);\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    transform: rotate(45deg) translateY(-2px);\n}\n\n.property-selector__panel {\n    position: absolute;\n    top: calc(100% + 8px);\n    left: 0;\n    z-index: 220;\n    width: min(640px, calc(100vw - 24px));\n    display: flex;\n    flex-direction: column;\n    overflow: hidden;\n    background: linear-gradient(168deg, rgba(52, 52, 56, 0.98) 0%, rgba(32, 32, 36, 0.99) 100%);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 12px;\n    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);\n}\n\n.property-selector__mode-row {\n    display: flex;\n    gap: 6px;\n    padding: 10px 12px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.property-selector__mode-btn {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 6px 12px;\n    border: 1px solid transparent;\n    border-radius: 8px;\n    background: transparent;\n    color: rgba(255, 255, 255, 0.65);\n    font-size: 0.75rem;\n    font-weight: 600;\n    cursor: pointer;\n    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;\n}\n\n.property-selector__mode-btn img {\n    width: 16px;\n    height: 16px;\n    filter: brightness(0) invert(1) opacity(0.65);\n}\n\n.property-selector__mode-btn:hover {\n    background: rgba(255, 255, 255, 0.06);\n    color: #fff;\n}\n\n.property-selector__mode-btn--active {\n    background: rgba(192, 159, 83, 0.16);\n    border-color: rgba(192, 159, 83, 0.4);\n    color: #f0f0f0;\n}\n\n.property-selector__mode-btn--active img {\n    filter: brightness(0) saturate(100%) invert(78%) sepia(24%) saturate(500%) hue-rotate(357deg) brightness(95%);\n}\n\n.property-selector__org-row {\n    position: relative;\n    padding: 8px 12px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.property-selector__org-btn {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    width: 100%;\n    border: none;\n    background: transparent;\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-weight: 600;\n    padding: 4px 2px;\n    cursor: pointer;\n    text-align: left;\n}\n\n.property-selector__org-badge {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 18px;\n    height: 18px;\n    border-radius: 50%;\n    background: #d0463c;\n    color: #fff;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    flex-shrink: 0;\n}\n\n.property-selector__org-name {\n    flex: 1;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__org-list {\n    position: absolute;\n    top: calc(100% + 2px);\n    left: 12px;\n    right: 12px;\n    margin: 0;\n    padding: 4px 0;\n    list-style: none;\n    background: rgba(24, 24, 26, 0.98);\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);\n    max-height: 220px;\n    overflow-y: auto;\n    z-index: 5;\n}\n\n.property-selector__org-list button {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    width: 100%;\n    border: none;\n    background: transparent;\n    color: #e4e4e4;\n    font-size: 0.8125rem;\n    padding: 8px 12px;\n    cursor: pointer;\n    text-align: left;\n}\n\n.property-selector__org-list button:hover {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n}\n\n.property-selector__org-list img {\n    width: 20px;\n    height: 20px;\n    border-radius: 4px;\n    object-fit: contain;\n}\n\n.property-selector__search-row {\n    padding: 10px 12px 8px;\n    border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    background: rgba(0, 0, 0, 0.15);\n}\n\n.property-selector__search {\n    width: 100%;\n    box-sizing: border-box;\n    padding: 8px 10px;\n    border: 1px solid rgba(255, 255, 255, 0.12);\n    border-radius: 8px;\n    background: rgba(0, 0, 0, 0.25);\n    color: #f0f0f0;\n    font-size: 0.8125rem;\n    font-family: inherit;\n}\n\n.property-selector__search::placeholder {\n    color: rgba(255, 255, 255, 0.35);\n}\n\n.property-selector__search:focus {\n    outline: none;\n    border-color: rgba(192, 159, 83, 0.45);\n    box-shadow: 0 0 0 2px rgba(192, 159, 83, 0.15);\n}\n\n.property-selector__tabs {\n    display: flex;\n    gap: 4px;\n    padding: 8px 12px 0;\n}\n\n.property-selector__tab {\n    border: none;\n    background: transparent;\n    color: rgba(255, 255, 255, 0.55);\n    font-size: 0.75rem;\n    font-weight: 600;\n    padding: 6px 10px;\n    border-bottom: 2px solid transparent;\n    cursor: pointer;\n}\n\n.property-selector__tab:hover {\n    color: #fff;\n}\n\n.property-selector__tab--active {\n    color: #c0a053;\n    border-bottom-color: #c0a053;\n}\n\n.property-selector__columns {\n    display: grid;\n    grid-template-columns: 200px 1fr;\n    height: min(60vh, 380px);\n    overflow: hidden;\n}\n\n.property-selector__col {\n    display: flex;\n    flex-direction: column;\n    min-height: 0;\n    border-right: 1px solid rgba(255, 255, 255, 0.08);\n}\n\n.property-selector__col:last-child {\n    border-right: none;\n}\n\n.property-selector__col-title {\n    padding: 10px 14px 6px;\n    font-size: 0.6875rem;\n    font-weight: 700;\n    letter-spacing: 0.06em;\n    text-transform: uppercase;\n    color: rgba(192, 159, 83, 0.85);\n    flex-shrink: 0;\n}\n\n.property-selector__list {\n    margin: 0;\n    padding: 0 6px 8px;\n    list-style: none;\n    overflow-y: auto;\n    flex: 1;\n}\n\n.property-selector__row {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    width: 100%;\n    border: none;\n    background: transparent;\n    color: #e4e4e4;\n    font-size: 0.8125rem;\n    padding: 8px 8px;\n    border-radius: 8px;\n    cursor: pointer;\n    text-align: left;\n    transition: background 0.15s ease, color 0.15s ease;\n}\n\n.property-selector__row:hover {\n    background: rgba(192, 159, 83, 0.14);\n    color: #fff;\n}\n\n.property-selector__row--active {\n    background: rgba(192, 159, 83, 0.2);\n    color: #fff;\n}\n\n.property-selector__ws-icon {\n    width: 22px;\n    height: 22px;\n    flex-shrink: 0;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    border-radius: 6px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    font-size: 0.6875rem;\n    font-weight: 700;\n}\n\n.property-selector__ws-icon--all {\n    background: rgba(255, 255, 255, 0.08);\n    border-color: rgba(255, 255, 255, 0.16);\n    color: rgba(255, 255, 255, 0.8);\n}\n\n.property-selector__row-text {\n    display: flex;\n    flex-direction: column;\n    gap: 1px;\n    min-width: 0;\n}\n\n.property-selector__row-name {\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__row-name--mono {\n    font-family: ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, monospace;\n    flex: 1;\n}\n\n.property-selector__row-sub {\n    font-size: 0.6875rem;\n    color: rgba(192, 159, 83, 0.85);\n    overflow: hidden;\n    text-overflow: ellipsis;\n    white-space: nowrap;\n}\n\n.property-selector__row--domain {\n    justify-content: flex-start;\n}\n\n.property-selector__check {\n    color: #7dd590;\n    font-size: 0.75rem;\n    flex-shrink: 0;\n}\n\n.property-selector__favicon {\n    width: 18px;\n    height: 18px;\n    border-radius: 4px;\n    object-fit: contain;\n    flex-shrink: 0;\n}\n\n.property-selector__verify {\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    width: 16px;\n    height: 16px;\n    border-radius: 50%;\n    font-size: 0.5625rem;\n    font-weight: 700;\n    flex-shrink: 0;\n}\n\n.property-selector__verify--verified {\n    background: rgba(80, 180, 100, 0.2);\n    border: 1px solid rgba(80, 180, 100, 0.4);\n    color: #7dd590;\n}\n\n.property-selector__verify--unverified {\n    background: rgba(220, 160, 60, 0.2);\n    border: 1px solid rgba(220, 160, 60, 0.4);\n    color: #e8c76a;\n}\n\n.property-selector__verify--expired {\n    background: rgba(220, 100, 80, 0.2);\n    border: 1px solid rgba(220, 100, 80, 0.4);\n    color: #f0a8a0;\n}\n\n.property-selector__analytics-badge {\n    color: #7dd590;\n    font-size: 0.5rem;\n    flex-shrink: 0;\n    line-height: 1;\n}\n\n/* Domain has no analytics site key yet — still fully clickable (to open and\n   enable it), just visually de-emphasised so the eye lands on active ones. */\n.property-selector__row--no-analytics {\n    opacity: 0.55;\n}\n\n.property-selector__row--no-analytics:hover {\n    opacity: 0.85;\n}\n\n.property-selector__primary-tag {\n    font-size: 0.5625rem;\n    font-weight: 700;\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n    padding: 2px 5px;\n    border-radius: 3px;\n    background: rgba(192, 159, 83, 0.2);\n    border: 1px solid rgba(192, 159, 83, 0.35);\n    color: #c0a053;\n    flex-shrink: 0;\n}\n\n.property-selector__star {\n    margin-left: auto;\n    border: none;\n    background: transparent;\n    color: rgba(255, 255, 255, 0.3);\n    font-size: 0.9rem;\n    line-height: 1;\n    cursor: pointer;\n    padding: 2px;\n    flex-shrink: 0;\n}\n\n.property-selector__star:hover {\n    color: rgba(192, 159, 83, 0.8);\n}\n\n.property-selector__star--active {\n    color: #c0a053;\n}\n\n.property-selector__empty {\n    padding: 14px 12px;\n    font-size: 0.75rem;\n    color: rgba(255, 255, 255, 0.4);\n    text-align: center;\n}\n\n@media screen and (min-width: 320px) and (max-width: 900px) {\n    .property-selector {\n        width: 100%;\n    }\n\n    .property-selector__trigger {\n        width: 100%;\n        max-width: none;\n    }\n\n    .property-selector__panel {\n        left: 0;\n        right: 0;\n        width: 100%;\n    }\n\n    .property-selector__columns {\n        grid-template-columns: 1fr;\n        grid-auto-rows: min-content;\n        max-height: min(70vh, 480px);\n        overflow-y: auto;\n    }\n\n    .property-selector__col {\n        border-right: none;\n        border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n    }\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -66147,16 +66164,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Functions_domainFavourites_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Functions/domainFavourites.js */ "./src/Functions/domainFavourites.js");
 /* harmony import */ var _icons_dashboard_svg__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./icons/dashboard.svg */ "./src/Components/Header/icons/dashboard.svg");
 /* harmony import */ var _icons_reports_svg__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./icons/reports.svg */ "./src/Components/Header/icons/reports.svg");
+/* harmony import */ var _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Authentication/Auth.js */ "./src/Authentication/Auth.js");
+/* harmony import */ var _API_host_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../API/host.js */ "./src/API/host.js");
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
 
 
 
@@ -66198,6 +66223,60 @@ function verifyBadge(status) {
     className: "property-selector__verify property-selector__verify--".concat(status)
   }, glyph);
 }
+function analyticsBadge(hasAnalytics) {
+  if (!hasAnalytics) return null;
+  return /*#__PURE__*/React.createElement("span", {
+    className: "property-selector__analytics-badge",
+    title: "Analytics installed"
+  }, "\u25CF");
+}
+
+// Which of this org's domains have an active analytics site key — fetched
+// once the panel is relevant (analytics mode) rather than up front, and
+// refreshed each time the panel opens (e.g. right after enabling a site from
+// the setup card elsewhere in the app).
+function useAnalyticsEnabledDomains(orgId, shouldFetch) {
+  var _useState = useState(function () {
+      return new Set();
+    }),
+    _useState2 = _slicedToArray(_useState, 2),
+    domains = _useState2[0],
+    setDomains = _useState2[1];
+  useEffect(function () {
+    if (!orgId || !shouldFetch) return;
+    var cancelled = false;
+    fetch("".concat(_API_host_js__WEBPACK_IMPORTED_MODULE_7__.ScannerHost, "/api/analytics-site?list=1"), {
+      headers: {
+        Authorization: _Authentication_Auth_js__WEBPACK_IMPORTED_MODULE_6__["default"].getToken(),
+        Organisation: String(orgId),
+        "Content-Type": "application/json"
+      }
+    }).then(/*#__PURE__*/function () {
+      var _ref = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee(r) {
+        return _regenerator().w(function (_context) {
+          while (1) switch (_context.n) {
+            case 0:
+              return _context.a(2, r.ok ? r.json() : null);
+          }
+        }, _callee);
+      }));
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }()).then(function (d) {
+      if (cancelled || !(d !== null && d !== void 0 && d.sites)) return;
+      setDomains(new Set(d.sites.filter(function (s) {
+        return s.active;
+      }).map(function (s) {
+        return s.domain;
+      })));
+    })["catch"](function () {});
+    return function () {
+      cancelled = true;
+    };
+  }, [orgId, shouldFetch]);
+  return domains;
+}
 function PropertySelector(props) {
   var _organisation$all;
   var mode = props.mode,
@@ -66210,29 +66289,30 @@ function PropertySelector(props) {
     orgId = props.orgId,
     organisation = props.organisation,
     onSelect = props.onSelect;
-  var _useState = useState(false),
-    _useState2 = _slicedToArray(_useState, 2),
-    isOpen = _useState2[0],
-    setIsOpen = _useState2[1];
-  var _useState3 = useState("all"),
+  var _useState3 = useState(false),
     _useState4 = _slicedToArray(_useState3, 2),
-    activeTab = _useState4[0],
-    setActiveTab = _useState4[1];
-  var _useState5 = useState(""),
+    isOpen = _useState4[0],
+    setIsOpen = _useState4[1];
+  var _useState5 = useState("all"),
     _useState6 = _slicedToArray(_useState5, 2),
-    query = _useState6[0],
-    setQuery = _useState6[1];
-  var _useState7 = useState(false),
+    activeTab = _useState6[0],
+    setActiveTab = _useState6[1];
+  var _useState7 = useState(""),
     _useState8 = _slicedToArray(_useState7, 2),
-    orgMenuOpen = _useState8[0],
-    setOrgMenuOpen = _useState8[1];
-  var _useState9 = useState(function () {
+    query = _useState8[0],
+    setQuery = _useState8[1];
+  var _useState9 = useState(false),
+    _useState0 = _slicedToArray(_useState9, 2),
+    orgMenuOpen = _useState0[0],
+    setOrgMenuOpen = _useState0[1];
+  var _useState1 = useState(function () {
       return (0,_Functions_domainFavourites_js__WEBPACK_IMPORTED_MODULE_3__.getFavouriteDomains)();
     }),
-    _useState0 = _slicedToArray(_useState9, 2),
-    favourites = _useState0[0],
-    setFavourites = _useState0[1];
+    _useState10 = _slicedToArray(_useState1, 2),
+    favourites = _useState10[0],
+    setFavourites = _useState10[1];
   var containerRef = useRef(null);
+  var analyticsDomains = useAnalyticsEnabledDomains(orgId, mode === "analytics" && isOpen);
   useEffect(function () {
     function onClickOutside(e) {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
@@ -66303,7 +66383,8 @@ function PropertySelector(props) {
           type: "workspace-domain",
           name: d.domain,
           isPrimary: d.isPrimary,
-          verificationStatus: getDomainVerificationStatus(d.domain, orgId)
+          verificationStatus: getDomainVerificationStatus(d.domain, orgId),
+          hasAnalytics: analyticsDomains.has(d.domain)
         };
       });
       return [combined].concat(_toConsumableArray(wsDomains));
@@ -66315,10 +66396,11 @@ function PropertySelector(props) {
         type: "domain",
         name: name,
         icon: d.icon || null,
-        verificationStatus: getDomainVerificationStatus(name, orgId)
+        verificationStatus: getDomainVerificationStatus(name, orgId),
+        hasAnalytics: analyticsDomains.has(name)
       };
     });
-  }, [activeWorkspace, domains, orgId]);
+  }, [activeWorkspace, domains, orgId, analyticsDomains]);
   var recent = useMemo(function () {
     return (0,_Functions_domainFavourites_js__WEBPACK_IMPORTED_MODULE_3__.getRecentDomains)();
   }, [isOpen]);
@@ -66336,6 +66418,7 @@ function PropertySelector(props) {
       if (q && !item.name.toLowerCase().includes(q)) return false;
       if (activeTab === "favourites") return favourites.includes(item.name);
       if (activeTab === "recent") return recent.includes(item.name);
+      if (activeTab === "with-analytics") return item.hasAnalytics;
       return true;
     });
   }, [domainItems, query, activeTab, favourites, recent]);
@@ -66481,13 +66564,16 @@ function PropertySelector(props) {
   }, [{
     id: "all",
     label: "All"
-  }, {
+  }].concat(_toConsumableArray(mode === "analytics" ? [{
+    id: "with-analytics",
+    label: "With analytics"
+  }] : []), [{
     id: "favourites",
     label: "Favourites"
   }, {
     id: "recent",
     label: "Recent"
-  }].map(function (tab) {
+  }]).map(function (tab) {
     return /*#__PURE__*/React.createElement("button", {
       key: tab.id,
       type: "button",
@@ -66538,13 +66624,16 @@ function PropertySelector(props) {
   }, filteredDomains.map(function (item) {
     var active = item.name === currentDomain;
     var isFav = favourites.includes(item.name);
+    var isRealDomain = item.type !== "workspace-combined" && item.name !== "combined view";
+    var dimForNoAnalytics = mode === "analytics" && isRealDomain && !item.hasAnalytics;
     return /*#__PURE__*/React.createElement("li", {
       key: item.key
     }, /*#__PURE__*/React.createElement("div", {
-      className: "property-selector__row property-selector__row--domain" + (active ? " property-selector__row--active" : ""),
+      className: "property-selector__row property-selector__row--domain" + (active ? " property-selector__row--active" : "") + (dimForNoAnalytics ? " property-selector__row--no-analytics" : ""),
       onClick: function onClick() {
         return handleDomainClick(item);
-      }
+      },
+      title: dimForNoAnalytics ? "Analytics not set up yet on this domain — click to open and enable it" : undefined
     }, active && /*#__PURE__*/React.createElement("span", {
       className: "property-selector__check",
       "aria-hidden": "true"
@@ -66554,7 +66643,7 @@ function PropertySelector(props) {
       alt: ""
     }) : null, /*#__PURE__*/React.createElement("span", {
       className: "property-selector__row-name property-selector__row-name--mono"
-    }, item.label || item.name), verifyBadge(item.verificationStatus), item.isPrimary && /*#__PURE__*/React.createElement("span", {
+    }, item.label || item.name), mode === "analytics" && isRealDomain && analyticsBadge(item.hasAnalytics), verifyBadge(item.verificationStatus), item.isPrimary && /*#__PURE__*/React.createElement("span", {
       className: "property-selector__primary-tag"
     }, "Primary"), item.type !== "workspace-combined" && item.name !== "combined view" && /*#__PURE__*/React.createElement("button", {
       type: "button",

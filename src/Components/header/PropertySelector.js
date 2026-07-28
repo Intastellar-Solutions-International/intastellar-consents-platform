@@ -11,6 +11,8 @@ import {
 } from "../../Functions/domainFavourites.js";
 import dashboardIcon from "./icons/dashboard.svg";
 import reportsIcon from "./icons/reports.svg";
+import Authentication from "../../Authentication/Auth.js";
+import { ScannerHost } from "../../API/host.js";
 
 const { useState, useEffect, useMemo, useRef } = React;
 
@@ -42,6 +44,44 @@ function verifyBadge(status) {
     );
 }
 
+function analyticsBadge(hasAnalytics) {
+    if (!hasAnalytics) return null;
+    return (
+        <span className="property-selector__analytics-badge" title="Analytics installed">
+            ●
+        </span>
+    );
+}
+
+// Which of this org's domains have an active analytics site key — fetched
+// once the panel is relevant (analytics mode) rather than up front, and
+// refreshed each time the panel opens (e.g. right after enabling a site from
+// the setup card elsewhere in the app).
+function useAnalyticsEnabledDomains(orgId, shouldFetch) {
+    const [domains, setDomains] = useState(() => new Set());
+
+    useEffect(() => {
+        if (!orgId || !shouldFetch) return;
+        let cancelled = false;
+        fetch(`${ScannerHost}/api/analytics-site?list=1`, {
+            headers: {
+                Authorization: Authentication.getToken(),
+                Organisation: String(orgId),
+                "Content-Type": "application/json",
+            },
+        })
+            .then(async (r) => (r.ok ? r.json() : null))
+            .then((d) => {
+                if (cancelled || !d?.sites) return;
+                setDomains(new Set(d.sites.filter((s) => s.active).map((s) => s.domain)));
+            })
+            .catch(() => {});
+        return () => { cancelled = true; };
+    }, [orgId, shouldFetch]);
+
+    return domains;
+}
+
 export default function PropertySelector(props) {
     const {
         mode,
@@ -62,6 +102,7 @@ export default function PropertySelector(props) {
     const [orgMenuOpen, setOrgMenuOpen] = useState(false);
     const [favourites, setFavourites] = useState(() => getFavouriteDomains());
     const containerRef = useRef(null);
+    const analyticsDomains = useAnalyticsEnabledDomains(orgId, mode === "analytics" && isOpen);
 
     useEffect(() => {
         function onClickOutside(e) {
@@ -126,6 +167,7 @@ export default function PropertySelector(props) {
                 name: d.domain,
                 isPrimary: d.isPrimary,
                 verificationStatus: getDomainVerificationStatus(d.domain, orgId),
+                hasAnalytics: analyticsDomains.has(d.domain),
             }));
             return [combined, ...wsDomains];
         }
@@ -137,9 +179,10 @@ export default function PropertySelector(props) {
                 name,
                 icon: d.icon || null,
                 verificationStatus: getDomainVerificationStatus(name, orgId),
+                hasAnalytics: analyticsDomains.has(name),
             };
         });
-    }, [activeWorkspace, domains, orgId]);
+    }, [activeWorkspace, domains, orgId, analyticsDomains]);
 
     const recent = useMemo(() => getRecentDomains(), [isOpen]);
 
@@ -158,6 +201,7 @@ export default function PropertySelector(props) {
             if (q && !item.name.toLowerCase().includes(q)) return false;
             if (activeTab === "favourites") return favourites.includes(item.name);
             if (activeTab === "recent") return recent.includes(item.name);
+            if (activeTab === "with-analytics") return item.hasAnalytics;
             return true;
         });
     }, [domainItems, query, activeTab, favourites, recent]);
@@ -289,6 +333,7 @@ export default function PropertySelector(props) {
                     <div className="property-selector__tabs">
                         {[
                             { id: "all", label: "All" },
+                            ...(mode === "analytics" ? [{ id: "with-analytics", label: "With analytics" }] : []),
                             { id: "favourites", label: "Favourites" },
                             { id: "recent", label: "Recent" },
                         ].map((tab) => (
@@ -356,14 +401,18 @@ export default function PropertySelector(props) {
                                 {filteredDomains.map((item) => {
                                     const active = item.name === currentDomain;
                                     const isFav = favourites.includes(item.name);
+                                    const isRealDomain = item.type !== "workspace-combined" && item.name !== "combined view";
+                                    const dimForNoAnalytics = mode === "analytics" && isRealDomain && !item.hasAnalytics;
                                     return (
                                         <li key={item.key}>
                                             <div
                                                 className={
                                                     "property-selector__row property-selector__row--domain" +
-                                                    (active ? " property-selector__row--active" : "")
+                                                    (active ? " property-selector__row--active" : "") +
+                                                    (dimForNoAnalytics ? " property-selector__row--no-analytics" : "")
                                                 }
                                                 onClick={() => handleDomainClick(item)}
+                                                title={dimForNoAnalytics ? "Analytics not set up yet on this domain — click to open and enable it" : undefined}
                                             >
                                                 {active && (
                                                     <span className="property-selector__check" aria-hidden="true">✓</span>
@@ -372,6 +421,7 @@ export default function PropertySelector(props) {
                                                 <span className="property-selector__row-name property-selector__row-name--mono">
                                                     {item.label || item.name}
                                                 </span>
+                                                {mode === "analytics" && isRealDomain && analyticsBadge(item.hasAnalytics)}
                                                 {verifyBadge(item.verificationStatus)}
                                                 {item.isPrimary && (
                                                     <span className="property-selector__primary-tag">Primary</span>
