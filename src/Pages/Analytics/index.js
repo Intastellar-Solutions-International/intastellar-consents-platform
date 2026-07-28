@@ -401,7 +401,7 @@ export default function SiteAnalytics() {
                     )}
 
                     {showData && (
-                        <div className="sa-dashboard-grid sa-dashboard-grid--overview">
+                        <div className="sa-dashboard-grid sa-dashboard-grid--overview" style={{gridTemplateColumns: data.totals.qualityLeads !== null ? "repeat(5, 1fr)" : "repeat(4, 1fr)"}}>
 
                             <KpiCard className="sa-ga-kpi0"
                                 icon={<IconRadio />}
@@ -435,6 +435,15 @@ export default function SiteAnalytics() {
                                 value={data.countries.length}
                                 sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
                             />
+                            {showData && data.totals.qualityLeads !== null && (
+                                <KpiCard
+                                    icon={<IconTarget />}
+                                    label="Quality leads"
+                                    value={data.totals.qualityLeads.toLocaleString("de-DE")}
+                                    sub="engaged + page/event match (see Settings)"
+                                    variant="live"
+                                />
+                            )}
 
                             <div className="sa-chart-section sa-ga-chart">
                                 <h3 className="sa-chart-section__title">
@@ -469,18 +478,6 @@ export default function SiteAnalytics() {
                                 </table>
                             </div>
 
-                        </div>
-                    )}
-
-                    {showData && data.totals.qualityLeads !== null && (
-                        <div className="sa-lead-kpi-wrap">
-                            <KpiCard
-                                icon={<IconTarget />}
-                                label="Quality leads"
-                                value={data.totals.qualityLeads.toLocaleString("de-DE")}
-                                sub="engaged + page/event match (see Settings)"
-                                variant="live"
-                            />
                         </div>
                     )}
 
