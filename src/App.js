@@ -49,6 +49,9 @@ import DSRDetail from "./Pages/DSR/DSRDetail";
 import AdConnectionsSettings from "./Pages/Settings/AdConnections";
 import AnalyticsScriptSettings from "./Pages/Settings/AnalyticsScript";
 import SiteAnalytics from "./Pages/Analytics";
+import AnalyticsAudience from "./Pages/Analytics/Audience.js";
+import AnalyticsAcquisition from "./Pages/Analytics/Acquisition.js";
+import AnalyticsConsent from "./Pages/Analytics/Consent.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -221,6 +224,21 @@ export default function App() {
                                                     }
                                                 </>}
                                             </div>
+                                        </Route>
+                                        <Route path="/analytics/:handle/audience" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Audience Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsAudience />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/acquisition" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Acquisition Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsAcquisition />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/consent" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Consent Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsConsent />
+                                            </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/marketing" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Channel Analytics" fullPage /> : <ErrorBoundary>

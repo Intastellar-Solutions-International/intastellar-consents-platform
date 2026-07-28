@@ -40604,17 +40604,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__ = __webpack_require__(/*! ./Pages/Settings/AdConnections */ "./src/Pages/Settings/AdConnections/index.js");
 /* harmony import */ var _Pages_Settings_AnalyticsScript__WEBPACK_IMPORTED_MODULE_49__ = __webpack_require__(/*! ./Pages/Settings/AnalyticsScript */ "./src/Pages/Settings/AnalyticsScript/index.js");
 /* harmony import */ var _Pages_Analytics__WEBPACK_IMPORTED_MODULE_50__ = __webpack_require__(/*! ./Pages/Analytics */ "./src/Pages/Analytics/index.js");
-/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_51__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
-/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
-/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
-/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
-/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
+Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Audience.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Acquisition.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Consent.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var _Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_52__ = __webpack_require__(/*! ./Pages/CookieDatabase */ "./src/Pages/CookieDatabase/index.js");
+/* harmony import */ var _Components_TierGate__WEBPACK_IMPORTED_MODULE_53__ = __webpack_require__(/*! ./Components/TierGate */ "./src/Components/TierGate/index.js");
+/* harmony import */ var _Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_54__ = __webpack_require__(/*! ./Components/DevTierSwitcher */ "./src/Components/DevTierSwitcher/index.js");
+/* harmony import */ var _Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__ = __webpack_require__(/*! ./Functions/tier.js */ "./src/Functions/tier.js");
+/* harmony import */ var _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__ = __webpack_require__(/*! ./Functions/storage.js */ "./src/Functions/storage.js");
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
 
 
 
@@ -40683,7 +40689,7 @@ var Redirect = window.ReactRouterDOM.Redirect;
 
 /* import { IntastellarConsentProvider } from "@intastellar/consents-react"; */
 
-var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].getItem("organisation"));
+var OrganisationContext = createContext(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("organisation"));
 var AllOrg = createContext(null);
 var DomainContext = createContext(null);
 var WorkspaceContext = createContext([null, function () {}]);
@@ -40692,7 +40698,7 @@ function App() {
     _useState2 = _slicedToArray(_useState, 2),
     dashboardView = _useState2[0],
     setDashboardView = _useState2[1];
-  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].getItem("organisation") : null),
+  var _useState3 = useState(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("organisation") ? _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("organisation") : null),
     _useState4 = _slicedToArray(_useState3, 2),
     organisation = _useState4[0],
     setOrganisation = _useState4[1];
@@ -40724,7 +40730,7 @@ function App() {
     domainError = _useState12[0],
     setDomainError = _useState12[1];
   var _useState13 = useState(function () {
-      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].getItem("subscription");
+      var cached = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("subscription");
       if (cached) {
         try {
           return JSON.parse(cached);
@@ -40745,14 +40751,14 @@ function App() {
     setId = _useState16[1];
   var navigate = window.ReactRouterDOM.useHistory();
   useEffect(function () {
-    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].getItem("globals");
+    var globals = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("globals");
     var path = window.location.pathname;
     var isApiRoute = path === "/api" || path.startsWith("/api/");
     if (!globals && path !== "/login" && path !== "/" && !isApiRoute) {
       window.location.replace("/login");
     }
   }, []);
-  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].getItem("globals") != null) {
+  if (_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("globals") != null) {
     var _getOrg2;
     var path = window.location.pathname;
     // Only redirect if id is present and not already on dashboard
@@ -40770,7 +40776,7 @@ function App() {
         organisationMember: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId()
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
@@ -40778,15 +40784,15 @@ function App() {
       });
       (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"].Subscription.headers, JSON.stringify({
         user: _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getUserId(),
-        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
+        org_id: (_getOrg = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg === void 0 ? void 0 : _getOrg.id
       })).then(function (data) {
         if (data === "Err_Login_Expired") {
-          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].removeItem("globals");
+          _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].removeItem("globals");
           navigate.push("/login");
           return;
         }
         setSubscriptionStatus(data);
-        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].setItem("subscription", JSON.stringify(data));
+        _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].setItem("subscription", JSON.stringify(data));
       });
       if (id && ((_API$id = _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id]) === null || _API$id === void 0 || (_API$id = _API$id.getDomains) === null || _API$id === void 0 ? void 0 : _API$id.url) != undefined) {
         (0,_Functions_fetch__WEBPACK_IMPORTED_MODULE_17__["default"])(_API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.url, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.method, _API_api__WEBPACK_IMPORTED_MODULE_7__["default"][id].getDomains.headers).then(function (data) {
@@ -40829,7 +40835,7 @@ function App() {
         });
       }
     }, []);
-    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
+    var orgId = (_getOrg2 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg2 === void 0 ? void 0 : _getOrg2.id;
     var isDevOrg = Number(orgId) === 1;
     var hasNoSubscription = (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) === "none" || typeof (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.message) === "string" && subscriptionStatus.message.includes("Subscription not found");
     var subscriptionLoading = !isDevOrg && !hasNoSubscription && (subscriptionStatus === null || subscriptionStatus === void 0 ? void 0 : subscriptionStatus.subscription) == null;
@@ -40858,7 +40864,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -40866,9 +40872,30 @@ function App() {
         dashboardView: dashboardView,
         setDashboardView: setDashboardView
       }) : /*#__PURE__*/React.createElement(_Pages_Dashboard_ferry_Dashboard_js__WEBPACK_IMPORTED_MODULE_9__["default"], null)))), /*#__PURE__*/React.createElement(Route, {
+        path: "/analytics/:handle/audience",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+        minTier: "starter",
+        featureName: "Audience Analytics",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Audience.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()), null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/analytics/:handle/acquisition",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+        minTier: "starter",
+        featureName: "Acquisition Analytics",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Acquisition.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()), null))), /*#__PURE__*/React.createElement(Route, {
+        path: "/analytics/:handle/consent",
+        exact: true
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
+        minTier: "starter",
+        featureName: "Consent Analytics",
+        fullPage: true
+      }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(Object(function webpackMissingModule() { var e = new Error("Cannot find module './Pages/Analytics/Consent.js'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()), null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -40877,7 +40904,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/marketing",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "Channel Analytics",
         fullPage: true
@@ -40886,14 +40913,14 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "starter",
         featureName: "Site Analytics",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Analytics__WEBPACK_IMPORTED_MODULE_50__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/analytics",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "starter",
         featureName: "Site Analytics",
         fullPage: true
@@ -40903,7 +40930,7 @@ function App() {
         style: {
           flex: "1"
         }
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "starter",
         featureName: "Analytics Dashboard",
         fullPage: true
@@ -40924,11 +40951,11 @@ function App() {
         subscriptionStatus: subscriptionStatus
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-organisation"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg3 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg3 === void 0 ? void 0 : _getOrg3.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg4 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg4 === void 0 ? void 0 : _getOrg4.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateOrganisation__WEBPACK_IMPORTED_MODULE_12__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg5 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg5 === void 0 ? void 0 : _getOrg5.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg6 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg6 === void 0 ? void 0 : _getOrg6.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddUser__WEBPACK_IMPORTED_MODULE_13__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/add-domain"
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg7 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg7 === void 0 ? void 0 : _getOrg7.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg8 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg8 === void 0 ? void 0 : _getOrg8.id) === "super-admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg9 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg9 === void 0 ? void 0 : _getOrg9.id) === "manager" ? /*#__PURE__*/React.createElement(_Pages_Settings_AddDomain__WEBPACK_IMPORTED_MODULE_19__["default"], null) : /*#__PURE__*/React.createElement("p", null, "No access"))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-users"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_ViewUsers__WEBPACK_IMPORTED_MODULE_15__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/view-organisations"
@@ -40937,7 +40964,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Settings_UserPreferences__WEBPACK_IMPORTED_MODULE_29__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -40946,7 +40973,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -40955,7 +40982,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -40964,28 +40991,28 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Reports_MarketingReport_ReconcilePage__WEBPACK_IMPORTED_MODULE_38__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/compliance",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "starter",
         featureName: "Compliance Reports",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, domainError ? /*#__PURE__*/React.createElement(_Components_AddDomain_AddDomain__WEBPACK_IMPORTED_MODULE_18__["default"], null) : /*#__PURE__*/React.createElement(_Pages_Compliance__WEBPACK_IMPORTED_MODULE_39__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/view/:handle",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -40994,7 +41021,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Reports",
         fullPage: true
@@ -41003,7 +41030,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -41012,7 +41039,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/user-consents/:uid",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Consent Audit Log",
         fullPage: true
@@ -41021,7 +41048,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/audit-report",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Audit Report",
         fullPage: true
@@ -41030,7 +41057,7 @@ function App() {
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/reconcile",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "Ad Reconciliation",
         fullPage: true
@@ -41038,7 +41065,7 @@ function App() {
         path: "/dashboard"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_PlatformSelector_PlatformSelector__WEBPACK_IMPORTED_MODULE_26__["default"], {
         setId: setId,
-        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
+        platforms: (_JSON$parse = JSON.parse(_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("globals"))) === null || _JSON$parse === void 0 || (_JSON$parse = _JSON$parse.access) === null || _JSON$parse === void 0 ? void 0 : _JSON$parse.type
       }))), /*#__PURE__*/React.createElement(Route, {
         path: "/login",
         exact: true
@@ -41046,56 +41073,56 @@ function App() {
         path: "/auth-login"
       }, /*#__PURE__*/React.createElement(_Login_AuthLogin__WEBPACK_IMPORTED_MODULE_34__["default"], null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/config-gdpr"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "starter",
         featureName: "Jurisdiction Configuration",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_Jurisdiction__WEBPACK_IMPORTED_MODULE_42__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/legal-basis"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "Legal Basis Tracking",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_LegalBasis__WEBPACK_IMPORTED_MODULE_43__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa/:entryId"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA_ROPAEntry__WEBPACK_IMPORTED_MODULE_45__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ropa",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "RoPA Builder",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_ROPA__WEBPACK_IMPORTED_MODULE_44__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr/:requestId",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR_DSRDetail__WEBPACK_IMPORTED_MODULE_47__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/reports/dsr",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('personal') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "personal",
         featureName: "Data Subject Requests",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_DSR__WEBPACK_IMPORTED_MODULE_46__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/blacklist-ip"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg0 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg0 === void 0 ? void 0 : _getOrg0.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg1 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg1 === void 0 ? void 0 : _getOrg1.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_BlacklistIp__WEBPACK_IMPORTED_MODULE_32__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/workspaces"
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, function (_org) {
-        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__["default"].getItem("organisation");
+        var orgRaw = _Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__["default"].getItem("organisation");
         var org = null;
         try {
           org = JSON.parse(orgRaw);
         } catch (_unused4) {/* ignore */}
         var role = (_org = org) !== null && _org !== void 0 && _org.id ? _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation(org.id) : null;
         var isAdminRole = role === "admin" || role === "super-admin";
-        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+        if (!(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('agency-pro')) return /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
           minTier: "agency-pro",
           featureName: "Client Workspaces",
           fullPage: true
@@ -41109,14 +41136,14 @@ function App() {
       }())), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/ad-connections",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "Ad Connections",
         fullPage: true
       }) : /*#__PURE__*/React.createElement(_Pages_Settings_AdConnections__WEBPACK_IMPORTED_MODULE_48__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/analytics-script",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('starter') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "starter",
         featureName: "Analytics Script",
         fullPage: true
@@ -41125,13 +41152,13 @@ function App() {
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/settings/create-user"
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg10 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg10 === void 0 ? void 0 : _getOrg10.id) === "admin" || _Authentication_Auth__WEBPACK_IMPORTED_MODULE_20__["default"].getOrganisationAccessStatusForOrganisation((_getOrg11 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg11 === void 0 ? void 0 : _getOrg11.id) === "super-admin" ? /*#__PURE__*/React.createElement(_Pages_Settings_CreateUser__WEBPACK_IMPORTED_MODULE_33__["default"], null) : null)), /*#__PURE__*/React.createElement(Route, {
         path: "/",
         exact: true
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Login_Login__WEBPACK_IMPORTED_MODULE_4__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/:id/compare",
         exact: true
-      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_54__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_52__["default"], {
+      }, subscriptionLoading ? /*#__PURE__*/React.createElement(_Components_LoadingSpinner_LoadingSpinner__WEBPACK_IMPORTED_MODULE_40__["default"], null) : needsPayment ? /*#__PURE__*/React.createElement(_Components_SubscriptionPlans__WEBPACK_IMPORTED_MODULE_30__["default"], null) : !(0,_Functions_tier_js__WEBPACK_IMPORTED_MODULE_55__.canAccess)('growth') ? /*#__PURE__*/React.createElement(_Components_TierGate__WEBPACK_IMPORTED_MODULE_53__["default"], {
         minTier: "growth",
         featureName: "Portfolio Benchmark",
         fullPage: true
@@ -41146,7 +41173,7 @@ function App() {
       }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, /*#__PURE__*/React.createElement(_Pages_Experiments_Experiments__WEBPACK_IMPORTED_MODULE_35__["default"], null))), /*#__PURE__*/React.createElement(Route, {
         path: "/cookie-database",
         exact: true
-      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_55__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_51__["default"], null) : /*#__PURE__*/React.createElement("p", {
+      }, /*#__PURE__*/React.createElement(_Components_Error_ErrorBoundary__WEBPACK_IMPORTED_MODULE_23__["default"], null, Number((_getOrg12 = (0,_Functions_storage_js__WEBPACK_IMPORTED_MODULE_56__.getOrg)()) === null || _getOrg12 === void 0 ? void 0 : _getOrg12.id) === 1 ? /*#__PURE__*/React.createElement(_Pages_CookieDatabase__WEBPACK_IMPORTED_MODULE_52__["default"], null) : /*#__PURE__*/React.createElement("p", {
         style: {
           padding: "40px",
           color: "#999"
@@ -41165,7 +41192,7 @@ function App() {
       }, /*#__PURE__*/React.createElement("img", {
         src: "https://www.intastellarsolutions.com/assets/logos/intastellar-new-planet.svg",
         className: "crawlerPage-logo"
-      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_53__["default"], null)));
+      }), /*#__PURE__*/React.createElement(_Components_Crawler__WEBPACK_IMPORTED_MODULE_27__["default"], null), /*#__PURE__*/React.createElement("footer", null, /*#__PURE__*/React.createElement("p", null, "Powered by Intastellar Cookie Consents"), /*#__PURE__*/React.createElement("p", null, "\xA9 ", new Date().getFullYear(), " Intastellar Solutions, International")))), /*#__PURE__*/React.createElement(_Components_DevTierSwitcher__WEBPACK_IMPORTED_MODULE_54__["default"], null)));
     }
   } else {
     return /*#__PURE__*/React.createElement(Router, null, /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {

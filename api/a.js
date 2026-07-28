@@ -81,9 +81,14 @@ async function ensureTables(db) {
             device_type     VARCHAR(8),
             screen_width    SMALLINT,
             screen_height   SMALLINT,
+            viewport_width  SMALLINT,
+            viewport_height SMALLINT,
             browser_family  VARCHAR(32),
             os_family       VARCHAR(32),
-            duration_sec    SMALLINT
+            language        VARCHAR(20),
+            timezone        VARCHAR(60),
+            duration_sec    SMALLINT,
+            scroll_depth    SMALLINT
         );
         CREATE INDEX IF NOT EXISTS idx_ae_site       ON analytics_events (site_id);
         CREATE INDEX IF NOT EXISTS idx_ae_org        ON analytics_events (organisation_id);
@@ -117,10 +122,15 @@ async function ensureTables(db) {
     `);
     // Add columns to existing tables that pre-date this schema version
     await db.query(`
-        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_level  VARCHAR(8)  NOT NULL DEFAULT 'minimal';
-        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_stat   BOOLEAN;
-        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_func   BOOLEAN;
-        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_adv    BOOLEAN;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_level    VARCHAR(8)  NOT NULL DEFAULT 'minimal';
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_stat     BOOLEAN;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_func     BOOLEAN;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS consent_adv      BOOLEAN;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS viewport_width   SMALLINT;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS viewport_height  SMALLINT;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS language         VARCHAR(20);
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS timezone         VARCHAR(60);
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS scroll_depth     SMALLINT;
         ALTER TABLE analytics_events ALTER COLUMN session_id DROP NOT NULL;
     `).catch(() => {});
 }
@@ -187,8 +197,20 @@ function getSid(){
 
 function utmp(p){try{return new URLSearchParams(location.search).get(p)||'';}catch(e){return '';}}
 function devType(){var w=screen.width;return w<768?'m':w<1024?'t':'d';}
+function getLang(){try{return(navigator.language||'').slice(0,20);}catch(e){return '';}}
+function getTz(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){return '';}}
 
-var t0=Date.now(),fullFired=false,exitSent=false;
+var t0=Date.now(),fullFired=false,exitSent=false,maxScroll=0;
+
+// Track max scroll depth as a percentage
+(function(){
+  function onScroll(){
+    var h=document.documentElement;
+    var pct=Math.round(((h.scrollTop||document.body.scrollTop)/(h.scrollHeight-h.clientHeight||1))*100);
+    if(pct>maxScroll)maxScroll=Math.min(100,pct);
+  }
+  try{window.addEventListener('scroll',onScroll,{passive:true});}catch(e){}
+})();
 
 function send(payload){
   // sendBeacon is the most reliable cross-site transport — it is not monkey-patched
@@ -223,8 +245,12 @@ function sendFull(c,final){
     ti:(document.title||'').slice(0,200),
     us:utmp('utm_source'),um:utmp('utm_medium'),
     uc:utmp('utm_campaign'),uk:utmp('utm_content'),
-    dt:devType(),sw:screen.width,sh:screen.height,
+    dt:devType(),
+    sw:screen.width,sh:screen.height,
+    vw:window.innerWidth,vh:window.innerHeight,
+    lang:getLang(),tz:getTz(),
     dur:Math.round((Date.now()-t0)/1000),
+    sd:final?maxScroll:undefined,
     cs:hasStat(c)?1:0,
     cf:hasFun(c)?1:0,
     ca:hasAdv(c)?1:0,
@@ -347,7 +373,8 @@ export default async function handler(req, res) {
     }
 
     const { s: siteId, t: eventType, cl: consentLevel, sid, u: rawUrl, r: referrer, ti: title,
-            us, um, uc, uk, dt, sw, sh, dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency } = body;
+            us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd,
+            dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
         return res.status(400).end();
@@ -451,9 +478,11 @@ export default async function handler(req, res) {
               consent_stat, consent_func, consent_adv,
               url, pathname, title, referrer_host,
               utm_source, utm_medium, utm_campaign, utm_content,
-              country_code, region, device_type, screen_width, screen_height,
-              browser_family, os_family, duration_sec)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)`,
+              country_code, region, device_type,
+              screen_width, screen_height, viewport_width, viewport_height,
+              browser_family, os_family, language, timezone,
+              duration_sec, scroll_depth)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27)`,
             [
                 siteId, orgId, String(sid).slice(0, 64),           // $1 $2 $3
                 cs === 1 || cs === true,                            // $4 consent_stat
@@ -466,9 +495,13 @@ export default async function handler(req, res) {
                 (uc || "").slice(0, 255), (uk || "").slice(0, 255), // $13 $14
                 country, region,                                    // $15 $16
                 deviceType,                                         // $17
-                Number(sw) || null, Number(sh) || null,             // $18 $19
-                browser, os,                                        // $20 $21
-                Math.min(Number(dur) || 0, 86400),                  // $22 duration_sec
+                Number(sw) || null, Number(sh) || null,             // $18 $19 screen
+                Number(vw) || null, Number(vh) || null,             // $20 $21 viewport
+                browser, os,                                        // $22 $23
+                (lang || "").slice(0, 20) || null,                  // $24 language
+                (tz   || "").slice(0, 60) || null,                  // $25 timezone
+                Math.min(Number(dur) || 0, 86400),                  // $26 duration_sec
+                (sd != null && sd >= 0 && sd <= 100) ? Number(sd) : null, // $27 scroll_depth
             ]
         ).catch(() => {});
     }

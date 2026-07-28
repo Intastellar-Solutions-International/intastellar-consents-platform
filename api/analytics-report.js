@@ -96,7 +96,7 @@ export default async function handler(req, res) {
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
            browsersRes, consentRes, utmRes, conversionsRes, eventDefsRes,
-           osRes, screensRes] = await Promise.all([
+           osRes, screensRes, languagesRes, timezonesRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -228,9 +228,29 @@ export default async function handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ),
 
+        db.query(`
+            SELECT language, COUNT(*) AS events
+            FROM analytics_events
+            WHERE site_id = $1 AND consent_level = 'full'
+              AND received_at >= $2 AND received_at < $3
+              AND language IS NOT NULL AND language != ''
+            GROUP BY language ORDER BY events DESC LIMIT 15`,
+            [siteId, fromDate, toDateExclusive]
+        ),
+
+        db.query(`
+            SELECT timezone, COUNT(*) AS events
+            FROM analytics_events
+            WHERE site_id = $1 AND consent_level = 'full'
+              AND received_at >= $2 AND received_at < $3
+              AND timezone IS NOT NULL AND timezone != ''
+            GROUP BY timezone ORDER BY events DESC LIMIT 15`,
+            [siteId, fromDate, toDateExclusive]
+        ),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(10).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(14).fill({ rows: [] });
         throw err;
     });
 
@@ -281,6 +301,14 @@ export default async function handler(req, res) {
         screens: screensRes.rows.map(r => ({
             width:  Number(r.screen_width),
             height: Number(r.screen_height),
+            events: Number(r.events || 0),
+        })),
+        languages: languagesRes.rows.map(r => ({
+            lang:   r.language,
+            events: Number(r.events || 0),
+        })),
+        timezones: timezonesRes.rows.map(r => ({
+            tz:     r.timezone,
             events: Number(r.events || 0),
         })),
         consent: (() => {
