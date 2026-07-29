@@ -1867,6 +1867,7 @@ export default function MarketingReconciliationPanel({
     // (#recon-funnel/#recon-utm-sources/#recon-projection) map 1:1 to these
     // tab keys — see the onClick interceptor below the tab strip's mount.
     const [activeTab, setActiveTab] = useState("funnel");
+    const [suggestionsVisible, setSuggestionsVisible] = useState(true);
 
     // Suggestions-strip CTAs link to #recon-* anchors, but that content only
     // exists in the DOM while its tab is active — so intercept the click,
@@ -2556,6 +2557,9 @@ export default function MarketingReconciliationPanel({
                 )}
             </div>
 
+            <div className="recon-layout">
+            <div className="recon-layout__main">
+
             {/* ── Highlights ──────────────────────────────────────────────── */}
             {reconciliationHighlights.items.length > 0 && (
                 <section className="marketing-highlights" aria-labelledby="recon-highlights-heading">
@@ -2615,15 +2619,6 @@ export default function MarketingReconciliationPanel({
                         <span className="recon-stat-card__sub">auto · {fromDate} → {toDate}</span>
                     </div>
                 )}
-            </div>
-
-            {/* ── Suggestions ─────────────────────────────────────────────── */}
-            <div onClick={handleSuggestionsClick}>
-                <MarketingSuggestionsStrip
-                    suggestions={suggestions}
-                    domainKey={`${domainKey}:${selectedPlatform.id}`}
-                    maxVisible={6}
-                />
             </div>
 
             {/* ── Platform filter strip ───────────────────────────────────── */}
@@ -2954,6 +2949,36 @@ export default function MarketingReconciliationPanel({
                     </div>
                 </>
             )}
+
+            </div>
+
+            {/* ── Suggestions (collapsible sidecard) ──────────────────────── */}
+            <aside className="recon-layout__sidebar">
+                <button
+                    type="button"
+                    className="recon-sidecard__toggle"
+                    onClick={() => setSuggestionsVisible((v) => !v)}
+                    aria-expanded={suggestionsVisible}
+                    aria-controls="recon-suggestions-panel"
+                >
+                    <span aria-hidden="true">{suggestionsVisible ? "▾" : "▸"}</span>{" "}
+                    Suggestions
+                    {suggestions.length > 0 && (
+                        <span className="recon-sidecard__count">{suggestions.length}</span>
+                    )}
+                </button>
+                {suggestionsVisible && (
+                    <div id="recon-suggestions-panel" onClick={handleSuggestionsClick}>
+                        <MarketingSuggestionsStrip
+                            suggestions={suggestions}
+                            domainKey={`${domainKey}:${selectedPlatform.id}`}
+                            maxVisible={6}
+                        />
+                    </div>
+                )}
+            </aside>
+
+            </div>
 
             {/* ── Alert settings modal ─────────────────────────────────────── */}
             {/* Overlay, not tab-scoped — rendered unconditionally regardless of activeTab. */}
