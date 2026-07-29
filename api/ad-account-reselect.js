@@ -6,10 +6,12 @@
  * record, and returns { pendingId } so the client can open the existing account picker.
  *
  * Required headers: Authorization: Bearer <token>, Organisation: <org_id>
+ * Required env vars (microsoft_ads only): MICROSOFT_ADS_DEVELOPER_TOKEN
  */
 
 import pkg from "pg";
 const { Pool } = pkg;
+import { fetchMicrosoftAdsAccounts } from "./_ad-platform-fetch.js";
 
 let pool;
 function getPool() {
@@ -192,7 +194,7 @@ async function fetchAllAccounts(platform, accessToken) {
             }
 
             case "microsoft_ads":
-                return [{ id: "default", name: "Microsoft Ads (confirm in dashboard)" }];
+                return await fetchMicrosoftAdsAccounts(accessToken);
 
             default:
                 return [];

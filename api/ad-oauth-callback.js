@@ -6,12 +6,14 @@
  * ad accounts, stores them in a short-lived pending record, then redirects
  * the user to the account picker UI.
  *
- * Required env vars: same as ad-oauth-start.js plus POSTGRES_URL
+ * Required env vars: same as ad-oauth-start.js plus POSTGRES_URL, and
+ *   MICROSOFT_ADS_DEVELOPER_TOKEN — required to list Microsoft Ads accounts
  */
 
 import pkg from "pg";
 const { Pool } = pkg;
 import { createHmac } from "crypto";
+import { fetchMicrosoftAdsAccounts } from "./_ad-platform-fetch.js";
 
 let pool;
 function getPool() {
@@ -236,10 +238,8 @@ async function fetchAllAccounts(platform, accessToken) {
                 return accounts;
             }
 
-            case "microsoft_ads": {
-                // Microsoft Ads uses a SOAP API; token is valid — let the user confirm manually
-                return [{ id: "default", name: "Microsoft Ads (confirm in dashboard)" }];
-            }
+            case "microsoft_ads":
+                return await fetchMicrosoftAdsAccounts(accessToken);
 
             default:
                 return [];

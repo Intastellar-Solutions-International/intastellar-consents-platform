@@ -7,6 +7,9 @@
  * tryRefreshToken(db, conn)                → conn (possibly with updated access_token)
  * fetchGoogleAdsUtmSources(conn)           → string[] of literal utm_source values found in this
  *                                            Google Ads account's tracking templates/custom params
+ * fetchMicrosoftAdsAccounts(accessToken)    → [{id, name, currency}] via the SOAP Customer Management
+ *                                            Service (v13) — untested against a live account, see the
+ *                                            function's own doc comment
  */
 
 export async function tryRefreshToken(db, conn) {
@@ -215,6 +218,100 @@ export async function fetchGoogleAdsUtmSources(conn) {
     }
 
     return Array.from(found);
+}
+
+// ── Microsoft Advertising: Customer Management Service (SOAP) ────────────────
+// Unlike every other platform here, Microsoft Advertising has no REST
+// endpoint for account discovery — only the SOAP-based Customer Management
+// Service (v13). No XML parsing library is added for this (matches the rest
+// of this file's dependency-light style, e.g. fetchGoogleAdsUtmSources'
+// regex-based parsing above); responses are picked apart with targeted
+// regexes for the documented v13 response shape instead. This has NOT been
+// verified against a live account — Microsoft's SOAP APIs are notoriously
+// strict about exact envelope/namespace formatting, so the first real call
+// against a connected account may need a debugging pass. Errors are
+// deliberately surfaced with the raw fault text (never silently swallowed to
+// an empty array) so that pass has something to go on.
+const MS_ADS_SOAP_NS = "https://bingads.microsoft.com/Customer/v13";
+const MS_ADS_ENDPOINT = "https://clientcenter.api.bingads.microsoft.com/CustomerManagement/v13/CustomerManagementService.svc";
+
+async function msAdsSoapCall(action, bodyXml, accessToken) {
+    const devToken = process.env.MICROSOFT_ADS_DEVELOPER_TOKEN || "";
+    const envelope = `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header>
+    <AuthenticationToken xmlns="${MS_ADS_SOAP_NS}">${accessToken}</AuthenticationToken>
+    <DeveloperToken xmlns="${MS_ADS_SOAP_NS}">${devToken}</DeveloperToken>
+  </soap:Header>
+  <soap:Body>${bodyXml}</soap:Body>
+</soap:Envelope>`;
+
+    const resp = await fetch(MS_ADS_ENDPOINT, {
+        method: "POST",
+        headers: {
+            "Content-Type": "text/xml; charset=utf-8",
+            SOAPAction: `"${MS_ADS_SOAP_NS}/ICustomerManagementService/${action}"`,
+        },
+        body: envelope,
+    });
+    const text = await resp.text();
+    if (!resp.ok) {
+        const faultMsg = /<faultstring>([^<]*)<\/faultstring>/i.exec(text)?.[1]
+            || /<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/i.exec(text)?.[1]
+            || `Microsoft Ads API error (${resp.status}): ${text.slice(0, 300)}`;
+        throw new Error(faultMsg);
+    }
+    return text;
+}
+
+function xmlTag(xml, tag) {
+    const m = new RegExp(`<(?:\\w+:)?${tag}(?:\\s[^>]*)?>([^<]*)<\\/(?:\\w+:)?${tag}>`, "i").exec(xml);
+    return m ? m[1] : null;
+}
+
+export async function fetchMicrosoftAdsAccounts(accessToken) {
+    // 1. Resolve the authenticated user's UserId (required by SearchAccounts below)
+    const userXml = await msAdsSoapCall(
+        "GetUser",
+        `<GetUserRequest xmlns="${MS_ADS_SOAP_NS}"><UserId i:nil="true"/></GetUserRequest>`,
+        accessToken
+    );
+    const userId = xmlTag(userXml, "Id");
+    if (!userId) throw new Error(`Could not resolve Microsoft Advertising user from GetUser response: ${userXml.slice(0, 300)}`);
+
+    // 2. Every account this user has access to
+    const searchXml = await msAdsSoapCall(
+        "SearchAccounts",
+        `<SearchAccountsRequest xmlns="${MS_ADS_SOAP_NS}">
+            <PageInfo><Index>0</Index><Size>1000</Size></PageInfo>
+            <Predicates>
+                <Predicate><Field>UserId</Field><Operator>Equals</Operator><Value>${userId}</Value></Predicate>
+            </Predicates>
+        </SearchAccountsRequest>`,
+        accessToken
+    );
+
+    const accounts = [];
+    const accountBlocks = searchXml.match(/<AdvertiserAccount[^>]*>[\s\S]*?<\/AdvertiserAccount>/gi) || [];
+    for (const block of accountBlocks) {
+        const id = xmlTag(block, "Id");
+        if (!id) continue;
+        const name = xmlTag(block, "Name");
+        const number = xmlTag(block, "AccountNumber") || xmlTag(block, "Number");
+        const currency = xmlTag(block, "CurrencyCode");
+        accounts.push({
+            id,
+            name: name || (number ? `Account ${number}` : `Account ${id}`),
+            currency: currency || null,
+        });
+    }
+    if (accounts.length === 0) {
+        // Zero accounts on an otherwise-successful call is more likely a
+        // parsing mismatch than a genuinely account-less user — log the raw
+        // shape so a live debugging pass has something concrete to work from.
+        console.warn("[fetchMicrosoftAdsAccounts] SearchAccounts returned no parseable AdvertiserAccount blocks:", searchXml.slice(0, 500));
+    }
+    return accounts;
 }
 
 async function fetchMetaAds(conn, fromDate, toDate) {
