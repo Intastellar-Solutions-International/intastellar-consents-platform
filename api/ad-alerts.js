@@ -169,10 +169,12 @@ export default async function handler(req, res) {
         // ── GET ───────────────────────────────────────────────────────────────
         if (req.method === "GET") {
             const domain = cleanDomain(req.query.domain);
-            if (!domain) return res.status(400).json({ error: "domain is required" });
             const resource = req.query.resource;
 
             if (resource === "rules") {
+                // Rules are genuinely per-domain (ad_alert_rules is keyed on
+                // organisation_id+domain+rule_type) — a domain is required here.
+                if (!domain) return res.status(400).json({ error: "domain is required" });
                 const { rows } = await db.query(
                     `SELECT * FROM ad_alert_rules
                       WHERE organisation_id = $1 AND domain = $2
@@ -196,13 +198,18 @@ export default async function handler(req, res) {
             }
 
             if (resource === "notifications") {
+                // Domain is optional here — the header's NotificationCenter bell
+                // intentionally fetches org-wide (no domain selected), while the
+                // Reconciliation panel fetches scoped to one domain. Only filter
+                // by domain when one was actually provided.
                 const limit = Math.min(50, parseInt(req.query.limit || "20", 10));
+                const params = domain ? [orgId, domain, limit] : [orgId, limit];
                 const { rows } = await db.query(
                     `SELECT * FROM ad_notifications
-                      WHERE organisation_id = $1 AND domain = $2
+                      WHERE organisation_id = $1 ${domain ? "AND domain = $2" : ""}
                       ORDER BY created_at DESC
-                      LIMIT $3`,
-                    [orgId, domain, limit]
+                      LIMIT $${domain ? 3 : 2}`,
+                    params
                 );
                 const unread = rows.filter(r => !r.read_at).length;
                 return res.json({ notifications: rows, unread });

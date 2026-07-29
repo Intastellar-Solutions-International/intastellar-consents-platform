@@ -40,7 +40,7 @@ function NotificationCenter() {
             if (!resp.ok) return;
             const data = await resp.json();
             setNotifications(data.notifications || []);
-            setUnread(data.unreadCount || 0);
+            setUnread(data.unread || 0);
         } catch {}
     }, [authToken, orgId]);
 
