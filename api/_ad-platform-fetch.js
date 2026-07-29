@@ -7,6 +7,8 @@
  * tryRefreshToken(db, conn)                → conn (possibly with updated access_token)
  * fetchGoogleAdsUtmSources(conn)           → string[] of literal utm_source values found in this
  *                                            Google Ads account's tracking templates/custom params
+ * fetchGoogleAdsCampaigns(conn, from, to)   → [{id, name, status, channelType, clicks, impressions,
+ *                                            spend, currency}] per-campaign, live (not cached)
  * fetchMicrosoftAdsAccounts(accessToken)    → [{id, name, currency}] via the SOAP Customer Management
  *                                            Service (v13) — untested against a live account, see the
  *                                            function's own doc comment
@@ -218,6 +220,83 @@ export async function fetchGoogleAdsUtmSources(conn) {
     }
 
     return Array.from(found);
+}
+
+// ── Google Ads per-campaign performance (real campaign names, not UTM guesses) ─
+// Unlike fetchGoogleAds/fetchGoogleAdsDaily (account-wide totals) this groups
+// by campaign.id so callers get actual campaign names + metrics straight from
+// the platform, for the "campaign data from ad channels" panel — a strictly
+// more trustworthy source than matching utm_campaign strings from consent/
+// analytics rows, since it can't be broken by inconsistent UTM tagging.
+export async function fetchGoogleAdsCampaigns(conn, fromDate, toDate) {
+    if (!conn.account_id) throw new Error("No Google Ads customer ID linked.");
+    const customerId = conn.account_id.replace(/\D/g, "");
+    const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+    const headers = {
+        Authorization: `Bearer ${conn.access_token}`,
+        "developer-token": devToken,
+        "Content-Type": "application/json",
+    };
+    if (conn.login_customer_id) headers["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
+
+    const resp = await fetch(
+        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
+        {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                query: `
+                    SELECT campaign.id, campaign.name, campaign.status, campaign.advertising_channel_type,
+                           metrics.clicks, metrics.cost_micros, metrics.impressions
+                    FROM campaign
+                    WHERE segments.date BETWEEN '${fromDate}' AND '${toDate}'
+                      AND campaign.status != 'REMOVED'
+                `,
+            }),
+        }
+    );
+    if (!resp.ok) {
+        const raw = await resp.text().catch(() => "");
+        let err = {};
+        try { err = JSON.parse(raw); } catch {}
+        throw new Error(err?.error?.message || `Google Ads API error (${resp.status}): ${raw.slice(0, 200)}`);
+    }
+    const data = await resp.json();
+    const byCampaign = new Map();
+    for (const row of (data.results || [])) {
+        const id = row.campaign?.id;
+        if (id == null) continue;
+        const key = String(id);
+        if (!byCampaign.has(key)) {
+            byCampaign.set(key, {
+                id: key,
+                name: row.campaign?.name || `Campaign ${key}`,
+                status: row.campaign?.status || null,
+                channelType: row.campaign?.advertisingChannelType ?? row.campaign?.advertising_channel_type ?? null,
+                clicks: 0,
+                impressions: 0,
+                spendMicros: 0,
+            });
+        }
+        const c = byCampaign.get(key);
+        c.clicks      += Number(row.metrics?.clicks || 0);
+        c.spendMicros += Number(row.metrics?.costMicros ?? row.metrics?.cost_micros ?? 0);
+        c.impressions += Number(row.metrics?.impressions || 0);
+    }
+
+    const currency = conn.account_currency || "EUR";
+    return Array.from(byCampaign.values())
+        .map(c => ({
+            id: c.id,
+            name: c.name,
+            status: c.status,
+            channelType: c.channelType,
+            clicks: c.clicks,
+            impressions: c.impressions,
+            spend: +(c.spendMicros / 1_000_000).toFixed(2),
+            currency,
+        }))
+        .sort((a, b) => b.spend - a.spend);
 }
 
 // ── Microsoft Advertising: Customer Management Service (SOAP) ────────────────

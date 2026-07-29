@@ -17,7 +17,6 @@ import {
     MarketingOverviewCharts,
     MarketingChannelCharts,
     MarketingTimeseriesChart,
-    Ga4SessionsChart,
 } from "./MarketingCharts.js";
 import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
 import { buildInvisibleTrafficSuggestions } from "./marketingSuggestions.js";
@@ -1621,11 +1620,12 @@ export default function MarketingReport() {
     const [timeseriesLoading, setTimeseriesLoading] = useState(false);
     const [timeseriesError, setTimeseriesError] = useState(null);
 
-    const [ga4DailyRows, setGa4DailyRows] = useState(null);
-    const [ga4PlatformBreakdown, setGa4PlatformBreakdown] = useState(null);
+    // Only the aggregate summary is kept here — the full GA4 sessions/
+    // channel-breakdown chart moved to its own Analytics page (Ga4SessionsChart,
+    // now in src/Pages/Analytics/GoogleAnalyticsChart.js). This page still needs
+    // ga4Summary.sessions for the lightweight "GA4 consent coverage" / "dark
+    // zone" highlight cards below, which are specific to this reconciliation view.
     const [ga4Summary, setGa4Summary] = useState(null);
-    const [ga4ChannelBreakdown, setGa4ChannelBreakdown] = useState(null);
-    const [ga4Syncing, setGa4Syncing] = useState(false);
 
     const endpoint = API[id]?.marketingAttribution;
     const timeseriesEndpoint = API[id]?.marketingAttributionTimeseries;
@@ -1876,15 +1876,11 @@ export default function MarketingReport() {
         if (!fromYmd || !toYmd2) return;
 
         let cancelled = false;
-        setGa4Syncing(true);
-        setGa4DailyRows(null);
-        setGa4PlatformBreakdown(null);
         setGa4Summary(null);
-        setGa4ChannelBreakdown(null);
 
         const headers = { Authorization: authToken, Organisation: String(orgId) };
 
-        // Check if GA4 is connected for this domain, then fetch daily data
+        // Check if GA4 is connected for this domain, then fetch its summary
         fetch(`${ScannerHost}/api/ad-connections?domain=${encodeURIComponent(domain)}`, { headers })
             .then(r => r.ok ? r.json() : null)
             .then(data => {
@@ -1892,20 +1888,16 @@ export default function MarketingReport() {
                 const hasGa4 = (data?.connections || []).some(
                     c => c.platform === "google_analytics" && c.account_id
                 );
-                if (!hasGa4) { setGa4Syncing(false); return; }
+                if (!hasGa4) return;
                 const qs = `platform=google_analytics&domain=${encodeURIComponent(domain)}&fromDate=${fromYmd}&toDate=${toYmd2}`;
                 return fetch(`${ScannerHost}/api/ad-daily-data?${qs}`, { headers })
                     .then(r => r.ok ? r.json() : null)
                     .then(daily => {
                         if (cancelled) return;
-                        if (daily?.rows?.length)       setGa4DailyRows(daily.rows);
-                        if (daily?.platformBreakdown)  setGa4PlatformBreakdown(daily.platformBreakdown);
-                        if (daily?.summary)            setGa4Summary(daily.summary);
-                        if (daily?.channelBreakdown)   setGa4ChannelBreakdown(daily.channelBreakdown);
+                        if (daily?.summary) setGa4Summary(daily.summary);
                     });
             })
-            .catch(() => {})
-            .finally(() => { if (!cancelled) setGa4Syncing(false); });
+            .catch(() => {});
 
         return () => { cancelled = true; };
     }, [listDomainLabel, fromDate, toDate]);
@@ -2788,19 +2780,6 @@ export default function MarketingReport() {
                             three choice columns.
                         </p>
                     ) : null}
-
-                    {/* ── GA4 card ─────────────────────────────────────────── */}
-                    {(ga4DailyRows?.length > 0 || ga4Syncing) && (
-                        <Ga4SessionsChart
-                            rows={ga4DailyRows || []}
-                            platformBreakdown={ga4PlatformBreakdown}
-                            summary={ga4Summary}
-                            channelBreakdown={ga4ChannelBreakdown}
-                            totalConsents={totalConsents}
-                            channelOverview={channelOverview}
-                            syncing={ga4Syncing}
-                        />
-                    )}
 
                     {/* ── Channel charts (overview or drill-in) ───────────── */}
                     {!error && rows.length > 0 ? (

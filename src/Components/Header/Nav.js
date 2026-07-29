@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsConversionsPath, analyticsAdSpendPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsConversionsPath, analyticsAdSpendPath, analyticsGoogleAnalyticsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -27,6 +27,7 @@ import recordingsIcon from "./icons/recordings.svg";
 import botsIcon from "./icons/bots.svg";
 import conversionsIcon from "./icons/conversions.svg";
 import adSpendIcon from "./icons/ad-spend.svg";
+import googleAnalyticsIcon from "./icons/google-analytics.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -49,8 +50,9 @@ export default function Nav() {
         const botsPath        = analyticsBotsPath(currentDomain);
         const conversionsPath = analyticsConversionsPath(currentDomain);
         const adSpendPath     = analyticsAdSpendPath(currentDomain);
+        const googleAnalyticsPath = analyticsGoogleAnalyticsPath(currentDomain);
 
-        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend"].find(s => path.includes(s));
+        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend", "/google-analytics"].find(s => path.includes(s));
         const overviewActive    = path.indexOf("/analytics") === 0 && !sub;
         const audienceActive    = sub === "/audience";
         const acquisitionActive = sub === "/acquisition";
@@ -61,6 +63,7 @@ export default function Nav() {
         const botsActive        = sub === "/bots";
         const conversionsActive = sub === "/conversions";
         const adSpendActive     = sub === "/ad-spend";
+        const googleAnalyticsActive = sub === "/google-analytics";
 
         return (
             <>
@@ -106,6 +109,10 @@ export default function Nav() {
                             <Link className={"navItems" + (adSpendActive ? " --active" : "")} to={adSpendPath}>
                                 <i className="dashboard-icons ad-spend" style={{ backgroundImage: `url(${adSpendIcon})` }} data-icon={adSpendIcon}></i>
                                 <span className="hiddenCollapsed">Ad Spend</span>
+                            </Link>
+                            <Link className={"navItems" + (googleAnalyticsActive ? " --active" : "")} to={googleAnalyticsPath}>
+                                <i className="dashboard-icons google-analytics" style={{ backgroundImage: `url(${googleAnalyticsIcon})` }} data-icon={googleAnalyticsIcon}></i>
+                                <span className="hiddenCollapsed">Google Analytics</span>
                             </Link>
                             <section className="navItems--bottom">
                                 <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}>

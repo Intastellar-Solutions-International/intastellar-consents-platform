@@ -143,6 +143,23 @@ function detectBot(ua) {
     return null;
 }
 
+// Local/dev-machine traffic — a site owner (or their team) previewing the
+// site on localhost, a LAN dev server, or a Bonjour/mDNS ".local" hostname.
+// Checked against the hostname the embed actually ran on (`pageHostSanitized`,
+// i.e. location.hostname — never includes a port), not the site's registered
+// domain, so this catches "example.com" being previewed at localhost:3000
+// during development without needing any site-level configuration.
+function isDevOrLocalHost(host) {
+    if (!host) return false;
+    if (host === "localhost" || host === "0.0.0.0" || host === "::1") return true;
+    if (host.endsWith(".local")) return true;
+    if (/^127\./.test(host)) return true;          // loopback
+    if (/^10\./.test(host)) return true;            // private LAN
+    if (/^192\.168\./.test(host)) return true;      // private LAN
+    if (/^172\.(1[6-9]|2\d|3[01])\./.test(host)) return true; // private LAN
+    return false;
+}
+
 // Full href or bare pathname, depending on event type — bot-checking happens
 // before we know which branch a request will take, so this needs to handle both.
 function extractPathnameLoose(rawUrl) {
@@ -796,6 +813,17 @@ export default async function handler(req, res) {
 
     const deviceType = dt === "m" ? "mobile" : dt === "t" ? "tablet" : "desktop";
     const pageHostSanitized = pageHost ? String(pageHost).slice(0, 255).toLowerCase() || null : null;
+
+    // ── Local/dev traffic — dropped entirely, not even logged. Unlike bots
+    // (which are real traffic worth counting somewhere, just not as a "visit")
+    // a request from localhost/a LAN dev server/a .local hostname is someone's
+    // own machine previewing the site, not a visitor — there's no analytics
+    // value in keeping a record of it. Checked before the bot lookup since
+    // it's the cheaper check and conceptually more fundamental (this traffic
+    // isn't a "visit" at all, automated or not).
+    if (isDevOrLocalHost(pageHostSanitized)) {
+        return res.status(202).end();
+    }
 
     // ── Bot / crawler traffic — logged separately, never counted as a real
     // visit. Checked before any of the branches below (minimal pageviews fire

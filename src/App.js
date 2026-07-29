@@ -57,6 +57,7 @@ import AnalyticsRecordings, { AnalyticsRecordingDetail } from "./Pages/Analytics
 import AnalyticsBots from "./Pages/Analytics/Bots.js";
 import AnalyticsConversionsOverview from "./Pages/Analytics/ConversionsOverview.js";
 import AnalyticsAdSpend from "./Pages/Analytics/AdSpend.js";
+import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -288,6 +289,16 @@ export default function App() {
                                         <Route path="/analytics/ad-spend" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Spend" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsAdSpend />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/google-analytics" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Google Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsGoogleAnalytics />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/google-analytics" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Google Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsGoogleAnalytics />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle" exact>
