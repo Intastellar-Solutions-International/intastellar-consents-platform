@@ -233,7 +233,7 @@ export async function fetchGoogleAdsUtmSources(conn) {
 // deliberately surfaced with the raw fault text (never silently swallowed to
 // an empty array) so that pass has something to go on.
 const MS_ADS_SOAP_NS = "https://bingads.microsoft.com/Customer/v13";
-const MS_ADS_ENDPOINT = "https://clientcenter.api.bingads.microsoft.com/CustomerManagement/v13/CustomerManagementService.svc";
+const MS_ADS_ENDPOINT = "https://clientcenter.api.bingads.microsoft.com/Api/CustomerManagement/v13/CustomerManagementService.svc";
 
 async function msAdsSoapCall(action, bodyXml, accessToken) {
     const devToken = process.env.MICROSOFT_ADS_DEVELOPER_TOKEN || "";
