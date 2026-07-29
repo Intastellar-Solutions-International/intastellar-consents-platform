@@ -354,6 +354,13 @@ async function ensureTables(db) {
 // Snippet format: <script src=".../api/a" data-site="SITEKEY" async defer></script>
 const EMBED_SCRIPT = `(function(){
 'use strict';
+// Our own cookie-compliance scanner runs headless Chrome with a normal
+// desktop UA (see api/_scan-core.js) so target sites see it like a real
+// visitor — UA-based bot detection on the server can't tell it apart from
+// one. It sets this flag on the page before any other script runs specifically
+// so first-party scripts can recognise it, so bail out here before doing
+// anything at all: scan runs should never appear in the dashboard as traffic.
+try{if(window.__ICS_SCAN__)return;}catch(e){}
 var CK='IntastellarConsentSolution';
 // document.currentScript is null for async/defer scripts (per spec).
 // Walk all script tags as a fallback so GTM-injected or deferred embeds still work.
