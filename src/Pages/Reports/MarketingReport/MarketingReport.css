@@ -1501,6 +1501,47 @@
 }
 
 /*
+ * --- Reconciliation content tabs ----------------------------------------
+ * Same pattern as .compliance-transfers__tab (Pages/Compliance/Style.css) —
+ * no shared <Tabs> component exists in this app, so this mirrors that one
+ * rather than inventing a new idiom.
+ */
+
+.recon-tabs {
+    display: flex;
+    gap: 2px;
+    margin: 4px 0 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.recon-tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px 10px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.recon-tab:hover {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.recon-tab.--active {
+    color: rgba(255, 255, 255, 0.88);
+    border-bottom-color: #c0a053;
+}
+
+/*
  * --- Suggestions strip ------------------------------------------------
  *
  * Sits between the KPI grid and the reconciliation panel. Visually quieter

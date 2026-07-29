@@ -1132,6 +1132,46 @@ function SnapshotComboChart({ snapshots }) {
     );
 }
 
+/* ─── wilsonMarginOfError ────────────────────────────────────────────────── */
+// ± percentage-point margin of error (95% confidence by default) for a
+// proportion successes/total, via the Wilson score interval. Used so a
+// percentage computed from a handful of consents (e.g. 31% from 13) doesn't
+// read as equally trustworthy as the same percentage from thousands — the
+// one existing precedent for this kind of rigor in the codebase is
+// Experiments.js's twoProportionZ/classifySignificance (a *two*-sample test,
+// for comparing variants — not applicable here since reconciliation isn't
+// comparing two groups, just asking "how much should I trust this one
+// number"), so this is new, purpose-built math rather than a reused import.
+function wilsonMarginOfError(successes, total, z = 1.96) {
+    if (!total || total <= 0) return null;
+    const p = Math.max(0, Math.min(1, successes / total));
+    const z2 = z * z;
+    const denom = 1 + z2 / total;
+    const margin = (z * Math.sqrt((p * (1 - p)) / total + z2 / (4 * total * total))) / denom;
+    return margin * 100;
+}
+
+const WIDE_MARGIN_PP = 15;
+const SEVERITY_RANK = { critical: 0, high: 1, medium: 2, low: 3 };
+
+// Mutates a not-yet-pushed suggestion in place: adds sampleSize/marginOfErrorPp
+// to its evidence always, and — only when the margin is wide enough that the
+// headline percentage isn't a reliable signal — caps severity at "medium" and
+// appends a caveat sentence. Never suppresses the finding entirely; the user
+// asked for the uncertainty to be surfaced, not hidden.
+function applyConfidenceCaveat(suggestion, successes, total) {
+    const margin = wilsonMarginOfError(successes, total);
+    if (margin == null) return suggestion;
+    suggestion.evidence = { ...suggestion.evidence, sampleSize: total, marginOfErrorPp: Math.round(margin) };
+    if (margin > WIDE_MARGIN_PP) {
+        if ((SEVERITY_RANK[suggestion.severity] ?? 9) < SEVERITY_RANK.medium) {
+            suggestion.severity = "medium";
+        }
+        suggestion.body += ` Based on only ${formatInt(total)} consents (±${Math.round(margin)} points at 95% confidence) — treat this as directional until volume grows.`;
+    }
+    return suggestion;
+}
+
 /* ─── computeInsights ────────────────────────────────────────────────────── */
 
 // Returns { suggestions, goodNotes }: `suggestions` feeds MarketingSuggestionsStrip
@@ -1142,6 +1182,7 @@ function computeInsights({
     hasClicks, hasSpend,
     visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
     costPerVisible, numConsents, numVisible, spendNum, currency,
+    clicksNum, scopeConsents,
     darkTrafficPct, darkConsents, darkTrafficTotal,
     selectedPlatform, filterActive,
 }) {
@@ -1152,46 +1193,46 @@ function computeInsights({
     // 1. UTM dark traffic (scope-level, always shown when significant)
     if (darkTrafficPct != null && darkTrafficTotal >= 20) {
         if (darkTrafficPct > 50) {
-            suggestions.push({
+            suggestions.push(applyConfidenceCaveat({
                 id: `dark-traffic:${platformId}`,
                 severity: "critical",
                 title: `${formatPct(darkTrafficPct, 0)} of traffic is untagged`,
                 body: `${formatInt(darkConsents)} of ${formatInt(darkTrafficTotal)} consents have no utm_source and can't be attributed to any platform or campaign. This level of dark traffic means your ROAS figures are based on a fraction of actual conversions. Review UTM tagging across all channels — especially brand, direct, and email campaigns.`,
                 action: { label: "Review traffic sources", href: "#recon-utm-sources" },
                 evidence: { darkTrafficPct: Math.round(darkTrafficPct), darkConsents, darkTrafficTotal },
-            });
+            }, darkConsents, darkTrafficTotal));
         } else if (darkTrafficPct > 25) {
-            suggestions.push({
+            suggestions.push(applyConfidenceCaveat({
                 id: `dark-traffic:${platformId}`,
                 severity: "high",
                 title: `${formatPct(darkTrafficPct, 0)} untagged traffic`,
                 body: `${formatInt(darkConsents)} consents have no utm_source. Some dark traffic is expected (direct, bookmarks) but above 25% usually signals incomplete UTM tagging on campaigns or landing pages. Use a UTM builder and audit your campaign links.`,
                 action: { label: "Review traffic sources", href: "#recon-utm-sources" },
                 evidence: { darkTrafficPct: Math.round(darkTrafficPct), darkConsents, darkTrafficTotal },
-            });
+            }, darkConsents, darkTrafficTotal));
         }
     }
 
     // 2. Analytics visibility vs 65% benchmark
     if (hasClicks && visibilityOfConsentsPct != null) {
         if (visibilityOfConsentsPct < 40) {
-            suggestions.push({
+            suggestions.push(applyConfidenceCaveat({
                 id: `visibility-benchmark:${platformId}`,
                 severity: "critical",
                 title: `Only ${formatPct(visibilityOfConsentsPct, 0)} analytics visibility`,
-                body: `Fewer than 4 in 10 consents from this campaign appear in your analytics tools — well below the typical 65–75% range. At this level your reported ROAS is likely 2–3× overstated. Check banner placement on ad landing pages, review your consent category setup, and consider A/B testing the banner UX.`,
-                action: { label: "See what closing the gap would cost", href: "#recon-projection" },
+                body: `Fewer than 4 in 10 consents from this campaign appear in your analytics tools — well below the typical 65–75% range. At this level your reported ROAS is likely 2–3× overstated. Try leading the banner with the value exchange ("personalise your experience") instead of a compliance-only framing, reduce the number of pre-checked categories, or check that banner placement isn't obstructed on ad landing pages.`,
+                action: { label: "Test a banner variant", href: "/experiments" },
                 evidence: { visibilityOfConsentsPct: Math.round(visibilityOfConsentsPct), benchmarkPct: 65 },
-            });
+            }, numVisible, numConsents));
         } else if (visibilityOfConsentsPct < 65) {
-            suggestions.push({
+            suggestions.push(applyConfidenceCaveat({
                 id: `visibility-benchmark:${platformId}`,
                 severity: "high",
                 title: `Below-benchmark visibility (${formatPct(visibilityOfConsentsPct, 0)})`,
-                body: `Typical analytics visibility sits at 65–75%. Closing the gap increases measurable reach without extra spend. The projection table below shows the exact cost reduction you'd see at each target visibility rate.`,
-                action: { label: "See what closing the gap would cost", href: "#recon-projection" },
+                body: `Typical analytics visibility sits at 65–75%. Closing the gap increases measurable reach without extra spend — try testing a banner variant with clearer, shorter copy or fewer pre-checked categories. The projection table below shows the exact cost reduction you'd see at each target visibility rate.`,
+                action: { label: "Test a banner variant", href: "/experiments" },
                 evidence: { visibilityOfConsentsPct: Math.round(visibilityOfConsentsPct), benchmarkPct: 65 },
-            });
+            }, numVisible, numConsents));
         } else if (visibilityOfConsentsPct >= 80) {
             goodNotes.push({
                 title: `Strong visibility (${formatPct(visibilityOfConsentsPct, 0)})`,
@@ -1213,7 +1254,7 @@ function computeInsights({
         const projCost = spendNum / Math.max(1, projVisible);
         const saving = ((costPerVisible - projCost) / costPerVisible) * 100;
         if (saving > 8) {
-            suggestions.push({
+            suggestions.push(applyConfidenceCaveat({
                 id: `cost-saving:${platformId}`,
                 severity: "medium",
                 title: `${formatPct(saving, 0)} cost saving at 75% visibility`,
@@ -1224,32 +1265,32 @@ function computeInsights({
                     projectedCostAt75: Math.round(projCost * 100) / 100,
                     savingPct: Math.round(saving),
                 },
-            });
+            }, numVisible, numConsents));
         }
     }
 
     // 4. Low banner reach
     if (hasClicks && bannerReachPct != null && bannerReachPct < 50) {
-        suggestions.push({
+        suggestions.push(applyConfidenceCaveat({
             id: `banner-reach:${platformId}`,
             severity: "high",
             title: `Low banner reach (${formatPct(bannerReachPct, 0)})`,
-            body: `Fewer than half of reported ${selectedPlatform.metric} triggered a consent banner interaction. Verify that your banner script loads correctly on all ad landing pages, isn't blocked by ad-blockers or page caching, and that cross-domain clicks aren't dropping the consent session.`,
-            action: { label: "See funnel breakdown", href: "#recon-funnel" },
+            body: `Fewer than half of reported ${selectedPlatform.metric} triggered a consent banner interaction. Try a shorter first sentence, move the accept button above the fold, or delay the banner by 1–2s so it doesn't compete with page load. Also verify the banner script isn't blocked by ad-blockers or page caching, and that cross-domain clicks aren't dropping the consent session.`,
+            action: { label: "Test a banner variant", href: "/experiments" },
             evidence: { bannerReachPct: Math.round(bannerReachPct) },
-        });
+        }, Math.min(numConsents, clicksNum || 0), clicksNum));
     }
 
     // 5. Low platform UTM match
     if (filterActive && coverageOfScopePct != null && coverageOfScopePct < 15 && hasClicks) {
-        suggestions.push({
+        suggestions.push(applyConfidenceCaveat({
             id: `utm-match:${platformId}`,
             severity: "high",
             title: `Low UTM match for ${selectedPlatform.label}`,
             body: `Only ${formatPct(coverageOfScopePct, 0)} of scope consents match ${selectedPlatform.label}'s utm_source pattern. Either this platform drives very little traffic in this channel, or campaign URLs are missing the correct utm_source tag (expected: ${(PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).slice(0, 3).join(", ")}).`,
             action: { label: "Review traffic sources", href: "#recon-utm-sources" },
             evidence: { coverageOfScopePct: Math.round(coverageOfScopePct) },
-        });
+        }, numConsents, scopeConsents));
     }
 
     // Sorted critical → high → medium; no cap here — MarketingSuggestionsStrip
@@ -1320,6 +1361,15 @@ function UtmHealthBar({ darkTrafficPct, darkConsents, darkTrafficTotal }) {
         </div>
     );
 }
+
+// Maps each Suggestions-strip CTA's #anchor to the tab that actually
+// contains that content now that detail sections are tab-scoped — a plain
+// href jump would land on a hidden (unmounted) target otherwise.
+const CTA_TARGET_TAB = {
+    "#recon-funnel": "funnel",
+    "#recon-utm-sources": "breakdown",
+    "#recon-projection": "history",
+};
 
 const SYNC_SHORT_LABEL = {
     google_ads: "Google Ads", meta_ads: "Meta", linkedin_ads: "LinkedIn",
@@ -1812,6 +1862,28 @@ export default function MarketingReconciliationPanel({
     const autoFetchedRef = React.useRef(new Set());
     const [alertSettingsOpen, setAlertSettingsOpen] = useState(false);
     const [connectingPlatform, setConnectingPlatform] = useState(false);
+    // Which detail section is showing below the always-visible Highlights/
+    // KPI/Suggestions summary. Anchor hrefs on the Suggestions strip's CTAs
+    // (#recon-funnel/#recon-utm-sources/#recon-projection) map 1:1 to these
+    // tab keys — see the onClick interceptor below the tab strip's mount.
+    const [activeTab, setActiveTab] = useState("funnel");
+
+    // Suggestions-strip CTAs link to #recon-* anchors, but that content only
+    // exists in the DOM while its tab is active — so intercept the click,
+    // switch tabs first, then scroll once the tab's content has mounted.
+    const handleSuggestionsClick = useCallback((e) => {
+        const link = e.target.closest && e.target.closest("a.marketing-suggestions__cta");
+        if (!link) return;
+        const hash = "#" + (link.getAttribute("href") || "").replace(/^#/, "");
+        const tab = CTA_TARGET_TAB[hash];
+        if (!tab) return;
+        e.preventDefault();
+        setActiveTab(tab);
+        requestAnimationFrame(() => {
+            const el = document.querySelector(hash);
+            if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    }, []);
 
     /*
      * Load inputs whenever scope changes; load snapshots whenever
@@ -2238,12 +2310,13 @@ export default function MarketingReconciliationPanel({
         hasClicks, hasSpend,
         visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
         costPerVisible, numConsents, numVisible, spendNum,
+        clicksNum, scopeConsents,
         currency: inputs.currency,
         ...(darkTrafficStats || {}),
         selectedPlatform, filterActive,
     }), [
         hasClicks, hasSpend, visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
-        costPerVisible, numConsents, numVisible, spendNum, inputs.currency,
+        costPerVisible, numConsents, numVisible, spendNum, clicksNum, scopeConsents, inputs.currency,
         darkTrafficStats, selectedPlatform, filterActive,
     ]);
 
@@ -2545,11 +2618,13 @@ export default function MarketingReconciliationPanel({
             </div>
 
             {/* ── Suggestions ─────────────────────────────────────────────── */}
-            <MarketingSuggestionsStrip
-                suggestions={suggestions}
-                domainKey={`${domainKey}:${selectedPlatform.id}`}
-                maxVisible={6}
-            />
+            <div onClick={handleSuggestionsClick}>
+                <MarketingSuggestionsStrip
+                    suggestions={suggestions}
+                    domainKey={`${domainKey}:${selectedPlatform.id}`}
+                    maxVisible={6}
+                />
+            </div>
 
             {/* ── Platform filter strip ───────────────────────────────────── */}
             {filterActive ? (
@@ -2619,80 +2694,93 @@ export default function MarketingReconciliationPanel({
                 </div>
             )}
 
-            {/* ── Conversion funnel ────────────────────────────────────────── */}
-            <div className="recon-card" id="recon-funnel">
-                <h3 className="recon-card__title">Conversion funnel</h3>
-                <div className="recon-main">
-                    <FunnelFlow
-                        clicks={clicksNum} consents={numConsents}
-                        visible={numVisible} invisible={numInvisible}
-                        platform={selectedPlatform}
-                        bannerReachPct={bannerReachPct}
-                        visibleSharePct={visibleSharePct}
-                        invisibleSharePct={invisibleSharePct}
-                        hasClicks={hasClicks}
-                    />
-                    <VisibilityGauge
-                        pct={visibilityOfConsentsPct}
-                        costPerVisible={costPerVisible}
-                        costPerClick={costPerClick}
-                        currency={inputs.currency}
-                        platformLabel={SYNC_SHORT_LABEL[selectedPlatform.id] || selectedPlatform.label}
-                    />
-                </div>
-                {!hasClicks && (
-                    <div className="marketing-reconciliation__empty">
-                        <p>Enter your {selectedPlatform.metric} count from <strong>{selectedPlatform.label}</strong> above to see the reconciliation.</p>
-                        <p>Use the same date range as the header filter so the numbers line up.</p>
-                    </div>
-                )}
+            {/* ── Detail tabs ──────────────────────────────────────────────── */}
+            {/* data-tab-target mirrors each CTA's #anchor so the click-interceptor
+                below the Suggestions strip can map href -> tab key. */}
+            <div className="recon-tabs" role="tablist">
+                {[
+                    { key: "funnel",    label: "Funnel" },
+                    { key: "breakdown", label: "Breakdown" },
+                    { key: "history",   label: "History" },
+                ].map(({ key, label }) => (
+                    <button
+                        key={key}
+                        type="button"
+                        role="tab"
+                        aria-selected={activeTab === key}
+                        className={"recon-tab" + (activeTab === key ? " --active" : "")}
+                        onClick={() => setActiveTab(key)}
+                    >
+                        {label}
+                    </button>
+                ))}
             </div>
 
-            {/* ── Charts grid ─────────────────────────────────────────────── */}
-            <div className="recon-charts-grid" id="recon-utm-sources">
-                <div>
-                    {darkTrafficStats && (
-                        <UtmHealthBar
-                            darkTrafficPct={darkTrafficStats.darkTrafficPct}
-                            darkConsents={darkTrafficStats.darkConsents}
-                            darkTrafficTotal={darkTrafficStats.darkTrafficTotal}
+            {activeTab === "funnel" && (
+                <div className="recon-card" id="recon-funnel">
+                    <h3 className="recon-card__title">Conversion funnel</h3>
+                    <div className="recon-main">
+                        <FunnelFlow
+                            clicks={clicksNum} consents={numConsents}
+                            visible={numVisible} invisible={numInvisible}
+                            platform={selectedPlatform}
+                            bannerReachPct={bannerReachPct}
+                            visibleSharePct={visibleSharePct}
+                            invisibleSharePct={invisibleSharePct}
+                            hasClicks={hasClicks}
                         />
+                        <VisibilityGauge
+                            pct={visibilityOfConsentsPct}
+                            costPerVisible={costPerVisible}
+                            costPerClick={costPerClick}
+                            currency={inputs.currency}
+                            platformLabel={SYNC_SHORT_LABEL[selectedPlatform.id] || selectedPlatform.label}
+                        />
+                    </div>
+                    {!hasClicks && (
+                        <div className="marketing-reconciliation__empty">
+                            <p>Enter your {selectedPlatform.metric} count from <strong>{selectedPlatform.label}</strong> above to see the reconciliation.</p>
+                            <p>Use the same date range as the header filter so the numbers line up.</p>
+                        </div>
                     )}
-                    <UtmSourcesChart scopeRows={scopeRows} />
-                </div>
-                {comparisonRows.length >= 2 ? <PlatformBarsChart rows={comparisonRows} currency={inputs.currency} /> : null}
-            </div>
-
-            {/* ── Cost per visible by channel ──────────────────────────────── */}
-            {comparisonRows.length >= 1 && (
-                <div className="recon-card">
-                    <CostByChannelTable rows={comparisonRows} currency={inputs.currency} />
                 </div>
             )}
 
-            {/* ── Cost projection ──────────────────────────────────────────── */}
-            {hasSpend && hasClicks && numVisible > 0 ? (
-                <div id="recon-projection">
-                    <ProjectionTable numConsents={numConsents} numVisible={numVisible} spend={spendNum} currency={inputs.currency} />
-                </div>
-            ) : null}
+            {activeTab === "breakdown" && (
+                <>
+                    <div className="recon-charts-grid" id="recon-utm-sources">
+                        <div>
+                            {darkTrafficStats && (
+                                <UtmHealthBar
+                                    darkTrafficPct={darkTrafficStats.darkTrafficPct}
+                                    darkConsents={darkTrafficStats.darkConsents}
+                                    darkTrafficTotal={darkTrafficStats.darkTrafficTotal}
+                                />
+                            )}
+                            <UtmSourcesChart scopeRows={scopeRows} />
+                        </div>
+                        {comparisonRows.length >= 2 ? <PlatformBarsChart rows={comparisonRows} currency={inputs.currency} /> : null}
+                    </div>
 
-            {/* ── Performance timeline ─────────────────────────────────────── */}
-            {snapshots.length >= 2 ? <SnapshotComboChart snapshots={snapshots} /> : null}
-
-            {/* ── Alert settings modal ─────────────────────────────────────── */}
-            {alertSettingsOpen && (
-                <AlertSettingsModal
-                    domainKey={domainKey}
-                    orgId={orgId}
-                    authToken={authToken}
-                    currency={inputs.currency}
-                    onClose={() => setAlertSettingsOpen(false)}
-                />
+                    {comparisonRows.length >= 1 && (
+                        <div className="recon-card">
+                            <CostByChannelTable rows={comparisonRows} currency={inputs.currency} />
+                        </div>
+                    )}
+                </>
             )}
 
-            {/* ── Snapshots accordion ──────────────────────────────────────── */}
-            <div className="marketing-reconciliation__snapshots">
+            {activeTab === "history" && (
+                <>
+                    {hasSpend && hasClicks && numVisible > 0 ? (
+                        <div id="recon-projection">
+                            <ProjectionTable numConsents={numConsents} numVisible={numVisible} spend={spendNum} currency={inputs.currency} />
+                        </div>
+                    ) : null}
+
+                    {snapshots.length >= 2 ? <SnapshotComboChart snapshots={snapshots} /> : null}
+
+                    <div className="marketing-reconciliation__snapshots">
                 <div className="marketing-reconciliation__snapshots-bar">
                     <button
                         type="button"
@@ -2863,7 +2951,21 @@ export default function MarketingReconciliationPanel({
                         </div>
                     )
                 ) : null}
-            </div>
+                    </div>
+                </>
+            )}
+
+            {/* ── Alert settings modal ─────────────────────────────────────── */}
+            {/* Overlay, not tab-scoped — rendered unconditionally regardless of activeTab. */}
+            {alertSettingsOpen && (
+                <AlertSettingsModal
+                    domainKey={domainKey}
+                    orgId={orgId}
+                    authToken={authToken}
+                    currency={inputs.currency}
+                    onClose={() => setAlertSettingsOpen(false)}
+                />
+            )}
         </section>
     );
 }
