@@ -2017,60 +2017,6 @@ export default function MarketingReconciliationPanel({
             .catch(() => {});
     }, [hasGoogleAdsConnection, authToken, orgId, domainKey]);
 
-    const googleAdsUtmSourcesSet = useMemo(
-        () => new Set(googleAdsUtmSources.map(canonUtmSource)),
-        [googleAdsUtmSources]
-    );
-    const extraSourcesByPlatform = useMemo(
-        () => ({ google_ads: googleAdsUtmSourcesSet }),
-        [googleAdsUtmSourcesSet]
-    );
-
-    // ── gclid-based Google Ads detection (getDomainStatistics audit log) ──────
-    // Complementary to utm_source pattern matching: Google auto-appends gclid
-    // to every ad-click landing page regardless of campaign tagging, so it
-    // catches real Google Ads traffic the utm_source regex misses entirely.
-    // Single bounded page (no full pagination) — this is a supplementary
-    // signal, not the primary count, so a large sample is enough to be useful
-    // without re-implementing UserConsents.js's full paginated fetch here.
-    const [gclidStats, setGclidStats] = useState(null);
-    useEffect(() => {
-        setGclidStats(null);
-        if (selectedPlatform.id !== "google_ads" || !authToken || !orgId
-            || !domainKey || domainKey === "combined view" || !fromDate || !toDate) return;
-        fetch(`${PrimaryHost}/analytics/gdpr/getDomainStatistics`, {
-            method: "GET",
-            headers: {
-                Authorization: authToken,
-                Organisation: String(orgId),
-                "Content-Type": "application/json",
-                Domains: toDomainsApiHeader(domainKey),
-                Offset: "0",
-                Limit: "500",
-                FromDate: fromDate,
-                ToDate: toDate,
-                SortOrder: "desc",
-            },
-        })
-            .then(r => r.ok ? r.json() : null)
-            .then(data => {
-                if (!Array.isArray(data)) return;
-                let withGclid = 0, withGclidUnmatched = 0;
-                const pattern = PLATFORM_SOURCE_PATTERNS.google_ads;
-                for (const rec of data) {
-                    const raw = `${rec?.url || ""} ${rec?.referrer || ""}`;
-                    if (!urlHasGclid(raw)) continue;
-                    withGclid += 1;
-                    const utmSource = extractUtmSourceFromUrl(raw);
-                    const canon = canonUtmSource(utmSource);
-                    const matches = canon && (pattern.test(canon) || googleAdsUtmSourcesSet.has(canon));
-                    if (!matches) withGclidUnmatched += 1;
-                }
-                setGclidStats({ sampled: data.length, withGclid, withGclidUnmatched });
-            })
-            .catch(() => {});
-    }, [selectedPlatform.id, authToken, orgId, domainKey, fromDate, toDate, googleAdsUtmSourcesSet]);
-
     // When the user drills into a channel, detect the matching ad platform, switch the
     // platform dropdown to it, and auto-fetch data if that platform is connected.
     useEffect(() => {
@@ -2209,6 +2155,60 @@ export default function MarketingReconciliationPanel({
         () => currencyOrFallback(inputs.currency),
         [inputs.currency]
     );
+
+    const googleAdsUtmSourcesSet = useMemo(
+        () => new Set(googleAdsUtmSources.map(canonUtmSource)),
+        [googleAdsUtmSources]
+    );
+    const extraSourcesByPlatform = useMemo(
+        () => ({ google_ads: googleAdsUtmSourcesSet }),
+        [googleAdsUtmSourcesSet]
+    );
+
+    // ── gclid-based Google Ads detection (getDomainStatistics audit log) ──────
+    // Complementary to utm_source pattern matching: Google auto-appends gclid
+    // to every ad-click landing page regardless of campaign tagging, so it
+    // catches real Google Ads traffic the utm_source regex misses entirely.
+    // Single bounded page (no full pagination) — this is a supplementary
+    // signal, not the primary count, so a large sample is enough to be useful
+    // without re-implementing UserConsents.js's full paginated fetch here.
+    const [gclidStats, setGclidStats] = useState(null);
+    useEffect(() => {
+        setGclidStats(null);
+        if (selectedPlatform.id !== "google_ads" || !authToken || !orgId
+            || !domainKey || domainKey === "combined view" || !fromDate || !toDate) return;
+        fetch(`${PrimaryHost}/analytics/gdpr/getDomainStatistics`, {
+            method: "GET",
+            headers: {
+                Authorization: authToken,
+                Organisation: String(orgId),
+                "Content-Type": "application/json",
+                Domains: toDomainsApiHeader(domainKey),
+                Offset: "0",
+                Limit: "500",
+                FromDate: fromDate,
+                ToDate: toDate,
+                SortOrder: "desc",
+            },
+        })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (!Array.isArray(data)) return;
+                let withGclid = 0, withGclidUnmatched = 0;
+                const pattern = PLATFORM_SOURCE_PATTERNS.google_ads;
+                for (const rec of data) {
+                    const raw = `${rec?.url || ""} ${rec?.referrer || ""}`;
+                    if (!urlHasGclid(raw)) continue;
+                    withGclid += 1;
+                    const utmSource = extractUtmSourceFromUrl(raw);
+                    const canon = canonUtmSource(utmSource);
+                    const matches = canon && (pattern.test(canon) || googleAdsUtmSourcesSet.has(canon));
+                    if (!matches) withGclidUnmatched += 1;
+                }
+                setGclidStats({ sampled: data.length, withGclid, withGclidUnmatched });
+            })
+            .catch(() => {});
+    }, [selectedPlatform.id, authToken, orgId, domainKey, fromDate, toDate, googleAdsUtmSourcesSet]);
 
     const currentValues = useMemo(() => {
         const slot = inputs.byPlatform && inputs.byPlatform[inputs.platform];
