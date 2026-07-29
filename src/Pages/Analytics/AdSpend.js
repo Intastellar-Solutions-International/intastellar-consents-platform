@@ -4,6 +4,7 @@ const Link = window.ReactRouterDOM.Link;
 import { DomainContext } from "../../App.js";
 import {
     useSyncDomainFromRoute, isCombinedOrClearDomain, toDomainsApiHeader, analyticsMarketingPath,
+    consentsDomainFromRoute,
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
@@ -173,9 +174,18 @@ export default function AdSpend() {
     const [globalDomain, setGlobalDomain] = useContext(DomainContext);
     useSyncDomainFromRoute(handle, setGlobalDomain);
 
-    const isCombined = isCombinedOrClearDomain(globalDomain);
-    const domainsHeaderValue = useMemo(() => toDomainsApiHeader(globalDomain), [globalDomain]);
-    const domainLabel = isCombined ? null : String(globalDomain || "").trim().toLowerCase();
+    // Resolved directly from the URL :handle during render, not from
+    // globalDomain alone — useSyncDomainFromRoute's effect (which corrects
+    // globalDomain from the URL) only takes effect on the *next* render, so
+    // reading globalDomain directly here could still be the pre-correction
+    // value. consentsDomainFromRoute reads the handle synchronously and only
+    // falls back to context when there's no handle at all (matching the
+    // pattern MarketingReport already uses for the same combined/per-domain
+    // toggle).
+    const resolvedDomain = consentsDomainFromRoute(handle, globalDomain);
+    const isCombined = isCombinedOrClearDomain(resolvedDomain);
+    const domainsHeaderValue = useMemo(() => toDomainsApiHeader(resolvedDomain), [resolvedDomain]);
+    const domainLabel = isCombined ? null : String(resolvedDomain || "").trim().toLowerCase();
 
     const [getLastDays, setLastDays] = useState(30);
     const [fromDate, setFromDate] = useState(() => {
