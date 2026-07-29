@@ -1,5 +1,6 @@
 const { useCallback, useEffect, useMemo, useState } = React;
 import { ScannerHost } from "../../../API/host";
+import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
 
 /*
  * MarketingReconciliationPanel
@@ -748,8 +749,15 @@ function FunnelFlow({ clicks, consents, visible, invisible, platform, visibleSha
 
 /* ─── VisibilityGauge ────────────────────────────────────────────────────── */
 
-function VisibilityGauge({ pct, costPerVisible, costPerClick, currency }) {
+function VisibilityGauge({ pct, costPerVisible, costPerClick, currency, platformLabel }) {
     if (pct == null) return null;
+    // Distinguishes this from the page's top "Overall visibility" KPI, which
+    // is the unfiltered site-wide number — this gauge is scoped to whichever
+    // platform is currently selected, and the two percentages legitimately
+    // differ. Showing "31% visibility" with no qualifier right below a
+    // top-of-page "48.5% visibility" reads as the same metric disagreeing
+    // with itself.
+    const caption = platformLabel ? `${platformLabel} visibility` : "visibility";
 
     const R = 70, CX = 90, CY = 90, SW = 14;
     const startAngle = Math.PI * 0.75;
@@ -771,7 +779,7 @@ function VisibilityGauge({ pct, costPerVisible, costPerClick, currency }) {
     return (
         <div className="recon-gauge">
             <svg viewBox={`0 0 ${W} ${H}`} className="recon-gauge__svg" role="img"
-                 aria-label={`Visibility: ${formatPct(pct)}`}>
+                 aria-label={`${caption}: ${formatPct(pct)}`}>
                 {/* Background track */}
                 <path d={arc(startAngle, endAngle, R)} fill="none"
                     stroke="rgba(255,255,255,0.08)" strokeWidth={SW} strokeLinecap="round" />
@@ -783,8 +791,8 @@ function VisibilityGauge({ pct, costPerVisible, costPerClick, currency }) {
                 {/* Center text */}
                 <text x={CX} y={CY - 8} textAnchor="middle" fontSize="28" fontWeight="700"
                     fill={gaugeColor}>{Math.round(pct)}%</text>
-                <text x={CX} y={CY + 14} textAnchor="middle" fontSize="11" fill="rgba(200,200,210,0.7)">
-                    visibility
+                <text x={CX} y={CY + 14} textAnchor="middle" fontSize="10" fill="rgba(200,200,210,0.7)">
+                    {caption}
                 </text>
                 {/* Scale labels */}
                 <text x={polarToXY(startAngle, R + 18).x} y={polarToXY(startAngle, R + 18).y + 4}
@@ -1126,6 +1134,10 @@ function SnapshotComboChart({ snapshots }) {
 
 /* ─── computeInsights ────────────────────────────────────────────────────── */
 
+// Returns { suggestions, goodNotes }: `suggestions` feeds MarketingSuggestionsStrip
+// (actionable problems only — critical/high/medium), `goodNotes` feeds the
+// Highlights box (positive/informational, nothing to act on). Ids are scoped
+// per-platform so snoozing one platform's card doesn't hide another's.
 function computeInsights({
     hasClicks, hasSpend,
     visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
@@ -1133,21 +1145,29 @@ function computeInsights({
     darkTrafficPct, darkConsents, darkTrafficTotal,
     selectedPlatform, filterActive,
 }) {
-    const ins = [];
+    const suggestions = [];
+    const goodNotes = [];
+    const platformId = selectedPlatform.id;
 
     // 1. UTM dark traffic (scope-level, always shown when significant)
     if (darkTrafficPct != null && darkTrafficTotal >= 20) {
         if (darkTrafficPct > 50) {
-            ins.push({
-                type: "critical",
+            suggestions.push({
+                id: `dark-traffic:${platformId}`,
+                severity: "critical",
                 title: `${formatPct(darkTrafficPct, 0)} of traffic is untagged`,
                 body: `${formatInt(darkConsents)} of ${formatInt(darkTrafficTotal)} consents have no utm_source and can't be attributed to any platform or campaign. This level of dark traffic means your ROAS figures are based on a fraction of actual conversions. Review UTM tagging across all channels — especially brand, direct, and email campaigns.`,
+                action: { label: "Review traffic sources", href: "#recon-utm-sources" },
+                evidence: { darkTrafficPct: Math.round(darkTrafficPct), darkConsents, darkTrafficTotal },
             });
         } else if (darkTrafficPct > 25) {
-            ins.push({
-                type: "warning",
+            suggestions.push({
+                id: `dark-traffic:${platformId}`,
+                severity: "high",
                 title: `${formatPct(darkTrafficPct, 0)} untagged traffic`,
                 body: `${formatInt(darkConsents)} consents have no utm_source. Some dark traffic is expected (direct, bookmarks) but above 25% usually signals incomplete UTM tagging on campaigns or landing pages. Use a UTM builder and audit your campaign links.`,
+                action: { label: "Review traffic sources", href: "#recon-utm-sources" },
+                evidence: { darkTrafficPct: Math.round(darkTrafficPct), darkConsents, darkTrafficTotal },
             });
         }
     }
@@ -1155,26 +1175,30 @@ function computeInsights({
     // 2. Analytics visibility vs 65% benchmark
     if (hasClicks && visibilityOfConsentsPct != null) {
         if (visibilityOfConsentsPct < 40) {
-            ins.push({
-                type: "critical",
+            suggestions.push({
+                id: `visibility-benchmark:${platformId}`,
+                severity: "critical",
                 title: `Only ${formatPct(visibilityOfConsentsPct, 0)} analytics visibility`,
                 body: `Fewer than 4 in 10 consents from this campaign appear in your analytics tools — well below the typical 65–75% range. At this level your reported ROAS is likely 2–3× overstated. Check banner placement on ad landing pages, review your consent category setup, and consider A/B testing the banner UX.`,
+                action: { label: "See what closing the gap would cost", href: "#recon-projection" },
+                evidence: { visibilityOfConsentsPct: Math.round(visibilityOfConsentsPct), benchmarkPct: 65 },
             });
         } else if (visibilityOfConsentsPct < 65) {
-            ins.push({
-                type: "warning",
+            suggestions.push({
+                id: `visibility-benchmark:${platformId}`,
+                severity: "high",
                 title: `Below-benchmark visibility (${formatPct(visibilityOfConsentsPct, 0)})`,
                 body: `Typical analytics visibility sits at 65–75%. Closing the gap increases measurable reach without extra spend. The projection table below shows the exact cost reduction you'd see at each target visibility rate.`,
+                action: { label: "See what closing the gap would cost", href: "#recon-projection" },
+                evidence: { visibilityOfConsentsPct: Math.round(visibilityOfConsentsPct), benchmarkPct: 65 },
             });
         } else if (visibilityOfConsentsPct >= 80) {
-            ins.push({
-                type: "good",
+            goodNotes.push({
                 title: `Strong visibility (${formatPct(visibilityOfConsentsPct, 0)})`,
                 body: `Well above the 65% benchmark — the large majority of campaign traffic is measurable. Your analytics data is a reliable reflection of actual performance.`,
             });
         } else {
-            ins.push({
-                type: "good",
+            goodNotes.push({
                 title: `Good visibility (${formatPct(visibilityOfConsentsPct, 0)})`,
                 body: `Above the 65% industry benchmark. Aim for 75–80% to further reduce cost per measurable event.`,
             });
@@ -1189,35 +1213,92 @@ function computeInsights({
         const projCost = spendNum / Math.max(1, projVisible);
         const saving = ((costPerVisible - projCost) / costPerVisible) * 100;
         if (saving > 8) {
-            ins.push({
-                type: "opportunity",
+            suggestions.push({
+                id: `cost-saving:${platformId}`,
+                severity: "medium",
                 title: `${formatPct(saving, 0)} cost saving at 75% visibility`,
                 body: `Your current cost per analytics-visible consent is ${formatMoney(costPerVisible, currency)}. At 75% visibility with the same spend it falls to ${formatMoney(projCost, currency)} — a ${formatPct(saving, 0)} reduction. Improving banner opt-in rates is often the highest-leverage action available without increasing budget.`,
+                action: { label: "See what closing the gap would cost", href: "#recon-projection" },
+                evidence: {
+                    costPerVisible: Math.round(costPerVisible * 100) / 100,
+                    projectedCostAt75: Math.round(projCost * 100) / 100,
+                    savingPct: Math.round(saving),
+                },
             });
         }
     }
 
     // 4. Low banner reach
     if (hasClicks && bannerReachPct != null && bannerReachPct < 50) {
-        ins.push({
-            type: "warning",
+        suggestions.push({
+            id: `banner-reach:${platformId}`,
+            severity: "high",
             title: `Low banner reach (${formatPct(bannerReachPct, 0)})`,
             body: `Fewer than half of reported ${selectedPlatform.metric} triggered a consent banner interaction. Verify that your banner script loads correctly on all ad landing pages, isn't blocked by ad-blockers or page caching, and that cross-domain clicks aren't dropping the consent session.`,
+            action: { label: "See funnel breakdown", href: "#recon-funnel" },
+            evidence: { bannerReachPct: Math.round(bannerReachPct) },
         });
     }
 
     // 5. Low platform UTM match
     if (filterActive && coverageOfScopePct != null && coverageOfScopePct < 15 && hasClicks) {
-        ins.push({
-            type: "warning",
+        suggestions.push({
+            id: `utm-match:${platformId}`,
+            severity: "high",
             title: `Low UTM match for ${selectedPlatform.label}`,
             body: `Only ${formatPct(coverageOfScopePct, 0)} of scope consents match ${selectedPlatform.label}'s utm_source pattern. Either this platform drives very little traffic in this channel, or campaign URLs are missing the correct utm_source tag (expected: ${(PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).slice(0, 3).join(", ")}).`,
+            action: { label: "Review traffic sources", href: "#recon-utm-sources" },
+            evidence: { coverageOfScopePct: Math.round(coverageOfScopePct) },
         });
     }
 
-    // Return up to 4 insights, sorted critical → warning → opportunity → good
-    const ORDER = { critical: 0, warning: 1, opportunity: 2, good: 3 };
-    return ins.sort((a, b) => (ORDER[a.type] ?? 4) - (ORDER[b.type] ?? 4)).slice(0, 4);
+    // Sorted critical → high → medium; no cap here — MarketingSuggestionsStrip
+    // has its own maxVisible, so this no longer silently drops a 5th finding.
+    const ORDER = { critical: 0, high: 1, medium: 2, low: 3 };
+    suggestions.sort((a, b) => (ORDER[a.severity] ?? 4) - (ORDER[b.severity] ?? 4));
+    return { suggestions, goodNotes };
+}
+
+/* ─── computeReconciliationHighlights ────────────────────────────────────── */
+// Short plain-English "read this first" summary, styled like Channel
+// Analytics' own Highlights box (same {eyebrow, headline, subline, items}
+// shape, same accent values) but authored fresh for reconciliation's own
+// metrics — built entirely from numbers already computed elsewhere in this
+// file, no new derivations.
+function computeReconciliationHighlights({
+    scopeConsents, selectedPlatform, hasClicks, hasSpend,
+    bannerReachPct, visibleSharePct, visibilityCostMultiplier, goodNotes,
+}) {
+    const items = [];
+
+    if (hasClicks && bannerReachPct != null && visibleSharePct != null) {
+        items.push({
+            accent: "watch",
+            title: "Where the gap concentrates",
+            body: bannerReachPct < visibleSharePct
+                ? `Most of the drop-off happens before the consent banner even fires (${formatPct(bannerReachPct, 0)} reach) — that's the bigger lever here, not analytics visibility itself.`
+                : `The banner reaches most traffic (${formatPct(bannerReachPct, 0)}) — the bigger drop-off happens after that, in analytics visibility.`,
+        });
+    }
+
+    if (hasSpend && visibilityCostMultiplier != null) {
+        items.push({
+            accent: "data",
+            title: "What that costs",
+            body: `Each analytics-visible consent currently costs ${visibilityCostMultiplier.toFixed(1)}× a raw click — closing the visibility gap is the cheapest way to bring that down.`,
+        });
+    }
+
+    (goodNotes || []).forEach((note) => {
+        items.push({ accent: "win", title: note.title, body: note.body });
+    });
+
+    return {
+        eyebrow: "HERE'S WHAT TO CARE ABOUT",
+        headline: `${formatInt(scopeConsents)} consents in scope · ${selectedPlatform.label}`,
+        subline: "Scan this first, then use the suggestions below to act on it.",
+        items,
+    };
 }
 
 /* ─── UtmHealthBar ────────────────────────────────────────────────────────── */
@@ -1236,32 +1317,6 @@ function UtmHealthBar({ darkTrafficPct, darkConsents, darkTrafficTotal }) {
                 <strong>{formatPct(taggedPct, 0)}</strong> attributed
                 <span className="utm-health__dark"> · {formatPct(darkTrafficPct, 0)} untagged ({formatInt(darkConsents)})</span>
             </span>
-        </div>
-    );
-}
-
-/* ─── InsightsPanel ───────────────────────────────────────────────────────── */
-
-const INSIGHT_ICONS = { critical: "⚠", warning: "◉", opportunity: "↗", good: "✓" };
-
-function InsightsPanel({ insights }) {
-    if (!insights || insights.length === 0) return null;
-    return (
-        <div className="recon-insights">
-            <h3 className="recon-insights__heading">Insights</h3>
-            <div className="recon-insights__list">
-                {insights.map((ins, i) => (
-                    <div key={i} className={`recon-insight recon-insight--${ins.type}`}>
-                        <span className="recon-insight__icon" aria-hidden="true">
-                            {INSIGHT_ICONS[ins.type] || "●"}
-                        </span>
-                        <div className="recon-insight__content">
-                            <p className="recon-insight__title">{ins.title}</p>
-                            <p className="recon-insight__body">{ins.body}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
         </div>
     );
 }
@@ -1660,7 +1715,6 @@ function CostByChannelTable({ rows, currency }) {
     const hasSpend = rows.some(r => r.spend > 0 && r.costPerVisible != null);
     if (!hasSpend) return null;
 
-    const sym = currency === "USD" ? "$" : currency === "GBP" ? "£" : currency === "CHF" ? "CHF " : "€";
     const avgCost = (() => {
         const totalSpend   = rows.reduce((s, r) => s + (r.spend || 0), 0);
         const totalVisible = rows.reduce((s, r) => s + (r.costPerVisible != null ? r.visible : 0), 0);
@@ -1696,14 +1750,14 @@ function CostByChannelTable({ rows, currency }) {
                                         <span className="cost-by-channel__dot" style={{ background: PLATFORM_COLORS[r.platform.id] || "#888" }} />
                                         {shortName}
                                     </td>
-                                    <td className="num">{r.spend > 0 ? `${sym}${r.spend.toLocaleString("de-DE", { minimumFractionDigits: 2 })}` : "—"}</td>
+                                    <td className="num">{r.spend > 0 ? formatMoney(r.spend, currency) : "—"}</td>
                                     <td className="num">{formatInt(r.visible)}</td>
                                     <td className="num">{formatInt(r.invisible)}</td>
                                     <td className={`num${visPct != null ? visPct >= 65 ? " cost-by-channel__good" : visPct < 40 ? " cost-by-channel__bad" : " cost-by-channel__warn" : ""}`}>
                                         {visPct != null ? formatPct(visPct) : "—"}
                                     </td>
                                     <td className="num cost-col" style={{ color: costColor, fontWeight: 700, fontSize: "1.05rem" }}>
-                                        {cost != null ? `${sym}${cost.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}
+                                        {cost != null ? formatMoney(cost, currency) : "—"}
                                     </td>
                                     <td className={`num${vsAvg != null ? vsAvg < 0 ? " cost-by-channel__good" : vsAvg > 20 ? " cost-by-channel__bad" : "" : ""}`}>
                                         {vsAvg != null ? `${vsAvg > 0 ? "+" : ""}${vsAvg.toFixed(0)}%` : "—"}
@@ -1718,7 +1772,7 @@ function CostByChannelTable({ rows, currency }) {
                                 <td className="num">—</td>
                                 <td className="num">—</td>
                                 <td className="num">—</td>
-                                <td className="num cost-col" style={{ fontWeight: 700 }}>{`${sym}${avgCost.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</td>
+                                <td className="num cost-col" style={{ fontWeight: 700 }}>{formatMoney(avgCost, currency)}</td>
                                 <td className="num">baseline</td>
                             </tr>
                         )}
@@ -2180,7 +2234,7 @@ export default function MarketingReconciliationPanel({
             ? costPerVisible / costPerClick
             : null;
 
-    const insights = useMemo(() => computeInsights({
+    const { suggestions, goodNotes } = useMemo(() => computeInsights({
         hasClicks, hasSpend,
         visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
         costPerVisible, numConsents, numVisible, spendNum,
@@ -2191,6 +2245,14 @@ export default function MarketingReconciliationPanel({
         hasClicks, hasSpend, visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
         costPerVisible, numConsents, numVisible, spendNum, inputs.currency,
         darkTrafficStats, selectedPlatform, filterActive,
+    ]);
+
+    const reconciliationHighlights = useMemo(() => computeReconciliationHighlights({
+        scopeConsents, selectedPlatform, hasClicks, hasSpend,
+        bannerReachPct, visibleSharePct, visibilityCostMultiplier, goodNotes,
+    }), [
+        scopeConsents, selectedPlatform, hasClicks, hasSpend,
+        bannerReachPct, visibleSharePct, visibilityCostMultiplier, goodNotes,
     ]);
 
     const scopeSentence = scopeLabel
@@ -2421,6 +2483,26 @@ export default function MarketingReconciliationPanel({
                 )}
             </div>
 
+            {/* ── Highlights ──────────────────────────────────────────────── */}
+            {reconciliationHighlights.items.length > 0 && (
+                <section className="marketing-highlights" aria-labelledby="recon-highlights-heading">
+                    <h2 id="recon-highlights-heading" className="marketing-report-section__title marketing-highlights__h2">
+                        Highlights
+                    </h2>
+                    <p className="marketing-highlights__eyebrow">{reconciliationHighlights.eyebrow}</p>
+                    <p className="marketing-highlights__headline">{reconciliationHighlights.headline}</p>
+                    <p className="marketing-highlights__sub">{reconciliationHighlights.subline}</p>
+                    <ul className="marketing-highlights__list">
+                        {reconciliationHighlights.items.map((it, i) => (
+                            <li key={`${it.title}-${i}`} className={`marketing-highlights__item marketing-highlights__item--${it.accent}`}>
+                                <span className="marketing-highlights__item-title">{it.title}</span>
+                                <p className="marketing-highlights__item-body">{it.body}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
             {/* ── KPI row ─────────────────────────────────────────────────── */}
             <div className="recon-kpi-row">
                 <div className="recon-stat-card">
@@ -2445,9 +2527,9 @@ export default function MarketingReconciliationPanel({
                     const tone = visPct == null ? "" : visPct >= 65 ? " recon-stat-card--good" : visPct >= 40 ? " recon-stat-card--warn" : " recon-stat-card--bad";
                     return (
                         <div className={`recon-stat-card${tone}`}>
-                            <span className="recon-stat-card__label">Visibility</span>
+                            <span className="recon-stat-card__label">Overall visibility</span>
                             <span className="recon-stat-card__value">{visPct != null ? formatPct(visPct) : "—"}</span>
-                            <span className="recon-stat-card__sub">benchmark 65%</span>
+                            <span className="recon-stat-card__sub">all traffic · benchmark 65%</span>
                         </div>
                     );
                 })()}
@@ -2461,6 +2543,13 @@ export default function MarketingReconciliationPanel({
                     </div>
                 )}
             </div>
+
+            {/* ── Suggestions ─────────────────────────────────────────────── */}
+            <MarketingSuggestionsStrip
+                suggestions={suggestions}
+                domainKey={`${domainKey}:${selectedPlatform.id}`}
+                maxVisible={6}
+            />
 
             {/* ── Platform filter strip ───────────────────────────────────── */}
             {filterActive ? (
@@ -2530,36 +2619,38 @@ export default function MarketingReconciliationPanel({
                 </div>
             )}
 
-            {/* ── Dashboard grid: Funnel card + Insights card ─────────────── */}
-            <div className="recon-dashboard-grid">
-                <div className="recon-card">
-                    <h3 className="recon-card__title">Conversion funnel</h3>
-                    <div className="recon-main">
-                        <FunnelFlow
-                            clicks={clicksNum} consents={numConsents}
-                            visible={numVisible} invisible={numInvisible}
-                            platform={selectedPlatform}
-                            bannerReachPct={bannerReachPct}
-                            visibleSharePct={visibleSharePct}
-                            invisibleSharePct={invisibleSharePct}
-                            hasClicks={hasClicks}
-                        />
-                        <VisibilityGauge
-                            pct={visibilityOfConsentsPct}
-                            costPerVisible={costPerVisible}
-                            costPerClick={costPerClick}
-                            currency={inputs.currency}
-                        />
-                    </div>
-                    {!hasClicks && (
-                        <div className="marketing-reconciliation__empty">
-                            <p>Enter your {selectedPlatform.metric} count from <strong>{selectedPlatform.label}</strong> above to see the reconciliation.</p>
-                            <p>Use the same date range as the header filter so the numbers line up.</p>
-                        </div>
-                    )}
+            {/* ── Conversion funnel ────────────────────────────────────────── */}
+            <div className="recon-card" id="recon-funnel">
+                <h3 className="recon-card__title">Conversion funnel</h3>
+                <div className="recon-main">
+                    <FunnelFlow
+                        clicks={clicksNum} consents={numConsents}
+                        visible={numVisible} invisible={numInvisible}
+                        platform={selectedPlatform}
+                        bannerReachPct={bannerReachPct}
+                        visibleSharePct={visibleSharePct}
+                        invisibleSharePct={invisibleSharePct}
+                        hasClicks={hasClicks}
+                    />
+                    <VisibilityGauge
+                        pct={visibilityOfConsentsPct}
+                        costPerVisible={costPerVisible}
+                        costPerClick={costPerClick}
+                        currency={inputs.currency}
+                        platformLabel={SYNC_SHORT_LABEL[selectedPlatform.id] || selectedPlatform.label}
+                    />
                 </div>
+                {!hasClicks && (
+                    <div className="marketing-reconciliation__empty">
+                        <p>Enter your {selectedPlatform.metric} count from <strong>{selectedPlatform.label}</strong> above to see the reconciliation.</p>
+                        <p>Use the same date range as the header filter so the numbers line up.</p>
+                    </div>
+                )}
+            </div>
 
-                <div className="recon-card recon-card--insights">
+            {/* ── Charts grid ─────────────────────────────────────────────── */}
+            <div className="recon-charts-grid" id="recon-utm-sources">
+                <div>
                     {darkTrafficStats && (
                         <UtmHealthBar
                             darkTrafficPct={darkTrafficStats.darkTrafficPct}
@@ -2567,18 +2658,8 @@ export default function MarketingReconciliationPanel({
                             darkTrafficTotal={darkTrafficStats.darkTrafficTotal}
                         />
                     )}
-                    <InsightsPanel insights={insights} />
-                    {insights.length === 0 && (!darkTrafficStats || darkTrafficStats.darkTrafficTotal < 20) && (
-                        <p className="recon-card__empty-hint">
-                            Insights appear once you enter {selectedPlatform.metric} data in the controls above.
-                        </p>
-                    )}
+                    <UtmSourcesChart scopeRows={scopeRows} />
                 </div>
-            </div>
-
-            {/* ── Charts grid ─────────────────────────────────────────────── */}
-            <div className="recon-charts-grid">
-                <UtmSourcesChart scopeRows={scopeRows} />
                 {comparisonRows.length >= 2 ? <PlatformBarsChart rows={comparisonRows} currency={inputs.currency} /> : null}
             </div>
 
@@ -2591,7 +2672,9 @@ export default function MarketingReconciliationPanel({
 
             {/* ── Cost projection ──────────────────────────────────────────── */}
             {hasSpend && hasClicks && numVisible > 0 ? (
-                <ProjectionTable numConsents={numConsents} numVisible={numVisible} spend={spendNum} currency={inputs.currency} />
+                <div id="recon-projection">
+                    <ProjectionTable numConsents={numConsents} numVisible={numVisible} spend={spendNum} currency={inputs.currency} />
+                </div>
             ) : null}
 
             {/* ── Performance timeline ─────────────────────────────────────── */}
