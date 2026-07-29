@@ -37,6 +37,14 @@ function useAdSpendReport(domainsHeaderValue, fromIso, toIso, tick = 0) {
     const [error,   setError]   = useState(null);
 
     useEffect(() => {
+        // On first mount, useSyncDomainFromRoute's effect (correcting the
+        // domain from the URL) and this effect both fire in the same tick,
+        // but this fetch still closes over the domain value from the render
+        // that scheduled it — one tick before the correction lands. That
+        // fires two requests (a stale "combined" one, then the real-domain
+        // one); without this guard, whichever response arrives last wins
+        // and can silently overwrite the correct data with the stale one.
+        let ignore = false;
         setLoading(true);
         setError(null);
         const qs = new URLSearchParams({ from: fromIso, to: toIso }).toString();
@@ -45,10 +53,12 @@ function useAdSpendReport(domainsHeaderValue, fromIso, toIso, tick = 0) {
         })
             .then(async r => {
                 if (!r.ok) throw new Error(r.status);
-                setData(await r.json());
+                const json = await r.json();
+                if (!ignore) setData(json);
             })
-            .catch(() => setError("Could not load ad spend data."))
-            .finally(() => setLoading(false));
+            .catch(() => { if (!ignore) setError("Could not load ad spend data."); })
+            .finally(() => { if (!ignore) setLoading(false); });
+        return () => { ignore = true; };
     }, [domainsHeaderValue, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return { data, loading, error };
