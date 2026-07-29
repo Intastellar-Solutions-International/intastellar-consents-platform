@@ -1,5 +1,6 @@
 const { useCallback, useEffect, useMemo, useState } = React;
-import { ScannerHost } from "../../../API/host";
+import { ScannerHost, PrimaryHost } from "../../../API/host";
+import { toDomainsApiHeader } from "../../../Functions/domainPathSegments.js";
 import MarketingSuggestionsStrip from "./MarketingSuggestionsStrip.js";
 
 /*
@@ -71,15 +72,16 @@ const PLATFORM_COLORS = {
  * arbitrary platformId rather than the currently-selected one.
  * Used by the comparison table to show all platforms side-by-side.
  */
-function computeStatsForPlatform(platformId, scopeRows, fallbackConsents, fallbackVisible, fallbackInvisible) {
+function computeStatsForPlatform(platformId, scopeRows, fallbackConsents, fallbackVisible, fallbackInvisible, extraSourcesByPlatform) {
     const pattern = platformPattern(platformId);
     if (!pattern) {
         return { consents: fallbackConsents, visible: fallbackVisible, invisible: fallbackInvisible };
     }
+    const extraSources = extraSourcesByPlatform && extraSourcesByPlatform[platformId];
     const rowsArr = Array.isArray(scopeRows) ? scopeRows : [];
     let consents = 0, visible = 0;
     for (const r of rowsArr) {
-        if (!rowMatchesPlatform(r, pattern)) continue;
+        if (!rowMatchesPlatform(r, pattern, extraSources)) continue;
         consents += Number(r.consents) || 0;
         visible  += Number(r.acceptAll) || 0;
     }
@@ -142,13 +144,32 @@ function detectPlatformForChannelName(channelName) {
     return null;
 }
 
-function rowMatchesPlatform(row, pattern) {
+// `extraSources` (optional): a Set of canonicalized literal utm_source values
+// discovered from a connected ad account's own campaign config (see
+// fetchGoogleAdsUtmSources in api/_ad-platform-fetch.js) — ORed in alongside
+// the hardcoded pattern, never replacing it, since some campaigns may still
+// use conventional naming even when others don't.
+function rowMatchesPlatform(row, pattern, extraSources) {
     if (!pattern) return true;
     const raw = row && row.utmSource ? row.utmSource : "";
     if (!raw || raw === "—") return false;
     const canon = canonUtmSource(raw);
     if (!canon) return false;
+    if (extraSources && extraSources.has(canon)) return true;
     return pattern.test(canon);
+}
+
+// Raw entry-URL helpers for gclid-based Google Ads detection (getDomainStatistics
+// audit-log records) — complementary to utm_source pattern matching, not a
+// replacement: Google auto-appends gclid to landing pages for every ad click
+// regardless of how (or whether) the campaign tags utm_source.
+function urlHasGclid(url) {
+    return /[?&]gclid=/i.test(String(url || ""));
+}
+function extractUtmSourceFromUrl(url) {
+    const m = /[?&]utm_source=([^&#]+)/i.exec(String(url || ""));
+    if (!m) return null;
+    try { return decodeURIComponent(m[1]); } catch { return m[1]; }
 }
 
 /*
@@ -1182,7 +1203,7 @@ function computeInsights({
     hasClicks, hasSpend,
     visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
     costPerVisible, numConsents, numVisible, spendNum, currency,
-    clicksNum, scopeConsents,
+    clicksNum, scopeConsents, gclidStats,
     darkTrafficPct, darkConsents, darkTrafficTotal,
     selectedPlatform, filterActive,
 }) {
@@ -1291,6 +1312,21 @@ function computeInsights({
             action: { label: "Review traffic sources", href: "#recon-utm-sources" },
             evidence: { coverageOfScopePct: Math.round(coverageOfScopePct) },
         }, numConsents, scopeConsents));
+    }
+
+    // 6. Google Ads clicks identifiable via gclid but not counted by utm_source
+    // matching (getDomainStatistics audit-log sample) — Google auto-appends
+    // gclid to every ad-click landing page regardless of campaign tagging, so
+    // this catches real traffic the utm_source pattern misses entirely.
+    if (platformId === "google_ads" && gclidStats && gclidStats.withGclidUnmatched > 0) {
+        suggestions.push(applyConfidenceCaveat({
+            id: `gclid-unmatched:${platformId}`,
+            severity: "high",
+            title: `${formatInt(gclidStats.withGclidUnmatched)} Google Ads clicks not counted`,
+            body: `${formatInt(gclidStats.withGclidUnmatched)} of ${formatInt(gclidStats.sampled)} recent visits carry a Google Ads click ID (gclid) in their entry URL — a signal Google itself attaches to every ad click — but their utm_source doesn't match this platform's pattern, so they're excluded from this reconciliation. This is real, currently-missed consent data. Consider counting gclid presence alongside utm_source, or ask your campaigns to also set an explicit utm_source.`,
+            action: { label: "Review traffic sources", href: "#recon-utm-sources" },
+            evidence: { withGclid: gclidStats.withGclid, withGclidUnmatched: gclidStats.withGclidUnmatched, sampled: gclidStats.sampled },
+        }, gclidStats.withGclidUnmatched, gclidStats.sampled));
     }
 
     // Sorted critical → high → medium; no cap here — MarketingSuggestionsStrip
@@ -1855,6 +1891,11 @@ export default function MarketingReconciliationPanel({
     const [snapshotsExpanded, setSnapshotsExpanded] = useState(false);
     const [savedFlash, setSavedFlash] = useState(false);
     const [connections, setConnections] = useState([]);
+    // Literal utm_source values discovered from the connected Google Ads
+    // account's own campaign tracking templates (see api/ad-utm-patterns.js)
+    // — unions with, never replaces, the hardcoded PLATFORM_SOURCE_PATTERNS
+    // guess-list below.
+    const [googleAdsUtmSources, setGoogleAdsUtmSources] = useState([]);
     const [syncing, setSyncing] = useState(false);
     const [syncMsg, setSyncMsg] = useState(null);
     const [ga4Sessions, setGa4Sessions] = useState(null);
@@ -1960,6 +2001,75 @@ export default function MarketingReconciliationPanel({
             .then(data => { if (data?.connections) setConnections(data.connections); })
             .catch(() => {});
     }, [authToken, orgId, domainKey]);
+
+    // Once a live Google Ads connection exists for this domain, fetch its
+    // real campaign UTM sources once — cheap, no caching needed (campaign
+    // tracking templates change rarely) and re-fetches if the connection set
+    // changes (e.g. right after connecting).
+    const hasGoogleAdsConnection = connections.some(c => c.platform === "google_ads" && c.account_id);
+    useEffect(() => {
+        if (!hasGoogleAdsConnection || !authToken || !orgId || !domainKey || domainKey === "combined view") return;
+        fetch(`${ScannerHost}/api/ad-utm-patterns?domain=${encodeURIComponent(domainKey)}&platform=google_ads`, {
+            headers: { Authorization: authToken, Organisation: String(orgId) },
+        })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => { if (data?.utmSources) setGoogleAdsUtmSources(data.utmSources); })
+            .catch(() => {});
+    }, [hasGoogleAdsConnection, authToken, orgId, domainKey]);
+
+    const googleAdsUtmSourcesSet = useMemo(
+        () => new Set(googleAdsUtmSources.map(canonUtmSource)),
+        [googleAdsUtmSources]
+    );
+    const extraSourcesByPlatform = useMemo(
+        () => ({ google_ads: googleAdsUtmSourcesSet }),
+        [googleAdsUtmSourcesSet]
+    );
+
+    // ── gclid-based Google Ads detection (getDomainStatistics audit log) ──────
+    // Complementary to utm_source pattern matching: Google auto-appends gclid
+    // to every ad-click landing page regardless of campaign tagging, so it
+    // catches real Google Ads traffic the utm_source regex misses entirely.
+    // Single bounded page (no full pagination) — this is a supplementary
+    // signal, not the primary count, so a large sample is enough to be useful
+    // without re-implementing UserConsents.js's full paginated fetch here.
+    const [gclidStats, setGclidStats] = useState(null);
+    useEffect(() => {
+        setGclidStats(null);
+        if (selectedPlatform.id !== "google_ads" || !authToken || !orgId
+            || !domainKey || domainKey === "combined view" || !fromDate || !toDate) return;
+        fetch(`${PrimaryHost}/analytics/gdpr/getDomainStatistics`, {
+            method: "GET",
+            headers: {
+                Authorization: authToken,
+                Organisation: String(orgId),
+                "Content-Type": "application/json",
+                Domains: toDomainsApiHeader(domainKey),
+                Offset: "0",
+                Limit: "500",
+                FromDate: fromDate,
+                ToDate: toDate,
+                SortOrder: "desc",
+            },
+        })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (!Array.isArray(data)) return;
+                let withGclid = 0, withGclidUnmatched = 0;
+                const pattern = PLATFORM_SOURCE_PATTERNS.google_ads;
+                for (const rec of data) {
+                    const raw = `${rec?.url || ""} ${rec?.referrer || ""}`;
+                    if (!urlHasGclid(raw)) continue;
+                    withGclid += 1;
+                    const utmSource = extractUtmSourceFromUrl(raw);
+                    const canon = canonUtmSource(utmSource);
+                    const matches = canon && (pattern.test(canon) || googleAdsUtmSourcesSet.has(canon));
+                    if (!matches) withGclidUnmatched += 1;
+                }
+                setGclidStats({ sampled: data.length, withGclid, withGclidUnmatched });
+            })
+            .catch(() => {});
+    }, [selectedPlatform.id, authToken, orgId, domainKey, fromDate, toDate, googleAdsUtmSourcesSet]);
 
     // When the user drills into a channel, detect the matching ad platform, switch the
     // platform dropdown to it, and auto-fetch data if that platform is connected.
@@ -2178,8 +2288,9 @@ export default function MarketingReconciliationPanel({
         let totalVisible = 0;
         let rowsMatched = 0;
         const matchedSourcesSet = new Set();
+        const extraSources = extraSourcesByPlatform[inputs.platform];
         for (const r of rowsArr) {
-            if (!rowMatchesPlatform(r, pattern)) continue;
+            if (!rowMatchesPlatform(r, pattern, extraSources)) continue;
             rowsMatched += 1;
             totalConsents += Number(r.consents) || 0;
             totalVisible += Number(r.acceptAll) || 0;
@@ -2196,7 +2307,7 @@ export default function MarketingReconciliationPanel({
             rowsMatched,
             scopeRowCount: rowsArr.length,
         };
-    }, [scopeRows, pattern, filterActive, scopeConsents, scopeVisible, scopeInvisible]);
+    }, [scopeRows, pattern, filterActive, scopeConsents, scopeVisible, scopeInvisible, extraSourcesByPlatform, inputs.platform]);
 
     const numConsents = platformStats.consents;
     const numVisible = platformStats.visible;
@@ -2225,7 +2336,7 @@ export default function MarketingReconciliationPanel({
                 const clicks = Number(vals?.adClicks) || 0;
                 if (!clicks) return null;
                 const spend  = Number(vals?.spend) || 0;
-                const stats  = computeStatsForPlatform(p.id, scopeRows, scopeConsents, scopeVisible, scopeInvisible);
+                const stats  = computeStatsForPlatform(p.id, scopeRows, scopeConsents, scopeVisible, scopeInvisible, extraSourcesByPlatform);
                 const visibleSharePct   = (stats.visible   / clicks) * 100;
                 const invisibleSharePct = (stats.invisible / clicks) * 100;
                 const visibilityPct     = stats.consents > 0 ? (stats.visible / stats.consents) * 100 : null;
@@ -2244,7 +2355,7 @@ export default function MarketingReconciliationPanel({
                 };
             })
             .filter(Boolean);
-    }, [inputs.byPlatform, scopeRows, scopeConsents, scopeVisible, scopeInvisible]);
+    }, [inputs.byPlatform, scopeRows, scopeConsents, scopeVisible, scopeInvisible, extraSourcesByPlatform]);
 
     // All utm_source values actually present in scope — surfaced when no platform match is found
     const actualScopeSources = useMemo(() => {
@@ -2307,19 +2418,41 @@ export default function MarketingReconciliationPanel({
             ? costPerVisible / costPerClick
             : null;
 
-    const { suggestions, goodNotes } = useMemo(() => computeInsights({
+    const { suggestions, goodNotes: goodNotesFromInsights } = useMemo(() => computeInsights({
         hasClicks, hasSpend,
         visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
         costPerVisible, numConsents, numVisible, spendNum,
-        clicksNum, scopeConsents,
+        clicksNum, scopeConsents, gclidStats,
         currency: inputs.currency,
         ...(darkTrafficStats || {}),
         selectedPlatform, filterActive,
     }), [
         hasClicks, hasSpend, visibilityOfConsentsPct, bannerReachPct, coverageOfScopePct,
-        costPerVisible, numConsents, numVisible, spendNum, clicksNum, scopeConsents, inputs.currency,
+        costPerVisible, numConsents, numVisible, spendNum, clicksNum, scopeConsents, gclidStats, inputs.currency,
         darkTrafficStats, selectedPlatform, filterActive,
     ]);
+
+    // Discovered-but-not-hardcoded Google Ads utm_source values (campaign
+    // tracking-template discovery) surface as a positive Highlights note —
+    // it's the gap already having been fixed, not a problem to act on.
+    const newlyMatchedGoogleAdsSources = useMemo(() => {
+        if (selectedPlatform.id !== "google_ads" || !googleAdsUtmSources.length) return [];
+        const hardcodedPattern = PLATFORM_SOURCE_PATTERNS.google_ads;
+        return googleAdsUtmSources.filter(s => !hardcodedPattern.test(canonUtmSource(s)));
+    }, [selectedPlatform, googleAdsUtmSources]);
+
+    const goodNotes = useMemo(() => {
+        if (!newlyMatchedGoogleAdsSources.length) return goodNotesFromInsights;
+        const shown = newlyMatchedGoogleAdsSources.slice(0, 3).join(", ");
+        const more = newlyMatchedGoogleAdsSources.length > 3 ? ` and ${newlyMatchedGoogleAdsSources.length - 3} more` : "";
+        return [
+            ...goodNotesFromInsights,
+            {
+                title: "Found additional Google Ads UTM sources",
+                body: `Included utm_source=${shown}${more} from your connected Google Ads campaigns' own tracking templates — these weren't covered by the default match pattern, so consents using them are now counted.`,
+            },
+        ];
+    }, [goodNotesFromInsights, newlyMatchedGoogleAdsSources]);
 
     const reconciliationHighlights = useMemo(() => computeReconciliationHighlights({
         scopeConsents, selectedPlatform, hasClicks, hasSpend,

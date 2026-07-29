@@ -5,6 +5,8 @@
  * fetchPlatformData(conn, from, to)        → aggregate { clicks, impressions, spend, currency, sessions }
  * fetchPlatformDataDaily(conn, from, to)   → { [YYYY-MM-DD]: { clicks, impressions, spend, currency } }
  * tryRefreshToken(db, conn)                → conn (possibly with updated access_token)
+ * fetchGoogleAdsUtmSources(conn)           → string[] of literal utm_source values found in this
+ *                                            Google Ads account's tracking templates/custom params
  */
 
 export async function tryRefreshToken(db, conn) {
@@ -126,6 +128,93 @@ async function fetchGoogleAds(conn, fromDate, toDate) {
         impressions += Number(row.metrics?.impressions || 0);
     }
     return { clicks, spend: +(spendMicros / 1_000_000).toFixed(2), currency: currency || "EUR", impressions };
+}
+
+// ── Google Ads UTM-source discovery (campaign tracking templates) ────────────
+// Google Ads has no "utm_source" field — utm parameters live embedded as raw
+// strings in a campaign's (or the whole account's) tracking template, final
+// URL suffix, or custom-parameter list. This fetches those raw strings and
+// extracts literal utm_source values, for use ALONGSIDE (never instead of)
+// the hardcoded google_ads match pattern in the reconciliation UI — some
+// campaigns may still use conventional naming even when others don't.
+// Accounts that only use ValueTrack placeholders (e.g. {campaignid}) yield
+// nothing; that's an honest dead end, not a bug — those aren't fixed values
+// to match on, they resolve differently per click.
+function extractUtmSources(text) {
+    if (!text) return [];
+    const out = [];
+    const re = /utm_source=([^&{}]+)/gi;
+    let m;
+    while ((m = re.exec(text))) {
+        try {
+            const v = decodeURIComponent(m[1]).trim().toLowerCase();
+            if (v) out.push(v);
+        } catch { /* malformed encoding — skip this match */ }
+    }
+    return out;
+}
+
+function collectUtmSourcesFrom(resource, into) {
+    if (!resource) return;
+    extractUtmSources(resource.trackingUrlTemplate).forEach(s => into.add(s));
+    extractUtmSources(resource.finalUrlSuffix).forEach(s => into.add(s));
+    for (const p of (resource.urlCustomParameters || [])) {
+        const key = String(p?.key || "").toLowerCase();
+        const value = p?.value;
+        if (key === "utm_source" && value && !/[{}]/.test(value)) {
+            into.add(String(value).trim().toLowerCase());
+        }
+    }
+}
+
+export async function fetchGoogleAdsUtmSources(conn) {
+    if (!conn.account_id) throw new Error("No Google Ads customer ID linked.");
+    const customerId = conn.account_id.replace(/\D/g, "");
+    const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+
+    const headers = {
+        Authorization: `Bearer ${conn.access_token}`,
+        "developer-token": devToken,
+        "Content-Type": "application/json",
+    };
+    if (conn.login_customer_id) headers["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
+
+    const post = (query) => fetch(
+        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
+        { method: "POST", headers, body: JSON.stringify({ query }) }
+    );
+
+    const found = new Set();
+
+    // Account-level fallback — a shared tracking template/suffix, if set,
+    // applies to every campaign that doesn't override it.
+    const acctResp = await post(
+        "SELECT customer.tracking_url_template, customer.final_url_suffix FROM customer LIMIT 1"
+    ).catch(() => null);
+    if (acctResp?.ok) {
+        const d = await acctResp.json().catch(() => ({}));
+        collectUtmSourcesFrom(d?.results?.[0]?.customer, found);
+    }
+
+    // Campaign-level — overrides the account-level template per-campaign
+    // when a campaign sets its own.
+    const campResp = await post(`
+        SELECT campaign.id, campaign.tracking_url_template, campaign.final_url_suffix, campaign.url_custom_parameters
+        FROM campaign
+        WHERE campaign.status != 'REMOVED'
+    `);
+    if (!campResp.ok) {
+        const raw = await campResp.text().catch(() => "");
+        let err = {};
+        try { err = JSON.parse(raw); } catch {}
+        throw new Error(err?.error?.message || `Google Ads API error (${campResp.status}): ${raw.slice(0, 200)}`);
+    }
+    const campData = await campResp.json();
+    for (const row of (campData.results || [])) {
+        collectUtmSourcesFrom(row.campaign, found);
+    }
+
+    return Array.from(found);
 }
 
 async function fetchMetaAds(conn, fromDate, toDate) {
