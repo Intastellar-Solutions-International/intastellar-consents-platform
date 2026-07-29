@@ -151,10 +151,16 @@ export function analyticsConversionsPath(domainUnicode) {
     return `/analytics/${seg}/conversions`;
 }
 
+export function analyticsAdSpendPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/ad-spend";
+    return `/analytics/${seg}/ad-spend`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/conversions"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
@@ -163,6 +169,7 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
         else if (leaf === "/recordings")  history.push(analyticsRecordingsPath(domainUnicode));
         else if (leaf === "/bots")        history.push(analyticsBotsPath(domainUnicode));
         else if (leaf === "/conversions") history.push(analyticsConversionsPath(domainUnicode));
+        else if (leaf === "/ad-spend")    history.push(analyticsAdSpendPath(domainUnicode));
         else                              history.push(analyticsPath(domainUnicode));
         return;
     }

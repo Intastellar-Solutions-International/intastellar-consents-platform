@@ -948,6 +948,34 @@
     }
 }
 
+/* ── Ad Spend sub-page grid ──────────────────────────────────────────────────── */
+
+.sa-as-grid {
+    display: grid;
+    gap: 12px;
+    align-items: start;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas:
+        "kpi0      kpi1      kpi2"
+        "chart     chart     chart"
+        "platforms platforms platforms"
+        "domains   domains   domains";
+}
+
+.sa-as-kpi0      { grid-area: kpi0; }
+.sa-as-kpi1      { grid-area: kpi1; }
+.sa-as-kpi2      { grid-area: kpi2; }
+.sa-as-chart     { grid-area: chart; align-self: start; }
+.sa-as-platforms { grid-area: platforms; }
+.sa-as-domains   { grid-area: domains; }
+
+@media (max-width: 760px) {
+    .sa-as-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas: "kpi0" "kpi1" "kpi2" "chart" "platforms" "domains";
+    }
+}
+
 /* ── Consent sub-page grid ───────────────────────────────────────────────────── */
 
 .sa-consent-page-grid {

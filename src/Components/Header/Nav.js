@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsConversionsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsConversionsPath, analyticsAdSpendPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -26,6 +26,7 @@ import heatmapIcon from "./icons/heatmap.svg";
 import recordingsIcon from "./icons/recordings.svg";
 import botsIcon from "./icons/bots.svg";
 import conversionsIcon from "./icons/conversions.svg";
+import adSpendIcon from "./icons/ad-spend.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -47,8 +48,9 @@ export default function Nav() {
         const recordingsPath  = analyticsRecordingsPath(currentDomain);
         const botsPath        = analyticsBotsPath(currentDomain);
         const conversionsPath = analyticsConversionsPath(currentDomain);
+        const adSpendPath     = analyticsAdSpendPath(currentDomain);
 
-        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions"].find(s => path.includes(s));
+        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend"].find(s => path.includes(s));
         const overviewActive    = path.indexOf("/analytics") === 0 && !sub;
         const audienceActive    = sub === "/audience";
         const acquisitionActive = sub === "/acquisition";
@@ -58,6 +60,7 @@ export default function Nav() {
         const recordingsActive  = sub === "/recordings";
         const botsActive        = sub === "/bots";
         const conversionsActive = sub === "/conversions";
+        const adSpendActive     = sub === "/ad-spend";
 
         return (
             <>
@@ -99,6 +102,10 @@ export default function Nav() {
                             <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}>
                                 <i className="dashboard-icons marketing" style={{ backgroundImage: `url(${marketing})` }} data-icon={marketing}></i>
                                 <span className="hiddenCollapsed">Marketing</span>
+                            </Link>
+                            <Link className={"navItems" + (adSpendActive ? " --active" : "")} to={adSpendPath}>
+                                <i className="dashboard-icons ad-spend" style={{ backgroundImage: `url(${adSpendIcon})` }} data-icon={adSpendIcon}></i>
+                                <span className="hiddenCollapsed">Ad Spend</span>
                             </Link>
                             <section className="navItems--bottom">
                                 <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}>
