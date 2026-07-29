@@ -20,18 +20,6 @@ const PLATFORM_LABELS = {
     microsoft_ads: "Microsoft Ads",
 };
 
-// Fixed categorical order, not brand colors — Google/LinkedIn/Microsoft all
-// trend blue, so using real brand hues would make three of four series hard
-// to tell apart. Assigned in this stable order regardless of which platforms
-// are actually connected; legend maps color -> label.
-const CHART_COLOR_ORDER = ["google_ads", "meta_ads", "linkedin_ads", "microsoft_ads"];
-const CHART_COLORS = {
-    google_ads:    "#3987e5",
-    meta_ads:      "#199e70",
-    linkedin_ads:  "#c98500",
-    microsoft_ads: "#9085e9",
-};
-
 const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr", PLN: "zł" };
 
 function formatMoney(n, currency) {
@@ -84,83 +72,86 @@ function AdSpendSetupCard({ domain }) {
     );
 }
 
-// Stacked bar-per-day chart for one currency group's platforms — same SVG
-// structure as the DailyChart in Pages/Analytics/index.js, generalized from
-// 2 fixed series to N dynamic platform series. Kept to one currency's
-// platforms per chart instance so bars never stack amounts across
-// incompatible currencies (same principle as the "group by currency" KPI).
-function AdSpendChart({ daily, platformIds, currency }) {
-    const W = 600, H = 160, PAD = { t: 10, r: 8, b: 28, l: 40 };
-    const cW = W - PAD.l - PAD.r;
-    const cH = H - PAD.t - PAD.b;
+// Per-channel metric card — a row of clickable KPI tiles (Spend / Clicks /
+// Impressions, plus a static Cost-per-click tile) above a shared line chart.
+// Clicking a tile makes that metric's line the bold/highlighted one; the
+// others stay visible but dimmed. Modeled on Google Ads' own campaign-report
+// widget. Each metric is normalized to its own max (0-1) before plotting —
+// spend/clicks/impressions live on wildly different scales, so a shared
+// literal y-axis would flatten whichever series has the smallest numbers.
+const CHANNEL_METRICS = [
+    { key: "spend",       label: "Spend",       color: "#3987e5" },
+    { key: "clicks",      label: "Clicks",      color: "#e5484d" },
+    { key: "impressions", label: "Impressions", color: "#c98500" },
+];
 
-    const orderedPlatforms = CHART_COLOR_ORDER.filter(p => platformIds.includes(p));
+function ChannelMetricCard({ platform, currency, totals, daily }) {
+    const [active, setActive] = useState("spend");
 
-    if (!daily?.length) return <div className="sa-chart sa-chart--empty">No data for this period</div>;
-
-    const maxVal = Math.max(
-        ...daily.map(d => orderedPlatforms.reduce((sum, p) => sum + (d.byPlatform?.[p] || 0), 0)),
-        1
+    const series = useMemo(
+        () => daily.map(d => d.byPlatform?.[platform] || { spend: 0, clicks: 0, impressions: 0 }),
+        [daily, platform]
     );
-    const barW = Math.max(2, Math.floor(cW / daily.length) - 2);
-    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(maxVal * f));
+
+    const maxByMetric = useMemo(() => {
+        const m = {};
+        for (const metric of CHANNEL_METRICS) {
+            m[metric.key] = Math.max(...series.map(s => s[metric.key] || 0), 1);
+        }
+        return m;
+    }, [series]);
+
+    const cpc = totals.clicks > 0 ? totals.spend / totals.clicks : null;
+
+    const formatTile = (key, v) => {
+        if (key === "spend") return formatMoney(v, currency);
+        return Math.round(v).toLocaleString("de-DE");
+    };
+
+    const W = 560, H = 140, PAD = { t: 10, r: 8, b: 8, l: 8 };
+    const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
+
+    const pointsFor = (key) => series.map((s, i) => {
+        const x = PAD.l + (series.length > 1 ? (i / (series.length - 1)) * cW : cW / 2);
+        const y = PAD.t + cH - ((s[key] || 0) / maxByMetric[key]) * cH;
+        return `${x},${y}`;
+    }).join(" ");
 
     return (
-        <div className="sa-chart">
-            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
-                {yTicks.map((v, i) => {
-                    const y = PAD.t + cH - (v / maxVal) * cH;
-                    return (
-                        <g key={i}>
-                            <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
-                                stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                            <text x={PAD.l - 4} y={y + 4} textAnchor="end"
-                                fontSize="9" fill="rgba(160,160,160,0.6)">{v}</text>
-                        </g>
-                    );
-                })}
-
-                {daily.map((d, i) => {
-                    const x = PAD.l + (i / daily.length) * cW + (cW / daily.length - barW) / 2;
-                    let yOffset = PAD.t + cH;
-                    return (
-                        <g key={d.date}>
-                            {orderedPlatforms.map(p => {
-                                const v = d.byPlatform?.[p] || 0;
-                                const h = (v / maxVal) * cH;
-                                yOffset -= h;
-                                return (
-                                    <rect key={p} x={x} y={yOffset} width={barW} height={h}
-                                        fill={CHART_COLORS[p]} rx="1" />
-                                );
-                            })}
-                        </g>
-                    );
-                })}
-
-                {[0, Math.floor(daily.length / 2), daily.length - 1]
-                    .filter((v, i, a) => a.indexOf(v) === i && v < daily.length)
-                    .map(i => {
-                        const d = daily[i];
-                        const x = PAD.l + (i / daily.length) * cW + (cW / daily.length) / 2;
-                        return (
-                            <text key={d.date} x={x} y={H - PAD.b + 14}
-                                textAnchor="middle" fontSize="9" fill="rgba(160,160,160,0.7)">
-                                {d.date.slice(5)}
-                            </text>
-                        );
-                    })
-                }
-            </svg>
-            <div className="sa-chart__legend">
-                {orderedPlatforms.map(p => (
-                    <span key={p} style={{ display: "inline-flex", alignItems: "center", gap: "4px", marginRight: "12px" }}>
-                        <span className="sa-chart__legend-dot" style={{ background: CHART_COLORS[p] }} />
-                        {platformLabel(p)}
-                    </span>
+        <div className="sa-channel-card">
+            <h4 className="sa-channel-card__title">{platformLabel(platform)}</h4>
+            <div className="sa-channel-card__tiles">
+                {CHANNEL_METRICS.map(m => (
+                    <button
+                        key={m.key}
+                        type="button"
+                        className={"sa-channel-tile" + (active === m.key ? " sa-channel-tile--active" : "")}
+                        style={active === m.key ? { background: m.color } : undefined}
+                        onClick={() => setActive(m.key)}
+                    >
+                        <span className="sa-channel-tile__label">{m.label}</span>
+                        <span className="sa-channel-tile__value">{formatTile(m.key, totals[m.key] || 0)}</span>
+                    </button>
                 ))}
-                <span style={{ marginLeft: "auto", color: "rgba(160,160,160,0.6)" }}>{currency}</span>
+                <div className="sa-channel-tile sa-channel-tile--static">
+                    <span className="sa-channel-tile__label">Cost / click</span>
+                    <span className="sa-channel-tile__value">{cpc != null ? formatMoney(cpc, currency) : "—"}</span>
+                </div>
             </div>
+            {series.length ? (
+                <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
+                    {CHANNEL_METRICS.filter(m => m.key !== active).map(m => (
+                        <polyline key={m.key} points={pointsFor(m.key)} fill="none"
+                            stroke={m.color} strokeOpacity="0.25" strokeWidth="1.5" />
+                    ))}
+                    {(() => {
+                        const m = CHANNEL_METRICS.find(x => x.key === active);
+                        return <polyline points={pointsFor(active)} fill="none" stroke={m.color} strokeWidth="2.5" />;
+                    })()}
+                </svg>
+            ) : (
+                <div className="sa-chart sa-chart--empty">No data for this period</div>
+            )}
         </div>
     );
 }
@@ -189,17 +180,6 @@ export default function AdSpend() {
 
     const maxPlatform = useMemo(() => Math.max(...(data?.platforms || []).map(p => p.amount), 1), [data]);
     const maxDomain   = useMemo(() => Math.max(...(data?.byDomain  || []).map(d => d.amount), 1), [data]);
-
-    // Group platforms by currency so the spend chart never stacks amounts
-    // across incompatible currencies inside a single bar.
-    const currencyGroups = useMemo(() => {
-        const map = new Map();
-        for (const p of (data?.platforms || [])) {
-            if (!map.has(p.currency)) map.set(p.currency, []);
-            map.get(p.currency).push(p.platform);
-        }
-        return Array.from(map.entries());
-    }, [data]);
 
     const showData = !loading && data && !data.noConnections;
 
@@ -241,20 +221,32 @@ export default function AdSpend() {
                             <KpiCard className="sa-as-kpi2"
                                 icon={<IconTarget />}
                                 label="Blended CAC"
-                                value="—"
-                                sub="coming soon"
+                                value={data.blendedCac?.length
+                                    ? data.blendedCac.map(c => c.cac != null ? formatMoney(c.cac, c.currency) : "—").join(" · ")
+                                    : "—"}
+                                sub={data.conversions?.totalQualityLeads
+                                    ? `spend ÷ ${data.conversions.totalQualityLeads.toLocaleString("de-DE")} ${data.conversions.source === "lead_quality" ? "quality leads" : "conversion events"}`
+                                    : "no conversions tracked yet"}
                             />
 
                             <div className="sa-chart-section sa-as-chart">
                                 <h3 className="sa-chart-section__title">
-                                    <IconTrendingUp className="sa-icon" /> Spend per day
+                                    <IconTrendingUp className="sa-icon" /> By channel
                                 </h3>
-                                {currencyGroups.length === 0 && (
+                                {!data.platforms.length && (
                                     <div className="sa-chart sa-chart--empty">No data for this period</div>
                                 )}
-                                {currencyGroups.map(([currency, platformIds]) => (
-                                    <AdSpendChart key={currency} daily={data.daily} platformIds={platformIds} currency={currency} />
-                                ))}
+                                <div className="sa-channel-cards">
+                                    {data.platforms.map(p => (
+                                        <ChannelMetricCard
+                                            key={p.platform}
+                                            platform={p.platform}
+                                            currency={p.currency}
+                                            totals={{ spend: p.amount, clicks: p.clicks, impressions: p.impressions }}
+                                            daily={data.daily}
+                                        />
+                                    ))}
+                                </div>
                             </div>
 
                             <div className="sa-panel sa-as-platforms">
