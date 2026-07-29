@@ -9,8 +9,7 @@
     "dev:api": "vercel dev --listen 3000",
     "startNodeServer": "nodemon index.js",
     "buildProd": "webpack build --mode=production",
-    "buildDev": "webpack build --mode=development",
-    "build": "webpack build --mode=production"
+    "buildDev": "webpack build --mode=development"
   },
   "repository": {
     "type": "git",
