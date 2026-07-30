@@ -316,15 +316,18 @@ const MS_ADS_ENDPOINT = "https://clientcenter.api.bingads.microsoft.com/Api/Cust
 
 async function msAdsSoapCall(action, bodyXml, accessToken) {
     const devToken = process.env.MICROSOFT_ADS_DEVELOPER_TOKEN || "";
-    const actionUri = `${MS_ADS_SOAP_NS}/ICustomerManagementService/${action}`;
-    // SOAP 1.1 — CustomerManagementService.svc's WCF binding only accepts
-    // text/xml with the operation Action carried in the transport-level
-    // SOAPAction HTTP header. Sending SOAP 1.2 framing
-    // (application/soap+xml) here gets rejected at the transport level with
-    // HTTP 415 before the request ever reaches the SOAP fault machinery.
+    // SOAP 1.1, text/xml. WCF's ContractFilter routes on the <Action> SOAP
+    // header element (in the service's own v13 namespace), and expects the
+    // short operation name there ("GetUser"), not a fully-qualified action
+    // URI — omitting this header, or using the long URI form, produces a
+    // "ContractFilter mismatch at the EndpointDispatcher" fault even though
+    // the transport-level request itself is accepted. The SOAPAction HTTP
+    // header takes the same short name.
     const envelope = `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
   <soap:Header>
+    <Action mustUnderstand="1" xmlns="${MS_ADS_SOAP_NS}">${action}</Action>
+    <ApplicationToken i:nil="true" xmlns="${MS_ADS_SOAP_NS}"/>
     <AuthenticationToken xmlns="${MS_ADS_SOAP_NS}">${accessToken}</AuthenticationToken>
     <DeveloperToken xmlns="${MS_ADS_SOAP_NS}">${devToken}</DeveloperToken>
   </soap:Header>
@@ -335,7 +338,7 @@ async function msAdsSoapCall(action, bodyXml, accessToken) {
         method: "POST",
         headers: {
             "Content-Type": "text/xml; charset=utf-8",
-            SOAPAction: `"${actionUri}"`,
+            SOAPAction: `"${action}"`,
         },
         body: envelope,
     });
