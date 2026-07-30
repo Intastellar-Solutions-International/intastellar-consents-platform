@@ -422,7 +422,12 @@ export default function SiteAnalytics() {
                     )}
 
                     {showData && (
-                        <div className="sa-dashboard-grid sa-dashboard-grid--overview" style={{gridTemplateColumns: data.totals.qualityLeads !== null ? "repeat(6, 1fr)" : "repeat(5, 1fr)"}}>
+                        <div className="sa-dashboard-grid sa-dashboard-grid--overview" style={{ gridTemplateColumns: data.totals.qualityLeads !== null ? "repeat(6, 1fr)" : "repeat(5, 1fr)" }, {
+                            gridTemplateAreas: data.totals.qualityLeads !== null ? `"kpi0  kpi1  kpi2  kpi3  kpi4  kpi5"
+"chart chart chart chart live live"
+"pages pages pages pages pages pages"` : `"kpi0  kpi1  kpi2  kpi3  kpi4"
+"chart chart chart live live"
+"pages pages pages pages pages"` }}>
 
                             <KpiCard className="sa-ga-kpi0"
                                 icon={<IconRadio />}
@@ -463,6 +468,7 @@ export default function SiteAnalytics() {
                                     value={data.totals.qualityLeads.toLocaleString("de-DE")}
                                     sub="engaged + page/event match (see Settings)"
                                     variant="live"
+                                    className="sa-ga-kpi5"
                                 />
                             )}
 

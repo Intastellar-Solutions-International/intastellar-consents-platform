@@ -490,6 +490,7 @@
 .sa-ga-kpi2      { grid-area: kpi2; }
 .sa-ga-kpi3      { grid-area: kpi3; }
 .sa-ga-kpi4      { grid-area: kpi4; }
+.sa-ga-kpi5      { grid-area: kpi5; }
 .sa-ga-chart     { grid-area: chart; align-self: start; }
 .sa-ga-live      { grid-area: live; }
 .sa-ga-pages     { grid-area: pages; }
