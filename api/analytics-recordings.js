@@ -59,7 +59,15 @@ function validateJwt(authHeader) {
     } catch { return null; }
 }
 
-function safeDate(str, fallback) {
+function safeDate(str, fallback, endOfDay = false) {
+    if (!str) return fallback;
+    // A bare "YYYY-MM-DD" (as sent by the date-range picker) parses to
+    // midnight UTC — fine as a lower bound, but as the upper bound it
+    // silently excludes everything recorded later that same day. Push it to
+    // the end of that day so "today" is actually included in "to".
+    if (endOfDay && /^\d{4}-\d{2}-\d{2}$/.test(String(str).trim())) {
+        str = `${str}T23:59:59.999Z`;
+    }
     const d = new Date(str);
     return isNaN(d.getTime()) ? fallback : d.toISOString();
 }
@@ -132,7 +140,7 @@ export default async function handler(req, res) {
     const today     = new Date().toISOString();
     const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString();
     const fromDate  = safeDate(req.query.from, thirtyAgo);
-    const toDate    = safeDate(req.query.to,   today);
+    const toDate    = safeDate(req.query.to,   today, true);
     const pathname  = (req.query.pathname || "").trim() || null;
     const limit     = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 25));
     const cursor    = req.query.cursor ? safeDate(req.query.cursor, null) : null;
