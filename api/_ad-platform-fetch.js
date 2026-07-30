@@ -350,7 +350,20 @@ async function msAdsSoapCall(action, bodyXml, accessToken) {
         const faultMsg = faultMatch?.[1] || faultMatch?.[2]
             || /<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/i.exec(text)?.[1]
             || `Microsoft Ads API error (${resp.status}): ${text.slice(0, 300)}`;
-        throw new Error(faultMsg);
+        // The top-level Reason/faultstring is often a generic wrapper (e.g.
+        // "Invalid client data. Check the SOAP fault details for more
+        // information.") — the actionable error code/message lives in the
+        // fault's <detail> block (ApiFaultDetail/AdApiFaultDetail ->
+        // OperationError/BatchError entries), so surface that too.
+        const detailBlock = /<(?:\w+:)?[Dd]etail[^>]*>([\s\S]*?)<\/(?:\w+:)?[Dd]etail>/i.exec(text)?.[1];
+        const codeMsgPairs = detailBlock
+            ? [...detailBlock.matchAll(/<(?:\w+:)?Code>([^<]*)<\/(?:\w+:)?Code>\s*<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/gi)]
+                .map((m) => `${m[1]}: ${m[2]}`)
+            : [];
+        const detailInfo = codeMsgPairs.length > 0
+            ? codeMsgPairs.join("; ")
+            : detailBlock?.slice(0, 500);
+        throw new Error(detailInfo ? `${faultMsg} | Detail: ${detailInfo}` : faultMsg);
     }
     return text;
 }
