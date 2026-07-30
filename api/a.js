@@ -704,8 +704,8 @@ function hookConsentTrigger(name){
   window[name]=wrapped;
 }
 function tryHooks(){
-  hookConsentTrigger('acceptAllCookies'); // banner's actual Accept All function
-  hookConsentTrigger('saveConsent');      // banner's actual Save Settings function
+  hookConsentTrigger('IntaAcceptAll');    // banner's actual Accept All function
+  hookConsentTrigger('IntaSaveSettings'); // banner's actual Save Settings function
 }
 
 // Fire on load
