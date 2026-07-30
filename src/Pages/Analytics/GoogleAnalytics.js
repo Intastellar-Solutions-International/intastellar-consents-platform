@@ -72,7 +72,7 @@ function useGa4Report(domain, fromDate, toDate) {
     return state;
 }
 
-/* Real per-campaign performance from connected ad accounts (Google Ads today). */
+/* Real per-campaign performance from connected ad accounts (Google Ads, Meta Ads today). */
 function useCampaignReport(domain, fromIso, toIso) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);

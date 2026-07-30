@@ -9,6 +9,10 @@
  *                                            Google Ads account's tracking templates/custom params
  * fetchGoogleAdsCampaigns(conn, from, to)   → [{id, name, status, channelType, clicks, impressions,
  *                                            spend, currency}] per-campaign, live (not cached)
+ * fetchMetaAdsCampaigns(conn, from, to)     → [{id, name, status, channelType, clicks, impressions,
+ *                                            spend, currency}] per-campaign, live (not cached);
+ *                                            status/channelType are always null (no Meta equivalent
+ *                                            surfaced by the insights endpoint at this level)
  * fetchMicrosoftAdsAccounts(accessToken)    → [{id, name, currency}] via the SOAP Customer Management
  *                                            Service (v13) — untested against a live account, see the
  *                                            function's own doc comment
@@ -426,6 +430,41 @@ export async function fetchMicrosoftAdsAccounts(accessToken) {
         console.warn("[fetchMicrosoftAdsAccounts] SearchAccounts returned no parseable AdvertiserAccount blocks:", searchXml.slice(0, 500));
     }
     return accounts;
+}
+
+export async function fetchMetaAdsCampaigns(conn, fromDate, toDate) {
+    const accountId = String(conn.account_id || "").replace(/^act_/, "");
+    if (!accountId) throw new Error("No Meta Ad Account linked.");
+    // level: "campaign" with no time_increment returns one row per campaign
+    // already aggregated over the whole time_range, unlike Google Ads' query
+    // above which returns one row per campaign per day and needs summing.
+    const params = new URLSearchParams({
+        fields: "campaign_id,campaign_name,clicks,spend,impressions,account_currency",
+        time_range: JSON.stringify({ since: fromDate, until: toDate }),
+        level: "campaign",
+        limit: "500",
+        access_token: conn.access_token,
+    });
+    const resp = await fetch(`https://graph.facebook.com/v18.0/act_${accountId}/insights?${params}`);
+    if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err?.error?.message || `Meta API error (${resp.status})`);
+    }
+    const data = await resp.json();
+    const fallbackCurrency = conn.account_currency || "USD";
+    return (data.data || [])
+        .filter(row => row.campaign_id)
+        .map(row => ({
+            id: row.campaign_id,
+            name: row.campaign_name || `Campaign ${row.campaign_id}`,
+            status: null,
+            channelType: null,
+            clicks: Number(row.clicks || 0),
+            impressions: Number(row.impressions || 0),
+            spend: Number(row.spend || 0),
+            currency: row.account_currency || fallbackCurrency,
+        }))
+        .sort((a, b) => b.spend - a.spend);
 }
 
 async function fetchMetaAds(conn, fromDate, toDate) {

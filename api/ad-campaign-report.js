@@ -11,18 +11,19 @@
  * connected account, same trade-off ad-daily-data.js already makes for GA4's
  * platform/channel breakdowns.
  *
- * Only google_ads is implemented today (see fetchGoogleAdsCampaigns in
- * _ad-platform-fetch.js). Other connected platforms are reported back with
- * `supported: false` so the UI can say "not available yet" instead of
- * silently omitting them.
+ * google_ads and meta_ads are implemented today (see fetchGoogleAdsCampaigns
+ * and fetchMetaAdsCampaigns in _ad-platform-fetch.js). Other connected
+ * platforms are reported back with `supported: false` so the UI can say
+ * "not available yet" instead of silently omitting them.
  *
  * Required headers: Authorization: Bearer <token>, Organisation: <org_id>
- * Required env vars: POSTGRES_URL, GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+ * Required env vars: POSTGRES_URL, GOOGLE_ADS_DEVELOPER_TOKEN, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET,
+ *                     META_ADS_CLIENT_ID, META_ADS_CLIENT_SECRET
  */
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { tryRefreshToken, fetchGoogleAdsCampaigns } from "./_ad-platform-fetch.js";
+import { tryRefreshToken, fetchGoogleAdsCampaigns, fetchMetaAdsCampaigns } from "./_ad-platform-fetch.js";
 
 let pool;
 function getPool() {
@@ -78,6 +79,7 @@ function safeDate(str, fallback) {
 // for it, so it isn't listed here either.
 const CAMPAIGN_FETCHERS = {
     google_ads: fetchGoogleAdsCampaigns,
+    meta_ads: fetchMetaAdsCampaigns,
 };
 
 export default async function handler(req, res) {
