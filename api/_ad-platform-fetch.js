@@ -312,6 +312,10 @@ export async function fetchGoogleAdsCampaigns(conn, fromDate, toDate) {
 // deliberately surfaced with the raw fault text (never silently swallowed to
 // an empty array) so that pass has something to go on.
 const MS_ADS_SOAP_NS = "https://bingads.microsoft.com/Customer/v13";
+// WCF serializes array/complex-type request elements (e.g. Predicate,
+// Paging) into this companion namespace, distinct from MS_ADS_SOAP_NS which
+// covers the top-level request type itself and its scalar fields.
+const MS_ADS_ENTITIES_NS = "https://bingads.microsoft.com/Customer/v13/Entities";
 const MS_ADS_ENDPOINT = "https://clientcenter.api.bingads.microsoft.com/Api/CustomerManagement/v13/CustomerManagementService.svc";
 
 async function msAdsSoapCall(action, bodyXml, accessToken) {
@@ -384,13 +388,19 @@ export async function fetchMicrosoftAdsAccounts(accessToken) {
     if (!userId) throw new Error(`Could not resolve Microsoft Advertising user from GetUser response: ${userXml.slice(0, 300)}`);
 
     // 2. Every account this user has access to
+    // Predicates must come before PageInfo (WCF deserializes positionally,
+    // matching the order in SearchAccountsRequest's data contract), and both
+    // their contents live in the Entities namespace, not the default one.
     const searchXml = await msAdsSoapCall(
         "SearchAccounts",
         `<SearchAccountsRequest xmlns="${MS_ADS_SOAP_NS}">
-            <PageInfo><Index>0</Index><Size>1000</Size></PageInfo>
-            <Predicates>
-                <Predicate><Field>UserId</Field><Operator>Equals</Operator><Value>${userId}</Value></Predicate>
+            <Predicates xmlns:e="${MS_ADS_ENTITIES_NS}">
+                <e:Predicate><e:Field>UserId</e:Field><e:Operator>Equals</e:Operator><e:Value>${userId}</e:Value></e:Predicate>
             </Predicates>
+            <PageInfo xmlns:e="${MS_ADS_ENTITIES_NS}">
+                <e:Index>0</e:Index>
+                <e:Size>1000</e:Size>
+            </PageInfo>
         </SearchAccountsRequest>`,
         accessToken
     );
