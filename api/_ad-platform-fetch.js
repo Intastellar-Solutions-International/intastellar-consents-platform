@@ -317,27 +317,25 @@ const MS_ADS_ENDPOINT = "https://clientcenter.api.bingads.microsoft.com/Api/Cust
 async function msAdsSoapCall(action, bodyXml, accessToken) {
     const devToken = process.env.MICROSOFT_ADS_DEVELOPER_TOKEN || "";
     const actionUri = `${MS_ADS_SOAP_NS}/ICustomerManagementService/${action}`;
-    // SOAP 1.2 + WS-Addressing — this service's WCF binding expects the
-    // operation Action carried in a WS-Addressing header element inside the
-    // envelope itself, not just the transport-level SOAPAction HTTP header
-    // (SOAP 1.1 style). Sending only the HTTP header produces a
-    // "ContractFilter mismatch at the EndpointDispatcher" fault, since the
-    // dispatcher never finds an Action where WS-Addressing says to look.
+    // SOAP 1.1 — CustomerManagementService.svc's WCF binding only accepts
+    // text/xml with the operation Action carried in the transport-level
+    // SOAPAction HTTP header. Sending SOAP 1.2 framing
+    // (application/soap+xml) here gets rejected at the transport level with
+    // HTTP 415 before the request ever reaches the SOAP fault machinery.
     const envelope = `<?xml version="1.0" encoding="utf-8"?>
-<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-  <s:Header>
-    <a:Action s:mustUnderstand="1">${actionUri}</a:Action>
-    <a:To s:mustUnderstand="1">${MS_ADS_ENDPOINT}</a:To>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header>
     <AuthenticationToken xmlns="${MS_ADS_SOAP_NS}">${accessToken}</AuthenticationToken>
     <DeveloperToken xmlns="${MS_ADS_SOAP_NS}">${devToken}</DeveloperToken>
-  </s:Header>
-  <s:Body>${bodyXml}</s:Body>
-</s:Envelope>`;
+  </soap:Header>
+  <soap:Body>${bodyXml}</soap:Body>
+</soap:Envelope>`;
 
     const resp = await fetch(MS_ADS_ENDPOINT, {
         method: "POST",
         headers: {
-            "Content-Type": `application/soap+xml; charset=utf-8; action="${actionUri}"`,
+            "Content-Type": "text/xml; charset=utf-8",
+            SOAPAction: `"${actionUri}"`,
         },
         body: envelope,
     });
