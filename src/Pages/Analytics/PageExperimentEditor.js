@@ -21,6 +21,41 @@ function changeKey(c) {
     return `${c.selector}::${c.type}::${c.property || ""}`;
 }
 
+// Kept in sync with STYLE_PROPS in api/ab-test-proxy.js's bridge script —
+// that's the curated set actually computed and sent per element selection;
+// this is the same set, with how each one should be edited.
+const STYLE_PROPERTIES = [
+    { group: "Typography", key: "color", label: "Text color", type: "color" },
+    { group: "Typography", key: "font-size", label: "Font size", type: "text" },
+    { group: "Typography", key: "font-weight", label: "Font weight", type: "select", options: ["normal", "bold", "100", "200", "300", "400", "500", "600", "700", "800", "900"] },
+    { group: "Typography", key: "font-family", label: "Font family", type: "text" },
+    { group: "Typography", key: "line-height", label: "Line height", type: "text" },
+    { group: "Typography", key: "text-align", label: "Text align", type: "select", options: ["left", "center", "right", "justify"] },
+    { group: "Background & border", key: "background-color", label: "Background color", type: "color" },
+    { group: "Background & border", key: "border", label: "Border", type: "text" },
+    { group: "Background & border", key: "border-radius", label: "Border radius", type: "text" },
+    { group: "Spacing & size", key: "padding", label: "Padding", type: "text" },
+    { group: "Spacing & size", key: "margin", label: "Margin", type: "text" },
+    { group: "Spacing & size", key: "width", label: "Width", type: "text" },
+    { group: "Spacing & size", key: "height", label: "Height", type: "text" },
+    { group: "Layout", key: "display", label: "Display", type: "select", options: ["block", "inline", "inline-block", "flex", "grid", "none"] },
+    { group: "Layout", key: "visibility", label: "Visibility", type: "select", options: ["visible", "hidden"] },
+    { group: "Layout", key: "opacity", label: "Opacity", type: "range" },
+];
+const STYLE_GROUPS = [...new Set(STYLE_PROPERTIES.map(p => p.group))];
+
+// <input type="color"> requires a hex value — computed styles come back as
+// rgb()/rgba(). Alpha is dropped (color inputs can't represent it); good
+// enough for a swatch preview, callers that need transparency can still get
+// there by typing a raw value elsewhere (this panel is a convenience layer,
+// not the only way to author a change).
+function toHexColor(rgbString) {
+    const m = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/.exec(rgbString || "");
+    if (!m) return "#000000";
+    const toHex = n => Number(n).toString(16).padStart(2, "0");
+    return `#${toHex(m[1])}${toHex(m[2])}${toHex(m[3])}`;
+}
+
 function upsertChange(changes, change) {
     const key = changeKey(change);
     const idx = changes.findIndex(c => changeKey(c) === key);
@@ -287,8 +322,8 @@ export default function PageExperimentEditor() {
                                                 onApply={value => applyChange({ selector: selectedElement.selector, type: "text", value })}
                                             />
 
-                                            <label className="pxp-inspector__label">Style property</label>
-                                            <StyleEditRow
+                                            <StylePanel
+                                                currentStyles={selectedElement.currentStyles}
                                                 onApply={(property, value) => applyChange({ selector: selectedElement.selector, type: "style", property, value })}
                                             />
 
@@ -354,34 +389,93 @@ function TextEditRow({ initial, onApply }) {
     );
 }
 
-function StyleEditRow({ onApply }) {
-    const [property, setProperty] = useState("");
-    const [value, setValue] = useState("");
+// Every editable style property for the selected element, grouped and
+// pre-filled from its current computed style. Text/select/range fields
+// apply on change; text fields apply on blur (so a value in progress isn't
+// re-applied on every keystroke), matching how the rest of this panel
+// already applies edits as a live preview rather than requiring a save
+// step per field — Save (top toolbar) is still what persists to the DB.
+function StylePanel({ currentStyles, onApply }) {
+    const styles = currentStyles || {};
     return (
-        <div className="sa-event-form" style={{ marginBottom: 12 }}>
+        <div className="pxp-style-panel">
+            {STYLE_GROUPS.map(group => (
+                <div key={group} className="pxp-style-group">
+                    <label className="pxp-inspector__label">{group}</label>
+                    {STYLE_PROPERTIES.filter(p => p.group === group).map(p => (
+                        <StyleField key={p.key} prop={p} currentValue={styles[p.key]} onApply={onApply} />
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function StyleField({ prop, currentValue, onApply }) {
+    const [value, setValue] = useState(currentValue || "");
+    // Re-seed when a different element is selected (currentValue changes
+    // identity via selectedElement, not on every render).
+    useEffect(() => { setValue(currentValue || ""); }, [currentValue]);
+
+    const commit = (v) => { setValue(v); onApply(prop.key, v); };
+
+    if (prop.type === "color") {
+        return (
+            <div className="pxp-style-field">
+                <span className="pxp-style-field__label">{prop.label}</span>
+                <input
+                    type="color"
+                    className="pxp-style-field__color"
+                    value={toHexColor(value)}
+                    onChange={e => commit(e.target.value)}
+                />
+            </div>
+        );
+    }
+
+    if (prop.type === "select") {
+        return (
+            <div className="pxp-style-field">
+                <span className="pxp-style-field__label">{prop.label}</span>
+                <select
+                    className="sa-event-form__select pxp-style-field__input"
+                    value={value}
+                    onChange={e => commit(e.target.value)}
+                >
+                    <option value="">—</option>
+                    {prop.options.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+            </div>
+        );
+    }
+
+    if (prop.type === "range") {
+        return (
+            <div className="pxp-style-field">
+                <span className="pxp-style-field__label">{prop.label}</span>
+                <input
+                    type="range"
+                    min="0" max="1" step="0.05"
+                    className="pxp-style-field__range"
+                    value={value === "" ? 1 : value}
+                    onChange={e => commit(e.target.value)}
+                />
+                <span className="pxp-style-field__range-value">{value}</span>
+            </div>
+        );
+    }
+
+    return (
+        <div className="pxp-style-field">
+            <span className="pxp-style-field__label">{prop.label}</span>
             <input
                 type="text"
-                className="sa-event-form__input"
-                placeholder="property, e.g. color"
-                value={property}
-                onChange={e => setProperty(e.target.value)}
-                maxLength={100}
-            />
-            <input
-                type="text"
-                className="sa-event-form__input"
-                placeholder="value, e.g. red"
+                className="sa-event-form__input pxp-style-field__input"
                 value={value}
                 onChange={e => setValue(e.target.value)}
+                onBlur={() => commit(value)}
                 maxLength={200}
             />
-            <button
-                type="button"
-                className="sa-event-form__submit"
-                onClick={() => property.trim() && onApply(property.trim(), value)}
-            >
-                Apply
-            </button>
         </div>
     );
 }

@@ -185,6 +185,17 @@ function highlight(el){
   h.style.height=r.height+'px';
 }
 
+// Kept in sync with STYLE_PROPERTIES in PageExperimentEditor.js — this is
+// the curated set of properties the style panel can adjust, so only these
+// (not the ~300 getComputedStyle() returns) get computed and sent per click.
+var STYLE_PROPS=['color','background-color','font-size','font-weight','font-family','line-height','text-align','padding','margin','width','height','border-radius','border','display','opacity','visibility'];
+function computedStylesFor(el){
+  var cs=window.getComputedStyle(el);
+  var out={};
+  for(var i=0;i<STYLE_PROPS.length;i++){out[STYLE_PROPS[i]]=cs.getPropertyValue(STYLE_PROPS[i]);}
+  return out;
+}
+
 document.addEventListener('mouseover',function(e){
   if(!selectMode)return;
   highlight(e.target);
@@ -202,7 +213,8 @@ document.addEventListener('click',function(e){
     selector:selectorFor(el),
     tagName:el.tagName.toLowerCase(),
     currentText:(el.textContent||'').trim().slice(0,500),
-    currentAttributes:attrs
+    currentAttributes:attrs,
+    currentStyles:computedStylesFor(el)
   },TRUSTED_ORIGIN);
 },true);
 

@@ -2415,3 +2415,53 @@ details[open] .ca-context-summary::before { content: "▾"; }
     flex-direction: column;
     gap: 4px;
 }
+
+.pxp-style-panel {
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pxp-style-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pxp-style-field {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    align-items: center;
+    gap: 8px;
+}
+
+.pxp-style-field__label {
+    font-size: 0.74rem;
+    color: rgba(180,180,180,0.8);
+}
+
+.pxp-style-field__input {
+    width: 100%;
+}
+
+.pxp-style-field__color {
+    width: 36px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.pxp-style-field__range {
+    width: 100%;
+}
+
+.pxp-style-field__range-value {
+    grid-column: 2;
+    font-size: 0.68rem;
+    color: rgba(140,140,140,0.7);
+    margin-top: -4px;
+}
