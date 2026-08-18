@@ -11,11 +11,92 @@
  * exposure to that variant — pre-existing behavior from before a visitor
  * ever saw a variant shouldn't be attributed to it.
  *
+ * Also returns, when a goal event is set:
+ *  - expectedConversionRate: Bayesian posterior mean (Beta(1,1) prior) —
+ *    regularises small-sample rates toward 50% instead of reporting a raw
+ *    ratio that swings wildly at low volume.
+ *  - probabilityToBeBetter / expectedImprovement: Monte-Carlo comparison of
+ *    each variant's Beta posterior against control's (see simulateVsControl
+ *    below) — same idea as GrowthBook's Bayesian engine, just computed
+ *    inline rather than via a stats library, since the shape parameters
+ *    here are always >=1 (conversions+1, failures+1) so a plain
+ *    Marsaglia-Tsang gamma sampler is all that's needed.
+ *  - dailySeries: cumulative sessions/conversions per variant per day
+ *    (bucketed by day of first exposure, not day of conversion) so the
+ *    Reports UI can chart a conversion-rate trend over the test's lifetime.
+ *
  * Requires headers: Authorization: Bearer <token>   Organisation: <org_id>
  */
 
 import pkg from "pg";
 const { Pool } = pkg;
+
+// Below this many sessions in a variant, a Bayesian posterior is still
+// mostly reflecting the uniform prior rather than real signal — the UI
+// shows a "collecting data" state instead of probability/improvement
+// numbers until every variant clears this bar. Not a formal power
+// calculation, just a common rule-of-thumb minimum.
+const MIN_SESSIONS_PER_VARIANT = 100;
+
+// Monte-Carlo draws per variant-vs-control comparison. Cheap enough (each
+// draw is two gamma samples, each usually 1-2 rejection-loop iterations) to
+// run well within a serverless request even with several variants.
+const SIMULATIONS = 10000;
+
+function gaussian() {
+    let u = 0, v = 0;
+    while (u === 0) u = Math.random();
+    while (v === 0) v = Math.random();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+// Marsaglia & Tsang (2000). Only valid for shape >= 1 — guaranteed here
+// since callers always pass (successes+1) / (failures+1) from a Beta(1,1)
+// prior, both of which are >= 1.
+function sampleGamma(shape) {
+    const d = shape - 1 / 3;
+    const c = 1 / Math.sqrt(9 * d);
+    for (;;) {
+        let x, v;
+        do {
+            x = gaussian();
+            v = 1 + c * x;
+        } while (v <= 0);
+        v = v * v * v;
+        const x2 = x * x;
+        const u = Math.random();
+        if (u < 1 - 0.0331 * x2 * x2) return d * v;
+        if (Math.log(u) < 0.5 * x2 + d * (1 - v + Math.log(v))) return d * v;
+    }
+}
+
+function sampleBeta(alpha, beta) {
+    const x = sampleGamma(alpha);
+    const y = sampleGamma(beta);
+    return x / (x + y);
+}
+
+// Probability the variant's true conversion rate beats control's, plus the
+// median simulated relative uplift — median rather than mean because the
+// (v-c)/c ratio has a heavy right tail whenever a simulated control draw
+// lands near zero, which would otherwise dominate an average.
+function simulateVsControl(controlConversions, controlSessions, variantConversions, variantSessions) {
+    const ac = controlConversions + 1, bc = (controlSessions - controlConversions) + 1;
+    const av = variantConversions + 1, bv = (variantSessions - variantConversions) + 1;
+    let wins = 0;
+    const uplifts = new Array(SIMULATIONS);
+    for (let i = 0; i < SIMULATIONS; i++) {
+        const c = sampleBeta(ac, bc);
+        const v = sampleBeta(av, bv);
+        if (v > c) wins++;
+        uplifts[i] = c > 1e-9 ? (v - c) / c : 0;
+    }
+    uplifts.sort((a, b) => a - b);
+    return {
+        probabilityToBeBetter: wins / SIMULATIONS,
+        expectedImprovement: uplifts[Math.floor(SIMULATIONS / 2)],
+    };
+}
 
 let pool;
 function getPool() {
@@ -166,16 +247,111 @@ export default async function handler(req, res) {
         [testId, goalEventName, siteId]
     ).catch(() => ({ rows: [] }));
 
+    const variants = rows.map(r => {
+        const uniqueSessions = Number(r.unique_sessions || 0);
+        const conversions = hasGoal ? Number(r.converted_sessions || 0) : null;
+        const conversionRate = !hasGoal || uniqueSessions === 0 ? null : conversions / uniqueSessions;
+        return {
+            variantId: r.variant_id, variantKey: r.variant_key, label: r.label, isControl: r.is_control,
+            exposures: Number(r.exposures || 0), uniqueSessions, conversions, conversionRate,
+            expectedConversionRate: null, expectedImprovement: null, probabilityToBeBetter: null,
+        };
+    });
+
+    const hasEnoughData = hasGoal && variants.length > 0 && variants.every(v => v.uniqueSessions >= MIN_SESSIONS_PER_VARIANT);
+
+    if (hasGoal) {
+        const control = variants.find(v => v.isControl);
+        for (const v of variants) {
+            // Beta(1,1) posterior mean — regularises toward 50% at low volume
+            // instead of reporting a raw ratio that swings wildly early on.
+            v.expectedConversionRate = (v.conversions + 1) / (v.uniqueSessions + 2);
+            if (v.isControl || !control) continue;
+            const { probabilityToBeBetter, expectedImprovement } = simulateVsControl(
+                control.conversions, control.uniqueSessions, v.conversions, v.uniqueSessions
+            );
+            v.probabilityToBeBetter = probabilityToBeBetter;
+            v.expectedImprovement = expectedImprovement;
+        }
+    }
+
+    // ── Daily series (cumulative sessions/conversions per variant per day) ────
+    // Bucketed by the day of each session's FIRST exposure — a conversion is
+    // credited to that day regardless of which day it actually happened on,
+    // matching the "cumulative" framing (as of today, how did sessions first
+    // exposed on day X eventually convert), not a day-by-day funnel.
+    const { rows: dailyRows } = await db.query(
+        `WITH first_exposures AS (
+            SELECT variant_id, session_id, MIN(assigned_at) AS first_assigned_at
+            FROM ab_test_assignments
+            WHERE test_id = $1
+            GROUP BY variant_id, session_id
+         ),
+         per_session AS (
+            SELECT
+                fe.variant_id,
+                DATE(fe.first_assigned_at) AS day,
+                ($2::text IS NOT NULL AND $3::text IS NOT NULL AND EXISTS (
+                    SELECT 1 FROM analytics_custom_events ce
+                    WHERE ce.site_id = $3 AND ce.session_id = fe.session_id
+                      AND ce.name = $2 AND ce.received_at >= fe.first_assigned_at
+                )) AS converted
+            FROM first_exposures fe
+         )
+         SELECT variant_id, day, COUNT(*) AS sessions, COUNT(*) FILTER (WHERE converted) AS conversions
+         FROM per_session
+         GROUP BY variant_id, day
+         ORDER BY day ASC`,
+        [testId, goalEventName, siteId]
+    ).catch(() => ({ rows: [] }));
+
+    const variantIds = variants.map(v => String(v.variantId));
+    const byVariantDay = {};
+    for (const id of variantIds) byVariantDay[id] = {};
+    let minDay = null, maxDay = null;
+    for (const d of dailyRows) {
+        const id = String(d.variant_id);
+        const day = d.day.toISOString().slice(0, 10);
+        if (!byVariantDay[id]) byVariantDay[id] = {};
+        byVariantDay[id][day] = { sessions: Number(d.sessions), conversions: Number(d.conversions) };
+        if (!minDay || day < minDay) minDay = day;
+        if (!maxDay || day > maxDay) maxDay = day;
+    }
+
+    const dailySeries = [];
+    if (minDay && maxDay) {
+        const cumulative = {};
+        for (const id of variantIds) cumulative[id] = { sessions: 0, conversions: 0 };
+        const cursor = new Date(minDay + "T00:00:00Z");
+        const end = new Date(maxDay + "T00:00:00Z");
+        // Safety cap — a test running for years shouldn't blow up the response;
+        // the chart only needs the most recent stretch anyway.
+        for (let i = 0; cursor <= end && i < 400; i++) {
+            const day = cursor.toISOString().slice(0, 10);
+            const variantsForDay = {};
+            for (const id of variantIds) {
+                const today = byVariantDay[id][day] || { sessions: 0, conversions: 0 };
+                cumulative[id].sessions += today.sessions;
+                cumulative[id].conversions += today.conversions;
+                variantsForDay[id] = {
+                    sessions: today.sessions,
+                    cumulativeSessions: cumulative[id].sessions,
+                    conversions: today.conversions,
+                    cumulativeConversions: cumulative[id].conversions,
+                    cumulativeConversionRate: cumulative[id].sessions > 0 ? cumulative[id].conversions / cumulative[id].sessions : null,
+                };
+            }
+            dailySeries.push({ date: day, variants: variantsForDay });
+            cursor.setUTCDate(cursor.getUTCDate() + 1);
+        }
+    }
+
     return res.status(200).json({
         test: { id: test.id, domain: test.domain, goalEventName },
-        variants: rows.map(r => {
-            const uniqueSessions = Number(r.unique_sessions || 0);
-            const conversions = hasGoal ? Number(r.converted_sessions || 0) : null;
-            const conversionRate = !hasGoal || uniqueSessions === 0 ? null : conversions / uniqueSessions;
-            return {
-                variantId: r.variant_id, variantKey: r.variant_key, label: r.label, isControl: r.is_control,
-                exposures: Number(r.exposures || 0), uniqueSessions, conversions, conversionRate,
-            };
-        }),
+        minSessionsPerVariant: MIN_SESSIONS_PER_VARIANT,
+        hasEnoughData,
+        dateRange: minDay && maxDay ? { from: minDay, to: maxDay } : null,
+        variants,
+        dailySeries,
     });
 }
