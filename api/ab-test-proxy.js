@@ -280,6 +280,15 @@ function rewriteHtml(html, targetUrl, trustedParentOrigin) {
     const baseHref = `${u.origin}${u.pathname.replace(/[^/]*$/, "")}`;
     head.insertAdjacentHTML("afterbegin", `<base href="${baseHref.replace(/"/g, "&quot;")}">`);
 
+    // Suppress the page's own analytics embed (api/a.js) for this proxied
+    // preview — reuses the same window.__ICS_SCAN__ bail-out flag the headless
+    // compliance scanner sets, so it never sends a pageview/click/exposure
+    // beacon at all. Inserted last among the afterbegin calls so it ends up
+    // as <head>'s very first child, ahead of the target page's own <script>
+    // tags (which, even if async, can't execute before this synchronous
+    // inline one — they still need a network round trip first).
+    head.insertAdjacentHTML("afterbegin", "<script>window.__ICS_SCAN__=true;</script>");
+
     // Hide the CMP banner (<intastellarconsents>) while editing — it has no
     // purpose in the editor (there's no real visitor to consent here) and
     // otherwise sits on top of the page, in the way of clicking elements.
