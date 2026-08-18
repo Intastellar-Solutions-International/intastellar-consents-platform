@@ -99,15 +99,18 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                 </thead>
                 <tbody>
                     {rows.map((r, i) => {
-                        const isOpen = expanded === r.campaign;
+                        const hasEvents = (r.events || []).length > 0;
+                        const isOpen = hasEvents && expanded === r.campaign;
                         return (
                             <React.Fragment key={r.campaign}>
                                 <tr
-                                    className="sa-campaign-row"
-                                    onClick={() => setExpanded(isOpen ? null : r.campaign)}
+                                    className={"sa-campaign-row" + (hasEvents ? "" : " sa-campaign-row--flat")}
+                                    onClick={hasEvents ? () => setExpanded(isOpen ? null : r.campaign) : undefined}
                                 >
                                     <td className="sa-campaign-row__toggle">
-                                        <IconChevronDown className={"sa-icon" + (isOpen ? " sa-campaign-row__chevron--open" : "")} />
+                                        {hasEvents && (
+                                            <IconChevronDown className={"sa-icon" + (isOpen ? " sa-campaign-row__chevron--open" : "")} />
+                                        )}
                                     </td>
                                     <td className="sa-table__path" title={r.campaign}>
                                         {r.campaign}

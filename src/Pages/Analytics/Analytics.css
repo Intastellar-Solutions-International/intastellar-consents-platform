@@ -1690,6 +1690,14 @@
     background: rgba(255,255,255,0.02);
 }
 
+.sa-campaign-row--flat {
+    cursor: default;
+}
+
+.sa-campaign-row--flat:hover td {
+    background: transparent;
+}
+
 .sa-campaign-row__toggle {
     width: 20px;
     padding-right: 0 !important;
