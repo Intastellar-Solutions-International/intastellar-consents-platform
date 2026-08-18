@@ -153,6 +153,14 @@ export function IconVideo(props) {
     );
 }
 
+export function IconChevronDown(props) {
+    return (
+        <svg {...svgProps} {...props}>
+            <path d="m6 9 6 6 6-6" />
+        </svg>
+    );
+}
+
 export function IconClock(props) {
     return (
         <svg {...svgProps} {...props}>

@@ -4,20 +4,26 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsReport, toIsoDate, KpiCard } from "./_shared.js";
-import { IconTarget, IconTrendingUp, IconGlobe, IconAlertTriangle } from "./Icons.js";
+import { IconTarget, IconTrendingUp, IconGlobe } from "./Icons.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import ConversionsPanel from "./Conversions.js";
 import TimeToConvert from "./TimeToConvert.js";
 import ConversionChannels from "./ConversionChannels.js";
 import ConversionCampaigns from "./ConversionCampaigns.js";
+import ConversionFunnel from "./ConversionFunnel.js";
 import Line from "../../Components/Charts/Line";
 import "./Analytics.css";
 
-const CONSENT_GAP_WARN_PCT = 25;
 // Countries with fewer total events than this are excluded from the rate
 // view — otherwise a country with 1 visit + 1 conversion reads as a
 // misleading 100% and can crowd out countries with a real sample size.
 const MAP_RATE_MIN_SAMPLE = 5;
+
+const TABS = [
+    { key: "overview", label: "Overview" },
+    { key: "deepdive", label: "Funnel & Sources" },
+    { key: "setup",    label: "Events & Tracking" },
+];
 
 export default function AnalyticsConversionsOverview() {
     document.title = "Conversions | Site Analytics";
@@ -42,6 +48,8 @@ export default function AnalyticsConversionsOverview() {
     const [tick, setTick] = useState(0);
     const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
 
+    const [tab, setTab] = useState("overview");
+
     const totalConversions = useMemo(
         () => (data?.conversions || []).reduce((s, c) => s + (c.count || 0), 0),
         [data]
@@ -51,10 +59,6 @@ export default function AnalyticsConversionsOverview() {
         () => (data?.conversions || []).reduce((s, c) => s + (c.linkedCount || 0), 0),
         [data]
     );
-
-    const consentGapPct = totalConversions > 0
-        ? Math.round(((totalConversions - linkedConversions) / totalConversions) * 1000) / 10
-        : 0;
 
     const trendData = useMemo(
         () => (data?.dailyConversions || []).map(d => ({ date: d.date, num: d.count })),
@@ -105,96 +109,114 @@ export default function AnalyticsConversionsOverview() {
                     )}
 
                     {showData && (
-                        <div className="sa-conv-grid">
-                            <KpiCard className="sa-conv-kpi1"
-                                icon={<IconTarget />}
-                                label="Total conversions"
-                                value={totalConversions.toLocaleString("de-DE")}
-                                sub={`across ${data.conversions.length} registered event${data.conversions.length !== 1 ? "s" : ""}`}
-                            />
-                            <KpiCard className="sa-conv-kpi2"
-                                icon={<IconTrendingUp />}
-                                label="Conversion rate"
-                                value={data.totals.conversionRate + "%"}
-                                sub={`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} sessions`}
-                            />
-                            <KpiCard className="sa-conv-kpi3"
-                                variant={consentGapPct >= CONSENT_GAP_WARN_PCT ? "warn" : undefined}
-                                icon={<IconAlertTriangle />}
-                                label="Consent-linked gap"
-                                value={consentGapPct + "%"}
-                                sub={
-                                    consentGapPct > 0
-                                        ? `${(totalConversions - linkedConversions).toLocaleString("de-DE")} of ${totalConversions.toLocaleString("de-DE")} conversions can't be tied to a session — funnel & time-to-convert only cover the linked ${linkedConversions.toLocaleString("de-DE")}`
-                                        : "All conversions are session-linked for this period"
-                                }
-                            />
-
-                            <div className="sa-panel sa-conv-trend">
-                                <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Conversion trend</h3>
-                                <Line
-                                    data={trendData}
-                                    title="Conversions"
-                                    fromDate={fromIso}
-                                    toDate={toIso}
-                                    showInsights
-                                    height={260}
-                                />
+                        <>
+                            <div className="sa-conv-tabs" role="tablist" aria-label="Conversions view">
+                                {TABS.map(t => (
+                                    <button
+                                        key={t.key}
+                                        type="button"
+                                        role="tab"
+                                        aria-selected={tab === t.key}
+                                        className={"sa-conv-tabs__btn" + (tab === t.key ? " is-active" : "")}
+                                        onClick={() => setTab(t.key)}
+                                    >
+                                        {t.label}
+                                    </button>
+                                ))}
                             </div>
 
-                            <div className="sa-panel sa-conv-map">
-                                <h3 className="sa-panel__title">
-                                    <IconGlobe className="sa-icon" /> Where conversions happen
-                                    <span className="sa-map__mode-toggle" role="group" aria-label="Map weighting">
-                                        <button
-                                            type="button"
-                                            className={mapMode === "rate" ? "is-active" : ""}
-                                            onClick={() => setMapMode("rate")}
-                                        >
-                                            Rate
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={mapMode === "volume" ? "is-active" : ""}
-                                            onClick={() => setMapMode("volume")}
-                                        >
-                                            Volume
-                                        </button>
-                                    </span>
-                                </h3>
-                                <AnalyticsWorldMap
-                                    countries={mapCountries}
-                                    metricLabel={mapMode === "rate" ? "Conversion rate" : "Conversions"}
-                                    formatValue={mapMode === "rate" ? (v => v.toFixed(1) + "%") : undefined}
-                                />
-                            </div>
+                            {tab === "overview" && (
+                                <div className="sa-conv-grid sa-conv-grid--overview">
+                                    <KpiCard className="sa-conv-kpi1"
+                                        icon={<IconTarget />}
+                                        label="Total conversions"
+                                        value={totalConversions.toLocaleString("de-DE")}
+                                        sub={`across ${data.conversions.length} registered event${data.conversions.length !== 1 ? "s" : ""}`}
+                                    />
+                                    <KpiCard className="sa-conv-kpi2"
+                                        icon={<IconTrendingUp />}
+                                        label="Conversion rate"
+                                        value={data.totals.conversionRate + "%"}
+                                        sub={`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} sessions`}
+                                    />
 
-                            <TimeToConvert
-                                timeToConvert={data.timeToConvert}
-                                totalConversions={totalConversions}
-                            />
+                                    <div className="sa-panel sa-conv-trend">
+                                        <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Conversion trend</h3>
+                                        <Line
+                                            data={trendData}
+                                            title="Conversions"
+                                            fromDate={fromIso}
+                                            toDate={toIso}
+                                            showInsights
+                                            height={260}
+                                        />
+                                    </div>
 
-                            <ConversionChannels
-                                byChannel={data.conversionsByChannel}
-                                byDevice={data.conversionsByDevice}
-                            />
+                                    <div className="sa-panel sa-conv-map">
+                                        <h3 className="sa-panel__title">
+                                            <IconGlobe className="sa-icon" /> Where conversions happen
+                                            <span className="sa-map__mode-toggle" role="group" aria-label="Map weighting">
+                                                <button
+                                                    type="button"
+                                                    className={mapMode === "rate" ? "is-active" : ""}
+                                                    onClick={() => setMapMode("rate")}
+                                                >
+                                                    Rate
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className={mapMode === "volume" ? "is-active" : ""}
+                                                    onClick={() => setMapMode("volume")}
+                                                >
+                                                    Volume
+                                                </button>
+                                            </span>
+                                        </h3>
+                                        <AnalyticsWorldMap
+                                            countries={mapCountries}
+                                            metricLabel={mapMode === "rate" ? "Conversion rate" : "Conversions"}
+                                            formatValue={mapMode === "rate" ? (v => v.toFixed(1) + "%") : undefined}
+                                        />
+                                    </div>
+                                </div>
+                            )}
 
-                            <ConversionCampaigns
-                                domain={domain}
-                                fromIso={fromIso}
-                                toIso={toIso}
-                                byCampaign={data.conversionsByCampaign}
-                            />
+                            {tab === "deepdive" && (
+                                <div className="sa-conv-grid sa-conv-grid--deepdive">
+                                    <TimeToConvert
+                                        timeToConvert={data.timeToConvert}
+                                        totalConversions={totalConversions}
+                                    />
 
-                            <div className="sa-conv-list">
+                                    <ConversionChannels
+                                        byChannel={data.conversionsByChannel}
+                                        byDevice={data.conversionsByDevice}
+                                    />
+
+                                    <ConversionFunnel
+                                        domain={domain}
+                                        funnel={data.funnel}
+                                        totalConversions={totalConversions}
+                                        linkedConversions={linkedConversions}
+                                    />
+
+                                    <ConversionCampaigns
+                                        domain={domain}
+                                        fromIso={fromIso}
+                                        toIso={toIso}
+                                        byCampaign={data.conversionsByCampaign}
+                                    />
+                                </div>
+                            )}
+
+                            {tab === "setup" && (
                                 <ConversionsPanel
                                     domain={domain}
                                     conversions={data.conversions}
-                                    funnel={data.funnel}
                                     onDefsChanged={() => setTick(t => t + 1)}
                                 />
-                            </div>
-                        </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

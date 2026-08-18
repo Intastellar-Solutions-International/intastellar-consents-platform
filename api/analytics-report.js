@@ -517,14 +517,16 @@ export default async function handler(req, res) {
         }),
 
         // Conversions by campaign — same session first-touch approach as
-        // channel, keyed by the raw utm_campaign string instead of a bucket.
-        // TRIM() folds "Booking2026" and "Booking2026   " (a stray trailing
-        // space in how the link was tagged) into one row instead of
-        // splitting real campaign volume across near-duplicates. The
-        // frontend joins this against /api/ad-campaign-report's live ad
-        // platform data (by campaign id, e.g. Meta's numeric campaign id
-        // ends up as-is in utm_campaign, falling back to name) to attach
-        // real spend where a matching connected ad account exists.
+        // channel, keyed by the raw utm_campaign string instead of a bucket,
+        // and broken out per conversion event name so it's visible *which*
+        // conversions a campaign actually drove (a campaign row of "1421
+        // conversions" alone doesn't say whether that's 1421 purchases or
+        // 1421 basket views). TRIM() folds "Booking2026" and "Booking2026  "
+        // (a stray trailing space in how the link was tagged) into one
+        // campaign instead of splitting real volume across near-duplicates.
+        // Ranked/limited to the top 30 campaigns by total volume first, then
+        // broken out by event name only within those — a campaign with many
+        // event types shouldn't crowd smaller campaigns out of the top 30.
         db.query(`
             WITH first_touch AS (
                 SELECT DISTINCT ON (session_id) session_id, utm_campaign, utm_source, utm_medium
@@ -533,18 +535,32 @@ export default async function handler(req, res) {
                   AND received_at >= $2 AND received_at < $3
                   AND utm_campaign IS NOT NULL AND TRIM(utm_campaign) != ''
                 ORDER BY session_id, received_at ASC
+            ),
+            campaign_events AS (
+                SELECT TRIM(ft.utm_campaign) AS campaign, ft.utm_source AS source, ft.utm_medium AS medium,
+                       ce.name AS event_name, ce.session_id
+                FROM analytics_custom_events ce
+                JOIN first_touch ft ON ft.session_id = ce.session_id
+                WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+            ),
+            top_campaigns AS (
+                SELECT campaign, COUNT(*) AS total_count, COUNT(DISTINCT session_id) AS campaign_sessions
+                FROM campaign_events
+                GROUP BY campaign
+                ORDER BY total_count DESC
+                LIMIT 30
             )
             SELECT
-                TRIM(ft.utm_campaign)                                                          AS campaign,
-                (ARRAY_AGG(ft.utm_source) FILTER (WHERE COALESCE(ft.utm_source, '') != ''))[1]  AS source,
-                (ARRAY_AGG(ft.utm_medium) FILTER (WHERE COALESCE(ft.utm_medium, '') != ''))[1]  AS medium,
-                COUNT(*)                     AS count,
-                COUNT(DISTINCT ce.session_id) AS sessions
-            FROM analytics_custom_events ce
-            JOIN first_touch ft ON ft.session_id = ce.session_id
-            WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
-            GROUP BY 1
-            ORDER BY count DESC LIMIT 30`,
+                cev.campaign,
+                (ARRAY_AGG(cev.source) FILTER (WHERE COALESCE(cev.source, '') != ''))[1]  AS source,
+                (ARRAY_AGG(cev.medium) FILTER (WHERE COALESCE(cev.medium, '') != ''))[1]  AS medium,
+                cev.event_name,
+                COUNT(*)              AS count,
+                tc.campaign_sessions  AS campaign_sessions
+            FROM campaign_events cev
+            JOIN top_campaigns tc ON tc.campaign = cev.campaign
+            GROUP BY cev.campaign, cev.event_name, tc.campaign_sessions
+            ORDER BY cev.campaign, count DESC`,
             [siteId, fromDate, toDateExclusive]
         ).catch((err) => {
             if (err?.message?.includes("does not exist")) return { rows: [] };
@@ -621,13 +637,26 @@ export default async function handler(req, res) {
             type:  r.device_type,
             count: Number(r.count || 0),
         })),
-        conversionsByCampaign: conversionsByCampaignRes.rows.map(r => ({
-            campaign: r.campaign,
-            source:   r.source || null,
-            medium:   r.medium || null,
-            count:    Number(r.count    || 0),
-            sessions: Number(r.sessions || 0),
-        })),
+        conversionsByCampaign: (() => {
+            const defsByName = new Map(eventDefsRes.rows.map(d => [d.name, d]));
+            const byCampaign = new Map();
+            conversionsByCampaignRes.rows.forEach(r => {
+                const def = defsByName.get(r.event_name);
+                let entry = byCampaign.get(r.campaign);
+                if (!entry) {
+                    entry = { campaign: r.campaign, source: r.source || null, medium: r.medium || null,
+                               count: 0, sessions: Number(r.campaign_sessions || 0), events: [] };
+                    byCampaign.set(r.campaign, entry);
+                }
+                entry.count += Number(r.count || 0);
+                entry.events.push({
+                    name:  r.event_name,
+                    label: def?.label || r.event_name,
+                    count: Number(r.count || 0),
+                });
+            });
+            return Array.from(byCampaign.values()).sort((a, b) => b.count - a.count);
+        })(),
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname,
             views:    Number(r.views    || 0),

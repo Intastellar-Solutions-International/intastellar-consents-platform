@@ -1,7 +1,7 @@
 const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import { authHeaders } from "./_shared.js";
-import { IconMegaphone } from "./Icons.js";
+import { IconMegaphone, IconChevronDown } from "./Icons.js";
 
 const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr", PLN: "zł" };
 
@@ -43,6 +43,7 @@ function useAdCampaignReport(domain, fromIso, toIso) {
  */
 export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign }) {
     const { data: adData, loading: adLoading } = useAdCampaignReport(domain, fromIso, toIso);
+    const [expanded, setExpanded] = useState(null);
 
     const adLookup = useMemo(() => {
         const byId = new Map();
@@ -88,6 +89,7 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
             <table className="sa-table">
                 <thead>
                     <tr>
+                        <th />
                         <th>Campaign</th>
                         <th>Source / medium</th>
                         <th className="sa-table__num">Conversions</th>
@@ -96,27 +98,53 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((r, i) => (
-                        <tr key={i}>
-                            <td className="sa-table__path" title={r.campaign}>
-                                {r.campaign}
-                                {r.ad && (
-                                    <span className="sa-panel__consent-note">
-                                        {" "}· {PLATFORM_LABEL[r.ad.platform] || r.ad.platform}
-                                        {r.ad.name && r.ad.name !== r.campaign ? ` "${r.ad.name}"` : ""}
-                                    </span>
+                    {rows.map((r, i) => {
+                        const isOpen = expanded === r.campaign;
+                        return (
+                            <React.Fragment key={r.campaign}>
+                                <tr
+                                    className="sa-campaign-row"
+                                    onClick={() => setExpanded(isOpen ? null : r.campaign)}
+                                >
+                                    <td className="sa-campaign-row__toggle">
+                                        <IconChevronDown className={"sa-icon" + (isOpen ? " sa-campaign-row__chevron--open" : "")} />
+                                    </td>
+                                    <td className="sa-table__path" title={r.campaign}>
+                                        {r.campaign}
+                                        {r.ad && (
+                                            <span className="sa-panel__consent-note">
+                                                {" "}· {PLATFORM_LABEL[r.ad.platform] || r.ad.platform}
+                                                {r.ad.name && r.ad.name !== r.campaign ? ` "${r.ad.name}"` : ""}
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td>{[r.source, r.medium].filter(Boolean).join(" / ") || "—"}</td>
+                                    <td className="sa-table__num">{r.count.toLocaleString("de-DE")}</td>
+                                    <td className="sa-table__num">
+                                        {r.ad ? formatMoney(r.ad.spend, r.ad.currency) : "—"}
+                                    </td>
+                                    <td className="sa-table__num">
+                                        {r.costPerConversion != null ? formatMoney(r.costPerConversion, r.ad.currency) : "—"}
+                                    </td>
+                                </tr>
+                                {isOpen && (
+                                    <tr className="sa-campaign-row__detail">
+                                        <td />
+                                        <td colSpan={5}>
+                                            <div className="sa-campaign-events">
+                                                {r.events.map(ev => (
+                                                    <span key={ev.name} className="sa-campaign-event-chip">
+                                                        {ev.label}
+                                                        <b>{ev.count.toLocaleString("de-DE")}</b>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </td>
+                                    </tr>
                                 )}
-                            </td>
-                            <td>{[r.source, r.medium].filter(Boolean).join(" / ") || "—"}</td>
-                            <td className="sa-table__num">{r.count.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">
-                                {r.ad ? formatMoney(r.ad.spend, r.ad.currency) : "—"}
-                            </td>
-                            <td className="sa-table__num">
-                                {r.costPerConversion != null ? formatMoney(r.costPerConversion, r.ad.currency) : "—"}
-                            </td>
-                        </tr>
-                    ))}
+                            </React.Fragment>
+                        );
+                    })}
                 </tbody>
             </table>
         </div>
