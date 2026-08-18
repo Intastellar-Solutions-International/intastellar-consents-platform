@@ -103,7 +103,8 @@ export default async function handler(req, res) {
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
            browsersRes, consentRes, utmRes, referrersRes, hostsRes, conversionsRes, eventDefsRes,
            conversionCountriesRes, convertedSessionsRes,
-           osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes] = await Promise.all([
+           osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
+           dailyConversionsRes, timeToConvertRes, funnelRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -391,9 +392,81 @@ export default async function handler(req, res) {
             })
             : Promise.resolve({ rows: [] }),
 
+        // Daily conversion volume — trend line for the conversions dashboard.
+        // Split by consent_level so the trend can also show how much of it
+        // is session-linked vs not, same convention as the `daily` pageview series.
+        db.query(`
+            SELECT
+                TO_CHAR(DATE_TRUNC('day', received_at AT TIME ZONE 'UTC'), 'YYYY-MM-DD') AS date,
+                COUNT(*)                                        AS count,
+                COUNT(*) FILTER (WHERE consent_level = 'full')  AS linked_count
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            GROUP BY 1 ORDER BY 1`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
+        // Time-to-convert — elapsed time between a session's first-seen event
+        // and each conversion it fired. Only measurable for session-linked
+        // (consent_level='full') conversions, since minimal-consent events
+        // carry no session_id to anchor a "first seen" timestamp against.
+        db.query(`
+            WITH first_seen AS (
+                SELECT session_id, MIN(received_at) AS first_at
+                FROM analytics_events
+                WHERE site_id = $1 AND session_id IS NOT NULL
+                  AND received_at >= $2 AND received_at < $3
+                GROUP BY session_id
+            ),
+            deltas AS (
+                SELECT EXTRACT(EPOCH FROM (ce.received_at - fs.first_at)) AS secs
+                FROM analytics_custom_events ce
+                JOIN first_seen fs ON fs.session_id = ce.session_id
+                WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+                  AND ce.received_at >= fs.first_at
+            )
+            SELECT
+                COUNT(*)                                                     AS sample_size,
+                PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY secs)             AS median_secs,
+                COUNT(*) FILTER (WHERE secs < 60)                            AS b_under_1m,
+                COUNT(*) FILTER (WHERE secs >= 60   AND secs < 300)          AS b_1_5m,
+                COUNT(*) FILTER (WHERE secs >= 300  AND secs < 1800)         AS b_5_30m,
+                COUNT(*) FILTER (WHERE secs >= 1800 AND secs < 3600)         AS b_30_60m,
+                COUNT(*) FILTER (WHERE secs >= 3600 AND secs < 86400)        AS b_1_24h,
+                COUNT(*) FILTER (WHERE secs >= 86400)                        AS b_over_24h
+            FROM deltas`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
+        // Funnel — distinct-session counts per registered e-commerce funnel
+        // kind (view_basket → begin_checkout → checkout → purchase). Uses
+        // distinct sessions rather than raw event counts so a step fired
+        // twice in one session doesn't inflate the funnel.
+        db.query(`
+            SELECT
+                d.kind,
+                COUNT(*)                                                          AS count,
+                COUNT(DISTINCT ce.session_id) FILTER (WHERE ce.session_id IS NOT NULL) AS sessions
+            FROM analytics_custom_events ce
+            JOIN analytics_event_defs d ON d.site_id = ce.site_id AND d.name = ce.name
+            WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+              AND d.kind IN ('view_basket','begin_checkout','checkout','purchase')
+            GROUP BY d.kind`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(20).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(23).fill({ rows: [] });
         throw err;
     });
 
@@ -425,6 +498,32 @@ export default async function handler(req, res) {
             date:     r.date,
             minimal:  Number(r.minimal     || 0),
             full:     Number(r.full_count  || 0),
+        })),
+        dailyConversions: dailyConversionsRes.rows.map(r => ({
+            date:        r.date,
+            count:       Number(r.count        || 0),
+            linkedCount: Number(r.linked_count  || 0),
+        })),
+        timeToConvert: (() => {
+            const r = timeToConvertRes.rows[0] || {};
+            const sampleSize = Number(r.sample_size || 0);
+            return {
+                sampleSize,
+                medianSeconds: r.median_secs != null ? Number(r.median_secs) : null,
+                buckets: [
+                    { key: "under_1m", label: "Under 1 min", count: Number(r.b_under_1m || 0) },
+                    { key: "1_5m",     label: "1–5 min",     count: Number(r.b_1_5m     || 0) },
+                    { key: "5_30m",    label: "5–30 min",    count: Number(r.b_5_30m    || 0) },
+                    { key: "30_60m",   label: "30–60 min",   count: Number(r.b_30_60m   || 0) },
+                    { key: "1_24h",    label: "1–24 hours",  count: Number(r.b_1_24h    || 0) },
+                    { key: "over_24h", label: "Over 24 hours", count: Number(r.b_over_24h || 0) },
+                ],
+            };
+        })(),
+        funnel: funnelRes.rows.map(r => ({
+            kind:     r.kind,
+            count:    Number(r.count    || 0),
+            sessions: Number(r.sessions || 0),
         })),
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname,

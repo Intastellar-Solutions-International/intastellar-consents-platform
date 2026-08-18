@@ -1463,23 +1463,102 @@
     display: grid;
     gap: 12px;
     align-items: start;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-areas:
-        "kpi1 kpi2"
-        "map  map"
-        "list list";
+        "kpi1  kpi2  kpi3"
+        "trend trend trend"
+        "map   map   map"
+        "ttc   ttc   ttc"
+        "list  list  list";
 }
 
-.sa-conv-kpi1 { grid-area: kpi1; }
-.sa-conv-kpi2 { grid-area: kpi2; }
-.sa-conv-map  { grid-area: map;  }
-.sa-conv-list { grid-area: list; }
+.sa-conv-kpi1  { grid-area: kpi1;  }
+.sa-conv-kpi2  { grid-area: kpi2;  }
+.sa-conv-kpi3  { grid-area: kpi3;  }
+.sa-conv-trend { grid-area: trend; }
+.sa-conv-map   { grid-area: map;   }
+.sa-conv-ttc   { grid-area: ttc;   }
+.sa-conv-list  { grid-area: list;  }
 
 @media (max-width: 620px) {
     .sa-conv-grid {
         grid-template-columns: 1fr;
-        grid-template-areas: "kpi1" "kpi2" "map" "list";
+        grid-template-areas: "kpi1" "kpi2" "kpi3" "trend" "map" "ttc" "list";
     }
+}
+
+/* ── Time-to-convert breakdown ──────────────────────────────────────────────── */
+
+.sa-ttc-row .sa-consent-row__label {
+    width: 90px;
+    flex-shrink: 0;
+}
+
+.sa-ttc-note {
+    margin: 12px 0 0;
+}
+
+/* ── Checkout funnel ─────────────────────────────────────────────────────────── */
+
+.sa-funnel {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.sa-funnel-step {
+    margin-top: 4px;
+}
+
+.sa-funnel-step__dropoff {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: rgba(239,120,120,0.8);
+    padding: 4px 0 4px 4px;
+}
+
+.sa-funnel-step__row {
+    display: grid;
+    grid-template-columns: 130px 1fr 90px;
+    align-items: center;
+    gap: 10px;
+}
+
+.sa-funnel-step__label {
+    font-size: 0.8rem;
+    color: rgba(210,210,210,0.9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sa-funnel-step__track {
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.05);
+    overflow: hidden;
+}
+
+.sa-funnel-step__fill {
+    height: 100%;
+    min-width: 3px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(192,159,83,0.85), rgba(192,159,83,0.55));
+    transition: width 0.3s ease;
+}
+
+.sa-funnel-step__value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(210,210,210,0.85);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-funnel-step__pct {
+    font-weight: 500;
+    color: rgba(150,150,150,0.65);
+    margin-left: 4px;
 }
 /* ─── GA4 Card (Channel Analytics) ──────────────────────────────────────── */
 .ga4-card {

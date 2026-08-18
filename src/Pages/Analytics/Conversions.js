@@ -1,7 +1,7 @@
 const { useState, useEffect, useCallback, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
-import { IconCash, IconCursorClick, IconTarget, IconPlus, IconTrash } from "./Icons.js";
+import { IconCash, IconCursorClick, IconTarget, IconPlus, IconTrash, IconFunnel } from "./Icons.js";
 
 function authHeaders() {
     return {
@@ -11,8 +11,19 @@ function authHeaders() {
     };
 }
 
-const KIND_ICON  = { purchase: IconCash, click: IconCursorClick, custom: IconTarget };
-const KIND_LABEL = { purchase: "Purchase", click: "Click", custom: "Custom" };
+const KIND_ICON  = {
+    purchase: IconCash, click: IconCursorClick, custom: IconTarget,
+    view_basket: IconFunnel, begin_checkout: IconFunnel, checkout: IconFunnel,
+};
+const KIND_LABEL = {
+    purchase: "Purchase", click: "Click", custom: "Custom",
+    view_basket: "Viewed basket", begin_checkout: "Began checkout", checkout: "Checkout",
+};
+
+// Fixed e-commerce funnel order — matches ALLOWED_KINDS in api/analytics-events.js.
+// A dashboard only gets the funnel treatment once 2+ of these steps are registered;
+// a single funnel-kind event (e.g. just "purchase") stays in the flat list below.
+const FUNNEL_ORDER = ["view_basket", "begin_checkout", "checkout", "purchase"];
 
 function snippetFor(name, kind) {
     if (kind === "purchase") {
@@ -27,7 +38,7 @@ function snippetFor(name, kind) {
  * so events fired without being "registered" here still show up (flagged
  * as unregistered) rather than being silently dropped.
  */
-export default function ConversionsPanel({ domain, conversions, onDefsChanged }) {
+export default function ConversionsPanel({ domain, conversions, funnel, onDefsChanged }) {
     const [defs, setDefs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
@@ -103,6 +114,33 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
         return out;
     }, [defs, conversions]);
 
+    const funnelByKind = useMemo(
+        () => new Map((funnel || []).map(f => [f.kind, f])),
+        [funnel]
+    );
+
+    // Only registered defs count toward "is this a real funnel" — an
+    // unregistered event has no confirmed kind, it's just named the same
+    // as a funnel step by coincidence.
+    const funnelSteps = useMemo(() => {
+        const registeredKinds = new Set(rows.filter(r => r.registered).map(r => r.kind));
+        const stepKinds = FUNNEL_ORDER.filter(k => registeredKinds.has(k));
+        if (stepKinds.length < 2) return [];
+        return stepKinds.map(kind => {
+            const row = rows.find(r => r.registered && r.kind === kind);
+            const sessions = funnelByKind.get(kind)?.sessions || 0;
+            return { kind, label: row?.label || KIND_LABEL[kind], sessions };
+        });
+    }, [rows, funnelByKind]);
+
+    const funnelStepKinds = useMemo(() => new Set(funnelSteps.map(s => s.kind)), [funnelSteps]);
+    const flatRows = useMemo(
+        () => rows.filter(r => !funnelStepKinds.has(r.kind)),
+        [rows, funnelStepKinds]
+    );
+
+    const firstStepSessions = funnelSteps[0]?.sessions || 0;
+
     return (
         <div className="sa-section">
             <div className="sa-panel__head">
@@ -150,9 +188,46 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                 </p>
             )}
 
-            {rows.length > 0 && (
+            {funnelSteps.length > 0 && (
+                <div className="sa-funnel">
+                    <h4 className="sa-panel__sub-title">
+                        <IconFunnel className="sa-icon" /> Checkout funnel
+                        <span className="sa-panel__consent-note">session-linked conversions only</span>
+                    </h4>
+                    {funnelSteps.map((step, i) => {
+                        const pct = firstStepSessions > 0
+                            ? Math.round((step.sessions / firstStepSessions) * 100)
+                            : 0;
+                        const prev = funnelSteps[i - 1];
+                        const dropOffPct = prev && prev.sessions > 0
+                            ? Math.round((1 - step.sessions / prev.sessions) * 1000) / 10
+                            : null;
+                        return (
+                            <div key={step.kind} className="sa-funnel-step">
+                                {i > 0 && dropOffPct != null && (
+                                    <div className="sa-funnel-step__dropoff">
+                                        &darr; {dropOffPct}% drop-off
+                                    </div>
+                                )}
+                                <div className="sa-funnel-step__row">
+                                    <span className="sa-funnel-step__label">{step.label}</span>
+                                    <div className="sa-funnel-step__track">
+                                        <div className="sa-funnel-step__fill" style={{ width: pct + "%" }} />
+                                    </div>
+                                    <span className="sa-funnel-step__value">
+                                        {step.sessions.toLocaleString("de-DE")}
+                                        <span className="sa-funnel-step__pct">({pct}%)</span>
+                                    </span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+            {flatRows.length > 0 && (
                 <div className="sa-events-list">
-                    {rows.map(r => {
+                    {flatRows.map(r => {
                         const Icon = KIND_ICON[r.kind] || IconTarget;
                         return (
                             <div key={r.name} className="sa-event-row">

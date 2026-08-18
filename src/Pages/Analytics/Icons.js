@@ -153,6 +153,33 @@ export function IconVideo(props) {
     );
 }
 
+export function IconClock(props) {
+    return (
+        <svg {...svgProps} {...props}>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3.5 2" />
+        </svg>
+    );
+}
+
+export function IconAlertTriangle(props) {
+    return (
+        <svg {...svgProps} {...props}>
+            <path d="M12 3 2 20h20L12 3Z" />
+            <path d="M12 10v4" />
+            <circle cx="12" cy="17.3" r="0.6" fill="currentColor" stroke="none" />
+        </svg>
+    );
+}
+
+export function IconFunnel(props) {
+    return (
+        <svg {...svgProps} {...props}>
+            <path d="M4 4h16l-6 8v6l-4 2v-8L4 4Z" />
+        </svg>
+    );
+}
+
 export function IconBot(props) {
     return (
         <svg {...svgProps} {...props}>

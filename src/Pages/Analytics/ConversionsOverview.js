@@ -4,10 +4,14 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { useAnalyticsReport, toIsoDate, KpiCard } from "./_shared.js";
-import { IconTarget, IconTrendingUp, IconGlobe } from "./Icons.js";
+import { IconTarget, IconTrendingUp, IconGlobe, IconAlertTriangle } from "./Icons.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import ConversionsPanel from "./Conversions.js";
+import TimeToConvert from "./TimeToConvert.js";
+import Line from "../../Components/Charts/Line";
 import "./Analytics.css";
+
+const CONSENT_GAP_WARN_PCT = 25;
 
 export default function AnalyticsConversionsOverview() {
     document.title = "Conversions | Site Analytics";
@@ -34,6 +38,20 @@ export default function AnalyticsConversionsOverview() {
 
     const totalConversions = useMemo(
         () => (data?.conversions || []).reduce((s, c) => s + (c.count || 0), 0),
+        [data]
+    );
+
+    const linkedConversions = useMemo(
+        () => (data?.conversions || []).reduce((s, c) => s + (c.linkedCount || 0), 0),
+        [data]
+    );
+
+    const consentGapPct = totalConversions > 0
+        ? Math.round(((totalConversions - linkedConversions) / totalConversions) * 1000) / 10
+        : 0;
+
+    const trendData = useMemo(
+        () => (data?.dailyConversions || []).map(d => ({ date: d.date, num: d.count })),
         [data]
     );
 
@@ -78,16 +96,45 @@ export default function AnalyticsConversionsOverview() {
                                 value={data.totals.conversionRate + "%"}
                                 sub={`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} sessions`}
                             />
+                            <KpiCard className="sa-conv-kpi3"
+                                variant={consentGapPct >= CONSENT_GAP_WARN_PCT ? "warn" : undefined}
+                                icon={<IconAlertTriangle />}
+                                label="Consent-linked gap"
+                                value={consentGapPct + "%"}
+                                sub={
+                                    consentGapPct > 0
+                                        ? `${(totalConversions - linkedConversions).toLocaleString("de-DE")} of ${totalConversions.toLocaleString("de-DE")} conversions can't be tied to a session — funnel & time-to-convert only cover the linked ${linkedConversions.toLocaleString("de-DE")}`
+                                        : "All conversions are session-linked for this period"
+                                }
+                            />
+
+                            <div className="sa-panel sa-conv-trend">
+                                <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Conversion trend</h3>
+                                <Line
+                                    data={trendData}
+                                    title="Conversions"
+                                    fromDate={fromIso}
+                                    toDate={toIso}
+                                    showInsights
+                                    height={260}
+                                />
+                            </div>
 
                             <div className="sa-panel sa-conv-map">
                                 <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Where conversions happen</h3>
                                 <AnalyticsWorldMap countries={data.conversionCountries} metricLabel="Conversions" />
                             </div>
 
+                            <TimeToConvert
+                                timeToConvert={data.timeToConvert}
+                                totalConversions={totalConversions}
+                            />
+
                             <div className="sa-conv-list">
                                 <ConversionsPanel
                                     domain={domain}
                                     conversions={data.conversions}
+                                    funnel={data.funnel}
                                     onDefsChanged={() => setTick(t => t + 1)}
                                 />
                             </div>
