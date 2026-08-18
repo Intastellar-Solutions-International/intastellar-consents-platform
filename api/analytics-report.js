@@ -104,7 +104,8 @@ export default async function handler(req, res) {
            browsersRes, consentRes, utmRes, referrersRes, hostsRes, conversionsRes, eventDefsRes,
            conversionCountriesRes, convertedSessionsRes,
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
-           dailyConversionsRes, timeToConvertRes, funnelRes] = await Promise.all([
+           dailyConversionsRes, timeToConvertRes, funnelRes,
+           conversionsByChannelRes, conversionsByDeviceRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -464,9 +465,60 @@ export default async function handler(req, res) {
             throw err;
         }),
 
+        // Conversions by channel — classified off each session's first-touch
+        // acquisition data (utm_medium / referrer_host), same as
+        // time-to-convert / funnel, only measurable for session-linked
+        // conversions. Buckets are deliberately kept to the four the
+        // dashboard shows: UTM-tagged traffic that isn't explicitly
+        // "organic" is folded into "paid" rather than adding email/social
+        // buckets the UI doesn't have room for.
+        db.query(`
+            WITH first_touch AS (
+                SELECT DISTINCT ON (session_id) session_id, utm_source, utm_medium, referrer_host
+                FROM analytics_events
+                WHERE site_id = $1 AND session_id IS NOT NULL
+                  AND received_at >= $2 AND received_at < $3
+                ORDER BY session_id, received_at ASC
+            )
+            SELECT
+                CASE
+                    WHEN ft.utm_medium ~* '^(cpc|ppc|paid|cpm|display)'                         THEN 'paid'
+                    WHEN ft.utm_medium = 'organic'
+                         OR (COALESCE(ft.utm_source, '') = ''
+                             AND ft.referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\.') THEN 'organic'
+                    WHEN COALESCE(ft.referrer_host, '') != ''                                    THEN 'referral'
+                    WHEN COALESCE(ft.utm_source, '') != ''                                       THEN 'paid'
+                    ELSE 'direct'
+                END AS channel,
+                COUNT(*)                              AS count,
+                COUNT(DISTINCT ce.session_id)          AS sessions
+            FROM analytics_custom_events ce
+            JOIN first_touch ft ON ft.session_id = ce.session_id
+            WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+            GROUP BY 1`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
+        // Conversions by device — device_type is captured directly on the
+        // custom event row, no session join needed.
+        db.query(`
+            SELECT device_type, COUNT(*) AS count
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+              AND device_type IS NOT NULL
+            GROUP BY device_type ORDER BY count DESC`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(23).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(25).fill({ rows: [] });
         throw err;
     });
 
@@ -524,6 +576,15 @@ export default async function handler(req, res) {
             kind:     r.kind,
             count:    Number(r.count    || 0),
             sessions: Number(r.sessions || 0),
+        })),
+        conversionsByChannel: conversionsByChannelRes.rows.map(r => ({
+            channel:  r.channel,
+            count:    Number(r.count    || 0),
+            sessions: Number(r.sessions || 0),
+        })),
+        conversionsByDevice: conversionsByDeviceRes.rows.map(r => ({
+            type:  r.device_type,
+            count: Number(r.count || 0),
         })),
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname,

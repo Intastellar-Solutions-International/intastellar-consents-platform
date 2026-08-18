@@ -293,9 +293,6 @@ export default function Map(props) {
             }
         }
 
-        console.log("showTooltips", (dataFlowMode) ? false : true);
-        console.log("dataFlowMode", dataFlowCountries.length);
-
         new svgMap({
             targetElementID: "svgMap",
             data: {
@@ -346,7 +343,11 @@ export default function Map(props) {
                 applyData: "total",
                 values: mapCountries,
             },
-            showTooltips: false,
+            /* svgMap has no real "showTooltips" option — it's silently
+             * ignored by this library version. Tooltip lifecycle is handled
+             * by hand below instead (capture + cleanup + a mouseleave
+             * safety net), since the library only toggles a CSS class and
+             * never removes its tooltip <div> from <body>. */
             /* onGetTooltip: (tooltipDiv, countryID, countryValues) => {
                 if (!countryValues) return "";
                 const fmt = (n) => (n != null && !isNaN(n) ? (typeof n === "number" ? n.toLocaleString("de-DE") : n) : "-");
@@ -398,19 +399,22 @@ export default function Map(props) {
             initialLocation: center
         });
 
+        // This instance's tooltip <div> — freshly appended to <body> by the
+        // constructor above, so it's reliably the last `.svgMap-tooltip` in
+        // the document right now.
+        const ownTooltips = document.querySelectorAll(".svgMap-tooltip");
+        const ownTooltip = ownTooltips[ownTooltips.length - 1];
+        const hideOwnTooltip = () => { if (ownTooltip) ownTooltip.style.display = "none"; };
+
         // Post-paint: flow lines (data-flow mode) or simple country stroke highlights
         requestAnimationFrame(() => {
             if (dataFlowMode) {
                 // Disable pointer events on all country paths so svgMap never
-                // fires its mouseenter tooltip — it's appended to <body> so CSS
-                // scoping won't reach it; killing the trigger is more reliable
+                // fires its mouseenter tooltip in the first place
                 el.querySelectorAll("path").forEach(p => {
                     p.style.pointerEvents = "none";
                 });
-                // Also hide any tooltip already in the DOM from a prior render
-                document.querySelectorAll(".svgMap-tooltip").forEach(t => {
-                    t.style.display = "none";
-                });
+                hideOwnTooltip();
                 drawDataFlows(el, dataFlowCountries, dataFlowOrigin);
             } else if (dataFlowCountries.length) {
                 dataFlowCountries.forEach(code => {
@@ -424,6 +428,12 @@ export default function Map(props) {
             }
         });
 
+        // Safety net: per-country `mouseleave` inside svgMap normally hides
+        // the tooltip, but if the pointer leaves the map fast enough that the
+        // browser coalesces the transition, the tooltip can be left stuck
+        // mid-air. Hide it whenever the pointer leaves the map area entirely.
+        if (!dataFlowMode) el.addEventListener("mouseleave", hideOwnTooltip);
+
         const onMapClick = (e) => {
             const node = e.target.closest?.("[data-id]");
             if (!node || !el.contains(node)) return;
@@ -431,7 +441,15 @@ export default function Map(props) {
             if (code) resolveSelection(code);
         };
         el.addEventListener("click", onMapClick);
-        return () => el.removeEventListener("click", onMapClick);
+        return () => {
+            el.removeEventListener("click", onMapClick);
+            el.removeEventListener("mouseleave", hideOwnTooltip);
+            // The library never removes its tooltip node on teardown, only
+            // toggles a CSS class — without this it's left behind (and can
+            // get stuck visible) across every re-render: date range change,
+            // filter change, or navigating away from the map entirely.
+            ownTooltip?.remove();
+        };
     }, [countries, mapCountries, demoMode, resolveSelection, dataFlowCountries, dataFlowMode, dataFlowOrigin]);
 
     useEffect(() => {

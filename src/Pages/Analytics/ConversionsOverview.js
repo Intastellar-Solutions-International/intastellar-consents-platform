@@ -8,6 +8,7 @@ import { IconTarget, IconTrendingUp, IconGlobe, IconAlertTriangle } from "./Icon
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import ConversionsPanel from "./Conversions.js";
 import TimeToConvert from "./TimeToConvert.js";
+import ConversionChannels from "./ConversionChannels.js";
 import Line from "../../Components/Charts/Line";
 import "./Analytics.css";
 
@@ -104,31 +105,29 @@ export default function AnalyticsConversionsOverview() {
 
                     {showData && (
                         <div className="sa-conv-grid">
-                            <div className="sa-conv-kpis">
-                                <KpiCard
-                                    icon={<IconTarget />}
-                                    label="Total conversions"
-                                    value={totalConversions.toLocaleString("de-DE")}
-                                    sub={`across ${data.conversions.length} registered event${data.conversions.length !== 1 ? "s" : ""}`}
-                                />
-                                <KpiCard
-                                    icon={<IconTrendingUp />}
-                                    label="Conversion rate"
-                                    value={data.totals.conversionRate + "%"}
-                                    sub={`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} sessions`}
-                                />
-                                <KpiCard
-                                    variant={consentGapPct >= CONSENT_GAP_WARN_PCT ? "warn" : undefined}
-                                    icon={<IconAlertTriangle />}
-                                    label="Consent-linked gap"
-                                    value={consentGapPct + "%"}
-                                    sub={
-                                        consentGapPct > 0
-                                            ? `${(totalConversions - linkedConversions).toLocaleString("de-DE")} of ${totalConversions.toLocaleString("de-DE")} conversions can't be tied to a session — funnel & time-to-convert only cover the linked ${linkedConversions.toLocaleString("de-DE")}`
-                                            : "All conversions are session-linked for this period"
-                                    }
-                                />
-                            </div>
+                            <KpiCard className="sa-conv-kpi1"
+                                icon={<IconTarget />}
+                                label="Total conversions"
+                                value={totalConversions.toLocaleString("de-DE")}
+                                sub={`across ${data.conversions.length} registered event${data.conversions.length !== 1 ? "s" : ""}`}
+                            />
+                            <KpiCard className="sa-conv-kpi2"
+                                icon={<IconTrendingUp />}
+                                label="Conversion rate"
+                                value={data.totals.conversionRate + "%"}
+                                sub={`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} sessions`}
+                            />
+                            <KpiCard className="sa-conv-kpi3"
+                                variant={consentGapPct >= CONSENT_GAP_WARN_PCT ? "warn" : undefined}
+                                icon={<IconAlertTriangle />}
+                                label="Consent-linked gap"
+                                value={consentGapPct + "%"}
+                                sub={
+                                    consentGapPct > 0
+                                        ? `${(totalConversions - linkedConversions).toLocaleString("de-DE")} of ${totalConversions.toLocaleString("de-DE")} conversions can't be tied to a session — funnel & time-to-convert only cover the linked ${linkedConversions.toLocaleString("de-DE")}`
+                                        : "All conversions are session-linked for this period"
+                                }
+                            />
 
                             <div className="sa-panel sa-conv-trend">
                                 <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Conversion trend</h3>
@@ -172,6 +171,11 @@ export default function AnalyticsConversionsOverview() {
                             <TimeToConvert
                                 timeToConvert={data.timeToConvert}
                                 totalConversions={totalConversions}
+                            />
+
+                            <ConversionChannels
+                                byChannel={data.conversionsByChannel}
+                                byDevice={data.conversionsByDevice}
                             />
 
                             <div className="sa-conv-list">

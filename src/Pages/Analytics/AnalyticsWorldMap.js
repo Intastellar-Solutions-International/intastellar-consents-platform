@@ -45,6 +45,12 @@ export default function AnalyticsWorldMap({ countries, metricLabel = "Events", f
         if (!rows.length) { el.innerHTML = ""; return undefined; }
 
         el.innerHTML = "";
+        // svgMap has no real "showTooltips" option (it's silently ignored) —
+        // this map uses a click-to-inspect caption instead, so the native
+        // hover tooltip has to be suppressed by hand. Its tooltip node is a
+        // single div appended to <body> when the instance is built, so the
+        // freshly-appended one is reliably the last `.svgMap-tooltip` in the
+        // document right after construction returns.
         new window.svgMap({
             targetElementID: MAP_ID,
             data: {
@@ -60,9 +66,11 @@ export default function AnalyticsWorldMap({ countries, metricLabel = "Events", f
                 applyData: "events",
                 values,
             },
-            showTooltips: false,
             initialZoom: 1.15,
         });
+        const ownTooltips = document.querySelectorAll(".svgMap-tooltip");
+        const ownTooltip = ownTooltips[ownTooltips.length - 1];
+        if (ownTooltip) ownTooltip.style.display = "none";
 
         const onMapClick = (e) => {
             const node = e.target.closest?.("[data-id]");
@@ -71,7 +79,14 @@ export default function AnalyticsWorldMap({ countries, metricLabel = "Events", f
             if (code) setSelected(code);
         };
         el.addEventListener("click", onMapClick);
-        return () => el.removeEventListener("click", onMapClick);
+        return () => {
+            el.removeEventListener("click", onMapClick);
+            // The library never removes its tooltip node on teardown, only
+            // toggles a CSS class — without this it can be left behind (and
+            // stuck visible) across every re-render (date range change, tick
+            // refresh, map-mode toggle).
+            ownTooltip?.remove();
+        };
     }, [rows, values, max, metricLabel]);
 
     if (!rows.length) {
