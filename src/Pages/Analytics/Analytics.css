@@ -1465,38 +1465,41 @@
     align-items: start;
     grid-template-columns: repeat(3, 1fr);
     grid-template-areas:
-        "kpi1  kpi2  kpi3"
-        "trend trend trend"
-        "map   ttc   channels"
-        "list  list  list";
+        "kpi1      kpi2      kpi3"
+        "trend     trend     trend"
+        "map       ttc       channels"
+        "campaigns campaigns campaigns"
+        "list      list      list";
 }
 
-.sa-conv-kpi1     { grid-area: kpi1;     }
-.sa-conv-kpi2     { grid-area: kpi2;     }
-.sa-conv-kpi3     { grid-area: kpi3;     }
-.sa-conv-trend    { grid-area: trend;    }
-.sa-conv-map      { grid-area: map;      }
-.sa-conv-ttc      { grid-area: ttc;      }
-.sa-conv-channels { grid-area: channels; }
-.sa-conv-list     { grid-area: list;     }
+.sa-conv-kpi1      { grid-area: kpi1;      }
+.sa-conv-kpi2      { grid-area: kpi2;      }
+.sa-conv-kpi3      { grid-area: kpi3;      }
+.sa-conv-trend     { grid-area: trend;     }
+.sa-conv-map       { grid-area: map;       }
+.sa-conv-ttc       { grid-area: ttc;       }
+.sa-conv-channels  { grid-area: channels;  }
+.sa-conv-campaigns { grid-area: campaigns; }
+.sa-conv-list      { grid-area: list;      }
 
 @media (max-width: 1100px) {
     .sa-conv-grid {
         grid-template-columns: 1fr 1fr;
         grid-template-areas:
-            "kpi1     kpi2"
-            "kpi3     kpi3"
-            "trend    trend"
-            "map      ttc"
-            "channels channels"
-            "list     list";
+            "kpi1      kpi2"
+            "kpi3      kpi3"
+            "trend     trend"
+            "map       ttc"
+            "channels  channels"
+            "campaigns campaigns"
+            "list      list";
     }
 }
 
 @media (max-width: 620px) {
     .sa-conv-grid {
         grid-template-columns: 1fr;
-        grid-template-areas: "kpi1" "kpi2" "kpi3" "trend" "map" "ttc" "channels" "list";
+        grid-template-areas: "kpi1" "kpi2" "kpi3" "trend" "map" "ttc" "channels" "campaigns" "list";
     }
 }
 

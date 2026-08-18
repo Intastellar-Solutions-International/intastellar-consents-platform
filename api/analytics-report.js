@@ -105,7 +105,7 @@ export default async function handler(req, res) {
            conversionCountriesRes, convertedSessionsRes,
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
            dailyConversionsRes, timeToConvertRes, funnelRes,
-           conversionsByChannelRes, conversionsByDeviceRes] = await Promise.all([
+           conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -516,9 +516,44 @@ export default async function handler(req, res) {
             throw err;
         }),
 
+        // Conversions by campaign — same session first-touch approach as
+        // channel, keyed by the raw utm_campaign string instead of a bucket.
+        // TRIM() folds "Booking2026" and "Booking2026   " (a stray trailing
+        // space in how the link was tagged) into one row instead of
+        // splitting real campaign volume across near-duplicates. The
+        // frontend joins this against /api/ad-campaign-report's live ad
+        // platform data (by campaign id, e.g. Meta's numeric campaign id
+        // ends up as-is in utm_campaign, falling back to name) to attach
+        // real spend where a matching connected ad account exists.
+        db.query(`
+            WITH first_touch AS (
+                SELECT DISTINCT ON (session_id) session_id, utm_campaign, utm_source, utm_medium
+                FROM analytics_events
+                WHERE site_id = $1 AND session_id IS NOT NULL
+                  AND received_at >= $2 AND received_at < $3
+                  AND utm_campaign IS NOT NULL AND TRIM(utm_campaign) != ''
+                ORDER BY session_id, received_at ASC
+            )
+            SELECT
+                TRIM(ft.utm_campaign)                                                          AS campaign,
+                (ARRAY_AGG(ft.utm_source) FILTER (WHERE COALESCE(ft.utm_source, '') != ''))[1]  AS source,
+                (ARRAY_AGG(ft.utm_medium) FILTER (WHERE COALESCE(ft.utm_medium, '') != ''))[1]  AS medium,
+                COUNT(*)                     AS count,
+                COUNT(DISTINCT ce.session_id) AS sessions
+            FROM analytics_custom_events ce
+            JOIN first_touch ft ON ft.session_id = ce.session_id
+            WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+            GROUP BY 1
+            ORDER BY count DESC LIMIT 30`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(25).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(26).fill({ rows: [] });
         throw err;
     });
 
@@ -585,6 +620,13 @@ export default async function handler(req, res) {
         conversionsByDevice: conversionsByDeviceRes.rows.map(r => ({
             type:  r.device_type,
             count: Number(r.count || 0),
+        })),
+        conversionsByCampaign: conversionsByCampaignRes.rows.map(r => ({
+            campaign: r.campaign,
+            source:   r.source || null,
+            medium:   r.medium || null,
+            count:    Number(r.count    || 0),
+            sessions: Number(r.sessions || 0),
         })),
         topPages: pagesRes.rows.map(r => ({
             pathname: r.pathname,

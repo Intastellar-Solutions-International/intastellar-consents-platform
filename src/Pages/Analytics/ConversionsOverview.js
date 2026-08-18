@@ -9,6 +9,7 @@ import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import ConversionsPanel from "./Conversions.js";
 import TimeToConvert from "./TimeToConvert.js";
 import ConversionChannels from "./ConversionChannels.js";
+import ConversionCampaigns from "./ConversionCampaigns.js";
 import Line from "../../Components/Charts/Line";
 import "./Analytics.css";
 
@@ -176,6 +177,13 @@ export default function AnalyticsConversionsOverview() {
                             <ConversionChannels
                                 byChannel={data.conversionsByChannel}
                                 byDevice={data.conversionsByDevice}
+                            />
+
+                            <ConversionCampaigns
+                                domain={domain}
+                                fromIso={fromIso}
+                                toIso={toIso}
+                                byCampaign={data.conversionsByCampaign}
                             />
 
                             <div className="sa-conv-list">
