@@ -36,7 +36,12 @@ const ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ];
 
-const ALLOWED_KINDS = new Set(["purchase", "click", "custom"]);
+// Kept in sync with api/analytics-events.js's ALLOWED_KINDS — a dataLayer
+// rule has to be able to tag a funnel step (view_basket/begin_checkout/
+// checkout) with the same kind a manually-registered event can, otherwise
+// dataLayer-sourced funnel events silently fall back to "custom" and never
+// qualify for the funnel view on the conversions dashboard.
+const ALLOWED_KINDS = new Set(["purchase", "click", "custom", "view_basket", "begin_checkout", "checkout"]);
 const NAME_RE = /^[a-z0-9_-]{1,64}$/i;
 // Dot-path into the pushed object — letters/numbers/underscore per segment,
 // at most 4 segments deep (also re-enforced client-side at extraction time).
