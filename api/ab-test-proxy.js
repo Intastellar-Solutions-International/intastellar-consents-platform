@@ -286,6 +286,8 @@ function rewriteHtml(html, targetUrl, trustedParentOrigin) {
     // A <style> rule, not a DOM removal, so it's robust regardless of when
     // the banner's own script registers/renders the custom element.
     head.insertAdjacentHTML("beforeend", "<style>intastellarconsents{display:none!important;}</style>");
+    // Remove the noScroll class from the HTML element
+    htmlEl.classList.remove("noScroll");
 
     const bodyEl = root.querySelector("body") || htmlEl;
     bodyEl.insertAdjacentHTML("beforeend", `<script>${buildBridgeScript(trustedParentOrigin)}</script>`);
