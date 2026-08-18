@@ -25,7 +25,7 @@
 import crypto from "crypto";
 import pkg from "pg";
 const { Pool } = pkg;
-import { parseHTML } from "linkedom";
+import { parse } from "node-html-parser";
 
 let pool;
 function getPool() {
@@ -243,29 +243,35 @@ parent.postMessage({type:'ab-editor:ready'},TRUSTED_ORIGIN);
 }
 
 function rewriteHtml(html, targetUrl, trustedParentOrigin) {
-    const { document } = parseHTML(html);
-    if (!document.documentElement) throw new Error("No <html> element in response");
+    // node-html-parser, not linkedom — linkedom's CJS build pulls in a
+    // css-select version that's ESM-only, and Vercel bundles api/*.js as
+    // CommonJS (no "type":"module" in package.json), so require()-ing it
+    // crashed every invocation with ERR_REQUIRE_ESM. node-html-parser's
+    // main entry and its own css-select dependency are both genuinely
+    // dual CJS/ESM (a real "exports" map, not just an ESM file with a
+    // misleading .js extension), so it doesn't hit that failure mode.
+    const root = parse(html);
+    let htmlEl = root.querySelector("html");
+    if (!htmlEl) throw new Error("No <html> element in response");
 
-    let head = document.head;
+    let head = root.querySelector("head");
     if (!head) {
-        head = document.createElement("head");
-        document.documentElement.insertBefore(head, document.documentElement.firstChild);
+        htmlEl.insertAdjacentHTML("afterbegin", "<head></head>");
+        head = root.querySelector("head");
     }
 
     // Strip any existing <base> so ours takes precedence, then inject one so
     // relative asset/link URLs resolve against the real site — this proxy
     // only rewrites the top-level document, not every asset it references.
     head.querySelectorAll("base").forEach(b => b.remove());
-    const base = document.createElement("base");
     const u = new URL(targetUrl);
-    base.setAttribute("href", `${u.origin}${u.pathname.replace(/[^/]*$/, "")}`);
-    head.insertBefore(base, head.firstChild);
+    const baseHref = `${u.origin}${u.pathname.replace(/[^/]*$/, "")}`;
+    head.insertAdjacentHTML("afterbegin", `<base href="${baseHref.replace(/"/g, "&quot;")}">`);
 
-    const bridge = document.createElement("script");
-    bridge.textContent = buildBridgeScript(trustedParentOrigin);
-    (document.body || document.documentElement).appendChild(bridge);
+    const bodyEl = root.querySelector("body") || htmlEl;
+    bodyEl.insertAdjacentHTML("beforeend", `<script>${buildBridgeScript(trustedParentOrigin)}</script>`);
 
-    return "<!doctype html>" + document.documentElement.outerHTML;
+    return root.toString();
 }
 
 export default async function handler(req, res) {
