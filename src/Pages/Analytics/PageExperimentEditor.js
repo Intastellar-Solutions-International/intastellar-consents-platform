@@ -5,7 +5,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { authHeaders } from "./_shared.js";
+import { authHeaders, KpiCard } from "./_shared.js";
 import { IconPlus, IconTrash } from "./Icons.js";
 import "./Analytics.css";
 
@@ -98,6 +98,12 @@ export default function PageExperimentEditor() {
     const iframeRef = useRef(null);
     const iframeOriginRef = useRef(null); // origin the proxy's response is served from — set once from proxyUrl
 
+    const [mode, setMode] = useState("editor"); // "editor" | "results"
+    const [durationDays, setDurationDays] = useState("");
+    const [results, setResults] = useState(null);
+    const [resultsLoading, setResultsLoading] = useState(false);
+    const [eventDefs, setEventDefs] = useState([]);
+
     document.title = test ? `${test.name} | Page Experiments` : "Page Experiments";
 
     const activeVariant = useMemo(() => variants.find(v => v.id === activeVariantId) || null, [variants, activeVariantId]);
@@ -120,6 +126,30 @@ export default function PageExperimentEditor() {
 
     useEffect(() => { fetchTest(); }, [fetchTest]);
 
+    // Registered conversion events for this domain — populates the goal-event
+    // dropdown. Reuses the existing event-registry endpoint (Conversions >
+    // Events & Tracking already calls this same one) rather than adding a
+    // new one just to list names.
+    useEffect(() => {
+        if (!domain) { setEventDefs([]); return; }
+        fetch(`${ScannerHost}/api/analytics-events?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : { events: [] })
+            .then(d => setEventDefs(d.events || []))
+            .catch(() => setEventDefs([]));
+    }, [domain]);
+
+    // Results fetch — only while viewing the Results panel, re-fetched each
+    // time the tab is switched to so it reflects the latest data.
+    useEffect(() => {
+        if (mode !== "results" || !testId) return;
+        setResultsLoading(true);
+        fetch(`${ScannerHost}/api/ab-test-results?testId=${testId}`, { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : null)
+            .then(setResults)
+            .catch(() => setResults(null))
+            .finally(() => setResultsLoading(false));
+    }, [mode, testId]);
+
     // Reseed local `changes` whenever the active variant changes (switching
     // tabs, or the initial load) — local edits are per-variant, not shared.
     useEffect(() => {
@@ -129,8 +159,10 @@ export default function PageExperimentEditor() {
     }, [activeVariant?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // ── Mint a signed proxy URL for the active variant ─────────────────────────
+    // Only in "editor" mode — no reason to keep loading/proxying the target
+    // page in the background while the Results panel is what's visible.
     useEffect(() => {
-        if (!activeVariantId || !testId) { setProxyUrl(null); return; }
+        if (mode !== "editor" || !activeVariantId || !testId) { setProxyUrl(null); return; }
         let ignore = false;
         setIframeReady(false);
         setProxyError(null);
@@ -151,7 +183,7 @@ export default function PageExperimentEditor() {
             })
             .catch(e => { if (!ignore) setProxyError(e.message || "Could not open editor"); });
         return () => { ignore = true; };
-    }, [testId, activeVariantId]);
+    }, [mode, testId, activeVariantId]);
 
     // ── Bridge message listener ─────────────────────────────────────────────────
     useEffect(() => {
@@ -244,10 +276,11 @@ export default function PageExperimentEditor() {
     const canLaunch = variants.length >= 2 && (test?.status === "draft" || test?.status === "paused");
     const setStatus = async (status) => {
         setStatusSaving(true);
+        const days = status === "running" && durationDays ? parseInt(durationDays, 10) : null;
         const r = await fetch(`${ScannerHost}/api/ab-tests?testId=${testId}`, {
             method: "PATCH",
             headers: authHeaders(),
-            body: JSON.stringify({ status }),
+            body: JSON.stringify({ status, ...(days ? { durationDays: days } : {}) }),
         }).catch(() => null);
         setStatusSaving(false);
         if (!r?.ok) {
@@ -255,6 +288,16 @@ export default function PageExperimentEditor() {
             alert(b?.error || "Could not update test status.");
             return;
         }
+        fetchTest();
+    };
+
+    const setGoalEvent = async (goalEventName) => {
+        const r = await fetch(`${ScannerHost}/api/ab-tests?testId=${testId}`, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({ goalEventName }),
+        }).catch(() => null);
+        if (!r?.ok) { alert("Could not update goal event."); return; }
         fetchTest();
     };
 
@@ -276,51 +319,113 @@ export default function PageExperimentEditor() {
                                 <button type="button" className="pxp-back-link" onClick={() => history.push(analyticsPageExperimentsPath(domain))}>
                                     &larr; All page experiments
                                 </button>
-                                <div className="pxp-variant-tabs">
-                                    {variants.map(v => (
-                                        <button
-                                            key={v.id}
-                                            type="button"
-                                            className={"pxp-variant-tab" + (v.id === activeVariantId ? " --active" : "")}
-                                            onClick={() => setActiveVariantId(v.id)}
-                                        >
-                                            {v.label || v.variantKey}
-                                        </button>
-                                    ))}
-                                    <button type="button" className="pxp-variant-tab pxp-variant-tab--add" onClick={addVariant}>
-                                        <IconPlus className="sa-icon" /> Variant
+
+                                <div className="pxp-mode-tabs" role="tablist" aria-label="View">
+                                    <button
+                                        type="button"
+                                        className={"pxp-variant-tab" + (mode === "editor" ? " --active" : "")}
+                                        onClick={() => setMode("editor")}
+                                    >
+                                        Editor
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={"pxp-variant-tab" + (mode === "results" ? " --active" : "")}
+                                        onClick={() => setMode("results")}
+                                    >
+                                        Results
                                     </button>
                                 </div>
-                                {test.status === "running" ? (
+
+                                {mode === "editor" && (
+                                    <div className="pxp-variant-tabs">
+                                        {variants.map(v => (
+                                            <button
+                                                key={v.id}
+                                                type="button"
+                                                className={"pxp-variant-tab" + (v.id === activeVariantId ? " --active" : "")}
+                                                onClick={() => setActiveVariantId(v.id)}
+                                            >
+                                                {v.label || v.variantKey}
+                                            </button>
+                                        ))}
+                                        <button type="button" className="pxp-variant-tab pxp-variant-tab--add" onClick={addVariant}>
+                                            <IconPlus className="sa-icon" /> Variant
+                                        </button>
+                                    </div>
+                                )}
+
+                                {mode === "editor" && (
                                     <button
                                         type="button"
-                                        className="pxp-launch-btn"
-                                        onClick={() => setStatus("paused")}
-                                        disabled={statusSaving}
+                                        className="sa-event-form__submit"
+                                        onClick={handleSave}
+                                        disabled={!dirty || saving}
                                     >
-                                        {statusSaving ? "Pausing…" : "Pause"}
-                                    </button>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        className="pxp-launch-btn"
-                                        onClick={() => setStatus("running")}
-                                        disabled={!canLaunch || statusSaving}
-                                        title={!canLaunch ? "Add a second variant to launch this test" : undefined}
-                                    >
-                                        {statusSaving ? "Launching…" : "Launch"}
+                                        {saving ? "Saving…" : dirty ? "Save changes" : "Saved"}
                                     </button>
                                 )}
-                                <button
-                                    type="button"
-                                    className="sa-event-form__submit"
-                                    onClick={handleSave}
-                                    disabled={!dirty || saving}
-                                >
-                                    {saving ? "Saving…" : dirty ? "Save changes" : "Saved"}
-                                </button>
                             </div>
 
+                            <div className="pxp-settings-row">
+                                <label className="pxp-inspector__label" style={{ marginBottom: 0 }}>
+                                    Goal event
+                                    <select
+                                        className="sa-event-form__select"
+                                        value={test.goalEventName || ""}
+                                        onChange={e => setGoalEvent(e.target.value)}
+                                    >
+                                        <option value="">— No goal event —</option>
+                                        {eventDefs.map(ev => (
+                                            <option key={ev.name} value={ev.name}>{ev.label || ev.name}</option>
+                                        ))}
+                                    </select>
+                                </label>
+
+                                {test.status === "running" ? (
+                                    <>
+                                        <span className="sa-panel__consent-note">
+                                            {test.endsAt ? `Ends ${new Date(test.endsAt).toLocaleString("de-DE")}` : "No end date"}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className="pxp-launch-btn"
+                                            onClick={() => setStatus("paused")}
+                                            disabled={statusSaving}
+                                        >
+                                            {statusSaving ? "Pausing…" : "Pause"}
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <input
+                                            type="number"
+                                            min="1" max="365"
+                                            className="sa-event-form__input"
+                                            style={{ width: 90 }}
+                                            placeholder="no limit"
+                                            value={durationDays}
+                                            onChange={e => setDurationDays(e.target.value)}
+                                        />
+                                        <span className="sa-panel__consent-note">days</span>
+                                        <button
+                                            type="button"
+                                            className="pxp-launch-btn"
+                                            onClick={() => setStatus("running")}
+                                            disabled={!canLaunch || statusSaving}
+                                            title={!canLaunch ? "Add a second variant to launch this test" : undefined}
+                                        >
+                                            {statusSaving ? "Launching…" : "Launch"}
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+
+                            {mode === "results" && (
+                                <ResultsPanel results={results} loading={resultsLoading} />
+                            )}
+
+                            {mode === "editor" && (
                             <div className="pxp-editor__body">
                                 <div className="pxp-editor__canvas">
                                     {proxyError && (
@@ -403,6 +508,7 @@ export default function PageExperimentEditor() {
                                     </div>
                                 </aside>
                             </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -514,6 +620,53 @@ function StyleField({ prop, currentValue, onApply }) {
                 onBlur={() => commit(value)}
                 maxLength={200}
             />
+        </div>
+    );
+}
+
+function ResultsPanel({ results, loading }) {
+    if (loading) return <p className="sa-notice">Loading&hellip;</p>;
+    if (!results) return <p className="sa-notice sa-notice--error">Could not load results.</p>;
+
+    const totalExposures = results.variants.reduce((s, v) => s + v.exposures, 0);
+    const totalUniqueSessions = results.variants.reduce((s, v) => s + v.uniqueSessions, 0);
+    const hasGoal = !!results.test.goalEventName;
+
+    return (
+        <div className="sa-section">
+            <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
+                <KpiCard label="Total exposures" value={totalExposures.toLocaleString("de-DE")} />
+                <KpiCard label="Unique sessions" value={totalUniqueSessions.toLocaleString("de-DE")} />
+            </div>
+            <table className="sa-table">
+                <thead>
+                    <tr>
+                        <th>Variant</th>
+                        <th className="sa-table__num">Exposures</th>
+                        <th className="sa-table__num">Unique sessions</th>
+                        {hasGoal && <th className="sa-table__num">Conversions</th>}
+                        {hasGoal && <th className="sa-table__num">Conv. rate</th>}
+                    </tr>
+                </thead>
+                <tbody>
+                    {results.variants.map(v => (
+                        <tr key={v.variantId}>
+                            <td>{v.label || v.variantKey}{v.isControl ? " (control)" : ""}</td>
+                            <td className="sa-table__num">{v.exposures.toLocaleString("de-DE")}</td>
+                            <td className="sa-table__num">{v.uniqueSessions.toLocaleString("de-DE")}</td>
+                            {hasGoal && <td className="sa-table__num">{v.conversions ?? "—"}</td>}
+                            {hasGoal && (
+                                <td className="sa-table__num">
+                                    {v.conversionRate != null ? (v.conversionRate * 100).toFixed(1) + "%" : "—"}
+                                </td>
+                            )}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            {!hasGoal && (
+                <p className="sa-panel__sub">Set a goal event above to see conversion rates per variant.</p>
+            )}
         </div>
     );
 }

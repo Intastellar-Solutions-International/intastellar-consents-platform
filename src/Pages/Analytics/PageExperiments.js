@@ -9,7 +9,7 @@ import { authHeaders } from "./_shared.js";
 import { IconPlus, IconTrash } from "./Icons.js";
 import "./Analytics.css";
 
-const STATUS_LABEL = { draft: "Draft", running: "Running", paused: "Paused", archived: "Archived" };
+const STATUS_LABEL = { draft: "Draft", running: "Running", paused: "Paused", archived: "Archived", completed: "Completed" };
 
 export default function PageExperiments() {
     document.title = "Page Experiments | Site Analytics";

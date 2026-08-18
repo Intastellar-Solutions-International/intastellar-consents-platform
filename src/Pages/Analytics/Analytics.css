@@ -2303,6 +2303,19 @@ details[open] .ca-context-summary::before { content: "▾"; }
     flex-wrap: wrap;
 }
 
+.pxp-mode-tabs {
+    display: flex;
+    gap: 4px;
+}
+
+.pxp-settings-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
 .pxp-variant-tab {
     appearance: none;
     border: 1px solid rgba(255,255,255,0.08);
