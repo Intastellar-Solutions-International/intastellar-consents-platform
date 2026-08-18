@@ -5,10 +5,12 @@
  * analytics-site-config.js (the site key is already embeddable/public).
  * Read by the embed script UNCONDITIONALLY on every pageload, regardless of
  * consent tier — variant application is rendering, not tracking, so it has
- * to work for every visitor. Only the exposure record (POST /api/a, t:'ab')
- * is consent-gated. This is why this is a separate endpoint rather than an
- * extension of analytics-site-config.js, which is only ever fetched for
- * full-consent visitors (via bootstrapSiteFeatures()).
+ * to work for every visitor. The exposure record (POST /api/a, t:'ab') is
+ * also sent unconditionally, since assignment data is needed for valid test
+ * results even from visitors who declined statistics cookies. This is why
+ * this is a separate endpoint rather than an extension of
+ * analytics-site-config.js, which is only ever fetched for full-consent
+ * visitors (via bootstrapSiteFeatures()).
  *
  * Degrades to `{ test: null }` on any bad input or DB error — this fires on
  * every pageload across every customer site, so it must never surface as a

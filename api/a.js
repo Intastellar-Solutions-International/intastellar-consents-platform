@@ -679,11 +679,11 @@ function bootstrapSiteFeatures(){
 
 // ── Page Experiments (visual A/B tests) ─────────────────────────────────────
 // Unlike bootstrapSiteFeatures() above (only ever called for full-consent
-// visitors, since recording/dataLayer are consent-sensitive features),
-// variant APPLICATION here has to run for every visitor regardless of
-// consent tier — it's rendering the page, not tracking anyone. Only the
-// exposure record at the end is consent-gated. See applyPageExperiment()'s
-// call site near the bottom of this file.
+// visitors, since recording/dataLayer are consent-sensitive features), both
+// variant APPLICATION and the exposure record run for every visitor
+// regardless of consent tier — assignment data is needed for valid test
+// results even from visitors who declined statistics cookies. See
+// applyPageExperiment()'s call site near the bottom of this file.
 
 // Same generic fallback heuristic detectBot() uses server-side (self-
 // identifying crawlers only — Googlebot, Bingbot, etc. all match this).
@@ -755,13 +755,9 @@ function applyPageExperiment(){
         applyChanges();
       }
 
-      // Consent may have changed since this request was fired — re-derive
-      // fresh rather than trusting a closed-over value, and only report the
-      // exposure (never skip *applying* the variant) when full.
-      var c2=getConsents();
-      if(hasStat(c2)){
-        send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname}));
-      }
+      // Sent unconditionally — assignment/exposure data is needed for valid
+      // test results even when the visitor declined statistics cookies.
+      send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname}));
     };
     xhr.send();
   }catch(e){}
@@ -881,7 +877,7 @@ function tryHooks(){
 // Fire on load
 var c=getConsents();
 tryHooks();
-applyPageExperiment(); // Runs regardless of consent tier — see its own doc comment above.
+applyPageExperiment(); // Runs (and reports exposure) regardless of consent tier — see its own doc comment above.
 if(hasStat(c)){
   sendFull(c,false);
 }else{
@@ -1095,10 +1091,10 @@ export default async function handler(req, res) {
     }
 
     // ── Page Experiment exposure ──────────────────────────────────────────────
-    // Only ever sent by the client when consent is full (see applyPageExperiment()
-    // in the embed script below) — an assignment row with no session_id has no
-    // analytical value, unlike a custom event, so there's no minimal-consent
-    // variant of this branch. Bot traffic is already excluded above, before any
+    // Sent by the client unconditionally, regardless of consent tier (see
+    // applyPageExperiment() in the embed script below) — assignment data is
+    // needed for valid test results even from visitors who declined
+    // statistics cookies. Bot traffic is already excluded above, before any
     // eventType branch runs. Re-validates the test/variant/domain/status
     // triple server-side rather than trusting the client's earlier GET
     // /api/ab-test-active response, closing the race where a test gets paused
