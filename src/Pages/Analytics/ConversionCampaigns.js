@@ -132,7 +132,7 @@ export default function ConversionCampaigns({ domain, fromIso, toIso, byCampaign
                                         <td />
                                         <td colSpan={5}>
                                             <div className="sa-campaign-events">
-                                                {r.events.map(ev => (
+                                                {(r.events || []).map(ev => (
                                                     <span key={ev.name} className="sa-campaign-event-chip">
                                                         {ev.label}
                                                         <b>{ev.count.toLocaleString("de-DE")}</b>

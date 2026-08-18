@@ -19,7 +19,7 @@ import "./Analytics.css";
 // misleading 100% and can crowd out countries with a real sample size.
 const MAP_RATE_MIN_SAMPLE = 5;
 
-const TABS = [
+const SECTIONS = [
     { key: "overview", label: "Overview" },
     { key: "deepdive", label: "Funnel & Sources" },
     { key: "setup",    label: "Events & Tracking" },
@@ -48,7 +48,7 @@ export default function AnalyticsConversionsOverview() {
     const [tick, setTick] = useState(0);
     const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
 
-    const [tab, setTab] = useState("overview");
+    const [section, setSection] = useState("overview");
 
     const totalConversions = useMemo(
         () => (data?.conversions || []).reduce((s, c) => s + (c.count || 0), 0),
@@ -109,23 +109,25 @@ export default function AnalyticsConversionsOverview() {
                     )}
 
                     {showData && (
-                        <>
-                            <div className="sa-conv-tabs" role="tablist" aria-label="Conversions view">
-                                {TABS.map(t => (
-                                    <button
-                                        key={t.key}
-                                        type="button"
-                                        role="tab"
-                                        aria-selected={tab === t.key}
-                                        className={"sa-conv-tabs__btn" + (tab === t.key ? " is-active" : "")}
-                                        onClick={() => setTab(t.key)}
-                                    >
-                                        {t.label}
-                                    </button>
-                                ))}
-                            </div>
+                        <div className="sa-conv-layout">
+                            <nav className="sa-conv-submenu" aria-label="Conversions view">
+                                <ul className="sa-conv-submenu__list">
+                                    {SECTIONS.map(s => (
+                                        <li key={s.key} className="sa-conv-submenu__item">
+                                            <button
+                                                type="button"
+                                                className={"sa-conv-submenu__link" + (section === s.key ? " --active" : "")}
+                                                onClick={() => setSection(s.key)}
+                                            >
+                                                {s.label}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
 
-                            {tab === "overview" && (
+                            <div className="sa-conv-submenu-content">
+                            {section === "overview" && (
                                 <div className="sa-conv-grid sa-conv-grid--overview">
                                     <KpiCard className="sa-conv-kpi1"
                                         icon={<IconTarget />}
@@ -181,7 +183,7 @@ export default function AnalyticsConversionsOverview() {
                                 </div>
                             )}
 
-                            {tab === "deepdive" && (
+                            {section === "deepdive" && (
                                 <div className="sa-conv-grid sa-conv-grid--deepdive">
                                     <TimeToConvert
                                         timeToConvert={data.timeToConvert}
@@ -209,14 +211,15 @@ export default function AnalyticsConversionsOverview() {
                                 </div>
                             )}
 
-                            {tab === "setup" && (
+                            {section === "setup" && (
                                 <ConversionsPanel
                                     domain={domain}
                                     conversions={data.conversions}
                                     onDefsChanged={() => setTick(t => t + 1)}
                                 />
                             )}
-                        </>
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>

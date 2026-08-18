@@ -1457,33 +1457,83 @@
     .sa-lead-kpi-wrap { grid-template-columns: 1fr; }
 }
 
-/* ── Conversions sub-page tabs ───────────────────────────────────────────────── */
+/* ── Conversions sub-page submenu (same visual language as the app's
+   Settings sidebar — vertical list, gold inset-left-border active state —
+   scoped to this page instead of the global fixed SideNav) ─────────────── */
 
-.sa-conv-tabs {
-    display: inline-flex;
-    gap: 2px;
-    padding: 3px;
-    margin-bottom: 14px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.07);
+.sa-conv-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
 }
 
-.sa-conv-tabs__btn {
+.sa-conv-submenu {
+    flex: 0 0 180px;
+    position: sticky;
+    top: 16px;
+}
+
+.sa-conv-submenu__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sa-conv-submenu__item {
+    margin: 0;
+}
+
+.sa-conv-submenu__link {
+    display: block;
+    width: 100%;
+    text-align: left;
     appearance: none;
     border: none;
     background: transparent;
     color: rgba(170,170,170,0.75);
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 600;
-    padding: 7px 14px;
-    border-radius: 7px;
+    padding: 9px 12px;
+    border-radius: 6px;
     cursor: pointer;
 }
 
-.sa-conv-tabs__btn.is-active {
-    background: rgba(192,159,83,0.2);
-    color: #e8d9b5;
+.sa-conv-submenu__link:hover:not(.--active) {
+    background-color: rgba(255,255,255,0.06);
+    color: rgb(255,255,255);
+}
+
+.sa-conv-submenu__link.--active {
+    background: rgba(255,255,255,0.08);
+    color: rgb(255,255,255);
+    box-shadow: inset 3px 0 0 0 rgb(192,159,83);
+}
+
+.sa-conv-submenu-content {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    .sa-conv-layout {
+        flex-direction: column;
+        gap: 12px;
+    }
+    .sa-conv-submenu {
+        flex: none;
+        width: 100%;
+        position: static;
+    }
+    .sa-conv-submenu__list {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .sa-conv-submenu__link.--active {
+        box-shadow: inset 0 -3px 0 0 rgb(192,159,83);
+    }
 }
 
 /* ── Conversions sub-page grid ────────────────────────────────────────────────── */
