@@ -56,6 +56,8 @@ import AnalyticsHeatmap from "./Pages/Analytics/Heatmap.js";
 import AnalyticsRecordings, { AnalyticsRecordingDetail } from "./Pages/Analytics/Recordings.js";
 import AnalyticsBots from "./Pages/Analytics/Bots.js";
 import AnalyticsConversionsOverview from "./Pages/Analytics/ConversionsOverview.js";
+import PageExperiments from "./Pages/Analytics/PageExperiments.js";
+import PageExperimentEditor from "./Pages/Analytics/PageExperimentEditor.js";
 import AnalyticsAdSpend from "./Pages/Analytics/AdSpend.js";
 import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import CookieDatabase from "./Pages/CookieDatabase";
@@ -269,6 +271,16 @@ export default function App() {
                                         <Route path="/analytics/:handle/conversions" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Conversions" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsConversionsOverview />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/page-experiments" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Experiments" fullPage /> : <ErrorBoundary>
+                                                <PageExperiments />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/page-experiments/:testId" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Experiments" fullPage /> : <ErrorBoundary>
+                                                <PageExperimentEditor />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/marketing" exact>

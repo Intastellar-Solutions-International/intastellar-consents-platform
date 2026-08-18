@@ -1,0 +1,166 @@
+const { useState, useEffect, useCallback, useContext, useMemo } = React;
+const useParams = window.ReactRouterDOM.useParams;
+const useHistory = window.ReactRouterDOM.useHistory;
+import { DomainContext } from "../../App.js";
+import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
+import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import { ScannerHost } from "../../API/host.js";
+import { authHeaders } from "./_shared.js";
+import { IconPlus, IconTrash } from "./Icons.js";
+import "./Analytics.css";
+
+const STATUS_LABEL = { draft: "Draft", archived: "Archived" };
+
+export default function PageExperiments() {
+    document.title = "Page Experiments | Site Analytics";
+
+    const { handle } = useParams();
+    const history = useHistory();
+    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
+    useSyncDomainFromRoute(handle, setGlobalDomain);
+
+    const domain = useMemo(() => {
+        if (isCombinedOrClearDomain(globalDomain)) return null;
+        return String(globalDomain || "").trim().toLowerCase();
+    }, [globalDomain]);
+
+    const [tests, setTests] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    const [showForm, setShowForm] = useState(false);
+    const [name, setName] = useState("");
+    const [targetPath, setTargetPath] = useState("/");
+    const [saving, setSaving] = useState(false);
+    const [formError, setFormError] = useState(null);
+
+    const fetchTests = useCallback(() => {
+        if (!domain) { setTests(null); return; }
+        setLoading(true);
+        setError(null);
+        fetch(`${ScannerHost}/api/ab-tests?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(d => setTests(d.tests || []))
+            .catch(() => setError("Could not load page experiments."))
+            .finally(() => setLoading(false));
+    }, [domain]);
+
+    useEffect(() => { fetchTests(); }, [fetchTests]);
+
+    const createTest = async (e) => {
+        e.preventDefault();
+        if (!name.trim() || !domain) return;
+        setSaving(true);
+        setFormError(null);
+        const r = await fetch(`${ScannerHost}/api/ab-tests`, {
+            method: "POST",
+            headers: authHeaders(),
+            body: JSON.stringify({ domain, name: name.trim(), targetPath: targetPath.trim() || "/" }),
+        }).catch(() => null);
+        setSaving(false);
+        if (!r?.ok) {
+            const body = await r?.json().catch(() => null);
+            setFormError(body?.error || "Could not create test.");
+            return;
+        }
+        const data = await r.json();
+        // Straight into the visual editor — creation itself is a lightweight
+        // 2-field form, the editor is the actual "New Test" experience.
+        history.push(`${analyticsPageExperimentsPath(domain)}/${data.test.id}`);
+    };
+
+    const removeTest = async (testId) => {
+        await fetch(`${ScannerHost}/api/ab-tests?testId=${testId}`, {
+            method: "DELETE", headers: authHeaders(),
+        }).catch(() => null);
+        fetchTests();
+    };
+
+    const showData = domain && !loading && !error && tests;
+
+    return (
+        <div style={{ flex: "1", minWidth: 0 }}>
+            <StickyPageTitle title="Page Experiments" />
+            <div className="dashboard-content">
+                <div className="sa-page">
+                    {!domain && (
+                        <p className="sa-notice">Select a domain in the header to view page experiments.</p>
+                    )}
+                    {domain && loading && <p className="sa-notice">Loading&hellip;</p>}
+                    {domain && error && <p className="sa-notice sa-notice--error">{error}</p>}
+
+                    {showData && (
+                        <div className="sa-section">
+                            <div className="sa-panel__head">
+                                <h3 className="sa-section__title">Tests</h3>
+                                <button type="button" className="sa-add-event-btn" onClick={() => setShowForm(s => !s)}>
+                                    <IconPlus className="sa-icon" /> New test
+                                </button>
+                            </div>
+
+                            {showForm && (
+                                <form className="sa-event-form" onSubmit={createTest}>
+                                    <input
+                                        type="text"
+                                        className="sa-event-form__input"
+                                        placeholder="test name, e.g. Pricing page hero"
+                                        value={name}
+                                        onChange={e => setName(e.target.value)}
+                                        maxLength={120}
+                                        required
+                                    />
+                                    <input
+                                        type="text"
+                                        className="sa-event-form__input"
+                                        placeholder="page path, e.g. /pricing"
+                                        value={targetPath}
+                                        onChange={e => setTargetPath(e.target.value)}
+                                        maxLength={512}
+                                    />
+                                    <button type="submit" className="sa-event-form__submit" disabled={saving}>
+                                        {saving ? "Creating…" : "Create & open editor"}
+                                    </button>
+                                </form>
+                            )}
+                            {formError && <p className="sa-notice sa-notice--error">{formError}</p>}
+
+                            {tests.length === 0 && !showForm && (
+                                <p className="sa-panel__sub">
+                                    No page experiments yet. Create one to open the visual editor and start making variants.
+                                </p>
+                            )}
+
+                            {tests.length > 0 && (
+                                <div className="sa-events-list">
+                                    {tests.map(t => (
+                                        <div key={t.id} className="sa-event-row">
+                                            <div className="sa-event-row__body" style={{ cursor: "pointer" }}
+                                                 onClick={() => history.push(`${analyticsPageExperimentsPath(domain)}/${t.id}`)}>
+                                                <div className="sa-event-row__top">
+                                                    <span className="sa-event-row__name">{t.name}</span>
+                                                    <span className="sa-event-row__kind">{STATUS_LABEL[t.status] || t.status}</span>
+                                                </div>
+                                                <div className="sa-event-row__stats">
+                                                    <span>{t.targetPath}</span>
+                                                    <span>{t.variantCount} variant{t.variantCount !== 1 ? "s" : ""}</span>
+                                                </div>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                className="sa-event-row__delete"
+                                                onClick={() => removeTest(t.id)}
+                                                aria-label={`Delete ${t.name}`}
+                                            >
+                                                <IconTrash />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsConversionsPath, analyticsAdSpendPath, analyticsGoogleAnalyticsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsConversionsPath, analyticsAdSpendPath, analyticsGoogleAnalyticsPath, analyticsPageExperimentsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -28,6 +28,7 @@ import botsIcon from "./icons/bots.svg";
 import conversionsIcon from "./icons/conversions.svg";
 import adSpendIcon from "./icons/ad-spend.svg";
 import googleAnalyticsIcon from "./icons/google-analytics.svg";
+import pageExperimentsIcon from "./icons/page-experiments.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -51,8 +52,9 @@ export default function Nav() {
         const conversionsPath = analyticsConversionsPath(currentDomain);
         const adSpendPath     = analyticsAdSpendPath(currentDomain);
         const googleAnalyticsPath = analyticsGoogleAnalyticsPath(currentDomain);
+        const pageExperimentsPath = analyticsPageExperimentsPath(currentDomain);
 
-        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend", "/google-analytics"].find(s => path.includes(s));
+        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend", "/google-analytics", "/page-experiments"].find(s => path.includes(s));
         const overviewActive    = path.indexOf("/analytics") === 0 && !sub;
         const audienceActive    = sub === "/audience";
         const acquisitionActive = sub === "/acquisition";
@@ -64,6 +66,7 @@ export default function Nav() {
         const conversionsActive = sub === "/conversions";
         const adSpendActive     = sub === "/ad-spend";
         const googleAnalyticsActive = sub === "/google-analytics";
+        const pageExperimentsActive = sub === "/page-experiments";
 
         return (
             <>
@@ -101,6 +104,10 @@ export default function Nav() {
                             <Link className={"navItems" + (conversionsActive ? " --active" : "")} to={conversionsPath}>
                                 <i className="dashboard-icons conversions" style={{ backgroundImage: `url(${conversionsIcon})` }} data-icon={conversionsIcon}></i>
                                 <span className="hiddenCollapsed">Conversions</span>
+                            </Link>
+                            <Link className={"navItems" + (pageExperimentsActive ? " --active" : "")} to={pageExperimentsPath}>
+                                <i className="dashboard-icons page-experiments" style={{ backgroundImage: `url(${pageExperimentsIcon})` }} data-icon={pageExperimentsIcon}></i>
+                                <span className="hiddenCollapsed">Page Experiments</span>
                             </Link>
                             <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}>
                                 <i className="dashboard-icons marketing" style={{ backgroundImage: `url(${marketing})` }} data-icon={marketing}></i>

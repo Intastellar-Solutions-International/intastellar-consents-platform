@@ -163,10 +163,16 @@ export function analyticsGoogleAnalyticsPath(domainUnicode) {
     return `/analytics/${seg}/google-analytics`;
 }
 
+export function analyticsPageExperimentsPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/page-experiments";
+    return `/analytics/${seg}/page-experiments`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend", "/google-analytics"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend", "/google-analytics", "/page-experiments"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
@@ -177,6 +183,7 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
         else if (leaf === "/conversions") history.push(analyticsConversionsPath(domainUnicode));
         else if (leaf === "/ad-spend")    history.push(analyticsAdSpendPath(domainUnicode));
         else if (leaf === "/google-analytics") history.push(analyticsGoogleAnalyticsPath(domainUnicode));
+        else if (leaf === "/page-experiments") history.push(analyticsPageExperimentsPath(domainUnicode));
         else                              history.push(analyticsPath(domainUnicode));
         return;
     }
