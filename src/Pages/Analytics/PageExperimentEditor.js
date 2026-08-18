@@ -380,8 +380,8 @@ export default function PageExperimentEditor() {
                             </div>
 
                             <div className="pxp-settings-row">
-                                <label className="pxp-inspector__label" style={{ marginBottom: 0 }}>
-                                    Goal event
+                                <div className="pxp-goal-field">
+                                    <span className="pxp-goal-field__label">Goal event</span>
                                     <select
                                         className="sa-event-form__select"
                                         value={test.goalEventName || ""}
@@ -392,45 +392,47 @@ export default function PageExperimentEditor() {
                                             <option key={ev.name} value={ev.name}>{ev.label || ev.name}</option>
                                         ))}
                                     </select>
-                                </label>
+                                </div>
 
-                                {test.status === "running" ? (
-                                    <>
-                                        <span className="sa-panel__consent-note">
-                                            {test.endsAt ? `Ends ${new Date(test.endsAt).toLocaleString("de-DE")}` : "No end date"}
-                                        </span>
-                                        <button
-                                            type="button"
-                                            className="pxp-launch-btn"
-                                            onClick={() => setStatus("paused")}
-                                            disabled={statusSaving}
-                                        >
-                                            {statusSaving ? "Pausing…" : "Pause"}
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <input
-                                            type="number"
-                                            min="1" max="365"
-                                            className="sa-event-form__input"
-                                            style={{ width: 90 }}
-                                            placeholder="no limit"
-                                            value={durationDays}
-                                            onChange={e => setDurationDays(e.target.value)}
-                                        />
-                                        <span className="sa-panel__consent-note">days</span>
-                                        <button
-                                            type="button"
-                                            className="pxp-launch-btn"
-                                            onClick={() => setStatus("running")}
-                                            disabled={!canLaunch || statusSaving}
-                                            title={!canLaunch ? "Add a second variant to launch this test" : undefined}
-                                        >
-                                            {statusSaving ? "Launching…" : "Launch"}
-                                        </button>
-                                    </>
-                                )}
+                                <div className="pxp-settings-row__status">
+                                    {test.status === "running" ? (
+                                        <>
+                                            <span className="pxp-status-note">
+                                                {test.endsAt ? `Ends ${new Date(test.endsAt).toLocaleString("de-DE")}` : "No end date"}
+                                            </span>
+                                            <button
+                                                type="button"
+                                                className="pxp-launch-btn pxp-launch-btn--pause"
+                                                onClick={() => setStatus("paused")}
+                                                disabled={statusSaving}
+                                            >
+                                                {statusSaving ? "Pausing…" : "Pause"}
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <input
+                                                type="number"
+                                                min="1" max="365"
+                                                className="sa-event-form__input"
+                                                style={{ width: 90 }}
+                                                placeholder="no limit"
+                                                value={durationDays}
+                                                onChange={e => setDurationDays(e.target.value)}
+                                            />
+                                            <span className="pxp-status-note">days</span>
+                                            <button
+                                                type="button"
+                                                className="pxp-launch-btn"
+                                                onClick={() => setStatus("running")}
+                                                disabled={!canLaunch || statusSaving}
+                                                title={!canLaunch ? "Add a second variant to launch this test" : undefined}
+                                            >
+                                                {statusSaving ? "Launching…" : "Launch"}
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
                             </div>
 
                             {mode === "results" && (

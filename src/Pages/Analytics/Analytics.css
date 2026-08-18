@@ -2311,9 +2311,42 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .pxp-settings-row {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
     margin-bottom: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(26,26,30,0.75);
+}
+
+.pxp-goal-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pxp-goal-field__label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(150,150,150,0.65);
+    white-space: nowrap;
+}
+
+.pxp-settings-row__status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.pxp-status-note {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(180,180,180,0.8);
+    white-space: nowrap;
 }
 
 .pxp-variant-tab {
@@ -2326,11 +2359,16 @@ details[open] .ca-context-summary::before { content: "▾"; }
     padding: 6px 12px;
     border-radius: 7px;
     cursor: pointer;
+    outline: none;
 }
 .pxp-variant-tab.--active {
     background: rgba(192,159,83,0.2);
     color: #e8d9b5;
     border-color: rgba(192,159,83,0.3);
+}
+.pxp-variant-tab:focus-visible {
+    outline: 2px solid rgba(192,159,83,0.5);
+    outline-offset: 2px;
 }
 .pxp-variant-tab--add {
     display: inline-flex;
@@ -2382,6 +2420,11 @@ details[open] .ca-context-summary::before { content: "▾"; }
     padding: 8px 14px;
     border-radius: 8px;
     cursor: pointer;
+}
+.pxp-launch-btn--pause {
+    border-color: rgba(220,100,100,0.35);
+    background: rgba(220,80,80,0.1);
+    color: #f0a3a3;
 }
 .pxp-launch-btn:disabled {
     opacity: 0.5;
