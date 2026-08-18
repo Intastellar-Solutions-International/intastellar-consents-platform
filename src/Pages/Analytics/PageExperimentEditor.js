@@ -5,8 +5,8 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { authHeaders, KpiCard } from "./_shared.js";
-import { IconPlus, IconTrash } from "./Icons.js";
+import { authHeaders } from "./_shared.js";
+import { IconPlus, IconTrash, IconClock, IconUsers, IconTrendingUp, IconBarChart, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
 
 const CHANGE_TYPE_LABEL = {
@@ -125,6 +125,18 @@ export default function PageExperimentEditor() {
     }, [domain, testId]);
 
     useEffect(() => { fetchTest(); }, [fetchTest]);
+
+    // A running experiment opens straight into its Results — that's what
+    // someone checking on an already-launched test wants to see, not the
+    // editor. Only applies once, the first time the test loads: switching
+    // tabs afterward (or a later fetchTest() refetch, e.g. after Pause)
+    // shouldn't yank the view back.
+    const initialModeSetRef = useRef(false);
+    useEffect(() => {
+        if (!test || initialModeSetRef.current) return;
+        initialModeSetRef.current = true;
+        if (test.status === "running") setMode("results");
+    }, [test]);
 
     // Registered conversion events for this domain — populates the goal-event
     // dropdown. Reuses the existing event-registry endpoint (Conversions >
@@ -624,49 +636,356 @@ function StyleField({ prop, currentValue, onApply }) {
     );
 }
 
+// Control is always first in `results.variants` (server orders is_control
+// DESC), so an index-based palette keeps a variant's color identical across
+// the table, the min-data progress bar, and both graphs without needing to
+// thread a color prop through every layer.
+const VARIANT_COLORS = [
+    "rgba(192,159,83,0.95)",  // control — same gold as the rest of the app's accent
+    "rgba(99,179,237,0.95)",
+    "rgba(74,222,128,0.95)",
+    "rgba(167,139,250,0.95)",
+    "rgba(248,113,113,0.95)",
+];
+function variantColor(index) {
+    return VARIANT_COLORS[index % VARIANT_COLORS.length];
+}
+
+function probabilityTone(p) {
+    if (p == null) return "neutral";
+    if (p >= 0.95) return "good";
+    if (p <= 0.05) return "bad";
+    return "neutral";
+}
+
+function fmtDate(iso) {
+    if (!iso) return "";
+    return new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+}
+
 function ResultsPanel({ results, loading }) {
+    const [graphTab, setGraphTab] = useState("date");
+
     if (loading) return <p className="sa-notice">Loading&hellip;</p>;
     if (!results) return <p className="sa-notice sa-notice--error">Could not load results.</p>;
 
-    const totalExposures = results.variants.reduce((s, v) => s + v.exposures, 0);
-    const totalUniqueSessions = results.variants.reduce((s, v) => s + v.uniqueSessions, 0);
-    const hasGoal = !!results.test.goalEventName;
+    const { test, variants, dailySeries, hasEnoughData, minSessionsPerVariant, dateRange } = results;
+    const hasGoal = !!test.goalEventName;
+    const totalExposures = variants.reduce((s, v) => s + v.exposures, 0);
+    const totalUniqueSessions = variants.reduce((s, v) => s + v.uniqueSessions, 0);
+    const totalConversions = hasGoal ? variants.reduce((s, v) => s + (v.conversions || 0), 0) : null;
 
     return (
-        <div className="sa-section">
-            <div style={{ display: "flex", gap: 16, marginBottom: 16 }}>
-                <KpiCard label="Total exposures" value={totalExposures.toLocaleString("de-DE")} />
-                <KpiCard label="Unique sessions" value={totalUniqueSessions.toLocaleString("de-DE")} />
+        <div className="pxp-report">
+            <div className="pxp-report__filters">
+                <div className="pxp-report__filter">
+                    <IconClock className="sa-icon" />
+                    <div className="pxp-report__filter-text">
+                        <span className="pxp-report__filter-value">
+                            {dateRange ? `${fmtDate(dateRange.from)} – ${fmtDate(dateRange.to)}` : "No data yet"}
+                        </span>
+                        <span className="pxp-report__filter-label">Date range</span>
+                    </div>
+                </div>
+                <div className="pxp-report__filter">
+                    <IconUsers className="sa-icon" />
+                    <div className="pxp-report__filter-text">
+                        <span className="pxp-report__filter-value">All visitors</span>
+                        <span className="pxp-report__filter-label">Exposures only record with statistics consent</span>
+                    </div>
+                </div>
             </div>
-            <table className="sa-table">
-                <thead>
-                    <tr>
-                        <th>Variant</th>
-                        <th className="sa-table__num">Exposures</th>
-                        <th className="sa-table__num">Unique sessions</th>
-                        {hasGoal && <th className="sa-table__num">Conversions</th>}
-                        {hasGoal && <th className="sa-table__num">Conv. rate</th>}
-                    </tr>
-                </thead>
-                <tbody>
-                    {results.variants.map(v => (
-                        <tr key={v.variantId}>
-                            <td>{v.label || v.variantKey}{v.isControl ? " (control)" : ""}</td>
-                            <td className="sa-table__num">{v.exposures.toLocaleString("de-DE")}</td>
-                            <td className="sa-table__num">{v.uniqueSessions.toLocaleString("de-DE")}</td>
-                            {hasGoal && <td className="sa-table__num">{v.conversions ?? "—"}</td>}
-                            {hasGoal && (
+
+            <div className="pxp-report__card">
+                <div className="pxp-report__card-head">
+                    {hasGoal ? (
+                        <>
+                            <span className="pxp-report__metric-badge">M1</span>
+                            <h3 className="pxp-report__metric-title">{test.goalEventName}</h3>
+                        </>
+                    ) : (
+                        <h3 className="pxp-report__metric-title">Traffic</h3>
+                    )}
+                </div>
+
+                {!hasGoal && (
+                    <p className="sa-panel__sub" style={{ marginBottom: 14 }}>
+                        Set a goal event above to see conversion rates and statistical comparisons per variant.
+                    </p>
+                )}
+
+                {hasGoal && !hasEnoughData && (
+                    <div className="pxp-collecting">
+                        <div className="pxp-collecting__head">
+                            <IconAlertTriangle className="sa-icon" />
+                            <span>Collecting minimum data for statistical calculations</span>
+                        </div>
+                        <div className="pxp-collecting__track">
+                            {variants.map((v, i) => (
+                                <div
+                                    key={v.variantId}
+                                    className="pxp-collecting__seg"
+                                    style={{
+                                        width: `${100 / variants.length}%`,
+                                        background: `linear-gradient(90deg, ${variantColor(i)} ${Math.min(100, (v.uniqueSessions / minSessionsPerVariant) * 100)}%, rgba(255,255,255,0.05) 0)`,
+                                    }}
+                                    title={`${v.label || v.variantKey}: ${v.uniqueSessions} / ${minSessionsPerVariant} sessions`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <div className="pxp-report__table-scroll">
+                    <table className="sa-table pxp-report__table">
+                        <thead>
+                            <tr>
+                                <th>Variation</th>
+                                <th className="sa-table__num">{hasGoal ? "Unique conversions / visitors" : "Exposures / visitors"}</th>
+                                {hasGoal && <th className="sa-table__num">Expected conversion rate</th>}
+                                {hasGoal && <th className="sa-table__num">Expected improvement</th>}
+                                {hasGoal && <th className="sa-table__num">Probability to be better</th>}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {variants.map((v, i) => (
+                                <tr key={v.variantId}>
+                                    <td>
+                                        <span className="pxp-report__variant-dot" style={{ background: variantColor(i) }} />
+                                        {v.label || v.variantKey}
+                                        {v.isControl && <span className="pxp-report__baseline-chip">Baseline</span>}
+                                    </td>
+                                    <td className="sa-table__num">
+                                        {(hasGoal ? v.conversions : v.exposures).toLocaleString("de-DE")} / {v.uniqueSessions.toLocaleString("de-DE")}
+                                    </td>
+                                    {hasGoal && (
+                                        <td className="sa-table__num">
+                                            {v.uniqueSessions > 0 ? (v.expectedConversionRate * 100).toFixed(2) + "%" : "No data yet"}
+                                        </td>
+                                    )}
+                                    {hasGoal && (
+                                        <td className="sa-table__num">
+                                            {v.isControl || !hasEnoughData ? "—" : (
+                                                <span className={v.expectedImprovement >= 0 ? "pxp-report__uplift--pos" : "pxp-report__uplift--neg"}>
+                                                    {v.expectedImprovement >= 0 ? "+" : ""}{(v.expectedImprovement * 100).toFixed(1)}%
+                                                </span>
+                                            )}
+                                        </td>
+                                    )}
+                                    {hasGoal && (
+                                        <td className="sa-table__num">
+                                            {v.isControl ? (
+                                                <span className="pxp-report__baseline-chip">Baseline</span>
+                                            ) : !hasEnoughData ? (
+                                                <span className="pxp-report__collecting-chip">Collecting data</span>
+                                            ) : (
+                                                <span className={`pxp-report__prob pxp-report__prob--${probabilityTone(v.probabilityToBeBetter)}`}>
+                                                    {(v.probabilityToBeBetter * 100).toFixed(1)}%
+                                                </span>
+                                            )}
+                                        </td>
+                                    )}
+                                </tr>
+                            ))}
+                            <tr className="pxp-report__total-row">
+                                <td>Total</td>
                                 <td className="sa-table__num">
-                                    {v.conversionRate != null ? (v.conversionRate * 100).toFixed(1) + "%" : "—"}
+                                    {(hasGoal ? totalConversions : totalExposures).toLocaleString("de-DE")} / {totalUniqueSessions.toLocaleString("de-DE")}
                                 </td>
-                            )}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            {!hasGoal && (
-                <p className="sa-panel__sub">Set a goal event above to see conversion rates per variant.</p>
+                                {hasGoal && <td className="sa-table__num">&mdash;</td>}
+                                {hasGoal && <td className="sa-table__num">&mdash;</td>}
+                                {hasGoal && <td className="sa-table__num">&mdash;</td>}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {hasGoal && dailySeries.length > 0 && (
+                <div className="pxp-report__card">
+                    <div className="pxp-graph-tabs">
+                        <button
+                            type="button"
+                            className={"pxp-graph-tab" + (graphTab === "date" ? " --active" : "")}
+                            onClick={() => setGraphTab("date")}
+                        >
+                            <IconTrendingUp className="sa-icon" /> Date Range Graph
+                        </button>
+                        <button
+                            type="button"
+                            className={"pxp-graph-tab" + (graphTab === "improvement" ? " --active" : "")}
+                            onClick={() => setGraphTab("improvement")}
+                        >
+                            <IconBarChart className="sa-icon" /> Expected Improvement Graph
+                        </button>
+                    </div>
+                    {graphTab === "date"
+                        ? <ConversionRateGraph dailySeries={dailySeries} variants={variants} />
+                        : <ImprovementGraph dailySeries={dailySeries} variants={variants} />}
+                </div>
             )}
+        </div>
+    );
+}
+
+// Cumulative conversion rate per variant, one line per variant, bucketed by
+// day of first exposure (see api/ab-test-results.js's dailySeries doc
+// comment). Hand-rolled SVG rather than Chart.js/react-chartjs-2 — nothing
+// else in this Analytics folder pulls those in; every other chart here
+// (see GoogleAnalyticsChart.js) is inline SVG, so this stays consistent
+// with that rather than adding a second charting approach.
+function ConversionRateGraph({ dailySeries, variants }) {
+    const W = 900, H = 300;
+    const PAD = { top: 16, right: 20, bottom: 30, left: 54 };
+    const plotW = W - PAD.left - PAD.right;
+    const plotH = H - PAD.top - PAD.bottom;
+    const n = dailySeries.length;
+
+    const series = variants.map((v, i) => ({
+        variantId: v.variantId,
+        label: v.label || v.variantKey,
+        color: variantColor(i),
+        points: dailySeries.map(d => d.variants[String(v.variantId)]?.cumulativeConversionRate ?? null),
+    }));
+
+    const observedMax = Math.max(0, ...series.flatMap(s => s.points.filter(p => p != null)));
+    // Nice round ceiling with headroom above the highest observed rate;
+    // falls back to a 10% placeholder scale before any real data exists.
+    const maxRate = observedMax > 0 ? Math.min(1, Math.ceil(observedMax * 10) / 10 + 0.1) : 0.1;
+    const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => maxRate * f);
+
+    const toX = i => PAD.left + (n <= 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    const toY = v => PAD.top + plotH - (Math.max(0, Math.min(v, maxRate)) / maxRate) * plotH;
+    const xStep = Math.max(1, Math.ceil(n / 8));
+
+    return (
+        <div className="pxp-graph">
+            <div className="pxp-graph-scroll">
+                <svg viewBox={`0 0 ${W} ${H}`} className="pxp-graph__svg" role="img" aria-label="Cumulative conversion rate by variant over time">
+                    {yTicks.map(v => (
+                        <g key={v}>
+                            <line x1={PAD.left} y1={toY(v)} x2={W - PAD.right} y2={toY(v)} stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                            <text x={PAD.left - 8} y={toY(v) + 4} textAnchor="end" fontSize="10" fill="rgba(160,160,160,0.6)">
+                                {(v * 100).toFixed(v < 0.1 ? 1 : 0)}%
+                            </text>
+                        </g>
+                    ))}
+                    {dailySeries.filter((_, i) => i % xStep === 0 || i === n - 1).map(d => {
+                        const i = dailySeries.indexOf(d);
+                        return (
+                            <text key={d.date} x={toX(i)} y={H - PAD.bottom + 16} textAnchor="middle" fontSize="10" fill="rgba(160,160,160,0.6)">
+                                {d.date.slice(5)}
+                            </text>
+                        );
+                    })}
+                    {series.map(s => {
+                        const defined = s.points.map((p, i) => (p == null ? null : [toX(i), toY(p)])).filter(Boolean);
+                        if (!defined.length) return null;
+                        return (
+                            <path
+                                key={s.variantId}
+                                d={"M" + defined.map(([x, y]) => `${x},${y}`).join(" L")}
+                                fill="none" stroke={s.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"
+                            />
+                        );
+                    })}
+                </svg>
+            </div>
+            <div className="pxp-graph__legend">
+                {series.map(s => (
+                    <span key={s.variantId} className="pxp-graph__legend-item">
+                        <span className="pxp-graph__legend-dot" style={{ background: s.color }} />
+                        {s.label}
+                    </span>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// Relative uplift of each non-control variant's cumulative conversion rate
+// vs control's, per day — a deterministic trend view. The headline
+// "Expected improvement" figure in the table above is the Monte-Carlo
+// median from api/ab-test-results.js; this graph is the simpler day-by-day
+// ratio, which is standard for a trend line and doesn't need re-simulating
+// per day.
+function ImprovementGraph({ dailySeries, variants }) {
+    const control = variants.find(v => v.isControl);
+    const challengers = variants.filter(v => !v.isControl);
+    if (!control || challengers.length === 0) {
+        return <p className="sa-panel__sub" style={{ padding: "16px 4px" }}>Add a variant to compare improvement against the baseline.</p>;
+    }
+
+    const W = 900, H = 300;
+    const PAD = { top: 16, right: 20, bottom: 30, left: 54 };
+    const plotW = W - PAD.left - PAD.right;
+    const plotH = H - PAD.top - PAD.bottom;
+    const n = dailySeries.length;
+
+    const series = challengers.map(v => ({
+        variantId: v.variantId,
+        label: v.label || v.variantKey,
+        color: variantColor(variants.indexOf(v)),
+        points: dailySeries.map(d => {
+            const c = d.variants[String(control.variantId)];
+            const x = d.variants[String(v.variantId)];
+            if (!c || !x || !c.cumulativeConversionRate) return null;
+            return (x.cumulativeConversionRate - c.cumulativeConversionRate) / c.cumulativeConversionRate;
+        }),
+    }));
+
+    const allVals = series.flatMap(s => s.points.filter(p => p != null));
+    const bound = Math.max(0.1, Math.ceil(Math.max(0, ...allVals.map(v => Math.abs(v))) * 10) / 10);
+    const toX = i => PAD.left + (n <= 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    const toY = v => PAD.top + plotH / 2 - (Math.max(-bound, Math.min(v, bound)) / bound) * (plotH / 2);
+    const xStep = Math.max(1, Math.ceil(n / 8));
+    const yTicks = [-bound, -bound / 2, 0, bound / 2, bound];
+
+    return (
+        <div className="pxp-graph">
+            <div className="pxp-graph-scroll">
+                <svg viewBox={`0 0 ${W} ${H}`} className="pxp-graph__svg" role="img" aria-label="Expected improvement vs control over time">
+                    {yTicks.map(v => (
+                        <g key={v}>
+                            <line
+                                x1={PAD.left} y1={toY(v)} x2={W - PAD.right} y2={toY(v)}
+                                stroke={v === 0 ? "rgba(255,255,255,0.18)" : "rgba(255,255,255,0.06)"}
+                                strokeWidth="1"
+                            />
+                            <text x={PAD.left - 8} y={toY(v) + 4} textAnchor="end" fontSize="10" fill="rgba(160,160,160,0.6)">
+                                {v > 0 ? "+" : ""}{(v * 100).toFixed(0)}%
+                            </text>
+                        </g>
+                    ))}
+                    {dailySeries.filter((_, i) => i % xStep === 0 || i === n - 1).map(d => {
+                        const i = dailySeries.indexOf(d);
+                        return (
+                            <text key={d.date} x={toX(i)} y={H - PAD.bottom + 16} textAnchor="middle" fontSize="10" fill="rgba(160,160,160,0.6)">
+                                {d.date.slice(5)}
+                            </text>
+                        );
+                    })}
+                    {series.map(s => {
+                        const defined = s.points.map((p, i) => (p == null ? null : [toX(i), toY(p)])).filter(Boolean);
+                        if (!defined.length) return null;
+                        return (
+                            <path
+                                key={s.variantId}
+                                d={"M" + defined.map(([x, y]) => `${x},${y}`).join(" L")}
+                                fill="none" stroke={s.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"
+                            />
+                        );
+                    })}
+                </svg>
+            </div>
+            <div className="pxp-graph__legend">
+                {series.map(s => (
+                    <span key={s.variantId} className="pxp-graph__legend-item">
+                        <span className="pxp-graph__legend-dot" style={{ background: s.color }} />
+                        {s.label} vs {control.label || control.variantKey}
+                    </span>
+                ))}
+            </div>
         </div>
     );
 }
