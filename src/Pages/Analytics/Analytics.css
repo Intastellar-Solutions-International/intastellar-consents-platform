@@ -406,6 +406,12 @@
     line-height: 1.4;
 }
 
+.sa-kpi__cross-check {
+    display: block;
+    margin-top: 4px;
+    color: rgba(120,120,120,0.55);
+}
+
 /* ── Chart section ───────────────────────────────────────────────────────────── */
 
 .sa-chart-section {

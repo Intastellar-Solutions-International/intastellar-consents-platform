@@ -425,10 +425,49 @@ function hasStat(c){return !!(c&&(ok(c.staticsticCookies)||ok(c.statisticCookies
 function hasFun(c) {return !!(c&&ok(c.functionalCookies));}
 function hasAdv(c) {return !!(c&&ok(c.advertisementCookies));}
 
+// Registrable parent domain for the current host, so the session cookie can
+// be scoped with Domain=<root> and shared across subdomains (e.g. a booking
+// portal on book.example.com and the main site on www.example.com) instead
+// of resetting per-origin the way sessionStorage does. Not a full public-
+// suffix-list implementation — just the common two-label ccTLD cases where
+// the naive "last two labels" guess would be wrong (co.uk, com.au, ...).
+// Anything unlisted falls back to the last two labels, which is correct for
+// the overwhelming majority of real hostnames.
+var TWO_LABEL_TLDS=['co.uk','org.uk','me.uk','gov.uk','ac.uk','co.nz','org.nz','com.au','net.au','org.au','co.jp','co.in','co.za'];
+function rootDomain(){
+  try{
+    var h=(location.hostname||'').toLowerCase();
+    if(!h||h==='localhost'||/^(\d{1,3}\.){3}\d{1,3}$/.test(h))return null; // IP/localhost — no cross-subdomain concept, no Domain attribute
+    var parts=h.split('.');
+    if(parts.length<=2)return null; // already bare (or single-label) — default (host-only) cookie scoping is already correct
+    var lastTwo=parts.slice(-2).join('.');
+    if(parts.length>2&&TWO_LABEL_TLDS.indexOf(lastTwo)!==-1)return parts.slice(-3).join('.');
+    return lastTwo;
+  }catch(e){return null;}
+}
+
 function getSid(){
   try{
-    var k='_ia_s',v=sessionStorage.getItem(k);
-    if(!v){v=Math.random().toString(36).slice(2,10)+Date.now().toString(36);sessionStorage.setItem(k,v);}
+    var existing=gc('_ia_s');
+    if(existing)return existing;
+    var v=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+    // No Max-Age/Expires — a *session* cookie (cleared when the browser
+    // itself closes, not per-tab like sessionStorage was), so this widens
+    // *scope* (shared across tabs and, with Domain set, across subdomains)
+    // without changing what "one session" means for conversion-rate math.
+    var base='_ia_s='+encodeURIComponent(v)+';path=/;SameSite=Lax'+(location.protocol==='https:'?';Secure':'');
+    var domain=rootDomain();
+    if(domain){
+      document.cookie=base+';domain='+domain;
+      // A Domain attribute the browser rejects for this host (e.g. our
+      // two-label-TLD list missed one) fails the write silently rather than
+      // erroring — verify it landed before trusting it, falling back to a
+      // same-origin cookie so session continuity degrades gracefully
+      // instead of vanishing outright.
+      if(document.cookie.indexOf('_ia_s=')===-1)document.cookie=base;
+    }else{
+      document.cookie=base;
+    }
     return v;
   }catch(e){return Math.random().toString(36).slice(2,10);}
 }

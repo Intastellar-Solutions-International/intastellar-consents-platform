@@ -16,7 +16,13 @@
  * fetchMicrosoftAdsAccounts(accessToken)    → [{id, name, currency}] via the SOAP Customer Management
  *                                            Service (v13) — untested against a live account, see the
  *                                            function's own doc comment
+ * fetchMicrosoftAdsCampaigns(conn, from, to) → [{id, name, status, channelType, clicks, impressions,
+ *                                            spend, currency}] via the SOAP Reporting Service (v13) —
+ *                                            untested against a live account, see the function's own
+ *                                            doc comment
  */
+
+import zlib from "zlib";
 
 export async function tryRefreshToken(db, conn) {
     if (!conn.token_expires_at) return conn;
@@ -432,6 +438,216 @@ export async function fetchMicrosoftAdsAccounts(accessToken) {
     return accounts;
 }
 
+// ── Microsoft Advertising: Reporting Service (SOAP, async report flow) ───────
+// Unlike Google/Meta, Bing Ads has no synchronous "run this query, get JSON
+// back" endpoint for performance metrics — campaign spend/clicks/impressions
+// only come out of the Reporting Service's async report flow: submit a
+// report request, poll until it's ready, then download a ZIP containing a
+// CSV. All three steps, plus the ZIP/CSV parsing, are implemented here by
+// hand (no zip or XML library — same dependency-light style as the rest of
+// this file). This has NOT been verified against a live account (none is
+// connected as of writing) — the request/response shapes follow Microsoft's
+// documented v13 schema as closely as possible, but exact element order,
+// namespace placement, and required SOAP headers for this service have a
+// real chance of needing a debugging pass on the first live call, same as
+// fetchMicrosoftAdsAccounts above. Errors are surfaced with raw response
+// text (never silently swallowed) so that pass has something to go on.
+const MS_ADS_REPORTING_NS = "https://bingads.microsoft.com/Reporting/v13";
+const MS_ADS_REPORTING_ENTITIES_NS = "https://bingads.microsoft.com/Reporting/v13/Entities";
+const MS_ADS_ARRAYS_NS = "http://schemas.microsoft.com/2003/10/Serialization/Arrays";
+const MS_ADS_REPORTING_ENDPOINT = "https://reporting.api.bingads.microsoft.com/Api/Advertiser/Reporting/v13/ReportingService.svc";
+
+async function msAdsReportingSoapCall(action, bodyXml, accessToken, accountId) {
+    const devToken = process.env.MICROSOFT_ADS_DEVELOPER_TOKEN || "";
+    const envelope = `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header>
+    <Action mustUnderstand="1" xmlns="${MS_ADS_REPORTING_NS}">${action}</Action>
+    <ApplicationToken i:nil="true" xmlns="${MS_ADS_REPORTING_NS}"/>
+    <AuthenticationToken xmlns="${MS_ADS_REPORTING_NS}">${accessToken}</AuthenticationToken>
+    <CustomerAccountId xmlns="${MS_ADS_REPORTING_NS}">${accountId}</CustomerAccountId>
+    <DeveloperToken xmlns="${MS_ADS_REPORTING_NS}">${devToken}</DeveloperToken>
+  </soap:Header>
+  <soap:Body>${bodyXml}</soap:Body>
+</soap:Envelope>`;
+
+    const resp = await fetch(MS_ADS_REPORTING_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8", SOAPAction: `"${action}"` },
+        body: envelope,
+    });
+    const text = await resp.text();
+    const faultMatch = /<(?:\w+:)?Reason>[\s\S]*?<(?:\w+:)?Text[^>]*>([^<]*)<|<faultstring>([^<]*)<\/faultstring>/i.exec(text);
+    if (!resp.ok || faultMatch) {
+        const faultMsg = faultMatch?.[1] || faultMatch?.[2]
+            || /<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/i.exec(text)?.[1]
+            || `Microsoft Ads Reporting API error (${resp.status}): ${text.slice(0, 300)}`;
+        const detailBlock = /<(?:\w+:)?[Dd]etail[^>]*>([\s\S]*?)<\/(?:\w+:)?[Dd]etail>/i.exec(text)?.[1];
+        const codeMsgPairs = detailBlock
+            ? [...detailBlock.matchAll(/<(?:\w+:)?Code>([^<]*)<\/(?:\w+:)?Code>\s*<(?:\w+:)?Message>([^<]*)<\/(?:\w+:)?Message>/gi)]
+                .map((m) => `${m[1]}: ${m[2]}`)
+            : [];
+        const detailInfo = codeMsgPairs.length > 0 ? codeMsgPairs.join("; ") : detailBlock?.slice(0, 500);
+        throw new Error(detailInfo ? `${faultMsg} | Detail: ${detailInfo}` : faultMsg);
+    }
+    return text;
+}
+
+function msAdsXmlTag(xml, tag) {
+    const m = new RegExp(`<(?:\\w+:)?${tag}(?:\\s[^>]*)?>([^<]*)<\\/(?:\\w+:)?${tag}>`, "i").exec(xml);
+    return m ? m[1] : null;
+}
+
+function toBingDateParts(isoDate) {
+    const [year, month, day] = isoDate.split("-").map(Number);
+    return { day, month, year };
+}
+
+// Minimal hand-rolled ZIP reader — Bing report downloads are a ZIP containing
+// exactly one CSV entry, so this reads the End Of Central Directory record
+// (searched from the end, since a comment field can precede it) to locate
+// the central directory, follows its first entry to the entry's local file
+// header, and inflates (or passes through, if stored uncompressed) just
+// that one entry. Not a general-purpose unzip — deliberately narrow to what
+// a single-file report archive needs.
+function readUInt16LE(buf, o) { return buf[o] | (buf[o + 1] << 8); }
+function readUInt32LE(buf, o) { return (buf[o] | (buf[o + 1] << 8) | (buf[o + 2] << 16) | (buf[o + 3] << 24)) >>> 0; }
+
+function unzipFirstEntry(buf) {
+    const EOCD_SIG = 0x06054b50;
+    let eocdOffset = -1;
+    const searchStart = Math.max(0, buf.length - 22 - 65536);
+    for (let i = buf.length - 22; i >= searchStart; i--) {
+        if (readUInt32LE(buf, i) === EOCD_SIG) { eocdOffset = i; break; }
+    }
+    if (eocdOffset === -1) throw new Error("Report download is not a valid ZIP (no End Of Central Directory record found)");
+    const cdOffset = readUInt32LE(buf, eocdOffset + 16);
+
+    const CD_SIG = 0x02014b50;
+    if (readUInt32LE(buf, cdOffset) !== CD_SIG) throw new Error("Malformed ZIP central directory in report download");
+    const compMethod = readUInt16LE(buf, cdOffset + 10);
+    const compSize    = readUInt32LE(buf, cdOffset + 20);
+    const lfhOffset   = readUInt32LE(buf, cdOffset + 42);
+
+    const LFH_SIG = 0x04034b50;
+    if (readUInt32LE(buf, lfhOffset) !== LFH_SIG) throw new Error("Malformed ZIP local file header in report download");
+    const lfhNameLen  = readUInt16LE(buf, lfhOffset + 26);
+    const lfhExtraLen = readUInt16LE(buf, lfhOffset + 28);
+    const dataStart = lfhOffset + 30 + lfhNameLen + lfhExtraLen;
+    const compressed = buf.slice(dataStart, dataStart + compSize);
+
+    if (compMethod === 0) return compressed;
+    if (compMethod === 8) return zlib.inflateRawSync(compressed);
+    throw new Error(`Unsupported ZIP compression method in report download: ${compMethod}`);
+}
+
+// Bing's CSV reports include a couple of preamble/footer lines around the
+// actual data by default (report title, date-range line, blank lines) —
+// rather than depending on exact line positions, this finds the header row
+// by content (the first line starting with a quoted "CampaignId") and reads
+// until a blank line or EOF. Handles the common case of no embedded commas/
+// quotes needing escaping in campaign names; a campaign name containing a
+// comma would need full CSV-quote-aware parsing, which this simple split
+// does not do.
+function parseSimpleCsv(text) {
+    const lines = text.split(/\r?\n/);
+    // Matched by presence, not position — the requested Columns order isn't
+    // guaranteed to be the order the report actually comes back in.
+    const headerIdx = lines.findIndex(l => /(^|,)"?CampaignId"?(,|$)/i.test(l.trim()));
+    if (headerIdx === -1) return [];
+    const headers = lines[headerIdx].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+    const rows = [];
+    for (let i = headerIdx + 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) break;
+        const cells = line.split(",").map(c => c.replace(/^"|"$/g, "").trim());
+        const row = {};
+        headers.forEach((h, idx) => { row[h] = cells[idx]; });
+        rows.push(row);
+    }
+    return rows;
+}
+
+export async function fetchMicrosoftAdsCampaigns(conn, fromDate, toDate) {
+    if (!conn.account_id) throw new Error("No Microsoft Advertising account linked.");
+    const { day: sd, month: sm, year: sy } = toBingDateParts(fromDate);
+    const { day: ed, month: em, year: ey } = toBingDateParts(toDate);
+
+    const submitBody = `
+        <SubmitGenerateReportRequest xmlns="${MS_ADS_REPORTING_NS}">
+            <ReportRequest i:type="CampaignPerformanceReportRequest">
+                <Format>Csv</Format>
+                <ReportName>ConversionsCampaignPerformance</ReportName>
+                <ReturnOnlyCompleteData>false</ReturnOnlyCompleteData>
+                <Aggregation>Summary</Aggregation>
+                <Columns xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
+                    <e:CampaignPerformanceReportColumn>CampaignId</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>CampaignName</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>CampaignStatus</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>CampaignType</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>Impressions</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>Clicks</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>Spend</e:CampaignPerformanceReportColumn>
+                </Columns>
+                <Scope xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
+                    <e:AccountIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${conn.account_id}</a:long></e:AccountIds>
+                </Scope>
+                <Time xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
+                    <e:CustomDateRangeStart><e:Day>${sd}</e:Day><e:Month>${sm}</e:Month><e:Year>${sy}</e:Year></e:CustomDateRangeStart>
+                    <e:CustomDateRangeEnd><e:Day>${ed}</e:Day><e:Month>${em}</e:Month><e:Year>${ey}</e:Year></e:CustomDateRangeEnd>
+                    <e:ReportTimeZone>GreenwichMeanTimeDublinEdinburghLisbonLondon</e:ReportTimeZone>
+                </Time>
+            </ReportRequest>
+        </SubmitGenerateReportRequest>`;
+
+    const submitXml = await msAdsReportingSoapCall("SubmitGenerateReport", submitBody, conn.access_token, conn.account_id);
+    const reportRequestId = msAdsXmlTag(submitXml, "ReportRequestId");
+    if (!reportRequestId) throw new Error(`Could not read ReportRequestId from SubmitGenerateReport response: ${submitXml.slice(0, 300)}`);
+
+    const pollBody = `<PollGenerateReportRequest xmlns="${MS_ADS_REPORTING_NS}"><ReportRequestId>${reportRequestId}</ReportRequestId></PollGenerateReportRequest>`;
+
+    // Reports typically finish in a few seconds but there's no push
+    // notification here, only polling — cap total wait so a slow/stuck
+    // report fails the request instead of hanging it indefinitely.
+    let downloadUrl = null;
+    const maxAttempts = 10;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        await new Promise(r => setTimeout(r, attempt === 0 ? 1500 : 3000));
+        const pollXml = await msAdsReportingSoapCall("PollGenerateReport", pollBody, conn.access_token, conn.account_id);
+        const status = msAdsXmlTag(pollXml, "Status");
+        if (status === "Success") {
+            downloadUrl = msAdsXmlTag(pollXml, "ReportDownloadUrl");
+            break;
+        }
+        if (status === "Error") {
+            throw new Error(`Microsoft Ads report generation failed: ${pollXml.slice(0, 300)}`);
+        }
+        // status === "Pending" (or unrecognized) — keep polling
+    }
+    if (!downloadUrl) throw new Error("Microsoft Ads report did not complete within the polling window.");
+
+    const zipResp = await fetch(downloadUrl);
+    if (!zipResp.ok) throw new Error(`Could not download Microsoft Ads report (${zipResp.status}).`);
+    const zipBuf = Buffer.from(await zipResp.arrayBuffer());
+    const csvBuf = unzipFirstEntry(zipBuf);
+    const rows = parseSimpleCsv(csvBuf.toString("utf8"));
+
+    const currency = conn.account_currency || "USD";
+    return rows
+        .filter(r => r.CampaignId)
+        .map(r => ({
+            id: r.CampaignId,
+            name: r.CampaignName || `Campaign ${r.CampaignId}`,
+            status: r.CampaignStatus || null,
+            channelType: r.CampaignType || null,
+            clicks: Number(r.Clicks || 0),
+            impressions: Number(r.Impressions || 0),
+            spend: Number(String(r.Spend || "0").replace(/[^0-9.-]/g, "")) || 0,
+            currency,
+        }))
+        .sort((a, b) => b.spend - a.spend);
+}
+
 export async function fetchMetaAdsCampaigns(conn, fromDate, toDate) {
     const accountId = String(conn.account_id || "").replace(/^act_/, "");
     if (!accountId) throw new Error("No Meta Ad Account linked.");
@@ -549,14 +765,26 @@ async function fetchGoogleAnalytics(conn, fromDate, toDate) {
     return { clicks: sessions, sessions, spend: 0, currency: null, impressions: 0 };
 }
 
+// Account-level totals via the same per-campaign report, summed — avoids
+// standing up a second (AccountPerformanceReportRequest) report shape for
+// an aggregate that the campaign-level report already contains.
+async function fetchMicrosoftAds(conn, fromDate, toDate) {
+    const campaigns = await fetchMicrosoftAdsCampaigns(conn, fromDate, toDate);
+    const totals = campaigns.reduce((acc, c) => ({
+        clicks: acc.clicks + c.clicks,
+        impressions: acc.impressions + c.impressions,
+        spend: acc.spend + c.spend,
+    }), { clicks: 0, impressions: 0, spend: 0 });
+    return { ...totals, spend: +totals.spend.toFixed(2), currency: conn.account_currency || "USD" };
+}
+
 export async function fetchPlatformData(conn, fromDate, toDate) {
     switch (conn.platform) {
         case "google_ads":       return fetchGoogleAds(conn, fromDate, toDate);
         case "meta_ads":         return fetchMetaAds(conn, fromDate, toDate);
         case "linkedin_ads":     return fetchLinkedInAds(conn, fromDate, toDate);
         case "google_analytics": return fetchGoogleAnalytics(conn, fromDate, toDate);
-        case "microsoft_ads":
-            throw new Error("Microsoft Ads automatic import is not yet available.");
+        case "microsoft_ads":    return fetchMicrosoftAds(conn, fromDate, toDate);
         default:
             throw new Error(`Unsupported platform: ${conn.platform}`);
     }
@@ -714,6 +942,79 @@ async function fetchGoogleAnalyticsDaily(conn, fromDate, toDate) {
     return result;
 }
 
+// Same Reporting Service flow as fetchMicrosoftAdsCampaigns, with
+// Aggregation: Daily and a TimePeriod column instead of Summary — one row
+// per campaign per day, summed here into an account-level daily total to
+// match every other platform's fetchPlatformDataDaily shape. Same
+// live-account caveat as fetchMicrosoftAdsCampaigns above.
+async function fetchMicrosoftAdsDaily(conn, fromDate, toDate) {
+    if (!conn.account_id) throw new Error("No Microsoft Advertising account linked.");
+    const { day: sd, month: sm, year: sy } = toBingDateParts(fromDate);
+    const { day: ed, month: em, year: ey } = toBingDateParts(toDate);
+
+    const submitBody = `
+        <SubmitGenerateReportRequest xmlns="${MS_ADS_REPORTING_NS}">
+            <ReportRequest i:type="CampaignPerformanceReportRequest">
+                <Format>Csv</Format>
+                <ReportName>ConversionsCampaignPerformanceDaily</ReportName>
+                <ReturnOnlyCompleteData>false</ReturnOnlyCompleteData>
+                <Aggregation>Daily</Aggregation>
+                <Columns xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
+                    <e:CampaignPerformanceReportColumn>CampaignId</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>TimePeriod</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>Impressions</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>Clicks</e:CampaignPerformanceReportColumn>
+                    <e:CampaignPerformanceReportColumn>Spend</e:CampaignPerformanceReportColumn>
+                </Columns>
+                <Scope xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
+                    <e:AccountIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${conn.account_id}</a:long></e:AccountIds>
+                </Scope>
+                <Time xmlns:e="${MS_ADS_REPORTING_ENTITIES_NS}">
+                    <e:CustomDateRangeStart><e:Day>${sd}</e:Day><e:Month>${sm}</e:Month><e:Year>${sy}</e:Year></e:CustomDateRangeStart>
+                    <e:CustomDateRangeEnd><e:Day>${ed}</e:Day><e:Month>${em}</e:Month><e:Year>${ey}</e:Year></e:CustomDateRangeEnd>
+                    <e:ReportTimeZone>GreenwichMeanTimeDublinEdinburghLisbonLondon</e:ReportTimeZone>
+                </Time>
+            </ReportRequest>
+        </SubmitGenerateReportRequest>`;
+
+    const submitXml = await msAdsReportingSoapCall("SubmitGenerateReport", submitBody, conn.access_token, conn.account_id);
+    const reportRequestId = msAdsXmlTag(submitXml, "ReportRequestId");
+    if (!reportRequestId) throw new Error(`Could not read ReportRequestId from SubmitGenerateReport response: ${submitXml.slice(0, 300)}`);
+
+    const pollBody = `<PollGenerateReportRequest xmlns="${MS_ADS_REPORTING_NS}"><ReportRequestId>${reportRequestId}</ReportRequestId></PollGenerateReportRequest>`;
+    let downloadUrl = null;
+    for (let attempt = 0; attempt < 10; attempt++) {
+        await new Promise(r => setTimeout(r, attempt === 0 ? 1500 : 3000));
+        const pollXml = await msAdsReportingSoapCall("PollGenerateReport", pollBody, conn.access_token, conn.account_id);
+        const status = msAdsXmlTag(pollXml, "Status");
+        if (status === "Success") { downloadUrl = msAdsXmlTag(pollXml, "ReportDownloadUrl"); break; }
+        if (status === "Error") throw new Error(`Microsoft Ads report generation failed: ${pollXml.slice(0, 300)}`);
+    }
+    if (!downloadUrl) throw new Error("Microsoft Ads report did not complete within the polling window.");
+
+    const zipResp = await fetch(downloadUrl);
+    if (!zipResp.ok) throw new Error(`Could not download Microsoft Ads report (${zipResp.status}).`);
+    const csvBuf = unzipFirstEntry(Buffer.from(await zipResp.arrayBuffer()));
+    const rows = parseSimpleCsv(csvBuf.toString("utf8"));
+    const currency = conn.account_currency || "USD";
+
+    const result = {};
+    for (const r of rows) {
+        // TimePeriod comes back as MM/DD/YYYY per Bing's documented Csv format.
+        const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(r.TimePeriod || "").trim());
+        if (!m) continue;
+        const date = `${m[3]}-${m[1].padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+        if (!result[date]) result[date] = { clicks: 0, impressions: 0, spend: 0, currency };
+        result[date].clicks      += Number(r.Clicks || 0);
+        result[date].impressions += Number(r.Impressions || 0);
+        result[date].spend       += Number(String(r.Spend || "0").replace(/[^0-9.-]/g, "")) || 0;
+    }
+    for (const date of Object.keys(result)) {
+        result[date].spend = +result[date].spend.toFixed(2);
+    }
+    return result;
+}
+
 // Returns { [YYYY-MM-DD]: { clicks, impressions, spend, currency } }
 export async function fetchPlatformDataDaily(conn, fromDate, toDate) {
     switch (conn.platform) {
@@ -721,6 +1022,7 @@ export async function fetchPlatformDataDaily(conn, fromDate, toDate) {
         case "meta_ads":         return fetchMetaAdsDaily(conn, fromDate, toDate);
         case "linkedin_ads":     return fetchLinkedInAdsDaily(conn, fromDate, toDate);
         case "google_analytics": return fetchGoogleAnalyticsDaily(conn, fromDate, toDate);
+        case "microsoft_ads":    return fetchMicrosoftAdsDaily(conn, fromDate, toDate);
         default:
             return {};
     }

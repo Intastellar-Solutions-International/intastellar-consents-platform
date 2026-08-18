@@ -1,9 +1,10 @@
-const { useState, useContext, useMemo } = React;
+const { useState, useEffect, useContext, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
 import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsReport, toIsoDate, KpiCard } from "./_shared.js";
+import { ScannerHost } from "../../API/host.js";
+import { useAnalyticsReport, toIsoDate, KpiCard, authHeaders } from "./_shared.js";
 import { IconTarget, IconTrendingUp, IconGlobe } from "./Icons.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import ConversionsPanel from "./Conversions.js";
@@ -24,6 +25,40 @@ const SECTIONS = [
     { key: "deepdive", label: "Funnel & Sources" },
     { key: "setup",    label: "Events & Tracking" },
 ];
+
+// Total traffic cross-check for the Conversion Rate tile — the platform's
+// own conversion rate is necessarily computed over consent-linked sessions
+// only (see the "session-linked conversions only" note throughout this
+// page), so it's a rate over a sample, not all traffic. This surfaces GA4's
+// full session count alongside it as a labeled reference point, not a
+// replacement — same connected-account pattern GoogleAnalytics.js already
+// uses (ad-connections → ad-daily-data's GA4 summary).
+function useGa4TotalSessions(domain, fromIso, toIso) {
+    const [state, setState] = useState({ connected: false, sessions: null, loading: false });
+
+    useEffect(() => {
+        if (!domain) { setState({ connected: false, sessions: null, loading: false }); return; }
+        let ignore = false;
+        setState(s => ({ ...s, loading: true }));
+        fetch(`${ScannerHost}/api/ad-connections?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (ignore) return null;
+                const hasGa4 = (data?.connections || []).some(c => c.platform === "google_analytics" && c.account_id);
+                if (!hasGa4) { setState({ connected: false, sessions: null, loading: false }); return null; }
+                const qs = `platform=google_analytics&domain=${encodeURIComponent(domain)}&fromDate=${fromIso}&toDate=${toIso}`;
+                return fetch(`${ScannerHost}/api/ad-daily-data?${qs}`, { headers: authHeaders() }).then(r => r.ok ? r.json() : null);
+            })
+            .then(daily => {
+                if (ignore || !daily) return;
+                setState({ connected: true, sessions: Number(daily.summary?.sessions || 0), loading: false });
+            })
+            .catch(() => { if (!ignore) setState(s => ({ ...s, loading: false })); });
+        return () => { ignore = true; };
+    }, [domain, fromIso, toIso]);
+
+    return state;
+}
 
 export default function AnalyticsConversionsOverview() {
     document.title = "Conversions | Site Analytics";
@@ -47,6 +82,7 @@ export default function AnalyticsConversionsOverview() {
 
     const [tick, setTick] = useState(0);
     const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
+    const ga4 = useGa4TotalSessions(domain, fromIso, toIso);
 
     const [section, setSection] = useState("overview");
 
@@ -139,7 +175,17 @@ export default function AnalyticsConversionsOverview() {
                                         icon={<IconTrendingUp />}
                                         label="Conversion rate"
                                         value={data.totals.conversionRate + "%"}
-                                        sub={`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} sessions`}
+                                        sub={
+                                            <>
+                                                {`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} consent-linked sessions`}
+                                                {ga4.connected && ga4.sessions != null && (
+                                                    <span className="sa-kpi__cross-check">
+                                                        GA4 total traffic: {ga4.sessions.toLocaleString("de-DE")} sessions
+                                                        (rate above covers consent-linked sessions only)
+                                                    </span>
+                                                )}
+                                            </>
+                                        }
                                     />
 
                                     <div className="sa-panel sa-conv-trend">
