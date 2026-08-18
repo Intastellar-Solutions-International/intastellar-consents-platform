@@ -2278,6 +2278,11 @@ details[open] .ca-context-summary::before { content: "▾"; }
     min-height: 500px;
 }
 
+.pxp-editor--results {
+    height: auto;
+    min-height: 0;
+}
+
 .pxp-editor__toolbar {
     display: flex;
     align-items: center;

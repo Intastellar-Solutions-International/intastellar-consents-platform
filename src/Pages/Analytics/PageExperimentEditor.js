@@ -359,7 +359,7 @@ export default function PageExperimentEditor() {
                     {error && <p className="sa-notice sa-notice--error">{error}</p>}
 
                     {!loading && !error && test && (
-                        <div className="pxp-editor">
+                        <div className={`pxp-editor${mode === "results" ? " pxp-editor--results" : ""}`}>
                             <div className="pxp-editor__toolbar">
                                 <button type="button" className="pxp-back-link" onClick={() => history.push(analyticsPageExperimentsPath(domain))}>
                                     &larr; All page experiments
