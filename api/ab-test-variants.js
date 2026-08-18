@@ -147,7 +147,7 @@ export default async function handler(req, res) {
 
     async function loadOwnedVariant(variantId) {
         const { rows } = await db.query(
-            `SELECT v.id, v.test_id, v.variant_key, v.is_control
+            `SELECT v.id, v.test_id, v.variant_key, v.is_control, t.status AS test_status
              FROM ab_test_variants v
              JOIN ab_tests t ON t.id = v.test_id
              WHERE v.id = $1 AND t.organisation_id = $2 LIMIT 1`,
@@ -256,8 +256,16 @@ export default async function handler(req, res) {
             `SELECT COUNT(*) AS n FROM ab_test_variants WHERE test_id = $1`,
             [existing.test_id]
         );
-        if (Number(countRows[0]?.n || 0) <= 1) {
+        const variantCount = Number(countRows[0]?.n || 0);
+        if (variantCount <= 1) {
             return res.status(400).json({ error: "Cannot delete the last remaining variant" });
+        }
+        // A running test needs 2+ variants (enforced when it was launched,
+        // in api/ab-tests.js's PATCH handler) — deleting down to 1 would
+        // silently turn it into a control-only page with nothing erroring
+        // anywhere else, so the same floor applies here while it's running.
+        if (existing.test_status === "running" && variantCount <= 2) {
+            return res.status(400).json({ error: "A running test needs at least 2 variants — pause it first to remove this one" });
         }
 
         await db.query(`DELETE FROM ab_test_variants WHERE id = $1`, [variantId]).catch(() => {});

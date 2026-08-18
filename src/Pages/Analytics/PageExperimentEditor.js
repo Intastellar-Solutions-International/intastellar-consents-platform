@@ -240,6 +240,24 @@ export default function PageExperimentEditor() {
         fetchTest();
     };
 
+    const [statusSaving, setStatusSaving] = useState(false);
+    const canLaunch = variants.length >= 2 && (test?.status === "draft" || test?.status === "paused");
+    const setStatus = async (status) => {
+        setStatusSaving(true);
+        const r = await fetch(`${ScannerHost}/api/ab-tests?testId=${testId}`, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({ status }),
+        }).catch(() => null);
+        setStatusSaving(false);
+        if (!r?.ok) {
+            const b = await r?.json().catch(() => null);
+            alert(b?.error || "Could not update test status.");
+            return;
+        }
+        fetchTest();
+    };
+
     if (!domain) {
         return <div className="sa-page"><p className="sa-notice">Select a domain in the header.</p></div>;
     }
@@ -273,6 +291,26 @@ export default function PageExperimentEditor() {
                                         <IconPlus className="sa-icon" /> Variant
                                     </button>
                                 </div>
+                                {test.status === "running" ? (
+                                    <button
+                                        type="button"
+                                        className="pxp-launch-btn"
+                                        onClick={() => setStatus("paused")}
+                                        disabled={statusSaving}
+                                    >
+                                        {statusSaving ? "Pausing…" : "Pause"}
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        className="pxp-launch-btn"
+                                        onClick={() => setStatus("running")}
+                                        disabled={!canLaunch || statusSaving}
+                                        title={!canLaunch ? "Add a second variant to launch this test" : undefined}
+                                    >
+                                        {statusSaving ? "Launching…" : "Launch"}
+                                    </button>
+                                )}
                                 <button
                                     type="button"
                                     className="sa-event-form__submit"

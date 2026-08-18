@@ -364,6 +364,46 @@ async function ensureTables(db) {
         );
         CREATE INDEX IF NOT EXISTS idx_adr_site ON analytics_datalayer_rules (site_id);
     `).catch(() => {});
+    // Page Experiments — ab_tests/ab_test_variants are owned/migrated by
+    // api/ab-tests.js; re-declared here defensively (same duplication
+    // convention api/ab-test-proxy.js already uses) so the exposure-record
+    // JOIN below never hits a missing-table error, even though in practice
+    // a test can't be "running" without that file having migrated first.
+    // ab_test_assignments itself IS owned here — this is its only writer.
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS ab_tests (
+            id               BIGSERIAL    PRIMARY KEY,
+            organisation_id  INTEGER      NOT NULL,
+            domain           TEXT         NOT NULL,
+            name             VARCHAR(120) NOT NULL,
+            target_path      TEXT         NOT NULL DEFAULT '/',
+            status           VARCHAR(16)  NOT NULL DEFAULT 'draft',
+            created_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            updated_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+        );
+        CREATE TABLE IF NOT EXISTS ab_test_variants (
+            id               BIGSERIAL    PRIMARY KEY,
+            test_id          BIGINT       NOT NULL REFERENCES ab_tests(id) ON DELETE CASCADE,
+            variant_key      VARCHAR(64)  NOT NULL,
+            label            VARCHAR(120),
+            is_control       BOOLEAN      NOT NULL DEFAULT false,
+            changes          JSONB        NOT NULL DEFAULT '[]',
+            created_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            updated_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            UNIQUE (test_id, variant_key)
+        );
+        CREATE TABLE IF NOT EXISTS ab_test_assignments (
+            id          BIGSERIAL   PRIMARY KEY,
+            test_id     BIGINT      NOT NULL REFERENCES ab_tests(id) ON DELETE CASCADE,
+            variant_id  BIGINT      NOT NULL REFERENCES ab_test_variants(id) ON DELETE CASCADE,
+            domain      TEXT        NOT NULL,
+            session_id  VARCHAR(64) NOT NULL,
+            assigned_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_aba_test     ON ab_test_assignments (test_id);
+        CREATE INDEX IF NOT EXISTS idx_aba_variant  ON ab_test_assignments (variant_id);
+        CREATE INDEX IF NOT EXISTS idx_aba_assigned ON ab_test_assignments (assigned_at);
+    `).catch(() => {});
 }
 
 // ── The embed script (served as application/javascript on GET) ────────────────
@@ -636,6 +676,96 @@ function bootstrapSiteFeatures(){
   }catch(e){}
 }
 
+// ── Page Experiments (visual A/B tests) ─────────────────────────────────────
+// Unlike bootstrapSiteFeatures() above (only ever called for full-consent
+// visitors, since recording/dataLayer are consent-sensitive features),
+// variant APPLICATION here has to run for every visitor regardless of
+// consent tier — it's rendering the page, not tracking anyone. Only the
+// exposure record at the end is consent-gated. See applyPageExperiment()'s
+// call site near the bottom of this file.
+
+// Same generic fallback heuristic detectBot() uses server-side (self-
+// identifying crawlers only — Googlebot, Bingbot, etc. all match this).
+// Not exhaustive, and deliberately not: this only needs to stop an indexed
+// crawl from seeing a randomly-bucketed variant, not defeat sophisticated
+// scraping — the exposure record is already bot-free for free server-side
+// via the real detectBot() check.
+function looksLikeBot(){
+  try{return /bot|spider|crawler|crawling/i.test(navigator.userAgent||'');}catch(e){return false;}
+}
+
+function fnv1a(str){
+  var h=0x811c9dc5;
+  for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193);}
+  return h>>>0;
+}
+function pickVariant(testId,sid,variants){
+  var pct=(fnv1a(testId+':'+sid)%10000)/10000,cum=0;
+  for(var i=0;i<variants.length;i++){cum+=variants[i].weight;if(pct<cum)return variants[i];}
+  return variants[variants.length-1];
+}
+
+// Kept in sync with applyChange() in api/ab-test-proxy.js's bridge script —
+// same change shape, same behavior, applied here to the live page instead
+// of inside the editor's preview iframe.
+function applyChange(change){
+  if(!change||!change.selector)return;
+  var els;
+  try{els=document.querySelectorAll(change.selector);}catch(err){return;}
+  els.forEach(function(el){
+    switch(change.type){
+      case 'text': el.textContent=change.value||''; break;
+      case 'html': el.innerHTML=change.value||''; break;
+      case 'style':
+        if(change.property)el.style.setProperty(change.property,change.value||'');
+        break;
+      case 'attribute':
+        if(change.property)el.setAttribute(change.property,change.value||'');
+        break;
+      case 'class':
+        if(change.value)el.classList.add(change.value);
+        break;
+      case 'remove': el.remove(); break;
+    }
+  });
+}
+
+function applyPageExperiment(){
+  if(looksLikeBot())return;
+  try{
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET','https://analytics.consentsmanagement.com/api/ab-test-active?site='+encodeURIComponent(SITE)+'&path='+encodeURIComponent(location.pathname),true);
+    xhr.onload=function(){
+      if(xhr.status<200||xhr.status>=300)return;
+      var data;
+      try{data=JSON.parse(xhr.responseText);}catch(e){return;}
+      var test=data&&data.test;
+      if(!test||!test.variants||!test.variants.length)return;
+
+      var variant=pickVariant(String(test.id),getSid(),test.variants);
+
+      var applyChanges=function(){
+        var changes=variant.changes||[];
+        for(var i=0;i<changes.length;i++)applyChange(changes[i]);
+      };
+      if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded',applyChanges);
+      }else{
+        applyChanges();
+      }
+
+      // Consent may have changed since this request was fired — re-derive
+      // fresh rather than trusting a closed-over value, and only report the
+      // exposure (never skip *applying* the variant) when full.
+      var c2=getConsents();
+      if(hasStat(c2)){
+        send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname}));
+      }
+    };
+    xhr.send();
+  }catch(e){}
+}
+
 function send(payload){
   // fetch+keepalive survives page unload much like sendBeacon, but without
   // sendBeacon's spec-mandated credentialed CORS mode — a credentialed
@@ -750,6 +880,7 @@ function tryHooks(){
 // Fire on load
 var c=getConsents();
 tryHooks();
+applyPageExperiment(); // Runs regardless of consent tier — see its own doc comment above.
 if(hasStat(c)){
   sendFull(c,false);
 }else{
@@ -822,7 +953,7 @@ export default async function handler(req, res) {
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, h: pageHost, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
             dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency,
-            txn: eventTransactionId, src: eventSource } = body;
+            txn: eventTransactionId, src: eventSource, tid: abTestId, vid: abVariantId } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
         return res.status(400).end();
@@ -831,6 +962,7 @@ export default async function handler(req, res) {
     const isMinimal = consentLevel !== "full";
     const isCustomEvent = eventType === "ev";
     const isClickBatch = eventType === "ck";
+    const isAbExposure = eventType === "ab";
 
     const db = getPool();
 
@@ -839,12 +971,13 @@ export default async function handler(req, res) {
 
     // Validate site ID — reject unknown or inactive sites
     const { rows: sites } = await db.query(
-        `SELECT organisation_id FROM analytics_sites WHERE id = $1 AND active = true LIMIT 1`,
+        `SELECT organisation_id, domain FROM analytics_sites WHERE id = $1 AND active = true LIMIT 1`,
         [siteId]
     ).catch(() => ({ rows: [] }));
 
     if (!sites.length) return res.status(403).end();
     const orgId = sites[0].organisation_id;
+    const siteDomain = sites[0].domain;
 
     // Country/region from Vercel edge headers — IP is never stored
     const country = (req.headers["x-vercel-ip-country"]  || "").slice(0, 2)  || null;
@@ -954,6 +1087,39 @@ export default async function handler(req, res) {
                   viewport_width, page_height, x_pct, y_pct, target_tag, target_id, target_class, target_text)
                  VALUES ${values.join(",")}`,
                 params
+            ).catch(() => {});
+        }
+
+        return res.status(202).end();
+    }
+
+    // ── Page Experiment exposure ──────────────────────────────────────────────
+    // Only ever sent by the client when consent is full (see applyPageExperiment()
+    // in the embed script below) — an assignment row with no session_id has no
+    // analytical value, unlike a custom event, so there's no minimal-consent
+    // variant of this branch. Bot traffic is already excluded above, before any
+    // eventType branch runs. Re-validates the test/variant/domain/status
+    // triple server-side rather than trusting the client's earlier GET
+    // /api/ab-test-active response, closing the race where a test gets paused
+    // between that fetch and this beacon.
+    if (isAbExposure) {
+        const testIdNum = parseInt(abTestId, 10);
+        const variantIdNum = parseInt(abVariantId, 10);
+        if (!testIdNum || !variantIdNum || !sid) return res.status(400).end();
+
+        const { rows: matches } = await db.query(
+            `SELECT t.id FROM ab_tests t
+             JOIN ab_test_variants v ON v.test_id = t.id
+             WHERE t.id = $1 AND v.id = $2 AND t.domain = $3 AND t.status = 'running'
+             LIMIT 1`,
+            [testIdNum, variantIdNum, siteDomain]
+        ).catch(() => ({ rows: [] }));
+
+        if (matches.length) {
+            await db.query(
+                `INSERT INTO ab_test_assignments (test_id, variant_id, domain, session_id)
+                 VALUES ($1,$2,$3,$4)`,
+                [testIdNum, variantIdNum, siteDomain, String(sid).slice(0, 64)]
             ).catch(() => {});
         }
 

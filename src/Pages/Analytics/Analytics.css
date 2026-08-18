@@ -2359,6 +2359,22 @@ details[open] .ca-context-summary::before { content: "▾"; }
     background: rgba(26,26,30,0.75);
 }
 
+.pxp-launch-btn {
+    appearance: none;
+    border: 1px solid rgba(74,222,128,0.35);
+    background: rgba(74,222,128,0.12);
+    color: #b6f2c8;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.pxp-launch-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
 .pxp-select-btn {
     display: block;
     width: 100%;

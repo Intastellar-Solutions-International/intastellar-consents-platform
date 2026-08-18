@@ -36,7 +36,7 @@ const ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ];
 
-const ALLOWED_STATUSES = new Set(["draft", "archived"]);
+const ALLOWED_STATUSES = new Set(["draft", "running", "paused", "archived"]);
 const NAME_RE = /^.{1,120}$/;
 
 function setCors(req, res) {
@@ -73,6 +73,13 @@ function isSafeTargetPath(p) {
     return true;
 }
 
+// Strips a single trailing slash (never the bare root) so a test saved as
+// "/pricing" still matches a visit to "/pricing/" — api/ab-test-active.js
+// applies the same normalization to the runtime lookup's path param.
+function normalizeTargetPath(p) {
+    return p.length > 1 && p.endsWith("/") ? p.slice(0, -1) : p;
+}
+
 async function ensureTables(db) {
     await db.query(`
         CREATE TABLE IF NOT EXISTS ab_tests (
@@ -87,6 +94,17 @@ async function ensureTables(db) {
         )
     `).catch(() => {});
     await db.query(`CREATE INDEX IF NOT EXISTS idx_ab_tests_org_domain ON ab_tests (organisation_id, domain)`).catch(() => {});
+    await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS traffic_split JSONB NOT NULL DEFAULT '{}'`).catch(() => {});
+    // Keeps "which test is active for this domain+path" a guaranteed fact
+    // for the runtime lookup (api/ab-test-active.js) rather than a
+    // coincidence — without this, two simultaneously-running tests on the
+    // same path is silent undefined behavior for which variant a visitor
+    // sees. The PATCH handler below catches the resulting 23505 and
+    // returns 409 when launching a second test onto an already-active path.
+    await db.query(`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_ab_tests_one_running_per_path
+        ON ab_tests (domain, target_path) WHERE status = 'running'
+    `).catch(() => {});
 
     await db.query(`
         CREATE TABLE IF NOT EXISTS ab_test_variants (
@@ -190,11 +208,12 @@ export default async function handler(req, res) {
 
         const domain = (body.domain || "").trim().toLowerCase();
         const name = (body.name || "").trim();
-        const targetPath = (body.targetPath || "/").trim();
+        const targetPathRaw = (body.targetPath || "/").trim();
 
         if (!domain) return res.status(400).json({ error: "domain is required" });
         if (!NAME_RE.test(name)) return res.status(400).json({ error: "name must be 1-120 characters" });
-        if (!isSafeTargetPath(targetPath)) return res.status(400).json({ error: "targetPath must be a same-site path starting with /" });
+        if (!isSafeTargetPath(targetPathRaw)) return res.status(400).json({ error: "targetPath must be a same-site path starting with /" });
+        const targetPath = normalizeTargetPath(targetPathRaw);
 
         const client = await db.connect();
         try {
@@ -250,18 +269,37 @@ export default async function handler(req, res) {
         }
 
         const name = body.name !== undefined ? String(body.name).trim() : existing.name;
-        const targetPath = body.targetPath !== undefined ? String(body.targetPath).trim() : existing.target_path;
+        const targetPathRaw = body.targetPath !== undefined ? String(body.targetPath).trim() : existing.target_path;
         const status = body.status !== undefined ? String(body.status) : existing.status;
 
         if (!NAME_RE.test(name)) return res.status(400).json({ error: "name must be 1-120 characters" });
-        if (!isSafeTargetPath(targetPath)) return res.status(400).json({ error: "targetPath must be a same-site path starting with /" });
-        if (!ALLOWED_STATUSES.has(status)) return res.status(400).json({ error: "status must be draft or archived" });
+        if (!isSafeTargetPath(targetPathRaw)) return res.status(400).json({ error: "targetPath must be a same-site path starting with /" });
+        if (!ALLOWED_STATUSES.has(status)) return res.status(400).json({ error: "status must be draft, running, paused, or archived" });
+        const targetPath = normalizeTargetPath(targetPathRaw);
 
-        const { rows } = await db.query(
-            `UPDATE ab_tests SET name = $1, target_path = $2, status = $3, updated_at = NOW()
-             WHERE id = $4 RETURNING id, domain, name, target_path, status, created_at, updated_at`,
-            [name, targetPath, status, testId]
-        );
+        if (status === "running") {
+            const { rows: countRows } = await db.query(
+                `SELECT COUNT(*) AS n FROM ab_test_variants WHERE test_id = $1`,
+                [testId]
+            );
+            if (Number(countRows[0]?.n || 0) < 2) {
+                return res.status(400).json({ error: "A test needs at least 2 variants to run" });
+            }
+        }
+
+        let rows;
+        try {
+            ({ rows } = await db.query(
+                `UPDATE ab_tests SET name = $1, target_path = $2, status = $3, updated_at = NOW()
+                 WHERE id = $4 RETURNING id, domain, name, target_path, status, created_at, updated_at`,
+                [name, targetPath, status, testId]
+            ));
+        } catch (e) {
+            if (e?.code === "23505") {
+                return res.status(409).json({ error: "Another test is already running on this path" });
+            }
+            return res.status(500).json({ error: "Could not update test" });
+        }
 
         const test = rows[0];
         return res.status(200).json({
