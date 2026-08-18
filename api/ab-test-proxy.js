@@ -280,6 +280,13 @@ function rewriteHtml(html, targetUrl, trustedParentOrigin) {
     const baseHref = `${u.origin}${u.pathname.replace(/[^/]*$/, "")}`;
     head.insertAdjacentHTML("afterbegin", `<base href="${baseHref.replace(/"/g, "&quot;")}">`);
 
+    // Hide the CMP banner (<intastellarconsents>) while editing — it has no
+    // purpose in the editor (there's no real visitor to consent here) and
+    // otherwise sits on top of the page, in the way of clicking elements.
+    // A <style> rule, not a DOM removal, so it's robust regardless of when
+    // the banner's own script registers/renders the custom element.
+    head.insertAdjacentHTML("beforeend", "<style>intastellarconsents{display:none!important;}</style>");
+
     const bodyEl = root.querySelector("body") || htmlEl;
     bodyEl.insertAdjacentHTML("beforeend", `<script>${buildBridgeScript(trustedParentOrigin)}</script>`);
 
