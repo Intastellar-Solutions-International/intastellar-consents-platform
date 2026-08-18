@@ -36,7 +36,8 @@ const ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ];
 
-const ALLOWED_STATUSES = new Set(["draft", "running", "paused", "archived"]);
+const ALLOWED_STATUSES = new Set(["draft", "running", "paused", "archived", "completed"]);
+const GOAL_EVENT_RE = /^[a-z0-9_-]{1,64}$/i;
 const NAME_RE = /^.{1,120}$/;
 
 function setCors(req, res) {
@@ -95,6 +96,8 @@ async function ensureTables(db) {
     `).catch(() => {});
     await db.query(`CREATE INDEX IF NOT EXISTS idx_ab_tests_org_domain ON ab_tests (organisation_id, domain)`).catch(() => {});
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS traffic_split JSONB NOT NULL DEFAULT '{}'`).catch(() => {});
+    await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS ends_at TIMESTAMPTZ`).catch(() => {});
+    await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS goal_event_name VARCHAR(64)`).catch(() => {});
     // Keeps "which test is active for this domain+path" a guaranteed fact
     // for the runtime lookup (api/ab-test-active.js) rather than a
     // coincidence — without this, two simultaneously-running tests on the
@@ -140,7 +143,8 @@ export default async function handler(req, res) {
     // same convention as resolveSiteId elsewhere in this codebase.
     async function loadOwnedTest(testId) {
         const { rows } = await db.query(
-            `SELECT id, organisation_id, domain, name, target_path, status, created_at, updated_at
+            `SELECT id, organisation_id, domain, name, target_path, status,
+                    ends_at, goal_event_name, created_at, updated_at
              FROM ab_tests WHERE id = $1 AND organisation_id = $2 LIMIT 1`,
             [testId, orgId]
         ).catch(() => ({ rows: [] }));
@@ -168,6 +172,7 @@ export default async function handler(req, res) {
                 test: {
                     id: test.id, domain: test.domain, name: test.name,
                     targetPath: test.target_path, status: test.status,
+                    endsAt: test.ends_at, goalEventName: test.goal_event_name,
                     createdAt: test.created_at, updatedAt: test.updated_at,
                 },
                 variants: variants.map(v => ({
@@ -271,11 +276,33 @@ export default async function handler(req, res) {
         const name = body.name !== undefined ? String(body.name).trim() : existing.name;
         const targetPathRaw = body.targetPath !== undefined ? String(body.targetPath).trim() : existing.target_path;
         const status = body.status !== undefined ? String(body.status) : existing.status;
+        // Whether THIS call is explicitly setting status:'running' — distinct
+        // from "status resolves to running" (which is also true for an
+        // unrelated metadata edit on an already-running test, since status
+        // defaults to existing.status above). Only an explicit launch should
+        // recompute ends_at; an unrelated edit must leave it untouched.
+        const isLaunchingNow = body.status !== undefined && status === "running";
 
         if (!NAME_RE.test(name)) return res.status(400).json({ error: "name must be 1-120 characters" });
         if (!isSafeTargetPath(targetPathRaw)) return res.status(400).json({ error: "targetPath must be a same-site path starting with /" });
-        if (!ALLOWED_STATUSES.has(status)) return res.status(400).json({ error: "status must be draft, running, paused, or archived" });
+        if (!ALLOWED_STATUSES.has(status)) return res.status(400).json({ error: "status must be draft, running, paused, archived, or completed" });
         const targetPath = normalizeTargetPath(targetPathRaw);
+
+        let durationDays = null;
+        if (body.durationDays !== undefined && body.durationDays !== null && body.durationDays !== "") {
+            durationDays = parseInt(body.durationDays, 10);
+            if (!Number.isInteger(durationDays) || durationDays < 1 || durationDays > 365) {
+                return res.status(400).json({ error: "durationDays must be an integer between 1 and 365" });
+            }
+        }
+
+        let goalEventName = existing.goal_event_name;
+        if (body.goalEventName !== undefined) {
+            const v = String(body.goalEventName || "").trim().toLowerCase();
+            if (v === "") goalEventName = null;
+            else if (!GOAL_EVENT_RE.test(v)) return res.status(400).json({ error: "goalEventName must be 1-64 letters, numbers, - or _" });
+            else goalEventName = v;
+        }
 
         if (status === "running") {
             const { rows: countRows } = await db.query(
@@ -290,9 +317,16 @@ export default async function handler(req, res) {
         let rows;
         try {
             ({ rows } = await db.query(
-                `UPDATE ab_tests SET name = $1, target_path = $2, status = $3, updated_at = NOW()
-                 WHERE id = $4 RETURNING id, domain, name, target_path, status, created_at, updated_at`,
-                [name, targetPath, status, testId]
+                `UPDATE ab_tests SET name = $1, target_path = $2, status = $3, goal_event_name = $4,
+                     ends_at = CASE
+                         WHEN $6::boolean = false THEN ends_at
+                         WHEN $5::int IS NOT NULL THEN NOW() + ($5::int * INTERVAL '1 day')
+                         ELSE NULL
+                     END,
+                     updated_at = NOW()
+                 WHERE id = $7
+                 RETURNING id, domain, name, target_path, status, ends_at, goal_event_name, created_at, updated_at`,
+                [name, targetPath, status, goalEventName, durationDays, isLaunchingNow, testId]
             ));
         } catch (e) {
             if (e?.code === "23505") {
@@ -306,6 +340,7 @@ export default async function handler(req, res) {
             test: {
                 id: test.id, domain: test.domain, name: test.name,
                 targetPath: test.target_path, status: test.status,
+                endsAt: test.ends_at, goalEventName: test.goal_event_name,
                 createdAt: test.created_at, updatedAt: test.updated_at,
             },
         });

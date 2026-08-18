@@ -381,6 +381,7 @@ async function ensureTables(db) {
             created_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
             updated_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW()
         );
+        ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS ends_at TIMESTAMPTZ;
         CREATE TABLE IF NOT EXISTS ab_test_variants (
             id               BIGSERIAL    PRIMARY KEY,
             test_id          BIGINT       NOT NULL REFERENCES ab_tests(id) ON DELETE CASCADE,
@@ -1111,6 +1112,7 @@ export default async function handler(req, res) {
             `SELECT t.id FROM ab_tests t
              JOIN ab_test_variants v ON v.test_id = t.id
              WHERE t.id = $1 AND v.id = $2 AND t.domain = $3 AND t.status = 'running'
+               AND (t.ends_at IS NULL OR t.ends_at > NOW())
              LIMIT 1`,
             [testIdNum, variantIdNum, siteDomain]
         ).catch(() => ({ rows: [] }));

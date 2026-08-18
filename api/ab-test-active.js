@@ -54,6 +54,7 @@ async function ensureTables(db) {
         )
     `).catch(() => {});
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS traffic_split JSONB NOT NULL DEFAULT '{}'`).catch(() => {});
+    await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS ends_at TIMESTAMPTZ`).catch(() => {});
     await db.query(`
         CREATE TABLE IF NOT EXISTS ab_test_variants (
             id               BIGSERIAL    PRIMARY KEY,
@@ -102,6 +103,7 @@ export default async function handler(req, res) {
              FROM ab_tests t
              JOIN ab_test_variants v ON v.test_id = t.id
              WHERE t.domain = $1 AND t.status = 'running' AND t.target_path = $2
+               AND (t.ends_at IS NULL OR t.ends_at > NOW())
              ORDER BY t.updated_at DESC, v.is_control DESC, v.id ASC`,
             [domain, path]
         ).catch(() => ({ rows: [] }));
