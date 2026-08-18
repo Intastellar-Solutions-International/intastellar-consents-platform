@@ -1,18 +1,22 @@
 /**
- * POST   /api/ab-test-variants   body: { testId, variantKey, label? } → add a variant
- * PUT    /api/ab-test-variants?variantId=<id>   body: { changes: [...], label? } → the visual
- *          editor's Save action — full-replaces the variant's `changes` array
+ * POST   /api/ab-test-variants   body: { testId, variantKey, label?, redirectUrl? } → add a variant
+ * PUT    /api/ab-test-variants?variantId=<id>   body: { changes: [...], label?, redirectUrl? } → the visual
+ *          editor's Save action — full-replaces the variant's `changes` array; for URL split tests,
+ *          also saves the redirect_url.
  * DELETE /api/ab-test-variants?variantId=<id>   → remove a variant (blocked for the
  *          control, and for the last remaining variant on a test)
  *
  * `changes` is an ordered array of DOM edits applied by the visual editor / the
- * (future) runtime script:
+ * runtime script:
  *   { selector: string, type: "text"|"html"|"style"|"attribute"|"remove"|"class",
  *     property?: string, value?: string }
  * Always read/written as a whole — never queried by individual entry — so it's
  * stored as one JSONB column rather than a normalized per-edit table, same
  * shape as ad_platform_connections/cookie_banner/jurisdiction_config/RoPA's
  * JSONB list columns elsewhere in this codebase.
+ *
+ * `redirectUrl` is only meaningful for url_split test variants (non-control). Control
+ * variants always stay on the original target_path so their redirectUrl is always null.
  *
  * Requires headers: Authorization: Bearer <token>   Organisation: <org_id>
  */
@@ -119,6 +123,16 @@ async function ensureTables(db) {
             UNIQUE (test_id, variant_key)
         )
     `).catch(() => {});
+    await db.query(`ALTER TABLE ab_test_variants ADD COLUMN IF NOT EXISTS redirect_url TEXT`).catch(() => {});
+}
+
+function isSafeRedirectUrl(url) {
+    if (!url || typeof url !== "string") return false;
+    if (url.length > 2048) return false;
+    try {
+        const u = new URL(url);
+        return u.protocol === "https:" || u.protocol === "http:";
+    } catch { return false; }
 }
 
 export default async function handler(req, res) {
@@ -168,20 +182,24 @@ export default async function handler(req, res) {
         const testId = parseInt(body.testId, 10);
         const variantKey = String(body.variantKey || "").trim().toLowerCase();
         const label = body.label ? String(body.label).trim().slice(0, 120) : null;
+        const redirectUrlRaw = body.redirectUrl ? String(body.redirectUrl).trim() : null;
 
         if (!testId) return res.status(400).json({ error: "testId is required" });
         if (!VARIANT_KEY_RE.test(variantKey)) {
             return res.status(400).json({ error: "variantKey must be 1-64 lowercase letters, numbers, - or _" });
+        }
+        if (redirectUrlRaw && !isSafeRedirectUrl(redirectUrlRaw)) {
+            return res.status(400).json({ error: "redirectUrl must be a valid absolute URL (https:// or http://)" });
         }
 
         const test = await loadOwnedTest(testId);
         if (!test) return res.status(404).json({ error: "Test not found" });
 
         const { rows } = await db.query(
-            `INSERT INTO ab_test_variants (test_id, variant_key, label, is_control)
-             VALUES ($1, $2, $3, false)
-             RETURNING id, variant_key, label, is_control, changes, created_at, updated_at`,
-            [testId, variantKey, label]
+            `INSERT INTO ab_test_variants (test_id, variant_key, label, is_control, redirect_url)
+             VALUES ($1, $2, $3, false, $4)
+             RETURNING id, variant_key, label, is_control, changes, redirect_url, created_at, updated_at`,
+            [testId, variantKey, label, redirectUrlRaw || null]
         ).catch((e) => {
             if (e?.constraint?.includes("variant_key") || e?.code === "23505") return { rows: null, dup: true };
             throw e;
@@ -194,6 +212,7 @@ export default async function handler(req, res) {
             variant: {
                 id: v.id, variantKey: v.variant_key, label: v.label,
                 isControl: v.is_control, changes: v.changes,
+                redirectUrl: v.redirect_url || null,
                 createdAt: v.created_at, updatedAt: v.updated_at,
             },
         });
@@ -219,15 +238,29 @@ export default async function handler(req, res) {
 
         const label = body.label !== undefined ? String(body.label).trim().slice(0, 120) || null : undefined;
 
+        let redirectUrl = undefined;
+        if (body.redirectUrl !== undefined) {
+            const raw = String(body.redirectUrl || "").trim();
+            if (raw === "") {
+                redirectUrl = null;
+            } else if (!isSafeRedirectUrl(raw)) {
+                return res.status(400).json({ error: "redirectUrl must be a valid absolute URL (https:// or http://)" });
+            } else {
+                redirectUrl = raw;
+            }
+        }
+
+        const setClauses = ["changes = $1", "updated_at = NOW()"];
+        const params = [JSON.stringify(body.changes), variantId];
+        let paramIdx = 3;
+        if (label !== undefined) { setClauses.push(`label = $${paramIdx}`); params.push(label); paramIdx++; }
+        if (redirectUrl !== undefined) { setClauses.push(`redirect_url = $${paramIdx}`); params.push(redirectUrl); paramIdx++; }
+
         const { rows } = await db.query(
-            label === undefined
-                ? `UPDATE ab_test_variants SET changes = $1, updated_at = NOW()
-                   WHERE id = $2 RETURNING id, variant_key, label, is_control, changes, created_at, updated_at`
-                : `UPDATE ab_test_variants SET changes = $1, label = $3, updated_at = NOW()
-                   WHERE id = $2 RETURNING id, variant_key, label, is_control, changes, created_at, updated_at`,
-            label === undefined
-                ? [JSON.stringify(body.changes), variantId]
-                : [JSON.stringify(body.changes), variantId, label]
+            `UPDATE ab_test_variants SET ${setClauses.join(", ")}
+             WHERE id = $2
+             RETURNING id, variant_key, label, is_control, changes, redirect_url, created_at, updated_at`,
+            params
         );
 
         const v = rows[0];
@@ -235,6 +268,7 @@ export default async function handler(req, res) {
             variant: {
                 id: v.id, variantKey: v.variant_key, label: v.label,
                 isControl: v.is_control, changes: v.changes,
+                redirectUrl: v.redirect_url || null,
                 createdAt: v.created_at, updatedAt: v.updated_at,
             },
         });

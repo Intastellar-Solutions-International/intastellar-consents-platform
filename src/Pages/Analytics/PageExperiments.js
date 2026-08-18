@@ -31,6 +31,7 @@ export default function PageExperiments() {
     const [showForm, setShowForm] = useState(false);
     const [name, setName] = useState("");
     const [targetPath, setTargetPath] = useState("/");
+    const [testType, setTestType] = useState("visual");
     const [saving, setSaving] = useState(false);
     const [formError, setFormError] = useState(null);
 
@@ -55,7 +56,7 @@ export default function PageExperiments() {
         const r = await fetch(`${ScannerHost}/api/ab-tests`, {
             method: "POST",
             headers: authHeaders(),
-            body: JSON.stringify({ domain, name: name.trim(), targetPath: targetPath.trim() || "/" }),
+            body: JSON.stringify({ domain, name: name.trim(), targetPath: targetPath.trim() || "/", testType }),
         }).catch(() => null);
         setSaving(false);
         if (!r?.ok) {
@@ -112,11 +113,27 @@ export default function PageExperiments() {
                                     <input
                                         type="text"
                                         className="sa-event-form__input"
-                                        placeholder="page path, e.g. /pricing"
+                                        placeholder="page path to test, e.g. /pricing"
                                         value={targetPath}
                                         onChange={e => setTargetPath(e.target.value)}
                                         maxLength={512}
                                     />
+                                    <div className="sa-event-form__type-row">
+                                        <label className={`sa-event-form__type-opt${testType === "visual" ? " sa-event-form__type-opt--active" : ""}`}>
+                                            <input type="radio" name="testType" value="visual"
+                                                checked={testType === "visual"}
+                                                onChange={() => setTestType("visual")} />
+                                            Visual editor
+                                            <span className="sa-event-form__type-hint">Modify elements on the same page</span>
+                                        </label>
+                                        <label className={`sa-event-form__type-opt${testType === "url_split" ? " sa-event-form__type-opt--active" : ""}`}>
+                                            <input type="radio" name="testType" value="url_split"
+                                                checked={testType === "url_split"}
+                                                onChange={() => setTestType("url_split")} />
+                                            URL split
+                                            <span className="sa-event-form__type-hint">Redirect variants to different pages</span>
+                                        </label>
+                                    </div>
                                     <button type="submit" className="sa-event-form__submit" disabled={saving}>
                                         {saving ? "Creating…" : "Create & open editor"}
                                     </button>
@@ -143,6 +160,7 @@ export default function PageExperiments() {
                                                 <div className="sa-event-row__stats">
                                                     <span>{t.targetPath}</span>
                                                     <span>{t.variantCount} variant{t.variantCount !== 1 ? "s" : ""}</span>
+                                                    {t.testType === "url_split" && <span className="sa-event-row__tag">URL split</span>}
                                                 </div>
                                             </div>
                                             <button

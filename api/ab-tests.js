@@ -98,6 +98,7 @@ async function ensureTables(db) {
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS traffic_split JSONB NOT NULL DEFAULT '{}'`).catch(() => {});
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS ends_at TIMESTAMPTZ`).catch(() => {});
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS goal_event_name VARCHAR(64)`).catch(() => {});
+    await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS test_type VARCHAR(16) NOT NULL DEFAULT 'visual'`).catch(() => {});
     // Keeps "which test is active for this domain+path" a guaranteed fact
     // for the runtime lookup (api/ab-test-active.js) rather than a
     // coincidence — without this, two simultaneously-running tests on the
@@ -144,7 +145,7 @@ export default async function handler(req, res) {
     async function loadOwnedTest(testId) {
         const { rows } = await db.query(
             `SELECT id, organisation_id, domain, name, target_path, status,
-                    ends_at, goal_event_name, created_at, updated_at
+                    ends_at, goal_event_name, test_type, created_at, updated_at
              FROM ab_tests WHERE id = $1 AND organisation_id = $2 LIMIT 1`,
             [testId, orgId]
         ).catch(() => ({ rows: [] }));
@@ -172,19 +173,21 @@ export default async function handler(req, res) {
                 test: {
                     id: test.id, domain: test.domain, name: test.name,
                     targetPath: test.target_path, status: test.status,
+                    testType: test.test_type || "visual",
                     endsAt: test.ends_at, goalEventName: test.goal_event_name,
                     createdAt: test.created_at, updatedAt: test.updated_at,
                 },
                 variants: variants.map(v => ({
                     id: v.id, variantKey: v.variant_key, label: v.label,
                     isControl: v.is_control, changes: v.changes,
+                    redirectUrl: v.redirect_url || null,
                     createdAt: v.created_at, updatedAt: v.updated_at,
                 })),
             });
         }
 
         const { rows } = await db.query(
-            `SELECT t.id, t.name, t.target_path, t.status, t.created_at, t.updated_at,
+            `SELECT t.id, t.name, t.target_path, t.status, t.test_type, t.created_at, t.updated_at,
                     COUNT(v.id) AS variant_count
              FROM ab_tests t
              LEFT JOIN ab_test_variants v ON v.test_id = t.id
@@ -196,6 +199,7 @@ export default async function handler(req, res) {
         return res.status(200).json({
             tests: rows.map(t => ({
                 id: t.id, name: t.name, targetPath: t.target_path, status: t.status,
+                testType: t.test_type || "visual",
                 variantCount: Number(t.variant_count || 0),
                 createdAt: t.created_at, updatedAt: t.updated_at,
             })),
@@ -214,20 +218,22 @@ export default async function handler(req, res) {
         const domain = (body.domain || "").trim().toLowerCase();
         const name = (body.name || "").trim();
         const targetPathRaw = (body.targetPath || "/").trim();
+        const testType = String(body.testType || "visual");
 
         if (!domain) return res.status(400).json({ error: "domain is required" });
         if (!NAME_RE.test(name)) return res.status(400).json({ error: "name must be 1-120 characters" });
         if (!isSafeTargetPath(targetPathRaw)) return res.status(400).json({ error: "targetPath must be a same-site path starting with /" });
+        if (testType !== "visual" && testType !== "url_split") return res.status(400).json({ error: "testType must be 'visual' or 'url_split'" });
         const targetPath = normalizeTargetPath(targetPathRaw);
 
         const client = await db.connect();
         try {
             await client.query("BEGIN");
             const { rows: testRows } = await client.query(
-                `INSERT INTO ab_tests (organisation_id, domain, name, target_path)
-                 VALUES ($1, $2, $3, $4)
-                 RETURNING id, domain, name, target_path, status, created_at, updated_at`,
-                [orgId, domain, name, targetPath]
+                `INSERT INTO ab_tests (organisation_id, domain, name, target_path, test_type)
+                 VALUES ($1, $2, $3, $4, $5)
+                 RETURNING id, domain, name, target_path, status, test_type, created_at, updated_at`,
+                [orgId, domain, name, targetPath, testType]
             );
             const test = testRows[0];
             const { rows: variantRows } = await client.query(
@@ -242,6 +248,7 @@ export default async function handler(req, res) {
                 test: {
                     id: test.id, domain: test.domain, name: test.name,
                     targetPath: test.target_path, status: test.status,
+                    testType: test.test_type || "visual",
                     createdAt: test.created_at, updatedAt: test.updated_at,
                 },
                 variants: variantRows.map(v => ({
@@ -325,7 +332,7 @@ export default async function handler(req, res) {
                      END,
                      updated_at = NOW()
                  WHERE id = $7
-                 RETURNING id, domain, name, target_path, status, ends_at, goal_event_name, created_at, updated_at`,
+                 RETURNING id, domain, name, target_path, status, ends_at, goal_event_name, test_type, created_at, updated_at`,
                 [name, targetPath, status, goalEventName, durationDays, isLaunchingNow, testId]
             ));
         } catch (e) {
@@ -340,6 +347,7 @@ export default async function handler(req, res) {
             test: {
                 id: test.id, domain: test.domain, name: test.name,
                 targetPath: test.target_path, status: test.status,
+                testType: test.test_type || "visual",
                 endsAt: test.ends_at, goalEventName: test.goal_event_name,
                 createdAt: test.created_at, updatedAt: test.updated_at,
             },

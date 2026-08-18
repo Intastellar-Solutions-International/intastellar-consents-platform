@@ -745,6 +745,18 @@ function applyPageExperiment(){
 
       var variant=pickVariant(String(test.id),getSid(),test.variants);
 
+      // Sent unconditionally — assignment/exposure data is needed for valid
+      // test results even when the visitor declined statistics cookies.
+      send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname}));
+
+      if(test.testType==='url_split'){
+        // URL split: redirect to the variant's page. Control stays put.
+        if(!variant.isControl&&variant.redirectUrl){
+          try{location.replace(variant.redirectUrl);}catch(e){}
+        }
+        return;
+      }
+
       var applyChanges=function(){
         var changes=variant.changes||[];
         for(var i=0;i<changes.length;i++)applyChange(changes[i]);
@@ -754,10 +766,6 @@ function applyPageExperiment(){
       }else{
         applyChanges();
       }
-
-      // Sent unconditionally — assignment/exposure data is needed for valid
-      // test results even when the visitor declined statistics cookies.
-      send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname}));
     };
     xhr.send();
   }catch(e){}

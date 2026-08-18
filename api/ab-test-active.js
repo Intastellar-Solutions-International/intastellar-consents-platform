@@ -57,6 +57,7 @@ async function ensureTables(db) {
     `).catch(() => {});
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS traffic_split JSONB NOT NULL DEFAULT '{}'`).catch(() => {});
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS ends_at TIMESTAMPTZ`).catch(() => {});
+    await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS test_type VARCHAR(16) NOT NULL DEFAULT 'visual'`).catch(() => {});
     await db.query(`
         CREATE TABLE IF NOT EXISTS ab_test_variants (
             id               BIGSERIAL    PRIMARY KEY,
@@ -70,6 +71,7 @@ async function ensureTables(db) {
             UNIQUE (test_id, variant_key)
         )
     `).catch(() => {});
+    await db.query(`ALTER TABLE ab_test_variants ADD COLUMN IF NOT EXISTS redirect_url TEXT`).catch(() => {});
 }
 
 export default async function handler(req, res) {
@@ -100,8 +102,8 @@ export default async function handler(req, res) {
         const domain = siteRows[0].domain;
 
         const { rows } = await db.query(
-            `SELECT t.id, t.target_path, t.traffic_split,
-                    v.id AS variant_id, v.variant_key, v.is_control, v.changes
+            `SELECT t.id, t.target_path, t.traffic_split, t.test_type,
+                    v.id AS variant_id, v.variant_key, v.is_control, v.changes, v.redirect_url
              FROM ab_tests t
              JOIN ab_test_variants v ON v.test_id = t.id
              WHERE t.domain = $1 AND t.status = 'running' AND t.target_path = $2
@@ -124,22 +126,26 @@ export default async function handler(req, res) {
         }) && variantRows.some(r => Number(split[r.variant_key]) > 0);
 
         let variants;
+        const testType = variantRows[0].test_type || "visual";
+
         if (hasValidSplit) {
             const total = variantRows.reduce((s, r) => s + Number(split[r.variant_key]), 0);
             variants = variantRows.map(r => ({
                 id: r.variant_id, variantKey: r.variant_key, isControl: r.is_control,
-                changes: r.changes, weight: Number(split[r.variant_key]) / total,
+                changes: r.changes, redirectUrl: r.redirect_url || null,
+                weight: Number(split[r.variant_key]) / total,
             }));
         } else {
             const equal = 1 / variantRows.length;
             variants = variantRows.map(r => ({
                 id: r.variant_id, variantKey: r.variant_key, isControl: r.is_control,
-                changes: r.changes, weight: equal,
+                changes: r.changes, redirectUrl: r.redirect_url || null,
+                weight: equal,
             }));
         }
 
         return res.status(200).json({
-            test: { id: testId, targetPath: variantRows[0].target_path, variants },
+            test: { id: testId, targetPath: variantRows[0].target_path, testType, variants },
         });
     } catch {
         return res.status(200).json({ test: null });

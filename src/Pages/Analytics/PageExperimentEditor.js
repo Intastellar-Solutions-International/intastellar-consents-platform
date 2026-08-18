@@ -104,6 +104,9 @@ export default function PageExperimentEditor() {
     const [resultsLoading, setResultsLoading] = useState(false);
     const [eventDefs, setEventDefs] = useState([]);
 
+    // URL split test state — redirect URL per variant (variantId → url string)
+    const [splitUrls, setSplitUrls] = useState({});
+
     document.title = test ? `${test.name} | Page Experiments` : "Page Experiments";
 
     const activeVariant = useMemo(() => variants.find(v => v.id === activeVariantId) || null, [variants, activeVariantId]);
@@ -170,11 +173,22 @@ export default function PageExperimentEditor() {
         setSelectedElement(null);
     }, [activeVariant?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // ── Mint a signed proxy URL for the active variant ─────────────────────────
-    // Only in "editor" mode — no reason to keep loading/proxying the target
-    // page in the background while the Results panel is what's visible.
+    // Reseed splitUrls whenever the variant list reloads (initial load or
+    // after add/delete/save). Keyed by variantId so all variants are editable
+    // at once without switching tabs.
     useEffect(() => {
-        if (mode !== "editor" || !activeVariantId || !testId) { setProxyUrl(null); return; }
+        if (!variants.length) return;
+        setSplitUrls(prev => {
+            const next = {};
+            for (const v of variants) next[v.id] = prev[v.id] !== undefined ? prev[v.id] : (v.redirectUrl || "");
+            return next;
+        });
+    }, [variants]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // ── Mint a signed proxy URL for the active variant ─────────────────────────
+    // Only in "editor" mode for visual tests — URL split tests don't use the proxy.
+    useEffect(() => {
+        if (mode !== "editor" || !activeVariantId || !testId || test?.testType === "url_split") { setProxyUrl(null); return; }
         let ignore = false;
         setIframeReady(false);
         setProxyError(null);
@@ -284,6 +298,25 @@ export default function PageExperimentEditor() {
         fetchTest();
     };
 
+    const handleSaveUrlSplit = async () => {
+        const nonControlVariants = variants.filter(v => !v.isControl);
+        setSaving(true);
+        let anyError = false;
+        for (const v of nonControlVariants) {
+            const url = splitUrls[v.id] || "";
+            const r = await fetch(`${ScannerHost}/api/ab-test-variants?variantId=${v.id}`, {
+                method: "PUT",
+                headers: authHeaders(),
+                body: JSON.stringify({ changes: [], redirectUrl: url }),
+            }).catch(() => null);
+            if (!r?.ok) anyError = true;
+        }
+        setSaving(false);
+        if (anyError) { alert("Some redirect URLs could not be saved."); return; }
+        setDirty(false);
+        fetchTest();
+    };
+
     const [statusSaving, setStatusSaving] = useState(false);
     const canLaunch = variants.length >= 2 && (test?.status === "draft" || test?.status === "paused");
     const setStatus = async (status) => {
@@ -349,7 +382,7 @@ export default function PageExperimentEditor() {
                                     </button>
                                 </div>
 
-                                {mode === "editor" && (
+                                {mode === "editor" && test.testType !== "url_split" && (
                                     <div className="pxp-variant-tabs">
                                         {variants.map(v => (
                                             <button
@@ -367,11 +400,17 @@ export default function PageExperimentEditor() {
                                     </div>
                                 )}
 
+                                {mode === "editor" && test.testType === "url_split" && (
+                                    <button type="button" className="pxp-variant-tab pxp-variant-tab--add" onClick={addVariant}>
+                                        <IconPlus className="sa-icon" /> Variant
+                                    </button>
+                                )}
+
                                 {mode === "editor" && (
                                     <button
                                         type="button"
                                         className="sa-event-form__submit"
-                                        onClick={handleSave}
+                                        onClick={test.testType === "url_split" ? handleSaveUrlSplit : handleSave}
                                         disabled={!dirty || saving}
                                     >
                                         {saving ? "Saving…" : dirty ? "Save changes" : "Saved"}
@@ -439,7 +478,58 @@ export default function PageExperimentEditor() {
                                 <ResultsPanel results={results} loading={resultsLoading} />
                             )}
 
-                            {mode === "editor" && (
+                            {mode === "editor" && test.testType === "url_split" && (
+                            <div className="pxp-url-split-panel">
+                                <p className="sa-panel__sub" style={{ marginBottom: 16 }}>
+                                    Visitors on <strong>{test.targetPath}</strong> are randomly split across variants.
+                                    The control stays on this page; each other variant redirects visitors to the URL you specify.
+                                </p>
+                                <div className="pxp-url-split-variants">
+                                    {variants.map(v => (
+                                        <div key={v.id} className="pxp-url-split-row">
+                                            <div className="pxp-url-split-row__meta">
+                                                <span className="pxp-url-split-row__label">{v.label || v.variantKey}</span>
+                                                {v.isControl && <span className="sa-event-row__tag">Control</span>}
+                                            </div>
+                                            {v.isControl ? (
+                                                <p className="pxp-url-split-row__control-note">
+                                                    No redirect — visitors stay on <code>{test.targetPath}</code>
+                                                </p>
+                                            ) : (
+                                                <input
+                                                    type="url"
+                                                    className="sa-event-form__input pxp-url-split-row__input"
+                                                    placeholder="https://example.com/variant-page"
+                                                    value={splitUrls[v.id] || ""}
+                                                    onChange={e => {
+                                                        setSplitUrls(prev => ({ ...prev, [v.id]: e.target.value }));
+                                                        setDirty(true);
+                                                    }}
+                                                    maxLength={2048}
+                                                />
+                                            )}
+                                            {!v.isControl && (
+                                                <button
+                                                    type="button"
+                                                    className="sa-event-row__delete"
+                                                    onClick={async () => {
+                                                        await fetch(`${ScannerHost}/api/ab-test-variants?variantId=${v.id}`, {
+                                                            method: "DELETE", headers: authHeaders(),
+                                                        }).catch(() => null);
+                                                        fetchTest();
+                                                    }}
+                                                    aria-label={`Delete ${v.label || v.variantKey}`}
+                                                >
+                                                    <IconTrash />
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            )}
+
+                            {mode === "editor" && test.testType !== "url_split" && (
                             <div className="pxp-editor__body">
                                 <div className="pxp-editor__canvas">
                                     {proxyError && (
@@ -496,7 +586,7 @@ export default function PageExperimentEditor() {
 
                                     {!selectedElement && (
                                         <p className="sa-panel__sub">
-                                            {iframeReady ? "Click “Select an element”, then click something on the page to edit it." : "Loading the page…"}
+                                            {iframeReady ? 'Click “Select an element”, then click something on the page to edit it.' : "Loading the page…"}
                                         </p>
                                     )}
 
