@@ -12,6 +12,10 @@ import Line from "../../Components/Charts/Line";
 import "./Analytics.css";
 
 const CONSENT_GAP_WARN_PCT = 25;
+// Countries with fewer total events than this are excluded from the rate
+// view — otherwise a country with 1 visit + 1 conversion reads as a
+// misleading 100% and can crowd out countries with a real sample size.
+const MAP_RATE_MIN_SAMPLE = 5;
 
 export default function AnalyticsConversionsOverview() {
     document.title = "Conversions | Site Analytics";
@@ -55,6 +59,22 @@ export default function AnalyticsConversionsOverview() {
         [data]
     );
 
+    const [mapMode, setMapMode] = useState("rate");
+
+    const rateCountries = useMemo(() => {
+        const totalByCode = new Map((data?.countries || []).map(c => [c.code, c.events]));
+        const convByCode  = new Map((data?.conversionCountries || []).map(c => [c.code, c.events]));
+        const out = [];
+        totalByCode.forEach((total, code) => {
+            if (total < MAP_RATE_MIN_SAMPLE) return;
+            const conv = convByCode.get(code) || 0;
+            out.push({ code, events: Math.round((conv / total) * 1000) / 10 });
+        });
+        return out;
+    }, [data]);
+
+    const mapCountries = mapMode === "rate" ? rateCountries : data?.conversionCountries;
+
     const showData = !loading && data && !data.noSiteKey && !data.noData;
 
     return (
@@ -84,29 +104,31 @@ export default function AnalyticsConversionsOverview() {
 
                     {showData && (
                         <div className="sa-conv-grid">
-                            <KpiCard className="sa-conv-kpi1"
-                                icon={<IconTarget />}
-                                label="Total conversions"
-                                value={totalConversions.toLocaleString("de-DE")}
-                                sub={`across ${data.conversions.length} registered event${data.conversions.length !== 1 ? "s" : ""}`}
-                            />
-                            <KpiCard className="sa-conv-kpi2"
-                                icon={<IconTrendingUp />}
-                                label="Conversion rate"
-                                value={data.totals.conversionRate + "%"}
-                                sub={`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} sessions`}
-                            />
-                            <KpiCard className="sa-conv-kpi3"
-                                variant={consentGapPct >= CONSENT_GAP_WARN_PCT ? "warn" : undefined}
-                                icon={<IconAlertTriangle />}
-                                label="Consent-linked gap"
-                                value={consentGapPct + "%"}
-                                sub={
-                                    consentGapPct > 0
-                                        ? `${(totalConversions - linkedConversions).toLocaleString("de-DE")} of ${totalConversions.toLocaleString("de-DE")} conversions can't be tied to a session — funnel & time-to-convert only cover the linked ${linkedConversions.toLocaleString("de-DE")}`
-                                        : "All conversions are session-linked for this period"
-                                }
-                            />
+                            <div className="sa-conv-kpis">
+                                <KpiCard
+                                    icon={<IconTarget />}
+                                    label="Total conversions"
+                                    value={totalConversions.toLocaleString("de-DE")}
+                                    sub={`across ${data.conversions.length} registered event${data.conversions.length !== 1 ? "s" : ""}`}
+                                />
+                                <KpiCard
+                                    icon={<IconTrendingUp />}
+                                    label="Conversion rate"
+                                    value={data.totals.conversionRate + "%"}
+                                    sub={`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} sessions`}
+                                />
+                                <KpiCard
+                                    variant={consentGapPct >= CONSENT_GAP_WARN_PCT ? "warn" : undefined}
+                                    icon={<IconAlertTriangle />}
+                                    label="Consent-linked gap"
+                                    value={consentGapPct + "%"}
+                                    sub={
+                                        consentGapPct > 0
+                                            ? `${(totalConversions - linkedConversions).toLocaleString("de-DE")} of ${totalConversions.toLocaleString("de-DE")} conversions can't be tied to a session — funnel & time-to-convert only cover the linked ${linkedConversions.toLocaleString("de-DE")}`
+                                            : "All conversions are session-linked for this period"
+                                    }
+                                />
+                            </div>
 
                             <div className="sa-panel sa-conv-trend">
                                 <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Conversion trend</h3>
@@ -121,8 +143,30 @@ export default function AnalyticsConversionsOverview() {
                             </div>
 
                             <div className="sa-panel sa-conv-map">
-                                <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Where conversions happen</h3>
-                                <AnalyticsWorldMap countries={data.conversionCountries} metricLabel="Conversions" />
+                                <h3 className="sa-panel__title">
+                                    <IconGlobe className="sa-icon" /> Where conversions happen
+                                    <span className="sa-map__mode-toggle" role="group" aria-label="Map weighting">
+                                        <button
+                                            type="button"
+                                            className={mapMode === "rate" ? "is-active" : ""}
+                                            onClick={() => setMapMode("rate")}
+                                        >
+                                            Rate
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={mapMode === "volume" ? "is-active" : ""}
+                                            onClick={() => setMapMode("volume")}
+                                        >
+                                            Volume
+                                        </button>
+                                    </span>
+                                </h3>
+                                <AnalyticsWorldMap
+                                    countries={mapCountries}
+                                    metricLabel={mapMode === "rate" ? "Conversion rate" : "Conversions"}
+                                    formatValue={mapMode === "rate" ? (v => v.toFixed(1) + "%") : undefined}
+                                />
                             </div>
 
                             <TimeToConvert

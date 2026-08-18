@@ -20,11 +20,13 @@ function colorForShare(pct) {
 
 /** Lightweight events-by-country map for Site Analytics — no drawer/compare,
  *  just a color-scaled world view plus a click-to-inspect caption. */
-export default function AnalyticsWorldMap({ countries, metricLabel = "Events" }) {
+export default function AnalyticsWorldMap({ countries, metricLabel = "Events", formatValue }) {
     const metricLower = metricLabel.toLowerCase();
+    const fmt = formatValue || ((v) => v.toLocaleString("de-DE"));
     const rows = useMemo(() => (countries || []).filter((c) => c.code), [countries]);
     const max = useMemo(() => Math.max(...rows.map((c) => c.events), 1), [rows]);
     const [selected, setSelected] = useState(null);
+    useEffect(() => { setSelected(null); }, [countries]);
 
     const values = useMemo(() => {
         const out = {};
@@ -83,8 +85,8 @@ export default function AnalyticsWorldMap({ countries, metricLabel = "Events" })
             <div id={MAP_ID} className="sa-map__inner" />
             <p className="sa-map__caption">
                 {selectedRow
-                    ? `${CODE_TO_NAME[selectedRow.code] || selectedRow.code}: ${selectedRow.events.toLocaleString("de-DE")} ${metricLower}`
-                    : `Darker regions had more ${metricLower} in this period. Click a country for its total.`}
+                    ? `${CODE_TO_NAME[selectedRow.code] || selectedRow.code}: ${fmt(selectedRow.events)} ${metricLower}`
+                    : `Darker regions had higher ${metricLower} in this period. Click a country for its value.`}
             </p>
         </div>
     );
