@@ -1,41 +1,21 @@
-const { useState, useContext, useMemo } = React;
-const useParams = window.ReactRouterDOM.useParams;
-import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+const { useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsReport, toIsoDate, MiniBar } from "./_shared.js";
+import { useAnalyticsPage, MiniBar } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import "./Analytics.css";
 
 export default function AnalyticsAcquisition() {
     document.title = "Acquisition | Site Analytics";
 
-    const { handle } = useParams();
-    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
-    useSyncDomainFromRoute(handle, setGlobalDomain);
-
-    const domain = useMemo(() => {
-        if (isCombinedOrClearDomain(globalDomain)) return null;
-        return String(globalDomain || "").trim().toLowerCase();
-    }, [globalDomain]);
-
-    const [getLastDays, setLastDays] = useState(30);
-    const [fromDate, setFromDate] = useState(() => {
-        const d = new Date(); d.setDate(d.getDate() - 30); return d;
-    });
-    const [toDate, setToDate] = useState(() => new Date());
-
-    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
-    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
-
-    const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso);
+    const {
+        domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
+        data, loading, error, showData,
+    } = useAnalyticsPage();
 
     const maxUtm       = useMemo(() => Math.max(...(data?.utmSources || []).map(u => u.events), 1), [data]);
     const maxPages     = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
     const maxReferrer  = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
     const maxHost      = useMemo(() => Math.max(...(data?.hosts      || []).map(h => h.events), 1), [data]);
-
-    const showData = !loading && data && !data.noSiteKey && !data.noData;
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>

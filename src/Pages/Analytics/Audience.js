@@ -1,35 +1,17 @@
-const { useState, useContext, useMemo } = React;
-const useParams = window.ReactRouterDOM.useParams;
-import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+const { useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import { useAnalyticsReport, toIsoDate, MiniBar } from "./_shared.js";
+import { useAnalyticsPage, MiniBar } from "./_shared.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
 import "./Analytics.css";
 
 export default function AnalyticsAudience() {
     document.title = "Audience | Site Analytics";
 
-    const { handle } = useParams();
-    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
-    useSyncDomainFromRoute(handle, setGlobalDomain);
-
-    const domain = useMemo(() => {
-        if (isCombinedOrClearDomain(globalDomain)) return null;
-        return String(globalDomain || "").trim().toLowerCase();
-    }, [globalDomain]);
-
-    const [getLastDays, setLastDays] = useState(30);
-    const [fromDate, setFromDate] = useState(() => {
-        const d = new Date(); d.setDate(d.getDate() - 30); return d;
-    });
-    const [toDate, setToDate] = useState(() => new Date());
-
-    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
-    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
-
-    const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso);
+    const {
+        domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
+        data, loading, error, showData,
+    } = useAnalyticsPage();
 
     const maxCountry = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
     const maxBrowser = useMemo(() => Math.max(...(data?.browsers   || []).map(b => b.events), 1), [data]);
@@ -38,8 +20,6 @@ export default function AnalyticsAudience() {
     const maxLang    = useMemo(() => Math.max(...(data?.languages  || []).map(l => l.events), 1), [data]);
     const maxTz      = useMemo(() => Math.max(...(data?.timezones  || []).map(t => t.events), 1), [data]);
     const deviceTotal = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
-
-    const showData = !loading && data && !data.noSiteKey && !data.noData;
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>

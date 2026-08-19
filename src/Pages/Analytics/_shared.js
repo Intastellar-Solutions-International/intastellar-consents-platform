@@ -1,6 +1,9 @@
-const { useState, useEffect, useMemo } = React;
+const { useState, useEffect, useContext, useMemo } = React;
+const useParams = window.ReactRouterDOM.useParams;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
+import { DomainContext } from "../../App.js";
+import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 
 export function authHeaders() {
     return {
@@ -34,6 +37,47 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0) {
     }, [domain, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return { data, loading, error };
+}
+
+// Domain resolution + date-range state that's identical across every
+// Analytics page — split out from useAnalyticsPage() below so pages with
+// their own bespoke data-fetching (Heatmap, Recordings, Bots, ...) can still
+// share it without being forced into the useAnalyticsReport() call.
+export function useAnalyticsPageChrome() {
+    const { handle } = useParams();
+    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
+    useSyncDomainFromRoute(handle, setGlobalDomain);
+
+    const domain = useMemo(() => {
+        if (isCombinedOrClearDomain(globalDomain)) return null;
+        return String(globalDomain || "").trim().toLowerCase();
+    }, [globalDomain]);
+
+    const [getLastDays, setLastDays] = useState(30);
+    const [fromDate, setFromDate] = useState(() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 30);
+        return d;
+    });
+    const [toDate, setToDate] = useState(() => new Date());
+
+    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
+    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
+
+    return { handle, domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso };
+}
+
+// Chrome + the standard useAnalyticsReport() call, for pages that fetch the
+// same report shape (KPIs/daily/countries/...) and nothing more bespoke.
+export function useAnalyticsPage() {
+    const chrome = useAnalyticsPageChrome();
+    const [tick, setTick] = useState(0);
+    const { data, loading, error } = useAnalyticsReport(chrome.domain, chrome.fromIso, chrome.toIso, tick);
+
+    const showSetup = !loading && data && (data.noSiteKey || data.noData);
+    const showData  = !loading && data && !data.noSiteKey && !data.noData;
+
+    return { ...chrome, tick, setTick, data, loading, error, showSetup, showData };
 }
 
 export function KpiCard({ icon, label, value, sub, variant, className }) {

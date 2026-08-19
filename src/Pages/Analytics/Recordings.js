@@ -5,7 +5,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsRecordingsPath } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, toIsoDate } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
 import { IconVideo } from "./Icons.js";
 import RecordingPlayer from "./RecordingPlayer.js";
 import "./Analytics.css";
@@ -96,22 +96,9 @@ function EnableRecordingCard({ domain, onEnabled }) {
 export default function AnalyticsRecordings() {
     document.title = "Recordings | Site Analytics";
 
-    const { handle } = useParams();
-    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
-    useSyncDomainFromRoute(handle, setGlobalDomain);
-
-    const domain = useMemo(() => {
-        if (isCombinedOrClearDomain(globalDomain)) return null;
-        return String(globalDomain || "").trim().toLowerCase();
-    }, [globalDomain]);
-
-    const [getLastDays, setLastDays] = useState(30);
-    const [fromDate, setFromDate] = useState(() => {
-        const d = new Date(); d.setDate(d.getDate() - 30); return d;
-    });
-    const [toDate, setToDate] = useState(() => new Date());
-    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
-    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
+    const {
+        domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso,
+    } = useAnalyticsPageChrome();
 
     const [tick, setTick] = useState(0);
     const { data, loading, error } = useRecordingList(domain, fromIso, toIso, tick);

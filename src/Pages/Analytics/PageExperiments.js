@@ -1,11 +1,9 @@
-const { useState, useEffect, useCallback, useContext, useMemo } = React;
-const useParams = window.ReactRouterDOM.useParams;
+const { useState, useEffect, useCallback } = React;
 const useHistory = window.ReactRouterDOM.useHistory;
-import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
+import { analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { authHeaders } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
 import { IconPlus, IconTrash } from "./Icons.js";
 import "./Analytics.css";
 
@@ -14,15 +12,8 @@ const STATUS_LABEL = { draft: "Draft", running: "Running", paused: "Paused", arc
 export default function PageExperiments() {
     document.title = "Page Experiments | Site Analytics";
 
-    const { handle } = useParams();
     const history = useHistory();
-    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
-    useSyncDomainFromRoute(handle, setGlobalDomain);
-
-    const domain = useMemo(() => {
-        if (isCombinedOrClearDomain(globalDomain)) return null;
-        return String(globalDomain || "").trim().toLowerCase();
-    }, [globalDomain]);
+    const { domain } = useAnalyticsPageChrome();
 
     const [tests, setTests] = useState(null);
     const [loading, setLoading] = useState(false);

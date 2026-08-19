@@ -1,11 +1,10 @@
-const { useState, useEffect, useContext, useMemo } = React;
+const { useState, useEffect, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
-import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
+import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { useAnalyticsReport, toIsoDate, KpiCard, authHeaders } from "./_shared.js";
+import { useAnalyticsPage, KpiCard, authHeaders } from "./_shared.js";
 import { IconTarget, IconTrendingUp, IconGlobe } from "./Icons.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import ConversionsPanel from "./Conversions.js";
@@ -64,26 +63,13 @@ function useGa4TotalSessions(domain, fromIso, toIso) {
 export default function AnalyticsConversionsOverview() {
     document.title = "Conversions | Site Analytics";
 
-    const { handle, section: sectionParam } = useParams();
+    const { section: sectionParam } = useParams();
     const history = useHistory();
-    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
-    useSyncDomainFromRoute(handle, setGlobalDomain);
 
-    const domain = useMemo(() => {
-        if (isCombinedOrClearDomain(globalDomain)) return null;
-        return String(globalDomain || "").trim().toLowerCase();
-    }, [globalDomain]);
-
-    const [getLastDays, setLastDays] = useState(30);
-    const [fromDate, setFromDate] = useState(() => {
-        const d = new Date(); d.setDate(d.getDate() - 30); return d;
-    });
-    const [toDate, setToDate] = useState(() => new Date());
-    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
-    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
-
-    const [tick, setTick] = useState(0);
-    const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
+    const {
+        domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
+        fromIso, toIso, tick, setTick, data, loading, error, showData,
+    } = useAnalyticsPage();
     const ga4 = useGa4TotalSessions(domain, fromIso, toIso);
 
     const section = SECTIONS.some(s => s.key === sectionParam) ? sectionParam : "overview";
@@ -118,8 +104,6 @@ export default function AnalyticsConversionsOverview() {
     }, [data]);
 
     const mapCountries = mapMode === "rate" ? rateCountries : data?.conversionCountries;
-
-    const showData = !loading && data && !data.noSiteKey && !data.noData;
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>

@@ -1,10 +1,7 @@
-const { useState, useEffect, useContext, useMemo } = React;
-const useParams = window.ReactRouterDOM.useParams;
-import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+const { useState, useEffect, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, toIsoDate, KpiCard, MiniBar } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, KpiCard, MiniBar } from "./_shared.js";
 import { IconBot, IconGlobe, IconDocument, IconRadio } from "./Icons.js";
 import "./Analytics.css";
 
@@ -52,22 +49,9 @@ function useBotReport(domain, fromIso, toIso) {
 export default function AnalyticsBots() {
     document.title = "Bots | Site Analytics";
 
-    const { handle } = useParams();
-    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
-    useSyncDomainFromRoute(handle, setGlobalDomain);
-
-    const domain = useMemo(() => {
-        if (isCombinedOrClearDomain(globalDomain)) return null;
-        return String(globalDomain || "").trim().toLowerCase();
-    }, [globalDomain]);
-
-    const [getLastDays, setLastDays] = useState(30);
-    const [fromDate, setFromDate] = useState(() => {
-        const d = new Date(); d.setDate(d.getDate() - 30); return d;
-    });
-    const [toDate, setToDate] = useState(() => new Date());
-    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
-    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
+    const {
+        domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso,
+    } = useAnalyticsPageChrome();
 
     const { data, loading, error } = useBotReport(domain, fromIso, toIso);
 

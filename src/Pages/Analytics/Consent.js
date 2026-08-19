@@ -1,36 +1,15 @@
-const { useState, useContext, useMemo } = React;
-const useParams = window.ReactRouterDOM.useParams;
-import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsReport, toIsoDate, KpiCard, ConsentBar } from "./_shared.js";
+import { useAnalyticsPage, KpiCard, ConsentBar } from "./_shared.js";
 import { IconShieldCheck, IconBarChart } from "./Icons.js";
 import "./Analytics.css";
 
 export default function AnalyticsConsent() {
     document.title = "Consent | Site Analytics";
 
-    const { handle } = useParams();
-    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
-    useSyncDomainFromRoute(handle, setGlobalDomain);
-
-    const domain = useMemo(() => {
-        if (isCombinedOrClearDomain(globalDomain)) return null;
-        return String(globalDomain || "").trim().toLowerCase();
-    }, [globalDomain]);
-
-    const [getLastDays, setLastDays] = useState(30);
-    const [fromDate, setFromDate] = useState(() => {
-        const d = new Date(); d.setDate(d.getDate() - 30); return d;
-    });
-    const [toDate, setToDate] = useState(() => new Date());
-
-    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
-    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
-
-    const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso);
-
-    const showData = !loading && data && !data.noSiteKey && !data.noData;
+    const {
+        domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
+        data, loading, error, showData,
+    } = useAnalyticsPage();
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>

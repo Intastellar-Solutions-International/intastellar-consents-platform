@@ -1,16 +1,13 @@
-const { useState, useEffect, useContext, useMemo, useCallback } = React;
-const useParams = window.ReactRouterDOM.useParams;
+const { useState, useEffect, useMemo, useCallback } = React;
 const Link = window.ReactRouterDOM.Link;
-import { DomainContext } from "../../App.js";
 import {
-    useSyncDomainFromRoute, isCombinedOrClearDomain,
     analyticsAudiencePath, analyticsAcquisitionPath,
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
-    authHeaders, toIsoDate, KpiCard, MiniBar, useAnalyticsReport,
+    authHeaders, KpiCard, MiniBar, useAnalyticsPage,
 } from "./_shared.js";
 import {
     IconBarChart,
@@ -360,36 +357,15 @@ function SetupCard({ domain, onKeyGenerated }) {
 export default function SiteAnalytics() {
     document.title = "Site Analytics | Intastellar Consents";
 
-    const { handle } = useParams();
-    const [globalDomain, setGlobalDomain] = useContext(DomainContext);
-    useSyncDomainFromRoute(handle, setGlobalDomain);
-
-    const domain = useMemo(() => {
-        if (isCombinedOrClearDomain(globalDomain)) return null;
-        return String(globalDomain || "").trim().toLowerCase();
-    }, [globalDomain]);
-
-    const [getLastDays, setLastDays] = useState(30);
-    const [fromDate, setFromDate] = useState(() => {
-        const d = new Date();
-        d.setDate(d.getDate() - 30);
-        return d;
-    });
-    const [toDate, setToDate] = useState(() => new Date());
-    const [tick,   setTick]   = useState(0);
-
-    const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
-    const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
-
-    const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
+    const {
+        domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
+        tick, setTick, data, loading, error, showSetup, showData,
+    } = useAnalyticsPage();
 
     const maxPageViews = useMemo(() => Math.max(...(data?.topPages  || []).map(p => p.views),  1), [data]);
     const maxCountry   = useMemo(() => Math.max(...(data?.countries || []).map(c => c.events), 1), [data]);
     const maxReferrer  = useMemo(() => Math.max(...(data?.referrers || []).map(r => r.events), 1), [data]);
     const deviceTotal  = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
-
-    const showSetup = !loading && data && (data.noSiteKey || data.noData);
-    const showData  = !loading && data && !data.noSiteKey && !data.noData;
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
