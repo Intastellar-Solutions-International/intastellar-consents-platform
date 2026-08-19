@@ -11,6 +11,18 @@
  * exposure to that variant — pre-existing behavior from before a visitor
  * ever saw a variant shouldn't be attributed to it.
  *
+ * Cross-domain (url_split) measurement: a url_split variant redirects
+ * visitors to whatever domain its redirect_url points at, which can be a
+ * different domain (or subdomain) than the test's own — so its conversions
+ * live under THAT domain's analytics_sites/site_id, not the test domain's.
+ * Each variant's exposures/conversions/daily-series are therefore looked up
+ * against its own resolved domain rather than one shared site_id for the
+ * whole test (see variantMeta below). This only surfaces data for a variant
+ * once the session id is actually shared across the redirect — same-apex
+ * subdomains inherit it via the Domain-scoped session cookie (api/a.js's
+ * getSid()/rootDomain()); unrelated domains have no shared cookie and won't
+ * show conversions here regardless of this endpoint's own correctness.
+ *
  * Also returns, when a goal event is set:
  *  - expectedConversionRate: Bayesian posterior mean (Beta(1,1) prior) —
  *    regularises small-sample rates toward 50% instead of reporting a raw
@@ -171,6 +183,7 @@ async function ensureTables(db) {
             UNIQUE (test_id, variant_key)
         )
     `).catch(() => {});
+    await db.query(`ALTER TABLE ab_test_variants ADD COLUMN IF NOT EXISTS redirect_url TEXT`).catch(() => {});
     await db.query(`
         CREATE TABLE IF NOT EXISTS ab_test_assignments (
             id          BIGSERIAL   PRIMARY KEY,
@@ -201,7 +214,7 @@ export default async function handler(req, res) {
     await ensureTables(db);
 
     const { rows: testRows } = await db.query(
-        `SELECT id, domain, goal_event_name FROM ab_tests WHERE id = $1 AND organisation_id = $2 LIMIT 1`,
+        `SELECT id, domain, goal_event_name, target_path, test_type FROM ab_tests WHERE id = $1 AND organisation_id = $2 LIMIT 1`,
         [testId, orgId]
     ).catch(() => ({ rows: [] }));
     if (!testRows.length) return res.status(404).json({ error: "Test not found" });
@@ -209,64 +222,100 @@ export default async function handler(req, res) {
     const test = testRows[0];
     const goalEventName = test.goal_event_name || null;
 
+    // Base variant list, fetched up front — each variant's OWN domain has to
+    // be resolved (see header comment) before exposures/conversions can be
+    // queried, since a url_split variant's data may live under a different
+    // site_id than the test's own domain.
+    const { rows: variantRows } = await db.query(
+        `SELECT id, variant_key, label, is_control, redirect_url
+         FROM ab_test_variants WHERE test_id = $1 ORDER BY is_control DESC, id ASC`,
+        [testId]
+    ).catch(() => ({ rows: [] }));
+
+    function hostnameFromRedirect(url) {
+        try { return new URL(url).hostname.toLowerCase(); } catch { return null; }
+    }
+
+    const variantDomains = variantRows.map(v =>
+        (!v.is_control && v.redirect_url && hostnameFromRedirect(v.redirect_url)) || test.domain
+    );
+    const uniqueDomains = [...new Set([test.domain, ...variantDomains])];
+
     // A Page Experiment doesn't require a first-party analytics site key to
-    // exist (see api/ab-tests.js's own doc comment) — if one was never
-    // generated for this domain, conversions simply aren't available,
-    // handled the same as "no goal set" below, not as an error.
+    // exist (see api/ab-tests.js's own doc comment) — a domain with no
+    // analytics_sites row here (the test's own, or a url_split variant's
+    // redirect target) simply can't have conversions measured yet for that
+    // variant; handled as "no data for this variant", not an error.
     const { rows: siteRows } = await db.query(
-        `SELECT id FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
-        [orgId, test.domain]
+        `SELECT id, domain FROM analytics_sites WHERE organisation_id = $1 AND domain = ANY($2::text[]) AND active = true`,
+        [orgId, uniqueDomains]
     ).catch(() => ({ rows: [] }));
-    const siteId = siteRows[0]?.id || null;
+    const siteIdByDomain = {};
+    for (const s of siteRows) siteIdByDomain[s.domain] = s.id;
 
-    const hasGoal = !!goalEventName && !!siteId;
+    const variantMeta = variantRows.map((v, i) => ({
+        row: v,
+        domain: variantDomains[i],
+        siteId: siteIdByDomain[variantDomains[i]] || null,
+    }));
 
-    const { rows } = await db.query(
-        `WITH exposures AS (
-            SELECT variant_id, session_id, MIN(assigned_at) AS first_assigned_at, COUNT(*) AS exposure_count
-            FROM ab_test_assignments
-            WHERE test_id = $1
-            GROUP BY variant_id, session_id
-         )
-         SELECT
-             v.id AS variant_id, v.variant_key, v.label, v.is_control,
-             COALESCE(SUM(e.exposure_count), 0) AS exposures,
-             COUNT(DISTINCT e.session_id) AS unique_sessions,
-             COUNT(DISTINCT e.session_id) FILTER (
-                 WHERE $2::text IS NOT NULL AND $3::text IS NOT NULL AND EXISTS (
-                     SELECT 1 FROM analytics_custom_events ce
-                     WHERE ce.site_id = $3 AND ce.session_id = e.session_id
-                       AND ce.name = $2 AND ce.received_at >= e.first_assigned_at
-                 )
-             ) AS converted_sessions
-         FROM ab_test_variants v
-         LEFT JOIN exposures e ON e.variant_id = v.id
-         WHERE v.test_id = $1
-         GROUP BY v.id, v.variant_key, v.label, v.is_control
-         ORDER BY v.is_control DESC, v.id ASC`,
-        [testId, goalEventName, siteId]
-    ).catch(() => ({ rows: [] }));
+    // ── Per-variant exposures + conversions ─────────────────────────────────
+    // One query per variant (rather than one combined query across all
+    // variants) since each needs its own site_id — the variant count on a
+    // real test is always small (a handful), so this stays cheap.
+    const variants = [];
+    for (const { row: v, domain: variantDomain, siteId: variantSiteId } of variantMeta) {
+        const hasGoal = !!goalEventName && !!variantSiteId;
+        const { rows: statRows } = await db.query(
+            `WITH exposures AS (
+                SELECT session_id, MIN(assigned_at) AS first_assigned_at, COUNT(*) AS exposure_count
+                FROM ab_test_assignments
+                WHERE test_id = $1 AND variant_id = $2
+                GROUP BY session_id
+             )
+             SELECT
+                 COALESCE(SUM(exposure_count), 0) AS exposures,
+                 COUNT(*) AS unique_sessions,
+                 COUNT(*) FILTER (
+                     WHERE $3::text IS NOT NULL AND $4::text IS NOT NULL AND EXISTS (
+                         SELECT 1 FROM analytics_custom_events ce
+                         WHERE ce.site_id = $4 AND ce.session_id = exposures.session_id
+                           AND ce.name = $3 AND ce.received_at >= exposures.first_assigned_at
+                     )
+                 ) AS converted_sessions
+             FROM exposures`,
+            [testId, v.id, goalEventName, variantSiteId]
+        ).catch(() => ({ rows: [] }));
 
-    const variants = rows.map(r => {
-        const uniqueSessions = Number(r.unique_sessions || 0);
-        const conversions = hasGoal ? Number(r.converted_sessions || 0) : null;
+        const stats = statRows[0] || { exposures: 0, unique_sessions: 0, converted_sessions: 0 };
+        const uniqueSessions = Number(stats.unique_sessions || 0);
+        const conversions = hasGoal ? Number(stats.converted_sessions || 0) : null;
         const conversionRate = !hasGoal || uniqueSessions === 0 ? null : conversions / uniqueSessions;
-        return {
-            variantId: r.variant_id, variantKey: r.variant_key, label: r.label, isControl: r.is_control,
-            exposures: Number(r.exposures || 0), uniqueSessions, conversions, conversionRate,
+
+        variants.push({
+            variantId: v.id, variantKey: v.variant_key, label: v.label, isControl: v.is_control,
+            domain: variantDomain, redirectUrl: v.redirect_url || null, hasSite: !!variantSiteId,
+            exposures: Number(stats.exposures || 0), uniqueSessions, conversions, conversionRate,
             expectedConversionRate: null, expectedImprovement: null, probabilityToBeBetter: null,
-        };
-    });
+        });
+    }
 
-    const hasEnoughData = hasGoal && variants.length > 0 && variants.every(v => v.uniqueSessions >= MIN_SESSIONS_PER_VARIANT);
+    // "Enough data" now also requires every variant to actually have a
+    // measurable conversion rate — a url_split variant redirecting to a
+    // domain with no analytics site registered can't clear this regardless
+    // of session volume, which is the point: it surfaces as missing data
+    // instead of a silently wrong/incomplete comparison.
+    const hasEnoughData = !!goalEventName && variants.length > 0 &&
+        variants.every(v => v.uniqueSessions >= MIN_SESSIONS_PER_VARIANT && v.conversions !== null);
 
-    if (hasGoal) {
-        const control = variants.find(v => v.isControl);
+    const control = variants.find(v => v.isControl);
+    if (goalEventName && control && control.conversions !== null) {
         for (const v of variants) {
+            if (v.conversions === null) continue;
             // Beta(1,1) posterior mean — regularises toward 50% at low volume
             // instead of reporting a raw ratio that swings wildly early on.
             v.expectedConversionRate = (v.conversions + 1) / (v.uniqueSessions + 2);
-            if (v.isControl || !control) continue;
+            if (v.isControl) continue;
             const { probabilityToBeBetter, expectedImprovement } = simulateVsControl(
                 control.conversions, control.uniqueSessions, v.conversions, v.uniqueSessions
             );
@@ -279,43 +328,40 @@ export default async function handler(req, res) {
     // Bucketed by the day of each session's FIRST exposure — a conversion is
     // credited to that day regardless of which day it actually happened on,
     // matching the "cumulative" framing (as of today, how did sessions first
-    // exposed on day X eventually convert), not a day-by-day funnel.
-    const { rows: dailyRows } = await db.query(
-        `WITH first_exposures AS (
-            SELECT variant_id, session_id, MIN(assigned_at) AS first_assigned_at
-            FROM ab_test_assignments
-            WHERE test_id = $1
-            GROUP BY variant_id, session_id
-         ),
-         per_session AS (
-            SELECT
-                fe.variant_id,
-                DATE(fe.first_assigned_at) AS day,
-                ($2::text IS NOT NULL AND $3::text IS NOT NULL AND EXISTS (
-                    SELECT 1 FROM analytics_custom_events ce
-                    WHERE ce.site_id = $3 AND ce.session_id = fe.session_id
-                      AND ce.name = $2 AND ce.received_at >= fe.first_assigned_at
-                )) AS converted
-            FROM first_exposures fe
-         )
-         SELECT variant_id, day, COUNT(*) AS sessions, COUNT(*) FILTER (WHERE converted) AS conversions
-         FROM per_session
-         GROUP BY variant_id, day
-         ORDER BY day ASC`,
-        [testId, goalEventName, siteId]
-    ).catch(() => ({ rows: [] }));
-
+    // exposed on day X eventually convert), not a day-by-day funnel. Run per
+    // variant for the same cross-domain reason as the stats query above.
     const variantIds = variants.map(v => String(v.variantId));
     const byVariantDay = {};
     for (const id of variantIds) byVariantDay[id] = {};
     let minDay = null, maxDay = null;
-    for (const d of dailyRows) {
-        const id = String(d.variant_id);
-        const day = d.day.toISOString().slice(0, 10);
-        if (!byVariantDay[id]) byVariantDay[id] = {};
-        byVariantDay[id][day] = { sessions: Number(d.sessions), conversions: Number(d.conversions) };
-        if (!minDay || day < minDay) minDay = day;
-        if (!maxDay || day > maxDay) maxDay = day;
+    for (const { row: v, siteId: variantSiteId } of variantMeta) {
+        const { rows: dailyRows } = await db.query(
+            `WITH first_exposures AS (
+                SELECT session_id, MIN(assigned_at) AS first_assigned_at
+                FROM ab_test_assignments
+                WHERE test_id = $1 AND variant_id = $2
+                GROUP BY session_id
+             )
+             SELECT
+                 DATE(first_assigned_at) AS day,
+                 COUNT(*) AS sessions,
+                 COUNT(*) FILTER (WHERE $3::text IS NOT NULL AND $4::text IS NOT NULL AND EXISTS (
+                     SELECT 1 FROM analytics_custom_events ce
+                     WHERE ce.site_id = $4 AND ce.session_id = first_exposures.session_id
+                       AND ce.name = $3 AND ce.received_at >= first_exposures.first_assigned_at
+                 )) AS conversions
+             FROM first_exposures
+             GROUP BY day`,
+            [testId, v.id, goalEventName, variantSiteId]
+        ).catch(() => ({ rows: [] }));
+
+        const id = String(v.id);
+        for (const d of dailyRows) {
+            const day = d.day.toISOString().slice(0, 10);
+            byVariantDay[id][day] = { sessions: Number(d.sessions), conversions: Number(d.conversions) };
+            if (!minDay || day < minDay) minDay = day;
+            if (!maxDay || day > maxDay) maxDay = day;
+        }
     }
 
     const dailySeries = [];
@@ -347,7 +393,7 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({
-        test: { id: test.id, domain: test.domain, goalEventName },
+        test: { id: test.id, domain: test.domain, goalEventName, targetPath: test.target_path, testType: test.test_type || "visual" },
         minSessionsPerVariant: MIN_SESSIONS_PER_VARIANT,
         hasEnoughData,
         dateRange: minDay && maxDay ? { from: minDay, to: maxDay } : null,
