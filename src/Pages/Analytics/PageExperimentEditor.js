@@ -104,8 +104,9 @@ export default function PageExperimentEditor() {
     const [resultsLoading, setResultsLoading] = useState(false);
     const [eventDefs, setEventDefs] = useState([]);
 
-    // URL split test state — redirect URL per variant (variantId → url string)
+    // URL split test state — label + redirect URL per variant (variantId → string)
     const [splitUrls, setSplitUrls] = useState({});
+    const [splitLabels, setSplitLabels] = useState({});
 
     document.title = test ? `${test.name} | Page Experiments` : "Page Experiments";
 
@@ -181,6 +182,11 @@ export default function PageExperimentEditor() {
         setSplitUrls(prev => {
             const next = {};
             for (const v of variants) next[v.id] = prev[v.id] !== undefined ? prev[v.id] : (v.redirectUrl || "");
+            return next;
+        });
+        setSplitLabels(prev => {
+            const next = {};
+            for (const v of variants) next[v.id] = prev[v.id] !== undefined ? prev[v.id] : (v.label || "");
             return next;
         });
     }, [variants]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -275,12 +281,29 @@ export default function PageExperimentEditor() {
     const addVariant = async () => {
         const key = prompt("Variant key (letters, numbers, - or _), e.g. variant-b:");
         if (!key) return;
+        const label = prompt("Variant name (shown in the editor), e.g. New page:");
         const r = await fetch(`${ScannerHost}/api/ab-test-variants`, {
             method: "POST",
             headers: authHeaders(),
-            body: JSON.stringify({ testId, variantKey: key.trim().toLowerCase() }),
+            body: JSON.stringify({ testId, variantKey: key.trim().toLowerCase(), label: label ? label.trim() : undefined }),
         }).catch(() => null);
         if (!r?.ok) { alert("Could not create variant — key may already be in use."); return; }
+        fetchTest();
+    };
+
+    // Immediate-save rename (not tied to the dirty/Save-changes flow, same as
+    // the visual editor's tab list not having its own draft state) — must
+    // resend the variant's existing `changes` since PUT always full-replaces
+    // that column, and renaming shouldn't silently wipe DOM edits.
+    const renameVariant = async (v) => {
+        const next = prompt("Variant name:", v.label || v.variantKey);
+        if (next === null) return;
+        const r = await fetch(`${ScannerHost}/api/ab-test-variants?variantId=${v.id}`, {
+            method: "PUT",
+            headers: authHeaders(),
+            body: JSON.stringify({ changes: v.changes || [], label: next.trim() }),
+        }).catch(() => null);
+        if (!r?.ok) { alert("Could not rename variant."); return; }
         fetchTest();
     };
 
@@ -299,20 +322,20 @@ export default function PageExperimentEditor() {
     };
 
     const handleSaveUrlSplit = async () => {
-        const nonControlVariants = variants.filter(v => !v.isControl);
         setSaving(true);
         let anyError = false;
-        for (const v of nonControlVariants) {
-            const url = splitUrls[v.id] || "";
+        for (const v of variants) {
+            const body = { changes: [], label: (splitLabels[v.id] || "").trim() };
+            if (!v.isControl) body.redirectUrl = splitUrls[v.id] || "";
             const r = await fetch(`${ScannerHost}/api/ab-test-variants?variantId=${v.id}`, {
                 method: "PUT",
                 headers: authHeaders(),
-                body: JSON.stringify({ changes: [], redirectUrl: url }),
+                body: JSON.stringify(body),
             }).catch(() => null);
             if (!r?.ok) anyError = true;
         }
         setSaving(false);
-        if (anyError) { alert("Some redirect URLs could not be saved."); return; }
+        if (anyError) { alert("Some changes could not be saved."); return; }
         setDirty(false);
         fetchTest();
     };
@@ -390,6 +413,8 @@ export default function PageExperimentEditor() {
                                                 type="button"
                                                 className={"pxp-variant-tab" + (v.id === activeVariantId ? " --active" : "")}
                                                 onClick={() => setActiveVariantId(v.id)}
+                                                onDoubleClick={() => renameVariant(v)}
+                                                title="Double-click to rename"
                                             >
                                                 {v.label || v.variantKey}
                                             </button>
@@ -492,7 +517,17 @@ export default function PageExperimentEditor() {
                                     {variants.map(v => (
                                         <div key={v.id} className="pxp-url-split-row">
                                             <div className="pxp-url-split-row__meta">
-                                                <span className="pxp-url-split-row__label">{v.label || v.variantKey}</span>
+                                                <input
+                                                    type="text"
+                                                    className="sa-event-form__input pxp-url-split-row__label-input"
+                                                    placeholder={v.variantKey}
+                                                    value={splitLabels[v.id] || ""}
+                                                    onChange={e => {
+                                                        setSplitLabels(prev => ({ ...prev, [v.id]: e.target.value }));
+                                                        setDirty(true);
+                                                    }}
+                                                    maxLength={120}
+                                                />
                                                 {v.isControl && <span className="sa-event-row__tag">Control</span>}
                                             </div>
                                             {v.isControl ? (

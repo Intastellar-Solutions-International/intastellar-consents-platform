@@ -2814,6 +2814,14 @@ details[open] .ca-context-summary::before { content: "▾"; }
     color: rgba(255,255,255,0.9);
 }
 
+.pxp-url-split-row__label-input {
+    font-weight: 600;
+    font-size: 14px;
+    width: 140px;
+    margin: 0;
+    flex-shrink: 0;
+}
+
 .pxp-url-split-row__control-note {
     flex: 1;
     font-size: 13px;

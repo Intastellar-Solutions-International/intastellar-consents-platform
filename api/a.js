@@ -468,8 +468,9 @@ function hasAdv(c) {return !!(c&&ok(c.advertisementCookies));}
 
 // Registrable parent domain for the current host, so the session cookie can
 // be scoped with Domain=<root> and shared across subdomains (e.g. a booking
-// portal on book.example.com and the main site on www.example.com) instead
-// of resetting per-origin the way sessionStorage does. Not a full public-
+// portal on book.example.com and the main site on www.example.com, or a
+// url_split test on the apex redirecting to a variant subdomain) instead of
+// resetting per-origin the way sessionStorage does. Not a full public-
 // suffix-list implementation — just the common two-label ccTLD cases where
 // the naive "last two labels" guess would be wrong (co.uk, com.au, ...).
 // Anything unlisted falls back to the last two labels, which is correct for
@@ -480,7 +481,16 @@ function rootDomain(){
     var h=(location.hostname||'').toLowerCase();
     if(!h||h==='localhost'||/^(\d{1,3}\.){3}\d{1,3}$/.test(h))return null; // IP/localhost — no cross-subdomain concept, no Domain attribute
     var parts=h.split('.');
-    if(parts.length<=2)return null; // already bare (or single-label) — default (host-only) cookie scoping is already correct
+    // A single-label host (no dot — an internal hostname with no real TLD)
+    // has no "domain" to scope to; a bare two-label host (e.g.
+    // "asasoftware.aero") DOES — setting Domain=<itself> here is what makes
+    // the resulting cookie a domain cookie subdomains can read too, per RFC
+    // 6265, rather than the host-only cookie an omitted Domain attribute
+    // produces. Skipping this for the two-label case (as this used to do)
+    // silently broke subdomain sharing whenever the *apex* set the cookie
+    // first, even though the reverse direction (a subdomain setting it)
+    // already worked via the parts.length>2 branch below.
+    if(parts.length<2)return null;
     var lastTwo=parts.slice(-2).join('.');
     if(parts.length>2&&TWO_LABEL_TLDS.indexOf(lastTwo)!==-1)return parts.slice(-3).join('.');
     return lastTwo;
