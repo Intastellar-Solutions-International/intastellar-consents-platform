@@ -106,6 +106,7 @@ export default async function handler(req, res) {
     if (!siteId) return res.status(400).end();
 
     const path = normalizePath(String(req.query.path || "/"));
+    const host = String(req.query.host || "").trim().toLowerCase().slice(0, 255);
 
     res.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
 
@@ -139,11 +140,25 @@ export default async function handler(req, res) {
 
         if (!rows.length) return res.status(200).json({ test: null });
 
+        // A test only applies on the exact host it was made for — EXCEPT
+        // url_split tests, which are designed to run at the registrable-root
+        // level (e.g. an apex test redirecting to a variant subdomain like
+        // book.<domain>; see rootDomain()'s doc comment in the embed script).
+        // Without this, a site key shared across subdomains (a booking
+        // portal on book.<domain> using the same key as the main site) would
+        // apply the main site's visual/element tests there too. `host` is
+        // only sent by embed scripts that have picked up this fix, so an
+        // empty value (older cached script) falls back to the pre-fix
+        // behaviour rather than silently dropping every test.
+        const hostMatchesSiteDomain = !host || host === domain;
+        const scopedRows = rows.filter(r => r.test_type === "url_split" || hostMatchesSiteDomain);
+        if (!scopedRows.length) return res.status(200).json({ test: null });
+
         // Pick the best-matching running test for this path: highest
         // specificity wins (exact > longest wildcard prefix), ties broken by
         // most-recently-updated.
         const byTest = new Map();
-        for (const r of rows) {
+        for (const r of scopedRows) {
             if (!byTest.has(r.id)) byTest.set(r.id, { targetPath: r.target_path, updatedAt: r.updated_at });
         }
         let testId = null, bestSpecificity = -1, bestUpdatedAt = null;

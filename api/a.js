@@ -781,7 +781,7 @@ function applyPageExperiment(){
   if(looksLikeBot())return;
   try{
     var xhr=new XMLHttpRequest();
-    xhr.open('GET','https://analytics.consentsmanagement.com/api/ab-test-active?site='+encodeURIComponent(SITE)+'&path='+encodeURIComponent(location.pathname),true);
+    xhr.open('GET','https://analytics.consentsmanagement.com/api/ab-test-active?site='+encodeURIComponent(SITE)+'&path='+encodeURIComponent(location.pathname)+'&host='+encodeURIComponent(getHost()),true);
     xhr.onload=function(){
       if(xhr.status<200||xhr.status>=300)return;
       var data;
