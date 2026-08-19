@@ -58,6 +58,7 @@ import AnalyticsBots from "./Pages/Analytics/Bots.js";
 import AnalyticsConversionsOverview from "./Pages/Analytics/ConversionsOverview.js";
 import PageExperiments from "./Pages/Analytics/PageExperiments.js";
 import PageExperimentEditor from "./Pages/Analytics/PageExperimentEditor.js";
+import PageExperimentVariantDetail from "./Pages/Analytics/PageExperimentVariantDetail.js";
 import AnalyticsAdSpend from "./Pages/Analytics/AdSpend.js";
 import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import CookieDatabase from "./Pages/CookieDatabase";
@@ -281,6 +282,11 @@ export default function App() {
                                         <Route path="/analytics/:handle/page-experiments/:testId" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Experiments" fullPage /> : <ErrorBoundary>
                                                 <PageExperimentEditor />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/page-experiments/:testId/variants/:variantId" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Experiments" fullPage /> : <ErrorBoundary>
+                                                <PageExperimentVariantDetail />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/marketing" exact>

@@ -2581,6 +2581,106 @@ details[open] .ca-context-summary::before { content: "▾"; }
     overflow-wrap: anywhere;
 }
 
+.pxp-report__page-name--link {
+    cursor: pointer;
+    text-decoration: underline dotted rgba(236,236,236,0.35);
+    text-underline-offset: 3px;
+}
+
+.pxp-report__page-name--link:hover {
+    color: rgba(192,159,83,0.95);
+}
+
+.pxp-report__variant-name {
+    cursor: pointer;
+}
+
+.pxp-report__variant-name:hover {
+    color: rgba(192,159,83,0.95);
+}
+
+/* ── Variant detail page ──────────────────────────────────────────────────── */
+.pxp-detail__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pxp-detail__section-title {
+    margin: 22px 0 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(200,200,200,0.85);
+}
+
+.pxp-detail-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.pxp-detail-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 12px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    text-align: center;
+}
+
+.pxp-detail-stat__value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ececec;
+}
+
+.pxp-detail-stat__label {
+    font-size: 0.68rem;
+    color: rgba(150,150,150,0.7);
+}
+
+.pxp-detail-clicks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pxp-detail-clicks__row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 0.8rem;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+}
+
+.pxp-detail-clicks__selector {
+    color: rgba(192,159,83,0.9);
+    font-size: 0.76rem;
+    flex-shrink: 0;
+}
+
+.pxp-detail-clicks__text {
+    color: rgba(180,180,180,0.75);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+
+.pxp-detail-clicks__n {
+    margin-left: auto;
+    color: rgba(200,200,200,0.6);
+    font-size: 0.72rem;
+    flex-shrink: 0;
+}
+
 .pxp-report__filters {
     display: flex;
     gap: 10px;

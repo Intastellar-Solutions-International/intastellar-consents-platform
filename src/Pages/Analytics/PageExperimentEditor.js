@@ -500,7 +500,7 @@ export default function PageExperimentEditor() {
                             </div>
 
                             {mode === "results" && (
-                                <ResultsPanel results={results} loading={resultsLoading} />
+                                <ResultsPanel results={results} loading={resultsLoading} history={history} domain={domain} testId={testId} />
                             )}
 
                             {mode === "editor" && test.testType === "url_split" && (
@@ -794,8 +794,11 @@ function fmtDate(iso) {
     return new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 }
 
-function ResultsPanel({ results, loading }) {
+function ResultsPanel({ results, loading, history, domain, testId }) {
     const [graphTab, setGraphTab] = useState("date");
+    const openVariantDetail = (variantId) => {
+        history.push(`${analyticsPageExperimentsPath(domain)}/${testId}/variants/${variantId}`);
+    };
 
     if (loading) return <p className="sa-notice">Loading&hellip;</p>;
     if (!results) return <p className="sa-notice sa-notice--error">Could not load results.</p>;
@@ -817,7 +820,12 @@ function ResultsPanel({ results, loading }) {
                     {variants.map((v, i) => (
                         <div key={v.variantId} className="pxp-report__page">
                             <span className="pxp-report__variant-dot" style={{ background: variantColor(i) }} />
-                            <span className="pxp-report__page-name">{v.label || v.variantKey}</span>
+                            <span
+                                className="pxp-report__page-name pxp-report__page-name--link"
+                                onClick={() => openVariantDetail(v.variantId)}
+                            >
+                                {v.label || v.variantKey}
+                            </span>
                             <span className="pxp-report__page-url">{v.isControl ? controlUrl : (v.redirectUrl || "No redirect URL set")}</span>
                         </div>
                     ))}
@@ -897,7 +905,11 @@ function ResultsPanel({ results, loading }) {
                         <tbody>
                             {variants.map((v, i) => (
                                 <tr key={v.variantId}>
-                                    <td>
+                                    <td
+                                        className="pxp-report__variant-name"
+                                        onClick={() => openVariantDetail(v.variantId)}
+                                        title="View detailed stats"
+                                    >
                                         <span className="pxp-report__variant-dot" style={{ background: variantColor(i) }} />
                                         {v.label || v.variantKey}
                                         {v.isControl && <span className="pxp-report__baseline-chip">Baseline</span>}
