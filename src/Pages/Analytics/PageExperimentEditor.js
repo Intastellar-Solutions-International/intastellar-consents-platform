@@ -5,7 +5,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { authHeaders } from "./_shared.js";
+import { authHeaders, InfoTip } from "./_shared.js";
 import { IconPlus, IconTrash, IconClock, IconUsers, IconTrendingUp, IconBarChart, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
 
@@ -846,7 +846,9 @@ function ResultsPanel({ results, loading, history, domain, testId }) {
                     <IconUsers className="sa-icon" />
                     <div className="pxp-report__filter-text">
                         <span className="pxp-report__filter-value">All visitors</span>
-                        <span className="pxp-report__filter-label">Exposures only record with statistics consent</span>
+                        <span className="pxp-report__filter-label">
+                            Exposures are recorded for every visitor, regardless of cookie consent
+                        </span>
                     </div>
                 </div>
             </div>
@@ -896,10 +898,32 @@ function ResultsPanel({ results, loading, history, domain, testId }) {
                         <thead>
                             <tr>
                                 <th>Variation</th>
-                                <th className="sa-table__num">{hasGoal ? "Unique conversions / visitors" : "Exposures / visitors"}</th>
-                                {hasGoal && <th className="sa-table__num">Expected conversion rate</th>}
-                                {hasGoal && <th className="sa-table__num">Expected improvement</th>}
-                                {hasGoal && <th className="sa-table__num">Probability to be better</th>}
+                                <th className="sa-table__num">
+                                    {hasGoal ? "Unique conversions / visitors" : "Exposures / visitors"}
+                                    <InfoTip text={
+                                        hasGoal
+                                            ? "Unique conversions: sessions that completed the goal event at least once. Visitors: unique sessions exposed to this variant (a repeat visit from the same session only counts once)."
+                                            : "Exposures: total times this variant was shown, including repeat views from the same session. Visitors: unique sessions exposed to this variant, counted once each."
+                                    } />
+                                </th>
+                                {hasGoal && (
+                                    <th className="sa-table__num">
+                                        Expected conversion rate
+                                        <InfoTip text="A Bayesian estimate of the true conversion rate, smoothed toward 50% at low sample sizes so it doesn't swing wildly early in the test." />
+                                    </th>
+                                )}
+                                {hasGoal && (
+                                    <th className="sa-table__num">
+                                        Expected improvement
+                                        <InfoTip text="Estimated relative change in conversion rate versus the control (baseline) variant." />
+                                    </th>
+                                )}
+                                {hasGoal && (
+                                    <th className="sa-table__num">
+                                        Probability to be better
+                                        <InfoTip text="The probability, given the data collected so far, that this variant's true conversion rate is higher than the control's." />
+                                    </th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>

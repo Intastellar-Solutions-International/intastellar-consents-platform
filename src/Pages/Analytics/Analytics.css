@@ -2599,6 +2599,20 @@ details[open] .ca-context-summary::before { content: "▾"; }
     color: rgba(192,159,83,0.95);
 }
 
+.sa-infotip {
+    display: inline-flex;
+    margin-left: 5px;
+    color: rgba(150,150,150,0.6);
+    font-size: 0.9em;
+    line-height: 1;
+    cursor: help;
+    vertical-align: middle;
+}
+
+.sa-infotip:hover {
+    color: rgba(192,159,83,0.9);
+}
+
 /* ── Variant detail page ──────────────────────────────────────────────────── */
 .pxp-detail__title {
     display: flex;

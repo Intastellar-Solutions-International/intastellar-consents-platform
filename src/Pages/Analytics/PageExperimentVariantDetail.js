@@ -5,7 +5,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { authHeaders } from "./_shared.js";
+import { authHeaders, InfoTip } from "./_shared.js";
 import "./Analytics.css";
 
 function fmtDuration(seconds) {
@@ -89,27 +89,42 @@ export default function PageExperimentVariantDetail() {
                                         <div className="pxp-detail-stats">
                                             <div className="pxp-detail-stat">
                                                 <span className="pxp-detail-stat__value">{detail.uniqueSessions.toLocaleString("de-DE")}</span>
-                                                <span className="pxp-detail-stat__label">Visitors</span>
+                                                <span className="pxp-detail-stat__label">
+                                                    Visitors
+                                                    <InfoTip text="Unique sessions exposed to this variant — a repeat visit from the same session only counts once. Compare to Exposures on the results table, which counts every view including repeats." />
+                                                </span>
                                             </div>
                                             <div className="pxp-detail-stat">
                                                 <span className="pxp-detail-stat__value">
                                                     {detail.engagement.engagedRate != null ? (detail.engagement.engagedRate * 100).toFixed(1) + "%" : "—"}
                                                 </span>
-                                                <span className="pxp-detail-stat__label">Engaged sessions</span>
+                                                <span className="pxp-detail-stat__label">
+                                                    Engaged sessions
+                                                    <InfoTip text="Share of visitors who stayed at least 10 seconds, viewed more than one page, or clicked something — filters out instant bounces rather than a raw bounce rate." />
+                                                </span>
                                             </div>
                                             <div className="pxp-detail-stat">
                                                 <span className="pxp-detail-stat__value">{fmtDuration(detail.engagement.avgDurationSec)}</span>
-                                                <span className="pxp-detail-stat__label">Avg. time on page</span>
+                                                <span className="pxp-detail-stat__label">
+                                                    Avg. time on page
+                                                    <InfoTip text="Average of each session's longest recorded time-on-page, across sessions that had at least one measured pageview." />
+                                                </span>
                                             </div>
                                             <div className="pxp-detail-stat">
                                                 <span className="pxp-detail-stat__value">
                                                     {detail.engagement.avgScrollDepth != null ? Math.round(detail.engagement.avgScrollDepth) + "%" : "—"}
                                                 </span>
-                                                <span className="pxp-detail-stat__label">Avg. scroll depth</span>
+                                                <span className="pxp-detail-stat__label">
+                                                    Avg. scroll depth
+                                                    <InfoTip text="Average of each session's deepest scroll position on the page, as a percentage of total page height." />
+                                                </span>
                                             </div>
                                         </div>
 
-                                        <h4 className="pxp-detail__section-title">Conversions</h4>
+                                        <h4 className="pxp-detail__section-title">
+                                            Conversions
+                                            <InfoTip text="Every conversion event that fired for this variant's sessions after they were first exposed to it — not just the test's one configured goal event." />
+                                        </h4>
                                         {detail.conversions.length === 0 ? (
                                             <p className="sa-panel__sub">No conversion events recorded for this variant yet.</p>
                                         ) : (
@@ -118,8 +133,14 @@ export default function PageExperimentVariantDetail() {
                                                     <thead>
                                                         <tr>
                                                             <th>Event</th>
-                                                            <th className="sa-table__num">Conversions</th>
-                                                            <th className="sa-table__num">Rate</th>
+                                                            <th className="sa-table__num">
+                                                                Conversions
+                                                                <InfoTip text="Unique sessions that fired this event at least once (not total event count)." />
+                                                            </th>
+                                                            <th className="sa-table__num">
+                                                                Rate
+                                                                <InfoTip text="Converted sessions divided by this variant's total visitors." />
+                                                            </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -137,7 +158,10 @@ export default function PageExperimentVariantDetail() {
                                             </div>
                                         )}
 
-                                        <h4 className="pxp-detail__section-title">Top clicked elements</h4>
+                                        <h4 className="pxp-detail__section-title">
+                                            Top clicked elements
+                                            <InfoTip text="Every click recorded on this page after a session's first exposure to this variant, grouped by the element clicked and ranked by click count." />
+                                        </h4>
                                         {!detail.clicks || detail.clicks.topElements.length === 0 ? (
                                             <p className="sa-panel__sub">No clicks recorded for this variant yet.</p>
                                         ) : (

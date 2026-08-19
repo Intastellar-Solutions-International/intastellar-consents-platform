@@ -83,6 +83,17 @@ export function formatDuration(seconds) {
     return `${(seconds / 86400).toFixed(1)}d`;
 }
 
+// Small "ⓘ" hint icon carrying its explanation in the native `title`
+// attribute — same lightweight hover-tooltip convention used everywhere
+// else in this Analytics directory (plain `title=` on the element itself),
+// just made visually discoverable since a label with an invisible title
+// attribute gives no hint that it's hoverable.
+export function InfoTip({ text }) {
+    return (
+        <span className="sa-infotip" title={text} aria-label={text}>&#9432;</span>
+    );
+}
+
 export function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
     const pct = max > 0 ? Math.round((value / max) * 100) : 0;
     return (
