@@ -2689,6 +2689,23 @@ details[open] .ca-context-summary::before { content: "▾"; }
     color: rgba(192,159,83,0.9);
 }
 
+.sa-benchmark-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: rgba(140,140,140,0.75);
+}
+
+.sa-benchmark-note__diff {
+    font-weight: 700;
+}
+
+.sa-benchmark-note__diff--up   { color: rgba(74,222,128,0.9); }
+.sa-benchmark-note__diff--down { color: rgba(248,113,113,0.9); }
+
 /* ── Variant detail page ──────────────────────────────────────────────────── */
 .pxp-detail__title {
     display: flex;

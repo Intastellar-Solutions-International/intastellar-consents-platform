@@ -8,6 +8,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, toIsoDate, pctChange,
+    IndustryBenchmarkNote,
 } from "./_shared.js";
 import {
     IconBarChart,
@@ -453,7 +454,9 @@ export default function SiteAnalytics() {
                                 sub="statisticCookies accepted"
                                 variant={data.totals.consentRate < 20 ? "warn" : null}
                                 trend={trendConsent}
-                            />
+                            >
+                                <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={data.totals.consentRate} />
+                            </KpiCard>
                             <KpiCard className="sa-ga-kpi4"
                                 icon={<IconGlobe />}
                                 label="Countries"

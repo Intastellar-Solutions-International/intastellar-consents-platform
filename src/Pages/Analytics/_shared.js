@@ -89,7 +89,7 @@ export function pctChange(current, previous) {
     return ((current - previous) / previous) * 100;
 }
 
-export function KpiCard({ icon, label, value, sub, variant, className, trend }) {
+export function KpiCard({ icon, label, value, sub, variant, className, trend, children }) {
     return (
         <div className={"sa-kpi" + (variant ? " sa-kpi--" + variant : "") + (className ? " " + className : "")}>
             <div className="sa-kpi__head">
@@ -106,6 +106,7 @@ export function KpiCard({ icon, label, value, sub, variant, className, trend }) 
                 )}
             </span>
             {sub && <span className="sa-kpi__sub">{sub}</span>}
+            {children}
         </div>
     );
 }
@@ -152,6 +153,24 @@ export function formatDuration(seconds) {
 export function InfoTip({ text }) {
     return (
         <span className="sa-infotip" title={text} aria-label={text}>&#9432;</span>
+    );
+}
+
+// `benchmark` is the industryBenchmark object returned by /api/analytics-report
+// (null when the domain has no industry set in Settings → Analytics Script).
+// `actualPct` is the domain's own consent rate for the same period.
+export function IndustryBenchmarkNote({ benchmark, actualPct }) {
+    if (!benchmark || actualPct == null || !Number.isFinite(actualPct)) return null;
+    const diff = actualPct - benchmark.consentRatePct;
+    const up = diff >= 0;
+    return (
+        <div className="sa-benchmark-note">
+            <span className="sa-benchmark-note__label">{benchmark.label} avg: {benchmark.consentRatePct}%</span>
+            <span className={"sa-benchmark-note__diff" + (up ? " sa-benchmark-note__diff--up" : " sa-benchmark-note__diff--down")}>
+                {up ? "▲" : "▼"} {Math.abs(diff).toFixed(1)}pts {up ? "above" : "below"} average
+            </span>
+            <InfoTip text="Reference estimate, not a live average computed from other customers' traffic. Set the industry in Settings → Analytics Script." />
+        </div>
     );
 }
 

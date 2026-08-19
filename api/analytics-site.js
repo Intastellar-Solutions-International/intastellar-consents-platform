@@ -12,6 +12,7 @@
 import pkg from "pg";
 const { Pool } = pkg;
 import { randomBytes } from "crypto";
+import { isValidIndustry } from "./_industry-benchmarks.js";
 
 let pool;
 function getPool() {
@@ -92,6 +93,7 @@ export default async function handler(req, res) {
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS heatmap_retention_days    SMALLINT NOT NULL DEFAULT 90;
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_block_selectors TEXT[]   NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_mask_selectors  TEXT[]   NOT NULL DEFAULT '{}';
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS industry                  VARCHAR(32);
     `).catch(() => {});
 
     // ── GET (list mode): which of this org's domains have analytics set up ────
@@ -120,7 +122,8 @@ export default async function handler(req, res) {
                     recording_block_selectors, recording_mask_selectors,
                     datalayer_enabled,
                     lead_quality_enabled, lead_require_engaged,
-                    lead_qualifying_pages, lead_qualifying_events
+                    lead_qualifying_pages, lead_qualifying_events,
+                    industry
              FROM analytics_sites
              WHERE organisation_id = $1 AND domain = $2
              LIMIT 1`,
@@ -189,6 +192,12 @@ export default async function handler(req, res) {
             sets.push(`lead_qualifying_events = $${i++}`);
             params.push(body.leadQualifyingEvents.map(s => String(s).slice(0, 64)).slice(0, 50));
         }
+        if (body.industry === null) {
+            sets.push(`industry = NULL`);
+        } else if (typeof body.industry === "string" && isValidIndustry(body.industry)) {
+            sets.push(`industry = $${i++}`);
+            params.push(body.industry);
+        }
 
         if (!sets.length) return res.status(400).json({ error: "No valid fields to update" });
 
@@ -199,7 +208,7 @@ export default async function handler(req, res) {
                        recording_sample_rate, recording_retention_days, heatmap_retention_days,
                        recording_block_selectors, recording_mask_selectors,
                        datalayer_enabled, lead_quality_enabled, lead_require_engaged,
-                       lead_qualifying_pages, lead_qualifying_events`,
+                       lead_qualifying_pages, lead_qualifying_events, industry`,
             params
         ).catch(() => ({ rows: [] }));
 

@@ -7,6 +7,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
+import { INDUSTRY_BENCHMARKS } from "./_industry-benchmarks.js";
 
 let pool;
 function getPool() {
@@ -84,7 +85,7 @@ export default async function handler(req, res) {
 
     // Look up site key for this org+domain
     const { rows: siteRows } = await db.query(
-        `SELECT id, lead_quality_enabled, lead_require_engaged, lead_qualifying_pages, lead_qualifying_events
+        `SELECT id, lead_quality_enabled, lead_require_engaged, lead_qualifying_pages, lead_qualifying_events, industry
          FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
         [orgId, domain]
     ).catch(() => ({ rows: [] }));
@@ -98,6 +99,10 @@ export default async function handler(req, res) {
     const leadRequireEngaged = siteRows[0].lead_require_engaged !== false;
     const leadQualifyingPages = Array.isArray(siteRows[0].lead_qualifying_pages) ? siteRows[0].lead_qualifying_pages : [];
     const leadQualifyingEvents = Array.isArray(siteRows[0].lead_qualifying_events) ? siteRows[0].lead_qualifying_events : [];
+    const industry = siteRows[0].industry || null;
+    const industryBenchmark = industry && INDUSTRY_BENCHMARKS[industry]
+        ? { industry, label: INDUSTRY_BENCHMARKS[industry].label, consentRatePct: INDUSTRY_BENCHMARKS[industry].consentRatePct }
+        : null;
 
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
@@ -582,6 +587,7 @@ export default async function handler(req, res) {
         from: fromDate,
         to: toDate,
         noData: total === 0,
+        industryBenchmark,
         totals: {
             total,
             minimal:        Number(t.minimal     || 0),

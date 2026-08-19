@@ -51,6 +51,81 @@ function CopyButton({ text, label = "Copy" }) {
 
 const KIND_OPTIONS = ["purchase", "click", "custom"];
 
+// Mirrors the value/label pairs in api/_industry-benchmarks.js — the actual
+// benchmark numbers stay server-side (api/ and src/ aren't cross-imported in
+// this project), this list only needs to stay in sync for the dropdown.
+const INDUSTRIES = [
+    { value: "aviation",    label: "Aviation" },
+    { value: "tourism",     label: "Tourism & Travel" },
+    { value: "hospitality", label: "Hospitality" },
+    { value: "ecommerce",   label: "E-commerce & Retail" },
+    { value: "finance",     label: "Finance & Insurance" },
+    { value: "healthcare",  label: "Healthcare" },
+    { value: "saas",        label: "SaaS & Technology" },
+    { value: "media",       label: "Media & Publishing" },
+    { value: "education",   label: "Education" },
+    { value: "real_estate", label: "Real Estate" },
+    { value: "automotive",  label: "Automotive" },
+    { value: "other",       label: "Other" },
+];
+
+function IndustrySection({ domain, site, onSaved }) {
+    const [industry, setIndustry] = useState(site.industry || "");
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
+    const [saved, setSaved] = useState(false);
+
+    const authHeaders = {
+        Authorization: Authentication.getToken(),
+        Organisation: String(Authentication.getOrganisation()),
+        "Content-Type": "application/json",
+    };
+
+    const save = async () => {
+        setSaving(true);
+        setError(null);
+        setSaved(false);
+        const r = await fetch(`${ScannerHost}/api/analytics-site?domain=${encodeURIComponent(domain)}`, {
+            method: "PATCH",
+            headers: authHeaders,
+            body: JSON.stringify({ industry: industry || null }),
+        }).catch(() => null);
+        setSaving(false);
+        if (!r?.ok) { setError("Could not save industry."); return; }
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+        onSaved?.();
+    };
+
+    return (
+        <div className="as-card">
+            <div className="as-section-head">
+                <h3 className="as-section-title">Industry</h3>
+            </div>
+            <p className="as-section-hint">
+                Used to show an industry-reference comparison next to this domain&rsquo;s consent rate, in the
+                Analytics overview and Consent tab. These are indicative reference figures, not a live average
+                computed from other customers&rsquo; traffic.
+            </p>
+
+            <div className="as-field-group">
+                <select className="as-select" value={industry} onChange={e => setIndustry(e.target.value)}>
+                    <option value="">Not set</option>
+                    {INDUSTRIES.map(i => (
+                        <option key={i.value} value={i.value}>{i.label}</option>
+                    ))}
+                </select>
+            </div>
+
+            {error && <p className="as-error">{error}</p>}
+
+            <button type="button" className="as-generate-btn" onClick={save} disabled={saving || industry === (site.industry || "")}>
+                {saving ? "Saving…" : saved ? "Saved!" : "Save industry"}
+            </button>
+        </div>
+    );
+}
+
 function DataLayerSection({ domain, datalayerEnabled, onToggle }) {
     const [rules, setRules] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -476,6 +551,14 @@ export default function AnalyticsScript() {
                                 </div>
                             </div>
                         </div>
+                    )}
+
+                    {!loading && siteData && (
+                        <IndustrySection
+                            domain={domain}
+                            site={siteData}
+                            onSaved={() => loadSiteKey(domain)}
+                        />
                     )}
 
                     {!loading && siteData && (

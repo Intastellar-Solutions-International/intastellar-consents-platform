@@ -1,5 +1,5 @@
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPage, KpiCard, ConsentBar } from "./_shared.js";
+import { useAnalyticsPage, KpiCard, ConsentBar, IndustryBenchmarkNote } from "./_shared.js";
 import { IconShieldCheck, IconBarChart } from "./Icons.js";
 import "./Analytics.css";
 
@@ -57,7 +57,9 @@ export default function AnalyticsConsent() {
                                     value={statRate + "%"}
                                     sub={`${stat.yes.toLocaleString("de-DE")} yes · ${stat.no.toLocaleString("de-DE")} no`}
                                     variant={statRate < 20 ? "warn" : null}
-                                />
+                                >
+                                    <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={statRate} />
+                                </KpiCard>
                                 <KpiCard className="sa-cg-kpi2"
                                     icon={<IconShieldCheck />}
                                     label="Functional consent"
