@@ -400,6 +400,18 @@
 
 .sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }
 
+.sa-kpi__trend {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    vertical-align: middle;
+}
+
+.sa-kpi__trend--up   { color: rgba(74,222,128,0.9); }
+.sa-kpi__trend--down { color: rgba(248,113,113,0.9); }
+
 .sa-kpi__sub {
     font-size: 0.7rem;
     color: rgba(140,140,140,0.65);
@@ -466,6 +478,27 @@
 
 .sa-chart__legend-dot--full    { background: rgba(74,222,128,0.75); }
 .sa-chart__legend-dot--minimal { background: rgba(192,159,83,0.55); }
+
+.sa-trend-insights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.sa-trend-insights__chip {
+    font-size: 0.72rem;
+    color: rgba(160,160,160,0.75);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+    padding: 4px 10px;
+}
+
+.sa-trend-insights__chip b {
+    color: #ececec;
+    font-weight: 700;
+}
 
 /* ── Dashboard grid ──────────────────────────────────────────────────────────── */
 
@@ -1378,6 +1411,13 @@
 }
 
 .sa-event-form__submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.sa-event-form__hint {
+    flex-basis: 100%;
+    margin: 2px 0 0;
+    font-size: 0.76rem;
+    color: rgba(192,159,83,0.85);
+}
 
 .sa-events-list {
     display: flex;

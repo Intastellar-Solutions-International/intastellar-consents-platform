@@ -134,10 +134,21 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                         required
                     />
                     <select className="sa-event-form__select" value={kind} onChange={e => setKind(e.target.value)}>
-                        <option value="purchase">Purchase</option>
-                        <option value="click">Click</option>
                         <option value="custom">Custom</option>
+                        <option value="click">Click</option>
+                        <option value="purchase">Purchase</option>
+                        <optgroup label="Checkout funnel">
+                            <option value="view_basket">Viewed basket</option>
+                            <option value="begin_checkout">Began checkout</option>
+                            <option value="checkout">Checkout</option>
+                        </optgroup>
                     </select>
+                    {["view_basket", "begin_checkout", "checkout"].includes(kind) && (
+                        <p className="sa-event-form__hint">
+                            Funnel step — register at least two of view basket / began checkout / checkout / purchase
+                            to see them in the Funnel &amp; Sources tab.
+                        </p>
+                    )}
                     <input
                         type="text"
                         className="sa-event-form__input"

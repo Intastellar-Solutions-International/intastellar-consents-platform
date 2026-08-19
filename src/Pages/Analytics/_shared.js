@@ -80,14 +80,31 @@ export function useAnalyticsPage() {
     return { ...chrome, tick, setTick, data, loading, error, showSetup, showData };
 }
 
-export function KpiCard({ icon, label, value, sub, variant, className }) {
+// % change of `current` vs `previous` — null when there's no previous-period
+// baseline to compare against (0 or missing), so callers can hide the chip
+// instead of showing a misleading "+∞%"/"0%".
+export function pctChange(current, previous) {
+    if (previous == null || previous === 0) return null;
+    if (current == null) return null;
+    return ((current - previous) / previous) * 100;
+}
+
+export function KpiCard({ icon, label, value, sub, variant, className, trend }) {
     return (
         <div className={"sa-kpi" + (variant ? " sa-kpi--" + variant : "") + (className ? " " + className : "")}>
             <div className="sa-kpi__head">
                 {icon && <span className="sa-kpi__icon" aria-hidden="true">{icon}</span>}
                 <span className="sa-kpi__label">{label}</span>
             </div>
-            <span className="sa-kpi__value">{value}</span>
+            <span className="sa-kpi__value">
+                {value}
+                {trend != null && Number.isFinite(trend) && (
+                    <span className={"sa-kpi__trend" + (trend >= 0 ? " sa-kpi__trend--up" : " sa-kpi__trend--down")}
+                          title="vs. previous period of the same length">
+                        {trend >= 0 ? "▲" : "▼"} {Math.abs(trend).toFixed(1)}%
+                    </span>
+                )}
+            </span>
             {sub && <span className="sa-kpi__sub">{sub}</span>}
         </div>
     );

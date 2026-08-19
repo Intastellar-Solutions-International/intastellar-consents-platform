@@ -7,7 +7,7 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
-    authHeaders, KpiCard, MiniBar, useAnalyticsPage,
+    authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, toIsoDate, pctChange,
 } from "./_shared.js";
 import {
     IconBarChart,
@@ -362,6 +362,21 @@ export default function SiteAnalytics() {
         tick, setTick, data, loading, error, showSetup, showData,
     } = useAnalyticsPage();
 
+    // Previous period of the same length, immediately preceding the current
+    // range — powers the "vs previous period" trend chips on the KPI cards.
+    const prevRange = useMemo(() => {
+        const spanMs = toDate.getTime() - fromDate.getTime();
+        const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
+        const prevFrom = new Date(prevTo.getTime() - spanMs);
+        return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
+    }, [fromDate, toDate]);
+    const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
+
+    const trendEngaged  = useMemo(() => pctChange(data?.totals?.engagedUsers,   prevData?.totals?.engagedUsers),   [data, prevData]);
+    const trendEvents   = useMemo(() => pctChange(data?.totals?.total,          prevData?.totals?.total),          [data, prevData]);
+    const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
+    const trendConsent  = useMemo(() => pctChange(data?.totals?.consentRate,    prevData?.totals?.consentRate),    [data, prevData]);
+
     const maxPageViews = useMemo(() => Math.max(...(data?.topPages  || []).map(p => p.views),  1), [data]);
     const maxCountry   = useMemo(() => Math.max(...(data?.countries || []).map(c => c.events), 1), [data]);
     const maxReferrer  = useMemo(() => Math.max(...(data?.referrers || []).map(r => r.events), 1), [data]);
@@ -415,18 +430,21 @@ export default function SiteAnalytics() {
                                 value={data.totals.engagedUsers.toLocaleString("de-DE")}
                                 sub="engaged: 10s+, clicked, or 2+ pages"
                                 variant="live"
+                                trend={trendEngaged}
                             />
                             <KpiCard className="sa-ga-kpi1"
                                 icon={<IconBarChart />}
                                 label="Total events"
                                 value={data.totals.total.toLocaleString("de-DE")}
                                 sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
+                                trend={trendEvents}
                             />
                             <KpiCard className="sa-ga-kpi2"
                                 icon={<IconUsers />}
                                 label="Unique sessions"
                                 value={data.totals.uniqueSessions.toLocaleString("de-DE")}
                                 sub="consent-gated sessions only"
+                                trend={trendSessions}
                             />
                             <KpiCard className="sa-ga-kpi3"
                                 icon={<IconShieldCheck />}
@@ -434,6 +452,7 @@ export default function SiteAnalytics() {
                                 value={data.totals.consentRate + "%"}
                                 sub="statisticCookies accepted"
                                 variant={data.totals.consentRate < 20 ? "warn" : null}
+                                trend={trendConsent}
                             />
                             <KpiCard className="sa-ga-kpi4"
                                 icon={<IconGlobe />}

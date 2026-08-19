@@ -12,7 +12,7 @@ import TimeToConvert from "./TimeToConvert.js";
 import ConversionChannels from "./ConversionChannels.js";
 import ConversionCampaigns from "./ConversionCampaigns.js";
 import ConversionFunnel from "./ConversionFunnel.js";
-import Line from "../../Components/Charts/Line";
+import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
 
 // Countries with fewer total events than this are excluded from the rate
@@ -176,11 +176,9 @@ export default function AnalyticsConversionsOverview() {
 
                                     <div className="sa-panel sa-conv-trend">
                                         <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Conversion trend</h3>
-                                        <Line
+                                        <TrendLineChart
                                             data={trendData}
                                             title="Conversions"
-                                            fromDate={fromIso}
-                                            toDate={toIso}
                                             showInsights
                                             height={260}
                                         />
