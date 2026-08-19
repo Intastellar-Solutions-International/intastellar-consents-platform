@@ -1,9 +1,14 @@
 const { useState, useEffect, useContext, useMemo, useCallback } = React;
 const useParams = window.ReactRouterDOM.useParams;
+const Link = window.ReactRouterDOM.Link;
 import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+import {
+    useSyncDomainFromRoute, isCombinedOrClearDomain,
+    analyticsAudiencePath, analyticsAcquisitionPath,
+} from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
+import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, toIsoDate, KpiCard, MiniBar, useAnalyticsReport,
 } from "./_shared.js";
@@ -16,6 +21,7 @@ import {
     IconDocument,
     IconRadio,
     IconTarget,
+    IconMegaphone,
 } from "./Icons.js";
 import "./Analytics.css";
 
@@ -377,7 +383,10 @@ export default function SiteAnalytics() {
 
     const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
 
-    const maxPageViews = useMemo(() => Math.max(...(data?.topPages || []).map(p => p.views), 1), [data]);
+    const maxPageViews = useMemo(() => Math.max(...(data?.topPages  || []).map(p => p.views),  1), [data]);
+    const maxCountry   = useMemo(() => Math.max(...(data?.countries || []).map(c => c.events), 1), [data]);
+    const maxReferrer  = useMemo(() => Math.max(...(data?.referrers || []).map(r => r.events), 1), [data]);
+    const deviceTotal  = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
 
     const showSetup = !loading && data && (data.noSiteKey || data.noData);
     const showData  = !loading && data && !data.noSiteKey && !data.noData;
@@ -422,12 +431,7 @@ export default function SiteAnalytics() {
                     )}
 
                     {showData && (
-                        <div className="sa-dashboard-grid sa-dashboard-grid--overview" style={{ gridTemplateColumns: data.totals.qualityLeads !== null ? "repeat(6, 1fr)" : "repeat(5, 1fr)" }, {
-                            gridTemplateAreas: data.totals.qualityLeads !== null ? `"kpi0  kpi1  kpi2  kpi3  kpi4  kpi5"
-"chart chart chart chart live live"
-"pages pages pages pages pages pages"` : `"kpi0  kpi1  kpi2  kpi3  kpi4"
-"chart chart chart live live"
-"pages pages pages pages pages"` }}>
+                        <div className={"sa-dashboard-grid sa-dashboard-grid--overview" + (data.totals.qualityLeads !== null ? " sa-dashboard-grid--leads" : "")}>
 
                             <KpiCard className="sa-ga-kpi0"
                                 icon={<IconRadio />}
@@ -480,6 +484,98 @@ export default function SiteAnalytics() {
                             </div>
 
                             <LivePanel domain={domain} className="sa-ga-live" engagedUsers={data.totals.engagedUsers} />
+
+                            <div className="sa-panel sa-ga-map">
+                                <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Active users by country</h3>
+                                {data.countries.length > 0
+                                    ? <AnalyticsWorldMap countries={data.countries} />
+                                    : <p className="sa-notice">No geographic data for this period.</p>}
+                            </div>
+
+                            <div className="sa-panel sa-ga-countries">
+                                <h3 className="sa-panel__title"><IconGlobe className="sa-icon" /> Top countries</h3>
+                                <table className="sa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Country</th>
+                                            <th className="sa-table__num">Events</th>
+                                            <th className="sa-table__bar" />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.countries.slice(0, 6).map(c => (
+                                            <tr key={c.code}>
+                                                <td>{c.code}</td>
+                                                <td className="sa-table__num">{c.events.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__bar">
+                                                    <MiniBar value={c.events} max={maxCountry} color="rgba(99,179,237,0.55)" />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {!data.countries.length && (
+                                            <tr><td colSpan={3} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                                <Link className="sa-panel__footer-link" to={analyticsAudiencePath(domain)}>View audience →</Link>
+                            </div>
+
+                            <div className="sa-panel sa-ga-sources">
+                                <h3 className="sa-panel__title">
+                                    <IconMegaphone className="sa-icon" /> Traffic sources
+                                    <span className="sa-panel__consent-note">full events only</span>
+                                </h3>
+                                <table className="sa-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Referrer</th>
+                                            <th className="sa-table__num">Events</th>
+                                            <th className="sa-table__num">Sessions</th>
+                                            <th className="sa-table__bar" />
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {data.referrers.slice(0, 6).map((r, i) => (
+                                            <tr key={i}>
+                                                <td className="sa-table__path" title={r.referrer}>{r.referrer}</td>
+                                                <td className="sa-table__num">{r.events.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{r.sessions.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__bar">
+                                                    <MiniBar value={r.events} max={maxReferrer} color="rgba(99,179,237,0.55)" />
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {!data.referrers.length && (
+                                            <tr><td colSpan={4} style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem" }}>No data yet</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                                <Link className="sa-panel__footer-link" to={analyticsAcquisitionPath(domain)}>View traffic acquisition →</Link>
+                            </div>
+
+                            <div className="sa-panel sa-ga-devices">
+                                <h3 className="sa-panel__title"><IconUsers className="sa-icon" /> Devices</h3>
+                                <div className="sa-consent-list">
+                                    {data.devices.map(d => {
+                                        const pct = deviceTotal > 0 ? Math.round((d.events / deviceTotal) * 100) : 0;
+                                        return (
+                                            <div key={d.type} className="sa-consent-row">
+                                                <span className="sa-consent-row__label" style={{ textTransform: "capitalize" }}>{d.type}</span>
+                                                <div className="sa-bar">
+                                                    <div className="sa-bar__seg"
+                                                        style={{ width: pct + "%", background: "rgba(192,159,83,0.55)" }}
+                                                        title={d.events + " events"} />
+                                                </div>
+                                                <span className="sa-consent-row__pct">{pct}%</span>
+                                            </div>
+                                        );
+                                    })}
+                                    {!data.devices.length && (
+                                        <p style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem", margin: 0 }}>No data yet</p>
+                                    )}
+                                </div>
+                                <Link className="sa-panel__footer-link" to={analyticsAudiencePath(domain)}>View audience →</Link>
+                            </div>
 
                             <div className="sa-panel sa-ga-pages">
                                 <h3 className="sa-panel__title"><IconDocument className="sa-icon" /> Top pages</h3>

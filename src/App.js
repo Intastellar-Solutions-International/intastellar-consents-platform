@@ -5,6 +5,7 @@ import Footer from "./Components/Footer";
 import Login from "./Login/Login";
 import Signup from "./Login/Signup";
 import Nav from "./Components/Header/Nav";
+import AnalyticsSideNav from "./Components/Header/AnalyticsSideNav";
 import API from "./API/api";
 import Dashboard from "./Pages/Dashboard/Dashboard.js";
 import FerryDashboard from "./Pages/Dashboard/ferry/Dashboard.js";
@@ -222,7 +223,10 @@ export default function App() {
                                 </ErrorBoundary>
                                 <div className="main-grid">
                                     {
-                                        id && window.location.pathname != "/" || window.location.pathname != "/login" ? <Nav /> : null
+                                        id && window.location.pathname != "/" || window.location.pathname != "/login" ? <>
+                                            <Nav />
+                                            <AnalyticsSideNav />
+                                        </> : null
                                     }
                                     <Switch>
                                         <Route path="/:id/dashboard" exact>

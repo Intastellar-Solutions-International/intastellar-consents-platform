@@ -1,7 +1,7 @@
 import "./header.css";
 import Authentication from "../../Authentication/Auth";
 import { DomainContext } from "../../App.js";
-import { dashboardPath, reportsPath, analyticsPath, analyticsMarketingPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath, analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath, analyticsConversionsPath, analyticsAdSpendPath, analyticsGoogleAnalyticsPath, analyticsPageExperimentsPath, detectDashboardMode } from "../../Functions/domainPathSegments.js";
+import { dashboardPath, reportsPath, analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsHeatmapPath, analyticsConversionsPath, detectDashboardMode, analyticsRailSection } from "../../Functions/domainPathSegments.js";
 const Link = window.ReactRouterDOM.Link;
 const useLocation = window.ReactRouterDOM.useLocation;
 const useContext = React.useContext;
@@ -18,17 +18,10 @@ import benchmark from "./icons/benchmark.svg";
 import compliance from "./icons/compliance.svg";
 import cookies from "./icons/cookies.svg";
 import analyticsOverview from "./icons/analytics-overview.svg";
-import marketing from "./icons/marketing.svg";
 import audience from "./icons/audience.svg";
 import acquisition from "./icons/acquisition.svg";
-import consentIcon from "./icons/compliance.svg";
 import heatmapIcon from "./icons/heatmap.svg";
-import recordingsIcon from "./icons/recordings.svg";
-import botsIcon from "./icons/bots.svg";
 import conversionsIcon from "./icons/conversions.svg";
-import adSpendIcon from "./icons/ad-spend.svg";
-import googleAnalyticsIcon from "./icons/google-analytics.svg";
-import pageExperimentsIcon from "./icons/page-experiments.svg";
 import { getOrg } from "../../Functions/storage.js";
 
 export default function Nav() {
@@ -39,87 +32,45 @@ export default function Nav() {
     const path = location.pathname;
     const mode = detectDashboardMode(path);
 
-    // ── Analytics mode: analytics + marketing links only ──────────────────
+    // ── Analytics mode: one entry point per section — Overview is a
+    // standalone landing page (no secondary sidebar); the other four jump
+    // into their group's first report and reveal the grouped AnalyticsSideNav
+    // (mounted alongside this rail, see App.js), which lists the rest of
+    // that group's pages. Groups mirror the dividers in SideNavLinks'
+    // analyticsLinks — see analyticsRailSection(). ──
     if (mode === "analytics") {
         const overviewPath    = analyticsPath(currentDomain);
         const audiencePath    = analyticsAudiencePath(currentDomain);
         const acquisitionPath = analyticsAcquisitionPath(currentDomain);
-        const consentPath     = analyticsConsentPath(currentDomain);
-        const marketingPath   = analyticsMarketingPath(currentDomain);
-        const heatmapPath     = analyticsHeatmapPath(currentDomain);
-        const recordingsPath  = analyticsRecordingsPath(currentDomain);
-        const botsPath        = analyticsBotsPath(currentDomain);
+        const behaviorPath    = analyticsHeatmapPath(currentDomain);
         const conversionsPath = analyticsConversionsPath(currentDomain);
-        const adSpendPath     = analyticsAdSpendPath(currentDomain);
-        const googleAnalyticsPath = analyticsGoogleAnalyticsPath(currentDomain);
-        const pageExperimentsPath = analyticsPageExperimentsPath(currentDomain);
 
-        const sub = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend", "/google-analytics", "/page-experiments"].find(s => path.includes(s));
-        const overviewActive    = path.indexOf("/analytics") === 0 && !sub;
-        const audienceActive    = sub === "/audience";
-        const acquisitionActive = sub === "/acquisition";
-        const consentActive     = sub === "/consent";
-        const marketingActive   = sub === "/marketing";
-        const heatmapActive     = sub === "/heatmap";
-        const recordingsActive  = sub === "/recordings";
-        const botsActive        = sub === "/bots";
-        const conversionsActive = sub === "/conversions";
-        const adSpendActive     = sub === "/ad-spend";
-        const googleAnalyticsActive = sub === "/google-analytics";
-        const pageExperimentsActive = sub === "/page-experiments";
+        const section = analyticsRailSection(path);
 
         return (
             <>
                 <div className="navOverlay">
                     <aside className="sidebar">
                         <nav className="collapsed">
-                            <Link className={"navItems" + (overviewActive ? " --active" : "")} to={overviewPath}>
+                            <Link className={"navItems" + (section === "overview" ? " --active" : "")} to={overviewPath}>
                                 <i className="dashboard-icons analytics-overview" style={{ backgroundImage: `url(${analyticsOverview})` }} data-icon={analyticsOverview}></i>
                                 <span className="hiddenCollapsed">Overview</span>
                             </Link>
-                            <Link className={"navItems" + (audienceActive ? " --active" : "")} to={audiencePath}>
+                            <Link className={"navItems" + (section === "audience" ? " --active" : "")} to={audiencePath}>
                                 <i className="dashboard-icons audience" style={{ backgroundImage: `url(${audience})` }} data-icon={audience}></i>
                                 <span className="hiddenCollapsed">Audience</span>
                             </Link>
-                            <Link className={"navItems" + (acquisitionActive ? " --active" : "")} to={acquisitionPath}>
+                            <Link className={"navItems" + (section === "acquisition" ? " --active" : "")} to={acquisitionPath}>
                                 <i className="dashboard-icons acquisition" style={{ backgroundImage: `url(${acquisition})` }} data-icon={acquisition}></i>
                                 <span className="hiddenCollapsed">Acquisition</span>
                             </Link>
-                            <Link className={"navItems" + (consentActive ? " --active" : "")} to={consentPath}>
-                                <i className="dashboard-icons consent-nav" style={{ backgroundImage: `url(${consentIcon})` }} data-icon={consentIcon}></i>
-                                <span className="hiddenCollapsed">Consent</span>
-                            </Link>
-                            <Link className={"navItems" + (heatmapActive ? " --active" : "")} to={heatmapPath}>
+                            <Link className={"navItems" + (section === "behavior" ? " --active" : "")} to={behaviorPath}>
                                 <i className="dashboard-icons heatmap" style={{ backgroundImage: `url(${heatmapIcon})` }} data-icon={heatmapIcon}></i>
-                                <span className="hiddenCollapsed">Heatmap</span>
+                                <span className="hiddenCollapsed">Behavior</span>
                             </Link>
-                            <Link className={"navItems" + (recordingsActive ? " --active" : "")} to={recordingsPath}>
-                                <i className="dashboard-icons recordings" style={{ backgroundImage: `url(${recordingsIcon})` }} data-icon={recordingsIcon}></i>
-                                <span className="hiddenCollapsed">Recordings</span>
-                            </Link>
-                            <Link className={"navItems" + (botsActive ? " --active" : "")} to={botsPath}>
-                                <i className="dashboard-icons bots" style={{ backgroundImage: `url(${botsIcon})` }} data-icon={botsIcon}></i>
-                                <span className="hiddenCollapsed">Bots</span>
-                            </Link>
-                            <Link className={"navItems" + (conversionsActive ? " --active" : "")} to={conversionsPath}>
+                            <Link className={"navItems" + (section === "conversions" ? " --active" : "")} to={conversionsPath}>
                                 <i className="dashboard-icons conversions" style={{ backgroundImage: `url(${conversionsIcon})` }} data-icon={conversionsIcon}></i>
                                 <span className="hiddenCollapsed">Conversions</span>
-                            </Link>
-                            <Link className={"navItems" + (pageExperimentsActive ? " --active" : "")} to={pageExperimentsPath}>
-                                <i className="dashboard-icons page-experiments" style={{ backgroundImage: `url(${pageExperimentsIcon})` }} data-icon={pageExperimentsIcon}></i>
-                                <span className="hiddenCollapsed">Page Experiments</span>
-                            </Link>
-                            <Link className={"navItems" + (marketingActive ? " --active" : "")} to={marketingPath}>
-                                <i className="dashboard-icons marketing" style={{ backgroundImage: `url(${marketing})` }} data-icon={marketing}></i>
-                                <span className="hiddenCollapsed">Marketing</span>
-                            </Link>
-                            <Link className={"navItems" + (adSpendActive ? " --active" : "")} to={adSpendPath}>
-                                <i className="dashboard-icons ad-spend" style={{ backgroundImage: `url(${adSpendIcon})` }} data-icon={adSpendIcon}></i>
-                                <span className="hiddenCollapsed">Ad Spend</span>
-                            </Link>
-                            <Link className={"navItems" + (googleAnalyticsActive ? " --active" : "")} to={googleAnalyticsPath}>
-                                <i className="dashboard-icons google-analytics" style={{ backgroundImage: `url(${googleAnalyticsIcon})` }} data-icon={googleAnalyticsIcon}></i>
-                                <span className="hiddenCollapsed">Google Analytics</span>
                             </Link>
                             <section className="navItems--bottom">
                                 <Link className={"navItems" + (path.indexOf("/settings") > -1 ? " --active" : "")} to={"/settings"}>

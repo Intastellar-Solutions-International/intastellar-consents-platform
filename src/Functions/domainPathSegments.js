@@ -200,6 +200,30 @@ export function detectDashboardMode(pathname) {
     return String(pathname || "").indexOf("/analytics") === 0 ? "analytics" : "cmp";
 }
 
+const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/conversions", "/ad-spend", "/google-analytics", "/page-experiments"];
+
+/** True for the Analytics overview ("Reports snapshot") page itself, false for any sub-report under it. */
+export function isAnalyticsOverviewPath(pathname) {
+    const path = String(pathname || "");
+    if (path.indexOf("/analytics") !== 0) return false;
+    return !ANALYTICS_SUBPATHS.some(s => path.includes(s));
+}
+
+/**
+ * Which analytics icon-rail "section" a pathname belongs to. Mirrors the
+ * group dividers in SideNavLinks' analyticsLinks, so the rail's icon and the
+ * secondary sidebar's expanded group always agree on where you are.
+ */
+export function analyticsRailSection(pathname) {
+    const path = String(pathname || "");
+    if (isAnalyticsOverviewPath(path)) return "overview";
+    if (path.includes("/audience") || path.includes("/consent")) return "audience";
+    if (path.includes("/acquisition") || path.includes("/marketing") || path.includes("/ad-spend") || path.includes("/google-analytics")) return "acquisition";
+    if (path.includes("/heatmap") || path.includes("/recordings") || path.includes("/bots")) return "behavior";
+    if (path.includes("/conversions") || path.includes("/page-experiments")) return "conversions";
+    return null;
+}
+
 /** Path for a dashboard mode ("cmp" | "analytics") at the given domain. */
 export function modePath(mode, platformId, domainUnicode) {
     if (mode === "analytics") {

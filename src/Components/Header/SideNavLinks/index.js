@@ -1,3 +1,10 @@
+import {
+    analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
+    analyticsMarketingPath, analyticsAdSpendPath, analyticsGoogleAnalyticsPath,
+    analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
+    analyticsConversionsPath, analyticsPageExperimentsPath,
+} from "../../../Functions/domainPathSegments.js";
+
 export const reportsLinks = [
     {
         name: "My Preferences",
@@ -68,3 +75,80 @@ export const experimentsLinks = [
         view: ["admin", "super-admin", "manager"]
     }
 ]
+
+// GA-style grouped sidebar for the Analytics section. Built as a function of
+// the current domain (rather than a static handle-less array) because
+// AnalyticsSideNav mounts outside any matched <Route> (see App.js) — so
+// SideNav's own useParams()-based "/analytics" -> "/analytics/:handle"
+// rewrite never fires there, and a handle-less link like "/analytics/audience"
+// has no matching route at all. Pre-resolving full hrefs here sidesteps that
+// entirely: SideNav's rewrite only runs when it finds a handle, so with none
+// available it just passes these paths through unchanged.
+export function buildAnalyticsLinks(domain) {
+    return [
+        {
+            name: "Reports snapshot",
+            path: analyticsPath(domain),
+        },
+        {
+            divider: true,
+            label: "Audience",
+        },
+        {
+            name: "Audience",
+            path: analyticsAudiencePath(domain),
+        },
+        {
+            name: "Consent",
+            path: analyticsConsentPath(domain),
+        },
+        {
+            divider: true,
+            label: "Acquisition",
+        },
+        {
+            name: "Acquisition",
+            path: analyticsAcquisitionPath(domain),
+        },
+        {
+            name: "Marketing",
+            path: analyticsMarketingPath(domain),
+        },
+        {
+            name: "Ad Spend",
+            path: analyticsAdSpendPath(domain),
+        },
+        {
+            name: "Google Analytics",
+            path: analyticsGoogleAnalyticsPath(domain),
+        },
+        {
+            divider: true,
+            label: "Behavior",
+        },
+        {
+            name: "Heatmap",
+            path: analyticsHeatmapPath(domain),
+        },
+        {
+            name: "Recordings",
+            path: analyticsRecordingsPath(domain),
+        },
+        {
+            name: "Bots",
+            path: analyticsBotsPath(domain),
+        },
+        {
+            divider: true,
+            label: "Conversions",
+        },
+        {
+            name: "Conversions",
+            path: analyticsConversionsPath(domain),
+        },
+        {
+            name: "Page Experiments",
+            path: analyticsPageExperimentsPath(domain),
+        },
+    ];
+}
