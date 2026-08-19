@@ -716,6 +716,34 @@ function pickVariant(testId,sid,variants){
   return variants[variants.length-1];
 }
 
+// Persisted per-test variant decision — computed once, on this session's
+// first pageload for a given test, then reused on every later evaluation
+// instead of re-deriving it from pickVariant() again. pickVariant() is
+// already a deterministic hash of (testId, sid), so on a truly static test
+// this wouldn't change anything — but a mid-test edit to traffic_split or
+// the variant list changes the hash's *outcome* (different weights/variant
+// count shift where the cumulative-weight walk lands), which would
+// otherwise flip an already-bucketed visitor to a different variant
+// partway through. Domain-scoped the same way as the session cookie (see
+// rootDomain()) so the decision is readable from either side of a
+// url_split redirect, not just the domain that made it.
+function abDecisionCookieName(testId){return '_ia_abv_'+testId;}
+function getAbDecision(testId){
+  try{return gc(abDecisionCookieName(testId))||null;}catch(e){return null;}
+}
+function setAbDecision(testId,variantId){
+  try{
+    var base=abDecisionCookieName(testId)+'='+encodeURIComponent(variantId)+';path=/;SameSite=Lax'+(location.protocol==='https:'?';Secure':'');
+    var domain=rootDomain();
+    if(domain){
+      document.cookie=base+';domain='+domain;
+      if(document.cookie.indexOf(abDecisionCookieName(testId)+'=')===-1)document.cookie=base;
+    }else{
+      document.cookie=base;
+    }
+  }catch(e){}
+}
+
 // Kept in sync with applyChange() in api/ab-test-proxy.js's bridge script —
 // same change shape, same behavior, applied here to the live page instead
 // of inside the editor's preview iframe.
@@ -753,16 +781,37 @@ function applyPageExperiment(){
       var test=data&&data.test;
       if(!test||!test.variants||!test.variants.length)return;
 
-      var variant=pickVariant(String(test.id),getSid(),test.variants);
+      // Reuse a saved decision for this test/session if one exists —
+      // otherwise pick fresh and save it. See abDecisionCookieName()'s doc
+      // comment above for why this isn't just pickVariant() every time.
+      var savedId=getAbDecision(test.id);
+      var variant=savedId&&test.variants.filter(function(v){return String(v.id)===String(savedId);})[0];
+      if(!variant){
+        variant=pickVariant(String(test.id),getSid(),test.variants);
+        setAbDecision(test.id,variant.id);
+      }
 
       // Sent unconditionally — assignment/exposure data is needed for valid
       // test results even when the visitor declined statistics cookies.
       send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname}));
 
       if(test.testType==='url_split'){
-        // URL split: redirect to the variant's page. Control stays put.
+        // URL split: redirect to the variant's page once. Control stays
+        // put. Skip the redirect if we're already on the variant's own
+        // destination host — without this, a script that also runs on the
+        // redirect-target domain (e.g. installed there for its own
+        // analytics) re-evaluates this same test on every pageload there
+        // too, and bounces every deeper click on that site straight back to
+        // the variant's URL (its site root, not a per-page mapping) — the
+        // "clicking further into the variant site keeps landing back on
+        // its home page" symptom.
         if(!variant.isControl&&variant.redirectUrl){
-          try{location.replace(variant.redirectUrl);}catch(e){}
+          var alreadyOnTarget=(function(){
+            try{return new URL(variant.redirectUrl).host===location.host;}catch(e){return false;}
+          })();
+          if(!alreadyOnTarget){
+            try{location.replace(variant.redirectUrl);}catch(e){}
+          }
         }
         return;
       }
