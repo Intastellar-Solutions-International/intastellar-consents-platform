@@ -243,7 +243,17 @@ export default function App() {
                                                 <AnalyticsAudience />
                                             </ErrorBoundary>}
                                         </Route>
+                                        <Route path="/analytics/audience" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Audience Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsAudience />
+                                            </ErrorBoundary>}
+                                        </Route>
                                         <Route path="/analytics/:handle/acquisition" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Acquisition Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsAcquisition />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/acquisition" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Acquisition Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsAcquisition />
                                             </ErrorBoundary>}
@@ -253,7 +263,17 @@ export default function App() {
                                                 <AnalyticsConsent />
                                             </ErrorBoundary>}
                                         </Route>
+                                        <Route path="/analytics/consent" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Consent Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsConsent />
+                                            </ErrorBoundary>}
+                                        </Route>
                                         <Route path="/analytics/:handle/heatmap" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Heatmap Analytics" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsHeatmap />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/heatmap" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Heatmap Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsHeatmap />
                                             </ErrorBoundary>}
@@ -268,17 +288,37 @@ export default function App() {
                                                 <AnalyticsRecordings />
                                             </ErrorBoundary>}
                                         </Route>
+                                        <Route path="/analytics/recordings" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Session Recordings" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsRecordings />
+                                            </ErrorBoundary>}
+                                        </Route>
                                         <Route path="/analytics/:handle/bots" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Bot Traffic" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsBots />
                                             </ErrorBoundary>}
                                         </Route>
-                                        <Route path="/analytics/:handle/conversions" exact>
+                                        <Route path="/analytics/bots" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Bot Traffic" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsBots />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/conversions/:section?" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Conversions" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsConversionsOverview />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/conversions/:section?" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Conversions" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsConversionsOverview />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/page-experiments" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Experiments" fullPage /> : <ErrorBoundary>
+                                                <PageExperiments />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/page-experiments" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Page Experiments" fullPage /> : <ErrorBoundary>
                                                 <PageExperiments />
                                             </ErrorBoundary>}

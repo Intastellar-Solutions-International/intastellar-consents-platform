@@ -117,7 +117,9 @@ export default function SideNav(props) {
                         })();
 
                         const isActive = location?.pathname === url;
-                        const itemClass = "navItems sidebar__link" + (isActive ? " --active" : "");
+                        const itemClass = "navItems sidebar__link"
+                            + (isActive ? " --active" : "")
+                            + (link.indent ? " sidebar__link--indent" : "");
 
                         return (
                             <li key={key} className="sidebar__item">

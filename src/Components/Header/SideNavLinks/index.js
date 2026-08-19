@@ -1,5 +1,5 @@
 import {
-    analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
+    analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
     analyticsMarketingPath, analyticsAdSpendPath, analyticsGoogleAnalyticsPath,
     analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
     analyticsConversionsPath, analyticsPageExperimentsPath,
@@ -87,10 +87,6 @@ export const experimentsLinks = [
 export function buildAnalyticsLinks(domain) {
     return [
         {
-            name: "Reports snapshot",
-            path: analyticsPath(domain),
-        },
-        {
             divider: true,
             label: "Audience",
         },
@@ -143,8 +139,19 @@ export function buildAnalyticsLinks(domain) {
             label: "Conversions",
         },
         {
-            name: "Conversions",
+            name: "Overview",
             path: analyticsConversionsPath(domain),
+            indent: true,
+        },
+        {
+            name: "Funnel & Sources",
+            path: analyticsConversionsPath(domain, "deepdive"),
+            indent: true,
+        },
+        {
+            name: "Events & Tracking",
+            path: analyticsConversionsPath(domain, "setup"),
+            indent: true,
         },
         {
             name: "Page Experiments",

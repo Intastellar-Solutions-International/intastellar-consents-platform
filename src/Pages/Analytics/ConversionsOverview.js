@@ -1,7 +1,8 @@
 const { useState, useEffect, useContext, useMemo } = React;
 const useParams = window.ReactRouterDOM.useParams;
+const useHistory = window.ReactRouterDOM.useHistory;
 import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
 import { useAnalyticsReport, toIsoDate, KpiCard, authHeaders } from "./_shared.js";
@@ -63,7 +64,8 @@ function useGa4TotalSessions(domain, fromIso, toIso) {
 export default function AnalyticsConversionsOverview() {
     document.title = "Conversions | Site Analytics";
 
-    const { handle } = useParams();
+    const { handle, section: sectionParam } = useParams();
+    const history = useHistory();
     const [globalDomain, setGlobalDomain] = useContext(DomainContext);
     useSyncDomainFromRoute(handle, setGlobalDomain);
 
@@ -84,7 +86,7 @@ export default function AnalyticsConversionsOverview() {
     const { data, loading, error } = useAnalyticsReport(domain, fromIso, toIso, tick);
     const ga4 = useGa4TotalSessions(domain, fromIso, toIso);
 
-    const [section, setSection] = useState("overview");
+    const section = SECTIONS.some(s => s.key === sectionParam) ? sectionParam : "overview";
 
     const totalConversions = useMemo(
         () => (data?.conversions || []).reduce((s, c) => s + (c.count || 0), 0),
@@ -153,7 +155,7 @@ export default function AnalyticsConversionsOverview() {
                                             <button
                                                 type="button"
                                                 className={"sa-conv-submenu__link" + (section === s.key ? " --active" : "")}
-                                                onClick={() => setSection(s.key)}
+                                                onClick={() => history.push(analyticsConversionsPath(domain, s.key))}
                                             >
                                                 {s.label}
                                             </button>

@@ -145,10 +145,12 @@ export function analyticsBotsPath(domainUnicode) {
     return `/analytics/${seg}/bots`;
 }
 
-export function analyticsConversionsPath(domainUnicode) {
+/** section: omit (or "overview") for the base tab, or "deepdive" | "setup" for a specific one — see ConversionsOverview.js's SECTIONS. */
+export function analyticsConversionsPath(domainUnicode, section) {
     const seg = encodeDomainPathSegment(domainUnicode);
-    if (!seg) return "/analytics/conversions";
-    return `/analytics/${seg}/conversions`;
+    const suffix = section && section !== "overview" ? `/${section}` : "";
+    if (!seg) return `/analytics/conversions${suffix}`;
+    return `/analytics/${seg}/conversions${suffix}`;
 }
 
 export function analyticsAdSpendPath(domainUnicode) {

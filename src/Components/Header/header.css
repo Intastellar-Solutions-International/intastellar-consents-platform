@@ -208,6 +208,16 @@
     box-shadow: inset 3px 0 0 0 rgb(192, 159, 83);
 }
 
+.sidebar__link--indent {
+    padding-left: 30px !important;
+    font-size: 0.86rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.sidebar__link--indent.--active {
+    color: rgb(255, 255, 255);
+}
+
 .navItems:hover:not(.--active),
 .sidebar__link:hover:not(.--active) {
     background-color: rgba(255, 255, 255, 0.06);
