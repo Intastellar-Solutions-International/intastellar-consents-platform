@@ -108,6 +108,14 @@ export default function PageExperimentEditor() {
     const [splitUrls, setSplitUrls] = useState({});
     const [splitLabels, setSplitLabels] = useState({});
 
+    // Traffic split percentages, keyed by variantKey (matching how
+    // traffic_split is stored server-side and read by api/ab-test-active.js).
+    // Applies to both test types — bucketing is shared logic, not specific
+    // to url_split.
+    const [splitPct, setSplitPct] = useState({});
+    const [splitSaving, setSplitSaving] = useState(false);
+    const [splitError, setSplitError] = useState(null);
+
     document.title = test ? `${test.name} | Page Experiments` : "Page Experiments";
 
     const activeVariant = useMemo(() => variants.find(v => v.id === activeVariantId) || null, [variants, activeVariantId]);
@@ -187,6 +195,26 @@ export default function PageExperimentEditor() {
         setSplitLabels(prev => {
             const next = {};
             for (const v of variants) next[v.id] = prev[v.id] !== undefined ? prev[v.id] : (v.label || "");
+            return next;
+        });
+    }, [variants]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Reseed splitPct from the saved trafficSplit whenever the variant list
+    // changes (initial load, or a variant added/removed) — only fills in
+    // entries missing from the current state, so an unsaved in-progress
+    // edit survives an unrelated refetch. A test with no custom split saved
+    // yet (trafficSplit doesn't cover every current variant) seeds an equal
+    // split as the starting point, matching the runtime's own fallback.
+    useEffect(() => {
+        if (!variants.length) return;
+        setSplitPct(prev => {
+            const stored = test?.trafficSplit || {};
+            const hasStored = variants.every(v => typeof stored[v.variantKey] === "number");
+            const equal = Math.round(100 / variants.length);
+            const next = {};
+            for (const v of variants) {
+                next[v.variantKey] = prev[v.variantKey] !== undefined ? prev[v.variantKey] : (hasStored ? stored[v.variantKey] : equal);
+            }
             return next;
         });
     }, [variants]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -359,6 +387,43 @@ export default function PageExperimentEditor() {
         fetchTest();
     };
 
+    const splitTotal = variants.reduce((s, v) => s + (Number(splitPct[v.variantKey]) || 0), 0);
+    const splitValid = variants.length >= 2 && splitTotal === 100;
+
+    const saveSplit = async () => {
+        if (!splitValid) return;
+        setSplitSaving(true);
+        setSplitError(null);
+        const body = {};
+        for (const v of variants) body[v.variantKey] = Number(splitPct[v.variantKey]) || 0;
+        const r = await fetch(`${ScannerHost}/api/ab-tests?testId=${testId}`, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({ trafficSplit: body }),
+        }).catch(() => null);
+        setSplitSaving(false);
+        if (!r?.ok) {
+            const b = await r?.json().catch(() => null);
+            setSplitError(b?.error || "Could not save traffic split.");
+            return;
+        }
+        fetchTest();
+    };
+
+    const resetSplit = async () => {
+        setSplitSaving(true);
+        setSplitError(null);
+        const r = await fetch(`${ScannerHost}/api/ab-tests?testId=${testId}`, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({ trafficSplit: {} }),
+        }).catch(() => null);
+        setSplitSaving(false);
+        if (!r?.ok) { setSplitError("Could not reset traffic split."); return; }
+        setSplitPct({});
+        fetchTest();
+    };
+
     const setGoalEvent = async (goalEventName) => {
         const r = await fetch(`${ScannerHost}/api/ab-tests?testId=${testId}`, {
             method: "PATCH",
@@ -498,6 +563,46 @@ export default function PageExperimentEditor() {
                                     )}
                                 </div>
                             </div>
+
+                            {mode === "editor" && variants.length >= 2 && (
+                                <div className="pxp-split-panel">
+                                    <div className="pxp-split-panel__head">
+                                        <span className="pxp-split-panel__title">
+                                            Traffic split
+                                            <InfoTip text="What share of visitors each variant should receive. Must add up to 100%. Defaults to an equal split across variants until you save a custom one." />
+                                        </span>
+                                        <span className={"pxp-split-panel__total" + (splitValid ? "" : " pxp-split-panel__total--bad")}>
+                                            {splitTotal}%
+                                        </span>
+                                    </div>
+                                    <div className="pxp-split-panel__rows">
+                                        {variants.map((v, i) => (
+                                            <div key={v.id} className="pxp-split-panel__row">
+                                                <span className="pxp-report__variant-dot" style={{ background: variantColor(i) }} />
+                                                <span className="pxp-split-panel__label">{v.label || v.variantKey}</span>
+                                                <input
+                                                    type="number"
+                                                    min="0" max="100"
+                                                    className="sa-event-form__input pxp-split-panel__input"
+                                                    value={splitPct[v.variantKey] ?? ""}
+                                                    onChange={e => setSplitPct(prev => ({ ...prev, [v.variantKey]: e.target.value === "" ? "" : Number(e.target.value) }))}
+                                                />
+                                                <span className="pxp-split-panel__pct-sign">%</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {!splitValid && <p className="pxp-split-panel__hint">Percentages must add up to 100%.</p>}
+                                    {splitError && <p className="sa-notice sa-notice--error">{splitError}</p>}
+                                    <div className="pxp-split-panel__actions">
+                                        <button type="button" className="sa-event-form__submit" onClick={saveSplit} disabled={!splitValid || splitSaving}>
+                                            {splitSaving ? "Saving…" : "Save split"}
+                                        </button>
+                                        <button type="button" className="pxp-back-link" onClick={resetSplit} disabled={splitSaving}>
+                                            Reset to equal split
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
                             {mode === "results" && (
                                 <ResultsPanel results={results} loading={resultsLoading} history={history} domain={domain} testId={testId} />

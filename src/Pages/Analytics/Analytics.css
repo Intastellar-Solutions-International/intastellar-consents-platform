@@ -2923,6 +2923,83 @@ details[open] .ca-context-summary::before { content: "▾"; }
     flex-shrink: 0;
 }
 
+/* ── Traffic split panel ──────────────────────────────────────────────────── */
+.pxp-split-panel {
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    background: rgba(26,26,30,0.75);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+}
+
+.pxp-split-panel__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.pxp-split-panel__title {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ececec;
+}
+
+.pxp-split-panel__total {
+    font-size: 0.85rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: rgba(134,231,164,0.9);
+}
+
+.pxp-split-panel__total--bad {
+    color: rgba(240,163,163,0.9);
+}
+
+.pxp-split-panel__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pxp-split-panel__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pxp-split-panel__label {
+    flex: 1;
+    font-size: 0.82rem;
+    color: rgba(220,220,220,0.9);
+}
+
+.pxp-split-panel__input {
+    width: 70px;
+    margin: 0;
+    text-align: right;
+}
+
+.pxp-split-panel__pct-sign {
+    color: rgba(160,160,160,0.7);
+    font-size: 0.82rem;
+}
+
+.pxp-split-panel__hint {
+    margin: 10px 0 0;
+    font-size: 0.76rem;
+    color: rgba(240,163,163,0.85);
+}
+
+.pxp-split-panel__actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+}
+
 /* ── URL split test panel ──────────────────────────────────────────────────── */
 .pxp-url-split-panel {
     padding: 24px;

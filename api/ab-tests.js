@@ -2,7 +2,7 @@
  * GET    /api/ab-tests?domain=<domain>                        → list tests for a domain
  * GET    /api/ab-tests?domain=<domain>&testId=<id>             → single test + its variants (editor payload)
  * POST   /api/ab-tests   body: { domain, name, targetPath }    → create a test (auto-creates a "control" variant)
- * PATCH  /api/ab-tests?testId=<id>   body: { name?, targetPath?, status? } → update test metadata
+ * PATCH  /api/ab-tests?testId=<id>   body: { name?, targetPath?, status?, trafficSplit? } → update test metadata
  * DELETE /api/ab-tests?testId=<id>                             → delete a test (cascades its variants)
  *
  * Scoped by organisation_id + domain directly (not site_id / analytics_sites)
@@ -150,7 +150,7 @@ export default async function handler(req, res) {
     async function loadOwnedTest(testId) {
         const { rows } = await db.query(
             `SELECT id, organisation_id, domain, name, target_path, status,
-                    ends_at, goal_event_name, test_type, created_at, updated_at
+                    ends_at, goal_event_name, test_type, traffic_split, created_at, updated_at
              FROM ab_tests WHERE id = $1 AND organisation_id = $2 LIMIT 1`,
             [testId, orgId]
         ).catch(() => ({ rows: [] }));
@@ -179,6 +179,7 @@ export default async function handler(req, res) {
                     id: test.id, domain: test.domain, name: test.name,
                     targetPath: test.target_path, status: test.status,
                     testType: test.test_type || "visual",
+                    trafficSplit: test.traffic_split || {},
                     endsAt: test.ends_at, goalEventName: test.goal_event_name,
                     createdAt: test.created_at, updatedAt: test.updated_at,
                 },
@@ -316,6 +317,37 @@ export default async function handler(req, res) {
             else goalEventName = v;
         }
 
+        // trafficSplit is keyed by variant_key (matching how api/ab-test-active.js
+        // reads it at runtime) — an empty object explicitly resets to an equal
+        // split; anything else must supply a non-negative weight for EVERY
+        // current variant, so an incomplete split can't silently fall back to
+        // equal-split behavior for whichever variant got left out (that's a
+        // wrong result presented as if it were the split the caller asked for).
+        let trafficSplit = existing.traffic_split || {};
+        if (body.trafficSplit !== undefined) {
+            const raw = body.trafficSplit;
+            if (raw === null || (typeof raw === "object" && !Array.isArray(raw) && Object.keys(raw).length === 0)) {
+                trafficSplit = {};
+            } else if (typeof raw !== "object" || Array.isArray(raw)) {
+                return res.status(400).json({ error: "trafficSplit must be an object of variantKey -> weight" });
+            } else {
+                const { rows: variantRows } = await db.query(
+                    `SELECT variant_key FROM ab_test_variants WHERE test_id = $1`,
+                    [testId]
+                ).catch(() => ({ rows: [] }));
+                let total = 0;
+                for (const { variant_key: key } of variantRows) {
+                    const w = raw[key];
+                    if (typeof w !== "number" || !isFinite(w) || w < 0) {
+                        return res.status(400).json({ error: `trafficSplit must include a non-negative weight for variant "${key}"` });
+                    }
+                    total += w;
+                }
+                if (total <= 0) return res.status(400).json({ error: "trafficSplit needs at least one variant with weight > 0" });
+                trafficSplit = raw;
+            }
+        }
+
         if (status === "running") {
             const { rows: countRows } = await db.query(
                 `SELECT COUNT(*) AS n FROM ab_test_variants WHERE test_id = $1`,
@@ -329,7 +361,7 @@ export default async function handler(req, res) {
         let rows;
         try {
             ({ rows } = await db.query(
-                `UPDATE ab_tests SET name = $1, target_path = $2, status = $3, goal_event_name = $4,
+                `UPDATE ab_tests SET name = $1, target_path = $2, status = $3, goal_event_name = $4, traffic_split = $8,
                      ends_at = CASE
                          WHEN $6::boolean = false THEN ends_at
                          WHEN $5::int IS NOT NULL THEN NOW() + ($5::int * INTERVAL '1 day')
@@ -337,8 +369,8 @@ export default async function handler(req, res) {
                      END,
                      updated_at = NOW()
                  WHERE id = $7
-                 RETURNING id, domain, name, target_path, status, ends_at, goal_event_name, test_type, created_at, updated_at`,
-                [name, targetPath, status, goalEventName, durationDays, isLaunchingNow, testId]
+                 RETURNING id, domain, name, target_path, status, ends_at, goal_event_name, test_type, traffic_split, created_at, updated_at`,
+                [name, targetPath, status, goalEventName, durationDays, isLaunchingNow, testId, JSON.stringify(trafficSplit)]
             ));
         } catch (e) {
             if (e?.code === "23505") {
@@ -353,6 +385,7 @@ export default async function handler(req, res) {
                 id: test.id, domain: test.domain, name: test.name,
                 targetPath: test.target_path, status: test.status,
                 testType: test.test_type || "visual",
+                trafficSplit: test.traffic_split || {},
                 endsAt: test.ends_at, goalEventName: test.goal_event_name,
                 createdAt: test.created_at, updatedAt: test.updated_at,
             },
