@@ -113,11 +113,20 @@ export default function PageExperiments() {
                                     <input
                                         type="text"
                                         className="sa-event-form__input"
-                                        placeholder="page path to test, e.g. /pricing"
+                                        placeholder="page path to test, e.g. /pricing or /blog/* for everything under /blog"
                                         value={targetPath}
                                         onChange={e => setTargetPath(e.target.value)}
                                         maxLength={512}
+                                        disabled={targetPath === "/*"}
                                     />
+                                    <label className="sa-event-form__checkbox">
+                                        <input
+                                            type="checkbox"
+                                            checked={targetPath === "/*"}
+                                            onChange={e => setTargetPath(e.target.checked ? "/*" : "/")}
+                                        />
+                                        Apply to the entire site (all pages)
+                                    </label>
                                     <div className="sa-event-form__type-row">
                                         <label className={`sa-event-form__type-opt${testType === "visual" ? " sa-event-form__type-opt--active" : ""}`}>
                                             <input type="radio" name="testType" value="visual"

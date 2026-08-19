@@ -70,6 +70,11 @@ function validateJwt(authHeader) {
 function isSafeTargetPath(p) {
     if (typeof p !== "string" || !p.startsWith("/") || p.startsWith("//")) return false;
     if (p.length > 512) return false;
+    // "*" is only meaningful as a trailing wildcard segment — "/*" (whole
+    // site) or "/blog/*" (that path and everything under it). Anywhere else
+    // it's just a literal character nothing will ever match, which almost
+    // certainly isn't what the caller meant.
+    if (p.includes("*") && !p.endsWith("/*")) return false;
     try { new URL(p, "https://example.com"); } catch { return false; }
     return true;
 }

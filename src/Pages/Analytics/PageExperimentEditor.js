@@ -481,8 +481,12 @@ export default function PageExperimentEditor() {
                             {mode === "editor" && test.testType === "url_split" && (
                             <div className="pxp-url-split-panel">
                                 <p className="sa-panel__sub" style={{ marginBottom: 16 }}>
-                                    Visitors on <strong>{test.targetPath}</strong> are randomly split across variants.
-                                    The control stays on this page; each other variant redirects visitors to the URL you specify.
+                                    {test.targetPath === "/*" ? (
+                                        <>Visitors anywhere on the <strong>entire site</strong> are randomly split across variants.</>
+                                    ) : (
+                                        <>Visitors on <strong>{test.targetPath}</strong> are randomly split across variants.</>
+                                    )}
+                                    {" "}The control stays put; each other variant redirects visitors to the URL you specify.
                                 </p>
                                 <div className="pxp-url-split-variants">
                                     {variants.map(v => (
@@ -493,7 +497,7 @@ export default function PageExperimentEditor() {
                                             </div>
                                             {v.isControl ? (
                                                 <p className="pxp-url-split-row__control-note">
-                                                    No redirect — visitors stay on <code>{test.targetPath}</code>
+                                                    No redirect — visitors stay {test.targetPath === "/*" ? "on the current page" : <>on <code>{test.targetPath}</code></>}
                                                 </p>
                                             ) : (
                                                 <input

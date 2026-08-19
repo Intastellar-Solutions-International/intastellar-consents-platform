@@ -42,6 +42,26 @@ function normalizePath(p) {
     return p.length > 1 && p.endsWith("/") ? p.slice(0, -1) : p;
 }
 
+// A target_path ending in "/*" (e.g. "/*" for the whole site, "/blog/*" for
+// that path and everything under it) matches any visited path sharing that
+// prefix. Returns null for a plain, non-wildcard target_path.
+function wildcardBase(targetPath) {
+    return targetPath.endsWith("/*") ? targetPath.slice(0, -1) : null; // keeps the trailing "/"
+}
+
+// Higher = more specific. An exact match always outranks a wildcard, and
+// among overlapping wildcards ("/*" vs "/blog/*") the longer, more specific
+// one wins — so an org can run a whole-site split while still carving out
+// one path for its own separate test. Returns -1 for no match.
+function matchSpecificity(path, targetPath) {
+    if (targetPath === path) return Infinity;
+    const base = wildcardBase(targetPath);
+    if (base === null) return -1;
+    // "/blog/*" matches "/blog" itself as well as anything under it.
+    if (path === base.slice(0, -1) || path.startsWith(base)) return base.length;
+    return -1;
+}
+
 async function ensureTables(db) {
     await db.query(`
         CREATE TABLE IF NOT EXISTS ab_tests (
@@ -101,22 +121,41 @@ export default async function handler(req, res) {
 
         const domain = siteRows[0].domain;
 
+        // Not filtered by target_path in SQL — a wildcard test's target_path
+        // ("/*", "/blog/*") can't be matched with a plain equality check, and
+        // a domain's running-test count is small enough that fetching them
+        // all and matching in JS is cheap (this response is itself cached
+        // for 60s, see Cache-Control above).
         const { rows } = await db.query(
-            `SELECT t.id, t.target_path, t.traffic_split, t.test_type,
+            `SELECT t.id, t.target_path, t.traffic_split, t.test_type, t.updated_at,
                     v.id AS variant_id, v.variant_key, v.is_control, v.changes, v.redirect_url
              FROM ab_tests t
              JOIN ab_test_variants v ON v.test_id = t.id
-             WHERE t.domain = $1 AND t.status = 'running' AND t.target_path = $2
+             WHERE t.domain = $1 AND t.status = 'running'
                AND (t.ends_at IS NULL OR t.ends_at > NOW())
              ORDER BY t.updated_at DESC, v.is_control DESC, v.id ASC`,
-            [domain, path]
+            [domain]
         ).catch(() => ({ rows: [] }));
 
         if (!rows.length) return res.status(200).json({ test: null });
 
-        // Defensive against the partial-unique-index invariant somehow not
-        // holding (e.g. mid-migration) — keep only the first test.id seen.
-        const testId = rows[0].id;
+        // Pick the best-matching running test for this path: highest
+        // specificity wins (exact > longest wildcard prefix), ties broken by
+        // most-recently-updated.
+        const byTest = new Map();
+        for (const r of rows) {
+            if (!byTest.has(r.id)) byTest.set(r.id, { targetPath: r.target_path, updatedAt: r.updated_at });
+        }
+        let testId = null, bestSpecificity = -1, bestUpdatedAt = null;
+        for (const [id, info] of byTest) {
+            const spec = matchSpecificity(path, info.targetPath);
+            if (spec < 0) continue;
+            if (spec > bestSpecificity || (spec === bestSpecificity && (!bestUpdatedAt || info.updatedAt > bestUpdatedAt))) {
+                bestSpecificity = spec; testId = id; bestUpdatedAt = info.updatedAt;
+            }
+        }
+        if (testId === null) return res.status(200).json({ test: null });
+
         const variantRows = rows.filter(r => r.id === testId);
 
         const split = variantRows[0].traffic_split || {};
