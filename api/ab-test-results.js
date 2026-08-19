@@ -242,21 +242,25 @@ export default async function handler(req, res) {
     const uniqueDomains = [...new Set([test.domain, ...variantDomains])];
 
     // A Page Experiment doesn't require a first-party analytics site key to
-    // exist (see api/ab-tests.js's own doc comment) — a domain with no
-    // analytics_sites row here (the test's own, or a url_split variant's
-    // redirect target) simply can't have conversions measured yet for that
-    // variant; handled as "no data for this variant", not an error.
+    // exist (see api/ab-tests.js's own doc comment). A url_split variant's
+    // redirect-target domain doesn't need a DEDICATED site key either — one
+    // site key can already cover multiple real hostnames (see page_host on
+    // analytics_events/analytics_custom_events/analytics_clicks), so a
+    // domain with no site of its own falls back to the test's own site
+    // instead of coming back empty. Only a domain with neither a dedicated
+    // site nor the test's own site available has genuinely no data yet.
     const { rows: siteRows } = await db.query(
         `SELECT id, domain FROM analytics_sites WHERE organisation_id = $1 AND domain = ANY($2::text[]) AND active = true`,
         [orgId, uniqueDomains]
     ).catch(() => ({ rows: [] }));
     const siteIdByDomain = {};
     for (const s of siteRows) siteIdByDomain[s.domain] = s.id;
+    const testSiteId = siteIdByDomain[test.domain] || null;
 
     const variantMeta = variantRows.map((v, i) => ({
         row: v,
         domain: variantDomains[i],
-        siteId: siteIdByDomain[variantDomains[i]] || null,
+        siteId: siteIdByDomain[variantDomains[i]] || testSiteId,
     }));
 
     // ── Per-variant exposures + conversions ─────────────────────────────────

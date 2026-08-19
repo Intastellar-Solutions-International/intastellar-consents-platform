@@ -14,7 +14,9 @@
  * url_split variant → the hostname its redirect_url points at) — same
  * cross-domain reasoning as api/ab-test-results.js, see that file's header
  * comment for why a variant's data can live under a different site_id than
- * the test's own.
+ * the test's own. That domain doesn't need a DEDICATED analytics site key
+ * either — falls back to the test's own site (scoped down via page_host)
+ * when no dedicated one exists, see the site-resolution block below.
  *
  * A pageview/conversion/click only counts if it happened at-or-after the
  * session's first exposure to this variant, same rule as ab-test-results.js.
@@ -154,11 +156,25 @@ export default async function handler(req, res) {
         variantId: v.id, variantKey: v.variant_key, label: v.label, isControl: v.is_control, domain,
     };
 
+    // A url_split variant's redirect-target domain doesn't need a DEDICATED
+    // analytics site of its own — one site key can already cover multiple
+    // real hostnames (page_host on each row identifies which one), so a
+    // domain with no site of its own falls back to the test's own site
+    // instead of coming back empty. pageHostFilter narrows the borrowed
+    // site's rows down to just this hostname's traffic when that happens —
+    // without it, the control's own traffic (same site_id) would bleed into
+    // this variant's engagement/click numbers. A dedicated site's rows
+    // already belong to the right domain by construction, so no filter is
+    // needed there.
     const { rows: siteRows } = await db.query(
-        `SELECT id FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
-        [orgId, domain]
+        `SELECT id, domain FROM analytics_sites
+         WHERE organisation_id = $1 AND domain = ANY($2::text[]) AND active = true`,
+        [orgId, [...new Set([domain, v.test_domain])]]
     ).catch(() => ({ rows: [] }));
-    const siteId = siteRows[0]?.id || null;
+    const dedicated = siteRows.find(s => s.domain === domain);
+    const fallback = siteRows.find(s => s.domain === v.test_domain);
+    const siteId = dedicated ? dedicated.id : (fallback ? fallback.id : null);
+    const pageHostFilter = (!dedicated && fallback && domain !== v.test_domain) ? domain : null;
 
     if (!siteId) {
         return res.status(200).json({
@@ -183,6 +199,7 @@ export default async function handler(req, res) {
             FROM assigned a
             LEFT JOIN analytics_events ae
               ON ae.session_id = a.session_id AND ae.site_id = $3 AND ae.received_at >= a.first_assigned_at
+              AND ($4::text IS NULL OR ae.page_host = $4)
             GROUP BY a.session_id, a.first_assigned_at
          )
          SELECT
@@ -197,10 +214,11 @@ export default async function handler(req, res) {
                      SELECT 1 FROM analytics_clicks c
                      WHERE c.site_id = $3 AND c.session_id = session_stats.session_id
                        AND c.received_at >= session_stats.first_assigned_at
+                       AND ($4::text IS NULL OR c.page_host = $4)
                  )
              ) AS engaged_sessions
          FROM session_stats`,
-        [v.test_id, v.id, siteId]
+        [v.test_id, v.id, siteId, pageHostFilter]
     ).catch(() => ({ rows: [] }));
 
     const e = engagementRows[0] || {};
@@ -217,6 +235,12 @@ export default async function handler(req, res) {
     };
 
     // ── Every conversion event that fired (not just the test's goal event) ────
+    // Deliberately NOT page_host-filtered even when pageHostFilter is set —
+    // a conversion (e.g. a completed booking) can legitimately land on a
+    // third host (a payment processor's return URL, a thank-you page on the
+    // main domain) later in the same session, and attributing it to this
+    // variant by session/timing is more correct than requiring it to have
+    // happened on the exact redirect-target host.
     const { rows: convRows } = await db.query(
         `WITH assigned AS (
             SELECT session_id, MIN(assigned_at) AS first_assigned_at
@@ -266,8 +290,9 @@ export default async function handler(req, res) {
          SELECT COUNT(*) AS clicks, COUNT(DISTINCT c.session_id) AS sessions
          FROM assigned a
          JOIN analytics_clicks c
-           ON c.session_id = a.session_id AND c.site_id = $3 AND c.received_at >= a.first_assigned_at`,
-        [v.test_id, v.id, siteId]
+           ON c.session_id = a.session_id AND c.site_id = $3 AND c.received_at >= a.first_assigned_at
+           AND ($4::text IS NULL OR c.page_host = $4)`,
+        [v.test_id, v.id, siteId, pageHostFilter]
     ).catch(() => ({ rows: [{}] }));
 
     const { rows: elementRows } = await db.query(
@@ -281,9 +306,10 @@ export default async function handler(req, res) {
          FROM assigned a
          JOIN analytics_clicks c
            ON c.session_id = a.session_id AND c.site_id = $3 AND c.received_at >= a.first_assigned_at
+           AND ($4::text IS NULL OR c.page_host = $4)
          GROUP BY c.target_tag, c.target_id, c.target_class, c.target_text
          ORDER BY n DESC LIMIT 15`,
-        [v.test_id, v.id, siteId]
+        [v.test_id, v.id, siteId, pageHostFilter]
     ).catch(() => ({ rows: [] }));
 
     const clickTotals = clickTotalRows[0] || {};

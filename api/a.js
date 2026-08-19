@@ -404,6 +404,14 @@ async function ensureTables(db) {
         CREATE INDEX IF NOT EXISTS idx_aba_test     ON ab_test_assignments (test_id);
         CREATE INDEX IF NOT EXISTS idx_aba_variant  ON ab_test_assignments (variant_id);
         CREATE INDEX IF NOT EXISTS idx_aba_assigned ON ab_test_assignments (assigned_at);
+        -- Hostname the exposure actually happened on — same purpose as
+        -- analytics_events.page_host: a url_split variant redirecting to a
+        -- subdomain doesn't need its own analytics_sites/site key, since one
+        -- site key can already cover multiple real hostnames as long as
+        -- each row is tagged with which one it came from.
+        ALTER TABLE ab_test_assignments ADD COLUMN IF NOT EXISTS page_host TEXT;
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
+        ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
     `).catch(() => {});
 }
 
@@ -563,7 +571,7 @@ function pageHeight(){
 function sendClicks(){
   if(!clickBuf.length)return;
   var batch=clickBuf.splice(0,clickBuf.length);
-  send(JSON.stringify({s:SITE,t:'ck',sid:getSid(),u:location.pathname,dt:devType(),ph:pageHeight(),ck:batch}));
+  send(JSON.stringify({s:SITE,t:'ck',sid:getSid(),u:location.pathname,h:getHost(),dt:devType(),ph:pageHeight(),ck:batch}));
 }
 
 function onClick(e){
@@ -793,7 +801,7 @@ function applyPageExperiment(){
 
       // Sent unconditionally — assignment/exposure data is needed for valid
       // test results even when the visitor declined statistics cookies.
-      send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname}));
+      send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname,h:getHost()}));
 
       if(test.testType==='url_split'){
         // URL split: redirect to the variant's page once. Control stays
@@ -977,7 +985,7 @@ function track(name,opts){
     cur:opts.currency?String(opts.currency).slice(0,3):undefined,
     txn:opts.transactionId?String(opts.transactionId).slice(0,64):undefined,
     src:opts._source==='datalayer'?'datalayer':'manual',
-    u:location.pathname,dt:devType(),
+    u:location.pathname,h:getHost(),dt:devType(),
     cs:full?1:0,
     cf:hasFun(c)?1:0,
     ca:hasAdv(c)?1:0
@@ -1095,8 +1103,8 @@ export default async function handler(req, res) {
         await db.query(
             `INSERT INTO analytics_custom_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
-              name, value_cents, currency, transaction_id, pathname, country_code, device_type, source)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`,
+              name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
                 isMinimal ? "minimal" : "full",
@@ -1104,7 +1112,7 @@ export default async function handler(req, res) {
                 String(eventName).slice(0, 64), valueCents,
                 eventCurrency ? String(eventCurrency).slice(0, 3).toUpperCase() : null,
                 eventTransactionId ? String(eventTransactionId).slice(0, 64) : null,
-                evPathname, country, deviceType,
+                evPathname, pageHostSanitized, country, deviceType,
                 eventSource === "datalayer" ? "datalayer" : "manual",
             ]
         ).catch(() => {});
@@ -1130,10 +1138,10 @@ export default async function handler(req, res) {
         for (const row of ck.slice(0, 25)) {
             if (!Array.isArray(row) || row.length < 6) continue;
             const [x, y, w, tag, tId, cls, text] = row;
-            values.push(`($${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++})`);
+            values.push(`($${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++},$${i++})`);
             params.push(
                 siteId, orgId, sessionId,
-                ckPathname, deviceType,
+                ckPathname, pageHostSanitized, deviceType,
                 Number(w) || null, pageH,
                 (typeof x === "number" && isFinite(x) && x >= 0 && x <= 100) ? x : null,
                 (typeof y === "number" && isFinite(y) && y >= 0 && y <= 100) ? y : null,
@@ -1147,7 +1155,7 @@ export default async function handler(req, res) {
         if (values.length) {
             await db.query(
                 `INSERT INTO analytics_clicks
-                 (site_id, organisation_id, session_id, pathname, device_type,
+                 (site_id, organisation_id, session_id, pathname, page_host, device_type,
                   viewport_width, page_height, x_pct, y_pct, target_tag, target_id, target_class, target_text)
                  VALUES ${values.join(",")}`,
                 params
@@ -1182,9 +1190,9 @@ export default async function handler(req, res) {
 
         if (matches.length) {
             await db.query(
-                `INSERT INTO ab_test_assignments (test_id, variant_id, domain, session_id)
-                 VALUES ($1,$2,$3,$4)`,
-                [testIdNum, variantIdNum, siteDomain, String(sid).slice(0, 64)]
+                `INSERT INTO ab_test_assignments (test_id, variant_id, domain, session_id, page_host)
+                 VALUES ($1,$2,$3,$4,$5)`,
+                [testIdNum, variantIdNum, siteDomain, String(sid).slice(0, 64), pageHostSanitized]
             ).catch(() => {});
         }
 
