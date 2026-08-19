@@ -140,18 +140,21 @@ export default async function handler(req, res) {
 
         if (!rows.length) return res.status(200).json({ test: null });
 
-        // A test only applies on the exact host it was made for — EXCEPT
-        // url_split tests, which are designed to run at the registrable-root
-        // level (e.g. an apex test redirecting to a variant subdomain like
-        // book.<domain>; see rootDomain()'s doc comment in the embed script).
-        // Without this, a site key shared across subdomains (a booking
-        // portal on book.<domain> using the same key as the main site) would
-        // apply the main site's visual/element tests there too. `host` is
-        // only sent by embed scripts that have picked up this fix, so an
-        // empty value (older cached script) falls back to the pre-fix
-        // behaviour rather than silently dropping every test.
+        // A test only applies on the exact host it was made for — including
+        // url_split tests. Their cross-subdomain behaviour comes entirely
+        // from redirect_url (e.g. an apex test's variant redirecting to
+        // new.<domain>); it's not a reason to widen which hosts the test
+        // itself is *eligible* on. Without this, a site key shared across
+        // subdomains (e.g. a booking portal on book.<domain> using the same
+        // key as the main site, sharing the root-domain session cookie —
+        // see rootDomain()'s doc comment in the embed script) would apply a
+        // test meant only for the main site/apex to every other subdomain
+        // running that key too. `host` is only sent by embed scripts that
+        // have picked up this fix, so an empty value (older cached script)
+        // falls back to the pre-fix behaviour rather than silently dropping
+        // every test.
         const hostMatchesSiteDomain = !host || host === domain;
-        const scopedRows = rows.filter(r => r.test_type === "url_split" || hostMatchesSiteDomain);
+        const scopedRows = hostMatchesSiteDomain ? rows : [];
         if (!scopedRows.length) return res.status(200).json({ test: null });
 
         // Pick the best-matching running test for this path: highest
