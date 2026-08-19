@@ -806,8 +806,24 @@ function ResultsPanel({ results, loading }) {
     const totalUniqueSessions = variants.reduce((s, v) => s + v.uniqueSessions, 0);
     const totalConversions = hasGoal ? variants.reduce((s, v) => s + (v.conversions || 0), 0) : null;
 
+    const controlUrl = test.targetPath === "/*"
+        ? `https://${test.domain} (entire site)`
+        : `https://${test.domain}${test.targetPath}`;
+
     return (
         <div className="pxp-report">
+            {test.testType === "url_split" && (
+                <div className="pxp-report__pages">
+                    {variants.map((v, i) => (
+                        <div key={v.variantId} className="pxp-report__page">
+                            <span className="pxp-report__variant-dot" style={{ background: variantColor(i) }} />
+                            <span className="pxp-report__page-name">{v.label || v.variantKey}</span>
+                            <span className="pxp-report__page-url">{v.isControl ? controlUrl : (v.redirectUrl || "No redirect URL set")}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             <div className="pxp-report__filters">
                 <div className="pxp-report__filter">
                     <IconClock className="sa-icon" />
@@ -887,16 +903,16 @@ function ResultsPanel({ results, loading }) {
                                         {v.isControl && <span className="pxp-report__baseline-chip">Baseline</span>}
                                     </td>
                                     <td className="sa-table__num">
-                                        {(hasGoal ? v.conversions : v.exposures).toLocaleString("de-DE")} / {v.uniqueSessions.toLocaleString("de-DE")}
+                                        {(hasGoal ? (v.conversions ?? 0) : v.exposures).toLocaleString("de-DE")} / {v.uniqueSessions.toLocaleString("de-DE")}
                                     </td>
                                     {hasGoal && (
-                                        <td className="sa-table__num">
-                                            {v.uniqueSessions > 0 ? (v.expectedConversionRate * 100).toFixed(2) + "%" : "No data yet"}
+                                        <td className="sa-table__num" title={v.conversions === null ? `No analytics site registered for ${v.domain}` : undefined}>
+                                            {v.conversions === null ? "No site" : v.uniqueSessions > 0 ? (v.expectedConversionRate * 100).toFixed(2) + "%" : "No data yet"}
                                         </td>
                                     )}
                                     {hasGoal && (
                                         <td className="sa-table__num">
-                                            {v.isControl || !hasEnoughData ? "—" : (
+                                            {v.isControl || !hasEnoughData || v.conversions === null ? "—" : (
                                                 <span className={v.expectedImprovement >= 0 ? "pxp-report__uplift--pos" : "pxp-report__uplift--neg"}>
                                                     {v.expectedImprovement >= 0 ? "+" : ""}{(v.expectedImprovement * 100).toFixed(1)}%
                                                 </span>
@@ -907,6 +923,8 @@ function ResultsPanel({ results, loading }) {
                                         <td className="sa-table__num">
                                             {v.isControl ? (
                                                 <span className="pxp-report__baseline-chip">Baseline</span>
+                                            ) : v.conversions === null ? (
+                                                "—"
                                             ) : !hasEnoughData ? (
                                                 <span className="pxp-report__collecting-chip">Collecting data</span>
                                             ) : (
