@@ -568,6 +568,34 @@ body {
     border-bottom-color: rgba(163, 133, 64, 0.45);
 }
 
+.int-login__panel--form .int-login__divider {
+    color: #9a8a78;
+}
+
+.int-login__panel--form .int-login__divider::before,
+.int-login__panel--form .int-login__divider::after {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.int-login__panel--form .int-login__new-here-title {
+    color: #1a1714;
+}
+
+.int-login__panel--form .int-login__new-here-copy {
+    color: #7a7068;
+}
+
+.int-login__panel--form .int-login__new-here-btn {
+    border-color: rgba(160, 128, 60, 0.45);
+    color: #3d2f0e;
+}
+
+.int-login__panel--form .int-login__new-here-btn:hover {
+    border-color: rgba(160, 128, 60, 0.75);
+    background: rgba(192, 159, 83, 0.1);
+    color: #1a1714;
+}
+
 /* ── Responsive: collapse to single column on small screens ── */
 @media (max-width: 860px) {
     .int-login__split {
@@ -862,6 +890,68 @@ body {
 .int-login__not-you-link:hover {
     color: #c0a053;
     border-bottom-color: rgba(192, 159, 83, 0.45);
+}
+
+/* "New here?" — the login page is the de facto landing page for anyone
+   arriving without an account, so this needs to be a real, discoverable
+   section, not a buried link. Deliberately styled as a secondary/outline
+   button (vs. the filled gold "Sign in" CTA) so returning users still land
+   on Sign in first, but new visitors don't have to hunt for it. */
+.int-login__divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0;
+    color: #8f9aad;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.int-login__divider::before,
+.int-login__divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.int-login__new-here-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #faf6ee;
+    margin: 0 0 4px;
+}
+
+.int-login__new-here-copy {
+    font-size: 0.8125rem;
+    color: #9aa3b2;
+    margin: 0 0 14px;
+    line-height: 1.5;
+}
+
+.int-login__new-here-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px 22px;
+    border-radius: 12px;
+    border: 1px solid rgba(192, 159, 83, 0.4);
+    background: transparent;
+    color: #e7d9b8;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.int-login__new-here-btn:hover {
+    border-color: rgba(192, 159, 83, 0.75);
+    background: rgba(192, 159, 83, 0.08);
+    color: #faf6ee;
 }
 
 /* SSO / identity trust (Login.js footer) */

@@ -90,7 +90,7 @@ export default function Login() {
                                 Welcome back
                             </h1>
                             <p className="int-login__lede">
-                                Sign in to continue to Intastellar Consents.
+                                Continue to Intastellar Consents
                             </p>
 
                             <div className="int-login__sso">
@@ -123,6 +123,20 @@ export default function Login() {
                                         </span>
                                     )}
                                 </button>
+                            </div>
+
+                            <div className="int-login__divider" role="separator" aria-label="or">
+                                <span>or</span>
+                            </div>
+
+                            <div className="int-login__new-here">
+                                <h2 className="int-login__new-here-title">New here?</h2>
+                                <p className="int-login__new-here-copy">
+                                    Create an account and get your cookie banner live on your site in minutes.
+                                </p>
+                                <a href="https://intastellar.eu/#get-started" className="int-login__new-here-btn">
+                                    Create an account
+                                </a>
                             </div>
 
                             <p className="int-login__not-you">
