@@ -127,7 +127,8 @@ export default async function handler(req, res) {
            conversionCountriesRes, convertedSessionsRes,
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
            dailyConversionsRes, timeToConvertRes, funnelRes,
-           conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes, pageEngagementRes] = await Promise.all([
+           conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes, pageEngagementRes,
+           newVsReturningRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -627,9 +628,29 @@ export default async function handler(req, res) {
             throw err;
         }),
 
+        // New vs returning — one row per session showing whether its FIRST event
+        // had is_new_visitor = true (just set _ia_v) or false (cookie existed).
+        // Sessions from before this column was added will have NULL and are
+        // excluded from both counts rather than misclassified.
+        db.query(`
+            SELECT
+                COUNT(*) FILTER (WHERE is_new) AS new_sessions,
+                COUNT(*) FILTER (WHERE NOT is_new) AS returning_sessions
+            FROM (
+                SELECT BOOL_OR(is_new_visitor) AS is_new
+                FROM analytics_events
+                WHERE site_id = $1 AND consent_level = 'full'
+                  AND received_at >= $2 AND received_at < $3
+                  AND session_id IS NOT NULL
+                  AND is_new_visitor IS NOT NULL
+                GROUP BY session_id
+            ) s`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(27).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(28).fill({ rows: [] });
         throw err;
     });
 
@@ -736,6 +757,12 @@ export default async function handler(req, res) {
                     avgDurationSec: e?.avg_duration_sec != null ? Number(e.avg_duration_sec) : null,
                 };
             });
+        })(),
+        newVsReturning: (() => {
+            const r = newVsReturningRes.rows[0] || {};
+            const n   = Number(r.new_sessions       || 0);
+            const ret = Number(r.returning_sessions  || 0);
+            return { newSessions: n, returningSessions: ret, tracked: n + ret };
         })(),
         countries: countriesRes.rows.map(r => ({
             code:   r.country_code,

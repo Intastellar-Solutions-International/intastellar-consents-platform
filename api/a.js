@@ -306,6 +306,7 @@ async function ensureTables(db) {
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS timezone         VARCHAR(60);
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS scroll_depth     SMALLINT;
         ALTER TABLE analytics_events ALTER COLUMN session_id DROP NOT NULL;
+        ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS is_new_visitor BOOLEAN;
         ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS target_text      VARCHAR(80);
         -- Client-generated per-pageload id. The embed sends a full event twice
         -- (once on load, once on exit with duration/scroll_depth filled in) —
@@ -530,6 +531,21 @@ function getSid(){
     return v;
   }catch(e){return Math.random().toString(36).slice(2,10);}
 }
+// Persistent visitor cookie (_ia_v) — survives browser close unlike _ia_s.
+// Max-Age 2 years. Absence = first-ever visit (new visitor). Returns 1 if
+// just created (new), 0 if already existed (returning).
+function getVid(){
+  try{
+    if(gc('_ia_v'))return 0;
+    var v=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+    var b='_ia_v='+encodeURIComponent(v)+';path=/;Max-Age=63072000;SameSite=Lax'+(location.protocol==='https:'?';Secure':'');
+    var d=rootDomain();
+    if(d){document.cookie=b+';domain='+d;if(document.cookie.indexOf('_ia_v=')===-1)document.cookie=b;}
+    else document.cookie=b;
+    return 1;
+  }catch(e){return 0;}
+}
+var _iaNew=getVid();
 
 function utmp(p){try{return new URLSearchParams(location.search).get(p)||'';}catch(e){return '';}}
 // The hostname the script is actually running on — distinct from the site's
@@ -892,7 +908,8 @@ function sendFull(c,final){
     cs:hasStat(c)?1:0,
     cf:hasFun(c)?1:0,
     ca:hasAdv(c)?1:0,
-    final:final?1:0
+    final:final?1:0,
+    nv:_iaNew
   }));
 }
 
@@ -1033,7 +1050,7 @@ export default async function handler(req, res) {
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, h: pageHost, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
             dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency,
-            txn: eventTransactionId, src: eventSource, tid: abTestId, vid: abVariantId } = body;
+            txn: eventTransactionId, src: eventSource, tid: abTestId, vid: abVariantId, nv } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
         return res.status(400).end();
@@ -1261,8 +1278,8 @@ export default async function handler(req, res) {
               country_code, region, device_type,
               screen_width, screen_height, viewport_width, viewport_height,
               browser_family, os_family, language, timezone,
-              duration_sec, scroll_depth, pageview_id)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29)
+              duration_sec, scroll_depth, pageview_id, is_new_visitor)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec = EXCLUDED.duration_sec,
                scroll_depth = COALESCE(EXCLUDED.scroll_depth, analytics_events.scroll_depth)`,
@@ -1286,6 +1303,7 @@ export default async function handler(req, res) {
                 Math.min(Number(dur) || 0, 86400),                  // $27 duration_sec
                 (sd != null && sd >= 0 && sd <= 100) ? Number(sd) : null, // $28 scroll_depth
                 pageviewId ? String(pageviewId).slice(0, 40) : null,      // $29 pageview_id
+                nv === 1 ? true : nv === 0 ? false : null,                // $30 is_new_visitor
             ]
         ).catch(() => {});
     }
