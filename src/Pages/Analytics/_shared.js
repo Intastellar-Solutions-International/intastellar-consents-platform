@@ -17,20 +17,46 @@ export function toIsoDate(d) {
     return d.toISOString().slice(0, 10);
 }
 
+// Every Analytics sub-page (Overview, Audience, Acquisition, Conversions, ...)
+// calls this for the SAME domain+date-range within seconds of each other on
+// navigation, but each page is a fresh component mount with no memory of
+// what the last one just fetched — without a cache, that's a full ~28-query
+// Postgres aggregation re-run from scratch on every single nav, which is
+// exactly what shows up as a multi-second "Loading…" on switching sections.
+// Keyed module-level (survives across page mounts within the session) with a
+// short TTL so it self-heals as new events roll in. `tick` is the existing
+// manual-refresh escape hatch (bumped after a mutation like enabling a site
+// key) — a bumped tick always bypasses the cache so an explicit refresh
+// still means what it says.
+const reportCache = new Map(); // `${domain}|${fromIso}|${toIso}` -> { data, ts }
+const REPORT_CACHE_TTL_MS = 60000;
+
+function cachedReport(domain, fromIso, toIso, tick) {
+    if (!domain || tick !== 0) return null;
+    const hit = reportCache.get(`${domain}|${fromIso}|${toIso}`);
+    return hit && (Date.now() - hit.ts < REPORT_CACHE_TTL_MS) ? hit.data : null;
+}
+
 export function useAnalyticsReport(domain, fromIso, toIso, tick = 0) {
-    const [data,    setData]    = useState(null);
+    const [data,    setData]    = useState(() => cachedReport(domain, fromIso, toIso, tick));
     const [loading, setLoading] = useState(false);
     const [error,   setError]   = useState(null);
 
     useEffect(() => {
         if (!domain) { setData(null); return; }
+
+        const fresh = cachedReport(domain, fromIso, toIso, tick);
+        if (fresh) { setData(fresh); setError(null); return; }
+
         setLoading(true);
         setError(null);
         const qs = new URLSearchParams({ domain, from: fromIso, to: toIso }).toString();
         fetch(`${ScannerHost}/api/analytics-report?${qs}`, { headers: authHeaders() })
             .then(async r => {
                 if (!r.ok) throw new Error(r.status);
-                setData(await r.json());
+                const json = await r.json();
+                reportCache.set(`${domain}|${fromIso}|${toIso}`, { data: json, ts: Date.now() });
+                setData(json);
             })
             .catch(() => setError("Could not load analytics data."))
             .finally(() => setLoading(false));

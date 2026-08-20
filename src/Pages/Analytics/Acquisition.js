@@ -1,6 +1,6 @@
 const { useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import "./Analytics.css";
 
@@ -77,13 +77,19 @@ export default function AnalyticsAcquisition() {
 
                             {/* Top pages */}
                             <div className="sa-panel sa-acq-pages">
-                                <h3 className="sa-panel__title"><IconTrendingUp className="sa-icon" /> Top pages</h3>
+                                <h3 className="sa-panel__title">
+                                    <IconTrendingUp className="sa-icon" /> Top pages
+                                    <span className="sa-panel__consent-note">bounce/exit/time: full events only</span>
+                                </h3>
                                 <table className="sa-table">
                                     <thead>
                                         <tr>
                                             <th>Page</th>
                                             <th className="sa-table__num">Views</th>
                                             <th className="sa-table__num">Sessions</th>
+                                            <th className="sa-table__num">Bounce rate</th>
+                                            <th className="sa-table__num">Exit rate</th>
+                                            <th className="sa-table__num">Avg. time on page</th>
                                             <th className="sa-table__bar" />
                                         </tr>
                                     </thead>
@@ -93,6 +99,9 @@ export default function AnalyticsAcquisition() {
                                                 <td className="sa-table__path" title={p.pathname}>{p.pathname}</td>
                                                 <td className="sa-table__num">{p.views.toLocaleString("de-DE")}</td>
                                                 <td className="sa-table__num">{p.sessions.toLocaleString("de-DE")}</td>
+                                                <td className="sa-table__num">{p.bounceRate != null ? formatPercent(p.bounceRate) : "—"}</td>
+                                                <td className="sa-table__num">{p.exitRate != null ? formatPercent(p.exitRate) : "—"}</td>
+                                                <td className="sa-table__num">{p.avgDurationSec != null ? formatDuration(p.avgDurationSec) : "—"}</td>
                                                 <td className="sa-table__bar">
                                                     <MiniBar value={p.views} max={maxPages} color="rgba(192,159,83,0.6)" />
                                                 </td>

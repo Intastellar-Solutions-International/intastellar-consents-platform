@@ -596,9 +596,40 @@ export default async function handler(req, res) {
             throw err;
         }),
 
+        // Per-page engagement — bounce rate, exit rate, avg time on page.
+        // Session-linked (full-consent) events only, same as Campaigns/
+        // Referrers/Hosts above — minimal pageviews carry no session_id, so
+        // there's no way to tell whether one was the only page a visitor saw
+        // (bounce) or the last one before they left (exit) without a session
+        // to reconstruct that sequence from.
+        db.query(`
+            WITH session_pageviews AS (
+                SELECT session_id, pathname, duration_sec,
+                       COUNT(*) OVER (PARTITION BY session_id)                                    AS session_pageview_count,
+                       ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY received_at DESC)      AS rn_from_end
+                FROM analytics_events
+                WHERE site_id = $1 AND consent_level = 'full' AND session_id IS NOT NULL
+                  AND received_at >= $2 AND received_at < $3
+                  AND pathname !~* '^/api/'
+                  AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
+            )
+            SELECT
+                pathname,
+                COUNT(DISTINCT session_id)                                                AS sessions,
+                COUNT(DISTINCT session_id) FILTER (WHERE session_pageview_count = 1)      AS bounce_sessions,
+                COUNT(DISTINCT session_id) FILTER (WHERE rn_from_end = 1)                 AS exit_sessions,
+                AVG(duration_sec) FILTER (WHERE duration_sec IS NOT NULL AND duration_sec > 0) AS avg_duration_sec
+            FROM session_pageviews
+            GROUP BY pathname`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch((err) => {
+            if (err?.message?.includes("does not exist")) return { rows: [] };
+            throw err;
+        }),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(26).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(27).fill({ rows: [] });
         throw err;
     });
 
@@ -687,11 +718,25 @@ export default async function handler(req, res) {
             });
             return Array.from(byCampaign.values()).sort((a, b) => b.count - a.count);
         })(),
-        topPages: pagesRes.rows.map(r => ({
-            pathname: r.pathname,
-            views:    Number(r.views    || 0),
-            sessions: Number(r.sessions || 0),
-        })),
+        topPages: (() => {
+            const engagementByPath = new Map(pageEngagementRes.rows.map(r => [r.pathname, r]));
+            return pagesRes.rows.map(r => {
+                const e = engagementByPath.get(r.pathname);
+                const sessions = e ? Number(e.sessions || 0) : 0;
+                return {
+                    pathname: r.pathname,
+                    views:    Number(r.views    || 0),
+                    sessions: Number(r.sessions || 0),
+                    // null (not 0) when there's no session-linked data for this
+                    // page yet — a page with only minimal-consent traffic has
+                    // no bounce/exit/duration signal to report, which reads
+                    // very differently from "0% bounce rate".
+                    bounceRate:    sessions > 0 ? (Number(e.bounce_sessions || 0) / sessions) * 100 : null,
+                    exitRate:      sessions > 0 ? (Number(e.exit_sessions   || 0) / sessions) * 100 : null,
+                    avgDurationSec: e?.avg_duration_sec != null ? Number(e.avg_duration_sec) : null,
+                };
+            });
+        })(),
         countries: countriesRes.rows.map(r => ({
             code:   r.country_code,
             events: Number(r.events || 0),
