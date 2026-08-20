@@ -639,6 +639,16 @@
     text-decoration: underline;
 }
 
+.sa-table__link {
+    color: rgba(192,159,83,0.9);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sa-table__link:hover {
+    text-decoration: underline;
+}
+
 /* ── Tables ──────────────────────────────────────────────────────────────────── */
 
 .sa-table {

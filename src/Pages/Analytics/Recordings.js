@@ -164,7 +164,7 @@ export default function AnalyticsRecordings() {
                                             <td>{r.browserFamily || "—"}</td>
                                             <td className="sa-table__num">{fmtDuration(r.durationSec)}</td>
                                             <td>
-                                                <Link to={`${analyticsRecordingsPath(domain)}/${r.id}`}>
+                                                <Link className="sa-table__link" to={`${analyticsRecordingsPath(domain)}/${r.id}`}>
                                                     Watch
                                                 </Link>
                                             </td>
@@ -215,7 +215,7 @@ export function AnalyticsRecordingDetail() {
             <StickyPageTitle title="Recording" />
             <div className="dashboard-content">
                 <div className="sa-page">
-                    <Link to={analyticsRecordingsPath(globalDomain)}>&larr; Back to recordings</Link>
+                    <Link className="sa-panel__footer-link" to={analyticsRecordingsPath(globalDomain)}>&larr; Back to recordings</Link>
                     {loading && <p className="sa-notice">Loading recording&hellip;</p>}
                     {error && <p className="sa-notice sa-notice--error">{error}</p>}
                     {data && !loading && (
