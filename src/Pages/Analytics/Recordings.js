@@ -164,7 +164,7 @@ export default function AnalyticsRecordings() {
                                             <td>{r.browserFamily || "—"}</td>
                                             <td className="sa-table__num">{fmtDuration(r.durationSec)}</td>
                                             <td>
-                                                <Link to={`${analyticsRecordingsPath(globalDomain)}/${r.id}`}>
+                                                <Link to={`${analyticsRecordingsPath(domain)}/${r.id}`}>
                                                     Watch
                                                 </Link>
                                             </td>
