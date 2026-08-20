@@ -279,34 +279,72 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
     // When a node is selected, compute the session count each highlighted node
     // contributes within the traced subgraph — not its total population.
     //
-    // The selected node itself keeps its full population (it's the anchor).
-    // Nodes downstream of the selection: sum sessions on highlighted incoming
-    // ribbons arriving at that node (= how many of the selected sessions
-    // continued here).
-    // Nodes upstream of the selection: sum sessions on highlighted outgoing
-    // ribbons leaving that node (= how many of those sessions eventually
-    // reached the selected node).
+    // Selected node: its own full population (anchor).
+    // Upstream (col < selCol): sum of highlighted outgoing ribbons — accurate,
+    //   because traceFlow adds only the ribbons that lead to the selected node.
+    // Direct downstream (col = selCol + 1): sum of highlighted incoming ribbons
+    //   from the selected node — accurate edge sessions.
+    // Further downstream (col > selCol + 1): the data only has pairwise edge
+    //   counts, not 3-way attribution, so we can't know exactly how many of
+    //   "adwords → /" sessions then went to "/contact". Instead we propagate
+    //   proportionally: for each incoming ribbon, take the fraction of the
+    //   source node that belongs to the selected flow and apply it to the
+    //   ribbon's session count. Nodes MUST be processed column by column so
+    //   each column's filtered values are ready when the next column reads them.
     const filteredPopMap = useMemo(() => {
         if (!highlight || !selected) return null;
         const selSep = selected.indexOf("|");
         const selCol = parseInt(selected.slice(0, selSep), 10);
         const map = new Map();
+
+        // Group highlighted nodes by column, then sort columns so upstream
+        // values are computed before downstream columns read them.
+        const byCol = new Map();
         for (const key of highlight.nodes) {
-            const sep = key.indexOf("|");
-            const col = parseInt(key.slice(0, sep), 10);
-            const nid = key.slice(sep + 1);
-            if (col === selCol) {
-                map.set(key, columnLayouts[col]?.yMap.get(nid)?.population ?? 0);
-            } else if (col > selCol) {
-                map.set(key,
-                    (ribbonIndex.incoming.get(key) || [])
-                        .filter(r => highlight.edges.has(r))
-                        .reduce((s, r) => s + r.edge.sessions, 0));
-            } else {
-                map.set(key,
-                    (ribbonIndex.outgoing.get(key) || [])
-                        .filter(r => highlight.edges.has(r))
-                        .reduce((s, r) => s + r.edge.sessions, 0));
+            const c = parseInt(key.slice(0, key.indexOf("|")), 10);
+            if (!byCol.has(c)) byCol.set(c, []);
+            byCol.get(c).push(key);
+        }
+        const sortedCols = [...byCol.keys()].sort((a, b) => a - b);
+
+        for (const col of sortedCols) {
+            for (const key of byCol.get(col)) {
+                const nid = key.slice(key.indexOf("|") + 1);
+
+                if (col === selCol) {
+                    map.set(key, columnLayouts[col]?.yMap.get(nid)?.population ?? 0);
+
+                } else if (col < selCol) {
+                    // Upstream: only the highlighted outgoing ribbons lead toward
+                    // the selected node, so their sum is the exact count.
+                    map.set(key,
+                        (ribbonIndex.outgoing.get(key) || [])
+                            .filter(r => highlight.edges.has(r))
+                            .reduce((s, r) => s + r.edge.sessions, 0));
+
+                } else if (col === selCol + 1) {
+                    // First hop downstream: highlighted incoming ribbons come
+                    // directly from the selected node — exact sessions.
+                    map.set(key,
+                        (ribbonIndex.incoming.get(key) || [])
+                            .filter(r => highlight.edges.has(r))
+                            .reduce((s, r) => s + r.edge.sessions, 0));
+
+                } else {
+                    // Further downstream: proportional estimate. Each incoming
+                    // highlighted ribbon contributes (fromFiltered / fromTotal)
+                    // of its session count, preserving the filter ratio from
+                    // the previous column.
+                    let est = 0;
+                    for (const r of (ribbonIndex.incoming.get(key) || [])) {
+                        if (!highlight.edges.has(r)) continue;
+                        const fromKey   = nodeKey(r.col, r.edge.from);
+                        const fromFilt  = map.get(fromKey) ?? 0;
+                        const fromTotal = columnLayouts[r.col]?.yMap.get(r.edge.from)?.population ?? 1;
+                        if (fromTotal > 0) est += r.edge.sessions * (fromFilt / fromTotal);
+                    }
+                    map.set(key, Math.round(est));
+                }
             }
         }
         return map;
