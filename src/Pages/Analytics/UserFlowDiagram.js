@@ -276,6 +276,42 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
         [selected, ribbonIndex]
     );
 
+    // When a node is selected, compute the session count each highlighted node
+    // contributes within the traced subgraph — not its total population.
+    //
+    // The selected node itself keeps its full population (it's the anchor).
+    // Nodes downstream of the selection: sum sessions on highlighted incoming
+    // ribbons arriving at that node (= how many of the selected sessions
+    // continued here).
+    // Nodes upstream of the selection: sum sessions on highlighted outgoing
+    // ribbons leaving that node (= how many of those sessions eventually
+    // reached the selected node).
+    const filteredPopMap = useMemo(() => {
+        if (!highlight || !selected) return null;
+        const selSep = selected.indexOf("|");
+        const selCol = parseInt(selected.slice(0, selSep), 10);
+        const map = new Map();
+        for (const key of highlight.nodes) {
+            const sep = key.indexOf("|");
+            const col = parseInt(key.slice(0, sep), 10);
+            const nid = key.slice(sep + 1);
+            if (col === selCol) {
+                map.set(key, columnLayouts[col]?.yMap.get(nid)?.population ?? 0);
+            } else if (col > selCol) {
+                map.set(key,
+                    (ribbonIndex.incoming.get(key) || [])
+                        .filter(r => highlight.edges.has(r))
+                        .reduce((s, r) => s + r.edge.sessions, 0));
+            } else {
+                map.set(key,
+                    (ribbonIndex.outgoing.get(key) || [])
+                        .filter(r => highlight.edges.has(r))
+                        .reduce((s, r) => s + r.edge.sessions, 0));
+            }
+        }
+        return map;
+    }, [highlight, selected, columnLayouts, ribbonIndex]);
+
     const maxEdgeSessions = Math.max(1, ...ribbons.map(r => r.edge.sessions));
 
     // exitCount.depth from the API maps directly to the frontend column index:
@@ -363,9 +399,27 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                     : exitPct >= 99.5 ? "100%"
                                     : exitPct.toFixed(1) + "%";
 
-                                const tooltipText = exitPctStr
-                                    ? `${node.id}: ${node.population.toLocaleString("de-DE")} sessions · ↓ ${exitPctStr} drop-off (${exitSessions.toLocaleString("de-DE")} left)`
-                                    : `${node.id}: ${node.population.toLocaleString("de-DE")} sessions`;
+                                // When a selection is active, display the filtered session
+                                // count for this node (how many of the selected sessions
+                                // passed through here) instead of the total population.
+                                const filteredPop = filteredPopMap?.get(key) ?? null;
+                                const displayPop  = filteredPop !== null ? filteredPop : node.population;
+
+                                // Right-side label: filtered session count while a selection
+                                // is active (replaces exit %, which isn't meaningful on a
+                                // filtered sub-graph); exit % when nothing is selected.
+                                const rightLabel = highlight && isOn
+                                    ? displayPop.toLocaleString("de-DE")
+                                    : exitPctStr ? `↓ ${exitPctStr}` : null;
+                                const rightLabelColor = highlight && isOn
+                                    ? `rgba(240,235,225,${textOpacity * 0.75})`
+                                    : `rgba(248,113,113,${isOn ? 0.9 : 0.2})`;
+
+                                const tooltipText = highlight && isOn
+                                    ? `${node.id}: ${displayPop.toLocaleString("de-DE")} of ${node.population.toLocaleString("de-DE")} sessions`
+                                    : exitPctStr
+                                        ? `${node.id}: ${node.population.toLocaleString("de-DE")} sessions · ↓ ${exitPctStr} drop-off (${exitSessions.toLocaleString("de-DE")} left)`
+                                        : `${node.id}: ${node.population.toLocaleString("de-DE")} sessions`;
 
                                 // Drop-off ribbon: a closed "fin" shape that starts from the
                                 // exit portion of the node's right edge (bottom fraction),
@@ -415,7 +469,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                         tabIndex={0}
                                         role="button"
                                         aria-pressed={isSelected}
-                                        aria-label={`${node.id}, ${node.population.toLocaleString("de-DE")} sessions${exitPctStr ? `, ${exitPctStr} drop-off` : ""}`}
+                                        aria-label={`${node.id}, ${displayPop.toLocaleString("de-DE")} sessions${!highlight && exitPctStr ? `, ${exitPctStr} drop-off` : ""}`}
                                         onKeyDown={e => {
                                             if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleNode(c, node.id); }
                                         }}
@@ -436,18 +490,18 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                             fontSize="10.5"
                                             fill={`rgba(240,235,225,${textOpacity})`}
                                         >
-                                            {truncate(node.id, exitPctStr ? exitLabelChars : labelChars)}
+                                            {truncate(node.id, rightLabel ? exitLabelChars : labelChars)}
                                         </text>
-                                        {exitPctStr && (
+                                        {rightLabel && (
                                             <text
                                                 x={x + colWidth - 6}
                                                 y={y + layout.height / 2}
                                                 textAnchor="end"
                                                 dominantBaseline="middle"
                                                 fontSize="9"
-                                                fill={`rgba(248,113,113,${isOn ? 0.9 : 0.2})`}
+                                                fill={rightLabelColor}
                                             >
-                                                {`↓ ${exitPctStr}`}
+                                                {rightLabel}
                                             </text>
                                         )}
                                     </g>
