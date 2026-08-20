@@ -1327,10 +1327,17 @@
     color: rgba(230,210,160,0.95);
 }
 
-.sa-heatmap__frame-wrap {
+.sa-heatmap__frame-outer {
     position: relative;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+
+.sa-heatmap__frame-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top left;
     border-radius: 10px;
     overflow: hidden;
     background: rgba(0,0,0,0.25);
