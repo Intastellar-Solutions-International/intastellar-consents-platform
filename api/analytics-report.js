@@ -86,7 +86,7 @@ export default async function handler(req, res) {
     // Look up site key for this org+domain
     const { rows: siteRows } = await db.query(
         `SELECT id, lead_quality_enabled, lead_require_engaged, lead_qualifying_pages, lead_qualifying_events, industry
-         FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
+         FROM analytics_sites WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2) AND active = true LIMIT 1`,
         [orgId, domain]
     ).catch(() => ({ rows: [] }));
 

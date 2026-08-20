@@ -71,7 +71,7 @@ export default async function handler(req, res) {
     const db = getPool();
 
     const { rows: siteRows } = await db.query(
-        `SELECT id FROM analytics_sites WHERE organisation_id = $1 AND domain = $2 AND active = true LIMIT 1`,
+        `SELECT id FROM analytics_sites WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2) AND active = true LIMIT 1`,
         [orgId, domain]
     ).catch(() => ({ rows: [] }));
 

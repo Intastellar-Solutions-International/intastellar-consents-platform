@@ -153,22 +153,33 @@ export default function PropertySelector(props) {
 
     const domainItems = useMemo(() => {
         if (activeWorkspace) {
+            // Unlike the plain org-level `domains` list below, workspace
+            // domains come from a separate backend (list-workspaces) that
+            // isn't guaranteed to hand back the same punycode-decoded Unicode
+            // form — left un-decoded here, an IDN domain (or one that's just
+            // differently-cased) would set globalDomain to a string that
+            // never matches analytics_sites.domain, permanently showing
+            // noSiteKey for a domain that genuinely has one. Decode the same
+            // way the non-workspace branch does so both paths agree.
             const combined = {
                 key: "__workspace_combined__",
                 type: "workspace-combined",
                 name: "combined view",
                 label: "All domains (combined)",
                 workspaceId: activeWorkspace.id,
-                workspaceDomains: activeWorkspace.domains?.map((d) => d.domain) || [],
+                workspaceDomains: activeWorkspace.domains?.map((d) => punycode.toUnicode(d.domain)) || [],
             };
-            const wsDomains = (activeWorkspace.domains || []).map((d) => ({
-                key: d.domain,
-                type: "workspace-domain",
-                name: d.domain,
-                isPrimary: d.isPrimary,
-                verificationStatus: getDomainVerificationStatus(d.domain, orgId),
-                hasAnalytics: analyticsDomains.has(d.domain),
-            }));
+            const wsDomains = (activeWorkspace.domains || []).map((d) => {
+                const name = punycode.toUnicode(d.domain);
+                return {
+                    key: name,
+                    type: "workspace-domain",
+                    name,
+                    isPrimary: d.isPrimary,
+                    verificationStatus: getDomainVerificationStatus(name, orgId),
+                    hasAnalytics: analyticsDomains.has(name),
+                };
+            });
             return [combined, ...wsDomains];
         }
         return (domains || []).map((d) => {

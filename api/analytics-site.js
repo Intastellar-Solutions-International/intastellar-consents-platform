@@ -125,7 +125,7 @@ export default async function handler(req, res) {
                     lead_qualifying_pages, lead_qualifying_events,
                     industry
              FROM analytics_sites
-             WHERE organisation_id = $1 AND domain = $2
+             WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2)
              LIMIT 1`,
             [orgId, domain]
         ).catch(() => ({ rows: [] }));
@@ -203,7 +203,7 @@ export default async function handler(req, res) {
 
         const { rows } = await db.query(
             `UPDATE analytics_sites SET ${sets.join(", ")}
-             WHERE organisation_id = $1 AND domain = $2
+             WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2)
              RETURNING id, domain, active, heatmaps_enabled, recording_enabled,
                        recording_sample_rate, recording_retention_days, heatmap_retention_days,
                        recording_block_selectors, recording_mask_selectors,
@@ -234,7 +234,7 @@ export default async function handler(req, res) {
         // Check if one already exists
         const { rows: existing } = await db.query(
             `SELECT id, domain, active, created_at FROM analytics_sites
-             WHERE organisation_id = $1 AND domain = $2 LIMIT 1`,
+             WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2) LIMIT 1`,
             [orgId, cleanDomain]
         ).catch(() => ({ rows: [] }));
 
@@ -260,7 +260,7 @@ export default async function handler(req, res) {
 
         await db.query(
             `UPDATE analytics_sites SET active = false
-             WHERE organisation_id = $1 AND domain = $2`,
+             WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2)`,
             [orgId, domain]
         ).catch(() => {});
 
