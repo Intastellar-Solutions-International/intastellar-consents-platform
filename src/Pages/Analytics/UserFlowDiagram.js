@@ -1,8 +1,11 @@
-const { useState, useMemo } = React;
+const { useState, useMemo, useRef, useLayoutEffect } = React;
 
-// Layout constants — tuned for readability, not data-driven.
-const COL_WIDTH   = 168;
-const COL_GAP     = 96;
+// Layout constants — tuned for readability, not data-driven. COL_WIDTH/
+// COL_GAP are floors, not fixed values — see the column-width calc in the
+// component body for how spare container width grows them.
+const MIN_COL_WIDTH = 168;
+const MAX_COL_WIDTH = 168 * 1.6;
+const MIN_COL_GAP   = 96;
 const NODE_GAP    = 6;
 const MIN_NODE_H  = 26;
 const MAX_TOTAL_H = 560;
@@ -42,6 +45,16 @@ function buildColumns(data) {
         }
         columns.push([...map.entries()].map(([id, population]) => ({ id, population })));
     }
+
+    // Trailing columns with zero nodes (e.g. reverse mode has few converting
+    // sessions whose pageview history reaches that far back) still reserved
+    // their full column-width slot otherwise, stretching the diagram out
+    // with dead space on the right instead of showing only what's actually
+    // there. Emptiness only ever cascades forward — a column can't have
+    // nodes if the column its edges come from is empty — so trimming from
+    // the first empty column onward is always safe.
+    const firstEmpty = columns.findIndex(c => c.length === 0);
+    if (firstEmpty > 0) columns.length = firstEmpty;
 
     for (const col of columns) col.sort((a, b) => b.population - a.population);
     return columns;
@@ -137,7 +150,40 @@ const DEFAULT_ARIA_LABEL = "Visitor flow from acquisition channel through subseq
 export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel = DEFAULT_ARIA_LABEL }) {
     const [selected, setSelected] = useState(null); // nodeKey(col, id) or null
 
+    // Same clientWidth + resize-listener measurement ClickOverlay uses in
+    // Heatmap.js. Real container width, not a CSS/viewBox stretch — SVG's
+    // viewBox scaling is *uniform* by nature, so stretching only the X axis
+    // via preserveAspectRatio="none" was tried and reverted: it distorts
+    // stroke width and glyph shapes along with everything else (visible as
+    // warped-looking text and ribbon curves that no longer line up with
+    // their nodes). Recomputing the actual layout in real pixels instead —
+    // wider columns, wider gaps — keeps a 1:1 SVG-unit-to-CSS-pixel mapping
+    // so text and strokes render exactly as authored regardless of size.
+    const containerRef = useRef(null);
+    const [containerWidth, setContainerWidth] = useState(0);
+
+    useLayoutEffect(() => {
+        function measure() {
+            setContainerWidth(containerRef.current?.clientWidth || 0);
+        }
+        measure();
+        window.addEventListener("resize", measure);
+        return () => window.removeEventListener("resize", measure);
+    }, []);
+
     const columns = useMemo(() => buildColumns(data), [data]);
+
+    // Grow column width and gap together (capped, so boxes don't balloon on
+    // an ultra-wide panel) when the container has more room than the
+    // minimum layout needs; never shrink below the floor — narrower than
+    // that falls back to the container's horizontal scroll instead.
+    const { colWidth, colGap } = useMemo(() => {
+        const n = Math.max(1, columns.length);
+        const naturalWidth = n * MIN_COL_WIDTH + Math.max(0, n - 1) * MIN_COL_GAP + 24;
+        const rawScale = containerWidth > naturalWidth ? containerWidth / naturalWidth : 1;
+        const scale = Math.min(rawScale, MAX_COL_WIDTH / MIN_COL_WIDTH);
+        return { colWidth: MIN_COL_WIDTH * scale, colGap: MIN_COL_GAP * scale };
+    }, [containerWidth, columns.length]);
 
     const maxPopulation = useMemo(
         () => Math.max(1, ...columns.flatMap(c => c.map(n => n.population))),
@@ -185,8 +231,14 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
     }), [columns, maxPopulation, scale]);
 
     const totalHeight = Math.max(...columnLayouts.map(c => c.totalHeight), 40);
-    const svgWidth = columns.length * COL_WIDTH + (columns.length - 1) * COL_GAP + 24;
+    const svgWidth = columns.length * colWidth + Math.max(0, columns.length - 1) * colGap + 24;
     const svgHeight = totalHeight + 24;
+
+    // How many characters fit a node label before truncating — scales with
+    // the actual box width now that it's no longer a fixed 168px, so wider
+    // columns show more of a long pathname instead of cutting off at the
+    // same point regardless of how much room there actually is.
+    const labelChars = Math.max(8, Math.floor((colWidth - 16) / 6));
 
     const ribbons = useMemo(() => {
         const out = [];
@@ -235,7 +287,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                     &times; Clear selection
                 </button>
             )}
-            <div className="sa-flow-scroll">
+            <div className="sa-flow-scroll" ref={containerRef}>
                 <svg
                     width={svgWidth}
                     height={svgHeight}
@@ -244,8 +296,8 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                     aria-label={ariaLabel}
                 >
                     {ribbons.map((r, i) => {
-                        const x0 = 12 + r.col * (COL_WIDTH + COL_GAP) + COL_WIDTH;
-                        const x1 = x0 + COL_GAP;
+                        const x0 = 12 + r.col * (colWidth + colGap) + colWidth;
+                        const x1 = x0 + colGap;
                         const y0 = 12 + r.y0;
                         const y1 = 12 + r.y1;
                         const midX = (x0 + x1) / 2;
@@ -270,7 +322,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                         <g key={c}>
                             {col.nodes.map(node => {
                                 const layout = col.yMap.get(node.id);
-                                const x = 12 + c * (COL_WIDTH + COL_GAP);
+                                const x = 12 + c * (colWidth + colGap);
                                 const y = 12 + layout.y;
                                 const key = nodeKey(c, node.id);
                                 const isSelected = selected === key;
@@ -299,7 +351,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                         }}
                                     >
                                         <rect
-                                            x={x} y={y} width={COL_WIDTH} height={layout.height}
+                                            x={x} y={y} width={colWidth} height={layout.height}
                                             rx="4"
                                             fill={`rgba(${rgb},${fillOpacity})`}
                                             stroke={`rgba(${rgb},${strokeOpacity})`}
@@ -313,7 +365,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                             fontSize="10.5"
                                             fill={`rgba(240,235,225,${textOpacity})`}
                                         >
-                                            {truncate(node.id, 20)}
+                                            {truncate(node.id, labelChars)}
                                         </text>
                                     </g>
                                 );
