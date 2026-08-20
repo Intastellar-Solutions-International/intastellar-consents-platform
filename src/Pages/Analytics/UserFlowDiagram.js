@@ -232,7 +232,10 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
 
     const totalHeight = Math.max(...columnLayouts.map(c => c.totalHeight), 40);
     const svgWidth = columns.length * colWidth + Math.max(0, columns.length - 1) * colGap + 24;
-    const svgHeight = totalHeight + 24;
+    // Extra bottom padding so exit-drop ribbons (which extend ~22px below nodes)
+    // don't get clipped — without this, the last row of nodes only has ~12px of
+    // breathing room below them in the SVG canvas.
+    const svgHeight = totalHeight + 24 + (data.exitCounts?.length > 0 ? 22 : 0);
 
     // How many characters fit a node label before truncating — scales with
     // the actual box width now that it's no longer a fixed 168px, so wider
@@ -274,6 +277,17 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
     );
 
     const maxEdgeSessions = Math.max(1, ...ribbons.map(r => r.edge.sessions));
+
+    // exitCount.depth from the API maps directly to the frontend column index:
+    // depth=1 → columns[1] (first pages), depth=2 → columns[2], etc.
+    const exitMap = useMemo(() => {
+        const m = new Map();
+        for (const e of (data.exitCounts || [])) m.set(nodeKey(e.depth, e.node), e.sessions);
+        return m;
+    }, [data]);
+
+    // Reserve ~44px on the right for the exit badge when present
+    const exitLabelChars = Math.max(8, Math.floor((colWidth - 52) / 6));
 
     function toggleNode(col, id) {
         const key = nodeKey(col, id);
@@ -337,6 +351,62 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                 // the gold used for every real page node, and from
                                 // the brighter gold used for the active selection.
                                 const rgb = isGoal ? "74,222,128" : isSelected ? "240,205,120" : "192,159,83";
+
+                                // Drop-off: sessions that arrived at this node but didn't continue.
+                                // Suppress on the last rendered column — those exits mean "end of
+                                // tracking depth", not a real bounce signal.
+                                const exitSessions = c < columns.length - 1 ? exitMap.get(key) : undefined;
+                                const exitPct = exitSessions != null && node.population > 0
+                                    ? exitSessions / node.population * 100 : null;
+                                const exitPctStr = exitPct == null ? null
+                                    : exitPct < 1 ? "<1%"
+                                    : exitPct >= 99.5 ? "100%"
+                                    : exitPct.toFixed(1) + "%";
+
+                                const tooltipText = exitPctStr
+                                    ? `${node.id}: ${node.population.toLocaleString("de-DE")} sessions · ↓ ${exitPctStr} drop-off (${exitSessions.toLocaleString("de-DE")} left)`
+                                    : `${node.id}: ${node.population.toLocaleString("de-DE")} sessions`;
+
+                                // Drop-off ribbon: a closed "fin" shape that starts from the
+                                // exit portion of the node's right edge (bottom fraction),
+                                // curves right and down, then back to the node edge. Using
+                                // a filled closed path instead of a thick stroke avoids the
+                                // blob effect you get when strokeWidth is proportional to
+                                // a large exit height on a short bezier curve.
+                                //
+                                // Shape: two quadratic beziers forming a sideways D:
+                                //   top edge: (xRight, yExitTop) → curves right → (xRight+spread, yEnd)
+                                //   bottom edge: (xRight+spread, yEnd+endH) → curves back → (xRight, yExitBot)
+                                //   closed by a straight line up the node right edge.
+                                const exitRibbon = exitPctStr ? (() => {
+                                    const exitRatio = exitSessions / node.population;
+                                    const exitH = Math.max(3, exitRatio * layout.height);
+                                    const yExitTop = y + layout.height - exitH;
+                                    const yExitBot = y + layout.height;
+                                    const spread = Math.min(14, exitH * 0.25 + 4);
+                                    const drop   = Math.max(6,  exitH * 0.2  + 4);
+                                    const yEnd   = yExitBot + drop;
+                                    const endH   = Math.max(2,  exitH * 0.08);
+                                    const yMid   = (yExitTop + yEnd) / 2;
+                                    const xRight = x + colWidth;
+                                    const fOpacity = isOn ? 0.22 : 0.05;
+                                    const sOpacity = isOn ? 0.6  : 0.12;
+                                    return (
+                                        <path
+                                            d={[
+                                                `M ${xRight} ${yExitTop}`,
+                                                `Q ${xRight + spread} ${yMid} ${xRight + spread} ${yEnd}`,
+                                                `L ${xRight + spread} ${yEnd + endH}`,
+                                                `Q ${xRight + spread} ${yMid + endH} ${xRight} ${yExitBot}`,
+                                                "Z",
+                                            ].join(" ")}
+                                            fill={`rgba(248,113,113,${fOpacity})`}
+                                            stroke={`rgba(248,113,113,${sOpacity})`}
+                                            strokeWidth="0.8"
+                                        />
+                                    );
+                                })() : null;
+
                                 return (
                                     <g
                                         key={node.id}
@@ -345,11 +415,12 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                         tabIndex={0}
                                         role="button"
                                         aria-pressed={isSelected}
-                                        aria-label={`${node.id}, ${node.population.toLocaleString("de-DE")} sessions`}
+                                        aria-label={`${node.id}, ${node.population.toLocaleString("de-DE")} sessions${exitPctStr ? `, ${exitPctStr} drop-off` : ""}`}
                                         onKeyDown={e => {
                                             if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleNode(c, node.id); }
                                         }}
                                     >
+                                        {exitRibbon}
                                         <rect
                                             x={x} y={y} width={colWidth} height={layout.height}
                                             rx="4"
@@ -357,7 +428,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                             stroke={`rgba(${rgb},${strokeOpacity})`}
                                             strokeWidth={isSelected || isGoal ? 1.6 : 1}
                                         >
-                                            <title>{`${node.id}: ${node.population.toLocaleString("de-DE")} sessions`}</title>
+                                            <title>{tooltipText}</title>
                                         </rect>
                                         <text
                                             x={x + 8} y={y + layout.height / 2}
@@ -365,8 +436,20 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                             fontSize="10.5"
                                             fill={`rgba(240,235,225,${textOpacity})`}
                                         >
-                                            {truncate(node.id, labelChars)}
+                                            {truncate(node.id, exitPctStr ? exitLabelChars : labelChars)}
                                         </text>
+                                        {exitPctStr && (
+                                            <text
+                                                x={x + colWidth - 6}
+                                                y={y + layout.height / 2}
+                                                textAnchor="end"
+                                                dominantBaseline="middle"
+                                                fontSize="9"
+                                                fill={`rgba(248,113,113,${isOn ? 0.9 : 0.2})`}
+                                            >
+                                                {`↓ ${exitPctStr}`}
+                                            </text>
+                                        )}
                                     </g>
                                 );
                             })}
