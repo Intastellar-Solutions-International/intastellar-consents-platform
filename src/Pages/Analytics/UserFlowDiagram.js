@@ -97,15 +97,30 @@ export default function UserFlowDiagram({ data }) {
         [columns]
     );
 
-    // Scale so the tallest column's total stacked height fits MAX_TOTAL_H.
+    // A node's height is MIN_NODE_H (a fixed legibility floor) plus a
+    // population-proportional "variable" amount, and `scale` compresses only
+    // that variable part when a column would otherwise overflow MAX_TOTAL_H.
+    // Scaling MIN_NODE_H itself (the previous approach) meant one dominant
+    // node forcing compression dragged every OTHER node in that column below
+    // it too — including ones already sitting at the floor — which is what
+    // pushed most long-tail nodes under the label-visibility threshold and
+    // made a capped, correctly-sized column look like it was full of empty
+    // boxes. Keeping the floor fixed guarantees every node stays legible
+    // regardless of how dominant one flow is or how many nodes share the
+    // column (already bounded to TOP_N_PER_COLUMN + 1 by the API).
     const scale = useMemo(() => {
-        let maxColTotal = 1;
+        let worst = 1;
         for (const col of columns) {
-            const total = col.reduce((s, n) => s + Math.max(MIN_NODE_H, (n.population / maxPopulation) * MAX_TOTAL_H), 0)
-                + (col.length - 1) * NODE_GAP;
-            maxColTotal = Math.max(maxColTotal, total);
+            const fixed = col.length * MIN_NODE_H + Math.max(0, col.length - 1) * NODE_GAP;
+            const variableTotal = col.reduce((s, n) => {
+                const raw = (n.population / maxPopulation) * MAX_TOTAL_H;
+                return s + Math.max(0, raw - MIN_NODE_H);
+            }, 0);
+            if (variableTotal <= 0) continue;
+            const budget = MAX_TOTAL_H - fixed;
+            worst = Math.min(worst, budget / variableTotal);
         }
-        return maxColTotal > MAX_TOTAL_H ? MAX_TOTAL_H / maxColTotal : 1;
+        return Math.max(0, worst);
     }, [columns, maxPopulation]);
 
     // Y-positions (and heights) per column, keyed by node id.
@@ -113,7 +128,9 @@ export default function UserFlowDiagram({ data }) {
         const yMap = new Map();
         let cursor = 0;
         for (const node of col) {
-            const height = Math.max(MIN_NODE_H, (node.population / maxPopulation) * MAX_TOTAL_H) * scale;
+            const raw = (node.population / maxPopulation) * MAX_TOTAL_H;
+            const variable = Math.max(0, raw - MIN_NODE_H);
+            const height = MIN_NODE_H + variable * scale;
             yMap.set(node.id, { y: cursor, height, population: node.population });
             cursor += height + NODE_GAP;
         }
@@ -183,16 +200,14 @@ export default function UserFlowDiagram({ data }) {
                                     >
                                         <title>{`${node.id}: ${node.population.toLocaleString("de-DE")} sessions`}</title>
                                     </rect>
-                                    {layout.height >= 16 && (
-                                        <text
-                                            x={x + 8} y={y + layout.height / 2}
-                                            dominantBaseline="middle"
-                                            fontSize="10.5"
-                                            fill="rgba(240,235,225,0.9)"
-                                        >
-                                            {truncate(node.id, 20)}
-                                        </text>
-                                    )}
+                                    <text
+                                        x={x + 8} y={y + layout.height / 2}
+                                        dominantBaseline="middle"
+                                        fontSize="10.5"
+                                        fill="rgba(240,235,225,0.9)"
+                                    >
+                                        {truncate(node.id, 20)}
+                                    </text>
                                 </g>
                             );
                         })}

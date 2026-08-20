@@ -193,8 +193,19 @@ export default async function handler(req, res) {
         WITH channel AS (
             SELECT DISTINCT ON (session_id)
                 session_id,
-                COALESCE(utm_source, '(direct)') || ' / ' ||
-                  COALESCE(utm_medium, CASE WHEN referrer_host IS NOT NULL THEN 'referral' ELSE '(none)' END) AS channel_label
+                -- utm_source/utm_medium are stored as '' (not NULL) when
+                -- absent — see api/a.js's ingest, (us || "").slice(0,255) —
+                -- so COALESCE alone never catches them; NULLIF collapses ''
+                -- to NULL first. Pure direct traffic (no UTM, no referrer)
+                -- gets the plain "(direct)" label instead of the redundant
+                -- "(direct) / (none)" compound.
+                CASE
+                    WHEN NULLIF(utm_source, '') IS NULL AND NULLIF(utm_medium, '') IS NULL AND referrer_host IS NULL
+                        THEN '(direct)'
+                    ELSE
+                        COALESCE(NULLIF(utm_source, ''), '(direct)') || ' / ' ||
+                        COALESCE(NULLIF(utm_medium, ''), CASE WHEN referrer_host IS NOT NULL THEN 'referral' ELSE '(none)' END)
+                END AS channel_label
             FROM analytics_events
             WHERE site_id = $1 AND session_id IS NOT NULL
               AND received_at >= $2 AND received_at < $3
