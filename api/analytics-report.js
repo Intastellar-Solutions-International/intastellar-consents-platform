@@ -77,6 +77,15 @@ function humanizeCampaign(raw) {
 }
 
 export default async function handler(req, res) {
+    try {
+        return await _handler(req, res);
+    } catch (err) {
+        console.error("[analytics-report] unhandled error:", err?.message, err?.stack);
+        return res.status(500).json({ error: "Internal server error", message: err?.message });
+    }
+}
+
+async function _handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
     if (req.method !== "GET") return res.status(405).end();
