@@ -74,13 +74,13 @@ export default function DomainList(props) {
                     <button className="copyCta" onClick={() => {
                         copy(
                             `<script src='https://downloads.intastellarsolutions.com/cookieconsents/${savedDomains[0]}/config.js'></script>
-                            <script href='https://consents.cdn.intastellarsolutions.com/uc.js'></script>`
+                            <script src='https://consents.cdn.intastellarsolutions.com/uc.js'></script>`
                         )
                     }}>Copy</button>
                     <div style={{ clear: "both" }}></div>
                     {
                         `<script src='https://downloads.intastellarsolutions.com/cookieconsents/${savedDomains[0]}/config.js'></script> \n
-                        <script href='https://consents.cdn.intastellarsolutions.com/uc.js'></script>`
+                        <script src='https://consents.cdn.intastellarsolutions.com/uc.js'></script>`
                     }
                 </> : <>
                     <h2>Domains to be added</h2>
