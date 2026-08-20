@@ -132,7 +132,9 @@ function traceFlow(selectedKey, ribbonIndex) {
     return { edges, nodes };
 }
 
-export default function UserFlowDiagram({ data }) {
+const DEFAULT_ARIA_LABEL = "Visitor flow from acquisition channel through subsequent pages — click a page to trace its full path";
+
+export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel = DEFAULT_ARIA_LABEL }) {
     const [selected, setSelected] = useState(null); // nodeKey(col, id) or null
 
     const columns = useMemo(() => buildColumns(data), [data]);
@@ -239,7 +241,7 @@ export default function UserFlowDiagram({ data }) {
                     height={svgHeight}
                     viewBox={`0 0 ${svgWidth} ${svgHeight}`}
                     role="img"
-                    aria-label="Visitor flow from acquisition channel through subsequent pages — click a page to trace its full path"
+                    aria-label={ariaLabel}
                 >
                     {ribbons.map((r, i) => {
                         const x0 = 12 + r.col * (COL_WIDTH + COL_GAP) + COL_WIDTH;
@@ -273,9 +275,16 @@ export default function UserFlowDiagram({ data }) {
                                 const key = nodeKey(c, node.id);
                                 const isSelected = selected === key;
                                 const isOn = highlight ? highlight.nodes.has(key) : true;
+                                const isGoal = conversionNode != null && node.id === conversionNode;
                                 const fillOpacity = isOn ? (isSelected ? 0.36 : 0.16) : 0.05;
                                 const strokeOpacity = isOn ? (isSelected ? 0.9 : 0.4) : 0.12;
                                 const textOpacity = isOn ? 0.9 : 0.25;
+                                // Goal node uses the same green already used for
+                                // "success"/consent-yes states elsewhere in this
+                                // dashboard (rgba(74,222,128,...)) — distinct from
+                                // the gold used for every real page node, and from
+                                // the brighter gold used for the active selection.
+                                const rgb = isGoal ? "74,222,128" : isSelected ? "240,205,120" : "192,159,83";
                                 return (
                                     <g
                                         key={node.id}
@@ -292,9 +301,9 @@ export default function UserFlowDiagram({ data }) {
                                         <rect
                                             x={x} y={y} width={COL_WIDTH} height={layout.height}
                                             rx="4"
-                                            fill={`rgba(192,159,83,${fillOpacity})`}
-                                            stroke={`rgba(${isSelected ? "240,205,120" : "192,159,83"},${strokeOpacity})`}
-                                            strokeWidth={isSelected ? 1.6 : 1}
+                                            fill={`rgba(${rgb},${fillOpacity})`}
+                                            stroke={`rgba(${rgb},${strokeOpacity})`}
+                                            strokeWidth={isSelected || isGoal ? 1.6 : 1}
                                         >
                                             <title>{`${node.id}: ${node.population.toLocaleString("de-DE")} sessions`}</title>
                                         </rect>

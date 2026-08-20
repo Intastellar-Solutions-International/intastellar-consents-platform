@@ -106,13 +106,34 @@ export default async function handler(req, res) {
         const siteId = await resolveSiteId(domain);
         if (!siteId) return res.status(200).json({ events: [] });
 
+        // sessionCount is session-linked occurrences specifically (not just
+        // "has this event ever fired") — an event that only fires under
+        // minimal consent (no session_id) would still show a count under a
+        // naive "any occurrence" query, but every session-based feature that
+        // consumes this list (Funnels, User Flow goals) can only ever use
+        // the session-linked rows, so a non-session-linked count would be
+        // misleading about whether picking this event actually does
+        // anything. All-time, not scoped to a date range, since callers
+        // fetch this list once per domain change, not per date-range change.
         const { rows } = await db.query(
-            `SELECT name, kind, label, created_at FROM analytics_event_defs
-             WHERE site_id = $1 ORDER BY created_at ASC`,
+            `SELECT d.name, d.kind, d.label, d.created_at, COALESCE(fc.sessions, 0) AS session_count
+             FROM analytics_event_defs d
+             LEFT JOIN (
+                 SELECT name, COUNT(DISTINCT session_id) AS sessions
+                 FROM analytics_custom_events
+                 WHERE site_id = $1 AND session_id IS NOT NULL
+                 GROUP BY name
+             ) fc ON fc.name = d.name
+             WHERE d.site_id = $1 ORDER BY d.created_at ASC`,
             [siteId]
         ).catch(() => ({ rows: [] }));
 
-        return res.status(200).json({ events: rows });
+        return res.status(200).json({
+            events: rows.map(r => ({
+                name: r.name, kind: r.kind, label: r.label, created_at: r.created_at,
+                sessionCount: Number(r.session_count || 0),
+            })),
+        });
     }
 
     // ── POST: create an event definition ──────────────────────────────────────
