@@ -78,8 +78,18 @@ import { record } from "rrweb";
         flush(true);
     }
 
+    // "hidden" fires on any backgrounding (tab switch, mobile app-switch,
+    // screen lock) — not just genuine page exit, and often within seconds of
+    // landing on a page. Treating it as the end of the recording was cutting
+    // nearly every session down to a near-zero duration_sec the moment the
+    // visitor so much as glanced away, even if they came right back and kept
+    // browsing. Flush defensively here instead (a backgrounded mobile tab can
+    // be killed by the OS without ever firing pagehide), but only actually
+    // finalize on pagehide — the real navigation-away/unload signal. Anything
+    // that never gets a final flush (tab killed while backgrounded) is
+    // reaped by the 2h staleness sweep in api/cron-cleanup-recordings.js.
     document.addEventListener("visibilitychange", function () {
-        if (document.visibilityState === "hidden") finalize();
+        if (document.visibilityState === "hidden") flush(false);
     });
     window.addEventListener("pagehide", finalize);
 
