@@ -1,13 +1,16 @@
 const { useState, useEffect, useCallback } = React;
 import { ScannerHost } from "../../../API/host";
+import {
+    GoogleLogo, GA4Logo, SearchConsoleLogo, MetaLogo, LinkedInLogo, MicrosoftLogo,
+} from "./PlatformLogos.js";
 
 const AD_PLATFORMS = [
-    { id: "google_ads",        label: "Google Ads",                  color: "#4285f4", initial: "G",  isAnalytics: false },
-    { id: "google_analytics",  label: "Google Analytics 4",          color: "#e37400", initial: "GA", isAnalytics: true  },
-    { id: "google_search_console", label: "Google Search Console",  color: "#34a853", initial: "GSC", isAnalytics: true  },
-    { id: "meta_ads",          label: "Meta (Facebook / Instagram)",  color: "#1877f2", initial: "f",  isAnalytics: false },
-    { id: "linkedin_ads",      label: "LinkedIn Ads",                 color: "#0a66c2", initial: "in", isAnalytics: false },
-    { id: "microsoft_ads",     label: "Microsoft Ads",                color: "#00a4ef", initial: "B",  isAnalytics: false },
+    { id: "google_ads",            label: "Google Ads",                  Logo: GoogleLogo,        isAnalytics: false },
+    { id: "google_analytics",      label: "Google Analytics 4",          Logo: GA4Logo,           isAnalytics: true  },
+    { id: "google_search_console", label: "Google Search Console",       Logo: SearchConsoleLogo, isAnalytics: true  },
+    { id: "meta_ads",              label: "Meta (Facebook / Instagram)", Logo: MetaLogo,          isAnalytics: false },
+    { id: "linkedin_ads",          label: "LinkedIn Ads",                Logo: LinkedInLogo,      isAnalytics: false },
+    { id: "microsoft_ads",         label: "Microsoft Ads",               Logo: MicrosoftLogo,     isAnalytics: false },
 ];
 
 function formatDate(iso) {
@@ -246,12 +249,8 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
                                 key={platform.id}
                                 className={`ad-connection-card${isFullyConnected ? " ad-connection-card--connected" : needsAccountSelection ? " ad-connection-card--pending" : ""}`}
                             >
-                                <div
-                                    className="ad-connection-card__icon"
-                                    style={{ background: platform.color }}
-                                    aria-hidden="true"
-                                >
-                                    {platform.initial}
+                                <div className="ad-connection-card__icon" aria-hidden="true">
+                                    <platform.Logo />
                                 </div>
 
                                 <div className="ad-connection-card__info">
