@@ -68,6 +68,11 @@ async function exchangeCode(platform, code) {
             clientId = process.env.GOOGLE_CLIENT_ID;
             clientSecret = process.env.GOOGLE_CLIENT_SECRET;
             break;
+        case "google_search_console":
+            url = "https://oauth2.googleapis.com/token";
+            clientId = process.env.GOOGLE_CLIENT_ID;
+            clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+            break;
         case "microsoft_ads":
             url = "https://login.microsoftonline.com/common/oauth2/v2.0/token";
             clientId = process.env.MICROSOFT_ADS_CLIENT_ID;
@@ -236,6 +241,27 @@ async function fetchAllAccounts(platform, accessToken) {
                     }
                 }
                 return accounts;
+            }
+
+            case "google_search_console": {
+                const resp = await fetch(
+                    "https://www.googleapis.com/webmasters/v3/sites",
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
+                if (!resp.ok) return [];
+                const data = await resp.json();
+                return (data.siteEntry || [])
+                    // "siteUnverifiedUser" means the token holder requested access
+                    // but ownership was never verified in Search Console — no
+                    // data is queryable for that site, so it's not a real option.
+                    .filter(s => s.permissionLevel && s.permissionLevel !== "siteUnverifiedUser")
+                    .map(s => ({
+                        // siteUrl is the literal path segment the Search Analytics
+                        // API needs later — keep it verbatim as the id, only clean
+                        // up the display label (strips "sc-domain:"/protocol/trailing slash).
+                        id: s.siteUrl,
+                        name: s.siteUrl.replace(/^sc-domain:/, "").replace(/^https?:\/\//, "").replace(/\/$/, ""),
+                    }));
             }
 
             case "microsoft_ads":

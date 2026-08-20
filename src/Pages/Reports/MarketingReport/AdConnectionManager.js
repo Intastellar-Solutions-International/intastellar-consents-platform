@@ -4,6 +4,7 @@ import { ScannerHost } from "../../../API/host";
 const AD_PLATFORMS = [
     { id: "google_ads",        label: "Google Ads",                  color: "#4285f4", initial: "G",  isAnalytics: false },
     { id: "google_analytics",  label: "Google Analytics 4",          color: "#e37400", initial: "GA", isAnalytics: true  },
+    { id: "google_search_console", label: "Google Search Console",  color: "#34a853", initial: "GSC", isAnalytics: true  },
     { id: "meta_ads",          label: "Meta (Facebook / Instagram)",  color: "#1877f2", initial: "f",  isAnalytics: false },
     { id: "linkedin_ads",      label: "LinkedIn Ads",                 color: "#0a66c2", initial: "in", isAnalytics: false },
     { id: "microsoft_ads",     label: "Microsoft Ads",                color: "#00a4ef", initial: "B",  isAnalytics: false },

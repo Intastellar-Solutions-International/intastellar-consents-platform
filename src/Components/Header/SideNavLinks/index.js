@@ -1,7 +1,9 @@
 import {
     analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
     analyticsMarketingPath, analyticsAdSpendPath, analyticsGoogleAnalyticsPath,
+    analyticsSearchConsolePath,
     analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
+    analyticsUserFlowPath,
     analyticsConversionsPath, analyticsPageExperimentsPath,
 } from "../../../Functions/domainPathSegments.js";
 
@@ -119,6 +121,10 @@ export function buildAnalyticsLinks(domain) {
             path: analyticsGoogleAnalyticsPath(domain),
         },
         {
+            name: "Search Console",
+            path: analyticsSearchConsolePath(domain),
+        },
+        {
             divider: true,
             label: "Behavior",
         },
@@ -133,6 +139,10 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Bots",
             path: analyticsBotsPath(domain),
+        },
+        {
+            name: "User Flow",
+            path: analyticsUserFlowPath(domain),
         },
         {
             divider: true,

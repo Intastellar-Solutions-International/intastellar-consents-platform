@@ -11,7 +11,7 @@ import ConversionsPanel from "./Conversions.js";
 import TimeToConvert from "./TimeToConvert.js";
 import ConversionChannels from "./ConversionChannels.js";
 import ConversionCampaigns from "./ConversionCampaigns.js";
-import ConversionFunnel from "./ConversionFunnel.js";
+import FunnelBuilder from "./FunnelBuilder.js";
 import TrendLineChart from "./TrendLineChart.js";
 import "./Analytics.css";
 
@@ -102,11 +102,6 @@ export default function AnalyticsConversionsOverview() {
     const trendConversionRate = useMemo(
         () => pctChange(data?.totals?.conversionRate, prevData?.totals?.conversionRate),
         [data, prevData]
-    );
-
-    const linkedConversions = useMemo(
-        () => (data?.conversions || []).reduce((s, c) => s + (c.linkedCount || 0), 0),
-        [data]
     );
 
     const trendData = useMemo(
@@ -252,11 +247,10 @@ export default function AnalyticsConversionsOverview() {
                                         byDevice={data.conversionsByDevice}
                                     />
 
-                                    <ConversionFunnel
+                                    <FunnelBuilder
                                         domain={domain}
-                                        funnel={data.funnel}
-                                        totalConversions={totalConversions}
-                                        linkedConversions={linkedConversions}
+                                        fromIso={fromIso}
+                                        toIso={toIso}
                                     />
 
                                     <ConversionCampaigns

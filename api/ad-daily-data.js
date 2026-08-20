@@ -198,6 +198,34 @@ async function fetchGA4PlatformBreakdown(accessToken, propertyId, fromDate, toDa
     }));
 }
 
+// Fetched live, uncached, per dashboard view — unlike the daily clicks/
+// impressions trend (cached via cron-ad-sync.js into ad_daily_data since
+// that's a fixed daily total that never changes once the day is over), top
+// queries/pages are naturally read-on-demand: their whole value is "what are
+// people searching for right now," and GSC's API quota (1200 req/property/
+// day) is generous relative to this being an admin-triggered view, not
+// high-traffic. rowLimit 20 matches every other "top N" table in this
+// dashboard (analytics-report.js's topPages/utmSources/referrers/hosts).
+async function fetchGSCDimension(accessToken, siteUrl, fromDate, toDate, dimension) {
+    const resp = await fetch(
+        `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`,
+        {
+            method: "POST",
+            headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ startDate: fromDate, endDate: toDate, dimensions: [dimension], rowLimit: 20 }),
+        }
+    );
+    if (!resp.ok) return [];
+    const data = await resp.json().catch(() => null);
+    return (data?.rows || []).map(row => ({
+        key:         row.keys?.[0] || "",
+        clicks:      Number(row.clicks || 0),
+        impressions: Number(row.impressions || 0),
+        ctr:         Number(row.ctr || 0),
+        position:    Number(row.position || 0),
+    }));
+}
+
 export default async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
@@ -224,7 +252,8 @@ export default async function handler(req, res) {
                     clicks::bigint      AS clicks,
                     impressions::bigint AS impressions,
                     spend::float        AS spend,
-                    currency
+                    currency,
+                    avg_position::float AS avg_position
              FROM ad_daily_data
              WHERE organisation_id=$1 AND domain=$2 AND platform=$3
                AND date >= $4::date AND date <= $5::date
@@ -238,6 +267,7 @@ export default async function handler(req, res) {
             impressions: Number(r.impressions || 0),
             spend:       Number(r.spend || 0),
             currency:    r.currency,
+            avgPosition: r.avg_position != null ? Number(r.avg_position) : null,
         }));
     } catch {
         // ad_daily_data table doesn't exist yet — cron hasn't run; fall through to live fetch
@@ -277,5 +307,24 @@ export default async function handler(req, res) {
         ]);
     }
 
-    return res.status(200).json({ rows, platformBreakdown, summary, channelBreakdown });
+    // For Search Console: top queries + top pages, live (see fetchGSCDimension's doc comment)
+    let topQueries = null;
+    let topPages = null;
+    if (platform === "google_search_console") {
+        const { rows: connRows } = await db.query(
+            `SELECT * FROM ad_platform_connections
+             WHERE organisation_id=$1 AND domain=$2 AND platform='google_search_console'
+               AND account_id IS NOT NULL AND access_token IS NOT NULL`,
+            [orgId, domain]
+        );
+        if (connRows.length) {
+            const refreshed = await tryRefreshToken(db, connRows[0]).catch(() => connRows[0]);
+            [topQueries, topPages] = await Promise.all([
+                fetchGSCDimension(refreshed.access_token, refreshed.account_id, fromDate, toDate, "query").catch(() => []),
+                fetchGSCDimension(refreshed.access_token, refreshed.account_id, fromDate, toDate, "page").catch(() => []),
+            ]);
+        }
+    }
+
+    return res.status(200).json({ rows, platformBreakdown, summary, channelBreakdown, topQueries, topPages });
 }

@@ -77,6 +77,10 @@ async function ensureDailyTable(db) {
             UNIQUE (organisation_id, domain, platform, date)
         )
     `);
+    // Search Console's own weighted-average ranking metric for the day —
+    // unlike CTR, this isn't derivable from clicks/impressions, so it needs
+    // its own column. NULL for every other platform.
+    await db.query(`ALTER TABLE ad_daily_data ADD COLUMN IF NOT EXISTS avg_position NUMERIC(6,2)`).catch(() => {});
 }
 
 export default async function handler(req, res) {
@@ -161,17 +165,19 @@ export default async function handler(req, res) {
             try {
                 await db.query(`
                     INSERT INTO ad_daily_data
-                        (organisation_id, domain, platform, date, clicks, impressions, spend, currency)
-                    VALUES ($1,$2,$3,$4::date,$5,$6,$7,$8)
+                        (organisation_id, domain, platform, date, clicks, impressions, spend, currency, avg_position)
+                    VALUES ($1,$2,$3,$4::date,$5,$6,$7,$8,$9)
                     ON CONFLICT (organisation_id, domain, platform, date) DO UPDATE SET
-                        clicks      = EXCLUDED.clicks,
-                        impressions = EXCLUDED.impressions,
-                        spend       = EXCLUDED.spend,
-                        currency    = COALESCE(EXCLUDED.currency, ad_daily_data.currency),
-                        synced_at   = NOW()
+                        clicks       = EXCLUDED.clicks,
+                        impressions  = EXCLUDED.impressions,
+                        spend        = EXCLUDED.spend,
+                        currency     = COALESCE(EXCLUDED.currency, ad_daily_data.currency),
+                        avg_position = EXCLUDED.avg_position,
+                        synced_at    = NOW()
                 `, [
                     conn.organisation_id, conn.domain, conn.platform, day,
                     v.clicks || 0, v.impressions || 0, v.spend ?? null, v.currency ?? null,
+                    v.avgPosition ?? null,
                 ]);
                 daysSaved++;
             } catch (e) {

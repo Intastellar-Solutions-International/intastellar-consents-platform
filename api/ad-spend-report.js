@@ -12,8 +12,10 @@
  * query param is accepted as a fallback. Missing/sentinel → combined
  * (org-wide) mode, matching DomainContext's default.
  *
- * google_analytics connections are excluded throughout — GA4 has no spend
- * concept (sessions only), so it isn't "ad platform" data for this page.
+ * google_analytics and google_search_console connections are excluded
+ * throughout — neither has a spend concept (sessions-only / clicks-and-
+ * impressions-only respectively), so neither is "ad platform" data for
+ * this page.
  *
  * Required headers: Authorization: Bearer <token>, Organisation: <org_id>
  * Required env vars: POSTGRES_URL
@@ -103,7 +105,7 @@ export default async function handler(req, res) {
     const gateParams = isCombined ? [orgId] : [orgId, domain];
     const { rows: gateRows } = await db.query(
         `SELECT 1 FROM ad_platform_connections
-         WHERE organisation_id = $1 AND platform != 'google_analytics'
+         WHERE organisation_id = $1 AND platform NOT IN ('google_analytics', 'google_search_console')
            AND account_id IS NOT NULL AND access_token IS NOT NULL
            ${isCombined ? "" : "AND LOWER(domain) = LOWER($2)"}
          LIMIT 1`,
@@ -118,7 +120,7 @@ export default async function handler(req, res) {
     const domainClause = isCombined ? "" : "AND LOWER(domain) = LOWER($4)";
     if (!isCombined) dateParams.push(domain);
     const baseWhere = `WHERE organisation_id = $1 AND date BETWEEN $2 AND $3
-                        AND platform != 'google_analytics' ${domainClause}`;
+                        AND platform NOT IN ('google_analytics', 'google_search_console') ${domainClause}`;
 
     const [currencyRes, platformRes, dailyRes, byDomainRes] = await Promise.all([
 
@@ -161,7 +163,7 @@ export default async function handler(req, res) {
                 `SELECT domain, currency, SUM(spend) AS amount
                  FROM ad_daily_data
                  WHERE organisation_id = $1 AND date BETWEEN $2 AND $3
-                   AND platform != 'google_analytics' AND currency IS NOT NULL
+                   AND platform NOT IN ('google_analytics', 'google_search_console') AND currency IS NOT NULL
                  GROUP BY domain, currency ORDER BY amount DESC`,
                 [orgId, fromDate, toDate]
             )

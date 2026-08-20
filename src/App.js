@@ -56,12 +56,14 @@ import AnalyticsConsent from "./Pages/Analytics/Consent.js";
 import AnalyticsHeatmap from "./Pages/Analytics/Heatmap.js";
 import AnalyticsRecordings, { AnalyticsRecordingDetail } from "./Pages/Analytics/Recordings.js";
 import AnalyticsBots from "./Pages/Analytics/Bots.js";
+import AnalyticsUserFlow from "./Pages/Analytics/UserFlow.js";
 import AnalyticsConversionsOverview from "./Pages/Analytics/ConversionsOverview.js";
 import PageExperiments from "./Pages/Analytics/PageExperiments.js";
 import PageExperimentEditor from "./Pages/Analytics/PageExperimentEditor.js";
 import PageExperimentVariantDetail from "./Pages/Analytics/PageExperimentVariantDetail.js";
 import AnalyticsAdSpend from "./Pages/Analytics/AdSpend.js";
 import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
+import AnalyticsSearchConsole from "./Pages/Analytics/SearchConsole.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -303,6 +305,16 @@ export default function App() {
                                                 <AnalyticsBots />
                                             </ErrorBoundary>}
                                         </Route>
+                                        <Route path="/analytics/:handle/user-flow" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="User Flow" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsUserFlow />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/user-flow" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="User Flow" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsUserFlow />
+                                            </ErrorBoundary>}
+                                        </Route>
                                         <Route path="/analytics/:handle/conversions/:section?" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Conversions" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsConversionsOverview />
@@ -361,6 +373,16 @@ export default function App() {
                                         <Route path="/analytics/google-analytics" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Google Analytics" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsGoogleAnalytics />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/search-console" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Search Console" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsSearchConsole />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/search-console" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Search Console" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsSearchConsole />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle" exact>

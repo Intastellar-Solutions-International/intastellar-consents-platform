@@ -34,6 +34,7 @@ export async function tryRefreshToken(db, conn) {
     switch (conn.platform) {
         case "google_ads":
         case "google_analytics":
+        case "google_search_console":
             refreshUrl    = "https://oauth2.googleapis.com/token";
             clientId      = process.env.GOOGLE_CLIENT_ID;
             clientSecret  = process.env.GOOGLE_CLIENT_SECRET;
@@ -942,6 +943,50 @@ async function fetchGoogleAnalyticsDaily(conn, fromDate, toDate) {
     return result;
 }
 
+// GSC has no "spend" concept (clicks/impressions/ctr/position only) — spend
+// stays 0/null like fetchGoogleAnalyticsDaily above, and ad-spend-report.js
+// excludes this platform from spend totals the same way it already excludes
+// google_analytics. `avg_position` isn't part of the shared
+// fetchPlatformDataDaily shape (see doc comment at the top of this file) —
+// callers that need it read `avgPosition` off each day's result directly;
+// ad_daily_data has its own `avg_position` column for the cached path.
+async function fetchSearchConsoleDaily(conn, fromDate, toDate) {
+    if (!conn.account_id) throw new Error("No Search Console property linked.");
+    const resp = await fetch(
+        `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(conn.account_id)}/searchAnalytics/query`,
+        {
+            method: "POST",
+            headers: { Authorization: `Bearer ${conn.access_token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+                startDate: fromDate,
+                endDate: toDate,
+                dimensions: ["date"],
+                rowLimit: 25000,
+            }),
+        }
+    );
+    if (!resp.ok) {
+        const raw = await resp.text().catch(() => "");
+        let err = {};
+        try { err = JSON.parse(raw); } catch {}
+        throw new Error(err?.error?.message || `Search Console API error (${resp.status}): ${raw.slice(0, 200)}`);
+    }
+    const data = await resp.json();
+    const result = {};
+    for (const row of (data.rows || [])) {
+        const date = row.keys?.[0];
+        if (!date) continue;
+        result[date] = {
+            clicks: Number(row.clicks || 0),
+            impressions: Number(row.impressions || 0),
+            spend: 0,
+            currency: null,
+            avgPosition: Number.isFinite(row.position) ? row.position : null,
+        };
+    }
+    return result;
+}
+
 // Same Reporting Service flow as fetchMicrosoftAdsCampaigns, with
 // Aggregation: Daily and a TimePeriod column instead of Summary — one row
 // per campaign per day, summed here into an account-level daily total to
@@ -1022,6 +1067,7 @@ export async function fetchPlatformDataDaily(conn, fromDate, toDate) {
         case "meta_ads":         return fetchMetaAdsDaily(conn, fromDate, toDate);
         case "linkedin_ads":     return fetchLinkedInAdsDaily(conn, fromDate, toDate);
         case "google_analytics": return fetchGoogleAnalyticsDaily(conn, fromDate, toDate);
+        case "google_search_console": return fetchSearchConsoleDaily(conn, fromDate, toDate);
         case "microsoft_ads":    return fetchMicrosoftAdsDaily(conn, fromDate, toDate);
         default:
             return {};
