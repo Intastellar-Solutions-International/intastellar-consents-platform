@@ -15,8 +15,9 @@ function getPool() {
         pool = new Pool({
             connectionString: process.env.POSTGRES_URL,
             ssl: { rejectUnauthorized: false },
-            max: 3,
-            connectionTimeoutMillis: 5000,
+            max: 5,
+            connectionTimeoutMillis: 30000,
+            idleTimeoutMillis: 30000,
         });
     }
     return pool;
