@@ -1021,6 +1021,25 @@
     padding-bottom: 4px;
 }
 
+.sa-flow-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 10px;
+    padding: 5px 12px;
+    background: rgba(192, 159, 83, 0.14);
+    border: 1px solid rgba(192, 159, 83, 0.35);
+    border-radius: 999px;
+    color: rgba(230, 210, 160, 0.95);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sa-flow-clear:hover {
+    background: rgba(192, 159, 83, 0.22);
+}
+
 /* ── Google Analytics sub-page stack ─────────────────────────────────────────── */
 
 .sa-ga4-stack {

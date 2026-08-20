@@ -1,4 +1,4 @@
-const { useMemo } = React;
+const { useState, useMemo } = React;
 
 // Layout constants — tuned for readability, not data-driven.
 const COL_WIDTH   = 168;
@@ -9,6 +9,10 @@ const MAX_TOTAL_H = 560;
 
 function truncate(s, n) {
     return s.length > n ? s.slice(0, n - 1) + "…" : s;
+}
+
+function nodeKey(col, id) {
+    return `${col}|${id}`;
 }
 
 // Builds one node list per column (channel, then FLOW_DEPTH+1 page columns)
@@ -89,7 +93,48 @@ function layoutBoundary(fromCol, toCol, edges, fromY, toY) {
     }).filter(Boolean);
 }
 
+// Every ribbon that's part of any path passing through the clicked node —
+// not just its immediate neighbors. Walks forward from the node (following
+// its outgoing edges, then their targets' outgoing edges, and so on to the
+// last column) and backward (following incoming edges back to column 0), so
+// clicking a page in the middle of the diagram traces its full journey: the
+// channels/pages that fed it AND everywhere sessions went from there.
+function traceFlow(selectedKey, ribbonIndex) {
+    const edges = new Set();
+    const nodes = new Set([selectedKey]);
+
+    let frontier = [selectedKey];
+    while (frontier.length) {
+        const next = [];
+        for (const key of frontier) {
+            for (const r of (ribbonIndex.outgoing.get(key) || [])) {
+                edges.add(r);
+                const tk = nodeKey(r.col + 1, r.edge.to);
+                if (!nodes.has(tk)) { nodes.add(tk); next.push(tk); }
+            }
+        }
+        frontier = next;
+    }
+
+    frontier = [selectedKey];
+    while (frontier.length) {
+        const next = [];
+        for (const key of frontier) {
+            for (const r of (ribbonIndex.incoming.get(key) || [])) {
+                edges.add(r);
+                const fk = nodeKey(r.col, r.edge.from);
+                if (!nodes.has(fk)) { nodes.add(fk); next.push(fk); }
+            }
+        }
+        frontier = next;
+    }
+
+    return { edges, nodes };
+}
+
 export default function UserFlowDiagram({ data }) {
+    const [selected, setSelected] = useState(null); // nodeKey(col, id) or null
+
     const columns = useMemo(() => buildColumns(data), [data]);
 
     const maxPopulation = useMemo(
@@ -153,67 +198,121 @@ export default function UserFlowDiagram({ data }) {
         return out;
     }, [columns, columnLayouts, data]);
 
+    // Indexed by the node a ribbon leaves from / arrives at, for tracing a
+    // clicked node's full path in both directions.
+    const ribbonIndex = useMemo(() => {
+        const outgoing = new Map(); // nodeKey(col, from) -> ribbons leaving that node
+        const incoming = new Map(); // nodeKey(col+1, to) -> ribbons arriving at that node
+        for (const r of ribbons) {
+            const outKey = nodeKey(r.col, r.edge.from);
+            const inKey  = nodeKey(r.col + 1, r.edge.to);
+            if (!outgoing.has(outKey)) outgoing.set(outKey, []);
+            outgoing.get(outKey).push(r);
+            if (!incoming.has(inKey)) incoming.set(inKey, []);
+            incoming.get(inKey).push(r);
+        }
+        return { outgoing, incoming };
+    }, [ribbons]);
+
+    const highlight = useMemo(
+        () => selected ? traceFlow(selected, ribbonIndex) : null,
+        [selected, ribbonIndex]
+    );
+
     const maxEdgeSessions = Math.max(1, ...ribbons.map(r => r.edge.sessions));
 
-    return (
-        <div className="sa-flow-scroll">
-            <svg
-                width={svgWidth}
-                height={svgHeight}
-                viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-                role="img"
-                aria-label="Visitor flow from acquisition channel through subsequent pages"
-            >
-                {ribbons.map((r, i) => {
-                    const x0 = 12 + r.col * (COL_WIDTH + COL_GAP) + COL_WIDTH;
-                    const x1 = x0 + COL_GAP;
-                    const y0 = 12 + r.y0;
-                    const y1 = 12 + r.y1;
-                    const midX = (x0 + x1) / 2;
-                    const opacity = 0.12 + 0.35 * (r.edge.sessions / maxEdgeSessions);
-                    return (
-                        <path
-                            key={i}
-                            d={`M${x0},${y0} C${midX},${y0} ${midX},${y1} ${x1},${y1}`}
-                            stroke={`rgba(192,159,83,${opacity.toFixed(2)})`}
-                            strokeWidth={r.width}
-                            fill="none"
-                        >
-                            <title>{`${r.edge.from} → ${r.edge.to}: ${r.edge.sessions.toLocaleString("de-DE")} sessions`}</title>
-                        </path>
-                    );
-                })}
+    function toggleNode(col, id) {
+        const key = nodeKey(col, id);
+        setSelected(prev => prev === key ? null : key);
+    }
 
-                {columnLayouts.map((col, c) => (
-                    <g key={c}>
-                        {col.nodes.map(node => {
-                            const layout = col.yMap.get(node.id);
-                            const x = 12 + c * (COL_WIDTH + COL_GAP);
-                            const y = 12 + layout.y;
-                            return (
-                                <g key={node.id}>
-                                    <rect
-                                        x={x} y={y} width={COL_WIDTH} height={layout.height}
-                                        rx="4"
-                                        fill="rgba(192,159,83,0.16)"
-                                        stroke="rgba(192,159,83,0.4)"
+    return (
+        <div>
+            {selected && (
+                <button type="button" className="sa-flow-clear" onClick={() => setSelected(null)}>
+                    &times; Clear selection
+                </button>
+            )}
+            <div className="sa-flow-scroll">
+                <svg
+                    width={svgWidth}
+                    height={svgHeight}
+                    viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+                    role="img"
+                    aria-label="Visitor flow from acquisition channel through subsequent pages — click a page to trace its full path"
+                >
+                    {ribbons.map((r, i) => {
+                        const x0 = 12 + r.col * (COL_WIDTH + COL_GAP) + COL_WIDTH;
+                        const x1 = x0 + COL_GAP;
+                        const y0 = 12 + r.y0;
+                        const y1 = 12 + r.y1;
+                        const midX = (x0 + x1) / 2;
+                        const baseOpacity = 0.12 + 0.35 * (r.edge.sessions / maxEdgeSessions);
+                        const isOn = highlight?.edges.has(r);
+                        const opacity = !highlight ? baseOpacity : (isOn ? Math.min(1, baseOpacity + 0.5) : baseOpacity * 0.15);
+                        const stroke = isOn ? `rgba(240,205,120,${opacity.toFixed(2)})` : `rgba(192,159,83,${opacity.toFixed(2)})`;
+                        return (
+                            <path
+                                key={i}
+                                d={`M${x0},${y0} C${midX},${y0} ${midX},${y1} ${x1},${y1}`}
+                                stroke={stroke}
+                                strokeWidth={r.width}
+                                fill="none"
+                            >
+                                <title>{`${r.edge.from} → ${r.edge.to}: ${r.edge.sessions.toLocaleString("de-DE")} sessions`}</title>
+                            </path>
+                        );
+                    })}
+
+                    {columnLayouts.map((col, c) => (
+                        <g key={c}>
+                            {col.nodes.map(node => {
+                                const layout = col.yMap.get(node.id);
+                                const x = 12 + c * (COL_WIDTH + COL_GAP);
+                                const y = 12 + layout.y;
+                                const key = nodeKey(c, node.id);
+                                const isSelected = selected === key;
+                                const isOn = highlight ? highlight.nodes.has(key) : true;
+                                const fillOpacity = isOn ? (isSelected ? 0.36 : 0.16) : 0.05;
+                                const strokeOpacity = isOn ? (isSelected ? 0.9 : 0.4) : 0.12;
+                                const textOpacity = isOn ? 0.9 : 0.25;
+                                return (
+                                    <g
+                                        key={node.id}
+                                        onClick={() => toggleNode(c, node.id)}
+                                        style={{ cursor: "pointer" }}
+                                        tabIndex={0}
+                                        role="button"
+                                        aria-pressed={isSelected}
+                                        aria-label={`${node.id}, ${node.population.toLocaleString("de-DE")} sessions`}
+                                        onKeyDown={e => {
+                                            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleNode(c, node.id); }
+                                        }}
                                     >
-                                        <title>{`${node.id}: ${node.population.toLocaleString("de-DE")} sessions`}</title>
-                                    </rect>
-                                    <text
-                                        x={x + 8} y={y + layout.height / 2}
-                                        dominantBaseline="middle"
-                                        fontSize="10.5"
-                                        fill="rgba(240,235,225,0.9)"
-                                    >
-                                        {truncate(node.id, 20)}
-                                    </text>
-                                </g>
-                            );
-                        })}
-                    </g>
-                ))}
-            </svg>
+                                        <rect
+                                            x={x} y={y} width={COL_WIDTH} height={layout.height}
+                                            rx="4"
+                                            fill={`rgba(192,159,83,${fillOpacity})`}
+                                            stroke={`rgba(${isSelected ? "240,205,120" : "192,159,83"},${strokeOpacity})`}
+                                            strokeWidth={isSelected ? 1.6 : 1}
+                                        >
+                                            <title>{`${node.id}: ${node.population.toLocaleString("de-DE")} sessions`}</title>
+                                        </rect>
+                                        <text
+                                            x={x + 8} y={y + layout.height / 2}
+                                            dominantBaseline="middle"
+                                            fontSize="10.5"
+                                            fill={`rgba(240,235,225,${textOpacity})`}
+                                        >
+                                            {truncate(node.id, 20)}
+                                        </text>
+                                    </g>
+                                );
+                            })}
+                        </g>
+                    ))}
+                </svg>
+            </div>
         </div>
     );
 }
