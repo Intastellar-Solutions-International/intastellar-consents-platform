@@ -988,6 +988,7 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-areas:
         "kpis       kpis"
+        "nvr        nvr"
         "countries  countries"
         "browsers   os"
         "screens    devices"
@@ -996,6 +997,7 @@
 
 .sa-aud-kpis      { grid-area: kpis; display: flex; gap: 12px; flex-wrap: wrap; }
 .sa-aud-kpis .sa-kpi { flex: 1 1 200px; }
+.sa-aud-nvr       { grid-area: nvr; }
 .sa-aud-countries { grid-area: countries; }
 .sa-aud-browsers  { grid-area: browsers;  }
 .sa-aud-os        { grid-area: os;        }
@@ -1004,13 +1006,17 @@
 .sa-aud-lang      { grid-area: lang;      }
 .sa-aud-tz        { grid-area: tz;        }
 
+.sa-aud-nvr-bars { display: flex; gap: 8px; }
+.sa-aud-nvr-bars > div { flex: 1; }
+
 @media (max-width: 620px) {
     .sa-audience-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
-            "kpis" "countries" "browsers" "os"
+            "kpis" "nvr" "countries" "browsers" "os"
             "devices" "screens" "lang" "tz";
     }
+    .sa-aud-nvr-bars { flex-direction: column; }
 }
 
 /* ── User flow diagram ────────────────────────────────────────────────────────── */

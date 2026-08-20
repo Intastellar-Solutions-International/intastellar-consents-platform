@@ -27,6 +27,18 @@ export default function AnalyticsAudience() {
     const trendEngaged  = useMemo(() => pctChange(data?.totals?.engagedUsers,   prevData?.totals?.engagedUsers),   [data, prevData]);
     const trendCountries = useMemo(() => pctChange(data?.countries?.length,     prevData?.countries?.length),      [data, prevData]);
 
+    const nvrData = useMemo(() => {
+        const nvr = data?.newVsReturning;
+        if (!nvr || nvr.tracked === 0) return null;
+        return {
+            newPct:       Math.round((nvr.newSessions       / nvr.tracked) * 100),
+            returningPct: Math.round((nvr.returningSessions / nvr.tracked) * 100),
+            newSessions:       nvr.newSessions,
+            returningSessions: nvr.returningSessions,
+            tracked:           nvr.tracked,
+        };
+    }, [data]);
+
     const maxCountry = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
     const maxBrowser = useMemo(() => Math.max(...(data?.browsers   || []).map(b => b.events), 1), [data]);
     const maxOs      = useMemo(() => Math.max(...(data?.os         || []).map(o => o.events), 1), [data]);
@@ -85,6 +97,52 @@ export default function AnalyticsAudience() {
                                     value={data.countries.length.toLocaleString("de-DE")}
                                     trend={trendCountries}
                                 />
+                            </div>
+
+                            {/* New vs Returning */}
+                            <div className="sa-panel sa-aud-nvr">
+                                <h3 className="sa-panel__title">
+                                    <IconUsers className="sa-icon" /> New vs Returning visitors
+                                    <span className="sa-panel__consent-note">full events only · based on persistent visitor cookie</span>
+                                </h3>
+                                {nvrData ? (
+                                    <div className="sa-aud-nvr-bars">
+                                        <div>
+                                            <div className="sa-consent-row">
+                                                <span className="sa-consent-row__label">New visitors</span>
+                                                <div className="sa-bar">
+                                                    <div className="sa-bar__seg"
+                                                        style={{ width: nvrData.newPct + "%", background: "rgba(74,222,128,0.5)" }}
+                                                        title={nvrData.newSessions.toLocaleString("de-DE") + " sessions"} />
+                                                </div>
+                                                <span className="sa-consent-row__pct">{nvrData.newPct}%</span>
+                                            </div>
+                                            <div className="sa-consent-row">
+                                                <span className="sa-consent-row__label">Returning visitors</span>
+                                                <div className="sa-bar">
+                                                    <div className="sa-bar__seg"
+                                                        style={{ width: nvrData.returningPct + "%", background: "rgba(192,159,83,0.55)" }}
+                                                        title={nvrData.returningSessions.toLocaleString("de-DE") + " sessions"} />
+                                                </div>
+                                                <span className="sa-consent-row__pct">{nvrData.returningPct}%</span>
+                                            </div>
+                                        </div>
+                                        <div style={{ display: "flex", gap: "16px", alignItems: "center", paddingLeft: "8px", borderLeft: "1px solid rgba(255,255,255,0.08)" }}>
+                                            <div style={{ textAlign: "center" }}>
+                                                <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(74,222,128,0.9)" }}>{nvrData.newSessions.toLocaleString("de-DE")}</div>
+                                                <div style={{ fontSize: "11px", color: "rgba(240,235,225,0.5)", marginTop: "2px" }}>new</div>
+                                            </div>
+                                            <div style={{ textAlign: "center" }}>
+                                                <div style={{ fontSize: "22px", fontWeight: 600, color: "rgba(192,159,83,0.9)" }}>{nvrData.returningSessions.toLocaleString("de-DE")}</div>
+                                                <div style={{ fontSize: "11px", color: "rgba(240,235,225,0.5)", marginTop: "2px" }}>returning</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p className="sa-notice" style={{ margin: 0, padding: "8px 0" }}>
+                                        No visitor tracking data yet — appears once visitors with the new analytics embed are recorded.
+                                    </p>
+                                )}
                             </div>
 
                             {/* Countries */}
