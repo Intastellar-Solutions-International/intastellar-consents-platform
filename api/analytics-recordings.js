@@ -112,9 +112,22 @@ export default async function handler(req, res) {
         if (!rows.length) return res.status(404).json({ error: "Recording not found" });
         const rec = rows[0];
 
+        // chunk_urls is appended in server-arrival order (array_append in the
+        // ingest handler), which isn't guaranteed to match send order — the
+        // recorder fires concurrent, unawaited fetches (periodic flush,
+        // size-triggered flush, final pagehide flush) that can race and
+        // commit out of sequence. Reordering by the seq number embedded in
+        // the blob path (recordings/<site>/<recId>/<seq>.json) restores the
+        // real order; without it, playback can start on a chunk that has no
+        // FullSnapshot to build on, rendering blank.
         const chunkUrls = Array.isArray(rec.chunk_urls) ? rec.chunk_urls : [];
+        const orderedChunkUrls = chunkUrls.slice().sort((a, b) => {
+            const seqA = parseInt((String(a).match(/\/(\d+)\.json(?:[?#]|$)/) || [])[1], 10);
+            const seqB = parseInt((String(b).match(/\/(\d+)\.json(?:[?#]|$)/) || [])[1], 10);
+            return (Number.isFinite(seqA) ? seqA : 0) - (Number.isFinite(seqB) ? seqB : 0);
+        });
         const events = [];
-        for (const url of chunkUrls) {
+        for (const url of orderedChunkUrls) {
             try {
                 const { stream } = await get(url, { access: "private" });
                 const text = await new Response(stream).text();
