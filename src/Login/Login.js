@@ -161,7 +161,7 @@ export default function Login() {
                                 Consent intelligence<br />for the modern web
                             </h2>
                             <p className="int-login__features-lede">
-                                GDPR-grade consent management with real-time analytics, domain verification, and multi-client workspace management.
+                                GDPR-grade consent management, real-time analytics, and multi-client workspaces.
                             </p>
                             <ul className="int-login__features-list" aria-label="Key features">
                                 <li className="int-login__feature">
