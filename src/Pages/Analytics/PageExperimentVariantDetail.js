@@ -5,7 +5,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { authHeaders, InfoTip } from "./_shared.js";
+import { authHeaders, InfoTip, formatPercent } from "./_shared.js";
 import "./Analytics.css";
 
 function fmtDuration(seconds) {
@@ -96,7 +96,7 @@ export default function PageExperimentVariantDetail() {
                                             </div>
                                             <div className="pxp-detail-stat">
                                                 <span className="pxp-detail-stat__value">
-                                                    {detail.engagement.engagedRate != null ? (detail.engagement.engagedRate * 100).toFixed(1) + "%" : "—"}
+                                                    {detail.engagement.engagedRate != null ? formatPercent(detail.engagement.engagedRate * 100) : "—"}
                                                 </span>
                                                 <span className="pxp-detail-stat__label">
                                                     Engaged sessions
@@ -149,7 +149,7 @@ export default function PageExperimentVariantDetail() {
                                                                 <td>{c.label}</td>
                                                                 <td className="sa-table__num">{c.convertedSessions.toLocaleString("de-DE")}</td>
                                                                 <td className="sa-table__num">
-                                                                    {c.conversionRate != null ? (c.conversionRate * 100).toFixed(2) + "%" : "—"}
+                                                                    {c.conversionRate != null ? formatPercent(c.conversionRate * 100, 2) : "—"}
                                                                 </td>
                                                             </tr>
                                                         ))}

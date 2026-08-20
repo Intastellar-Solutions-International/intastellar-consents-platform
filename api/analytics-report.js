@@ -59,6 +59,23 @@ function safeDate(str, fallback) {
     return isNaN(d.getTime()) ? fallback : d.toISOString().slice(0, 10);
 }
 
+// utm_campaign is whatever literal text was in the visitor's landing URL —
+// we only capture it, never generate or template it ourselves. Two common
+// garbage-in cases from misconfigured ad platforms: (1) an unsubstituted
+// tracking-template macro like Google/Bing ValueTrack's "{campaignname}"
+// (the advertiser's own ad platform failed to fill it in before appending it
+// to the destination URL — nothing on our side to "fix", it's already
+// broken by the time it reaches us), and (2) a bare numeric platform
+// campaign ID used in place of a name. Neither is meaningful to a human
+// reading this table, so label both instead of showing the raw value.
+function humanizeCampaign(raw) {
+    const v = (raw || "").trim();
+    if (!v) return null;
+    if (/[{}]/.test(v) || /%7[bB]/.test(v)) return "Unresolved campaign tag";
+    if (/^\d+$/.test(v)) return `Unnamed campaign (ID: ${v})`;
+    return v;
+}
+
 export default async function handler(req, res) {
     setCors(req, res);
     if (req.method === "OPTIONS") return res.status(204).end();
@@ -110,7 +127,7 @@ export default async function handler(req, res) {
            conversionCountriesRes, convertedSessionsRes,
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
            dailyConversionsRes, timeToConvertRes, funnelRes,
-           conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes] = await Promise.all([
+           conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes, pageEngagementRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -136,6 +153,11 @@ export default async function handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ),
 
+        // Excludes /api/* and static-asset paths — a tracking beacon can end up
+        // logging a non-content pathname (e.g. a visitor landing on
+        // /api/ab-test-proxy while a url_split Page Experiment variant proxies
+        // their real page through that route) which otherwise pollutes "top
+        // pages" with routes nobody actually reads as a page.
         db.query(`
             SELECT
                 pathname,
@@ -143,6 +165,8 @@ export default async function handler(req, res) {
                 COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS sessions
             FROM analytics_events
             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+              AND pathname !~* '^/api/'
+              AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
             GROUP BY pathname ORDER BY views DESC LIMIT 20`,
             [siteId, fromDate, toDateExclusive]
         ),
@@ -710,10 +734,11 @@ export default async function handler(req, res) {
             };
         })(),
         utmSources: utmRes.rows.map(r => ({
-            source:   r.utm_source,
-            medium:   r.utm_medium,
-            campaign: r.utm_campaign || null,
-            events:   Number(r.events || 0),
+            source:      r.utm_source,
+            medium:      r.utm_medium,
+            campaign:    humanizeCampaign(r.utm_campaign),
+            campaignRaw: r.utm_campaign || null,
+            events:      Number(r.events || 0),
         })),
         referrers: referrersRes.rows.map(r => ({
             referrer: r.referrer,

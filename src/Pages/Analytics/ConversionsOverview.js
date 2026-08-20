@@ -4,7 +4,7 @@ const useHistory = window.ReactRouterDOM.useHistory;
 import { analyticsConversionsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { useAnalyticsPage, KpiCard, authHeaders } from "./_shared.js";
+import { useAnalyticsPage, KpiCard, authHeaders, useAnalyticsReport, toIsoDate, pctChange, formatPercent } from "./_shared.js";
 import { IconTarget, IconTrendingUp, IconGlobe } from "./Icons.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import ConversionsPanel from "./Conversions.js";
@@ -72,11 +72,36 @@ export default function AnalyticsConversionsOverview() {
     } = useAnalyticsPage();
     const ga4 = useGa4TotalSessions(domain, fromIso, toIso);
 
+    // Previous period of the same length, immediately preceding the current
+    // range — same "vs previous period" pattern the Overview page's KPI
+    // cards use (src/Pages/Analytics/index.js).
+    const prevRange = useMemo(() => {
+        const spanMs = toDate.getTime() - fromDate.getTime();
+        const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
+        const prevFrom = new Date(prevTo.getTime() - spanMs);
+        return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
+    }, [fromDate, toDate]);
+    const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
+
     const section = SECTIONS.some(s => s.key === sectionParam) ? sectionParam : "overview";
 
     const totalConversions = useMemo(
         () => (data?.conversions || []).reduce((s, c) => s + (c.count || 0), 0),
         [data]
+    );
+
+    const prevTotalConversions = useMemo(
+        () => (prevData?.conversions || []).reduce((s, c) => s + (c.count || 0), 0),
+        [prevData]
+    );
+
+    const trendTotalConversions = useMemo(
+        () => pctChange(totalConversions, prevTotalConversions),
+        [totalConversions, prevTotalConversions]
+    );
+    const trendConversionRate = useMemo(
+        () => pctChange(data?.totals?.conversionRate, prevData?.totals?.conversionRate),
+        [data, prevData]
     );
 
     const linkedConversions = useMemo(
@@ -156,11 +181,13 @@ export default function AnalyticsConversionsOverview() {
                                         label="Total conversions"
                                         value={totalConversions.toLocaleString("de-DE")}
                                         sub={`across ${data.conversions.length} registered event${data.conversions.length !== 1 ? "s" : ""}`}
+                                        trend={trendTotalConversions}
                                     />
                                     <KpiCard className="sa-conv-kpi2"
                                         icon={<IconTrendingUp />}
                                         label="Conversion rate"
-                                        value={data.totals.conversionRate + "%"}
+                                        value={formatPercent(data.totals.conversionRate)}
+                                        trend={trendConversionRate}
                                         sub={
                                             <>
                                                 {`${data.totals.convertedSessions.toLocaleString("de-DE")} of ${data.totals.uniqueSessions.toLocaleString("de-DE")} consent-linked sessions`}
@@ -207,7 +234,7 @@ export default function AnalyticsConversionsOverview() {
                                         <AnalyticsWorldMap
                                             countries={mapCountries}
                                             metricLabel={mapMode === "rate" ? "Conversion rate" : "Conversions"}
-                                            formatValue={mapMode === "rate" ? (v => v.toFixed(1) + "%") : undefined}
+                                            formatValue={mapMode === "rate" ? formatPercent : undefined}
                                         />
                                     </div>
                                 </div>

@@ -8,7 +8,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, toIsoDate, pctChange,
-    IndustryBenchmarkNote,
+    IndustryBenchmarkNote, formatPercent,
 } from "./_shared.js";
 import {
     IconBarChart,
@@ -450,7 +450,7 @@ export default function SiteAnalytics() {
                             <KpiCard className="sa-ga-kpi3"
                                 icon={<IconShieldCheck />}
                                 label="Consent rate"
-                                value={data.totals.consentRate + "%"}
+                                value={formatPercent(data.totals.consentRate)}
                                 sub="statisticCookies accepted"
                                 variant={data.totals.consentRate < 20 ? "warn" : null}
                                 trend={trendConsent}

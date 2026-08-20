@@ -897,12 +897,20 @@ function sendFull(c,final){
 }
 
 document.addEventListener('visibilitychange',function(){
+  // "hidden" fires on any backgrounding (tab switch, mobile app-switch,
+  // screen lock) — not necessarily the end of the visit. Treating it as
+  // final locked duration_sec/scroll_depth in at whatever they were the
+  // moment the visitor first glanced away, even if they came right back and
+  // kept reading — systematically undercounting time-on-page. Flush
+  // defensively here instead (a backgrounded mobile tab can be killed by the
+  // OS without ever firing pagehide) without marking exitSent: the
+  // pageview_id upsert lets a later beacon keep extending the same row's
+  // duration_sec if the visitor returns. Only pagehide — genuine
+  // navigation-away/unload — is treated as the definitive end of the visit.
   if(document.visibilityState==='hidden'&&fullFired&&!exitSent){
-    exitSent=true;
-    if(clickFlushIv){clearInterval(clickFlushIv);clickFlushIv=null;}
     sendClicks();
     var c=getConsents();
-    if(hasStat(c))sendFull(c,true);
+    if(hasStat(c))sendFull(c,false);
   }
 });
 window.addEventListener('pagehide',function(){

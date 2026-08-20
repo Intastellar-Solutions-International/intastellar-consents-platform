@@ -1,7 +1,7 @@
 const { useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
-import { useAnalyticsPage, MiniBar } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange } from "./_shared.js";
 import { IconGlobe, IconUsers, IconRadio } from "./Icons.js";
 import "./Analytics.css";
 
@@ -10,8 +10,22 @@ export default function AnalyticsAudience() {
 
     const {
         domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
-        data, loading, error, showData,
+        tick, data, loading, error, showData,
     } = useAnalyticsPage();
+
+    // Previous period of the same length — same "vs previous period" pattern
+    // the Overview page's KPI cards use (src/Pages/Analytics/index.js).
+    const prevRange = useMemo(() => {
+        const spanMs = toDate.getTime() - fromDate.getTime();
+        const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
+        const prevFrom = new Date(prevTo.getTime() - spanMs);
+        return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
+    }, [fromDate, toDate]);
+    const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
+
+    const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
+    const trendEngaged  = useMemo(() => pctChange(data?.totals?.engagedUsers,   prevData?.totals?.engagedUsers),   [data, prevData]);
+    const trendCountries = useMemo(() => pctChange(data?.countries?.length,     prevData?.countries?.length),      [data, prevData]);
 
     const maxCountry = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
     const maxBrowser = useMemo(() => Math.max(...(data?.browsers   || []).map(b => b.events), 1), [data]);
@@ -48,6 +62,30 @@ export default function AnalyticsAudience() {
 
                     {showData && (
                         <div className="sa-audience-grid">
+
+                            {/* Top-line numbers */}
+                            <div className="sa-aud-kpis">
+                                <KpiCard
+                                    icon={<IconUsers />}
+                                    label="Unique sessions"
+                                    value={data.totals.uniqueSessions.toLocaleString("de-DE")}
+                                    sub="consent-gated sessions only"
+                                    trend={trendSessions}
+                                />
+                                <KpiCard
+                                    icon={<IconRadio />}
+                                    label="Active users"
+                                    value={data.totals.engagedUsers.toLocaleString("de-DE")}
+                                    sub="engaged: 10s+, clicked, or 2+ pages"
+                                    trend={trendEngaged}
+                                />
+                                <KpiCard
+                                    icon={<IconGlobe />}
+                                    label="Countries reached"
+                                    value={data.countries.length.toLocaleString("de-DE")}
+                                    trend={trendCountries}
+                                />
+                            </div>
 
                             {/* Countries */}
                             <div className="sa-panel sa-aud-countries">

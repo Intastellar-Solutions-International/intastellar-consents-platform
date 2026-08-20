@@ -9,6 +9,8 @@
  * sections) when they aren't supplied, which is the case on this new page.
  */
 
+import { formatPercent } from "./_shared.js";
+
 function fmtInt(n) {
     const x = Number(n);
     if (!Number.isFinite(x)) return "—";
@@ -84,7 +86,7 @@ export function Ga4SessionsChart({ rows, platformBreakdown, summary, channelBrea
         { label: "Users",         value: fmtInt(summary.totalUsers) },
         { label: "New users",     value: fmtInt(summary.newUsers) },
         { label: "Page views",    value: fmtInt(summary.pageViews) },
-        { label: "Engagement",    value: `${(summary.engagementRate * 100).toFixed(1)}%`,
+        { label: "Engagement",    value: formatPercent(summary.engagementRate * 100),
           title: "Engaged sessions as a share of total sessions (GA4's replacement for bounce rate)." },
         { label: "Avg. session",  value: fmtDuration(summary.avgSessionDuration) },
     ] : null;
@@ -178,7 +180,7 @@ export function Ga4SessionsChart({ rows, platformBreakdown, summary, channelBrea
                                         <div className="ga4-pb-row__bar"
                                              style={{ width: `${Math.max(1, share)}%`, background: isSs ? "rgba(99,102,241,0.7)" : "rgba(227,116,0,0.6)" }} />
                                     </div>
-                                    <span className="ga4-pb-row__share">{share.toFixed(1)}%</span>
+                                    <span className="ga4-pb-row__share">{formatPercent(share)}</span>
                                     <span className="ga4-pb-row__count">{fmtInt(p.sessions)}</span>
                                 </div>
                             );
@@ -192,7 +194,7 @@ export function Ga4SessionsChart({ rows, platformBreakdown, summary, channelBrea
                 const ga4Sess = summary.sessions;
                 const capturePct = Math.min(100, (totalConsents / ga4Sess) * 100);
                 const darkZone = Math.max(0, ga4Sess - totalConsents);
-                const captureStr = capturePct.toFixed(1) + "%";
+                const captureStr = formatPercent(capturePct);
                 return (
                     <div className="ga4-coverage">
                         <div className="ga4-coverage__header">
@@ -282,7 +284,7 @@ export function Ga4SessionsChart({ rows, platformBreakdown, summary, channelBrea
                                                     {g.channelGroup}
                                                 </td>
                                                 <td className="ga4-xref__td ga4-xref__td--num">{fmtInt(g.sessions)}</td>
-                                                <td className="ga4-xref__td ga4-xref__td--num">{sessionShare.toFixed(1)}%</td>
+                                                <td className="ga4-xref__td ga4-xref__td--num">{formatPercent(sessionShare)}</td>
                                                 <td className="ga4-xref__td ga4-xref__td--channels">
                                                     {matched.length > 0
                                                         ? matched.map(c => c.channel).join(", ")
@@ -294,7 +296,7 @@ export function Ga4SessionsChart({ rows, platformBreakdown, summary, channelBrea
                                                 <td className="ga4-xref__td ga4-xref__td--num">
                                                     {covPct !== null
                                                         ? <span className={covPct < 10 ? "ga4-xref__cov--low" : covPct > 50 ? "ga4-xref__cov--high" : "ga4-xref__cov--mid"}>
-                                                            {covPct.toFixed(1)}%
+                                                            {formatPercent(covPct)}
                                                           </span>
                                                         : "—"}
                                                 </td>

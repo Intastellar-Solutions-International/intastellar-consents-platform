@@ -101,7 +101,7 @@ export function KpiCard({ icon, label, value, sub, variant, className, trend, ch
                 {trend != null && Number.isFinite(trend) && (
                     <span className={"sa-kpi__trend" + (trend >= 0 ? " sa-kpi__trend--up" : " sa-kpi__trend--down")}
                           title="vs. previous period of the same length">
-                        {trend >= 0 ? "▲" : "▼"} {Math.abs(trend).toFixed(1)}%
+                        {trend >= 0 ? "▲" : "▼"} {formatPercent(Math.abs(trend))}
                     </span>
                 )}
             </span>
@@ -137,12 +137,26 @@ export function ConsentBar({ label, yes, no }) {
     );
 }
 
+// Single formatting convention for the whole Analytics dashboard: de-DE
+// (period thousands separator, comma decimal separator) — already the
+// convention every table on the dashboard uses via .toLocaleString("de-DE")
+// for counts. Percentages/rates were inconsistently built with .toFixed()
+// or raw string concatenation instead, which always renders a period
+// decimal regardless of locale (e.g. "9.8%" next to de-DE counts like
+// "1.352") — this is the one place that should be used for any percentage
+// or rate shown anywhere on the dashboard.
+export function formatPercent(value, digits = 1) {
+    if (value == null || !Number.isFinite(value)) return "—";
+    return value.toLocaleString("de-DE", { minimumFractionDigits: digits, maximumFractionDigits: digits }) + "%";
+}
+
 export function formatDuration(seconds) {
     if (seconds == null || !Number.isFinite(seconds)) return "—";
     if (seconds < 60) return `${Math.round(seconds)}s`;
     if (seconds < 3600) return `${Math.round(seconds / 60)}m`;
-    if (seconds < 86400) return `${(seconds / 3600).toFixed(1)}h`;
-    return `${(seconds / 86400).toFixed(1)}d`;
+    const oneDecimal = { minimumFractionDigits: 1, maximumFractionDigits: 1 };
+    if (seconds < 86400) return `${(seconds / 3600).toLocaleString("de-DE", oneDecimal)}h`;
+    return `${(seconds / 86400).toLocaleString("de-DE", oneDecimal)}d`;
 }
 
 // Small "ⓘ" hint icon carrying its explanation in the native `title`
@@ -167,7 +181,7 @@ export function IndustryBenchmarkNote({ benchmark, actualPct }) {
         <div className="sa-benchmark-note">
             <span className="sa-benchmark-note__label">{benchmark.label} avg: {benchmark.consentRatePct}%</span>
             <span className={"sa-benchmark-note__diff" + (up ? " sa-benchmark-note__diff--up" : " sa-benchmark-note__diff--down")}>
-                {up ? "▲" : "▼"} {Math.abs(diff).toFixed(1)}pts {up ? "above" : "below"} average
+                {up ? "▲" : "▼"} {Math.abs(diff).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}pts {up ? "above" : "below"} average
             </span>
             <InfoTip text="Reference estimate, not a live average computed from other customers' traffic. Set the industry in Settings → Analytics Script." />
         </div>

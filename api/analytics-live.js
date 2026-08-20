@@ -110,6 +110,8 @@ export default async function handler(req, res) {
             FROM analytics_events
             WHERE site_id = $1
               AND received_at >= NOW() - INTERVAL '30 minutes'
+              AND pathname !~* '^/api/'
+              AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
             GROUP BY pathname
             ORDER BY views DESC
             LIMIT 10`,

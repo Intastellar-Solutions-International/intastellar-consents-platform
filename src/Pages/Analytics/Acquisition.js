@@ -1,6 +1,6 @@
 const { useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPage, MiniBar } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import "./Analytics.css";
 
@@ -9,8 +9,21 @@ export default function AnalyticsAcquisition() {
 
     const {
         domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
-        data, loading, error, showData,
+        tick, data, loading, error, showData,
     } = useAnalyticsPage();
+
+    // Previous period of the same length — same "vs previous period" pattern
+    // the Overview page's KPI cards use (src/Pages/Analytics/index.js).
+    const prevRange = useMemo(() => {
+        const spanMs = toDate.getTime() - fromDate.getTime();
+        const prevTo = new Date(fromDate.getTime() - 24 * 60 * 60 * 1000);
+        const prevFrom = new Date(prevTo.getTime() - spanMs);
+        return { fromIso: toIsoDate(prevFrom), toIso: toIsoDate(prevTo) };
+    }, [fromDate, toDate]);
+    const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
+
+    const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
+    const trendPageviews = useMemo(() => pctChange(data?.totals?.total,          prevData?.totals?.total),          [data, prevData]);
 
     const maxUtm       = useMemo(() => Math.max(...(data?.utmSources || []).map(u => u.events), 1), [data]);
     const maxPages     = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
@@ -44,6 +57,23 @@ export default function AnalyticsAcquisition() {
 
                     {showData && (
                         <div className="sa-acq-grid">
+
+                            {/* Top-line numbers */}
+                            <div className="sa-acq-kpis">
+                                <KpiCard
+                                    icon={<IconGlobe />}
+                                    label="Sessions"
+                                    value={data.totals.uniqueSessions.toLocaleString("de-DE")}
+                                    sub="consent-gated sessions only"
+                                    trend={trendSessions}
+                                />
+                                <KpiCard
+                                    icon={<IconTrendingUp />}
+                                    label="Page views"
+                                    value={data.totals.total.toLocaleString("de-DE")}
+                                    trend={trendPageviews}
+                                />
+                            </div>
 
                             {/* Top pages */}
                             <div className="sa-panel sa-acq-pages">
@@ -92,7 +122,12 @@ export default function AnalyticsAcquisition() {
                                         <tbody>
                                             {data.utmSources.map((u, i) => (
                                                 <tr key={i}>
-                                                    <td>{u.campaign || "—"}</td>
+                                                    <td
+                                                        title={u.campaignRaw && u.campaignRaw !== u.campaign ? `Raw value: ${u.campaignRaw}` : undefined}
+                                                        style={!u.campaign || u.campaign.startsWith("Unresolved") || u.campaign.startsWith("Unnamed") ? { color: "rgba(130,130,130,0.7)", fontStyle: "italic" } : undefined}
+                                                    >
+                                                        {u.campaign || "—"}
+                                                    </td>
                                                     <td>{u.source || "—"}</td>
                                                     <td>{u.medium || "—"}</td>
                                                     <td className="sa-table__num">{u.events.toLocaleString("de-DE")}</td>
@@ -173,10 +208,18 @@ export default function AnalyticsAcquisition() {
                                     <tbody>
                                         {data?.hosts?.map((h, i) => (
                                             <tr key={i}>
-                                                <td className="sa-table__path" title={h.host}>
+                                                <td
+                                                    className="sa-table__path"
+                                                    title={h.host === "(unknown)"
+                                                        ? "No hostname was reported with these events — usually pageviews sent before host tracking was added to this site's tracking snippet, or from a cached/self-hosted copy of the snippet that predates it. Re-copying the current snippet from Settings resolves this going forward."
+                                                        : h.host}
+                                                >
                                                     {h.host}
                                                     {h.host !== domain && h.host !== "(unknown)" && (
                                                         <span className="sa-panel__consent-note"> · cross-site</span>
+                                                    )}
+                                                    {h.host === "(unknown)" && (
+                                                        <span className="sa-panel__consent-note"> · no host reported</span>
                                                     )}
                                                 </td>
                                                 <td className="sa-table__num">{h.events.toLocaleString("de-DE")}</td>

@@ -987,12 +987,15 @@
     align-items: start;
     grid-template-columns: repeat(2, 1fr);
     grid-template-areas:
+        "kpis       kpis"
         "countries  countries"
         "browsers   os"
         "screens    devices"
         "lang       tz";
 }
 
+.sa-aud-kpis      { grid-area: kpis; display: flex; gap: 12px; flex-wrap: wrap; }
+.sa-aud-kpis .sa-kpi { flex: 1 1 200px; }
 .sa-aud-countries { grid-area: countries; }
 .sa-aud-browsers  { grid-area: browsers;  }
 .sa-aud-os        { grid-area: os;        }
@@ -1005,7 +1008,7 @@
     .sa-audience-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
-            "countries" "browsers" "os"
+            "kpis" "countries" "browsers" "os"
             "devices" "screens" "lang" "tz";
     }
 }
@@ -1026,10 +1029,13 @@
     align-items: start;
     grid-template-columns: repeat(2, 1fr);
     grid-template-areas:
+        "kpis      kpis"
         "pages     utm"
         "referrers hosts";
 }
 
+.sa-acq-kpis      { grid-area: kpis; display: flex; gap: 12px; flex-wrap: wrap; }
+.sa-acq-kpis .sa-kpi { flex: 1 1 200px; }
 .sa-acq-pages     { grid-area: pages;     }
 .sa-acq-utm       { grid-area: utm;       }
 .sa-acq-referrers { grid-area: referrers; }
@@ -1038,7 +1044,7 @@
 @media (max-width: 760px) {
     .sa-acq-grid {
         grid-template-columns: 1fr;
-        grid-template-areas: "pages" "utm" "referrers" "hosts";
+        grid-template-areas: "kpis" "pages" "utm" "referrers" "hosts";
     }
 }
 

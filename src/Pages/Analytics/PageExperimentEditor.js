@@ -5,7 +5,7 @@ import { DomainContext } from "../../App.js";
 import { useSyncDomainFromRoute, isCombinedOrClearDomain, analyticsPageExperimentsPath } from "../../Functions/domainPathSegments.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { ScannerHost } from "../../API/host.js";
-import { authHeaders, InfoTip } from "./_shared.js";
+import { authHeaders, InfoTip, formatPercent } from "./_shared.js";
 import { IconPlus, IconTrash, IconClock, IconUsers, IconTrendingUp, IconBarChart, IconAlertTriangle } from "./Icons.js";
 import "./Analytics.css";
 
@@ -1048,14 +1048,14 @@ function ResultsPanel({ results, loading, history, domain, testId }) {
                                     </td>
                                     {hasGoal && (
                                         <td className="sa-table__num" title={v.conversions === null ? `No analytics site registered for ${v.domain}` : undefined}>
-                                            {v.conversions === null ? "No site" : v.uniqueSessions > 0 ? (v.expectedConversionRate * 100).toFixed(2) + "%" : "No data yet"}
+                                            {v.conversions === null ? "No site" : v.uniqueSessions > 0 ? formatPercent(v.expectedConversionRate * 100, 2) : "No data yet"}
                                         </td>
                                     )}
                                     {hasGoal && (
                                         <td className="sa-table__num">
                                             {v.isControl || !hasEnoughData || v.conversions === null ? "—" : (
                                                 <span className={v.expectedImprovement >= 0 ? "pxp-report__uplift--pos" : "pxp-report__uplift--neg"}>
-                                                    {v.expectedImprovement >= 0 ? "+" : ""}{(v.expectedImprovement * 100).toFixed(1)}%
+                                                    {v.expectedImprovement >= 0 ? "+" : ""}{formatPercent(v.expectedImprovement * 100)}
                                                 </span>
                                             )}
                                         </td>
@@ -1070,7 +1070,7 @@ function ResultsPanel({ results, loading, history, domain, testId }) {
                                                 <span className="pxp-report__collecting-chip">Collecting data</span>
                                             ) : (
                                                 <span className={`pxp-report__prob pxp-report__prob--${probabilityTone(v.probabilityToBeBetter)}`}>
-                                                    {(v.probabilityToBeBetter * 100).toFixed(1)}%
+                                                    {formatPercent(v.probabilityToBeBetter * 100)}
                                                 </span>
                                             )}
                                         </td>
@@ -1156,7 +1156,7 @@ function ConversionRateGraph({ dailySeries, variants }) {
                         <g key={v}>
                             <line x1={PAD.left} y1={toY(v)} x2={W - PAD.right} y2={toY(v)} stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
                             <text x={PAD.left - 8} y={toY(v) + 4} textAnchor="end" fontSize="10" fill="rgba(160,160,160,0.6)">
-                                {(v * 100).toFixed(v < 0.1 ? 1 : 0)}%
+                                {formatPercent(v * 100, v < 0.1 ? 1 : 0)}
                             </text>
                         </g>
                     ))}
