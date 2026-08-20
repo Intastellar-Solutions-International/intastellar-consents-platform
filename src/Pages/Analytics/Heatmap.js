@@ -43,7 +43,7 @@ function usePaths(domain, fromIso, toIso) {
     return { paths, loading, noSiteKey };
 }
 
-function useHeatmapDetail(domain, pathname, device, fromIso, toIso) {
+function useHeatmapDetail(domain, pathname, host, device, fromIso, toIso) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
     const [error,   setError]   = useState(null);
@@ -54,6 +54,7 @@ function useHeatmapDetail(domain, pathname, device, fromIso, toIso) {
         setError(null);
         const qs = new URLSearchParams({
             domain, pathname, from: fromIso, to: toIso,
+            ...(host ? { host } : {}),
             ...(device ? { device } : {}),
         }).toString();
         fetch(`${HEATMAP_URL}?${qs}`, { headers: authHeaders() })
@@ -63,7 +64,7 @@ function useHeatmapDetail(domain, pathname, device, fromIso, toIso) {
             })
             .catch(() => setError("Could not load heatmap data."))
             .finally(() => setLoading(false));
-    }, [domain, pathname, device, fromIso, toIso]);
+    }, [domain, pathname, host, device, fromIso, toIso]);
 
     return { data, loading, error };
 }
@@ -80,9 +81,9 @@ const DEVICE_DIMENSIONS = {
     mobile:  { width: 390,  height: 844 },
 };
 
-function ClickOverlay({ domain, pathname, clicks, device }) {
+function ClickOverlay({ host, pathname, clicks, device }) {
     const maxN = useMemo(() => Math.max(...clicks.map(c => c.n), 1), [clicks]);
-    const src  = pathname ? `https://${domain}${pathname}` : null;
+    const src  = pathname && host ? `https://${host}${pathname}` : null;
     const [frameFailed, setFrameFailed] = useState(false);
     const outerRef = useRef(null);
     const [scale, setScale] = useState(1);
@@ -183,14 +184,20 @@ export default function AnalyticsHeatmap() {
     } = useAnalyticsPageChrome();
 
     const { paths, loading: pathsLoading, noSiteKey } = usePaths(domain, fromIso, toIso);
-    const [selectedPath, setSelectedPath] = useState(null);
+    // A path is keyed by (host, pathname), not pathname alone — the same
+    // pathname can exist on multiple subdomains (page_host) with different
+    // layouts, so picking a path also has to pin down which host it's on.
+    const [selected, setSelected] = useState(null); // { pathname, host }
     const [device, setDevice] = useState("");
 
-    useEffect(() => {
-        if (!selectedPath && paths.length) setSelectedPath(paths[0].pathname);
-    }, [paths, selectedPath]);
+    const pathKey = p => `${p.host} ${p.pathname}`;
+    const multiHost = useMemo(() => new Set(paths.map(p => p.host)).size > 1, [paths]);
 
-    const { data, loading, error } = useHeatmapDetail(domain, selectedPath, device, fromIso, toIso);
+    useEffect(() => {
+        if (!selected && paths.length) setSelected({ pathname: paths[0].pathname, host: paths[0].host });
+    }, [paths, selected]);
+
+    const { data, loading, error } = useHeatmapDetail(domain, selected?.pathname, selected?.host, device, fromIso, toIso);
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -222,12 +229,15 @@ export default function AnalyticsHeatmap() {
                             <div className="sa-heatmap__controls">
                                 <select
                                     className="sa-select"
-                                    value={selectedPath || ""}
-                                    onChange={e => setSelectedPath(e.target.value)}
+                                    value={selected ? pathKey(selected) : ""}
+                                    onChange={e => {
+                                        const match = paths.find(p => pathKey(p) === e.target.value);
+                                        if (match) setSelected({ pathname: match.pathname, host: match.host });
+                                    }}
                                 >
                                     {paths.map(p => (
-                                        <option key={p.pathname} value={p.pathname}>
-                                            {p.pathname} ({p.clicks.toLocaleString("de-DE")} clicks)
+                                        <option key={pathKey(p)} value={pathKey(p)}>
+                                            {multiHost ? `${p.host}${p.pathname}` : p.pathname} ({p.clicks.toLocaleString("de-DE")} clicks)
                                         </option>
                                     ))}
                                 </select>
@@ -255,7 +265,7 @@ export default function AnalyticsHeatmap() {
                                         {data.noData ? (
                                             <p className="sa-notice">No click data for this page/device combination.</p>
                                         ) : (
-                                            <ClickOverlay domain={domain} pathname={selectedPath} clicks={data.clicks} device={device} />
+                                            <ClickOverlay host={data.host} pathname={data.pathname} clicks={data.clicks} device={device} />
                                         )}
                                     </div>
 
