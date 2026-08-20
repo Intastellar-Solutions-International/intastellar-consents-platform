@@ -14,7 +14,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { tryRefreshToken } from "./_ad-platform-fetch.js";
+import { tryRefreshToken, fetchPlatformDataDaily } from "./_ad-platform-fetch.js";
 
 let pool;
 function getPool() {
@@ -289,10 +289,40 @@ export default async function handler(req, res) {
         }
     }
 
-    // Live fallback: if no cached rows and we have a GA4 token, fetch directly from the API
+    // For Search Console: same connection lookup, reused below for both the
+    // daily-rows live fallback and the top queries/pages fetch.
+    let gscConn = null;
+    if (platform === "google_search_console") {
+        const { rows: connRows } = await db.query(
+            `SELECT * FROM ad_platform_connections
+             WHERE organisation_id=$1 AND domain=$2 AND platform='google_search_console'
+               AND account_id IS NOT NULL AND access_token IS NOT NULL`,
+            [orgId, domain]
+        );
+        if (connRows.length) {
+            gscConn = await tryRefreshToken(db, connRows[0]).catch(() => connRows[0]);
+        }
+    }
+
+    // Live fallback: if no cached rows, fetch directly from the API rather
+    // than showing an empty trend — the cache only gets backfilled once
+    // cron-ad-sync.js next runs, so a connection made minutes ago (like the
+    // one topQueries/topPages below prove is already working live) would
+    // otherwise show all zeros here despite genuinely having data.
     if (rows.length === 0 && ga4AccessToken && ga4PropertyId) {
         rows = await fetchGA4DailyLive(ga4AccessToken, ga4PropertyId, fromDate, toDate)
             .catch(() => []);
+    } else if (rows.length === 0 && gscConn) {
+        const byDay = await fetchPlatformDataDaily(gscConn, fromDate, toDate).catch(() => ({}));
+        rows = Object.entries(byDay).map(([date, v]) => ({
+            date,
+            sessions: Number(v.clicks || 0),
+            clicks: Number(v.clicks || 0),
+            impressions: Number(v.impressions || 0),
+            spend: Number(v.spend || 0),
+            currency: v.currency,
+            avgPosition: v.avgPosition != null ? Number(v.avgPosition) : null,
+        })).sort((a, b) => a.date.localeCompare(b.date));
     }
 
     // For GA4: platform breakdown + aggregate summary + channel group breakdown (all in parallel)
@@ -310,20 +340,11 @@ export default async function handler(req, res) {
     // For Search Console: top queries + top pages, live (see fetchGSCDimension's doc comment)
     let topQueries = null;
     let topPages = null;
-    if (platform === "google_search_console") {
-        const { rows: connRows } = await db.query(
-            `SELECT * FROM ad_platform_connections
-             WHERE organisation_id=$1 AND domain=$2 AND platform='google_search_console'
-               AND account_id IS NOT NULL AND access_token IS NOT NULL`,
-            [orgId, domain]
-        );
-        if (connRows.length) {
-            const refreshed = await tryRefreshToken(db, connRows[0]).catch(() => connRows[0]);
-            [topQueries, topPages] = await Promise.all([
-                fetchGSCDimension(refreshed.access_token, refreshed.account_id, fromDate, toDate, "query").catch(() => []),
-                fetchGSCDimension(refreshed.access_token, refreshed.account_id, fromDate, toDate, "page").catch(() => []),
-            ]);
-        }
+    if (gscConn) {
+        [topQueries, topPages] = await Promise.all([
+            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, "query").catch(() => []),
+            fetchGSCDimension(gscConn.access_token, gscConn.account_id, fromDate, toDate, "page").catch(() => []),
+        ]);
     }
 
     return res.status(200).json({ rows, platformBreakdown, summary, channelBreakdown, topQueries, topPages });
