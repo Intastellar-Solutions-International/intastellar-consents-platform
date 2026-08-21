@@ -3755,3 +3755,36 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-seg-filter__clear:hover {
     background: rgba(239,68,68,0.14);
 }
+
+/* ── Ad Spend sync bar ───────────────────────────────────────────────────── */
+.sa-as-sync-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.sa-as-sync-btn {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid rgba(192,159,83,0.35);
+    background: rgba(192,159,83,0.08);
+    color: rgba(192,159,83,0.85);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.sa-as-sync-btn:hover:not(:disabled) {
+    background: rgba(192,159,83,0.16);
+}
+
+.sa-as-sync-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.sa-as-sync-msg {
+    font-size: 0.78rem;
+    color: rgba(160,174,192,0.65);
+}

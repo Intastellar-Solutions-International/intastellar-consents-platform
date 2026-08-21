@@ -1,4 +1,4 @@
-const { useState, useEffect, useContext, useMemo } = React;
+const { useState, useEffect, useContext, useMemo, useCallback } = React;
 const useParams = window.ReactRouterDOM.useParams;
 const Link = window.ReactRouterDOM.Link;
 import { DomainContext } from "../../App.js";
@@ -196,12 +196,34 @@ export default function AdSpend() {
     const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
 
-    const { data, loading, error } = useAdSpendReport(domainsHeaderValue, fromIso, toIso);
+    const [tick, setTick] = useState(0);
+    const { data, loading, error } = useAdSpendReport(domainsHeaderValue, fromIso, toIso, tick);
 
     const maxPlatform = useMemo(() => Math.max(...(data?.platforms || []).map(p => p.amount), 1), [data]);
     const maxDomain   = useMemo(() => Math.max(...(data?.byDomain  || []).map(d => d.amount), 1), [data]);
 
     const showData = !loading && data && !data.noConnections;
+
+    const [syncing, setSyncing] = useState(false);
+    const [syncMsg, setSyncMsg] = useState(null);
+
+    const handleSync = useCallback(async () => {
+        if (!domainLabel || syncing) return;
+        setSyncing(true);
+        setSyncMsg(null);
+        try {
+            const qs = new URLSearchParams({ domain: domainLabel }).toString();
+            const r = await fetch(`${ScannerHost}/api/cron-ad-sync?${qs}`, { headers: authHeaders() });
+            const json = await r.json().catch(() => ({}));
+            if (!r.ok) { setSyncMsg("Sync failed — check console."); }
+            else {
+                const synced = (json.results || []).filter(x => x.status === "synced").length;
+                setSyncMsg(synced > 0 ? `Synced ${synced} platform(s).` : "Already up to date.");
+                setTick(t => t + 1);
+            }
+        } catch { setSyncMsg("Sync failed — check network."); }
+        finally { setSyncing(false); }
+    }, [domainLabel, syncing]);
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -220,6 +242,15 @@ export default function AdSpend() {
                     {loading && <p className="sa-notice">Loading&hellip;</p>}
                     {error && <p className="sa-notice sa-notice--error">{error}</p>}
                     {!loading && data?.noConnections && <AdSpendSetupCard domain={domainLabel} />}
+
+                    {showData && !loading && domainLabel && (
+                        <div className="sa-as-sync-bar">
+                            <button className="sa-as-sync-btn" onClick={handleSync} disabled={syncing}>
+                                {syncing ? "Syncing…" : "Sync data now"}
+                            </button>
+                            {syncMsg && <span className="sa-as-sync-msg">{syncMsg}</span>}
+                        </div>
+                    )}
 
                     {showData && (
                         <div className="sa-as-grid">
