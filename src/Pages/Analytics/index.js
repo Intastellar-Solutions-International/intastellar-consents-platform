@@ -354,6 +354,55 @@ function SetupCard({ domain, onKeyGenerated }) {
     );
 }
 
+// ── Consent Impact Estimator ──────────────────────────────────────────────────
+// Shows observed vs estimated true traffic, accounting for the ~25-35% of
+// visitors who decline full consent and are therefore counted with less
+// granularity. Uses only analytics_events (consent_level column) — the
+// consent platform's separate DB is not consulted here.
+function ConsentImpactPanel({ impact }) {
+    if (!impact || impact.estimatedTrue == null) return null;
+    const { consentRate, observedSessions, estimatedTrue } = impact;
+    const hidden = Math.max(0, estimatedTrue - observedSessions);
+    const hiddenPct = estimatedTrue > 0 ? Math.round((hidden / estimatedTrue) * 100) : 0;
+
+    return (
+        <div className="sa-panel sa-consent-impact">
+            <h3 className="sa-panel__title">
+                <IconShieldCheck className="sa-icon" /> Consent Impact Estimator
+            </h3>
+            <p className="sa-panel__sub">
+                Visitors who decline full consent are visible only as anonymous events — their sessions
+                cannot be stitched. This estimates your true session volume based on the observed consent rate.
+            </p>
+            <div className="sa-ci-kpis">
+                <div className="sa-ci-kpi">
+                    <span className="sa-ci-kpi__label">Consent rate</span>
+                    <span className="sa-ci-kpi__value">{formatPercent(consentRate)}</span>
+                </div>
+                <div className="sa-ci-kpi">
+                    <span className="sa-ci-kpi__label">Observed sessions</span>
+                    <span className="sa-ci-kpi__value">{observedSessions.toLocaleString("de-DE")}</span>
+                </div>
+                <div className="sa-ci-kpi">
+                    <span className="sa-ci-kpi__label">Estimated true total</span>
+                    <span className="sa-ci-kpi__value">{estimatedTrue.toLocaleString("de-DE")}</span>
+                    <span className="sa-ci-kpi__note">~{hiddenPct}% of traffic uncounted in session analytics</span>
+                </div>
+            </div>
+            <div className="sa-ci-bar-wrap">
+                <div className="sa-ci-bar">
+                    <div className="sa-ci-bar__observed" style={{ width: (100 - hiddenPct) + "%" }} title="Observed (full consent)" />
+                    <div className="sa-ci-bar__hidden"   style={{ width: hiddenPct + "%" }} title="Estimated uncounted (declined/minimal consent)" />
+                </div>
+                <div className="sa-ci-bar-labels">
+                    <span>Observed</span>
+                    <span>Uncounted</span>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 // ── Main overview page ────────────────────────────────────────────────────────
 export default function SiteAnalytics() {
     document.title = "Site Analytics | Intastellar Consents";
@@ -598,6 +647,10 @@ export default function SiteAnalytics() {
                                     </tbody>
                                 </table>
                             </div>
+
+                            {data.consentImpact && (
+                                <ConsentImpactPanel impact={data.consentImpact} />
+                            )}
 
                         </div>
                     )}

@@ -20,6 +20,87 @@ import "./Analytics.css";
 // misleading 100% and can crowd out countries with a real sample size.
 const MAP_RATE_MIN_SAMPLE = 5;
 
+const CHANNEL_LABEL = { organic: "Organic", paid: "Paid", referral: "Referral", direct: "Direct" };
+const CHANNEL_COLORS_FIRST = {
+    organic:  "rgba(74,222,128,0.55)",
+    paid:     "rgba(251,146,60,0.55)",
+    referral: "rgba(99,179,237,0.55)",
+    direct:   "rgba(167,139,250,0.55)",
+};
+const CHANNEL_COLORS_LAST = {
+    organic:  "rgba(74,222,128,0.85)",
+    paid:     "rgba(251,146,60,0.85)",
+    referral: "rgba(99,179,237,0.85)",
+    direct:   "rgba(167,139,250,0.85)",
+};
+
+function AttributionComparison({ firstTouchByChannel, lastTouchByChannel }) {
+    const channels = Array.from(new Set([
+        ...(firstTouchByChannel || []).map(r => r.channel),
+        ...(lastTouchByChannel  || []).map(r => r.channel),
+    ]));
+
+    const firstMap = Object.fromEntries((firstTouchByChannel || []).map(r => [r.channel, r.count]));
+    const lastMap  = Object.fromEntries((lastTouchByChannel  || []).map(r => [r.channel, Number(r.sessions)]));
+
+    const firstTotal = Object.values(firstMap).reduce((s, n) => s + n, 0);
+    const lastTotal  = Object.values(lastMap).reduce((s, n) => s + n, 0);
+
+    if (!firstTotal && !lastTotal) return null;
+
+    return (
+        <div className="sa-panel sa-attr-comparison">
+            <h3 className="sa-panel__title">First-touch vs Last-touch Attribution</h3>
+            <p className="sa-panel__sub">
+                First-touch credits the channel where the session started. Last-touch credits the channel
+                of the last event before a conversion — useful for bottom-of-funnel insight.
+            </p>
+            <div className="sa-attr-cols">
+                <div className="sa-attr-col">
+                    <h4 className="sa-panel__sub-title">First-touch</h4>
+                    <div className="sa-consent-list">
+                        {channels.map(ch => {
+                            const count = firstMap[ch] || 0;
+                            const pct = firstTotal > 0 ? Math.round((count / firstTotal) * 100) : 0;
+                            return (
+                                <div key={ch} className="sa-consent-row">
+                                    <span className="sa-consent-row__label">{CHANNEL_LABEL[ch] || ch}</span>
+                                    <div className="sa-bar">
+                                        <div className="sa-bar__seg"
+                                            style={{ width: pct + "%", background: CHANNEL_COLORS_FIRST[ch] || "rgba(192,159,83,0.5)" }}
+                                            title={`${count} sessions`} />
+                                    </div>
+                                    <span className="sa-consent-row__pct">{pct}%</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+                <div className="sa-attr-col">
+                    <h4 className="sa-panel__sub-title">Last-touch</h4>
+                    <div className="sa-consent-list">
+                        {channels.map(ch => {
+                            const count = lastMap[ch] || 0;
+                            const pct = lastTotal > 0 ? Math.round((count / lastTotal) * 100) : 0;
+                            return (
+                                <div key={ch} className="sa-consent-row">
+                                    <span className="sa-consent-row__label">{CHANNEL_LABEL[ch] || ch}</span>
+                                    <div className="sa-bar">
+                                        <div className="sa-bar__seg"
+                                            style={{ width: pct + "%", background: CHANNEL_COLORS_LAST[ch] || "rgba(192,159,83,0.8)" }}
+                                            title={`${count} sessions`} />
+                                    </div>
+                                    <span className="sa-consent-row__pct">{pct}%</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 const SECTIONS = [
     { key: "overview", label: "Overview" },
     { key: "deepdive", label: "Funnel & Sources" },
@@ -258,6 +339,11 @@ export default function AnalyticsConversionsOverview() {
                                         fromIso={fromIso}
                                         toIso={toIso}
                                         byCampaign={data.conversionsByCampaign}
+                                    />
+
+                                    <AttributionComparison
+                                        firstTouchByChannel={data.conversionsByChannel}
+                                        lastTouchByChannel={data.lastTouchByChannel}
                                     />
                                 </div>
                             )}
