@@ -28,16 +28,16 @@ function fmtDate(iso) {
 
 function MiniBarPreview({ report }) {
     const heights = [55, 70, 48, 85, 62, 90, 58, 75, 68, 82];
-    const colors = { line: "#3B87E8", bar: "#3B87E8", table: "#7B8499", kpi: "#C4A35A", donut: "#A78BFA" };
-    const color = colors[report.chart_type] || "#3B87E8";
+    const colors = { line: "rgba(192,159,83,0.85)", bar: "rgba(192,159,83,0.85)", table: "rgba(130,130,130,0.5)", kpi: "rgba(192,159,83,0.85)", donut: "rgba(192,159,83,0.85)" };
+    const color = colors[report.chart_type] || "rgba(192,159,83,0.85)";
 
     if (report.chart_type === "kpi") {
         return (
             <div className="sa-report-card__preview" style={{ display: "flex", gap: 6, alignItems: "center" }}>
                 {(report.metrics || ["sessions"]).slice(0, 3).map(m => (
                     <div key={m} style={{ flex: 1, background: "rgba(196,163,90,.12)", borderRadius: 4, padding: "4px 6px" }}>
-                        <div style={{ fontSize: 9, color: "var(--sa-muted)" }}>{(METRIC_LABELS[m] || m).toUpperCase()}</div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "var(--sa-hi)" }}>—</div>
+                        <div style={{ fontSize: 9, color: "rgba(130,130,130,0.55)" }}>{(METRIC_LABELS[m] || m).toUpperCase()}</div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(210,210,210,0.88)" }}>—</div>
                     </div>
                 ))}
             </div>
@@ -50,7 +50,7 @@ function MiniBarPreview({ report }) {
         return (
             <div className="sa-report-card__preview" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <svg width="48" height="48" viewBox="0 0 48 48" style={{ transform: "rotate(-90deg)" }}>
-                    <circle cx="24" cy="24" r={r} fill="none" stroke="var(--sa-track)" strokeWidth="8" />
+                    <circle cx="24" cy="24" r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="8" />
                     <circle cx="24" cy="24" r={r} fill="none" stroke={color} strokeWidth="8"
                         strokeDasharray={circumference} strokeDashoffset={circumference * (1 - pct)} strokeLinecap="butt" />
                 </svg>
@@ -61,14 +61,14 @@ function MiniBarPreview({ report }) {
     if (report.chart_type === "table") {
         return (
             <div className="sa-report-card__preview" style={{ flexDirection: "column", gap: 3, padding: 6 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "var(--sa-muted)", paddingBottom: 3, borderBottom: "1px solid var(--sa-border)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "rgba(130,130,130,0.55)", paddingBottom: 3, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
                     <span>{BREAKDOWN_LABELS[report.breakdown] || "DIM"}</span>
                     <span>{(METRIC_LABELS[report.metrics?.[0]] || "VALUE").toUpperCase()}</span>
                 </div>
                 {["—", "—", "—"].map((_, i) => (
-                    <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "var(--sa-txt-sec)" }}>
-                        <span style={{ width: 60, background: "var(--sa-track)", borderRadius: 2, height: 8, marginTop: 2 }} />
-                        <span style={{ width: 28, background: "var(--sa-track)", borderRadius: 2, height: 8, marginTop: 2 }} />
+                    <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "rgba(160,160,160,0.65)" }}>
+                        <span style={{ width: 60, background: "rgba(255,255,255,0.07)", borderRadius: 2, height: 8, marginTop: 2 }} />
+                        <span style={{ width: 28, background: "rgba(255,255,255,0.07)", borderRadius: 2, height: 8, marginTop: 2 }} />
                     </div>
                 ))}
             </div>
@@ -177,7 +177,7 @@ export default function SavedReports() {
                         <>
                             <div className="sa-reports-header">
                                 <div>
-                                    <p className="sa-notice" style={{ margin: 0, color: "var(--sa-txt-sec)" }}>
+                                    <p className="sa-notice" style={{ margin: 0, color: "rgba(160,160,160,0.65)" }}>
                                         Custom reports are saved per domain and rebuild from live data each time you open them.
                                     </p>
                                 </div>
