@@ -4259,3 +4259,102 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-rb-donut-pct    { font-size: 0.78rem; font-weight: 600; color: rgba(210,210,210,0.85); }
 
 .sa-rb-no-data { font-size: 0.82rem; color: rgba(130,130,130,0.5); padding: 24px 0; text-align: center; }
+
+/* ── Template library ────────────────────────────────────────────────────── */
+
+.sa-tpl-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+}
+
+.sa-tpl-body {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sa-tpl-category__label {
+    font-size: 0.67rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.sa-tpl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.sa-tpl-card {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: background .12s, border-color .12s;
+}
+
+.sa-tpl-card:hover {
+    background: rgba(192,159,83,0.06);
+    border-color: rgba(192,159,83,0.25);
+}
+
+.sa-tpl-card__header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.sa-tpl-card__icon {
+    display: flex;
+    align-items: center;
+    opacity: 0.85;
+}
+
+.sa-tpl-card__cat {
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.sa-tpl-card__name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(210,210,210,0.9);
+    line-height: 1.25;
+}
+
+.sa-tpl-card__desc {
+    font-size: 0.75rem;
+    color: rgba(160,160,160,0.6);
+    line-height: 1.45;
+}
+
+.sa-tpl-card__meta {
+    font-size: 0.70rem;
+    color: rgba(130,130,130,0.5);
+    margin-top: 2px;
+}
+
+.sa-tpl-card__use {
+    font-size: 0.73rem;
+    font-weight: 600;
+    color: rgba(192,159,83,0.7);
+    margin-top: 4px;
+    opacity: 0;
+    transition: opacity .12s;
+}
+
+.sa-tpl-card:hover .sa-tpl-card__use {
+    opacity: 1;
+}

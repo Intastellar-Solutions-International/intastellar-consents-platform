@@ -1,10 +1,12 @@
 const { useState, useEffect, useMemo } = React;
-const useParams  = window.ReactRouterDOM.useParams;
-const useHistory = window.ReactRouterDOM.useHistory;
+const useParams   = window.ReactRouterDOM.useParams;
+const useHistory  = window.ReactRouterDOM.useHistory;
+const useLocation = window.ReactRouterDOM.useLocation;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, KpiCard, formatPercent } from "./_shared.js";
 import { analyticsReportsPath } from "../../Functions/domainPathSegments.js";
+import { REPORT_TEMPLATES, CT_SVG } from "./reportTemplates.js";
 import TrendLineChart from "./TrendLineChart.js";
 import { IconTarget } from "./Icons.js";
 import "./Analytics.css";
@@ -49,36 +51,6 @@ const FILTER_DEVICE_OPTS  = ["desktop", "mobile", "tablet"];
 const FILTER_CONSENT_OPTS = ["full", "minimal"];
 
 const EMPTY_CONFIG = { name: "", chartType: "line", metrics: ["sessions"], breakdown: "date", filters: [], dateRangeDays: 30 };
-
-// ── Chart type SVG icons ──────────────────────────────────────────────────────
-
-const CT_SVG = {
-    line: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-            <polyline points="3 17 8 11 13 14 21 6" /><line x1="3" y1="21" x2="21" y2="21" />
-        </svg>
-    ),
-    bar: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-            <rect x="3" y="12" width="4" height="9" rx="1" /><rect x="10" y="7" width="4" height="14" rx="1" /><rect x="17" y="3" width="4" height="18" rx="1" />
-        </svg>
-    ),
-    table: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-            <rect x="3" y="3" width="18" height="18" rx="2" /><line x1="3" y1="9" x2="21" y2="9" /><line x1="3" y1="15" x2="21" y2="15" /><line x1="9" y1="9" x2="9" y2="21" />
-        </svg>
-    ),
-    kpi: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-            <rect x="3" y="4" width="7" height="7" rx="1.5" /><rect x="14" y="4" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" />
-        </svg>
-    ),
-    donut: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
-            <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="4" /><line x1="12" y1="3" x2="12" y2="8" /><line x1="20.5" y1="7" x2="16.1" y2="9.5" />
-        </svg>
-    ),
-};
 
 // ── Visualisation sub-components ──────────────────────────────────────────────
 
@@ -191,13 +163,23 @@ function FilterRow({ filter, onChange, onRemove }) {
 export default function ReportBuilder() {
     const { reportId } = useParams();
     const history      = useHistory();
+    const location     = useLocation();
     const isNew        = !reportId || reportId === "new";
 
-    document.title = (isNew ? "New Report" : "Edit Report") + " | Site Analytics";
+    // Check for template pre-population (?tpl=key or ?domain=x from saved-reports edit)
+    const tplKey = new URLSearchParams(location.search).get("tpl");
+    const tpl    = tplKey ? REPORT_TEMPLATES.find(t => t.key === tplKey) : null;
+
+    const initialConfig = tpl
+        ? { name: tpl.name, chartType: tpl.chartType, metrics: tpl.metrics,
+            breakdown: tpl.breakdown, filters: tpl.filters, dateRangeDays: tpl.dateRangeDays }
+        : EMPTY_CONFIG;
+
+    document.title = tpl ? `${tpl.name} | Reports` : (isNew ? "New Report" : "Edit Report") + " | Site Analytics";
 
     const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate } = useAnalyticsPageChrome();
 
-    const [config,  setConfig]  = useState(EMPTY_CONFIG);
+    const [config,  setConfig]  = useState(initialConfig);
     const [saving,  setSaving]  = useState(false);
     const [saveErr, setSaveErr] = useState(null);
     const [loadErr, setLoadErr] = useState(null);
