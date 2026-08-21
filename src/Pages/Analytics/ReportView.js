@@ -55,7 +55,7 @@ const METRIC_DEFS = {
     conversions:    { getTotal: (d, _ad) => (d?.conversions||[]).reduce((s,c) => s+(c.count||0), 0),                isRate: false },
     conversionRate: { getTotal: (d, _ad) => d?.totals?.conversionRate || 0,                                         isRate: true  },
     consentRate:    { getTotal: (d, _ad) => { const t = d?.totals?.total||0; return t > 0 ? ((d?.totals?.full_count||0)/t)*100 : 0; }, isRate: true },
-    newUsers:       { getTotal: (d, _ad) => { const r=(d?.newVsReturning||[]).find(r=>r.is_returning===false||r.is_returning==="false"); return r?.sessions||0; }, isRate: false },
+    newUsers:       { getTotal: (d, _ad) => { const arr=Array.isArray(d?.newVsReturning)?d.newVsReturning:[]; const r=arr.find(r=>r.is_returning===false||r.is_returning==="false"); return r?.sessions||0; }, isRate: false },
     adSpend:        { getTotal: (_d, ad) => adSpendTotal(ad),   isRate: false, isMoney: true  },
     adClicks:       { getTotal: (_d, ad) => adClicksTotal(ad),  isRate: false, isMoney: false },
     adImpressions:  { getTotal: (_d, ad) => adImprTotal(ad),    isRate: false, isMoney: false },

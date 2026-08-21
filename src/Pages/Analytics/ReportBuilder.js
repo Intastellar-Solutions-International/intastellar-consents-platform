@@ -46,7 +46,8 @@ const METRIC_DEFS = {
         return total > 0 ? ((d?.totals?.full_count || 0) / total) * 100 : 0;
     }, isRate: true },
     newUsers:       { label: "New users",         group: "analytics", getTotal: (d, _ad) => {
-        const row = (d?.newVsReturning || []).find(r => r.is_returning === false || r.is_returning === "false");
+        const arr = Array.isArray(d?.newVsReturning) ? d.newVsReturning : [];
+        const row = arr.find(r => r.is_returning === false || r.is_returning === "false");
         return row?.sessions || 0;
     }, isRate: false },
     // Ad spend
