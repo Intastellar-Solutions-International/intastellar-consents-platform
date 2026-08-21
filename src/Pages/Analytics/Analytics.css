@@ -3402,3 +3402,210 @@ details[open] .ca-context-summary::before { content: "▾"; }
     cursor: pointer;
     user-select: none;
 }
+
+/* ── Cohort retention matrix ─────────────────────────────────────────────── */
+.sa-cohorts-wrap {
+    width: 100%;
+}
+
+.sa-cohort-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    white-space: nowrap;
+}
+
+.sa-cohort-table th,
+.sa-cohort-table td {
+    padding: 6px 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    text-align: center;
+    color: rgba(220,230,245,0.85);
+}
+
+.sa-cohort-table th {
+    background: rgba(255,255,255,0.04);
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: rgba(160,174,192,0.8);
+}
+
+.sa-cohort-table__week {
+    text-align: left !important;
+    min-width: 90px;
+}
+
+.sa-cohort-table__size {
+    text-align: right !important;
+    color: rgba(160,174,192,0.7);
+    min-width: 60px;
+}
+
+.sa-cohort-table__cell {
+    min-width: 54px;
+    border-radius: 0;
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.sa-cohort-legend {
+    margin-top: 12px;
+    font-size: 0.78rem;
+    color: rgba(160,174,192,0.6);
+}
+
+.sa-panel__sub {
+    font-size: 0.8rem;
+    color: rgba(160,174,192,0.6);
+    margin: 0 0 14px;
+    line-height: 1.5;
+}
+
+/* ── Analytics alerts ────────────────────────────────────────────────────── */
+.sa-alerts-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .sa-alerts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.sa-alert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sa-alert-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 8px;
+}
+
+.sa-alert-row--disabled {
+    opacity: 0.5;
+}
+
+.sa-alert-row__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.sa-alert-row__name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(220,230,245,0.9);
+}
+
+.sa-alert-row__rule {
+    font-size: 0.78rem;
+    color: rgba(160,174,192,0.7);
+}
+
+.sa-alert-row__last {
+    font-size: 0.75rem;
+    color: rgba(160,174,192,0.45);
+}
+
+.sa-alert-row__actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.sa-alert-form {
+    position: sticky;
+    top: 70px;
+}
+
+.sa-alert-form__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sa-form-label {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(160,174,192,0.8);
+}
+
+.sa-form-select,
+.sa-form-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: rgba(220,230,245,0.9);
+    font-size: 0.85rem;
+    outline: none;
+    width: 100%;
+}
+
+.sa-form-select:focus,
+.sa-form-input:focus {
+    border-color: rgba(192,159,83,0.5);
+}
+
+.sa-form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.83rem;
+    color: rgba(200,210,225,0.75);
+    cursor: pointer;
+}
+
+.sa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(192,159,83,0.4);
+    background: rgba(192,159,83,0.12);
+    color: rgba(192,159,83,0.95);
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.sa-btn:hover:not(:disabled) {
+    background: rgba(192,159,83,0.22);
+}
+
+.sa-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.sa-btn--sm {
+    padding: 5px 10px;
+    font-size: 0.77rem;
+}
+
+.sa-btn--danger {
+    border-color: rgba(239,68,68,0.35);
+    background: rgba(239,68,68,0.08);
+    color: rgba(239,68,68,0.85);
+}
+
+.sa-btn--danger:hover:not(:disabled) {
+    background: rgba(239,68,68,0.16);
+}

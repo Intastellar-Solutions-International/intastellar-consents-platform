@@ -183,10 +183,22 @@ export function analyticsPageExperimentsPath(domainUnicode) {
     return `/analytics/${seg}/page-experiments`;
 }
 
+export function analyticsCohortPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/cohorts";
+    return `/analytics/${seg}/cohorts`;
+}
+
+export function analyticsAlertsPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/alerts";
+    return `/analytics/${seg}/alerts`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
-        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/google-analytics", "/search-console", "/page-experiments"].find(s => pathname.includes(s));
+        const leaf = ["/marketing", "/audience", "/acquisition", "/consent", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts"].find(s => pathname.includes(s));
         if (leaf === "/marketing")        history.push(analyticsMarketingPath(domainUnicode));
         else if (leaf === "/audience")    history.push(analyticsAudiencePath(domainUnicode));
         else if (leaf === "/acquisition") history.push(analyticsAcquisitionPath(domainUnicode));
@@ -200,6 +212,8 @@ export function navigateWithDomain(history, platformId, domainUnicode, pathname)
         else if (leaf === "/google-analytics") history.push(analyticsGoogleAnalyticsPath(domainUnicode));
         else if (leaf === "/search-console") history.push(analyticsSearchConsolePath(domainUnicode));
         else if (leaf === "/page-experiments") history.push(analyticsPageExperimentsPath(domainUnicode));
+        else if (leaf === "/cohorts")     history.push(analyticsCohortPath(domainUnicode));
+        else if (leaf === "/alerts")      history.push(analyticsAlertsPath(domainUnicode));
         else                              history.push(analyticsPath(domainUnicode));
         return;
     }
@@ -216,7 +230,7 @@ export function detectDashboardMode(pathname) {
     return String(pathname || "").indexOf("/analytics") === 0 ? "analytics" : "cmp";
 }
 
-const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/google-analytics", "/search-console", "/page-experiments"];
+const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts"];
 
 /** True for the Analytics overview ("Reports snapshot") page itself, false for any sub-report under it. */
 export function isAnalyticsOverviewPath(pathname) {
@@ -237,6 +251,7 @@ export function analyticsRailSection(pathname) {
     if (path.includes("/acquisition") || path.includes("/marketing") || path.includes("/ad-spend") || path.includes("/google-analytics") || path.includes("/search-console")) return "acquisition";
     if (path.includes("/heatmap") || path.includes("/recordings") || path.includes("/bots") || path.includes("/user-flow")) return "behavior";
     if (path.includes("/conversions") || path.includes("/page-experiments")) return "conversions";
+    if (path.includes("/cohorts") || path.includes("/alerts")) return "insights";
     return null;
 }
 

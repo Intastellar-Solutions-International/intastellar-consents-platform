@@ -64,6 +64,8 @@ import PageExperimentVariantDetail from "./Pages/Analytics/PageExperimentVariant
 import AnalyticsAdSpend from "./Pages/Analytics/AdSpend.js";
 import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import AnalyticsSearchConsole from "./Pages/Analytics/SearchConsole.js";
+import AnalyticsCohorts from "./Pages/Analytics/Cohorts.js";
+import AnalyticsAlerts from "./Pages/Analytics/AlertConfigs.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -383,6 +385,26 @@ export default function App() {
                                         <Route path="/analytics/search-console" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Search Console" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsSearchConsole />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/cohorts" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Retention Cohorts" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsCohorts />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/cohorts" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Retention Cohorts" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsCohorts />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/alerts" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Alerts" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsAlerts />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/alerts" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Alerts" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsAlerts />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle" exact>
