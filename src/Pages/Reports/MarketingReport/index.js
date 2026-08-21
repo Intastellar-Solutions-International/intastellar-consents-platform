@@ -54,6 +54,35 @@ function extractSummary(payload) {
     return null;
 }
 
+// ── Ad-platform UTM matching ─────────────────────────────────────────────────
+const AD_PLATFORM_LABELS = {
+    google_ads:    "Google Ads",
+    meta_ads:      "Meta Ads",
+    linkedin_ads:  "LinkedIn Ads",
+    microsoft_ads: "Microsoft Ads",
+};
+const AD_PLATFORM_PATTERNS = {
+    google_ads:    /^(?:google|adwords|gads)/,
+    meta_ads:      /^(?:facebook|meta|instagram|messenger|fb|ig|msg|an$)/,
+    linkedin_ads:  /^(?:linkedin|liads)/,
+    microsoft_ads: /^(?:bing|microsoft|msads|msn)/,
+};
+function canonAdSource(s) {
+    return String(s || "").toLowerCase().replace(/[\s_\-.]+/g, "");
+}
+function consentsForAdPlatform(channelOverview, platformId) {
+    const pattern = AD_PLATFORM_PATTERNS[platformId];
+    if (!pattern) return 0;
+    return channelOverview
+        .filter(row => pattern.test(canonAdSource(row.channel)))
+        .reduce((sum, row) => sum + (row.consents || 0), 0);
+}
+function formatAdMoney(n, currency) {
+    const SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr" };
+    const sym = SYMBOLS[currency] || (currency ? currency + " " : "");
+    return `${sym}${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 /** Prefer API summary (full dataset) when rows are paginated. */
 function pickTotalConsentsFromSummary(summary, rowList) {
     const v = summary && summary.totalConsents != null ? Number(summary.totalConsents) : NaN;
@@ -1626,6 +1655,8 @@ export default function MarketingReport() {
     // ga4Summary.sessions for the lightweight "GA4 consent coverage" / "dark
     // zone" highlight cards below, which are specific to this reconciliation view.
     const [ga4Summary, setGa4Summary] = useState(null);
+    const [adPerfData, setAdPerfData] = useState(null);
+    const [adPerfLoading, setAdPerfLoading] = useState(false);
 
     const endpoint = API[id]?.marketingAttribution;
     const timeseriesEndpoint = API[id]?.marketingAttributionTimeseries;
@@ -1898,6 +1929,43 @@ export default function MarketingReport() {
                     });
             })
             .catch(() => {});
+
+        return () => { cancelled = true; };
+    }, [listDomainLabel, fromDate, toDate]);
+
+    // Fetch aggregated ad platform data (spend / clicks / impressions) for the
+    // current domain + date range. Used to show the "Ad Performance" panel on
+    // the channel overview. Silently skipped for the combined view and when no
+    // ad platforms are connected.
+    useEffect(() => {
+        const domain = listDomainLabel;
+        if (!domain || domain === "combined view") return;
+        const authToken = Authentication.getToken();
+        const orgId = Authentication.getOrganisation();
+        if (!authToken || !orgId) return;
+        const fromYmd = toYmd(fromDate);
+        const toYmd2  = toYmd(toDate);
+        if (!fromYmd || !toYmd2) return;
+
+        let cancelled = false;
+        setAdPerfData(null);
+        setAdPerfLoading(true);
+
+        const qs = new URLSearchParams({ from: fromYmd, to: toYmd2 }).toString();
+        fetch(`${ScannerHost}/api/ad-spend-report?${qs}`, {
+            headers: {
+                Authorization: authToken,
+                Organisation: String(orgId),
+                Domains: toDomainsApiHeader(domain),
+            },
+        })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (cancelled) return;
+                if (data && !data.noConnections && data.platforms?.length > 0) setAdPerfData(data);
+            })
+            .catch(() => {})
+            .finally(() => { if (!cancelled) setAdPerfLoading(false); });
 
         return () => { cancelled = true; };
     }, [listDomainLabel, fromDate, toDate]);
@@ -2433,6 +2501,53 @@ export default function MarketingReport() {
                                     {c.compare ? <div className="ca-kpi__compare">{c.compare}</div> : null}
                                 </div>
                             ))}
+                        </div>
+                    )}
+
+                    {/* ── Ad Performance ──────────────────────────────────── */}
+                    {!selectedChannel && !adPerfLoading && adPerfData?.platforms?.length > 0 && (
+                        <div className="ca-ad-perf">
+                            <h3 className="ca-ad-perf__title">Ad Performance</h3>
+                            <div className="ca-ad-perf__cards">
+                                {adPerfData.platforms.map(p => {
+                                    const matched = consentsForAdPlatform(channelOverview, p.platform);
+                                    const cpc = p.clicks > 0 ? p.amount / p.clicks : null;
+                                    const cpconsent = matched > 0 ? p.amount / matched : null;
+                                    return (
+                                        <div key={p.platform} className="ca-ad-perf-card">
+                                            <span className="ca-ad-perf-card__platform">
+                                                {AD_PLATFORM_LABELS[p.platform] || p.platform}
+                                            </span>
+                                            <div className="ca-ad-perf-card__metrics">
+                                                <span className="ca-ad-perf-card__metric">
+                                                    <span className="ca-ad-perf-card__val">{formatAdMoney(p.amount, p.currency)}</span>
+                                                    <span className="ca-ad-perf-card__lbl">spend</span>
+                                                </span>
+                                                <span className="ca-ad-perf-card__metric">
+                                                    <span className="ca-ad-perf-card__val">{p.clicks.toLocaleString("de-DE")}</span>
+                                                    <span className="ca-ad-perf-card__lbl">clicks</span>
+                                                </span>
+                                                <span className="ca-ad-perf-card__metric">
+                                                    <span className="ca-ad-perf-card__val">{p.impressions.toLocaleString("de-DE")}</span>
+                                                    <span className="ca-ad-perf-card__lbl">impressions</span>
+                                                </span>
+                                                {cpc != null && (
+                                                    <span className="ca-ad-perf-card__metric">
+                                                        <span className="ca-ad-perf-card__val">{formatAdMoney(cpc, p.currency)}</span>
+                                                        <span className="ca-ad-perf-card__lbl">CPC</span>
+                                                    </span>
+                                                )}
+                                                {cpconsent != null && (
+                                                    <span className="ca-ad-perf-card__metric ca-ad-perf-card__metric--accent">
+                                                        <span className="ca-ad-perf-card__val">{formatAdMoney(cpconsent, p.currency)}</span>
+                                                        <span className="ca-ad-perf-card__lbl">cost / consent</span>
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     )}
 
