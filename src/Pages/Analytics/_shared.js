@@ -282,6 +282,7 @@ export function SegmentFilter({ segment, setSegment }) {
                 <option value="">All channels</option>
                 <option value="organic">Organic</option>
                 <option value="paid">Paid</option>
+                <option value="paid_social">Paid Social (Meta)</option>
                 <option value="referral">Referral</option>
                 <option value="direct">Direct</option>
             </select>

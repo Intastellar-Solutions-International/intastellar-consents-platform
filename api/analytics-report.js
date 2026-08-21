@@ -134,7 +134,7 @@ async function _handler(req, res) {
     // Optional segment filters — validated against fixed enums so string interpolation
     // into SQL is safe (no user-controlled text reaches the query string).
     const VALID_DEVICES  = new Set(["desktop", "tablet", "mobile", "other"]);
-    const VALID_CHANNELS = new Set(["organic", "paid", "direct", "referral"]);
+    const VALID_CHANNELS = new Set(["organic", "paid", "paid_social", "direct", "referral"]);
     const VALID_CONSENTS = new Set(["full", "minimal"]);
     const rawCountry = (req.query.seg_country || "").trim().toUpperCase();
 
@@ -144,11 +144,13 @@ async function _handler(req, res) {
     const segConsent = VALID_CONSENTS.has(req.query.seg_consent) ? req.query.seg_consent : null;
 
     // Channel segment maps to UTM+referrer conditions (no user text in SQL).
+    const META_SOURCE_PATTERN = `'^(fb|facebook|ig|instagram|msg|messenger|an)$'`;
     const CHANNEL_SQL = {
-        organic:  `(utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.'))`,
-        paid:     `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','')))`,
-        referral: `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
-        direct:   `(COALESCE(referrer_host,'')='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
+        organic:     `(utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.'))`,
+        paid:        `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','') AND utm_source !~* ${META_SOURCE_PATTERN}))`,
+        paid_social: `(utm_source ~* ${META_SOURCE_PATTERN})`,
+        referral:    `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
+        direct:      `(COALESCE(referrer_host,'')='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
     };
 
     // Extra WHERE clauses injected into analytics_events queries.
@@ -551,6 +553,7 @@ async function _handler(req, res) {
             )
             SELECT
                 CASE
+                    WHEN ft.utm_source ~* '^(fb|facebook|ig|instagram|msg|messenger|an)$'       THEN 'paid_social'
                     WHEN ft.utm_medium ~* '^(cpc|ppc|paid|cpm|display)'                         THEN 'paid'
                     WHEN ft.utm_medium = 'organic'
                          OR (COALESCE(ft.utm_source, '') = ''
@@ -710,6 +713,7 @@ async function _handler(req, res) {
             )
             SELECT
                 CASE
+                    WHEN utm_source ~* '^(fb|facebook|ig|instagram|msg|messenger|an)$'                THEN 'paid_social'
                     WHEN utm_medium ~* '^(cpc|ppc|paid|cpm|display)'                                  THEN 'paid'
                     WHEN utm_medium = 'organic'
                          OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')=''

@@ -20,18 +20,20 @@ import "./Analytics.css";
 // misleading 100% and can crowd out countries with a real sample size.
 const MAP_RATE_MIN_SAMPLE = 5;
 
-const CHANNEL_LABEL = { organic: "Organic", paid: "Paid", referral: "Referral", direct: "Direct" };
+const CHANNEL_LABEL = { organic: "Organic", paid: "Paid", paid_social: "Paid Social (Meta)", referral: "Referral", direct: "Direct" };
 const CHANNEL_COLORS_FIRST = {
-    organic:  "rgba(74,222,128,0.55)",
-    paid:     "rgba(251,146,60,0.55)",
-    referral: "rgba(99,179,237,0.55)",
-    direct:   "rgba(167,139,250,0.55)",
+    organic:     "rgba(74,222,128,0.55)",
+    paid:        "rgba(251,146,60,0.55)",
+    paid_social: "rgba(24,119,242,0.55)",
+    referral:    "rgba(99,179,237,0.55)",
+    direct:      "rgba(167,139,250,0.55)",
 };
 const CHANNEL_COLORS_LAST = {
-    organic:  "rgba(74,222,128,0.85)",
-    paid:     "rgba(251,146,60,0.85)",
-    referral: "rgba(99,179,237,0.85)",
-    direct:   "rgba(167,139,250,0.85)",
+    organic:     "rgba(74,222,128,0.85)",
+    paid:        "rgba(251,146,60,0.85)",
+    paid_social: "rgba(24,119,242,0.85)",
+    referral:    "rgba(99,179,237,0.85)",
+    direct:      "rgba(167,139,250,0.85)",
 };
 
 function AttributionComparison({ firstTouchByChannel, lastTouchByChannel }) {
