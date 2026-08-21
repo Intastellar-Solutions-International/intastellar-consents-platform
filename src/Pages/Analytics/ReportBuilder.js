@@ -32,10 +32,10 @@ const METRIC_DEFS = {
 
 const BREAKDOWN_DEFS = {
     date:      { label: "Date (daily)",  getSeries: d => (d?.daily||[]).map(r => ({ label: r.date, value: (r.full_count||0)+(r.minimal||0) })) },
-    country:   { label: "Country",       getSeries: d => (d?.countries||[]).slice(0,10).map(r => ({ label: r.code||r.country_code||"?", value: r.events })) },
-    device:    { label: "Device",        getSeries: d => (d?.devices||[]).map(r => ({ label: r.device_type, value: r.events })) },
-    utmSource: { label: "UTM source",    getSeries: d => (d?.utm||[]).slice(0,10).map(r => ({ label: r.utm_source||"(none)", value: r.events })) },
-    browser:   { label: "Browser",       getSeries: d => (d?.browsers||[]).slice(0,8).map(r => ({ label: r.browser_family, value: r.events })) },
+    country:   { label: "Country",       getSeries: d => (d?.countries||[]).slice(0,10).map(r => ({ label: r.code||"?", value: r.events })) },
+    device:    { label: "Device",        getSeries: d => (d?.devices||[]).map(r => ({ label: r.type||"Unknown", value: r.events })) },
+    utmSource: { label: "UTM source",    getSeries: d => (d?.utmSources||[]).slice(0,10).map(r => ({ label: r.source||"(none)", value: r.events })) },
+    browser:   { label: "Browser",       getSeries: d => (d?.browsers||[]).slice(0,8).map(r => ({ label: r.name||"Unknown", value: r.events })) },
     channel:   { label: "Channel",       getSeries: d => (d?.conversionsByChannel||[]).map(r => ({ label: r.channel, value: r.sessions||r.count })) },
     none:      { label: "None (totals)", getSeries: () => [] },
 };
@@ -119,6 +119,7 @@ function DonutViz({ series }) {
                     <div key={i} className="sa-rb-donut-row">
                         <span className="sa-rb-donut-dot" style={{ background: COLORS[i] }} />
                         <span className="sa-rb-donut-label">{s.label}</span>
+                        <span className="sa-rb-donut-count">{s.value.toLocaleString("de-DE")}</span>
                         <span className="sa-rb-donut-pct">{total > 0 ? formatPercent((s.value/total)*100, 0) : "—"}</span>
                     </div>
                 ))}

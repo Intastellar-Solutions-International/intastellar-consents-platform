@@ -4251,12 +4251,13 @@ details[open] .ca-context-summary::before { content: "▾"; }
 }
 
 /* Donut */
-.sa-rb-donut-wrap   { display: flex; align-items: center; gap: 24px; padding: 8px 0; flex-wrap: wrap; }
-.sa-rb-donut-legend { display: flex; flex-direction: column; gap: 7px; }
+.sa-rb-donut-wrap   { display: flex; align-items: center; gap: 28px; padding: 8px 0; flex-wrap: wrap; }
+.sa-rb-donut-legend { display: flex; flex-direction: column; gap: 8px; min-width: 220px; }
 .sa-rb-donut-row    { display: flex; align-items: center; gap: 8px; }
-.sa-rb-donut-dot    { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.sa-rb-donut-label  { font-size: 0.78rem; color: rgba(160,160,160,0.7); flex: 1; }
-.sa-rb-donut-pct    { font-size: 0.78rem; font-weight: 600; color: rgba(210,210,210,0.85); }
+.sa-rb-donut-dot    { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.sa-rb-donut-label  { font-size: 0.81rem; color: rgba(210,210,210,0.85); flex: 1; min-width: 80px; }
+.sa-rb-donut-count  { font-size: 0.77rem; color: rgba(160,160,160,0.6); width: 52px; text-align: right; flex-shrink: 0; }
+.sa-rb-donut-pct    { font-size: 0.77rem; font-weight: 700; color: rgba(192,159,83,0.9); width: 38px; text-align: right; flex-shrink: 0; }
 
 .sa-rb-no-data { font-size: 0.82rem; color: rgba(130,130,130,0.5); padding: 24px 0; text-align: center; }
 
