@@ -61,6 +61,17 @@ const BACKFILL_DAYS = Math.min(
     90
 );
 
+// Hard limits on how far back each platform's API returns reliable data.
+// Used to clamp user-requested date ranges on manual syncs.
+const PLATFORM_MAX_DAYS = {
+    google_ads:            1095, // 3 years
+    meta_ads:              1095, // ~37 months
+    linkedin_ads:           730, // 2 years
+    microsoft_ads:         1095, // 3 years
+    google_search_console:  500, // GSC retains ~16 months
+    google_analytics:       365, // GA4 standard retention
+};
+
 function isoDate(d) {
     return d.toISOString().slice(0, 10);
 }
@@ -117,10 +128,12 @@ export default async function handler(req, res) {
     const db = getPool();
     await ensureDailyTable(db);
 
-    // Manual trigger: scope to the requesting org + optional domain/platform filter
-    const manualOrgId  = jwt ? parseInt(req.headers.organisation || "", 10) : null;
-    const manualDomain = jwt ? (req.query.domain   || "").trim().toLowerCase() : null;
-    const manualPlat   = jwt ? (req.query.platform || "").trim()               : null;
+    // Manual trigger: scope to the requesting org + optional domain/platform/date filter
+    const manualOrgId   = jwt ? parseInt(req.headers.organisation || "", 10) : null;
+    const manualDomain  = jwt ? (req.query.domain    || "").trim().toLowerCase() : null;
+    const manualPlat    = jwt ? (req.query.platform  || "").trim()               : null;
+    const manualFrom    = jwt ? (req.query.fromDate  || "").trim()               : null;
+    const manualTo      = jwt ? (req.query.toDate    || "").trim()               : null;
 
     const whereExtra = manualOrgId
         ? `AND organisation_id = ${manualOrgId}
@@ -151,15 +164,32 @@ export default async function handler(req, res) {
         const conn = { ...rawConn };
         const tag = `[${conn.platform}] ${conn.domain}`;
 
+        // For manual triggers with a requested date range: clamp to the platform's
+        // maximum look-back window. Cron runs always use the global backfill window.
+        let windowFrom = backfillFrom;
+        let windowTo   = yesterday;
+        if (manualFrom && manualTo) {
+            const maxDays = PLATFORM_MAX_DAYS[conn.platform] || BACKFILL_DAYS;
+            const platformEarliestMs = today.getTime() - maxDays * 86_400_000;
+            const requestedFromMs    = new Date(manualFrom + "T00:00:00Z").getTime();
+            const requestedToMs      = new Date(manualTo   + "T00:00:00Z").getTime();
+            windowFrom = isoDate(new Date(Math.max(requestedFromMs, platformEarliestMs)));
+            windowTo   = isoDate(new Date(Math.min(requestedToMs,   today.getTime() - 86_400_000)));
+            if (windowFrom > windowTo) {
+                results.push({ tag, status: "skipped", reason: "date range out of platform window" });
+                continue;
+            }
+        }
+
         // Find which days in the window are already cached
         const { rows: cachedRows } = await db.query(
             `SELECT date::text AS date FROM ad_daily_data
              WHERE organisation_id=$1 AND domain=$2 AND platform=$3
                AND date >= $4::date AND date <= $5::date`,
-            [conn.organisation_id, conn.domain, conn.platform, backfillFrom, yesterday]
+            [conn.organisation_id, conn.domain, conn.platform, windowFrom, windowTo]
         );
         const cached = new Set(cachedRows.map(r => r.date));
-        const allDays = daysInRange(backfillFrom, yesterday);
+        const allDays = daysInRange(windowFrom, windowTo);
         const missingDays = allDays.filter(d => !cached.has(d));
 
         if (missingDays.length === 0) {

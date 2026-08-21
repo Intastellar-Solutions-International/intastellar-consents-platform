@@ -212,7 +212,7 @@ export default function AdSpend() {
         setSyncing(true);
         setSyncMsg(null);
         try {
-            const qs = new URLSearchParams({ domain: domainLabel }).toString();
+            const qs = new URLSearchParams({ domain: domainLabel, fromDate: fromIso, toDate: toIso }).toString();
             const r = await fetch(`${ScannerHost}/api/cron-ad-sync?${qs}`, { headers: authHeaders() });
             const json = await r.json().catch(() => ({}));
             if (!r.ok) { setSyncMsg("Sync failed — check console."); }
@@ -223,7 +223,7 @@ export default function AdSpend() {
             }
         } catch { setSyncMsg("Sync failed — check network."); }
         finally { setSyncing(false); }
-    }, [domainLabel, syncing]);
+    }, [domainLabel, syncing, fromIso, toIso]);
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>

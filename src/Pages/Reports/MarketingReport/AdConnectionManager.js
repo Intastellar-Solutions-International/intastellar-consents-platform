@@ -58,14 +58,26 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
 
     useEffect(() => { fetchConnections(); }, [fetchConnections]);
 
+    const triggerSync = useCallback((syncDomain, platform) => {
+        if (!authToken || !orgId || !syncDomain) return;
+        const url = new URL(`${ScannerHost}/api/cron-ad-sync`);
+        url.searchParams.set("domain", syncDomain);
+        if (platform) url.searchParams.set("platform", platform);
+        fetch(url.toString(), {
+            headers: { Authorization: authToken, Organisation: String(orgId) },
+        }).catch(() => {});
+    }, [authToken, orgId]);
+
     // Pick up oauth_success / oauth_error query params set by the callback redirect
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         if (params.has("oauth_success")) {
             const p = params.get("oauth_success");
+            const oauthDomain = params.get("oauth_domain") || domain;
             const label = AD_PLATFORMS.find(x => x.id === p)?.label || p;
-            setStatus(`${label} connected.`);
+            setStatus(`${label} connected — syncing data…`);
             fetchConnections();
+            triggerSync(oauthDomain, p);
             const url = new URL(window.location.href);
             url.searchParams.delete("oauth_success");
             url.searchParams.delete("oauth_domain");
@@ -77,7 +89,7 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
             url.searchParams.delete("platform");
             window.history.replaceState({}, "", url.toString());
         }
-    }, [fetchConnections, setStatus]);
+    }, [fetchConnections, setStatus, triggerSync, domain]);
 
     async function handleConnect(platformId) {
         if (!orgId) {
@@ -155,8 +167,9 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
             if (!resp.ok) { setStatus(data.error || "Could not save account.", true); return; }
             setManualInput(null);
             setManualId("");
-            setStatus("Account connected.");
+            setStatus("Account connected — syncing data…");
             fetchConnections();
+            triggerSync(domain, manualInput.platformId);
         } catch (err) {
             setStatus(err.message, true);
         } finally {
