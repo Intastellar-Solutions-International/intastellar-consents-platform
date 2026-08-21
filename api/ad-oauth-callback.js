@@ -54,7 +54,7 @@ async function exchangeCode(platform, code) {
             clientSecret = process.env.GOOGLE_CLIENT_SECRET;
             break;
         case "meta_ads":
-            url = "https://graph.facebook.com/v18.0/oauth/access_token";
+            url = "https://graph.facebook.com/v26.0/oauth/access_token";
             clientId = process.env.META_ADS_CLIENT_ID;
             clientSecret = process.env.META_ADS_CLIENT_SECRET;
             break;
@@ -197,7 +197,7 @@ async function fetchAllAccounts(platform, accessToken) {
 
             case "meta_ads": {
                 const resp = await fetch(
-                    "https://graph.facebook.com/v18.0/me/adaccounts?fields=id,name,account_status&limit=50",
+                    "https://graph.facebook.com/v26.0/me/adaccounts?fields=id,name,account_status&limit=50",
                     { headers: { Authorization: `Bearer ${accessToken}` } }
                 );
                 if (!resp.ok) return [];

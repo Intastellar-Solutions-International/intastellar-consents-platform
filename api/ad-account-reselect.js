@@ -167,7 +167,7 @@ async function fetchAllAccounts(platform, accessToken) {
 
             case "meta_ads": {
                 const resp = await fetch(
-                    "https://graph.facebook.com/v18.0/me/adaccounts?fields=id,name,account_status&limit=50",
+                    "https://graph.facebook.com/v26.0/me/adaccounts?fields=id,name,account_status&limit=50",
                     { headers: { Authorization: `Bearer ${accessToken}` } }
                 );
                 if (!resp.ok) return [];

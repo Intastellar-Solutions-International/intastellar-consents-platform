@@ -58,7 +58,7 @@ function buildAuthUrl(platform, state) {
             const clientId = process.env.META_ADS_CLIENT_ID;
             if (!clientId) return null;
             const scope = encodeURIComponent("ads_read,ads_management");
-            return `https://www.facebook.com/v18.0/dialog/oauth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+            return `https://www.facebook.com/v26.0/dialog/oauth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
         }
         case "linkedin_ads": {
             const clientId = process.env.LINKEDIN_CLIENT_ID;

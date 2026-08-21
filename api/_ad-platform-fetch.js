@@ -51,7 +51,7 @@ export async function tryRefreshToken(db, conn) {
             break;
         case "meta_ads": {
             const resp = await fetch(
-                `https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.META_ADS_CLIENT_ID}&client_secret=${process.env.META_ADS_CLIENT_SECRET}&fb_exchange_token=${conn.access_token}`
+                `https://graph.facebook.com/v26.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.META_ADS_CLIENT_ID}&client_secret=${process.env.META_ADS_CLIENT_SECRET}&fb_exchange_token=${conn.access_token}`
             ).catch(() => null);
             if (!resp?.ok) return conn;
             const data = await resp.json().catch(() => null);
@@ -662,7 +662,7 @@ export async function fetchMetaAdsCampaigns(conn, fromDate, toDate) {
         limit: "500",
         access_token: conn.access_token,
     });
-    const resp = await fetch(`https://graph.facebook.com/v18.0/act_${accountId}/insights?${params}`);
+    const resp = await fetch(`https://graph.facebook.com/v26.0/act_${accountId}/insights?${params}`);
     if (!resp.ok) {
         const err = await resp.json().catch(() => ({}));
         throw new Error(err?.error?.message || `Meta API error (${resp.status})`);
@@ -693,7 +693,7 @@ async function fetchMetaAds(conn, fromDate, toDate) {
         level: "account",
         access_token: conn.access_token,
     });
-    const resp = await fetch(`https://graph.facebook.com/v18.0/act_${accountId}/insights?${params}`);
+    const resp = await fetch(`https://graph.facebook.com/v26.0/act_${accountId}/insights?${params}`);
     if (!resp.ok) {
         const err = await resp.json().catch(() => ({}));
         throw new Error(err?.error?.message || `Meta API error (${resp.status})`);
@@ -851,7 +851,7 @@ async function fetchMetaAdsDaily(conn, fromDate, toDate) {
         time_increment: "1",
         access_token: conn.access_token,
     });
-    const resp = await fetch(`https://graph.facebook.com/v18.0/act_${accountId}/insights?${params}`);
+    const resp = await fetch(`https://graph.facebook.com/v26.0/act_${accountId}/insights?${params}`);
     if (!resp.ok) {
         const err = await resp.json().catch(() => ({}));
         throw new Error(err?.error?.message || `Meta API error (${resp.status})`);
