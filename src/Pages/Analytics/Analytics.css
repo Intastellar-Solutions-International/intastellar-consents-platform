@@ -4626,3 +4626,12 @@ details[open] .ca-context-summary::before { content: "▾"; }
     color: rgba(239,68,68,0.8);
     font-weight: 600;
 }
+
+/* ── Report builder hint text ───────────────────────────────────────────── */
+
+.sa-rb-hint {
+    font-size: 0.73rem;
+    color: rgba(130,130,130,0.55);
+    line-height: 1.5;
+    margin: 0 0 10px;
+}

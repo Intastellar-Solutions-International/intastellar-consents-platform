@@ -6,7 +6,7 @@ import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, useAdSpendReport, KpiCard, formatPercent } from "./_shared.js";
 import { analyticsReportsPath } from "../../Functions/domainPathSegments.js";
-import { REPORT_TEMPLATES, CT_SVG, AD_METRICS } from "./reportTemplates.js";
+import { REPORT_TEMPLATES, AD_METRICS } from "./reportTemplates.js";
 import TrendLineChart from "./TrendLineChart.js";
 import { IconTarget } from "./Icons.js";
 import "./Analytics.css";
@@ -27,87 +27,111 @@ function formatMoney(n, currency) {
     return `${sym}${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function adCurrency(adData) { return adData?.spendByCurrency?.[0]?.currency || "EUR"; }
-function adSpendTotal(adData) { return Number(adData?.spendByCurrency?.[0]?.amount || 0); }
-function adClicksTotal(adData) { return Number(adData?.spendByCurrency?.[0]?.clicks || 0); }
-function adImpressionsTotal(adData) { return Number(adData?.spendByCurrency?.[0]?.impressions || 0); }
-function adCacTotal(adData) { return Number(adData?.blendedCac?.[0]?.cac || 0); }
+function adCurrency(adData)   { return adData?.spendByCurrency?.[0]?.currency || "EUR"; }
+function adFieldForMetric(m)  { return m === "adClicks" ? "clicks" : m === "adImpressions" ? "impressions" : "spend"; }
 
 // ── Metric definitions ────────────────────────────────────────────────────────
 
 const METRIC_DEFS = {
-    // Site analytics
-    sessions:       { label: "Sessions",         group: "analytics", getTotal: (d, _ad) => d?.totals?.unique_sessions || 0,                                         isRate: false },
-    pageViews:      { label: "Page views",        group: "analytics", getTotal: (d, _ad) => (d?.daily||[]).reduce((s,r) => s+(r.full_count||0)+(r.minimal||0), 0),  isRate: false },
-    conversions:    { label: "Conversions",       group: "analytics", getTotal: (d, _ad) => (d?.conversions||[]).reduce((s,c) => s+(c.count||0), 0),                 isRate: false },
-    conversionRate: { label: "Conversion rate",   group: "analytics", getTotal: (d, _ad) => d?.totals?.conversionRate || 0,                                          isRate: true  },
-    consentRate:    { label: "Consent rate",      group: "analytics", getTotal: (d, _ad) => {
-        const total = d?.totals?.total || 0;
-        return total > 0 ? ((d?.totals?.full_count || 0) / total) * 100 : 0;
-    }, isRate: true },
-    newUsers:       { label: "New users",         group: "analytics", getTotal: (d, _ad) => {
-        const arr = Array.isArray(d?.newVsReturning) ? d.newVsReturning : [];
-        const row = arr.find(r => r.is_returning === false || r.is_returning === "false");
-        return row?.sessions || 0;
-    }, isRate: false },
-    // Ad spend
-    adSpend:        { label: "Ad spend",          group: "adspend",   getTotal: (_d, ad) => adSpendTotal(ad),       isRate: false, isMoney: true  },
-    adClicks:       { label: "Ad clicks",         group: "adspend",   getTotal: (_d, ad) => adClicksTotal(ad),      isRate: false, isMoney: false },
-    adImpressions:  { label: "Impressions",       group: "adspend",   getTotal: (_d, ad) => adImpressionsTotal(ad), isRate: false, isMoney: false },
-    blendedCac:     { label: "Blended CAC",       group: "adspend",   getTotal: (_d, ad) => adCacTotal(ad),         isRate: false, isMoney: true  },
+    sessions:       { label: "Sessions",       group: "analytics", isRate: false, isMoney: false,
+        getTotal: (d) => d?.totals?.unique_sessions || 0 },
+    pageViews:      { label: "Page views",     group: "analytics", isRate: false, isMoney: false,
+        getTotal: (d) => (d?.daily||[]).reduce((s,r) => s+(r.full_count||0)+(r.minimal||0), 0) },
+    conversions:    { label: "Conversions",    group: "analytics", isRate: false, isMoney: false,
+        getTotal: (d) => (d?.conversions||[]).reduce((s,c) => s+(c.count||0), 0) },
+    conversionRate: { label: "Conversion rate",group: "analytics", isRate: true,  isMoney: false,
+        getTotal: (d) => d?.totals?.conversionRate || 0 },
+    consentRate:    { label: "Consent rate",   group: "analytics", isRate: true,  isMoney: false,
+        getTotal: (d) => { const t=d?.totals?.total||0; return t>0 ? ((d?.totals?.full_count||0)/t)*100 : 0; } },
+    newUsers:       { label: "New users",      group: "analytics", isRate: false, isMoney: false,
+        getTotal: (d) => { const arr=Array.isArray(d?.newVsReturning)?d.newVsReturning:[]; const r=arr.find(r=>r.is_returning===false||r.is_returning==="false"); return r?.sessions||0; } },
+    adSpend:        { label: "Ad spend",       group: "adspend",   isRate: false, isMoney: true,
+        getTotal: (_d, ad) => Number(ad?.spendByCurrency?.[0]?.amount || 0) },
+    adClicks:       { label: "Ad clicks",      group: "adspend",   isRate: false, isMoney: false,
+        getTotal: (_d, ad) => Number(ad?.spendByCurrency?.[0]?.clicks || 0) },
+    adImpressions:  { label: "Impressions",    group: "adspend",   isRate: false, isMoney: false,
+        getTotal: (_d, ad) => Number(ad?.spendByCurrency?.[0]?.impressions || 0) },
+    blendedCac:     { label: "Blended CAC",    group: "adspend",   isRate: false, isMoney: true,
+        getTotal: (_d, ad) => Number(ad?.blendedCac?.[0]?.cac || 0) },
 };
 
-function adFieldForMetric(m) {
-    if (m === "adClicks")      return "clicks";
-    if (m === "adImpressions") return "impressions";
-    return "spend";
-}
+// ── Breakdown style options ───────────────────────────────────────────────────
 
-const BREAKDOWN_DEFS = {
-    date:       { label: "Date (daily)",  getSeries: (d, ad, prim) => {
-        if (AD_METRICS.has(prim)) {
-            const field = adFieldForMetric(prim);
-            return (ad?.daily||[]).map(r => ({
-                label: r.date,
-                value: Object.values(r.byPlatform||{}).reduce((s, p) => s + (p[field]||0), 0),
-            }));
-        }
-        return (d?.daily||[]).map(r => ({ label: r.date, value: (r.full_count||0)+(r.minimal||0) }));
-    }},
-    country:    { label: "Country",       getSeries: (d) => (d?.countries||[]).slice(0,10).map(r => ({ label: r.code||"?", value: r.events })) },
-    device:     { label: "Device",        getSeries: (d) => (d?.devices||[]).map(r => ({ label: r.type||"Unknown", value: r.events })) },
-    utmSource:  { label: "UTM source",    getSeries: (d) => (d?.utmSources||[]).slice(0,10).map(r => ({ label: r.source||"(none)", value: r.events })) },
-    browser:    { label: "Browser",       getSeries: (d) => (d?.browsers||[]).slice(0,8).map(r => ({ label: r.name||"Unknown", value: r.events })) },
-    channel:    { label: "Channel",       getSeries: (d) => (d?.conversionsByChannel||[]).map(r => ({ label: r.channel, value: r.sessions||r.count })) },
-    none:       { label: "None (totals)", getSeries: () => [] },
-    adPlatform: { label: "Ad platform",   getSeries: (_d, ad, prim) => {
-        const field = prim === "adClicks" ? "clicks" : prim === "adImpressions" ? "impressions" : "amount";
+const BREAKDOWN_STYLES = [
+    { key: "bar", label: "Bar chart", icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
+            <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+        </svg>
+    )},
+    { key: "donut", label: "Donut chart", icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
+            <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>
+        </svg>
+    )},
+    { key: "table", label: "Table", icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
+            <rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/>
+        </svg>
+    )},
+    { key: "kpi", label: "KPI cards only", icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
+            <rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+    )},
+];
+
+// ── Breakdown dimensions ──────────────────────────────────────────────────────
+
+const BREAKDOWN_DIMS = [
+    { key: "date",       label: "Date only (trend)",       adOnly: false },
+    { key: "country",    label: "Country",                 adOnly: false },
+    { key: "device",     label: "Device",                  adOnly: false },
+    { key: "browser",    label: "Browser",                 adOnly: false },
+    { key: "utmSource",  label: "UTM source",              adOnly: false },
+    { key: "channel",    label: "Channel",                 adOnly: false },
+    { key: "adPlatform", label: "Ad platform",             adOnly: true  },
+];
+
+function getBreakdownSeries(breakdown, data, adData, primaryMetric) {
+    if (breakdown === "date" || breakdown === "none") return [];
+    if (breakdown === "adPlatform") {
+        const field = adFieldForMetric(primaryMetric);
         const byPlat = {};
-        (ad?.platforms||[]).forEach(p => {
-            byPlat[p.platform] = (byPlat[p.platform]||0) + Number(p[field] || p.amount || 0);
+        (adData?.platforms||[]).forEach(p => {
+            byPlat[p.platform] = (byPlat[p.platform]||0) + Number(p[field]||p.amount||0);
         });
         return Object.entries(byPlat)
-            .map(([plat, val]) => ({ label: PLATFORM_LABELS[plat]||plat, value: val }))
-            .sort((a, b) => b.value - a.value);
-    }},
-};
+            .map(([p, v]) => ({ label: PLATFORM_LABELS[p]||p, value: v }))
+            .sort((a,b) => b.value-a.value);
+    }
+    const defs = {
+        country:   d => (d?.countries||[]).slice(0,10).map(r => ({ label: r.code||"?", value: r.events })),
+        device:    d => (d?.devices||[]).map(r => ({ label: r.type||"Unknown", value: r.events })),
+        utmSource: d => (d?.utmSources||[]).slice(0,10).map(r => ({ label: r.source||"(none)", value: r.events })),
+        browser:   d => (d?.browsers||[]).slice(0,8).map(r => ({ label: r.name||"Unknown", value: r.events })),
+        channel:   d => (d?.conversionsByChannel||[]).map(r => ({ label: r.channel, value: r.sessions||r.count })),
+    };
+    return defs[breakdown] ? defs[breakdown](data) : [];
+}
 
-const FILTER_DIMENSIONS = [
-    { value: "channel", label: "Channel" },
-    { value: "device",  label: "Device" },
-    { value: "consent", label: "Consent level" },
-    { value: "country", label: "Country (2-letter code)" },
-];
-const FILTER_CHANNEL_OPTS = ["organic", "paid", "paid_social", "referral", "direct"];
-const FILTER_DEVICE_OPTS  = ["desktop", "mobile", "tablet"];
-const FILTER_CONSENT_OPTS = ["full", "minimal"];
+function getTrendSeries(data, adData, primaryMetric) {
+    if (AD_METRICS.has(primaryMetric)) {
+        const field = adFieldForMetric(primaryMetric);
+        return (adData?.daily||[]).map(r => ({
+            date: r.date,
+            num: Object.values(r.byPlatform||{}).reduce((s,p) => s+(p[field]||0), 0),
+        }));
+    }
+    return (data?.daily||[]).map(r => ({
+        date: r.date,
+        num: (r.full_count||0)+(r.minimal||0),
+    }));
+}
 
-const EMPTY_CONFIG = { name: "", chartType: "line", metrics: ["sessions"], breakdown: "date", filters: [], dateRangeDays: 30 };
-
-// ── Visualisation sub-components ──────────────────────────────────────────────
+// ── Chart sub-components ──────────────────────────────────────────────────────
 
 function BarRows({ series, formatVal }) {
-    if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No data available.</p>;
+    if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No breakdown data.</p>;
     const max = Math.max(...series.map(s => s.value), 1);
     return (
         <div className="sa-rb-bar-chart">
@@ -125,7 +149,7 @@ function BarRows({ series, formatVal }) {
 }
 
 function DataTable({ series, metricLabel, formatVal }) {
-    if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No data available.</p>;
+    if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No breakdown data.</p>;
     const max = Math.max(...series.map(s => s.value), 1);
     return (
         <table className="sa-table">
@@ -148,20 +172,20 @@ function DataTable({ series, metricLabel, formatVal }) {
 }
 
 function DonutViz({ series, formatVal }) {
-    if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No data available.</p>;
+    if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No breakdown data.</p>;
+    const COLORS = ["rgba(192,159,83,0.9)","rgba(74,222,128,0.8)","rgba(99,179,237,0.8)","rgba(167,139,250,0.8)","rgba(251,146,60,0.8)"];
     const total = series.reduce((s,r) => s+r.value, 0);
     const top5  = series.slice(0, 5);
-    const COLORS = ["rgba(192,159,83,0.9)","rgba(74,222,128,0.8)","rgba(99,179,237,0.8)","rgba(167,139,250,0.8)","rgba(251,146,60,0.8)"];
-    const circumference = 2 * Math.PI * 52;
+    const C = 2 * Math.PI * 52;
     let offset = 0;
     return (
         <div className="sa-rb-donut-wrap">
             <svg width="130" height="130" viewBox="0 0 130 130" style={{ transform: "rotate(-90deg)", flexShrink: 0 }}>
                 <circle cx="65" cy="65" r="52" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="18" />
                 {top5.map((s, i) => {
-                    const dash = circumference * (total > 0 ? s.value/total : 0);
+                    const dash = C * (total > 0 ? s.value/total : 0);
                     const el = <circle key={i} cx="65" cy="65" r="52" fill="none" stroke={COLORS[i]} strokeWidth="18"
-                        strokeDasharray={`${dash} ${circumference-dash}`} strokeDashoffset={-offset} />;
+                        strokeDasharray={`${dash} ${C-dash}`} strokeDashoffset={-offset} />;
                     offset += dash;
                     return el;
                 })}
@@ -182,6 +206,16 @@ function DonutViz({ series, formatVal }) {
 
 // ── Filter row ────────────────────────────────────────────────────────────────
 
+const FILTER_DIMENSIONS = [
+    { value: "channel", label: "Channel" },
+    { value: "device",  label: "Device" },
+    { value: "consent", label: "Consent level" },
+    { value: "country", label: "Country (2-letter code)" },
+];
+const FILTER_CHANNEL_OPTS = ["organic", "paid", "paid_social", "referral", "direct"];
+const FILTER_DEVICE_OPTS  = ["desktop", "mobile", "tablet"];
+const FILTER_CONSENT_OPTS = ["full", "minimal"];
+
 function FilterRow({ filter, onChange, onRemove }) {
     const opts = filter.dimension === "channel" ? FILTER_CHANNEL_OPTS
                : filter.dimension === "device"  ? FILTER_DEVICE_OPTS
@@ -195,8 +229,7 @@ function FilterRow({ filter, onChange, onRemove }) {
                 {FILTER_DIMENSIONS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
             </select>
             {opts ? (
-                <select className="sa-form-select" style={{ flex: 1 }}
-                    value={filter.value}
+                <select className="sa-form-select" style={{ flex: 1 }} value={filter.value}
                     onChange={e => onChange({ ...filter, value: e.target.value })}>
                     <option value="">Select…</option>
                     {opts.map(o => <option key={o} value={o}>{o}</option>)}
@@ -211,7 +244,22 @@ function FilterRow({ filter, onChange, onRemove }) {
     );
 }
 
+// ── Section divider for the preview column ────────────────────────────────────
+
+function PanelLabel({ children }) {
+    return (
+        <div style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: ".09em", textTransform: "uppercase",
+            color: "rgba(130,130,130,0.5)", marginBottom: 6, marginTop: 4 }}>
+            {children}
+        </div>
+    );
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
+
+const EMPTY_CONFIG = {
+    name: "", chartType: "bar", metrics: ["sessions"], breakdown: "date", filters: [], dateRangeDays: 30,
+};
 
 export default function ReportBuilder() {
     const { reportId } = useParams();
@@ -223,11 +271,11 @@ export default function ReportBuilder() {
     const tpl    = tplKey ? REPORT_TEMPLATES.find(t => t.key === tplKey) : null;
 
     const initialConfig = tpl
-        ? { name: tpl.name, chartType: tpl.chartType, metrics: tpl.metrics,
-            breakdown: tpl.breakdown, filters: tpl.filters, dateRangeDays: tpl.dateRangeDays }
+        ? { name: tpl.name, chartType: tpl.chartType === "line" ? "bar" : tpl.chartType,
+            metrics: tpl.metrics, breakdown: tpl.breakdown, filters: tpl.filters, dateRangeDays: tpl.dateRangeDays }
         : EMPTY_CONFIG;
 
-    document.title = tpl ? `${tpl.name} | Reports` : (isNew ? "New Report" : "Edit Report") + " | Site Analytics";
+    document.title = isNew ? "New Report | Site Analytics" : "Edit Report | Site Analytics";
 
     const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate } = useAnalyticsPageChrome();
 
@@ -237,11 +285,9 @@ export default function ReportBuilder() {
     const [loadErr, setLoadErr] = useState(null);
 
     const reportFrom = useMemo(() => {
-        const d = new Date();
-        d.setDate(d.getDate() - (config.dateRangeDays || 30));
+        const d = new Date(); d.setDate(d.getDate() - (config.dateRangeDays || 30));
         return d.toISOString().slice(0,10);
     }, [config.dateRangeDays]);
-
     const reportTo = useMemo(() => new Date().toISOString().slice(0,10), []);
 
     const segment = useMemo(() => {
@@ -258,8 +304,8 @@ export default function ReportBuilder() {
 
     const hasAdMetrics = config.metrics.some(m => AD_METRICS.has(m));
 
-    const { data, loading: dataLoading }   = useAnalyticsReport(domain, reportFrom, reportTo, 0, segment);
-    const { data: adData, loading: adLoading } = useAdSpendReport(domain, reportFrom, reportTo, hasAdMetrics);
+    const { data, loading: dataLoading }              = useAnalyticsReport(domain, reportFrom, reportTo, 0, segment);
+    const { data: adData, loading: adLoading }        = useAdSpendReport(domain, reportFrom, reportTo, hasAdMetrics);
 
     // Load existing report for edit mode
     useEffect(() => {
@@ -268,13 +314,17 @@ export default function ReportBuilder() {
             .then(async r => {
                 if (!r.ok) throw new Error(r.status);
                 const json = await r.json();
-                const found = (json.reports || []).find(r => String(r.id) === String(reportId));
+                const found = (json.reports||[]).find(r => String(r.id) === String(reportId));
                 if (found) {
-                    setConfig({ name: found.name, chartType: found.chart_type, metrics: found.metrics || ["sessions"],
-                        breakdown: found.breakdown, filters: found.filters || [], dateRangeDays: found.date_range_days || 30 });
-                } else {
-                    setLoadErr("Report not found.");
-                }
+                    setConfig({
+                        name: found.name,
+                        chartType: found.chart_type === "line" ? "bar" : found.chart_type,
+                        metrics: found.metrics || ["sessions"],
+                        breakdown: found.breakdown || "date",
+                        filters: found.filters || [],
+                        dateRangeDays: found.date_range_days || 30,
+                    });
+                } else { setLoadErr("Report not found."); }
             })
             .catch(() => setLoadErr("Could not load report."));
     }, [isNew, reportId, domain]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -291,8 +341,11 @@ export default function ReportBuilder() {
         if (!config.name.trim()) { setSaveErr("Give the report a name."); return; }
         if (!domain)             { setSaveErr("Select a domain first."); return; }
         setSaving(true); setSaveErr(null);
-        const body = { name: config.name.trim(), chart_type: config.chartType, metrics: config.metrics,
-            breakdown: config.breakdown, filters: config.filters.filter(f => f.value), date_range_days: config.dateRangeDays };
+        const body = {
+            name: config.name.trim(), chart_type: config.chartType, metrics: config.metrics,
+            breakdown: config.breakdown, filters: config.filters.filter(f => f.value),
+            date_range_days: config.dateRangeDays,
+        };
         const url    = `${REPORTS_URL}?domain=${encodeURIComponent(domain)}${isNew ? "" : `&id=${reportId}`}`;
         const method = isNew ? "POST" : "PUT";
         const r = await fetch(url, { method, headers: authHeaders(), body: JSON.stringify(body) }).catch(() => null);
@@ -300,43 +353,34 @@ export default function ReportBuilder() {
         history.push(analyticsReportsPath(domain));
     }
 
-    // ── Derived preview data ──────────────────────────────────────────────────
+    // ── Derived data ──────────────────────────────────────────────────────────
 
-    const primaryMetric  = config.metrics[0] || "sessions";
-    const primaryMetDef  = METRIC_DEFS[primaryMetric] || METRIC_DEFS.sessions;
-    const breakdownDef   = BREAKDOWN_DEFS[config.breakdown] || BREAKDOWN_DEFS.date;
-    const currency       = adCurrency(adData);
-    const moneyFmt       = v => formatMoney(v, currency);
-    const isAdPrimary    = AD_METRICS.has(primaryMetric);
+    const primaryMetric = config.metrics[0] || "sessions";
+    const primaryDef    = METRIC_DEFS[primaryMetric] || METRIC_DEFS.sessions;
+    const isAdPrimary   = AD_METRICS.has(primaryMetric);
+    const currency      = adCurrency(adData);
+    const moneyFmt      = v => formatMoney(v, currency);
+    const isKpiMode     = config.chartType === "kpi";
+    const isLoading     = dataLoading || adLoading;
+    const hasData       = isAdPrimary ? !!adData : !!data;
 
-    const series = useMemo(() => {
-        if (isAdPrimary && !adData) return [];
-        if (!isAdPrimary && !data) return [];
-        return breakdownDef.getSeries(data, adData, primaryMetric);
-    }, [data, adData, config.breakdown, primaryMetric]); // eslint-disable-line react-hooks/exhaustive-deps
+    const trendData = useMemo(() => getTrendSeries(data, adData, primaryMetric),
+        [data, adData, primaryMetric]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const kpiValues = useMemo(() => {
-        return Object.fromEntries(config.metrics.map(m => {
-            const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
-            return [m, def.getTotal(data, adData)];
-        }));
-    }, [data, adData, config.metrics]);
-
-    const trendData = config.breakdown === "date"
-        ? series.map(s => ({ date: s.label, num: s.value }))
-        : [];
-
-    const isLoading = dataLoading || adLoading;
-    const hasData   = isAdPrimary ? !!adData : !!data;
-
-    // Analytics metrics grouped for the picker
-    const analyticsMetrics = Object.entries(METRIC_DEFS).filter(([, d]) => d.group === "analytics");
-    const adMetricsList    = Object.entries(METRIC_DEFS).filter(([, d]) => d.group === "adspend");
-
-    // Breakdowns: filter adPlatform out when no ad metrics selected
-    const breakdownEntries = Object.entries(BREAKDOWN_DEFS).filter(([key]) =>
-        key !== "adPlatform" || hasAdMetrics
+    const breakdownSeries = useMemo(
+        () => getBreakdownSeries(config.breakdown, data, adData, primaryMetric),
+        [config.breakdown, data, adData, primaryMetric] // eslint-disable-line react-hooks/exhaustive-deps
     );
+
+    const kpiValues = useMemo(() => Object.fromEntries(
+        config.metrics.map(m => [m, (METRIC_DEFS[m]||METRIC_DEFS.sessions).getTotal(data, adData)])
+    ), [data, adData, config.metrics]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const showBreakdown = !isKpiMode && config.breakdown !== "date" && config.breakdown !== "none";
+
+    const analyticsMetrics = Object.entries(METRIC_DEFS).filter(([,d]) => d.group === "analytics");
+    const adMetricsList    = Object.entries(METRIC_DEFS).filter(([,d]) => d.group === "adspend");
+    const breakdownDims    = BREAKDOWN_DIMS.filter(d => !d.adOnly || hasAdMetrics);
 
     // ── Render ────────────────────────────────────────────────────────────────
 
@@ -349,13 +393,8 @@ export default function ReportBuilder() {
                             ← My Reports
                         </button>
                         <span style={{ color: "rgba(255,255,255,0.15)", fontWeight: 300 }}>/</span>
-                        <input
-                            className="sa-rb-name-input"
-                            type="text"
-                            placeholder="Report name…"
-                            value={config.name}
-                            onChange={e => setConfig(c => ({ ...c, name: e.target.value }))}
-                        />
+                        <input className="sa-rb-name-input" type="text" placeholder="Report name…"
+                            value={config.name} onChange={e => setConfig(c => ({ ...c, name: e.target.value }))} />
                     </span>
                 }
             />
@@ -365,29 +404,14 @@ export default function ReportBuilder() {
                     {loadErr && <p className="sa-notice sa-notice--error">{loadErr}</p>}
 
                     <div className="sa-rb-grid">
-                        {/* ── LEFT: config ─────────────────────────────── */}
+
+                        {/* ── LEFT: config panel ───────────────────────── */}
                         <div className="sa-rb-config-col">
 
-                            {/* Chart type */}
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">Chart type</h3>
-                                <div className="sa-rb-chart-types">
-                                    {["line","bar","table","kpi","donut"].map(key => (
-                                        <button key={key}
-                                            className={"sa-rb-ct-btn" + (config.chartType === key ? " sa-rb-ct-btn--active" : "")}
-                                            onClick={() => setConfig(c => ({ ...c, chartType: key }))}>
-                                            <span className="sa-rb-ct-icon">{CT_SVG[key]}</span>
-                                            <span style={{ textTransform: "capitalize" }}>{key}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Metrics — grouped */}
+                            {/* Metrics */}
                             <div className="sa-panel">
                                 <h3 className="sa-panel__title">Metrics</h3>
-
-                                <div className="sa-rb-metric-group-label">Site analytics</div>
+                                <div className="sa-rb-metric-group-label" style={{ borderTop: "none", paddingTop: 0 }}>Site analytics</div>
                                 <div className="sa-rb-metric-list">
                                     {analyticsMetrics.map(([key, def]) => (
                                         <div key={key} className="sa-rb-metric-item" onClick={() => toggleMetric(key)}>
@@ -398,7 +422,6 @@ export default function ReportBuilder() {
                                         </div>
                                     ))}
                                 </div>
-
                                 <div className="sa-rb-metric-group-label" style={{ marginTop: 10 }}>
                                     <span>Ad spend</span>
                                     <span className="sa-rb-metric-group-badge">requires connection</span>
@@ -415,16 +438,45 @@ export default function ReportBuilder() {
                                 </div>
                             </div>
 
-                            {/* Breakdown */}
+                            {/* Breakdown dimension */}
                             <div className="sa-panel">
-                                <h3 className="sa-panel__title">Breakdown by</h3>
+                                <h3 className="sa-panel__title">Breakdown dimension</h3>
+                                <p className="sa-rb-hint">The trend chart always shows data over time. Pick a dimension to add a breakdown panel below it.</p>
                                 <div className="sa-rb-breakdown-list">
-                                    {breakdownEntries.map(([key, def]) => (
+                                    {breakdownDims.map(({ key, label }) => (
                                         <div key={key} className="sa-rb-breakdown-item" onClick={() => setConfig(c => ({ ...c, breakdown: key }))}>
                                             <div className={"sa-rb-radio" + (config.breakdown === key ? " sa-rb-radio--sel" : "")} />
-                                            <span className="sa-rb-metric-label">{def.label}</span>
+                                            <span className="sa-rb-metric-label">{label}</span>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+
+                            {/* Breakdown style — only relevant when a dimension is selected */}
+                            {showBreakdown && (
+                                <div className="sa-panel">
+                                    <h3 className="sa-panel__title">Breakdown style</h3>
+                                    <div className="sa-rb-chart-types">
+                                        {BREAKDOWN_STYLES.filter(s => s.key !== "kpi").map(({ key, label, icon }) => (
+                                            <button key={key}
+                                                className={"sa-rb-ct-btn" + (config.chartType === key ? " sa-rb-ct-btn--active" : "")}
+                                                onClick={() => setConfig(c => ({ ...c, chartType: key }))}>
+                                                <span className="sa-rb-ct-icon">{icon}</span>
+                                                <span>{label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* KPI-only mode toggle */}
+                            <div className="sa-panel">
+                                <h3 className="sa-panel__title">Display mode</h3>
+                                <div className="sa-rb-breakdown-list">
+                                    <div className="sa-rb-breakdown-item" onClick={() => setConfig(c => ({ ...c, chartType: c.chartType === "kpi" ? "bar" : "kpi" }))}>
+                                        <div className={"sa-rb-radio" + (isKpiMode ? " sa-rb-radio--sel" : "")} />
+                                        <span className="sa-rb-metric-label">KPI cards only (no charts)</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -472,79 +524,87 @@ export default function ReportBuilder() {
 
                         {/* ── RIGHT: live preview ───────────────────────── */}
                         <div className="sa-rb-preview-col">
-                            {/* KPI summary row */}
-                            {config.metrics.length > 0 && (
-                                <div className="sa-rb-kpi-strip">
-                                    {config.metrics.map(m => {
-                                        const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
-                                        const val = kpiValues[m] ?? 0;
-                                        const fmt = def.isMoney ? moneyFmt(val)
-                                                  : def.isRate  ? formatPercent(val)
-                                                  : val.toLocaleString("de-DE");
-                                        return (
-                                            <div key={m} className="sa-rb-kpi">
-                                                <div className="sa-rb-kpi__label">{def.label.toUpperCase()}</div>
-                                                <div className="sa-rb-kpi__value">{isLoading ? "—" : fmt}</div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
 
-                            {/* Ad spend not connected notice */}
+                            {/* ── 1. KPI strip — always ─────────────────── */}
+                            <div className="sa-rb-kpi-strip">
+                                {config.metrics.map(m => {
+                                    const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
+                                    const val = kpiValues[m] ?? 0;
+                                    const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE");
+                                    return (
+                                        <div key={m} className="sa-rb-kpi">
+                                            <div className="sa-rb-kpi__label">{def.label.toUpperCase()}</div>
+                                            <div className="sa-rb-kpi__value">{isLoading ? "—" : fmt}</div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Ad not connected notice */}
                             {hasAdMetrics && !adLoading && !adData && domain && (
                                 <div className="sa-rb-ad-notice">
-                                    <strong>No ad connections found for {domain}.</strong>{" "}
-                                    Connect Google Ads, Meta, or LinkedIn in the Ad Spend section to see data here.
+                                    <strong>No ad connections for {domain}.</strong>{" "}
+                                    Connect an ad platform in Ad Spend settings to see this data.
                                 </div>
                             )}
 
-                            {/* Main chart panel */}
-                            <div className="sa-panel">
-                                <h3 className="sa-panel__title">
-                                    {config.name || "Report preview"}
-                                    <span className="sa-panel__sub-title" style={{ marginLeft: 8, fontWeight: 400, fontSize: 11, textTransform: "none", letterSpacing: 0 }}>
-                                        {primaryMetDef.label} · {breakdownDef.label} · last {config.dateRangeDays}d
-                                        {domain && <> · {domain}</>}
-                                    </span>
-                                </h3>
-
-                                {isLoading && <p className="sa-notice" style={{ margin: 0 }}>Loading data…</p>}
-                                {!isLoading && !hasData && <p className="sa-notice" style={{ margin: 0 }}>Select a domain in the header to preview live data.</p>}
-
-                                {!isLoading && hasData && (
-                                    <>
-                                        {config.chartType === "kpi" && (
+                            {/* ── 2. KPI mode — large metric cards ─────── */}
+                            {isKpiMode && (
+                                <>
+                                    <PanelLabel>Metrics overview</PanelLabel>
+                                    <div className="sa-panel">
+                                        {isLoading && <p className="sa-notice" style={{ margin: 0 }}>Loading data…</p>}
+                                        {!isLoading && !hasData && <p className="sa-notice" style={{ margin: 0 }}>Select a domain to preview.</p>}
+                                        {!isLoading && hasData && (
                                             <div className="sa-rb-kpi-grid">
                                                 {config.metrics.map(m => {
                                                     const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
                                                     const val = kpiValues[m] ?? 0;
-                                                    const fmt = def.isMoney ? moneyFmt(val)
-                                                              : def.isRate  ? formatPercent(val)
-                                                              : val.toLocaleString("de-DE");
+                                                    const fmt = def.isMoney ? moneyFmt(val) : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE");
                                                     return <KpiCard key={m} icon={<IconTarget />} label={def.label} value={fmt} />;
                                                 })}
                                             </div>
                                         )}
-                                        {config.chartType === "line" && config.breakdown === "date" && trendData.length > 0 && (
-                                            <TrendLineChart data={trendData} title={primaryMetDef.label} showInsights height={240} />
+                                    </div>
+                                </>
+                            )}
+
+                            {/* ── 3. Trend chart — always (non-KPI mode) ── */}
+                            {!isKpiMode && (
+                                <>
+                                    <PanelLabel>Trend — {primaryDef.label} · last {config.dateRangeDays} days{domain ? ` · ${domain}` : ""}</PanelLabel>
+                                    <div className="sa-panel">
+                                        {isLoading && <p className="sa-notice" style={{ margin: 0 }}>Loading data…</p>}
+                                        {!isLoading && !hasData && <p className="sa-notice" style={{ margin: 0 }}>Select a domain to preview.</p>}
+                                        {!isLoading && hasData && trendData.length > 0 && (
+                                            <TrendLineChart data={trendData} title={primaryDef.label} showInsights height={220} />
                                         )}
-                                        {config.chartType === "line" && config.breakdown !== "date" && (
-                                            <BarRows series={series} formatVal={isAdPrimary && primaryMetDef.isMoney ? moneyFmt : null} />
+                                        {!isLoading && hasData && trendData.length === 0 && (
+                                            <p className="sa-notice" style={{ margin: 0 }}>No daily data for the selected period.</p>
                                         )}
-                                        {config.chartType === "bar" && (
-                                            <BarRows series={series} formatVal={isAdPrimary && primaryMetDef.isMoney ? moneyFmt : null} />
-                                        )}
-                                        {config.chartType === "table" && (
-                                            <DataTable series={series} metricLabel={primaryMetDef.label}
-                                                formatVal={isAdPrimary && primaryMetDef.isMoney ? moneyFmt : null} />
-                                        )}
-                                        {config.chartType === "donut" && (
-                                            <DonutViz series={series} formatVal={isAdPrimary && primaryMetDef.isMoney ? moneyFmt : null} />
-                                        )}
-                                    </>
-                                )}
-                            </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {/* ── 4. Breakdown panel — when dim ≠ date ─── */}
+                            {showBreakdown && (
+                                <>
+                                    <PanelLabel>
+                                        Breakdown — {BREAKDOWN_DIMS.find(d => d.key === config.breakdown)?.label || config.breakdown}
+                                    </PanelLabel>
+                                    <div className="sa-panel">
+                                        {isLoading && <p className="sa-notice" style={{ margin: 0 }}>Loading data…</p>}
+                                        {!isLoading && !hasData && <p className="sa-notice" style={{ margin: 0 }}>Select a domain to preview.</p>}
+                                        {!isLoading && hasData && (() => {
+                                            const fmtVal = primaryDef.isMoney ? moneyFmt : null;
+                                            if (config.chartType === "donut") return <DonutViz series={breakdownSeries} formatVal={fmtVal} />;
+                                            if (config.chartType === "table") return <DataTable series={breakdownSeries} metricLabel={primaryDef.label} formatVal={fmtVal} />;
+                                            return <BarRows series={breakdownSeries} formatVal={fmtVal} />;
+                                        })()}
+                                    </div>
+                                </>
+                            )}
+
                         </div>
                     </div>
                 </div>
