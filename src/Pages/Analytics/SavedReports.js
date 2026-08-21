@@ -134,7 +134,7 @@ function ReportCard({ report, onDelete, onDuplicate }) {
 
     return (
         <div className="sa-report-card"
-            onClick={() => history.push(analyticsReportViewPath(null, report.id) + `?domain=${encodeURIComponent(report._domain||"")}`)}>
+            onClick={() => history.push(analyticsReportViewPath(report._domain, report.id))}>
             <div className="sa-report-card__type">
                 <span style={{ opacity: 0.7 }}>{CT_SVG[report.chart_type]}</span>
                 <span>{CHART_TYPE_LABELS[report.chart_type]||report.chart_type}</span>
@@ -146,7 +146,7 @@ function ReportCard({ report, onDelete, onDuplicate }) {
                 <span className="sa-report-card__date">Updated {fmtDate(report.updated_at)}</span>
                 <div className="sa-report-card__actions" onClick={e => e.stopPropagation()}>
                     <button className="sa-report-card__action-btn"
-                        onClick={e => { e.stopPropagation(); history.push(analyticsReportBuilderPath(null, report.id) + `?domain=${encodeURIComponent(report._domain||"")}`); }}>
+                        onClick={e => { e.stopPropagation(); history.push(analyticsReportBuilderPath(report._domain, report.id)); }}>
                         Edit
                     </button>
                     <button className="sa-report-card__action-btn" onClick={handleDuplicate} disabled={dup}>

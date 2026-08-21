@@ -237,6 +237,59 @@ export default function ReportView() {
         return Object.fromEntries(metrics.map(m => [m, (METRIC_DEFS[m]||METRIC_DEFS.sessions).getTotal(data, adData)]));
     }, [data, adData, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    function exportCsv() {
+        if (!report) return;
+        const esc = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+        const rows = [];
+
+        // ── Metadata ───────────────────────────────────────────────────────
+        rows.push([esc(report.name)]);
+        rows.push([esc(`Domain: ${domain || "All domains"}`)]);
+        rows.push([esc(`Date range: Last ${report.date_range_days} days`)]);
+        rows.push([esc(`Exported: ${new Date().toLocaleDateString("en-GB")}`)]);
+        rows.push([]);
+
+        // ── KPI totals ─────────────────────────────────────────────────────
+        rows.push(["Metric", "Value"].map(esc));
+        metrics.forEach(m => {
+            const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
+            const val = kpiValues[m] ?? 0;
+            const fmt = def.isMoney ? formatMoney(val, currency)
+                      : def.isRate  ? `${val.toFixed(2)}%`
+                      : String(val);
+            rows.push([esc(METRIC_LABELS[m]||m), esc(fmt)]);
+        });
+        rows.push([]);
+
+        // ── Trend (daily) ──────────────────────────────────────────────────
+        if (trendData.length > 0) {
+            rows.push(["Date", esc(METRIC_LABELS[primaryMetric]||primaryMetric)]);
+            trendData.forEach(r => rows.push([esc(r.date), r.num]));
+            rows.push([]);
+        }
+
+        // ── Breakdown ──────────────────────────────────────────────────────
+        if (breakdownSeries.length > 0) {
+            rows.push([esc(BREAKDOWN_DIM_LABELS[breakdown]||breakdown), esc(METRIC_LABELS[primaryMetric]||primaryMetric)]);
+            breakdownSeries.forEach(s => {
+                const def = METRIC_DEFS[primaryMetric] || METRIC_DEFS.sessions;
+                const fmt = def.isMoney ? formatMoney(s.value, currency) : String(s.value);
+                rows.push([esc(s.label), esc(fmt)]);
+            });
+        }
+
+        const csv  = rows.map(r => r.join(",")).join("\n");
+        const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href     = url;
+        a.download = `${report.name.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
     async function duplicate() {
         if (!report || !domain) return;
         setDupLoading(true);
@@ -292,6 +345,17 @@ export default function ReportView() {
                                     <div className="sa-rv-meta__updated">Updated {fmtDate(report.updated_at)}</div>
                                 </div>
                                 <div className="sa-rv-actions">
+                                    <button className="sa-btn" onClick={exportCsv} disabled={!hasData || isLoading}
+                                        title="Export data as CSV">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+                                            strokeLinecap="round" strokeLinejoin="round" width="13" height="13"
+                                            style={{ marginRight: 5, verticalAlign: "middle" }}>
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="7 10 12 15 17 10"/>
+                                            <line x1="12" y1="15" x2="12" y2="3"/>
+                                        </svg>
+                                        Export CSV
+                                    </button>
                                     <button className="sa-btn" onClick={duplicate} disabled={dupLoading}>
                                         {dupLoading ? "Duplicating…" : "Duplicate"}
                                     </button>
