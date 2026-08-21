@@ -4359,3 +4359,220 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-tpl-card:hover .sa-tpl-card__use {
     opacity: 1;
 }
+
+/* ── Template library controls (search + tabs) ─────────────────────────── */
+
+.sa-tpl-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.sa-tpl-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.sa-tpl-tab {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(160,160,160,0.65);
+    cursor: pointer;
+    transition: background .12s, border-color .12s, color .12s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.sa-tpl-tab:hover {
+    background: rgba(255,255,255,0.04);
+    color: rgba(210,210,210,0.85);
+    border-color: rgba(255,255,255,0.14);
+}
+
+.sa-tpl-tab--active {
+    background: rgba(192,159,83,0.12);
+    border-color: rgba(192,159,83,0.35);
+    color: rgba(192,159,83,0.9);
+}
+
+.sa-tpl-tab__count {
+    font-size: 0.65rem;
+    background: rgba(255,255,255,0.07);
+    border-radius: 20px;
+    padding: 1px 5px;
+    color: rgba(130,130,130,0.6);
+}
+
+.sa-tpl-tab--active .sa-tpl-tab__count {
+    background: rgba(192,159,83,0.18);
+    color: rgba(192,159,83,0.7);
+}
+
+.sa-tpl-search {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.78rem;
+    color: rgba(210,210,210,0.85);
+    outline: none;
+    width: 180px;
+    transition: border-color .12s, background .12s;
+}
+
+.sa-tpl-search::placeholder {
+    color: rgba(130,130,130,0.45);
+}
+
+.sa-tpl-search:focus {
+    border-color: rgba(192,159,83,0.35);
+    background: rgba(192,159,83,0.04);
+}
+
+/* ── Report View (sa-rv-*) ──────────────────────────────────────────────── */
+
+.sa-rv-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.sa-rv-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.sa-rv-meta__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.sa-rv-meta__updated {
+    font-size: 0.72rem;
+    color: rgba(130,130,130,0.5);
+}
+
+.sa-rv-chip {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(192,159,83,0.1);
+    border: 1px solid rgba(192,159,83,0.22);
+    border-radius: 20px;
+    padding: 3px 9px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: rgba(192,159,83,0.85);
+    white-space: nowrap;
+}
+
+.sa-rv-chip--dim {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(255,255,255,0.08);
+    color: rgba(160,160,160,0.65);
+}
+
+.sa-rv-chip--filter {
+    background: rgba(99,179,237,0.08);
+    border-color: rgba(99,179,237,0.2);
+    color: rgba(99,179,237,0.75);
+}
+
+.sa-rv-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.sa-rv-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.sa-rv-kpi {
+    background: rgba(26,26,30,0.75);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.sa-rv-kpi__label {
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: rgba(130,130,130,0.6);
+    margin-bottom: 6px;
+}
+
+.sa-rv-kpi__value {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: rgba(210,210,210,0.92);
+    letter-spacing: -.01em;
+}
+
+.sa-rv-bar-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sa-rv-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sa-rv-bar-label {
+    width: 120px;
+    font-size: 0.78rem;
+    color: rgba(160,160,160,0.75);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.sa-rv-bar-track {
+    flex: 1;
+    height: 7px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.sa-rv-bar-fill {
+    height: 100%;
+    background: rgba(192,159,83,0.7);
+    border-radius: 4px;
+    transition: width .3s ease;
+}
+
+.sa-rv-bar-val {
+    width: 52px;
+    text-align: right;
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    color: rgba(210,210,210,0.75);
+    flex-shrink: 0;
+}

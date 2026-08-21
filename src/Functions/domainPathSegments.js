@@ -209,6 +209,13 @@ export function analyticsReportBuilderPath(domainUnicode, reportId) {
     return `/analytics/${seg}/reports${suffix}`;
 }
 
+/** Read-only view for a saved report. */
+export function analyticsReportViewPath(domainUnicode, reportId) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return `/analytics/reports/${reportId}/view`;
+    return `/analytics/${seg}/reports/${reportId}/view`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {

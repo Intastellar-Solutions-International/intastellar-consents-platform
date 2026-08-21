@@ -68,6 +68,7 @@ import AnalyticsCohorts from "./Pages/Analytics/Cohorts.js";
 import AnalyticsAlerts from "./Pages/Analytics/AlertConfigs.js";
 import AnalyticsSavedReports from "./Pages/Analytics/SavedReports.js";
 import AnalyticsReportBuilder from "./Pages/Analytics/ReportBuilder.js";
+import AnalyticsReportView from "./Pages/Analytics/ReportView.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -407,6 +408,16 @@ export default function App() {
                                         <Route path="/analytics/alerts" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Alerts" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsAlerts />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/reports/:reportId/view" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Custom Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsReportView />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/reports/:reportId/view" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Custom Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsReportView />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/reports/new" exact>
