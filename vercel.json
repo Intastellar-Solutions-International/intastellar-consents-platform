@@ -23,6 +23,10 @@
   ],
   "crons": [
     {
+      "path": "/api/cron-analytics-alerts",
+      "schedule": "0 7 * * *"
+    },
+    {
       "path": "/api/cron-scan-domains",
       "schedule": "0 3 * * *"
     },
@@ -154,6 +158,18 @@
     "api/a.js": {
       "memory": 256,
       "maxDuration": 10
+    },
+    "api/analytics-cohorts.js": {
+      "memory": 256,
+      "maxDuration": 20
+    },
+    "api/analytics-alert-configs.js": {
+      "memory": 256,
+      "maxDuration": 10
+    },
+    "api/cron-analytics-alerts.js": {
+      "memory": 256,
+      "maxDuration": 60
     },
     "api/analytics-site.js": {
       "memory": 256,
