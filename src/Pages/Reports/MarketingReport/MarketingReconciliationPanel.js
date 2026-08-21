@@ -109,7 +109,7 @@ function computeStatsForPlatform(platformId, scopeRows, fallbackConsents, fallba
  */
 const PLATFORM_SOURCE_PATTERNS = {
     google_ads: /^(?:google|adwords|gads)/,
-    meta_ads: /^(?:facebook|meta|instagram|fb|ig)/,
+    meta_ads: /^(?:facebook|meta|instagram|messenger|fb|ig|msg|an$)/,
     microsoft_ads: /^(?:bing|microsoft|msads|msn)/,
     linkedin_ads: /^(?:linkedin|liads)/,
     tiktok_ads: /^(?:tiktok|ttads)/,
@@ -179,7 +179,7 @@ function extractUtmSourceFromUrl(url) {
  */
 const PLATFORM_EXAMPLE_SOURCES = {
     google_ads: ["google", "googleads", "adwords", "gads"],
-    meta_ads: ["facebook", "fb", "meta", "instagram", "ig"],
+    meta_ads: ["facebook", "fb", "meta", "instagram", "ig", "messenger", "msg", "an"],
     microsoft_ads: ["bing", "microsoft", "msads", "msn"],
     linkedin_ads: ["linkedin", "liads"],
     tiktok_ads: ["tiktok", "ttads"],
