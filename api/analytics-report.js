@@ -131,6 +131,35 @@ async function _handler(req, res) {
         ? { industry, label: INDUSTRY_BENCHMARKS[industry].label, consentRatePct: INDUSTRY_BENCHMARKS[industry].consentRatePct }
         : null;
 
+    // Optional segment filters — validated against fixed enums so string interpolation
+    // into SQL is safe (no user-controlled text reaches the query string).
+    const VALID_DEVICES  = new Set(["desktop", "tablet", "mobile", "other"]);
+    const VALID_CHANNELS = new Set(["organic", "paid", "direct", "referral"]);
+    const VALID_CONSENTS = new Set(["full", "minimal"]);
+    const rawCountry = (req.query.seg_country || "").trim().toUpperCase();
+
+    const segDevice  = VALID_DEVICES.has(req.query.seg_device)  ? req.query.seg_device  : null;
+    const segCountry = /^[A-Z]{2}$/.test(rawCountry)           ? rawCountry             : null;
+    const segChannel = VALID_CHANNELS.has(req.query.seg_channel) ? req.query.seg_channel : null;
+    const segConsent = VALID_CONSENTS.has(req.query.seg_consent) ? req.query.seg_consent : null;
+
+    // Channel segment maps to UTM+referrer conditions (no user text in SQL).
+    const CHANNEL_SQL = {
+        organic:  `(utm_medium = 'organic' OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')='' AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.'))`,
+        paid:     `(utm_medium ~* '^(cpc|ppc|paid|cpm|display)' OR (COALESCE(utm_source,'')!='' AND COALESCE(utm_medium,'') NOT IN ('organic','')))`,
+        referral: `(COALESCE(referrer_host,'')!='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
+        direct:   `(COALESCE(referrer_host,'')='' AND COALESCE(utm_source,'')='' AND COALESCE(utm_medium,'')='')`,
+    };
+
+    // Extra WHERE clauses injected into analytics_events queries.
+    const segClauses = [
+        segDevice  ? `device_type = '${segDevice}'`   : null,
+        segCountry ? `country_code = '${segCountry}'` : null,
+        segConsent ? `consent_level = '${segConsent}'` : null,
+        segChannel ? CHANNEL_SQL[segChannel]           : null,
+    ].filter(Boolean);
+    const segAnd = segClauses.length ? "AND " + segClauses.join(" AND ") : "";
+
     // Run all aggregations in parallel
     const [totalsRes, dailyRes, pagesRes, countriesRes, devicesRes,
            browsersRes, consentRes, utmRes, referrersRes, hostsRes, conversionsRes, eventDefsRes,
@@ -138,7 +167,7 @@ async function _handler(req, res) {
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
            dailyConversionsRes, timeToConvertRes, funnelRes,
            conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes, pageEngagementRes,
-           newVsReturningRes] = await Promise.all([
+           newVsReturningRes, lastTouchByChannelRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -149,7 +178,7 @@ async function _handler(req, res) {
                 COUNT(*) FILTER (WHERE consent_stat = true)                    AS stat_yes,
                 COUNT(*) FILTER (WHERE consent_stat = false OR consent_stat IS NULL) AS stat_no
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3`,
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}`,
             [siteId, fromDate, toDateExclusive]
         ),
 
@@ -159,7 +188,7 @@ async function _handler(req, res) {
                 COUNT(*) FILTER (WHERE consent_level = 'minimal')  AS minimal,
                 COUNT(*) FILTER (WHERE consent_level = 'full')     AS full_count
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
             GROUP BY 1 ORDER BY 1`,
             [siteId, fromDate, toDateExclusive]
         ),
@@ -175,7 +204,7 @@ async function _handler(req, res) {
                 COUNT(*)                                                          AS views,
                 COUNT(DISTINCT session_id) FILTER (WHERE session_id IS NOT NULL) AS sessions
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
               AND pathname !~* '^/api/'
               AND pathname !~* '\\.(js|css|json|xml|txt|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot|pdf)$'
             GROUP BY pathname ORDER BY views DESC LIMIT 20`,
@@ -185,7 +214,7 @@ async function _handler(req, res) {
         db.query(`
             SELECT country_code, COUNT(*) AS events
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
               AND country_code IS NOT NULL
             GROUP BY country_code ORDER BY events DESC LIMIT 15`,
             [siteId, fromDate, toDateExclusive]
@@ -194,7 +223,7 @@ async function _handler(req, res) {
         db.query(`
             SELECT device_type, COUNT(*) AS events
             FROM analytics_events
-            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3 ${segAnd}
               AND device_type IS NOT NULL
             GROUP BY device_type ORDER BY events DESC`,
             [siteId, fromDate, toDateExclusive]
@@ -204,7 +233,7 @@ async function _handler(req, res) {
             SELECT browser_family, COUNT(*) AS events
             FROM analytics_events
             WHERE site_id = $1 AND consent_level = 'full'
-              AND received_at >= $2 AND received_at < $3
+              AND received_at >= $2 AND received_at < $3 ${segAnd}
               AND browser_family IS NOT NULL AND browser_family != 'other'
             GROUP BY browser_family ORDER BY events DESC LIMIT 8`,
             [siteId, fromDate, toDateExclusive]
@@ -658,9 +687,46 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Last-touch attribution — for each converting session, the LAST analytics
+        // event before the conversion fires tells us the channel the visitor came
+        // from most recently. Paired with first-touch (conversionsByChannel above),
+        // this surfaces assist vs closing channel differences: a channel that
+        // appears heavily in first-touch but barely in last-touch is an awareness
+        // channel; one that dominates last-touch is a closing channel.
+        db.query(`
+            WITH last_touch AS (
+                SELECT DISTINCT ON (ce.session_id)
+                    ce.session_id,
+                    ae.utm_medium,
+                    ae.utm_source,
+                    ae.referrer_host
+                FROM analytics_custom_events ce
+                JOIN analytics_events ae
+                    ON ae.session_id = ce.session_id
+                    AND ae.site_id = $1
+                    AND ae.received_at >= $2 AND ae.received_at < $3
+                WHERE ce.site_id = $1 AND ce.received_at >= $2 AND ce.received_at < $3
+                ORDER BY ce.session_id, ae.received_at DESC
+            )
+            SELECT
+                CASE
+                    WHEN utm_medium ~* '^(cpc|ppc|paid|cpm|display)'                                  THEN 'paid'
+                    WHEN utm_medium = 'organic'
+                         OR (COALESCE(utm_medium,'')='' AND COALESCE(utm_source,'')=''
+                             AND referrer_host ~* '(google|bing|duckduckgo|yahoo|baidu|yandex|ecosia)\\.') THEN 'organic'
+                    WHEN COALESCE(referrer_host,'') != ''                                              THEN 'referral'
+                    WHEN COALESCE(utm_source,'') != ''                                                 THEN 'paid'
+                    ELSE 'direct'
+                END AS channel,
+                COUNT(DISTINCT session_id) AS sessions
+            FROM last_touch
+            GROUP BY 1`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(28).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(29).fill({ rows: [] });
         throw err;
     });
 
@@ -774,6 +840,36 @@ async function _handler(req, res) {
             const ret = Number(r.returning_sessions  || 0);
             return { newSessions: n, returningSessions: ret, tracked: n + ret };
         })(),
+        // Consent impact — estimates the "true" unfiltered visitor count from the
+        // full-consent fraction. Not derived from the consent platform's own DB
+        // (which lives on a separate server); computed entirely from the consent_level
+        // field captured in analytics_events at event time.
+        consentImpact: (() => {
+            const t = totalsRes.rows[0] || {};
+            const full = Number(t.full_count || 0);
+            const totalObs = Number(t.total || 0);
+            const consentRate = totalObs > 0 ? full / totalObs : 0;
+            const uniqueSess  = Number(t.unique_sessions || 0);
+            return {
+                consentRate,
+                observedSessions: uniqueSess,
+                estimatedTrue: consentRate > 0 ? Math.round(uniqueSess / consentRate) : null,
+                dailyEstimates: dailyRes.rows.map(r => {
+                    const d_full = Number(r.full_count || 0);
+                    const d_total = Number(r.minimal || 0) + d_full;
+                    const d_rate = d_total > 0 ? d_full / d_total : consentRate;
+                    return {
+                        date: r.date,
+                        estimated: d_rate > 0 ? Math.round(d_full / d_rate) : d_total,
+                    };
+                }),
+            };
+        })(),
+        lastTouchByChannel: lastTouchByChannelRes.rows.map(r => ({
+            channel:  r.channel,
+            sessions: Number(r.sessions || 0),
+        })),
+        segment: { device: segDevice, country: segCountry, channel: segChannel, consent: segConsent },
         countries: countriesRes.rows.map(r => ({
             code:   r.country_code,
             events: Number(r.events || 0),
