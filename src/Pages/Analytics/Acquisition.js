@@ -1,6 +1,6 @@
 const { useMemo } = React;
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration, SegmentFilter } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import "./Analytics.css";
 
@@ -9,7 +9,7 @@ export default function AnalyticsAcquisition() {
 
     const {
         domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
-        tick, data, loading, error, showData,
+        tick, data, loading, error, showData, segment, setSegment,
     } = useAnalyticsPage();
 
     // Previous period of the same length — same "vs previous period" pattern
@@ -43,6 +43,9 @@ export default function AnalyticsAcquisition() {
             />
             <div className="dashboard-content">
                 <div className="sa-page">
+                    {domain && !loading && data && !data.noSiteKey && (
+                        <SegmentFilter segment={segment} setSegment={setSegment} />
+                    )}
                     {!domain && (
                         <p className="sa-notice">Select a domain in the header to view acquisition data.</p>
                     )}

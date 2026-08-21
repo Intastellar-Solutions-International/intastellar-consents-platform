@@ -8,7 +8,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, toIsoDate, pctChange,
-    IndustryBenchmarkNote, formatPercent,
+    IndustryBenchmarkNote, formatPercent, SegmentFilter,
 } from "./_shared.js";
 import {
     IconBarChart,
@@ -409,7 +409,7 @@ export default function SiteAnalytics() {
 
     const {
         domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate,
-        tick, setTick, data, loading, error, showSetup, showData,
+        tick, setTick, data, loading, error, showSetup, showData, segment, setSegment,
     } = useAnalyticsPage();
 
     // Previous period of the same length, immediately preceding the current
@@ -451,6 +451,7 @@ export default function SiteAnalytics() {
                             <span className="sa-site-key-badge">
                                 Site key: <code>{data.siteId}</code>
                             </span>
+                            <SegmentFilter segment={segment} setSegment={setSegment} />
                         </div>
                     )}
 

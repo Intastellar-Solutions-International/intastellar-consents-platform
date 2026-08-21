@@ -37,30 +37,52 @@ function cachedReport(domain, fromIso, toIso, tick) {
     return hit && (Date.now() - hit.ts < REPORT_CACHE_TTL_MS) ? hit.data : null;
 }
 
-export function useAnalyticsReport(domain, fromIso, toIso, tick = 0) {
-    const [data,    setData]    = useState(() => cachedReport(domain, fromIso, toIso, tick));
+function segCacheKey(domain, fromIso, toIso, segment) {
+    const seg = segment || {};
+    return `${domain}|${fromIso}|${toIso}|${seg.device||""}|${seg.country||""}|${seg.channel||""}|${seg.consent||""}`;
+}
+
+export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = null) {
+    const [data,    setData]    = useState(() => {
+        const key = segCacheKey(domain, fromIso, toIso, segment);
+        if (!domain || tick !== 0) return null;
+        const hit = reportCache.get(key);
+        return hit && (Date.now() - hit.ts < REPORT_CACHE_TTL_MS) ? hit.data : null;
+    });
     const [loading, setLoading] = useState(false);
     const [error,   setError]   = useState(null);
 
     useEffect(() => {
         if (!domain) { setData(null); return; }
 
-        const fresh = cachedReport(domain, fromIso, toIso, tick);
-        if (fresh) { setData(fresh); setError(null); return; }
+        const key = segCacheKey(domain, fromIso, toIso, segment);
+        if (tick === 0) {
+            const hit = reportCache.get(key);
+            if (hit && (Date.now() - hit.ts < REPORT_CACHE_TTL_MS)) {
+                setData(hit.data);
+                setError(null);
+                return;
+            }
+        }
 
         setLoading(true);
         setError(null);
-        const qs = new URLSearchParams({ domain, from: fromIso, to: toIso }).toString();
+        const params = { domain, from: fromIso, to: toIso };
+        if (segment?.device)  params.seg_device  = segment.device;
+        if (segment?.country) params.seg_country = segment.country;
+        if (segment?.channel) params.seg_channel = segment.channel;
+        if (segment?.consent) params.seg_consent = segment.consent;
+        const qs = new URLSearchParams(params).toString();
         fetch(`${ScannerHost}/api/analytics-report?${qs}`, { headers: authHeaders() })
             .then(async r => {
                 if (!r.ok) throw new Error(r.status);
                 const json = await r.json();
-                reportCache.set(`${domain}|${fromIso}|${toIso}`, { data: json, ts: Date.now() });
+                reportCache.set(key, { data: json, ts: Date.now() });
                 setData(json);
             })
             .catch(() => setError("Could not load analytics data."))
             .finally(() => setLoading(false));
-    }, [domain, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [domain, fromIso, toIso, tick, segment?.device, segment?.country, segment?.channel, segment?.consent]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return { data, loading, error };
 }
@@ -90,7 +112,9 @@ export function useAnalyticsPageChrome() {
     const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
 
-    return { handle, domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso };
+    const [segment, setSegment] = useState({ device: null, country: "", channel: null, consent: null });
+
+    return { handle, domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate, fromIso, toIso, segment, setSegment };
 }
 
 // Chrome + the standard useAnalyticsReport() call, for pages that fetch the
@@ -98,7 +122,12 @@ export function useAnalyticsPageChrome() {
 export function useAnalyticsPage() {
     const chrome = useAnalyticsPageChrome();
     const [tick, setTick] = useState(0);
-    const { data, loading, error } = useAnalyticsReport(chrome.domain, chrome.fromIso, chrome.toIso, tick);
+    const segParam = useMemo(() => {
+        const s = chrome.segment;
+        const hasAny = s.device || s.country || s.channel || s.consent;
+        return hasAny ? s : null;
+    }, [chrome.segment]);
+    const { data, loading, error } = useAnalyticsReport(chrome.domain, chrome.fromIso, chrome.toIso, tick, segParam);
 
     const showSetup = !loading && data && (data.noSiteKey || data.noData);
     const showData  = !loading && data && !data.noSiteKey && !data.noData;
@@ -219,6 +248,67 @@ export function MiniBar({ value, max, color = "rgba(192,159,83,0.7)" }) {
     return (
         <div className="sa-mini-bar">
             <div className="sa-mini-bar__fill" style={{ width: pct + "%", background: color }} />
+        </div>
+    );
+}
+
+// Segment filter bar — renders a row of compact dropdowns to filter the
+// analytics-report by device, country, traffic channel, and consent level.
+// `segment` and `setSegment` come from useAnalyticsPageChrome().
+export function SegmentFilter({ segment, setSegment }) {
+    function set(k, v) {
+        setSegment(s => ({ ...s, [k]: v || null }));
+    }
+
+    const hasFilter = segment.device || segment.country || segment.channel || segment.consent;
+
+    return (
+        <div className="sa-seg-filter">
+            <span className="sa-seg-filter__label">Filter</span>
+
+            <select className="sa-seg-filter__select"
+                value={segment.device || ""}
+                onChange={e => set("device", e.target.value)}>
+                <option value="">All devices</option>
+                <option value="desktop">Desktop</option>
+                <option value="mobile">Mobile</option>
+                <option value="tablet">Tablet</option>
+                <option value="other">Other</option>
+            </select>
+
+            <select className="sa-seg-filter__select"
+                value={segment.channel || ""}
+                onChange={e => set("channel", e.target.value)}>
+                <option value="">All channels</option>
+                <option value="organic">Organic</option>
+                <option value="paid">Paid</option>
+                <option value="referral">Referral</option>
+                <option value="direct">Direct</option>
+            </select>
+
+            <select className="sa-seg-filter__select"
+                value={segment.consent || ""}
+                onChange={e => set("consent", e.target.value)}>
+                <option value="">All consent</option>
+                <option value="full">Full consent</option>
+                <option value="minimal">Minimal consent</option>
+            </select>
+
+            <input
+                className="sa-seg-filter__country"
+                type="text"
+                maxLength={2}
+                placeholder="Country (e.g. DE)"
+                value={segment.country || ""}
+                onChange={e => setSegment(s => ({ ...s, country: e.target.value.toUpperCase().slice(0, 2) }))}
+            />
+
+            {hasFilter && (
+                <button className="sa-seg-filter__clear"
+                    onClick={() => setSegment({ device: null, country: "", channel: null, consent: null })}>
+                    Clear
+                </button>
+            )}
         </div>
     );
 }
