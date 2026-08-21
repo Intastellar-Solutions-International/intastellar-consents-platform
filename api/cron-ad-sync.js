@@ -29,6 +29,21 @@ import pkg from "pg";
 const { Pool } = pkg;
 import { tryRefreshToken, fetchPlatformDataDaily } from "./_ad-platform-fetch.js";
 
+function validateJwt(authHeader) {
+    const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
+    if (!match) return null;
+    try {
+        const decoded = Buffer.from(match[1], "base64").toString("utf8");
+        const parts = decoded.split(".");
+        if (parts.length !== 3) return null;
+        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
+        const now = Math.floor(Date.now() / 1000);
+        if (payload.iss !== "Intastellar Account") return null;
+        if ((payload.nbf && payload.nbf > now) || (payload.exp && payload.exp < now)) return null;
+        return payload;
+    } catch { return null; }
+}
+
 let pool;
 function getPool() {
     if (!pool) {
@@ -84,26 +99,43 @@ async function ensureDailyTable(db) {
 }
 
 export default async function handler(req, res) {
-    const secret = process.env.CRON_SECRET;
-    if (!secret) {
-        console.warn("[cron-ad-sync] CRON_SECRET not set — endpoint is unprotected");
-    } else if (req.headers.authorization !== `Bearer ${secret}`) {
-        return res.status(401).json({ error: "Unauthorized" });
-    }
     if (req.method !== "GET" && req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
+    }
+
+    // Two auth modes:
+    // 1. Vercel cron: Authorization: Bearer <CRON_SECRET>
+    // 2. Manual trigger from the dashboard: Authorization: Bearer <JWT>  + Organisation header + ?domain=
+    const secret = process.env.CRON_SECRET;
+    const isCronCall = secret && req.headers.authorization === `Bearer ${secret}`;
+    const jwt = !isCronCall ? validateJwt(req.headers.authorization) : null;
+
+    if (!isCronCall && !jwt) {
+        return res.status(401).json({ error: "Unauthorized" });
     }
 
     const db = getPool();
     await ensureDailyTable(db);
 
-    // Fetch all fully-connected connections
+    // Manual trigger: scope to the requesting org + optional domain/platform filter
+    const manualOrgId  = jwt ? parseInt(req.headers.organisation || "", 10) : null;
+    const manualDomain = jwt ? (req.query.domain   || "").trim().toLowerCase() : null;
+    const manualPlat   = jwt ? (req.query.platform || "").trim()               : null;
+
+    const whereExtra = manualOrgId
+        ? `AND organisation_id = ${manualOrgId}
+           ${manualDomain ? `AND LOWER(domain) = '${manualDomain.replace(/'/g, "''")}'` : ""}
+           ${manualPlat   ? `AND platform = '${manualPlat.replace(/'/g, "''")}'`         : ""}`
+        : "";
+
+    // Fetch connections (all for cron, scoped for manual trigger)
     const { rows: connections } = await db.query(`
         SELECT organisation_id, domain, platform, account_id, account_label,
                login_customer_id, account_currency,
                access_token, refresh_token, token_expires_at
         FROM ad_platform_connections
         WHERE account_id IS NOT NULL AND access_token IS NOT NULL
+        ${whereExtra}
         ORDER BY organisation_id, domain, platform
     `);
 
