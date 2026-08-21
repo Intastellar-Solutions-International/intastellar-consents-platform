@@ -179,7 +179,7 @@ function extractUtmSourceFromUrl(url) {
  */
 const PLATFORM_EXAMPLE_SOURCES = {
     google_ads: ["google", "googleads", "adwords", "gads"],
-    meta_ads: ["facebook", "fb", "meta", "instagram", "ig", "messenger", "msg", "an"],
+    meta_ads: ["fb", "ig", "msg", "an", "facebook", "instagram", "meta", "messenger"],
     microsoft_ads: ["bing", "microsoft", "msads", "msn"],
     linkedin_ads: ["linkedin", "liads"],
     tiktok_ads: ["tiktok", "ttads"],
@@ -1307,8 +1307,8 @@ function computeInsights({
         suggestions.push(applyConfidenceCaveat({
             id: `utm-match:${platformId}`,
             severity: "high",
-            title: `Low UTM match for ${selectedPlatform.label}`,
-            body: `Only ${formatPct(coverageOfScopePct, 0)} of scope consents match ${selectedPlatform.label}'s utm_source pattern. Either this platform drives very little traffic in this channel, or campaign URLs are missing the correct utm_source tag (expected: ${(PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).slice(0, 3).join(", ")}).`,
+            title: `Low UTM coverage — ${selectedPlatform.label}`,
+            body: `Only ${formatPct(coverageOfScopePct, 0)} of consents in this scope can be attributed to ${selectedPlatform.label} via utm_source. Campaign links are likely missing or inconsistently tagged — make sure utm_source is set to one of: ${(PLATFORM_EXAMPLE_SOURCES[selectedPlatform.id] || []).slice(0, 4).join(", ")}.`,
             action: { label: "Review traffic sources", href: "#recon-utm-sources" },
             evidence: { coverageOfScopePct: Math.round(coverageOfScopePct) },
         }, numConsents, scopeConsents));
