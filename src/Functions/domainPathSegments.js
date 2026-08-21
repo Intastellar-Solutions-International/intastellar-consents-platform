@@ -195,6 +195,20 @@ export function analyticsAlertsPath(domainUnicode) {
     return `/analytics/${seg}/alerts`;
 }
 
+export function analyticsReportsPath(domainUnicode) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    if (!seg) return "/analytics/reports";
+    return `/analytics/${seg}/reports`;
+}
+
+/** reportId omitted → "new" builder; provided → edit existing report. */
+export function analyticsReportBuilderPath(domainUnicode, reportId) {
+    const seg = encodeDomainPathSegment(domainUnicode);
+    const suffix = reportId ? `/${reportId}` : "/new";
+    if (!seg) return `/analytics/reports${suffix}`;
+    return `/analytics/${seg}/reports${suffix}`;
+}
+
 /** First arg is React Router v5 `useHistory()` (object with `.push(path)`). */
 export function navigateWithDomain(history, platformId, domainUnicode, pathname) {
     if (String(pathname || "").indexOf("/analytics") === 0) {
@@ -230,7 +244,7 @@ export function detectDashboardMode(pathname) {
     return String(pathname || "").indexOf("/analytics") === 0 ? "analytics" : "cmp";
 }
 
-const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts"];
+const ANALYTICS_SUBPATHS = ["/audience", "/acquisition", "/consent", "/marketing", "/heatmap", "/recordings", "/bots", "/user-flow", "/conversions", "/ad-spend", "/google-analytics", "/search-console", "/page-experiments", "/cohorts", "/alerts", "/reports"];
 
 /** True for the Analytics overview ("Reports snapshot") page itself, false for any sub-report under it. */
 export function isAnalyticsOverviewPath(pathname) {
@@ -252,6 +266,7 @@ export function analyticsRailSection(pathname) {
     if (path.includes("/heatmap") || path.includes("/recordings") || path.includes("/bots") || path.includes("/user-flow")) return "behavior";
     if (path.includes("/conversions") || path.includes("/page-experiments")) return "conversions";
     if (path.includes("/cohorts") || path.includes("/alerts")) return "insights";
+    if (path.includes("/reports")) return "reports";
     return null;
 }
 

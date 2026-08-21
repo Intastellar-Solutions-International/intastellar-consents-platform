@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>Intastellar Analytics — Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0B0C10;--card:#181B26;--bdr:#262A3A;--side:#0E0F14;--head:#10121A;
+  --pri:#D8DCF0;--sec:#7B8499;--mut:#424759;
+  --blue:#3B87E8;--gold:#C4A35A;--green:#4ADE80;--red:#E5484D;
+  --orange:#FB923C;--purple:#A78BFA;--teal:#63B3ED;
+  --track:#171C2A;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--pri);display:flex;height:100vh;overflow:hidden;font-size:13px;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;min-width:220px;background:var(--side);display:flex;flex-direction:column;border-right:1px solid var(--bdr);}
+.brand{padding:18px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--bdr);}
+.brand svg{flex-shrink:0;}
+.brand-name{font-size:14px;font-weight:600;color:var(--pri);}
+.nav-section{padding:20px 0 4px;}
+.nav-label{font-size:10px;font-weight:500;color:var(--mut);letter-spacing:.08em;padding:0 20px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;color:var(--sec);font-size:13px;transition:color .15s;position:relative;}
+.nav-item:hover{color:var(--pri);background:rgba(59,135,232,.06);}
+.nav-item.active{color:var(--pri);font-weight:500;background:rgba(59,135,232,.12);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:7px;bottom:7px;width:3px;background:var(--blue);border-radius:0 2px 2px 0;}
+.nav-icon{width:16px;height:16px;opacity:.7;flex-shrink:0;}
+.nav-item.active .nav-icon{opacity:1;}
+
+/* ── CONTENT ── */
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{height:58px;min-height:58px;background:var(--head);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 28px;gap:16px;}
+.topbar-title{font-size:16px;font-weight:600;flex:1;}
+.pill{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--pri);}
+.pill-dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+.screen{display:none;flex:1;overflow-y:auto;padding:24px 28px;flex-direction:column;gap:20px;}
+.screen.active{display:flex;}
+
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.filter-label{font-size:13px;color:var(--mut);font-weight:500;margin-right:4px;}
+.chip{padding:5px 12px;border:1px solid var(--bdr);border-radius:6px;font-size:12px;color:var(--sec);cursor:pointer;background:none;transition:all .15s;}
+.chip:hover{border-color:var(--blue);color:var(--pri);}
+.chip.active-chip{border-color:var(--blue);color:var(--blue);background:rgba(59,135,232,.1);}
+.chip.clear{color:var(--mut);margin-left:auto;}
+
+/* ── KPI ROW ── */
+.kpi-row{display:grid;gap:12px;}
+.kpi-row-5{grid-template-columns:repeat(5,1fr);}
+.kpi-row-4{grid-template-columns:repeat(4,1fr);}
+.kpi-card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:16px 18px;}
+.kpi-label{font-size:10px;font-weight:500;color:var(--mut);letter-spacing:.06em;margin-bottom:8px;}
+.kpi-value{font-size:24px;font-weight:600;color:var(--pri);margin-bottom:6px;line-height:1.1;}
+.kpi-value.sm{font-size:18px;}
+.kpi-sub{font-size:11px;color:var(--mut);}
+.kpi-sub.up{color:var(--green);}
+.kpi-sub.dn{color:var(--red);}
+
+/* ── TWO COL ── */
+.row{display:flex;gap:16px;}
+.col-60{flex:0 0 calc(60% - 8px);}
+.col-40{flex:0 0 calc(40% - 8px);}
+.col-50{flex:1;}
+
+/* ── PANEL ── */
+.panel{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:20px;}
+.panel-title{font-size:14px;font-weight:600;color:var(--pri);margin-bottom:16px;}
+.panel-sub{font-size:12px;color:var(--sec);margin-top:-12px;margin-bottom:14px;}
+
+/* ── CHART BARS ── */
+.chart-area{background:var(--track);border-radius:8px;padding:16px;display:flex;align-items:flex-end;gap:3px;height:160px;}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+.chart-bar{width:100%;border-radius:3px 3px 0 0;min-height:2px;}
+.chart-x{display:flex;justify-content:space-between;margin-top:6px;padding:0 2px;}
+.chart-x span{font-size:10px;color:var(--mut);}
+
+/* ── HORIZONTAL BARS ── */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-row:last-child{margin-bottom:0;}
+.bar-label{min-width:110px;font-size:13px;color:var(--sec);}
+.bar-label.sm{min-width:80px;}
+.bar-track{flex:1;height:7px;background:var(--track);border-radius:4px;overflow:hidden;}
+.bar-track.thin{height:5px;}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-pct{min-width:36px;text-align:right;font-size:13px;font-weight:500;color:var(--pri);}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{font-size:10px;font-weight:500;color:var(--mut);letter-spacing:.06em;text-align:left;padding:6px 0 10px;border-bottom:1px solid var(--bdr);}
+.tbl td{padding:10px 0;border-bottom:1px solid rgba(38,42,58,.5);font-size:13px;color:var(--pri);}
+.tbl td.muted{color:var(--mut);}
+.tbl td.sec{color:var(--sec);}
+.tbl tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:4px;font-size:11px;font-weight:500;}
+.badge.active{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);color:var(--green);}
+.badge.inactive{background:rgba(66,71,89,.2);border:1px solid var(--bdr);color:var(--mut);}
+.badge.warn{background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.25);color:var(--orange);}
+
+/* ── CONSENT BARS ── */
+.seg-bar{height:12px;border-radius:6px;display:flex;overflow:hidden;gap:2px;margin:10px 0;}
+
+/* ── COHORT ── */
+.cohort-grid{display:grid;gap:3px;}
+.cohort-cell{height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;}
+.cohort-header{background:none!important;color:var(--sec);font-size:10px;font-weight:500;letter-spacing:.04em;}
+
+/* ── FLOW ── */
+.flow-cols{display:flex;gap:0;align-items:flex-start;}
+.flow-col{flex:1;display:flex;flex-direction:column;gap:6px;padding:0 12px;}
+.flow-col:first-child{padding-left:0;}
+.flow-col:last-child{padding-right:0;}
+.flow-col-title{font-size:10px;font-weight:500;color:var(--mut);letter-spacing:.06em;margin-bottom:8px;text-align:center;}
+.flow-node{background:var(--track);border:1px solid var(--bdr);border-radius:6px;padding:8px 10px;font-size:11px;color:var(--pri);cursor:default;transition:border-color .15s;}
+.flow-node:hover{border-color:var(--blue);}
+.flow-node .fn-path{font-weight:500;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.flow-node .fn-count{font-size:10px;color:var(--sec);}
+.flow-node .fn-bar{height:3px;background:var(--bdr);border-radius:2px;margin-top:6px;overflow:hidden;}
+.flow-node .fn-bar-fill{height:100%;background:var(--blue);border-radius:2px;}
+
+/* ── ALERT ITEMS ── */
+.alert-item{background:var(--track);border:1px solid var(--bdr);border-radius:8px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;}
+.alert-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.alert-body{flex:1;}
+.alert-name{font-size:13px;font-weight:500;color:var(--pri);margin-bottom:3px;}
+.alert-desc{font-size:11px;color:var(--sec);}
+
+/* ── PLATFORM CARDS ── */
+.platform-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.plat-card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;overflow:hidden;}
+.plat-accent{height:4px;}
+.plat-body{padding:14px 16px;}
+.plat-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.plat-name{font-size:14px;font-weight:600;}
+.plat-status{width:8px;height:8px;border-radius:50%;}
+.plat-spend{font-size:22px;font-weight:600;color:var(--pri);}
+.plat-spend-label{font-size:10px;color:var(--mut);margin-top:2px;margin-bottom:12px;}
+.plat-metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.plat-metric{font-size:11px;}
+.plat-metric-val{font-size:13px;font-weight:500;color:var(--pri);}
+.plat-metric-lbl{color:var(--mut);}
+.connect-btn{width:100%;padding:8px;background:none;border:1px solid var(--bdr);border-radius:6px;color:var(--blue);font-size:12px;font-family:inherit;cursor:pointer;margin-top:12px;}
+
+/* ── MISC ── */
+.stat-trio{display:flex;gap:32px;}
+.stat-item .stat-val{font-size:22px;font-weight:600;color:var(--pri);}
+.stat-item .stat-lbl{font-size:11px;color:var(--mut);margin-top:3px;}
+.stat-item .stat-val.dn{color:var(--red);}
+.gauge-wrap{display:flex;align-items:center;gap:24px;}
+.gauge{width:110px;height:110px;position:relative;flex-shrink:0;}
+.gauge svg{transform:rotate(-90deg);}
+.gauge-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.gauge-pct{font-size:20px;font-weight:600;color:var(--pri);}
+.gauge-sub{font-size:10px;color:var(--sec);}
+.recon-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(38,42,58,.4);}
+.recon-row:last-child{border-bottom:none;}
+.dot8{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.impact-bar{height:14px;border-radius:7px;display:flex;overflow:hidden;gap:2px;margin:12px 0;}
+.impact-bar .observed{background:var(--blue);}
+.impact-bar .hidden{background:rgba(229,72,77,.35);}
+
+/* ── EDIT MODE ── */
+.edit-btn{background:none;border:1px solid var(--bdr);border-radius:6px;color:var(--sec);font-size:12px;font-family:inherit;padding:5px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.edit-btn:hover{border-color:var(--blue);color:var(--blue);}
+body.editing .edit-btn{display:none;}
+.edit-actions{display:none;align-items:center;gap:10px;}
+body.editing .edit-actions{display:flex;}
+.edit-mode-label{font-size:12px;color:var(--blue);font-weight:500;background:rgba(59,135,232,.1);border:1px solid rgba(59,135,232,.25);border-radius:6px;padding:5px 12px;}
+.edit-save{background:var(--blue);color:#fff;border:none;border-radius:6px;font-size:12px;font-family:inherit;padding:6px 14px;cursor:pointer;font-weight:500;}
+.edit-discard{background:none;border:1px solid var(--bdr);color:var(--sec);border-radius:6px;font-size:12px;font-family:inherit;padding:5px 12px;cursor:pointer;}
+body.editing .screen.active .panel{border-style:dashed;border-color:var(--blue);position:relative;cursor:move;}
+body.editing .screen.active .panel:hover{background:rgba(59,135,232,.04);}
+.panel-ctrl{display:none;position:absolute;top:8px;right:8px;gap:5px;z-index:5;}
+body.editing .panel-ctrl{display:flex;}
+.panel-drag-handle{position:absolute;top:9px;left:12px;color:var(--mut);font-size:13px;cursor:grab;display:none;user-select:none;}
+body.editing .panel-drag-handle{display:block;}
+.panel-rm{width:22px;height:22px;border-radius:4px;border:1px solid rgba(229,72,77,.35);background:rgba(229,72,77,.1);color:var(--red);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;}
+.add-widget-fab{position:fixed;bottom:28px;right:28px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:11px 18px;font-size:13px;font-weight:600;cursor:pointer;display:none;box-shadow:0 4px 20px rgba(59,135,232,.45);font-family:inherit;z-index:50;}
+body.editing .add-widget-fab{display:block;}
+
+/* ── WIDGET DRAWER ── */
+.widget-drawer{position:fixed;right:0;top:58px;bottom:0;width:290px;background:var(--side);border-left:1px solid var(--bdr);transform:translateX(100%);transition:transform .22s ease;z-index:80;display:flex;flex-direction:column;overflow:hidden;}
+.widget-drawer.open{transform:translateX(0);}
+.wd-head{padding:16px 20px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.wd-title{font-size:14px;font-weight:600;}
+.wd-close{background:none;border:none;color:var(--mut);font-size:18px;cursor:pointer;line-height:1;}
+.wd-body{overflow-y:auto;flex:1;}
+.wd-group{padding:14px 20px;border-bottom:1px solid var(--bdr);}
+.wd-group-label{font-size:10px;font-weight:500;color:var(--mut);letter-spacing:.08em;margin-bottom:10px;}
+.wd-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(38,42,58,.35);}
+.wd-item:last-child{border-bottom:none;}
+.wd-item-name{font-size:12px;color:var(--pri);}
+.wd-item-sub{font-size:10px;color:var(--mut);margin-top:1px;}
+.wd-add{background:none;border:1px solid var(--blue);border-radius:4px;color:var(--blue);font-size:11px;padding:3px 8px;cursor:pointer;font-family:inherit;}
+.wd-add.wd-added{border-color:var(--mut);color:var(--mut);cursor:default;}
+
+/* ── MY REPORTS ── */
+.reports-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.report-card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:18px;cursor:pointer;transition:border-color .15s;position:relative;}
+.report-card:hover{border-color:var(--blue);}
+.report-card.new-card{border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:148px;color:var(--sec);}
+.report-card.new-card:hover{border-color:var(--blue);color:var(--blue);}
+.rc-type{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:var(--sec);background:var(--track);border-radius:4px;padding:2px 8px;margin-bottom:8px;}
+.rc-name{font-size:13px;font-weight:600;color:var(--pri);margin-bottom:4px;}
+.rc-meta{font-size:11px;color:var(--mut);}
+.rc-preview{height:50px;background:var(--track);border-radius:5px;margin:10px 0;display:flex;align-items:flex-end;padding:6px 6px 0;gap:2px;overflow:hidden;}
+.rc-bar{border-radius:2px 2px 0 0;}
+.rc-actions{position:absolute;top:10px;right:10px;display:flex;gap:5px;opacity:0;transition:opacity .15s;}
+.report-card:hover .rc-actions{opacity:1;}
+.rc-action-btn{background:var(--track);border:1px solid var(--bdr);border-radius:4px;color:var(--sec);font-size:10px;padding:3px 7px;cursor:pointer;font-family:inherit;}
+
+/* ── REPORT BUILDER ── */
+.rb-layout{display:flex;flex:1;min-height:0;overflow:hidden;}
+.rb-config{width:300px;min-width:300px;background:var(--side);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden;}
+.rb-config-scroll{flex:1;overflow-y:auto;}
+.rb-section{padding:14px 18px;border-bottom:1px solid var(--bdr);}
+.rb-label{font-size:10px;font-weight:500;color:var(--mut);letter-spacing:.08em;margin-bottom:10px;}
+.rb-name-input{width:100%;background:var(--track);border:1px solid var(--bdr);border-radius:6px;color:var(--pri);font-size:13px;padding:8px 10px;font-family:inherit;outline:none;}
+.rb-name-input:focus{border-color:var(--blue);}
+.chart-type-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
+.ct-btn{background:var(--track);border:1px solid var(--bdr);border-radius:6px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-size:9px;color:var(--sec);transition:all .15s;}
+.ct-btn:hover{border-color:var(--blue);}
+.ct-btn.ct-active{border-color:var(--blue);background:rgba(59,135,232,.12);color:var(--blue);}
+.ct-icon{font-size:16px;}
+.metric-list{display:flex;flex-direction:column;gap:6px;}
+.m-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:3px 0;}
+.m-check{width:15px;height:15px;border:1.5px solid var(--bdr);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .15s;}
+.m-check.checked{background:var(--blue);border-color:var(--blue);color:#fff;}
+.m-label{font-size:12px;color:var(--sec);}
+.m-item:hover .m-label{color:var(--pri);}
+.breakdown-list{display:flex;flex-direction:column;gap:6px;}
+.bd-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:3px 0;}
+.bd-radio{width:13px;height:13px;border:1.5px solid var(--bdr);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.bd-radio.sel{border-color:var(--blue);}
+.bd-radio.sel::after{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);}
+.bd-label{font-size:12px;color:var(--sec);}
+.filter-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.f-row{display:flex;align-items:center;gap:5px;}
+.f-sel{flex:1;background:var(--track);border:1px solid var(--bdr);border-radius:4px;color:var(--pri);font-size:11px;padding:5px 6px;font-family:inherit;outline:none;}
+.f-rm{background:none;border:none;color:var(--mut);cursor:pointer;font-size:15px;line-height:1;padding:0 2px;}
+.add-filter-btn{width:100%;background:none;border:1px dashed var(--bdr);border-radius:5px;color:var(--blue);font-size:11px;padding:6px;cursor:pointer;font-family:inherit;}
+.add-filter-btn:hover{border-color:var(--blue);}
+.rb-save{margin:14px 18px;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:calc(100% - 36px);}
+.rb-preview{flex:1;padding:24px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;}
+.rb-preview-card{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:20px;}
+.rb-preview-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.rb-preview-sub{font-size:11px;color:var(--sec);margin-bottom:16px;}
+.rb-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.rb-kpi{background:var(--track);border-radius:8px;padding:12px 14px;}
+.rb-kpi-lbl{font-size:10px;color:var(--mut);margin-bottom:5px;}
+.rb-kpi-val{font-size:20px;font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- ─────────── SIDEBAR ─────────── -->
+<aside class="sidebar">
+  <div class="brand">
+    <svg width="34" height="17" viewBox="-380 415 2460 1220" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#C4A35A" d="M1842.391,1334.447C1827.905,1329.402 1813.345,1324.281 1798.714,1319.083C776.714,956.042 -371.407,497.583 115.333,424.5C304.5,396.083 1018,558.208 1018,558.208C1018,558.208 173.833,391.792 714.25,707.125C928.078,831.913 1371.744,1035.754 1823.259,1178.38C1825.618,1231.57 1832.099,1283.697 1842.391,1334.447ZM1822.429,1151.916C1820.271,1151.195 1818.113,1150.473 1815.956,1149.75C1511.956,1047.833 1193.873,905.583 987.206,810.792C615.79,640.417 500.665,488.083 797.915,539.583C1007.831,575.958 1171.623,621.875 1171.623,621.875C1171.623,621.875 789.665,539.083 1134.04,739.833C1254.345,809.959 1534.488,911.989 1830.324,1004.807C1824.999,1046.78 1822.254,1089.554 1822.254,1132.964C1822.254,1139.295 1822.312,1145.612 1822.429,1151.916ZM1834.9,972.849C1627.807,903.835 1436.773,830.544 1324.879,776.125L1324.878,776.167C1322.545,775.042 1320.295,773.917 1318.086,772.833C1414.586,565.167 1624.961,421.167 1869.045,421.167C1943.353,421.167 2014.542,434.512 2080.347,458.937C1953.662,600.127 1866.128,777.149 1834.9,972.849ZM1952.998,1629.992C1925.571,1633.784 1897.558,1635.745 1869.086,1635.745C1578.086,1635.745 1334.961,1431.037 1275.67,1157.787C1442.003,1225.203 1616.836,1290.953 1792.17,1351.62C1811.94,1358.461 1831.434,1365.115 1850.66,1371.588C1872.895,1463.231 1907.646,1550.004 1952.998,1629.992Z"/>
+    </svg>
+    <span class="brand-name">Intastellar</span>
+  </div>
+  <nav id="sidebar-nav"></nav>
+</aside>
+
+<!-- ─────────── CONTENT ─────────── -->
+<div class="content">
+  <header class="topbar">
+    <span class="topbar-title" id="topbar-title">Overview</span>
+    <div class="pill"><span class="pill-dot"></span>cykelfaergen.info</div>
+    <div class="pill">21 Jul – 20 Aug 2026 ▾</div>
+    <button class="edit-btn" onclick="toggleEditMode()">✏ Edit layout</button>
+    <div class="edit-actions">
+      <span class="edit-mode-label">Editing layout</span>
+      <button class="edit-discard" onclick="toggleEditMode()">Discard</button>
+      <button class="edit-save" onclick="saveLayout()">Save layout</button>
+    </div>
+  </header>
+
+  <!-- ══ OVERVIEW ══ -->
+  <div class="screen active" id="screen-overview">
+    <div class="filter-bar">
+      <span class="filter-label">Filter</span>
+      <button class="chip">All devices</button>
+      <button class="chip">All channels</button>
+      <button class="chip">All consent</button>
+      <button class="chip active-chip">Paid Social (Meta)</button>
+      <button class="chip clear">✕ Clear</button>
+    </div>
+    <div class="kpi-row kpi-row-5">
+      <div class="kpi-card"><div class="kpi-label">SESSIONS</div><div class="kpi-value">14,829</div><div class="kpi-sub up">▲ 12% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">PAGE VIEWS</div><div class="kpi-value">48,204</div><div class="kpi-sub up">▲ 8% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">CONSENT RATE</div><div class="kpi-value">61.4%</div><div class="kpi-sub dn">▼ 2.1pp vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">ENGAGED USERS</div><div class="kpi-value">7,341</div><div class="kpi-sub up">▲ 5% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">AVG. DURATION</div><div class="kpi-value">2m 14s</div><div class="kpi-sub">per session</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Sessions over time</div>
+      <div class="chart-area" id="chart-overview"></div>
+      <div class="chart-x"><span>21 Jul</span><span>28 Jul</span><span>4 Aug</span><span>11 Aug</span><span>18 Aug</span><span>20 Aug</span></div>
+    </div>
+    <div class="row">
+      <div class="col-60 panel">
+        <div class="panel-title">Top pages</div>
+        <div id="top-pages"></div>
+      </div>
+      <div class="col-40" style="display:flex;flex-direction:column;gap:14px;">
+        <div class="panel">
+          <div class="panel-title">Consent breakdown</div>
+          <div class="bar-row"><span class="bar-label">Full consent</span><div class="bar-track"><div class="bar-fill" style="width:61%;background:var(--green)"></div></div><span class="bar-pct" style="color:var(--green)">61%</span></div>
+          <div class="bar-row"><span class="bar-label">Minimal</span><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--gold)"></div></div><span class="bar-pct" style="color:var(--gold)">28%</span></div>
+          <div class="bar-row"><span class="bar-label">Declined</span><div class="bar-track"><div class="bar-fill" style="width:11%;background:var(--red)"></div></div><span class="bar-pct" style="color:var(--red)">11%</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Consent impact estimator</div>
+          <div class="panel-sub">Estimated true sessions vs observed</div>
+          <div class="stat-trio">
+            <div class="stat-item"><div class="stat-val">14,829</div><div class="stat-lbl">Observed</div></div>
+            <div class="stat-item"><div class="stat-val" style="color:var(--blue)">24,149</div><div class="stat-lbl">Est. true</div></div>
+            <div class="stat-item"><div class="stat-val dn">9,320</div><div class="stat-lbl">Hidden</div></div>
+          </div>
+          <div class="impact-bar"><div class="observed" style="width:61%"></div><div class="hidden" style="width:39%"></div></div>
+          <div style="font-size:11px;color:var(--sec)">38.6% of sessions invisible due to consent refusal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACQUISITION ══ -->
+  <div class="screen" id="screen-acquisition">
+    <div class="kpi-row kpi-row-5">
+      <div class="kpi-card"><div class="kpi-label">SESSIONS</div><div class="kpi-value">14,829</div><div class="kpi-sub up">▲ 12% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">NEW USERS</div><div class="kpi-value">9,043</div><div class="kpi-sub up">▲ 9% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">RETURN RATE</div><div class="kpi-value">39.1%</div><div class="kpi-sub up">▲ 1.4pp</div></div>
+      <div class="kpi-card"><div class="kpi-label">BOUNCE RATE</div><div class="kpi-value">48.3%</div><div class="kpi-sub up">▼ 2.1pp</div></div>
+      <div class="kpi-card"><div class="kpi-label">AVG. DURATION</div><div class="kpi-value">2m 14s</div><div class="kpi-sub">per session</div></div>
+    </div>
+    <div class="row">
+      <div class="col-50 panel">
+        <div class="panel-title">Traffic by channel</div>
+        <div class="bar-row"><span class="bar-label">Organic Search</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><span class="bar-pct">38%</span></div>
+        <div class="bar-row"><span class="bar-label">Direct</span><div class="bar-track"><div class="bar-fill" style="width:63%;background:var(--purple)"></div></div><span class="bar-pct">24%</span></div>
+        <div class="bar-row"><span class="bar-label">Paid Social</span><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--blue)"></div></div><span class="bar-pct">18%</span></div>
+        <div class="bar-row"><span class="bar-label">Referral</span><div class="bar-track"><div class="bar-fill" style="width:32%;background:var(--teal)"></div></div><span class="bar-pct">12%</span></div>
+        <div class="bar-row"><span class="bar-label">Paid Search</span><div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--orange)"></div></div><span class="bar-pct">8%</span></div>
+      </div>
+      <div class="col-50 panel">
+        <div class="panel-title">Top UTM sources</div>
+        <table class="tbl">
+          <thead><tr><th>SOURCE</th><th>MEDIUM</th><th>SESSIONS</th><th>SHARE</th></tr></thead>
+          <tbody>
+            <tr><td>google</td><td class="sec">organic</td><td>5,634</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="bar-track thin" style="width:80px"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span style="font-size:11px;color:var(--sec)">38%</span></div></td></tr>
+            <tr><td>(direct)</td><td class="sec">—</td><td>3,559</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="bar-track thin" style="width:80px"><div class="bar-fill" style="width:63%;background:var(--blue)"></div></div><span style="font-size:11px;color:var(--sec)">24%</span></div></td></tr>
+            <tr><td>fb</td><td class="sec">cpc</td><td>1,487</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="bar-track thin" style="width:80px"><div class="bar-fill" style="width:26%;background:var(--blue)"></div></div><span style="font-size:11px;color:var(--sec)">10%</span></div></td></tr>
+            <tr><td>ig</td><td class="sec">cpc</td><td>1,183</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="bar-track thin" style="width:80px"><div class="bar-fill" style="width:21%;background:var(--blue)"></div></div><span style="font-size:11px;color:var(--sec)">8%</span></div></td></tr>
+            <tr><td>linkedin.com</td><td class="sec">referral</td><td>919</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="bar-track thin" style="width:80px"><div class="bar-fill" style="width:16%;background:var(--blue)"></div></div><span style="font-size:11px;color:var(--sec)">6%</span></div></td></tr>
+            <tr><td>newsletter</td><td class="sec">email</td><td>742</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="bar-track thin" style="width:80px"><div class="bar-fill" style="width:13%;background:var(--blue)"></div></div><span style="font-size:11px;color:var(--sec)">5%</span></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-50 panel">
+        <div class="panel-title">New vs Returning users</div>
+        <div class="seg-bar"><div style="width:61%;background:var(--blue)"></div><div style="width:39%;background:var(--gold)"></div></div>
+        <div style="display:flex;gap:32px;margin-top:10px;">
+          <div><div style="font-size:11px;color:var(--sec);margin-bottom:4px;">● New users</div><div style="font-size:20px;font-weight:600;color:var(--pri)">9,043</div><div style="font-size:12px;color:var(--blue);font-weight:500">61%</div></div>
+          <div><div style="font-size:11px;color:var(--sec);margin-bottom:4px;">● Returning users</div><div style="font-size:20px;font-weight:600;color:var(--pri)">5,786</div><div style="font-size:12px;color:var(--gold);font-weight:500">39%</div></div>
+        </div>
+      </div>
+      <div class="col-50 panel">
+        <div class="panel-title">Devices</div>
+        <div class="bar-row"><span class="bar-label sm">Desktop</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span class="bar-pct">57%</span></div>
+        <div class="bar-row"><span class="bar-label sm">Mobile</span><div class="bar-track"><div class="bar-fill" style="width:67%;background:var(--gold)"></div></div><span class="bar-pct">38%</span></div>
+        <div class="bar-row"><span class="bar-label sm">Tablet</span><div class="bar-track"><div class="bar-fill" style="width:9%;background:var(--purple)"></div></div><span class="bar-pct">5%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONVERSIONS ══ -->
+  <div class="screen" id="screen-conversions">
+    <div class="kpi-row kpi-row-5">
+      <div class="kpi-card"><div class="kpi-label">TOTAL CONVERSIONS</div><div class="kpi-value">4,218</div><div class="kpi-sub up">▲ 22% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">CONVERSION RATE</div><div class="kpi-value">28.4%</div><div class="kpi-sub up">▲ 3.1pp</div></div>
+      <div class="kpi-card"><div class="kpi-label">CONVERTED SESSIONS</div><div class="kpi-value sm">4,218/14,829</div><div class="kpi-sub">consent-linked</div></div>
+      <div class="kpi-card"><div class="kpi-label">TIME TO CONVERT</div><div class="kpi-value">2.3 days</div><div class="kpi-sub">avg. first visit</div></div>
+      <div class="kpi-card"><div class="kpi-label">TOP EVENT</div><div class="kpi-value sm">Contact form</div><div class="kpi-sub">1,847 completions</div></div>
+    </div>
+    <div class="row">
+      <div class="col-60 panel">
+        <div class="panel-title">Conversion trend — daily</div>
+        <div class="chart-area" id="chart-conv"></div>
+        <div class="chart-x"><span>21 Jul</span><span>28 Jul</span><span>4 Aug</span><span>11 Aug</span><span>18 Aug</span></div>
+      </div>
+      <div class="col-40 panel">
+        <div class="panel-title">Conversion events</div>
+        <table class="tbl">
+          <thead><tr><th>EVENT</th><th>COUNT</th><th>RATE</th></tr></thead>
+          <tbody>
+            <tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:8px"></span>Contact form</td><td>1,847</td><td style="color:var(--green)">12.5%</td></tr>
+            <tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin-right:8px"></span>Product purchase</td><td>1,203</td><td style="color:var(--blue)">8.1%</td></tr>
+            <tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-right:8px"></span>Newsletter signup</td><td>891</td><td style="color:var(--gold)">6.0%</td></tr>
+            <tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--orange);margin-right:8px"></span>Demo request</td><td>277</td><td style="color:var(--orange)">1.9%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">First-touch vs Last-touch attribution</div>
+      <div class="row" style="gap:48px;">
+        <div style="flex:1">
+          <div style="font-size:12px;color:var(--sec);font-weight:500;margin-bottom:12px">First-touch</div>
+          <div class="bar-row"><span class="bar-label">Organic</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><span class="bar-pct">38%</span></div>
+          <div class="bar-row"><span class="bar-label">Direct</span><div class="bar-track"><div class="bar-fill" style="width:63%;background:var(--purple)"></div></div><span class="bar-pct">24%</span></div>
+          <div class="bar-row"><span class="bar-label">Paid Social</span><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--blue)"></div></div><span class="bar-pct">18%</span></div>
+          <div class="bar-row"><span class="bar-label">Referral</span><div class="bar-track"><div class="bar-fill" style="width:32%;background:var(--teal)"></div></div><span class="bar-pct">12%</span></div>
+          <div class="bar-row"><span class="bar-label">Paid Search</span><div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--orange)"></div></div><span class="bar-pct">8%</span></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:12px;color:var(--sec);font-weight:500;margin-bottom:12px">Last-touch</div>
+          <div class="bar-row"><span class="bar-label">Direct</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--purple)"></div></div><span class="bar-pct">31%</span></div>
+          <div class="bar-row"><span class="bar-label">Organic</span><div class="bar-track"><div class="bar-fill" style="width:77%;background:var(--green)"></div></div><span class="bar-pct">24%</span></div>
+          <div class="bar-row"><span class="bar-label">Paid Social</span><div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--blue)"></div></div><span class="bar-pct">22%</span></div>
+          <div class="bar-row"><span class="bar-label">Referral</span><div class="bar-track"><div class="bar-fill" style="width:48%;background:var(--teal)"></div></div><span class="bar-pct">15%</span></div>
+          <div class="bar-row"><span class="bar-label">Paid Search</span><div class="bar-track"><div class="bar-fill" style="width:26%;background:var(--orange)"></div></div><span class="bar-pct">8%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ USER FLOW ══ -->
+  <div class="screen" id="screen-userflow">
+    <div style="font-size:13px;color:var(--sec);margin-bottom:4px">How sessions move through the site — entry points, mid-funnel paths, and exits.</div>
+    <div class="row" style="align-items:flex-start">
+      <div class="panel" style="flex:0 0 260px">
+        <div class="panel-title">Top entry pages</div>
+        <div class="bar-row"><span class="bar-label sm">/shop/bikes</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span class="bar-pct">31%</span></div>
+        <div class="bar-row"><span class="bar-label sm">/ (Home)</span><div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--blue)"></div></div><span class="bar-pct">22%</span></div>
+        <div class="bar-row"><span class="bar-label sm">/products</span><div class="bar-track"><div class="bar-fill" style="width:58%;background:var(--blue)"></div></div><span class="bar-pct">18%</span></div>
+        <div class="bar-row"><span class="bar-label sm">/blog</span><div class="bar-track"><div class="bar-fill" style="width:45%;background:var(--blue)"></div></div><span class="bar-pct">14%</span></div>
+        <div class="bar-row"><span class="bar-label sm">/shop/helmets</span><div class="bar-track"><div class="bar-fill" style="width:48%;background:var(--blue)"></div></div><span class="bar-pct">15%</span></div>
+      </div>
+      <div class="panel" style="flex:1">
+        <div class="panel-title">Session flow — top paths</div>
+        <div class="flow-cols">
+          <div class="flow-col">
+            <div class="flow-col-title">ENTRY</div>
+            <div class="flow-node"><div class="fn-path">/shop/bikes</div><div class="fn-count">4,597 sessions</div><div class="fn-bar"><div class="fn-bar-fill" style="width:100%"></div></div></div>
+            <div class="flow-node"><div class="fn-path">/ (Home)</div><div class="fn-count">3,262 sessions</div><div class="fn-bar"><div class="fn-bar-fill" style="width:71%"></div></div></div>
+            <div class="flow-node"><div class="fn-path">/products</div><div class="fn-count">2,669 sessions</div><div class="fn-bar"><div class="fn-bar-fill" style="width:58%"></div></div></div>
+            <div class="flow-node"><div class="fn-path">/blog</div><div class="fn-count">2,076 sessions</div><div class="fn-bar"><div class="fn-bar-fill" style="width:45%"></div></div></div>
+          </div>
+          <div class="flow-col">
+            <div class="flow-col-title">MID-FUNNEL</div>
+            <div class="flow-node"><div class="fn-path">/checkout</div><div class="fn-count">3,841 pass-through</div><div class="fn-bar"><div class="fn-bar-fill" style="width:83%"></div></div></div>
+            <div class="flow-node"><div class="fn-path">/shop/bikes</div><div class="fn-count">2,934 pass-through</div><div class="fn-bar"><div class="fn-bar-fill" style="width:64%"></div></div></div>
+            <div class="flow-node"><div class="fn-path">/products</div><div class="fn-count">1,821 pass-through</div><div class="fn-bar"><div class="fn-bar-fill" style="width:40%"></div></div></div>
+            <div class="flow-node"><div class="fn-path">/shop/helmets</div><div class="fn-count">1,204 pass-through</div><div class="fn-bar"><div class="fn-bar-fill" style="width:26%"></div></div></div>
+          </div>
+          <div class="flow-col">
+            <div class="flow-col-title">EXIT / CONVERT</div>
+            <div class="flow-node" style="border-color:rgba(74,222,128,.3)"><div class="fn-path" style="color:var(--green)">✓ Converted</div><div class="fn-count">4,218 sessions</div><div class="fn-bar"><div class="fn-bar-fill" style="width:92%;background:var(--green)"></div></div></div>
+            <div class="flow-node"><div class="fn-path">Exited on /</div><div class="fn-count">3,421 sessions</div><div class="fn-bar"><div class="fn-bar-fill" style="width:74%"></div></div></div>
+            <div class="flow-node"><div class="fn-path">Exited on /blog</div><div class="fn-count">2,104 sessions</div><div class="fn-bar"><div class="fn-bar-fill" style="width:46%"></div></div></div>
+            <div class="flow-node" style="border-color:rgba(229,72,77,.25)"><div class="fn-path" style="color:var(--red)">✗ Bounced</div><div class="fn-count">7,164 sessions</div><div class="fn-bar"><div class="fn-bar-fill" style="width:100%;background:var(--red);opacity:.5"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="panel col-50"><div class="panel-title">Exit rate by page</div>
+        <div class="bar-row"><span class="bar-label">/</span><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--red)"></div></div><span class="bar-pct" style="color:var(--red)">82%</span></div>
+        <div class="bar-row"><span class="bar-label">/blog</span><div class="bar-track"><div class="bar-fill" style="width:61%;background:var(--orange)"></div></div><span class="bar-pct" style="color:var(--orange)">61%</span></div>
+        <div class="bar-row"><span class="bar-label">/products</span><div class="bar-track"><div class="bar-fill" style="width:44%;background:var(--gold)"></div></div><span class="bar-pct" style="color:var(--gold)">44%</span></div>
+        <div class="bar-row"><span class="bar-label">/shop/bikes</span><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--green)"></div></div><span class="bar-pct" style="color:var(--green)">28%</span></div>
+        <div class="bar-row"><span class="bar-label">/checkout</span><div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--green)"></div></div><span class="bar-pct" style="color:var(--green)">12%</span></div>
+      </div>
+      <div class="panel col-50"><div class="panel-title">Session depth distribution</div>
+        <div class="bar-row"><span class="bar-label sm">1 page</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--red);opacity:.7"></div></div><span class="bar-pct">48%</span></div>
+        <div class="bar-row"><span class="bar-label sm">2–3 pages</span><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--gold)"></div></div><span class="bar-pct">29%</span></div>
+        <div class="bar-row"><span class="bar-label sm">4–6 pages</span><div class="bar-track"><div class="bar-fill" style="width:35%;background:var(--blue)"></div></div><span class="bar-pct">17%</span></div>
+        <div class="bar-row"><span class="bar-label sm">7+ pages</span><div class="bar-track"><div class="bar-fill" style="width:12%;background:var(--green)"></div></div><span class="bar-pct">6%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AUDIENCE ══ -->
+  <div class="screen" id="screen-audience">
+    <div class="kpi-row kpi-row-5">
+      <div class="kpi-card"><div class="kpi-label">UNIQUE USERS</div><div class="kpi-value">12,041</div><div class="kpi-sub up">▲ 9% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">SESSIONS / USER</div><div class="kpi-value">1.23</div><div class="kpi-sub dn">▼ 0.04</div></div>
+      <div class="kpi-card"><div class="kpi-label">PAGES / SESSION</div><div class="kpi-value">3.25</div><div class="kpi-sub up">▲ 0.2</div></div>
+      <div class="kpi-card"><div class="kpi-label">BOUNCE RATE</div><div class="kpi-value">48.3%</div><div class="kpi-sub up">▼ 2.1pp</div></div>
+      <div class="kpi-card"><div class="kpi-label">AVG. DURATION</div><div class="kpi-value">2m 14s</div><div class="kpi-sub">per session</div></div>
+    </div>
+    <div class="row">
+      <div class="panel col-50">
+        <div class="panel-title">Top countries</div>
+        <div class="bar-row"><span class="bar-label">🇩🇰 Denmark</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span class="bar-pct">62%</span></div>
+        <div class="bar-row"><span class="bar-label">🇩🇪 Germany</span><div class="bar-track"><div class="bar-fill" style="width:29%;background:var(--blue)"></div></div><span class="bar-pct">18%</span></div>
+        <div class="bar-row"><span class="bar-label">🇸🇪 Sweden</span><div class="bar-track"><div class="bar-fill" style="width:13%;background:var(--blue)"></div></div><span class="bar-pct">8%</span></div>
+        <div class="bar-row"><span class="bar-label">🇳🇴 Norway</span><div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--blue)"></div></div><span class="bar-pct">6%</span></div>
+        <div class="bar-row"><span class="bar-label">🇳🇱 Netherlands</span><div class="bar-track"><div class="bar-fill" style="width:6%;background:var(--blue)"></div></div><span class="bar-pct">4%</span></div>
+        <div class="bar-row"><span class="bar-label">🌐 Other</span><div class="bar-track"><div class="bar-fill" style="width:3%;background:var(--mut)"></div></div><span class="bar-pct">2%</span></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:14px;">
+        <div class="panel">
+          <div class="panel-title">Browsers</div>
+          <div class="bar-row"><span class="bar-label sm">Chrome</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span class="bar-pct">58%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Safari</span><div class="bar-track"><div class="bar-fill" style="width:41%;background:var(--green)"></div></div><span class="bar-pct">24%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Firefox</span><div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--orange)"></div></div><span class="bar-pct">12%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Edge</span><div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--teal)"></div></div><span class="bar-pct">6%</span></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Operating systems</div>
+          <div class="bar-row"><span class="bar-label sm">Windows</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span class="bar-pct">42%</span></div>
+          <div class="bar-row"><span class="bar-label sm">macOS</span><div class="bar-track"><div class="bar-fill" style="width:81%;background:var(--green)"></div></div><span class="bar-pct">34%</span></div>
+          <div class="bar-row"><span class="bar-label sm">iOS</span><div class="bar-track"><div class="bar-fill" style="width:33%;background:var(--gold)"></div></div><span class="bar-pct">14%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Android</span><div class="bar-track"><div class="bar-fill" style="width:19%;background:var(--orange)"></div></div><span class="bar-pct">8%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Languages</div>
+      <div style="display:flex;gap:32px">
+        <div><div style="font-size:28px;font-weight:600;color:var(--pri)">61%</div><div style="font-size:12px;color:var(--sec)">Danish (da)</div></div>
+        <div><div style="font-size:28px;font-weight:600;color:var(--pri)">18%</div><div style="font-size:12px;color:var(--sec)">German (de)</div></div>
+        <div><div style="font-size:28px;font-weight:600;color:var(--pri)">12%</div><div style="font-size:12px;color:var(--sec)">English (en)</div></div>
+        <div><div style="font-size:28px;font-weight:600;color:var(--pri)">6%</div><div style="font-size:12px;color:var(--sec)">Swedish (sv)</div></div>
+        <div><div style="font-size:28px;font-weight:600;color:var(--pri)">3%</div><div style="font-size:12px;color:var(--sec)">Norwegian (no)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONSENT ══ -->
+  <div class="screen" id="screen-consent">
+    <div class="kpi-row kpi-row-5">
+      <div class="kpi-card"><div class="kpi-label">OVERALL RATE</div><div class="kpi-value">61.4%</div><div class="kpi-sub dn">▼ 2.1pp vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">ANALYTICS</div><div class="kpi-value">68.2%</div><div class="kpi-sub">analytics cookies</div></div>
+      <div class="kpi-card"><div class="kpi-label">MARKETING</div><div class="kpi-value">44.1%</div><div class="kpi-sub dn">ad targeting</div></div>
+      <div class="kpi-card"><div class="kpi-label">FUNCTIONAL</div><div class="kpi-value">89.3%</div><div class="kpi-sub up">chat, maps etc.</div></div>
+      <div class="kpi-card"><div class="kpi-label">DECLINED ALL</div><div class="kpi-value">11.0%</div><div class="kpi-sub">of all visits</div></div>
+    </div>
+    <div class="row">
+      <div class="col-60 panel">
+        <div class="panel-title">Consent rate over time</div>
+        <div class="chart-area" id="chart-consent"></div>
+        <div class="chart-x"><span>21 Jul</span><span>28 Jul</span><span>4 Aug</span><span>11 Aug</span><span>18 Aug</span></div>
+      </div>
+      <div class="col-40 panel">
+        <div class="panel-title">Consent by category</div>
+        <div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;color:var(--pri)">Analytics</span><span style="font-size:13px;font-weight:500;color:var(--blue)">68%</span></div><div class="bar-track" style="height:10px"><div class="bar-fill" style="width:68%;background:var(--blue)"></div></div></div>
+        <div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;color:var(--pri)">Functional</span><span style="font-size:13px;font-weight:500;color:var(--green)">89%</span></div><div class="bar-track" style="height:10px"><div class="bar-fill" style="width:89%;background:var(--green)"></div></div></div>
+        <div style="margin-bottom:14px"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;color:var(--pri)">Marketing</span><span style="font-size:13px;font-weight:500;color:var(--orange)">44%</span></div><div class="bar-track" style="height:10px"><div class="bar-fill" style="width:44%;background:var(--orange)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:13px;color:var(--pri)">Personalisation</span><span style="font-size:13px;font-weight:500;color:var(--purple)">52%</span></div><div class="bar-track" style="height:10px"><div class="bar-fill" style="width:52%;background:var(--purple)"></div></div></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="panel col-50">
+        <div class="panel-title">Consent by device</div>
+        <div class="bar-row"><span class="bar-label sm">Desktop</span><div class="bar-track"><div class="bar-fill" style="width:65%;background:var(--blue)"></div></div><span class="bar-pct">65%</span></div>
+        <div class="bar-row"><span class="bar-label sm">Mobile</span><div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--gold)"></div></div><span class="bar-pct">55%</span></div>
+        <div class="bar-row"><span class="bar-label sm">Tablet</span><div class="bar-track"><div class="bar-fill" style="width:61%;background:var(--purple)"></div></div><span class="bar-pct">61%</span></div>
+      </div>
+      <div class="panel col-50">
+        <div class="panel-title">Top consent countries</div>
+        <div class="bar-row"><span class="bar-label">🇩🇰 Denmark</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><span class="bar-pct">71%</span></div>
+        <div class="bar-row"><span class="bar-label">🇸🇪 Sweden</span><div class="bar-track"><div class="bar-fill" style="width:90%;background:var(--green)"></div></div><span class="bar-pct">64%</span></div>
+        <div class="bar-row"><span class="bar-label">🇳🇴 Norway</span><div class="bar-track"><div class="bar-fill" style="width:94%;background:var(--green)"></div></div><span class="bar-pct">67%</span></div>
+        <div class="bar-row"><span class="bar-label">🇩🇪 Germany</span><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--gold)"></div></div><span class="bar-pct">58%</span></div>
+        <div class="bar-row"><span class="bar-label">🇳🇱 Netherlands</span><div class="bar-track"><div class="bar-fill" style="width:73%;background:var(--orange)"></div></div><span class="bar-pct">52%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RETENTION COHORTS ══ -->
+  <div class="screen" id="screen-retention">
+    <div style="font-size:13px;color:var(--sec)">Week-over-week user retention — % of each cohort still active N weeks after first session.</div>
+    <div class="row" style="align-items:flex-start">
+      <div class="panel" style="flex:1;overflow-x:auto">
+        <div class="panel-title">Retention cohort grid</div>
+        <div id="cohort-grid" style="min-width:560px"></div>
+      </div>
+      <div class="panel" style="flex:0 0 280px">
+        <div class="panel-title">Avg. retention curve</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <div class="bar-row"><span class="bar-label sm">Week 0</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span class="bar-pct">100%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Week 1</span><div class="bar-track"><div class="bar-fill" style="width:32%;background:var(--blue)"></div></div><span class="bar-pct">32%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Week 2</span><div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--blue)"></div></div><span class="bar-pct">21%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Week 3</span><div class="bar-track"><div class="bar-fill" style="width:16%;background:var(--blue)"></div></div><span class="bar-pct">16%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Week 4</span><div class="bar-track"><div class="bar-fill" style="width:13%;background:var(--blue)"></div></div><span class="bar-pct">13%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Week 5</span><div class="bar-track"><div class="bar-fill" style="width:11%;background:var(--blue)"></div></div><span class="bar-pct">11%</span></div>
+          <div class="bar-row"><span class="bar-label sm">Week 6</span><div class="bar-track"><div class="bar-fill" style="width:9%;background:var(--blue)"></div></div><span class="bar-pct">9%</span></div>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--bdr)">
+          <div style="font-size:11px;color:var(--mut);margin-bottom:8px">KEY METRICS</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;color:var(--sec)">Week-1 retention</span><span style="font-size:13px;font-weight:500;color:var(--pri)">32%</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-size:12px;color:var(--sec)">Week-4 retention</span><span style="font-size:13px;font-weight:500;color:var(--pri)">13%</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:12px;color:var(--sec)">Steady-state est.</span><span style="font-size:13px;font-weight:500;color:var(--blue)">~9%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ALERTS ══ -->
+  <div class="screen" id="screen-alerts">
+    <div class="row" style="align-items:flex-start">
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <span style="font-size:14px;font-weight:600;color:var(--pri)">Alert rules</span>
+          <button style="background:var(--blue);color:#fff;border:none;border-radius:6px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;font-weight:500">+ New alert</button>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot" style="background:var(--red)"></div>
+          <div class="alert-body">
+            <div class="alert-name">Consent rate drop</div>
+            <div class="alert-desc">Trigger when overall consent rate falls below <strong style="color:var(--pri)">55%</strong> over a rolling 24h window</div>
+          </div>
+          <span class="badge warn">⚠ Triggered 2h ago</span>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot" style="background:var(--green)"></div>
+          <div class="alert-body">
+            <div class="alert-name">Session spike</div>
+            <div class="alert-desc">Trigger when hourly sessions exceed <strong style="color:var(--pri)">200% of 7-day avg</strong></div>
+          </div>
+          <span class="badge active">● Active</span>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot" style="background:var(--green)"></div>
+          <div class="alert-body">
+            <div class="alert-name">UTM coverage low</div>
+            <div class="alert-desc">Trigger when paid traffic with missing utm_source exceeds <strong style="color:var(--pri)">30%</strong></div>
+          </div>
+          <span class="badge active">● Active</span>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot" style="background:var(--mut)"></div>
+          <div class="alert-body">
+            <div class="alert-name">Low conversion rate</div>
+            <div class="alert-desc">Trigger when 7-day conversion rate drops below <strong style="color:var(--pri)">20%</strong></div>
+          </div>
+          <span class="badge inactive">● Paused</span>
+        </div>
+        <div class="alert-item">
+          <div class="alert-dot" style="background:var(--green)"></div>
+          <div class="alert-body">
+            <div class="alert-name">Ad spend overrun</div>
+            <div class="alert-desc">Trigger when daily ad spend exceeds <strong style="color:var(--pri)">€250</strong> across any single platform</div>
+          </div>
+          <span class="badge active">● Active</span>
+        </div>
+      </div>
+      <div style="flex:0 0 320px">
+        <div style="font-size:14px;font-weight:600;color:var(--pri);margin-bottom:14px">Recent alert history</div>
+        <div class="panel">
+          <div class="recon-row"><div class="dot8" style="background:var(--red)"></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--pri)">Consent rate drop</div><div style="font-size:11px;color:var(--sec)">Rate fell to 53.2%</div></div><span style="font-size:11px;color:var(--mut)">2h ago</span></div>
+          <div class="recon-row"><div class="dot8" style="background:var(--orange)"></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--pri)">Consent rate drop</div><div style="font-size:11px;color:var(--sec)">Rate fell to 54.8%</div></div><span style="font-size:11px;color:var(--mut)">3d ago</span></div>
+          <div class="recon-row"><div class="dot8" style="background:var(--blue)"></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--pri)">Session spike</div><div style="font-size:11px;color:var(--sec)">312% of 7d avg</div></div><span style="font-size:11px;color:var(--mut)">5d ago</span></div>
+          <div class="recon-row"><div class="dot8" style="background:var(--orange)"></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--pri)">UTM coverage low</div><div style="font-size:11px;color:var(--sec)">38% missing utm_source</div></div><span style="font-size:11px;color:var(--mut)">8d ago</span></div>
+          <div class="recon-row"><div class="dot8" style="background:var(--red)"></div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--pri)">Ad spend overrun</div><div style="font-size:11px;color:var(--sec)">Meta Ads €287 in 1 day</div></div><span style="font-size:11px;color:var(--mut)">12d ago</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CHANNEL ANALYTICS ══ -->
+  <div class="screen" id="screen-channel">
+    <div class="kpi-row kpi-row-4">
+      <div class="kpi-card"><div class="kpi-label">PAID SESSIONS</div><div class="kpi-value">3,857</div><div class="kpi-sub">via connected ad platforms</div></div>
+      <div class="kpi-card"><div class="kpi-label">TOTAL AD SPEND</div><div class="kpi-value">€4,821</div><div class="kpi-sub up">3 platforms connected</div></div>
+      <div class="kpi-card"><div class="kpi-label">BLENDED CAC</div><div class="kpi-value">€1.25</div><div class="kpi-sub">cost per consent</div></div>
+      <div class="kpi-card"><div class="kpi-label">UTM COVERAGE</div><div class="kpi-value">74%</div><div class="kpi-sub dn">26% sessions untagged</div></div>
+    </div>
+    <div class="row">
+      <div class="panel col-50">
+        <div class="panel-title">Sessions by channel</div>
+        <div class="bar-row"><span class="bar-label">Organic Search</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><span class="bar-pct">38%</span></div>
+        <div class="bar-row"><span class="bar-label">Direct</span><div class="bar-track"><div class="bar-fill" style="width:63%;background:var(--purple)"></div></div><span class="bar-pct">24%</span></div>
+        <div class="bar-row"><span class="bar-label">Paid Social</span><div class="bar-track"><div class="bar-fill" style="width:47%;background:var(--blue)"></div></div><span class="bar-pct">18%</span></div>
+        <div class="bar-row"><span class="bar-label">Referral</span><div class="bar-track"><div class="bar-fill" style="width:32%;background:var(--teal)"></div></div><span class="bar-pct">12%</span></div>
+        <div class="bar-row"><span class="bar-label">Paid Search</span><div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--orange)"></div></div><span class="bar-pct">8%</span></div>
+      </div>
+      <div class="panel col-50">
+        <div class="panel-title">Ad performance by channel</div>
+        <table class="tbl">
+          <thead><tr><th>PLATFORM</th><th>SPEND</th><th>SESSIONS</th><th>CAC</th></tr></thead>
+          <tbody>
+            <tr><td><span class="dot8" style="background:var(--blue);display:inline-block;margin-right:8px"></span>Google Ads</td><td>€2,104</td><td>2,241</td><td>€0.94</td></tr>
+            <tr><td><span class="dot8" style="background:#1877F2;display:inline-block;margin-right:8px"></span>Meta Ads</td><td>€1,893</td><td>1,183</td><td>€1.60</td></tr>
+            <tr><td><span class="dot8" style="background:#0A66C2;display:inline-block;margin-right:8px"></span>LinkedIn Ads</td><td>€824</td><td>433</td><td>€1.90</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px;padding:12px;background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);border-radius:8px">
+          <div style="font-size:12px;font-weight:500;color:var(--orange);margin-bottom:4px">⚠ Low UTM coverage — Meta Ads</div>
+          <div style="font-size:11px;color:var(--sec)">Only 8% of scope consents match Meta Ads' utm_source. Ensure campaign URLs use: <strong style="color:var(--pri)">fb, ig, msg, an</strong></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="panel col-50">
+        <div class="panel-title">UTM source coverage</div>
+        <div class="gauge-wrap">
+          <div class="gauge">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#171C2A" stroke-width="12"/>
+              <circle cx="55" cy="55" r="44" fill="none" stroke="#3B87E8" stroke-width="12" stroke-dasharray="277" stroke-dashoffset="72" stroke-linecap="round"/>
+            </svg>
+            <div class="gauge-label"><div class="gauge-pct">74%</div><div class="gauge-sub">tagged</div></div>
+          </div>
+          <div style="flex:1">
+            <div style="margin-bottom:10px"><div style="font-size:12px;color:var(--sec);margin-bottom:4px">Tagged sessions</div><div style="font-size:18px;font-weight:600;color:var(--green)">10,974</div></div>
+            <div><div style="font-size:12px;color:var(--sec);margin-bottom:4px">Missing utm_source</div><div style="font-size:18px;font-weight:600;color:var(--red)">3,855</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel col-50">
+        <div class="panel-title">Consents by paid channel</div>
+        <div class="bar-row"><span class="bar-label">Google Ads</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--blue)"></div></div><span class="bar-pct">1,461</span></div>
+        <div class="bar-row"><span class="bar-label">Meta Ads</span><div class="bar-track"><div class="bar-fill" style="width:51%;background:#1877F2"></div></div><span class="bar-pct">745</span></div>
+        <div class="bar-row"><span class="bar-label">LinkedIn Ads</span><div class="bar-track"><div class="bar-fill" style="width:20%;background:#0A66C2"></div></div><span class="bar-pct">289</span></div>
+        <div style="margin-top:16px;font-size:12px;color:var(--sec)">Cost per consent: <strong style="color:var(--pri)">Google €1.44</strong> · <strong style="color:var(--pri)">Meta €2.54</strong> · <strong style="color:var(--pri)">LinkedIn €2.85</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AD SPEND ══ -->
+  <div class="screen" id="screen-adspend">
+    <div class="kpi-row kpi-row-5">
+      <div class="kpi-card"><div class="kpi-label">TOTAL SPEND</div><div class="kpi-value">€4,821</div><div class="kpi-sub">across 3 platforms</div></div>
+      <div class="kpi-card"><div class="kpi-label">TOTAL CLICKS</div><div class="kpi-value">12,483</div><div class="kpi-sub up">▲ 18% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">IMPRESSIONS</div><div class="kpi-value">841K</div><div class="kpi-sub up">▲ 9% vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">BLENDED CPC</div><div class="kpi-value">€0.39</div><div class="kpi-sub up">▼ €0.05 vs prev</div></div>
+      <div class="kpi-card"><div class="kpi-label">BLENDED CTR</div><div class="kpi-value">1.48%</div><div class="kpi-sub">industry avg: 1.9%</div></div>
+    </div>
+    <div class="platform-cards">
+      <div class="plat-card"><div class="plat-accent" style="background:var(--blue)"></div><div class="plat-body"><div class="plat-header"><span class="plat-name" style="color:var(--pri)">Google Ads</span><span class="plat-status" style="background:var(--green)"></span></div><div class="plat-spend">€2,104</div><div class="plat-spend-label">spend this period</div><div class="plat-metrics"><div class="plat-metric"><div class="plat-metric-val">6,812</div><div class="plat-metric-lbl">Clicks</div></div><div class="plat-metric"><div class="plat-metric-val">412K</div><div class="plat-metric-lbl">Impr.</div></div><div class="plat-metric"><div class="plat-metric-val">€0.31</div><div class="plat-metric-lbl">CPC</div></div><div class="plat-metric"><div class="plat-metric-val">€4.21</div><div class="plat-metric-lbl">Cost/conv</div></div></div></div></div>
+      <div class="plat-card"><div class="plat-accent" style="background:#1877F2"></div><div class="plat-body"><div class="plat-header"><span class="plat-name" style="color:var(--pri)">Meta Ads</span><span class="plat-status" style="background:var(--green)"></span></div><div class="plat-spend">€1,893</div><div class="plat-spend-label">spend this period</div><div class="plat-metrics"><div class="plat-metric"><div class="plat-metric-val">4,201</div><div class="plat-metric-lbl">Clicks</div></div><div class="plat-metric"><div class="plat-metric-val">318K</div><div class="plat-metric-lbl">Impr.</div></div><div class="plat-metric"><div class="plat-metric-val">€0.45</div><div class="plat-metric-lbl">CPC</div></div><div class="plat-metric"><div class="plat-metric-val">€5.67</div><div class="plat-metric-lbl">Cost/conv</div></div></div></div></div>
+      <div class="plat-card"><div class="plat-accent" style="background:#0A66C2"></div><div class="plat-body"><div class="plat-header"><span class="plat-name" style="color:var(--pri)">LinkedIn Ads</span><span class="plat-status" style="background:var(--green)"></span></div><div class="plat-spend">€824</div><div class="plat-spend-label">spend this period</div><div class="plat-metrics"><div class="plat-metric"><div class="plat-metric-val">1,470</div><div class="plat-metric-lbl">Clicks</div></div><div class="plat-metric"><div class="plat-metric-val">111K</div><div class="plat-metric-lbl">Impr.</div></div><div class="plat-metric"><div class="plat-metric-val">€0.56</div><div class="plat-metric-lbl">CPC</div></div><div class="plat-metric"><div class="plat-metric-val">€8.24</div><div class="plat-metric-lbl">Cost/conv</div></div></div></div></div>
+      <div class="plat-card"><div class="plat-accent" style="background:var(--mut)"></div><div class="plat-body"><div class="plat-header"><span class="plat-name" style="color:var(--sec)">Microsoft Ads</span><span class="plat-status" style="background:var(--mut)"></span></div><div style="font-size:12px;color:var(--mut);margin:12px 0">Not connected</div><button class="connect-btn">Connect account →</button></div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Spend over time</div>
+      <div class="chart-area" id="chart-adspend"></div>
+      <div class="chart-x"><span>21 Jul</span><span>28 Jul</span><span>4 Aug</span><span>11 Aug</span><span>18 Aug</span><span>20 Aug</span></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Platform comparison</div>
+      <table class="tbl">
+        <thead><tr><th>PLATFORM</th><th>SPEND</th><th>CLICKS</th><th>IMPR.</th><th>CPC</th><th>CTR</th><th>COST/CONV</th><th>STATUS</th></tr></thead>
+        <tbody>
+          <tr><td><span class="dot8" style="background:var(--blue);display:inline-block;margin-right:8px"></span>Google Ads</td><td>€2,104</td><td>6,812</td><td>412K</td><td>€0.31</td><td>1.65%</td><td>€4.21</td><td><span class="badge active">Active</span></td></tr>
+          <tr><td><span class="dot8" style="background:#1877F2;display:inline-block;margin-right:8px"></span>Meta Ads</td><td>€1,893</td><td>4,201</td><td>318K</td><td>€0.45</td><td>1.32%</td><td>€5.67</td><td><span class="badge active">Active</span></td></tr>
+          <tr><td><span class="dot8" style="background:#0A66C2;display:inline-block;margin-right:8px"></span>LinkedIn Ads</td><td>€824</td><td>1,470</td><td>111K</td><td>€0.56</td><td>1.32%</td><td>€8.24</td><td><span class="badge active">Active</span></td></tr>
+          <tr><td><span class="dot8" style="background:var(--mut);display:inline-block;margin-right:8px"></span><span style="color:var(--mut)">Microsoft Ads</span></td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td class="muted">—</td><td><span class="badge inactive">Not connected</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ AD RECONCILIATION ══ -->
+  <div class="screen" id="screen-reconciliation">
+    <div class="filter-bar">
+      <span class="filter-label">Platform</span>
+      <button class="chip active-chip">Meta Ads</button>
+      <button class="chip">Google Ads</button>
+      <button class="chip">LinkedIn Ads</button>
+    </div>
+    <div class="row">
+      <div class="panel" style="flex:0 0 240px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div style="font-size:12px;font-weight:500;color:var(--sec);margin-bottom:8px">UTM MATCH RATE</div>
+        <div class="gauge" style="width:130px;height:130px">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle cx="65" cy="65" r="52" fill="none" stroke="#171C2A" stroke-width="14"/>
+            <circle cx="65" cy="65" r="52" fill="none" stroke="#4ADE80" stroke-width="14" stroke-dasharray="327" stroke-dashoffset="249" stroke-linecap="round"/>
+          </svg>
+          <div class="gauge-label"><div class="gauge-pct" style="font-size:24px">24%</div><div class="gauge-sub">matched</div></div>
+        </div>
+        <div style="text-align:center;margin-top:8px"><div style="font-size:12px;color:var(--sec)">108 of 1,392 consents</div><div style="font-size:11px;color:var(--mut);margin-top:4px">in scope match Meta utm_source</div></div>
+      </div>
+      <div class="panel" style="flex:1">
+        <div class="panel-title">Reconciliation — Meta Ads</div>
+        <div style="padding:12px;background:rgba(229,72,77,.06);border:1px solid rgba(229,72,77,.2);border-radius:8px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:500;color:var(--red);margin-bottom:4px">Low UTM coverage</div>
+          <div style="font-size:11px;color:var(--sec)">Only <strong style="color:var(--pri)">7.8%</strong> of scope consents can be attributed to Meta Ads via utm_source. Campaign links likely missing or inconsistently tagged — set utm_source to one of: <strong style="color:var(--pri)">fb, ig, msg, an</strong></div>
+        </div>
+        <table class="tbl">
+          <thead><tr><th>utm_source VALUE</th><th>SESSIONS</th><th>CONSENTS</th><th>RATE</th><th>STATUS</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--green)">fb</td><td>847</td><td>64</td><td>7.6%</td><td><span class="badge active">Matched</span></td></tr>
+            <tr><td style="color:var(--green)">ig</td><td>412</td><td>31</td><td>7.5%</td><td><span class="badge active">Matched</span></td></tr>
+            <tr><td style="color:var(--green)">facebook</td><td>228</td><td>13</td><td>5.7%</td><td><span class="badge active">Matched</span></td></tr>
+            <tr><td style="color:var(--mut)">social</td><td>1,204</td><td>—</td><td>—</td><td><span class="badge inactive">Unmatched</span></td></tr>
+            <tr><td style="color:var(--mut)">meta-ads</td><td>876</td><td>—</td><td>—</td><td><span class="badge warn">Partial</span></td></tr>
+            <tr><td style="color:var(--mut)">(not set)</td><td>3,421</td><td>—</td><td>—</td><td><span class="badge inactive">Missing</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="panel" style="flex:0 0 220px">
+        <div class="panel-title">Scope summary</div>
+        <div class="recon-row"><div class="dot8" style="background:var(--green)"></div><div style="flex:1;font-size:12px;color:var(--sec)">Matched</div><span style="font-size:13px;font-weight:500;color:var(--green)">108</span></div>
+        <div class="recon-row"><div class="dot8" style="background:var(--red)"></div><div style="flex:1;font-size:12px;color:var(--sec)">Unmatched</div><span style="font-size:13px;font-weight:500;color:var(--red)">1,284</span></div>
+        <div class="recon-row"><div class="dot8" style="background:var(--mut)"></div><div style="flex:1;font-size:12px;color:var(--sec)">Total scope</div><span style="font-size:13px;font-weight:500;color:var(--pri)">1,392</span></div>
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr)">
+          <div style="font-size:11px;color:var(--mut);margin-bottom:10px">PLATFORM REPORTED</div>
+          <div class="recon-row"><div style="flex:1;font-size:12px;color:var(--sec)">Impressions</div><span style="font-size:13px;color:var(--pri)">318K</span></div>
+          <div class="recon-row"><div style="flex:1;font-size:12px;color:var(--sec)">Clicks</div><span style="font-size:13px;color:var(--pri)">4,201</span></div>
+          <div class="recon-row"><div style="flex:1;font-size:12px;color:var(--sec)">Spend</div><span style="font-size:13px;color:var(--pri)">€1,893</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MY REPORTS ══ -->
+  <div class="screen" id="screen-my-reports">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div>
+        <div style="font-size:16px;font-weight:600;color:var(--pri)">My Reports</div>
+        <div style="font-size:12px;color:var(--sec);margin-top:3px">Saved custom reports for this domain</div>
+      </div>
+      <button onclick="switchScreen('report-builder','New report')" style="background:var(--blue);color:#fff;border:none;border-radius:7px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">+ New report</button>
+    </div>
+    <div class="reports-grid">
+      <!-- Saved report cards -->
+      <div class="report-card" onclick="switchScreen('report-builder','New report')">
+        <div class="rc-type">📈 Line chart</div>
+        <div class="rc-name">Weekly session trend</div>
+        <div class="rc-meta">Sessions · by Date · last 30d</div>
+        <div class="rc-preview">
+          <div class="rc-bar" style="flex:1;height:60%;background:rgba(59,135,232,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:75%;background:rgba(59,135,232,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:55%;background:rgba(59,135,232,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:85%;background:rgba(59,135,232,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:65%;background:rgba(59,135,232,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:90%;background:rgba(59,135,232,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:70%;background:rgba(59,135,232,.5)"></div>
+        </div>
+        <div class="rc-meta" style="margin-top:6px">Updated 2h ago</div>
+        <div class="rc-actions">
+          <button class="rc-action-btn">Edit</button>
+          <button class="rc-action-btn" style="color:var(--red)">Delete</button>
+        </div>
+      </div>
+      <div class="report-card" onclick="switchScreen('report-builder','New report')">
+        <div class="rc-type">📊 Bar chart</div>
+        <div class="rc-name">Consent by channel</div>
+        <div class="rc-meta">Consent rate · by Channel · last 30d</div>
+        <div class="rc-preview">
+          <div class="rc-bar" style="flex:1;height:89%;background:rgba(74,222,128,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:44%;background:rgba(251,146,60,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:61%;background:rgba(196,163,90,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:71%;background:rgba(99,179,237,.5)"></div>
+          <div class="rc-bar" style="flex:1;height:55%;background:rgba(167,139,250,.5)"></div>
+        </div>
+        <div class="rc-meta" style="margin-top:6px">Updated yesterday</div>
+        <div class="rc-actions">
+          <button class="rc-action-btn">Edit</button>
+          <button class="rc-action-btn" style="color:var(--red)">Delete</button>
+        </div>
+      </div>
+      <div class="report-card" onclick="switchScreen('report-builder','New report')">
+        <div class="rc-type">⬛ KPI cards</div>
+        <div class="rc-name">Meta Ads performance</div>
+        <div class="rc-meta">Spend, CTR, CPC · no breakdown</div>
+        <div class="rc-preview" style="align-items:center;gap:8px;padding:8px 6px">
+          <div style="flex:1;background:rgba(59,135,232,.15);border-radius:4px;height:34px;display:flex;flex-direction:column;justify-content:center;padding:4px 6px">
+            <div style="font-size:9px;color:var(--mut)">SPEND</div>
+            <div style="font-size:12px;font-weight:600;color:var(--pri)">€1,893</div>
+          </div>
+          <div style="flex:1;background:rgba(74,222,128,.1);border-radius:4px;height:34px;display:flex;flex-direction:column;justify-content:center;padding:4px 6px">
+            <div style="font-size:9px;color:var(--mut)">CTR</div>
+            <div style="font-size:12px;font-weight:600;color:var(--green)">1.32%</div>
+          </div>
+          <div style="flex:1;background:rgba(251,146,60,.1);border-radius:4px;height:34px;display:flex;flex-direction:column;justify-content:center;padding:4px 6px">
+            <div style="font-size:9px;color:var(--mut)">CPC</div>
+            <div style="font-size:12px;font-weight:600;color:var(--orange)">€0.45</div>
+          </div>
+        </div>
+        <div class="rc-meta" style="margin-top:6px">Updated 3d ago</div>
+        <div class="rc-actions">
+          <button class="rc-action-btn">Edit</button>
+          <button class="rc-action-btn" style="color:var(--red)">Delete</button>
+        </div>
+      </div>
+      <div class="report-card" onclick="switchScreen('report-builder','New report')">
+        <div class="rc-type">🍩 Donut</div>
+        <div class="rc-name">Traffic share by country</div>
+        <div class="rc-meta">Sessions · by Country · last 30d</div>
+        <div class="rc-preview" style="justify-content:center;align-items:center;">
+          <svg width="44" height="44" viewBox="0 0 44 44" style="transform:rotate(-90deg)">
+            <circle cx="22" cy="22" r="16" fill="none" stroke="#171C2A" stroke-width="8"/>
+            <circle cx="22" cy="22" r="16" fill="none" stroke="rgba(59,135,232,.7)" stroke-width="8" stroke-dasharray="100.5" stroke-dashoffset="37" stroke-linecap="butt"/>
+            <circle cx="22" cy="22" r="16" fill="none" stroke="rgba(74,222,128,.6)" stroke-width="8" stroke-dasharray="100.5" stroke-dashoffset="72" stroke-linecap="butt"/>
+          </svg>
+          <div style="margin-left:10px;font-size:10px;color:var(--sec);display:flex;flex-direction:column;gap:3px">
+            <div><span style="color:rgba(59,135,232,.9)">●</span> DK 62%</div>
+            <div><span style="color:rgba(74,222,128,.8)">●</span> DE 18%</div>
+            <div><span style="color:var(--mut)">●</span> Other 20%</div>
+          </div>
+        </div>
+        <div class="rc-meta" style="margin-top:6px">Updated 5d ago</div>
+        <div class="rc-actions">
+          <button class="rc-action-btn">Edit</button>
+          <button class="rc-action-btn" style="color:var(--red)">Delete</button>
+        </div>
+      </div>
+      <div class="report-card" onclick="switchScreen('report-builder','New report')">
+        <div class="rc-type">📋 Table</div>
+        <div class="rc-name">UTM source breakdown</div>
+        <div class="rc-meta">Sessions, Conversions · by UTM source</div>
+        <div class="rc-preview" style="flex-direction:column;gap:3px;padding:6px;">
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mut);padding-bottom:3px;border-bottom:1px solid var(--bdr)"><span>SOURCE</span><span>SESSIONS</span><span>CVR</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--sec)"><span>google</span><span>5,634</span><span style="color:var(--green)">14%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--sec)"><span>fb</span><span>1,487</span><span style="color:var(--blue)">9%</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--sec)"><span>ig</span><span>1,183</span><span style="color:var(--blue)">8%</span></div>
+        </div>
+        <div class="rc-meta" style="margin-top:6px">Updated 1d ago</div>
+        <div class="rc-actions">
+          <button class="rc-action-btn">Edit</button>
+          <button class="rc-action-btn" style="color:var(--red)">Delete</button>
+        </div>
+      </div>
+      <!-- New report card -->
+      <div class="report-card new-card" onclick="switchScreen('report-builder','New report')">
+        <div style="font-size:28px;color:var(--mut)">+</div>
+        <div style="font-size:13px;font-weight:500">New report</div>
+        <div style="font-size:11px;color:var(--mut)">Build a custom view</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ REPORT BUILDER ══ -->
+  <div class="screen" id="screen-report-builder" style="padding:0;gap:0;">
+    <div class="rb-layout">
+      <!-- Config panel -->
+      <div class="rb-config">
+        <div class="rb-config-scroll">
+          <div class="rb-section">
+            <div class="rb-label">REPORT NAME</div>
+            <input class="rb-name-input" type="text" placeholder="e.g. Weekly session trend" value="Weekly session trend" />
+          </div>
+          <div class="rb-section">
+            <div class="rb-label">CHART TYPE</div>
+            <div class="chart-type-grid">
+              <div class="ct-btn ct-active" onclick="selectChartType(this,'line')"><span class="ct-icon">📈</span>Line</div>
+              <div class="ct-btn" onclick="selectChartType(this,'bar')"><span class="ct-icon">📊</span>Bar</div>
+              <div class="ct-btn" onclick="selectChartType(this,'table')"><span class="ct-icon">📋</span>Table</div>
+              <div class="ct-btn" onclick="selectChartType(this,'kpi')"><span class="ct-icon">⬛</span>KPI</div>
+              <div class="ct-btn" onclick="selectChartType(this,'donut')"><span class="ct-icon">🍩</span>Donut</div>
+            </div>
+          </div>
+          <div class="rb-section">
+            <div class="rb-label">METRICS</div>
+            <div class="metric-list" id="metric-list">
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check checked">✓</div><span class="m-label">Sessions</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check checked">✓</div><span class="m-label">Page views</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">Unique users</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">Conversions</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">Conversion rate</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">Consent rate</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">Bounce rate</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">Avg. duration</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">Ad spend</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">CTR</span></div>
+              <div class="m-item" onclick="toggleMetric(this)"><div class="m-check"></div><span class="m-label">CPC</span></div>
+            </div>
+          </div>
+          <div class="rb-section">
+            <div class="rb-label">BREAKDOWN BY</div>
+            <div class="breakdown-list" id="breakdown-list">
+              <div class="bd-item" onclick="selectBreakdown(this)"><div class="bd-radio sel"></div><span class="bd-label">Date (daily)</span></div>
+              <div class="bd-item" onclick="selectBreakdown(this)"><div class="bd-radio"></div><span class="bd-label">Channel</span></div>
+              <div class="bd-item" onclick="selectBreakdown(this)"><div class="bd-radio"></div><span class="bd-label">Country</span></div>
+              <div class="bd-item" onclick="selectBreakdown(this)"><div class="bd-radio"></div><span class="bd-label">Device</span></div>
+              <div class="bd-item" onclick="selectBreakdown(this)"><div class="bd-radio"></div><span class="bd-label">UTM source</span></div>
+              <div class="bd-item" onclick="selectBreakdown(this)"><div class="bd-radio"></div><span class="bd-label">Browser</span></div>
+              <div class="bd-item" onclick="selectBreakdown(this)"><div class="bd-radio"></div><span class="bd-label">None (totals only)</span></div>
+            </div>
+          </div>
+          <div class="rb-section">
+            <div class="rb-label">FILTERS</div>
+            <div class="filter-rows" id="filter-rows">
+              <div class="f-row">
+                <select class="f-sel"><option>Channel</option><option>Country</option><option>Device</option><option>UTM source</option><option>Consent level</option></select>
+                <select class="f-sel"><option>is</option><option>is not</option><option>contains</option></select>
+                <select class="f-sel"><option>Paid Social</option><option>Organic</option><option>Direct</option></select>
+                <button class="f-rm" onclick="removeFilter(this)">×</button>
+              </div>
+            </div>
+            <button class="add-filter-btn" onclick="addFilter()">+ Add filter</button>
+          </div>
+          <div class="rb-section">
+            <div class="rb-label">DATE RANGE</div>
+            <div style="display:flex;gap:6px">
+              <select class="f-sel"><option>Last 30 days</option><option>Last 7 days</option><option>Last 90 days</option><option>This month</option><option>Custom</option></select>
+            </div>
+          </div>
+        </div>
+        <button class="rb-save" onclick="saveReport()">Save report</button>
+      </div>
+      <!-- Preview panel -->
+      <div class="rb-preview">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:15px;font-weight:600;color:var(--pri)" id="rb-preview-name">Weekly session trend</div>
+            <div style="font-size:11px;color:var(--sec);margin-top:2px">Sessions, Page views · by Date · Last 30 days · Channel = Paid Social</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div class="pill">Preview</div>
+            <button style="background:none;border:1px solid var(--bdr);border-radius:6px;color:var(--sec);font-size:12px;padding:5px 12px;cursor:pointer;font-family:inherit">Share ↗</button>
+          </div>
+        </div>
+
+        <!-- KPI summary row -->
+        <div class="rb-kpi-row">
+          <div class="rb-kpi"><div class="rb-kpi-lbl">SESSIONS</div><div class="rb-kpi-val" style="color:var(--blue)">14,829</div><div style="font-size:10px;color:var(--green);margin-top:3px">▲ 12%</div></div>
+          <div class="rb-kpi"><div class="rb-kpi-lbl">PAGE VIEWS</div><div class="rb-kpi-val" style="color:var(--pri)">48,204</div><div style="font-size:10px;color:var(--green);margin-top:3px">▲ 8%</div></div>
+          <div class="rb-kpi"><div class="rb-kpi-lbl">PERIOD</div><div class="rb-kpi-val" style="font-size:13px;color:var(--sec)">21 Jul – 20 Aug</div><div style="font-size:10px;color:var(--mut);margin-top:3px">30 days</div></div>
+        </div>
+
+        <!-- Main chart -->
+        <div class="rb-preview-card">
+          <div class="rb-preview-title" id="rb-chart-title">Sessions & Page views over time</div>
+          <div class="rb-preview-sub">Daily breakdown · 21 Jul – 20 Aug 2026</div>
+          <div style="display:flex;align-items:flex-end;gap:2px;height:180px;background:var(--track);border-radius:8px;padding:14px 14px 0;">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:52%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:71%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:48%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:76%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:92%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:67%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:55%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:83%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:100%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:72%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:88%;background:rgba(59,135,232,.6)"></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:2px">
+              <div style="width:100%;border-radius:2px 2px 0 0;height:64%;background:rgba(59,135,232,.6)"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 14px 0;font-size:10px;color:var(--mut)">
+            <span>21 Jul</span><span>28 Jul</span><span>4 Aug</span><span>11 Aug</span><span>18 Aug</span>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr)">
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sec)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(59,135,232,.6)"></div>Sessions</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--sec)"><div style="width:10px;height:10px;border-radius:2px;background:rgba(196,163,90,.6)"></div>Page views</div>
+          </div>
+        </div>
+
+        <!-- Data table preview -->
+        <div class="rb-preview-card">
+          <div class="rb-preview-title">Data table</div>
+          <div class="rb-preview-sub">Top 10 rows · sorted by Sessions desc</div>
+          <table class="tbl">
+            <thead><tr><th>DATE</th><th>SESSIONS</th><th>PAGE VIEWS</th><th>TREND</th></tr></thead>
+            <tbody>
+              <tr><td>20 Aug</td><td>621</td><td>2,018</td><td style="color:var(--green)">▲ peak</td></tr>
+              <tr><td>19 Aug</td><td>584</td><td>1,901</td><td style="color:var(--green)">▲ +6%</td></tr>
+              <tr><td>18 Aug</td><td>542</td><td>1,764</td><td style="color:var(--green)">▲ +3%</td></tr>
+              <tr><td>17 Aug</td><td>498</td><td>1,620</td><td style="color:var(--mut)">— flat</td></tr>
+              <tr><td>16 Aug</td><td>412</td><td>1,340</td><td style="color:var(--red)">▼ -8%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- Widget drawer (outside content, fixed) -->
+<div class="widget-drawer" id="widget-drawer">
+  <div class="wd-head">
+    <span class="wd-title">Add widget</span>
+    <button class="wd-close" onclick="toggleWidgetDrawer()">×</button>
+  </div>
+  <div class="wd-body">
+    <div class="wd-group">
+      <div class="wd-group-label">KPI CARDS</div>
+      <div class="wd-item"><div><div class="wd-item-name">Sessions KPI</div><div class="wd-item-sub">Total sessions in period</div></div><button class="wd-add wd-added">Added</button></div>
+      <div class="wd-item"><div><div class="wd-item-name">Consent rate KPI</div><div class="wd-item-sub">Overall consent %</div></div><button class="wd-add wd-added">Added</button></div>
+      <div class="wd-item"><div><div class="wd-item-name">Conversions KPI</div><div class="wd-item-sub">Total goal completions</div></div><button class="wd-add" onclick="addWidget(this)">+ Add</button></div>
+      <div class="wd-item"><div><div class="wd-item-name">Ad spend KPI</div><div class="wd-item-sub">Blended spend across platforms</div></div><button class="wd-add" onclick="addWidget(this)">+ Add</button></div>
+    </div>
+    <div class="wd-group">
+      <div class="wd-group-label">CHARTS</div>
+      <div class="wd-item"><div><div class="wd-item-name">Sessions over time</div><div class="wd-item-sub">Daily bar chart</div></div><button class="wd-add wd-added">Added</button></div>
+      <div class="wd-item"><div><div class="wd-item-name">Consent trend</div><div class="wd-item-sub">Rolling consent rate line</div></div><button class="wd-add" onclick="addWidget(this)">+ Add</button></div>
+      <div class="wd-item"><div><div class="wd-item-name">Channel breakdown</div><div class="wd-item-sub">Traffic by source</div></div><button class="wd-add" onclick="addWidget(this)">+ Add</button></div>
+      <div class="wd-item"><div><div class="wd-item-name">Conversion trend</div><div class="wd-item-sub">Daily conversions chart</div></div><button class="wd-add" onclick="addWidget(this)">+ Add</button></div>
+    </div>
+    <div class="wd-group">
+      <div class="wd-group-label">TABLES</div>
+      <div class="wd-item"><div><div class="wd-item-name">Top pages</div><div class="wd-item-sub">Most visited URLs</div></div><button class="wd-add wd-added">Added</button></div>
+      <div class="wd-item"><div><div class="wd-item-name">Top UTM sources</div><div class="wd-item-sub">Traffic by utm_source</div></div><button class="wd-add" onclick="addWidget(this)">+ Add</button></div>
+      <div class="wd-item"><div><div class="wd-item-name">Country breakdown</div><div class="wd-item-sub">Sessions by country</div></div><button class="wd-add" onclick="addWidget(this)">+ Add</button></div>
+    </div>
+    <div class="wd-group">
+      <div class="wd-group-label">CUSTOM</div>
+      <div class="wd-item"><div><div class="wd-item-name">From My Reports</div><div class="wd-item-sub">Embed a saved report</div></div><button class="wd-add" onclick="addWidget(this)">+ Add</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="add-widget-fab" onclick="toggleWidgetDrawer()">+ Add widget</button>
+
+<script>
+const NAV = [
+  { section:"ANALYTICS", items:[
+    {id:"overview",       label:"Overview"},
+    {id:"acquisition",    label:"Acquisition"},
+    {id:"conversions",    label:"Conversions"},
+    {id:"userflow",       label:"User Flow"},
+    {id:"audience",       label:"Audience"},
+    {id:"consent",        label:"Consent"},
+  ]},
+  { section:"INSIGHTS", items:[
+    {id:"retention",      label:"Retention Cohorts"},
+    {id:"alerts",         label:"Alerts"},
+  ]},
+  { section:"ADVERTISING", items:[
+    {id:"channel",        label:"Channel Analytics"},
+    {id:"adspend",        label:"Ad Spend"},
+    {id:"reconciliation", label:"Ad Reconciliation"},
+  ]},
+  { section:"MY REPORTS", items:[
+    {id:"my-reports",     label:"Saved reports"},
+    {id:"report-builder", label:"New report"},
+  ]},
+];
+
+const ICONS = {
+  overview:"◈", acquisition:"⇡", conversions:"◎", userflow:"⤳", audience:"◯", consent:"⊙",
+  retention:"▦", alerts:"◬", channel:"⊕", adspend:"◈", reconciliation:"⊜"
+};
+
+const nav = document.getElementById('sidebar-nav');
+NAV.forEach(sec => {
+  const secEl = document.createElement('div');
+  secEl.className = 'nav-section';
+  const lbl = document.createElement('div');
+  lbl.className = 'nav-label';
+  lbl.textContent = sec.section;
+  secEl.appendChild(lbl);
+  sec.items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'nav-item' + (item.id === 'overview' ? ' active' : '');
+    el.innerHTML = `<span class="nav-icon">${ICONS[item.id]||'·'}</span>${item.label}`;
+    el.dataset.screen = item.id;
+    el.addEventListener('click', () => switchScreen(item.id, item.label));
+    secEl.appendChild(el);
+  });
+  nav.appendChild(secEl);
+});
+
+function switchScreen(id, label) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const screen = document.getElementById('screen-' + id);
+  if (screen) screen.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.dataset.screen === id) n.classList.add('active');
+  });
+  document.getElementById('topbar-title').textContent = label;
+}
+
+function buildBarChart(containerId, values, colorFn) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '';
+  const max = Math.max(...values);
+  values.forEach((v, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'chart-bar-wrap';
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = Math.round((v / max) * 100) + '%';
+    bar.style.background = colorFn(v, i);
+    wrap.appendChild(bar);
+    el.appendChild(wrap);
+  });
+}
+
+const sessVals = [420,580,390,620,750,580,440,660,800,520,460,680,820,570,490,710,860,610,530,700,880,640,480,750,920,670,510,780,950,700];
+buildBarChart('chart-overview', sessVals, () => 'rgba(59,135,232,0.55)');
+
+const convVals = [8,12,9,15,18,14,11,16,21,17,13,19,24,18,15,22,28,20,16,25,30,22,18,27,34,24,19,29,38,28];
+buildBarChart('chart-conv', convVals, () => 'rgba(196,163,90,0.75)');
+
+const consVals = [58,60,62,59,61,63,65,62,64,66,63,61,63,65,67,64,62,64,66,68,65,63,65,63,61,63,61,59,61,61];
+buildBarChart('chart-consent', consVals, v => v >= 65 ? 'rgba(74,222,128,0.65)' : v >= 60 ? 'rgba(59,135,232,0.6)' : 'rgba(229,72,77,0.5)');
+
+const adVals = [42,55,38,61,74,58,43,66,79,52,45,68,83,57,49,72,86,61,53,70,88,64,47,75,92,67,50,78,95,70];
+buildBarChart('chart-adspend', adVals, () => 'rgba(59,135,232,0.7)');
+
+const pages = [
+  {p:'/shop/bikes',n:4821,pct:100},{p:'/products',n:3102,pct:64},
+  {p:'/checkout',n:1874,pct:39},{p:'/',n:1643,pct:34},
+  {p:'/shop/helmets',n:1204,pct:25},{p:'/blog',n:892,pct:18},{p:'/contact',n:531,pct:11},
+];
+const pagesEl = document.getElementById('top-pages');
+pages.forEach(p => {
+  pagesEl.innerHTML += `<div class="bar-row"><span class="bar-label">${p.p}</span><div class="bar-track"><div class="bar-fill" style="width:${p.pct}%;background:var(--blue)"></div></div><span class="bar-pct" style="min-width:48px">${p.n.toLocaleString()}</span></div>`;
+});
+
+const cohortData = [
+  {week:'21 Jul',users:2841,ret:[100,34,22,17,14,12,10]},
+  {week:'28 Jul',users:2634,ret:[100,31,19,15,12,10,null]},
+  {week:'4 Aug', users:3012,ret:[100,33,21,16,13,null,null]},
+  {week:'11 Aug',users:2789,ret:[100,36,23,18,null,null,null]},
+  {week:'18 Aug',users:2941,ret:[100,29,null,null,null,null,null]},
+  {week:'20 Aug',users:612, ret:[100,null,null,null,null,null,null]},
+];
+const grid = document.getElementById('cohort-grid');
+grid.style.gridTemplateColumns = 'repeat(8, 1fr)';
+['Cohort','Users','Wk 0','Wk 1','Wk 2','Wk 3','Wk 4','Wk 5'].forEach(h => {
+  const cell = document.createElement('div');
+  cell.className = 'cohort-cell cohort-header';
+  cell.textContent = h;
+  grid.appendChild(cell);
+});
+cohortData.forEach(row => {
+  [{text:row.week,style:'text-align:right'},{text:row.users.toLocaleString(),style:'background:var(--track);color:var(--sec);font-size:11px'}].forEach(c => {
+    const cell = document.createElement('div');
+    cell.className = 'cohort-cell cohort-header';
+    cell.style.cssText = c.style;
+    cell.textContent = c.text;
+    grid.appendChild(cell);
+  });
+  row.ret.forEach(val => {
+    const cell = document.createElement('div');
+    cell.className = 'cohort-cell';
+    if (val === null) {
+      cell.style.background = 'transparent';
+      cell.style.border = '1px dashed var(--bdr)';
+      cell.style.color = 'var(--mut)';
+      cell.style.fontSize = '10px';
+      cell.textContent = '—';
+    } else {
+      const t = val / 100;
+      cell.style.background = `rgba(${Math.round(59+15*t)},${Math.round(135+87*t)},${Math.round(232-104*t)},${0.1+t*0.7})`;
+      cell.style.color = 'var(--pri)';
+      cell.style.fontSize = '12px';
+      cell.textContent = val + '%';
+    }
+    grid.appendChild(cell);
+  });
+});
+
+// ─────── EDIT MODE ───────
+function toggleEditMode() {
+  const editing = document.body.classList.toggle('editing');
+  if (!editing) closeWidgetDrawer();
+
+  // Add/remove panel controls on active screen panels
+  document.querySelectorAll('.screen.active .panel').forEach(p => {
+    if (editing) {
+      if (!p.querySelector('.panel-drag-handle')) {
+        const h = document.createElement('div');
+        h.className = 'panel-drag-handle';
+        h.textContent = '⠿⠿';
+        p.prepend(h);
+      }
+      if (!p.querySelector('.panel-ctrl')) {
+        const ctrl = document.createElement('div');
+        ctrl.className = 'panel-ctrl';
+        ctrl.innerHTML = '<button class="panel-rm" title="Remove widget" onclick="removePanel(this)">×</button>';
+        p.appendChild(ctrl);
+      }
+    }
+  });
+}
+
+function saveLayout() {
+  document.body.classList.remove('editing');
+  closeWidgetDrawer();
+  // Show a brief toast
+  const toast = document.createElement('div');
+  toast.textContent = 'Layout saved';
+  toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.35);color:#4ADE80;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;pointer-events:none';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2200);
+}
+
+function removePanel(btn) {
+  const panel = btn.closest('.panel');
+  panel.style.transition = 'opacity .2s,transform .2s';
+  panel.style.opacity = '0';
+  panel.style.transform = 'scale(.96)';
+  setTimeout(() => panel.remove(), 200);
+}
+
+// ─────── WIDGET DRAWER ───────
+function toggleWidgetDrawer() {
+  document.getElementById('widget-drawer').classList.toggle('open');
+}
+function closeWidgetDrawer() {
+  document.getElementById('widget-drawer').classList.remove('open');
+}
+function addWidget(btn) {
+  btn.textContent = 'Added';
+  btn.classList.add('wd-added');
+  btn.disabled = true;
+  const toast = document.createElement('div');
+  toast.textContent = 'Widget added to layout';
+  toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(59,135,232,.15);border:1px solid rgba(59,135,232,.35);color:#3B87E8;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;pointer-events:none';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
+
+// ─────── REPORT BUILDER ───────
+function selectChartType(btn, type) {
+  document.querySelectorAll('.ct-btn').forEach(b => b.classList.remove('ct-active'));
+  btn.classList.add('ct-active');
+  const titles = {line:'Trend over time',bar:'Breakdown comparison',table:'Data table',kpi:'KPI summary',donut:'Distribution'};
+  const el = document.getElementById('rb-chart-title');
+  if (el) el.textContent = titles[type] || 'Chart';
+}
+
+function toggleMetric(item) {
+  const check = item.querySelector('.m-check');
+  const isChecked = check.classList.toggle('checked');
+  check.textContent = isChecked ? '✓' : '';
+}
+
+function selectBreakdown(item) {
+  document.querySelectorAll('#breakdown-list .bd-radio').forEach(r => r.classList.remove('sel'));
+  item.querySelector('.bd-radio').classList.add('sel');
+}
+
+function addFilter() {
+  const rows = document.getElementById('filter-rows');
+  const row = document.createElement('div');
+  row.className = 'f-row';
+  row.innerHTML = `
+    <select class="f-sel"><option>Channel</option><option>Country</option><option>Device</option><option>UTM source</option><option>Consent level</option></select>
+    <select class="f-sel"><option>is</option><option>is not</option><option>contains</option></select>
+    <select class="f-sel"><option>Organic</option><option>Paid Social</option><option>Direct</option></select>
+    <button class="f-rm" onclick="removeFilter(this)">×</button>`;
+  rows.appendChild(row);
+}
+
+function removeFilter(btn) {
+  btn.closest('.f-row').remove();
+}
+
+function saveReport() {
+  const name = document.querySelector('.rb-name-input').value || 'Untitled report';
+  const toast = document.createElement('div');
+  toast.textContent = `"${name}" saved to My Reports`;
+  toast.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.35);color:#4ADE80;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;pointer-events:none';
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.remove(); switchScreen('my-reports','My Reports'); }, 1800);
+}
+</script>
+</body>
+</html>

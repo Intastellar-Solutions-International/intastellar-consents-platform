@@ -66,6 +66,8 @@ import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import AnalyticsSearchConsole from "./Pages/Analytics/SearchConsole.js";
 import AnalyticsCohorts from "./Pages/Analytics/Cohorts.js";
 import AnalyticsAlerts from "./Pages/Analytics/AlertConfigs.js";
+import AnalyticsSavedReports from "./Pages/Analytics/SavedReports.js";
+import AnalyticsReportBuilder from "./Pages/Analytics/ReportBuilder.js";
 import CookieDatabase from "./Pages/CookieDatabase";
 import TierGate from "./Components/TierGate";
 import DevTierSwitcher from "./Components/DevTierSwitcher";
@@ -405,6 +407,36 @@ export default function App() {
                                         <Route path="/analytics/alerts" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Alerts" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsAlerts />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/reports/new" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Custom Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsReportBuilder />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/reports/new" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Custom Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsReportBuilder />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/reports/:reportId" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Custom Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsReportBuilder />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/reports/:reportId" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Custom Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsReportBuilder />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/reports" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Custom Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsSavedReports />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/reports" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Custom Reports" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsSavedReports />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle" exact>
