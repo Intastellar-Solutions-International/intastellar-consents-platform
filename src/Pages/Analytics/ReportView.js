@@ -3,44 +3,70 @@ const useParams  = window.ReactRouterDOM.useParams;
 const useHistory = window.ReactRouterDOM.useHistory;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, KpiCard, formatPercent } from "./_shared.js";
+import { authHeaders, useAnalyticsPageChrome, useAnalyticsReport, useAdSpendReport, KpiCard, formatPercent } from "./_shared.js";
 import { analyticsReportsPath, analyticsReportBuilderPath } from "../../Functions/domainPathSegments.js";
-import { METRIC_LABELS } from "./reportTemplates.js";
+import { METRIC_LABELS, AD_METRICS } from "./reportTemplates.js";
 import TrendLineChart from "./TrendLineChart.js";
 import { IconTarget } from "./Icons.js";
 import "./Analytics.css";
 
 const REPORTS_URL = `${ScannerHost}/api/analytics-saved-reports`;
 
+const PLATFORM_LABELS = {
+    google_ads:    "Google Ads",
+    meta_ads:      "Meta Ads",
+    linkedin_ads:  "LinkedIn Ads",
+    microsoft_ads: "Microsoft Ads",
+};
+
+const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF ", DKK: "kr ", SEK: "kr ", NOK: "kr ", PLN: "zł " };
+
+function formatMoney(n, currency) {
+    const sym = CURRENCY_SYMBOLS[currency] || (currency ? currency + " " : "");
+    return `${sym}${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function adCurrency(adData)      { return adData?.spendByCurrency?.[0]?.currency || "EUR"; }
+function adSpendTotal(adData)    { return Number(adData?.spendByCurrency?.[0]?.amount || 0); }
+function adClicksTotal(adData)   { return Number(adData?.spendByCurrency?.[0]?.clicks || 0); }
+function adImprTotal(adData)     { return Number(adData?.spendByCurrency?.[0]?.impressions || 0); }
+function adCacTotal(adData)      { return Number(adData?.blendedCac?.[0]?.cac || 0); }
+function adFieldForMetric(m)     { return m === "adClicks" ? "clicks" : m === "adImpressions" ? "impressions" : "spend"; }
+
 const BREAKDOWN_LABELS = {
     date: "Date (daily)", country: "Country", device: "Device",
-    utmSource: "UTM source", browser: "Browser", channel: "Channel", none: "Totals",
+    utmSource: "UTM source", browser: "Browser", channel: "Channel",
+    none: "Totals", adPlatform: "Ad platform",
 };
 
 const BREAKDOWN_DEFS = {
-    date:      d => (d?.daily||[]).map(r => ({ label: r.date,              value: (r.full_count||0)+(r.minimal||0) })),
-    country:   d => (d?.countries||[]).slice(0,10).map(r => ({ label: r.code||"?",              value: r.events })),
-    device:    d => (d?.devices||[]).map(r => ({ label: r.type||"Unknown",                      value: r.events })),
-    utmSource: d => (d?.utmSources||[]).slice(0,10).map(r => ({ label: r.source||"(none)",      value: r.events })),
-    browser:   d => (d?.browsers||[]).slice(0,8).map(r => ({ label: r.name||"Unknown",          value: r.events })),
-    channel:   d => (d?.conversionsByChannel||[]).map(r => ({ label: r.channel,                 value: r.sessions||r.count })),
-    none:      () => [],
+    date:       d => (d?.daily||[]).map(r => ({ label: r.date, value: (r.full_count||0)+(r.minimal||0) })),
+    country:    d => (d?.countries||[]).slice(0,10).map(r => ({ label: r.code||"?", value: r.events })),
+    device:     d => (d?.devices||[]).map(r => ({ label: r.type||"Unknown", value: r.events })),
+    utmSource:  d => (d?.utmSources||[]).slice(0,10).map(r => ({ label: r.source||"(none)", value: r.events })),
+    browser:    d => (d?.browsers||[]).slice(0,8).map(r => ({ label: r.name||"Unknown", value: r.events })),
+    channel:    d => (d?.conversionsByChannel||[]).map(r => ({ label: r.channel, value: r.sessions||r.count })),
+    none:       () => [],
 };
 
 const METRIC_DEFS = {
-    sessions:       { getTotal: d => d?.totals?.unique_sessions || 0,                                           isRate: false },
-    pageViews:      { getTotal: d => (d?.daily||[]).reduce((s,r) => s+(r.full_count||0)+(r.minimal||0), 0),    isRate: false },
-    conversions:    { getTotal: d => (d?.conversions||[]).reduce((s,c) => s+(c.count||0), 0),                  isRate: false },
-    conversionRate: { getTotal: d => d?.totals?.conversionRate || 0,                                           isRate: true  },
-    consentRate:    { getTotal: d => { const t = d?.totals?.total||0; return t > 0 ? ((d?.totals?.full_count||0)/t)*100 : 0; }, isRate: true },
-    newUsers:       { getTotal: d => { const r = (d?.newVsReturning||[]).find(r => r.is_returning === false || r.is_returning === "false"); return r?.sessions||0; }, isRate: false },
+    sessions:       { getTotal: (d, _ad) => d?.totals?.unique_sessions || 0,                                        isRate: false },
+    pageViews:      { getTotal: (d, _ad) => (d?.daily||[]).reduce((s,r) => s+(r.full_count||0)+(r.minimal||0), 0), isRate: false },
+    conversions:    { getTotal: (d, _ad) => (d?.conversions||[]).reduce((s,c) => s+(c.count||0), 0),                isRate: false },
+    conversionRate: { getTotal: (d, _ad) => d?.totals?.conversionRate || 0,                                         isRate: true  },
+    consentRate:    { getTotal: (d, _ad) => { const t = d?.totals?.total||0; return t > 0 ? ((d?.totals?.full_count||0)/t)*100 : 0; }, isRate: true },
+    newUsers:       { getTotal: (d, _ad) => { const r=(d?.newVsReturning||[]).find(r=>r.is_returning===false||r.is_returning==="false"); return r?.sessions||0; }, isRate: false },
+    adSpend:        { getTotal: (_d, ad) => adSpendTotal(ad),   isRate: false, isMoney: true  },
+    adClicks:       { getTotal: (_d, ad) => adClicksTotal(ad),  isRate: false, isMoney: false },
+    adImpressions:  { getTotal: (_d, ad) => adImprTotal(ad),    isRate: false, isMoney: false },
+    blendedCac:     { getTotal: (_d, ad) => adCacTotal(ad),     isRate: false, isMoney: true  },
 };
 
 const COLORS = ["rgba(192,159,83,0.9)","rgba(74,222,128,0.8)","rgba(99,179,237,0.8)","rgba(167,139,250,0.8)","rgba(251,146,60,0.8)"];
 
 // ── Chart renders ─────────────────────────────────────────────────────────────
 
-function BarRows({ series }) {
+function BarRows({ series, formatVal }) {
     if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No data.</p>;
     const max = Math.max(...series.map(s => s.value), 1);
     return (
@@ -51,14 +77,14 @@ function BarRows({ series }) {
                     <div className="sa-rv-bar-track">
                         <div className="sa-rv-bar-fill" style={{ width: `${(s.value/max)*100}%` }} />
                     </div>
-                    <span className="sa-rv-bar-val">{s.value?.toLocaleString("de-DE") ?? "—"}</span>
+                    <span className="sa-rv-bar-val">{formatVal ? formatVal(s.value) : s.value?.toLocaleString("de-DE") ?? "—"}</span>
                 </div>
             ))}
         </div>
     );
 }
 
-function DataTable({ series, metricLabel }) {
+function DataTable({ series, metricLabel, formatVal }) {
     if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No data.</p>;
     const max = Math.max(...series.map(s => s.value), 1);
     return (
@@ -68,7 +94,7 @@ function DataTable({ series, metricLabel }) {
                 {series.map((s, i) => (
                     <tr key={i}>
                         <td>{s.label}</td>
-                        <td>{s.value?.toLocaleString("de-DE") ?? "—"}</td>
+                        <td>{formatVal ? formatVal(s.value) : s.value?.toLocaleString("de-DE") ?? "—"}</td>
                         <td>
                             <div className="sa-bar" style={{ minWidth: 100 }}>
                                 <div className="sa-bar__seg" style={{ width: `${(s.value/max)*100}%`, background: "rgba(192,159,83,0.55)" }} />
@@ -81,7 +107,7 @@ function DataTable({ series, metricLabel }) {
     );
 }
 
-function DonutViz({ series }) {
+function DonutViz({ series, formatVal }) {
     if (!series?.length) return <p className="sa-notice" style={{ margin: 0 }}>No data.</p>;
     const total = series.reduce((s,r) => s+r.value, 0);
     const top5  = series.slice(0, 5);
@@ -104,7 +130,7 @@ function DonutViz({ series }) {
                     <div key={i} className="sa-rb-donut-row">
                         <span className="sa-rb-donut-dot" style={{ background: COLORS[i] }} />
                         <span className="sa-rb-donut-label">{s.label}</span>
-                        <span className="sa-rb-donut-count">{s.value.toLocaleString("de-DE")}</span>
+                        <span className="sa-rb-donut-count">{formatVal ? formatVal(s.value) : s.value.toLocaleString("de-DE")}</span>
                         <span className="sa-rb-donut-pct">{total > 0 ? formatPercent((s.value/total)*100, 0) : "—"}</span>
                     </div>
                 ))}
@@ -120,11 +146,10 @@ export default function ReportView() {
     const history      = useHistory();
     const { domain, getLastDays, setLastDays, fromDate, setFromDate, toDate, setToDate } = useAnalyticsPageChrome();
 
-    const [report,    setReport]    = useState(null);
-    const [loadErr,   setLoadErr]   = useState(null);
-    const [dupLoading, setDupLoading] = useState(false);
+    const [report,      setReport]     = useState(null);
+    const [loadErr,     setLoadErr]    = useState(null);
+    const [dupLoading,  setDupLoading] = useState(false);
 
-    // Load the report config
     useEffect(() => {
         if (!domain) return;
         fetch(`${REPORTS_URL}?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
@@ -138,7 +163,6 @@ export default function ReportView() {
             .catch(() => setLoadErr("Could not load report."));
     }, [reportId, domain]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Date range from report config
     const reportFrom = useMemo(() => {
         const days = report?.date_range_days || 30;
         const d = new Date(); d.setDate(d.getDate() - days);
@@ -147,7 +171,6 @@ export default function ReportView() {
 
     const reportTo = useMemo(() => new Date().toISOString().slice(0,10), []);
 
-    // Segment from filters
     const segment = useMemo(() => {
         const filters = report?.filters || [];
         const seg = { device: null, country: "", channel: null, consent: null };
@@ -161,27 +184,54 @@ export default function ReportView() {
         return (seg.device || seg.country || seg.channel || seg.consent) ? seg : null;
     }, [report?.filters]);
 
-    const { data, loading: dataLoading } = useAnalyticsReport(domain, reportFrom, reportTo, 0, segment);
-
-    const breakdown = report?.breakdown || "date";
     const metrics   = report?.metrics   || ["sessions"];
+    const breakdown = report?.breakdown || "date";
     const chartType = report?.chart_type || "line";
 
+    const hasAdMetrics = metrics.some(m => AD_METRICS.has(m));
+    const primaryMetric = metrics[0] || "sessions";
+    const isAdPrimary   = AD_METRICS.has(primaryMetric);
+
+    const { data, loading: dataLoading } = useAnalyticsReport(domain, reportFrom, reportTo, 0, segment);
+    const { data: adData, loading: adLoading } = useAdSpendReport(domain, reportFrom, reportTo, hasAdMetrics);
+
+    const currency = adCurrency(adData);
+    const moneyFmt = v => formatMoney(v, currency);
+    const primaryMetDef = METRIC_DEFS[primaryMetric] || METRIC_DEFS.sessions;
+
     const series = useMemo(() => {
-        if (!data || !BREAKDOWN_DEFS[breakdown]) return [];
+        if (breakdown === "adPlatform") {
+            const field = adFieldForMetric(primaryMetric);
+            const byPlat = {};
+            (adData?.platforms||[]).forEach(p => {
+                byPlat[p.platform] = (byPlat[p.platform]||0) + Number(p[field] || p.amount || 0);
+            });
+            return Object.entries(byPlat)
+                .map(([plat, val]) => ({ label: PLATFORM_LABELS[plat]||plat, value: val }))
+                .sort((a, b) => b.value - a.value);
+        }
+        if (breakdown === "date" && isAdPrimary) {
+            const field = adFieldForMetric(primaryMetric);
+            return (adData?.daily||[]).map(r => ({
+                label: r.date,
+                value: Object.values(r.byPlatform||{}).reduce((s, p) => s + (p[field]||0), 0),
+            }));
+        }
+        if (!BREAKDOWN_DEFS[breakdown] || !data) return [];
         return BREAKDOWN_DEFS[breakdown](data);
-    }, [data, breakdown]);
+    }, [data, adData, breakdown, primaryMetric]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const kpiValues = useMemo(() => {
-        if (!data) return {};
-        return Object.fromEntries(metrics.map(m => [m, (METRIC_DEFS[m]||METRIC_DEFS.sessions).getTotal(data)]));
-    }, [data, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
+        if (!data && !adData) return {};
+        return Object.fromEntries(metrics.map(m => [m, (METRIC_DEFS[m]||METRIC_DEFS.sessions).getTotal(data, adData)]));
+    }, [data, adData, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const trendData = breakdown === "date"
         ? series.map(s => ({ date: s.label, num: s.value }))
         : [];
 
-    const primaryMetricDef = METRIC_DEFS[metrics[0]] || METRIC_DEFS.sessions;
+    const isLoading = dataLoading || adLoading;
+    const hasData   = isAdPrimary ? !!adData : !!data;
 
     async function duplicate() {
         if (!report || !domain) return;
@@ -262,15 +312,24 @@ export default function ReportView() {
                                     {metrics.map(m => {
                                         const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
                                         const val = kpiValues[m] ?? 0;
+                                        const fmt = def.isMoney ? moneyFmt(val)
+                                                  : def.isRate  ? formatPercent(val)
+                                                  : val.toLocaleString("de-DE");
                                         return (
                                             <div key={m} className="sa-rv-kpi">
                                                 <div className="sa-rv-kpi__label">{(METRIC_LABELS[m]||m).toUpperCase()}</div>
-                                                <div className="sa-rv-kpi__value">
-                                                    {dataLoading ? "—" : def.isRate ? formatPercent(val) : val.toLocaleString("de-DE")}
-                                                </div>
+                                                <div className="sa-rv-kpi__value">{isLoading ? "—" : fmt}</div>
                                             </div>
                                         );
                                     })}
+                                </div>
+                            )}
+
+                            {/* Ad not connected notice */}
+                            {hasAdMetrics && !adLoading && !adData && domain && (
+                                <div className="sa-rb-ad-notice">
+                                    <strong>No ad connections for {domain}.</strong>{" "}
+                                    Connect an ad platform in the Ad Spend section to see this data.
                                 </div>
                             )}
 
@@ -281,28 +340,39 @@ export default function ReportView() {
                                     {domain && <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0, marginLeft: 8, fontSize: 11, color: "rgba(130,130,130,0.6)" }}>{domain}</span>}
                                 </h3>
 
-                                {dataLoading && <p className="sa-notice" style={{ margin: 0 }}>Loading data…</p>}
-                                {!dataLoading && !data && <p className="sa-notice" style={{ margin: 0 }}>Select a domain to view this report.</p>}
+                                {isLoading && <p className="sa-notice" style={{ margin: 0 }}>Loading data…</p>}
+                                {!isLoading && !hasData && <p className="sa-notice" style={{ margin: 0 }}>Select a domain to view this report.</p>}
 
-                                {!dataLoading && data && (
+                                {!isLoading && hasData && (
                                     <>
                                         {chartType === "kpi" && (
                                             <div className="sa-rb-kpi-grid">
                                                 {metrics.map(m => {
                                                     const def = METRIC_DEFS[m] || METRIC_DEFS.sessions;
                                                     const val = kpiValues[m] ?? 0;
-                                                    return <KpiCard key={m} icon={<IconTarget />} label={METRIC_LABELS[m]||m}
-                                                        value={def.isRate ? formatPercent(val) : val.toLocaleString("de-DE")} />;
+                                                    const fmt = def.isMoney ? moneyFmt(val)
+                                                              : def.isRate  ? formatPercent(val)
+                                                              : val.toLocaleString("de-DE");
+                                                    return <KpiCard key={m} icon={<IconTarget />} label={METRIC_LABELS[m]||m} value={fmt} />;
                                                 })}
                                             </div>
                                         )}
                                         {chartType === "line" && breakdown === "date" && trendData.length > 0 && (
                                             <TrendLineChart data={trendData} title={METRIC_LABELS[metrics[0]]||metrics[0]} showInsights height={280} />
                                         )}
-                                        {chartType === "line" && breakdown !== "date" && <BarRows series={series} />}
-                                        {chartType === "bar"   && <BarRows series={series} />}
-                                        {chartType === "table" && <DataTable series={series} metricLabel={METRIC_LABELS[metrics[0]]||metrics[0]} />}
-                                        {chartType === "donut" && <DonutViz series={series} />}
+                                        {chartType === "line" && breakdown !== "date" && (
+                                            <BarRows series={series} formatVal={isAdPrimary && primaryMetDef.isMoney ? moneyFmt : null} />
+                                        )}
+                                        {chartType === "bar" && (
+                                            <BarRows series={series} formatVal={isAdPrimary && primaryMetDef.isMoney ? moneyFmt : null} />
+                                        )}
+                                        {chartType === "table" && (
+                                            <DataTable series={series} metricLabel={METRIC_LABELS[metrics[0]]||metrics[0]}
+                                                formatVal={isAdPrimary && primaryMetDef.isMoney ? moneyFmt : null} />
+                                        )}
+                                        {chartType === "donut" && (
+                                            <DonutViz series={series} formatVal={isAdPrimary && primaryMetDef.isMoney ? moneyFmt : null} />
+                                        )}
                                     </>
                                 )}
                             </div>

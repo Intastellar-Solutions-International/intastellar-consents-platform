@@ -284,7 +284,14 @@ export default function SavedReports() {
 
                         {domain && !loading && !error && reports.length === 0 && (
                             <div className="sa-reports-empty">
-                                <div className="sa-reports-empty__icon">📊</div>
+                                <div className="sa-reports-empty__icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="40" height="40">
+                                        <rect x="3" y="12" width="4" height="9" rx="1" />
+                                        <rect x="10" y="7" width="4" height="14" rx="1" />
+                                        <rect x="17" y="3" width="4" height="18" rx="1" />
+                                        <line x1="3" y1="21" x2="21" y2="21" />
+                                    </svg>
+                                </div>
                                 <div className="sa-reports-empty__title">No saved reports yet</div>
                                 <div className="sa-reports-empty__sub">Pick a template above or build a custom report from scratch.</div>
                             </div>

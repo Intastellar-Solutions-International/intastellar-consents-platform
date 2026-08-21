@@ -1,6 +1,9 @@
 // Predefined report templates — shown in the My Reports page and used to
 // pre-populate the ReportBuilder when ?tpl=<key> is present in the URL.
 
+/** Metrics that require the /api/ad-spend-report endpoint instead of /api/analytics-report */
+export const AD_METRICS = new Set(["adSpend","adClicks","adImpressions","blendedCac"]);
+
 export const REPORT_TEMPLATES = [
     {
         key: "traffic_overview",
@@ -134,9 +137,55 @@ export const REPORT_TEMPLATES = [
         dateRangeDays: 30,
         category: "Audience",
     },
+
+    // ── Ad Spend ──────────────────────────────────────────────────────────────
+    {
+        key: "ad_spend_overview",
+        name: "Ad Spend Overview",
+        description: "Total spend, clicks and impressions across all connected ad platforms at a glance.",
+        chartType: "kpi",
+        metrics: ["adSpend", "adClicks", "adImpressions"],
+        breakdown: "none",
+        filters: [],
+        dateRangeDays: 30,
+        category: "Ad Spend",
+    },
+    {
+        key: "ad_spend_trend",
+        name: "Spend Trend",
+        description: "Daily ad spend over time — see how your budget paces across the selected period.",
+        chartType: "line",
+        metrics: ["adSpend"],
+        breakdown: "date",
+        filters: [],
+        dateRangeDays: 30,
+        category: "Ad Spend",
+    },
+    {
+        key: "ad_platform_split",
+        name: "Spend by Platform",
+        description: "How your ad budget is split across Google, Meta, LinkedIn, and other platforms.",
+        chartType: "donut",
+        metrics: ["adSpend"],
+        breakdown: "adPlatform",
+        filters: [],
+        dateRangeDays: 30,
+        category: "Ad Spend",
+    },
+    {
+        key: "blended_cac",
+        name: "Blended CAC",
+        description: "Total ad spend ÷ total conversions — your blended cost to acquire one customer.",
+        chartType: "kpi",
+        metrics: ["adSpend", "blendedCac"],
+        breakdown: "none",
+        filters: [],
+        dateRangeDays: 30,
+        category: "Ad Spend",
+    },
 ];
 
-export const CATEGORY_ORDER = ["Overview", "Audience", "Acquisition", "Conversions", "Consent"];
+export const CATEGORY_ORDER = ["Overview", "Audience", "Acquisition", "Conversions", "Consent", "Ad Spend"];
 
 // Chart type → SVG icon (same style as the builder's CT_SVG)
 export const CT_SVG = {
@@ -170,6 +219,7 @@ export const CT_SVG = {
 export const METRIC_LABELS = {
     sessions: "Sessions", pageViews: "Page views", conversions: "Conversions",
     conversionRate: "Conversion rate", consentRate: "Consent rate", newUsers: "New users",
+    adSpend: "Ad spend", adClicks: "Ad clicks", adImpressions: "Impressions", blendedCac: "Blended CAC",
 };
 
 export const CATEGORY_COLOR = {
@@ -178,4 +228,5 @@ export const CATEGORY_COLOR = {
     Acquisition:  "rgba(167,139,250,0.7)",
     Conversions:  "rgba(74,222,128,0.7)",
     Consent:      "rgba(251,146,60,0.7)",
+    "Ad Spend":   "rgba(239,68,68,0.7)",
 };

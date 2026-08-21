@@ -87,6 +87,36 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
     return { data, loading, error };
 }
 
+/**
+ * Fetch /api/ad-spend-report for the report builder and viewer.
+ * `enabled` should be false when no ad metrics are selected — avoids a
+ * network round-trip when the report only uses first-party analytics data.
+ */
+export function useAdSpendReport(domain, fromIso, toIso, enabled = true) {
+    const [data,    setData]    = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (!enabled || !domain) { setData(null); return; }
+        let ignore = false;
+        setLoading(true);
+        const qs = new URLSearchParams({ from: fromIso, to: toIso }).toString();
+        fetch(`${ScannerHost}/api/ad-spend-report?${qs}`, {
+            headers: { ...authHeaders(), Domains: domain },
+        })
+            .then(async r => {
+                if (!r.ok) throw new Error(r.status);
+                const json = await r.json();
+                if (!ignore) setData(json?.noConnections ? null : json);
+            })
+            .catch(() => { if (!ignore) setData(null); })
+            .finally(() => { if (!ignore) setLoading(false); });
+        return () => { ignore = true; };
+    }, [domain, fromIso, toIso, enabled]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    return { data, loading };
+}
+
 // Domain resolution + date-range state that's identical across every
 // Analytics page — split out from useAnalyticsPage() below so pages with
 // their own bespoke data-fetching (Heatmap, Recordings, Bots, ...) can still
