@@ -815,30 +815,39 @@ function applyPageExperiment(){
         setAbDecision(test.id,variant.id);
       }
 
-      // Sent unconditionally — assignment/exposure data is needed for valid
-      // test results even when the visitor declined statistics cookies.
-      send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname,h:getHost()}));
-
       if(test.testType==='url_split'){
         // URL split: redirect to the variant's page once. Control stays
         // put. Skip the redirect if we're already on the variant's own
         // destination host — without this, a script that also runs on the
-        // redirect-target domain (e.g. installed there for its own
-        // analytics) re-evaluates this same test on every pageload there
-        // too, and bounces every deeper click on that site straight back to
-        // the variant's URL (its site root, not a per-page mapping) — the
-        // "clicking further into the variant site keeps landing back on
-        // its home page" symptom.
+        // redirect-target domain re-evaluates this same test on every
+        // pageload and bounces every deeper click back to the variant root.
+        //
+        // IMPORTANT: also skip the ab exposure event when already on target.
+        // The redirect fires send() on the source domain before redirecting,
+        // so the variant assignment is already recorded there. Firing send()
+        // again on the target domain creates a second ab_test_assignments row
+        // for the same session, which doubles the "Visitors" count for the
+        // variant vs. the control (control sessions are only ever counted once,
+        // on the source domain). Skipping the event here keeps counts correct.
         if(!variant.isControl&&variant.redirectUrl){
           var alreadyOnTarget=(function(){
             try{return new URL(variant.redirectUrl).host===location.host;}catch(e){return false;}
           })();
-          if(!alreadyOnTarget){
-            try{location.replace(variant.redirectUrl);}catch(e){}
-          }
+          if(alreadyOnTarget)return; // already counted from source domain
+          // Sending exposure before redirect so the record lands even if the
+          // browser cuts the network request short during navigation.
+          send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname,h:getHost()}));
+          try{location.replace(variant.redirectUrl);}catch(e){}
+        } else {
+          // Control — count the exposure on the source domain.
+          send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname,h:getHost()}));
         }
         return;
       }
+
+      // Non-url-split: count exposure unconditionally (assignment/exposure data
+      // is needed even when the visitor declined statistics cookies).
+      send(JSON.stringify({s:SITE,t:'ab',tid:test.id,vid:variant.id,sid:getSid(),u:location.pathname,h:getHost()}));
 
       var applyChanges=function(){
         var changes=variant.changes||[];
