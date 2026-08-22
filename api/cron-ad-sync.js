@@ -28,6 +28,7 @@
 import pkg from "pg";
 const { Pool } = pkg;
 import { tryRefreshToken, fetchPlatformDataDaily } from "./_ad-platform-fetch.js";
+import { getEcbRates, fx } from "./_fx.js";
 
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
@@ -107,6 +108,10 @@ async function ensureDailyTable(db) {
     // unlike CTR, this isn't derivable from clicks/impressions, so it needs
     // its own column. NULL for every other platform.
     await db.query(`ALTER TABLE ad_daily_data ADD COLUMN IF NOT EXISTS avg_position NUMERIC(6,2)`).catch(() => {});
+    // spend_eur: native spend converted to EUR at the time of sync, using ECB
+    // rates fetched that day. Used by ad-spend-report.js to convert to any
+    // display currency without re-hitting ECB on every page load.
+    await db.query(`ALTER TABLE ad_daily_data ADD COLUMN IF NOT EXISTS spend_eur NUMERIC(14,4)`).catch(() => {});
 }
 
 export default async function handler(req, res) {
@@ -155,6 +160,10 @@ export default async function handler(req, res) {
     const today = new Date();
     const yesterday = isoDate(new Date(today.getTime() - 86_400_000));
     const backfillFrom = isoDate(new Date(today.getTime() - BACKFILL_DAYS * 86_400_000));
+
+    // Fetch ECB rates once for the whole sync run so every platform's native
+    // currency can be normalised to EUR in the same upsert (no per-row fetch).
+    const fxRates = await getEcbRates().catch(() => null);
 
     const results = [];
     let totalDaysFetched = 0;
@@ -224,22 +233,26 @@ export default async function handler(req, res) {
         for (const day of missingDays) {
             const v = byDay[day];
             if (!v) continue; // platform returned no data for this day (e.g. no campaigns active)
+            const spendEur = fxRates && v.spend != null && v.currency
+                ? fx(v.spend, v.currency, "EUR", fxRates)
+                : null;
             try {
                 await db.query(`
                     INSERT INTO ad_daily_data
-                        (organisation_id, domain, platform, date, clicks, impressions, spend, currency, avg_position)
-                    VALUES ($1,$2,$3,$4::date,$5,$6,$7,$8,$9)
+                        (organisation_id, domain, platform, date, clicks, impressions, spend, currency, avg_position, spend_eur)
+                    VALUES ($1,$2,$3,$4::date,$5,$6,$7,$8,$9,$10)
                     ON CONFLICT (organisation_id, domain, platform, date) DO UPDATE SET
                         clicks       = EXCLUDED.clicks,
                         impressions  = EXCLUDED.impressions,
                         spend        = EXCLUDED.spend,
                         currency     = COALESCE(EXCLUDED.currency, ad_daily_data.currency),
                         avg_position = EXCLUDED.avg_position,
+                        spend_eur    = COALESCE(EXCLUDED.spend_eur, ad_daily_data.spend_eur),
                         synced_at    = NOW()
                 `, [
                     conn.organisation_id, conn.domain, conn.platform, day,
                     v.clicks || 0, v.impressions || 0, v.spend ?? null, v.currency ?? null,
-                    v.avgPosition ?? null,
+                    v.avgPosition ?? null, spendEur ?? null,
                 ]);
                 daysSaved++;
             } catch (e) {

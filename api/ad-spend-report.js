@@ -23,6 +23,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
+import { getEcbRates, fx, FALLBACK_RATES } from "./_fx.js";
 
 let pool;
 function getPool() {
@@ -72,43 +73,10 @@ function safeDate(str, fallback) {
     return isNaN(d.getTime()) ? fallback : d.toISOString().slice(0, 10);
 }
 
-// ── ECB exchange rates (EUR-based, cached 24 h per process) ──────────────────
-// 1 EUR = rate[currency] units. EUR itself = 1.
-// Used to unify multi-currency ad spend into one display currency.
-let _fxCache = { rates: null, fetchedAt: 0 };
-
-async function getEcbRates() {
-    if (_fxCache.rates && Date.now() - _fxCache.fetchedAt < 86_400_000) {
-        return _fxCache.rates;
-    }
-    try {
-        const xml = await fetch(
-            "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml",
-            { signal: AbortSignal.timeout(5000) }
-        ).then(r => r.text());
-        const rates = { EUR: 1 };
-        for (const m of xml.matchAll(/currency="([A-Z]{3})" rate="([0-9.]+)"/g)) {
-            rates[m[1]] = parseFloat(m[2]);
-        }
-        _fxCache = { rates, fetchedAt: Date.now() };
-        return rates;
-    } catch {
-        // Return stale cache if available, otherwise a hardcoded fallback
-        // so a transient ECB outage doesn't break the entire report.
-        return _fxCache.rates ?? {
-            EUR: 1, USD: 1.09, GBP: 0.86, DKK: 7.46,
-            SEK: 11.3, NOK: 11.7, CHF: 0.97, PLN: 4.3,
-        };
-    }
-}
-
-function fx(amount, from, to, rates) {
-    if (!from || !to || from === to || !amount) return Number(amount || 0);
-    const fromRate = rates[from];
-    const toRate   = rates[to];
-    if (!fromRate || !toRate) return Number(amount || 0);
-    return (Number(amount) / fromRate) * toRate;
-}
+// FX utilities imported from _fx.js (getEcbRates, fx, FALLBACK_RATES).
+// spend_eur is now stored in ad_daily_data at sync time (cron-ad-sync.js),
+// so conversion at report time only needs ECB rates for the final
+// EUR → displayCurrency step, not for the native → EUR step.
 
 export default async function handler(req, res) {
     setCors(req, res);
@@ -167,11 +135,20 @@ export default async function handler(req, res) {
     const baseWhere = `WHERE organisation_id = $1 AND date BETWEEN $2 AND $3
                         AND platform NOT IN ('google_analytics', 'google_search_console') ${domainClause}`;
 
+    // Each query exposes two spend columns so the JS below can use spend_eur
+    // (computed at sync time, day-of ECB rate) for rows that have it, and
+    // fall back to the native spend amount for older rows that pre-date the
+    // spend_eur column. SQL SUM() ignores NULLs, so the CASE split is exact.
+    const EUR_SPLIT = `
+        SUM(CASE WHEN spend_eur IS NOT NULL THEN spend_eur      ELSE 0 END) AS eur_from_new,
+        SUM(CASE WHEN spend_eur IS NULL     THEN COALESCE(spend,0) ELSE 0 END) AS native_from_old`;
+
     const [currencyRes, platformRes, dailyRes, byDomainRes] = await Promise.all([
 
         db.query(
             `SELECT currency,
-                    SUM(spend)       AS amount,
+                    SUM(spend) AS amount,
+                    ${EUR_SPLIT},
                     SUM(clicks)      AS clicks,
                     SUM(impressions) AS impressions
              FROM ad_daily_data
@@ -182,7 +159,8 @@ export default async function handler(req, res) {
 
         db.query(
             `SELECT platform, currency,
-                    SUM(spend)       AS amount,
+                    SUM(spend) AS amount,
+                    ${EUR_SPLIT},
                     SUM(clicks)      AS clicks,
                     SUM(impressions) AS impressions
              FROM ad_daily_data
@@ -192,20 +170,23 @@ export default async function handler(req, res) {
         ),
 
         db.query(
-            `SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, platform,
-                    SUM(spend)       AS amount,
+            `SELECT TO_CHAR(date, 'YYYY-MM-DD') AS date, platform, currency,
+                    SUM(spend) AS amount,
+                    ${EUR_SPLIT},
                     SUM(clicks)      AS clicks,
                     SUM(impressions) AS impressions
              FROM ad_daily_data
              ${baseWhere} AND currency IS NOT NULL
-             GROUP BY date, platform ORDER BY date ASC`,
+             GROUP BY date, platform, currency ORDER BY date ASC`,
             dateParams
         ),
 
         // Per-domain breakdown only makes sense (and is only queried) in combined mode.
         isCombined
             ? db.query(
-                `SELECT domain, currency, SUM(spend) AS amount
+                `SELECT domain, currency,
+                        SUM(spend) AS amount,
+                        ${EUR_SPLIT}
                  FROM ad_daily_data
                  WHERE organisation_id = $1 AND date BETWEEN $2 AND $3
                    AND platform NOT IN ('google_analytics', 'google_search_console') AND currency IS NOT NULL
@@ -220,14 +201,23 @@ export default async function handler(req, res) {
     // clicks, impressions} } map, so the chart components don't need to
     // pivot the data themselves (per-channel widgets derive cost-per-click
     // from spend/clicks here rather than a stored column).
+    // The daily query now groups by (date, platform, currency) — in combined
+    // view a (date, platform) pair can span multiple domains with different
+    // currencies. We accumulate across currency rows into one platform bucket.
     const dailyMap = new Map();
     for (const row of dailyRes.rows) {
         if (!dailyMap.has(row.date)) dailyMap.set(row.date, {});
-        dailyMap.get(row.date)[row.platform] = {
-            spend:       Number(row.amount || 0),
-            clicks:      Number(row.clicks || 0),
-            impressions: Number(row.impressions || 0),
-        };
+        const byPlatform = dailyMap.get(row.date);
+        if (!byPlatform[row.platform]) byPlatform[row.platform] = { spend: 0, clicks: 0, impressions: 0 };
+        // spend will be patched to the display currency below if needed;
+        // store native amount for now so the non-conversion path still works.
+        byPlatform[row.platform].spend       += Number(row.amount || 0);
+        byPlatform[row.platform].clicks      += Number(row.clicks || 0);
+        byPlatform[row.platform].impressions += Number(row.impressions || 0);
+        // stash the EUR split so the conversion block below can use it
+        byPlatform[row.platform]._eurFromNew    = (byPlatform[row.platform]._eurFromNew    || 0) + Number(row.eur_from_new    || 0);
+        byPlatform[row.platform]._nativeFromOld = (byPlatform[row.platform]._nativeFromOld || 0) + Number(row.native_from_old || 0);
+        byPlatform[row.platform]._currency      = row.currency; // last write wins (fine for single-domain)
     }
     const daily = Array.from(dailyMap.entries())
         .sort(([a], [b]) => a.localeCompare(b))
@@ -303,7 +293,17 @@ export default async function handler(req, res) {
 
     // Fetch FX rates only when conversion is needed (avoids the ECB fetch
     // entirely for callers that don't pass ?displayCurrency).
+    // ECB rates are only needed for the EUR → displayCurrency step.
+    // The EUR amounts for each row come from `spend_eur` (stored at sync time
+    // with that day's ECB rate) for new rows, and a runtime conversion for
+    // old rows that pre-date the spend_eur column.
     const rates = displayCurrency ? await getEcbRates() : null;
+
+    // Helper: compute the EUR amount from one DB row using the stored spend_eur
+    // (preferred, uses day-of rates) with a runtime fallback for old rows.
+    function toEur(r) {
+        return Number(r.eur_from_new || 0) + fx(r.native_from_old, r.currency, "EUR", rates || FALLBACK_RATES);
+    }
 
     // Aggregate spend/clicks/impressions into a single display-currency row.
     // When no displayCurrency is requested, keep the original per-currency rows
@@ -311,10 +311,12 @@ export default async function handler(req, res) {
     let spendByCurrency, platforms, byDomain;
 
     if (displayCurrency && rates) {
+        const displayRate = rates[displayCurrency] || 1;
+
         // Collapse all currency rows into one converted total.
         const agg = { amount: 0, clicks: 0, impressions: 0 };
         for (const r of currencyRes.rows) {
-            agg.amount      += fx(r.amount, r.currency, displayCurrency, rates);
+            agg.amount      += toEur(r) * displayRate;
             agg.clicks      += Number(r.clicks || 0);
             agg.impressions += Number(r.impressions || 0);
         }
@@ -327,7 +329,7 @@ export default async function handler(req, res) {
             const key = r.platform;
             if (!platMap.has(key)) platMap.set(key, { platform: key, currency: displayCurrency, amount: 0, clicks: 0, impressions: 0 });
             const entry = platMap.get(key);
-            entry.amount      += fx(r.amount, r.currency, displayCurrency, rates);
+            entry.amount      += toEur(r) * displayRate;
             entry.clicks      += Number(r.clicks || 0);
             entry.impressions += Number(r.impressions || 0);
         }
@@ -338,25 +340,30 @@ export default async function handler(req, res) {
             ? Object.values(
                 byDomainRes.rows.reduce((acc, r) => {
                     acc[r.domain] = acc[r.domain] || { domain: r.domain, currency: displayCurrency, amount: 0 };
-                    acc[r.domain].amount += fx(r.amount, r.currency, displayCurrency, rates);
+                    acc[r.domain].amount += toEur(r) * displayRate;
                     return acc;
                 }, {})
               )
             : null;
 
-        // Patch daily rows: convert each platform's spend in-place.
+        // Patch daily rows: convert each platform's stashed EUR split in-place.
         for (const day of daily) {
             for (const [platform, vals] of Object.entries(day.byPlatform)) {
-                // We don't know the native currency per-platform-day from the
-                // aggregated daily query, so look it up from the platforms map.
-                const conn = platformRes.rows.find(p => p.platform === platform);
+                const eurAmount = (vals._eurFromNew || 0) + fx(vals._nativeFromOld, vals._currency, "EUR", rates);
                 day.byPlatform[platform] = {
-                    ...vals,
-                    spend: fx(vals.spend, conn?.currency, displayCurrency, rates),
+                    spend:       eurAmount * displayRate,
+                    clicks:      vals.clicks,
+                    impressions: vals.impressions,
                 };
             }
         }
     } else {
+        // Clean up the internal _eur* fields before sending native-currency rows.
+        for (const day of daily) {
+            for (const [platform, vals] of Object.entries(day.byPlatform)) {
+                day.byPlatform[platform] = { spend: vals.spend, clicks: vals.clicks, impressions: vals.impressions };
+            }
+        }
         spendByCurrency = currencyRes.rows.map(r => ({
             currency: r.currency, amount: Number(r.amount || 0),
             clicks: Number(r.clicks || 0), impressions: Number(r.impressions || 0),
