@@ -63,6 +63,7 @@ import PageExperimentEditor from "./Pages/Analytics/PageExperimentEditor.js";
 import PageExperimentVariantDetail from "./Pages/Analytics/PageExperimentVariantDetail.js";
 import AnalyticsAdSpend from "./Pages/Analytics/AdSpend.js";
 import ConversionAttribution from "./Pages/Analytics/ConversionAttribution.js";
+import AnalyticsSettings from "./Pages/Analytics/AnalyticsSettings.js";
 import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import AnalyticsSearchConsole from "./Pages/Analytics/SearchConsole.js";
 import AnalyticsCohorts from "./Pages/Analytics/Cohorts.js";
@@ -369,6 +370,16 @@ export default function App() {
                                         <Route path="/analytics/ad-spend" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Spend" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsAdSpend />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/settings" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Settings" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsSettings />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/settings" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('starter') ? <TierGate minTier="starter" featureName="Analytics Settings" fullPage /> : <ErrorBoundary>
+                                                <AnalyticsSettings />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/attribution" exact>

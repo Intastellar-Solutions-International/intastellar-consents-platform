@@ -1,6 +1,6 @@
 import {
     analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
-    analyticsMarketingPath, analyticsAdSpendPath, analyticsAttributionPath, analyticsGoogleAnalyticsPath,
+    analyticsMarketingPath, analyticsAdSpendPath, analyticsAttributionPath, analyticsSettingsPath, analyticsGoogleAnalyticsPath,
     analyticsSearchConsolePath,
     analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
     analyticsUserFlowPath,
@@ -198,6 +198,14 @@ export function buildAnalyticsLinks(domain) {
             name: "New Report",
             path: analyticsReportBuilderPath(domain),
             indent: true,
+        },
+        {
+            divider: true,
+            label: "Configuration",
+        },
+        {
+            name: "Settings",
+            path: analyticsSettingsPath(domain),
         },
     ];
 }

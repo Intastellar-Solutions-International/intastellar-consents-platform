@@ -58,7 +58,7 @@ function setCors(req, res) {
     const origin = req.headers.origin || "";
     if (ALLOWED_ORIGINS.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET,PATCH,DELETE,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
@@ -175,6 +175,22 @@ export default async function handler(req, res) {
             .sort((a, b) => (a.domain || "").localeCompare(b.domain || "") || a.platform.localeCompare(b.platform));
 
         return res.status(200).json({ connections });
+    }
+
+    if (req.method === "PATCH") {
+        const { platform, domain } = req.query;
+        if (!platform || !domain) return res.status(400).json({ error: "?platform= and ?domain= required" });
+        let body = {};
+        try {
+            body = typeof req.body === "object" && req.body !== null ? req.body : JSON.parse(req.body || "{}");
+        } catch { return res.status(400).json({ error: "Invalid JSON" }); }
+        const { conversionAction } = body;
+        await db.query(
+            `UPDATE ad_platform_connections SET conversion_action=$1, updated_at=NOW()
+             WHERE organisation_id=$2 AND domain=$3 AND platform=$4`,
+            [conversionAction || null, orgId, domain, platform]
+        );
+        return res.status(200).json({ ok: true });
     }
 
     if (req.method === "DELETE") {
