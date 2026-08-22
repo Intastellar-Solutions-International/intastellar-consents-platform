@@ -117,13 +117,15 @@ export default async function handler(req, res) {
         // Query finalized connections
         const finalizedResult = domain
             ? await db.query(
-                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at,
+                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes,
+                        conversion_action, created_at, updated_at,
                         (access_token IS NOT NULL) AS has_token, NULL::uuid AS pending_id
                  FROM ad_platform_connections WHERE organisation_id=$1 AND domain=$2 ORDER BY platform`,
                 [orgId, domain]
             )
             : await db.query(
-                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes, created_at, updated_at,
+                `SELECT id, platform, domain, account_id, account_label, login_customer_id, account_currency, scopes,
+                        conversion_action, created_at, updated_at,
                         (access_token IS NOT NULL) AS has_token, NULL::uuid AS pending_id
                  FROM ad_platform_connections WHERE organisation_id=$1 ORDER BY domain, platform`,
                 [orgId]
