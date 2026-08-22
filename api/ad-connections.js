@@ -86,6 +86,11 @@ async function ensureTable(db) {
     `);
     await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS login_customer_id TEXT`).catch(() => {});
     await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS account_currency TEXT`).catch(() => {});
+    // conversion_action stores the platform-specific conversion identifier needed to push:
+    // Google Ads → resource name like "customers/123/conversionActions/456"
+    // Microsoft Ads → conversion goal name (string)
+    // Meta Ads → not needed (uses account_id as pixel_id + standard event names)
+    await db.query(`ALTER TABLE ad_platform_connections ADD COLUMN IF NOT EXISTS conversion_action TEXT`).catch(() => {});
     tableReady = true;
 }
 

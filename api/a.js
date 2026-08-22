@@ -322,6 +322,12 @@ async function ensureTables(db) {
         ALTER TABLE analytics_events ADD COLUMN IF NOT EXISTS page_host        VARCHAR(255);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS transaction_id VARCHAR(64);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS source         VARCHAR(10) NOT NULL DEFAULT 'manual';
+        ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS gclid          VARCHAR(512);
+        ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS msclkid        VARCHAR(512);
+        ALTER TABLE analytics_events        ADD COLUMN IF NOT EXISTS fbclid         VARCHAR(512);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS gclid          VARCHAR(512);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS msclkid        VARCHAR(512);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS fbclid         VARCHAR(512);
     `).catch(() => {});
     await db.query(`
         CREATE UNIQUE INDEX IF NOT EXISTS idx_ae_pageview_id ON analytics_events (pageview_id);
@@ -341,6 +347,30 @@ async function ensureTables(db) {
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_require_engaged      BOOLEAN  NOT NULL DEFAULT true;
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_pages     TEXT[]   NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_events    TEXT[]   NOT NULL DEFAULT '{}';
+    `).catch(() => {});
+    // Ad platform conversion push log — created on first custom event with click IDs.
+    // 'pending' rows are picked up by /api/ad-conversion-push and sent to the
+    // relevant ad platform. Status then becomes 'sent' or 'failed'.
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS analytics_conversion_pushes (
+            id                BIGSERIAL    PRIMARY KEY,
+            organisation_id   INTEGER      NOT NULL,
+            site_id           VARCHAR(32)  NOT NULL,
+            custom_event_id   BIGINT,
+            platform          VARCHAR(32)  NOT NULL,
+            click_id          VARCHAR(512),
+            event_name        VARCHAR(64),
+            value_usd         NUMERIC(12,4),
+            currency          VARCHAR(3),
+            conversion_time   TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            status            VARCHAR(16)  NOT NULL DEFAULT 'pending',
+            error_message     TEXT,
+            platform_response JSONB,
+            pushed_at         TIMESTAMPTZ,
+            created_at        TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_acp_org_status ON analytics_conversion_pushes (organisation_id, status);
+        CREATE INDEX IF NOT EXISTS idx_acp_created    ON analytics_conversion_pushes (created_at);
     `).catch(() => {});
     // dataLayer -> intaAnalytics.track() mapping rules. Deliberately only three
     // fixed, typed extraction slots (value/currency/transaction_id) rather than
@@ -546,6 +576,27 @@ function getVid(){
   }catch(e){return 0;}
 }
 var _iaNew=getVid();
+
+// Ad click IDs captured on landing and persisted for 90 days so they survive
+// across the session cookie and are still available when a conversion fires
+// later in the same journey. Only sent with full-consent events.
+function getClickIds(){
+  try{
+    var p=new URLSearchParams(location.search);
+    var g=p.get('gclid')||'',ms=p.get('msclkid')||'',fb=p.get('fbclid')||'';
+    if(g||ms||fb){
+      var val=encodeURIComponent(JSON.stringify({g:g,ms:ms,fb:fb}));
+      var base='_ia_cid='+val+';path=/;Max-Age=7776000;SameSite=Lax'+(location.protocol==='https:'?';Secure':'');
+      var d=rootDomain();
+      if(d){document.cookie=base+';domain='+d;if(document.cookie.indexOf('_ia_cid=')===-1)document.cookie=base;}
+      else document.cookie=base;
+    }
+    var stored=gc('_ia_cid');
+    if(stored){try{return JSON.parse(decodeURIComponent(stored));}catch(e){}}
+    return {};
+  }catch(e){return {};}
+}
+var _iaCid=getClickIds();
 
 function utmp(p){try{return new URLSearchParams(location.search).get(p)||'';}catch(e){return '';}}
 // The hostname the script is actually running on — distinct from the site's
@@ -918,7 +969,8 @@ function sendFull(c,final){
     cf:hasFun(c)?1:0,
     ca:hasAdv(c)?1:0,
     final:final?1:0,
-    nv:_iaNew
+    nv:_iaNew,
+    gc:_iaCid.g||undefined,mc:_iaCid.ms||undefined,fc:_iaCid.fb||undefined
   }));
 }
 
@@ -1022,7 +1074,10 @@ function track(name,opts){
     u:location.pathname,h:getHost(),dt:devType(),
     cs:full?1:0,
     cf:hasFun(c)?1:0,
-    ca:hasAdv(c)?1:0
+    ca:hasAdv(c)?1:0,
+    gc:full?(_iaCid.g||undefined):undefined,
+    mc:full?(_iaCid.ms||undefined):undefined,
+    fc:full?(_iaCid.fb||undefined):undefined
   }));
 }
 window.intaAnalytics={track:track};
@@ -1059,7 +1114,8 @@ export default async function handler(req, res) {
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, h: pageHost, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
             dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency,
-            txn: eventTransactionId, src: eventSource, tid: abTestId, vid: abVariantId, nv } = body;
+            txn: eventTransactionId, src: eventSource, tid: abTestId, vid: abVariantId, nv,
+            gc: gclid, mc: msclkid, fc: fbclid } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
         return res.status(400).end();
@@ -1134,11 +1190,17 @@ export default async function handler(req, res) {
             ? Math.round(eventValue * 100)
             : null;
 
-        await db.query(
+        const cleanGclid   = gclid   ? String(gclid).slice(0, 512)   : null;
+        const cleanMsclkid = msclkid ? String(msclkid).slice(0, 512) : null;
+        const cleanFbclid  = fbclid  ? String(fbclid).slice(0, 512)  : null;
+
+        const { rows: evRows } = await db.query(
             `INSERT INTO analytics_custom_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
-              name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)`,
+              name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
+              gclid, msclkid, fbclid)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
+             RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
                 isMinimal ? "minimal" : "full",
@@ -1148,8 +1210,33 @@ export default async function handler(req, res) {
                 eventTransactionId ? String(eventTransactionId).slice(0, 64) : null,
                 evPathname, pageHostSanitized, country, deviceType,
                 eventSource === "datalayer" ? "datalayer" : "manual",
+                cleanGclid, cleanMsclkid, cleanFbclid,
             ]
-        ).catch(() => {});
+        ).catch(() => ({ rows: [] }));
+
+        // Queue push records for any ad platform whose click ID arrived with this event.
+        // Processed asynchronously by /api/ad-conversion-push.
+        const evId = evRows[0]?.id ?? null;
+        if (!isMinimal && evId && (cleanGclid || cleanMsclkid || cleanFbclid)) {
+            const valueUsd = valueCents != null
+                ? (valueCents / 100).toFixed(4)
+                : null;
+            const cur = eventCurrency
+                ? String(eventCurrency).slice(0, 3).toUpperCase()
+                : null;
+            const pushRows = [];
+            if (cleanGclid)   pushRows.push(["google_ads",      cleanGclid]);
+            if (cleanMsclkid) pushRows.push(["microsoft_ads",   cleanMsclkid]);
+            if (cleanFbclid)  pushRows.push(["meta_ads",        cleanFbclid]);
+            for (const [platform, clickId] of pushRows) {
+                await db.query(
+                    `INSERT INTO analytics_conversion_pushes
+                     (organisation_id, site_id, custom_event_id, platform, click_id, event_name, value_usd, currency)
+                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
+                    [orgId, siteId, evId, platform, clickId, String(eventName).slice(0, 64), valueUsd, cur]
+                ).catch(() => {});
+            }
+        }
 
         return res.status(202).end();
     }
@@ -1287,8 +1374,9 @@ export default async function handler(req, res) {
               country_code, region, device_type,
               screen_width, screen_height, viewport_width, viewport_height,
               browser_family, os_family, language, timezone,
-              duration_sec, scroll_depth, pageview_id, is_new_visitor)
-             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30)
+              duration_sec, scroll_depth, pageview_id, is_new_visitor,
+              gclid, msclkid, fbclid)
+             VALUES ($1,$2,$3,'full',$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32,$33)
              ON CONFLICT (pageview_id) DO UPDATE SET
                duration_sec = EXCLUDED.duration_sec,
                scroll_depth = COALESCE(EXCLUDED.scroll_depth, analytics_events.scroll_depth)`,
@@ -1313,6 +1401,9 @@ export default async function handler(req, res) {
                 (sd != null && sd >= 0 && sd <= 100) ? Number(sd) : null, // $28 scroll_depth
                 pageviewId ? String(pageviewId).slice(0, 40) : null,      // $29 pageview_id
                 nv === 1 ? true : nv === 0 ? false : null,                // $30 is_new_visitor
+                gclid   ? String(gclid).slice(0, 512)   : null,           // $31 gclid
+                msclkid ? String(msclkid).slice(0, 512) : null,           // $32 msclkid
+                fbclid  ? String(fbclid).slice(0, 512)  : null,           // $33 fbclid
             ]
         ).catch(() => {});
     }
