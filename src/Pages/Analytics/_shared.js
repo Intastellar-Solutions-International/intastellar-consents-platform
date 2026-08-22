@@ -92,6 +92,10 @@ export function useAnalyticsReport(domain, fromIso, toIso, tick = 0, segment = n
  * `enabled` should be false when no ad metrics are selected — avoids a
  * network round-trip when the report only uses first-party analytics data.
  */
+function readStoredAdCurrency() {
+    try { return localStorage.getItem("ia_ad_display_currency") || "EUR"; } catch { return "EUR"; }
+}
+
 export function useAdSpendReport(domain, fromIso, toIso, enabled = true) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
@@ -100,7 +104,8 @@ export function useAdSpendReport(domain, fromIso, toIso, enabled = true) {
         if (!enabled || !domain) { setData(null); return; }
         let ignore = false;
         setLoading(true);
-        const qs = new URLSearchParams({ from: fromIso, to: toIso }).toString();
+        const displayCurrency = readStoredAdCurrency();
+        const qs = new URLSearchParams({ from: fromIso, to: toIso, displayCurrency }).toString();
         fetch(`${ScannerHost}/api/ad-spend-report?${qs}`, {
             headers: { ...authHeaders(), Domains: domain },
         })

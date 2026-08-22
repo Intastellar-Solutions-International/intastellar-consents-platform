@@ -21,34 +21,36 @@ const PLATFORM_LABELS = {
     microsoft_ads: "Microsoft Ads",
 };
 
-const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr", PLN: "zł" };
+const CURRENCY_SYMBOLS = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF", DKK: "kr", SEK: "kr", NOK: "kr", PLN: "zł", AUD: "A$", CAD: "C$", SGD: "S$" };
+const DISPLAY_CURRENCIES = ["EUR", "USD", "GBP", "DKK", "SEK", "NOK", "CHF"];
+const CURRENCY_PREFS_KEY = "ia_ad_display_currency";
 
 function formatMoney(n, currency) {
     const symbol = CURRENCY_SYMBOLS[currency] || (currency ? currency + " " : "");
-    return `${symbol} ${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${symbol}${Number(n || 0).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function readStoredCurrency() {
+    try { return localStorage.getItem(CURRENCY_PREFS_KEY) || "EUR"; } catch { return "EUR"; }
+}
+function storeDisplayCurrency(c) {
+    try { localStorage.setItem(CURRENCY_PREFS_KEY, c); } catch {}
 }
 
 function platformLabel(id) {
     return PLATFORM_LABELS[id] || id;
 }
 
-function useAdSpendReport(domainsHeaderValue, fromIso, toIso, tick = 0) {
+function useAdSpendReport(domainsHeaderValue, fromIso, toIso, displayCurrency, tick = 0) {
     const [data,    setData]    = useState(null);
     const [loading, setLoading] = useState(false);
     const [error,   setError]   = useState(null);
 
     useEffect(() => {
-        // On first mount, useSyncDomainFromRoute's effect (correcting the
-        // domain from the URL) and this effect both fire in the same tick,
-        // but this fetch still closes over the domain value from the render
-        // that scheduled it — one tick before the correction lands. That
-        // fires two requests (a stale "combined" one, then the real-domain
-        // one); without this guard, whichever response arrives last wins
-        // and can silently overwrite the correct data with the stale one.
         let ignore = false;
         setLoading(true);
         setError(null);
-        const qs = new URLSearchParams({ from: fromIso, to: toIso }).toString();
+        const qs = new URLSearchParams({ from: fromIso, to: toIso, ...(displayCurrency ? { displayCurrency } : {}) }).toString();
         fetch(`${ScannerHost}/api/ad-spend-report?${qs}`, {
             headers: { ...authHeaders(), Domains: domainsHeaderValue },
         })
@@ -60,7 +62,7 @@ function useAdSpendReport(domainsHeaderValue, fromIso, toIso, tick = 0) {
             .catch(() => { if (!ignore) setError("Could not load ad spend data."); })
             .finally(() => { if (!ignore) setLoading(false); });
         return () => { ignore = true; };
-    }, [domainsHeaderValue, fromIso, toIso, tick]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [domainsHeaderValue, fromIso, toIso, displayCurrency, tick]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return { data, loading, error };
 }
@@ -196,8 +198,11 @@ export default function AdSpend() {
     const fromIso = useMemo(() => toIsoDate(fromDate), [fromDate]);
     const toIso   = useMemo(() => toIsoDate(toDate),   [toDate]);
 
+    const [displayCurrency, setDisplayCurrency] = useState(readStoredCurrency);
+    const changeCurrency = useCallback(c => { storeDisplayCurrency(c); setDisplayCurrency(c); }, []);
+
     const [tick, setTick] = useState(0);
-    const { data, loading, error } = useAdSpendReport(domainsHeaderValue, fromIso, toIso, tick);
+    const { data, loading, error } = useAdSpendReport(domainsHeaderValue, fromIso, toIso, displayCurrency, tick);
 
     const maxPlatform = useMemo(() => Math.max(...(data?.platforms || []).map(p => p.amount), 1), [data]);
     const maxDomain   = useMemo(() => Math.max(...(data?.byDomain  || []).map(d => d.amount), 1), [data]);
@@ -243,12 +248,29 @@ export default function AdSpend() {
                     {error && <p className="sa-notice sa-notice--error">{error}</p>}
                     {!loading && data?.noConnections && <AdSpendSetupCard domain={domainLabel} />}
 
-                    {showData && !loading && domainLabel && (
-                        <div className="sa-as-sync-bar">
-                            <button className="sa-as-sync-btn" onClick={handleSync} disabled={syncing}>
-                                {syncing ? "Syncing…" : "Sync data now"}
-                            </button>
-                            {syncMsg && <span className="sa-as-sync-msg">{syncMsg}</span>}
+                    {showData && (
+                        <div className="sa-as-toolbar">
+                            {/* Currency picker */}
+                            <div className="sa-currency-picker">
+                                {DISPLAY_CURRENCIES.map(c => (
+                                    <button
+                                        key={c}
+                                        className={"sa-currency-btn" + (displayCurrency === c ? " sa-currency-btn--active" : "")}
+                                        onClick={() => changeCurrency(c)}
+                                    >
+                                        {c}
+                                    </button>
+                                ))}
+                            </div>
+                            {/* Sync button (domain-scoped only) */}
+                            {domainLabel && (
+                                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                    <button className="sa-as-sync-btn" onClick={handleSync} disabled={syncing}>
+                                        {syncing ? "Syncing…" : "Sync data now"}
+                                    </button>
+                                    {syncMsg && <span className="sa-as-sync-msg">{syncMsg}</span>}
+                                </div>
+                            )}
                         </div>
                     )}
 

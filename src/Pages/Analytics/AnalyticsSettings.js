@@ -1,11 +1,13 @@
-const { useState, useEffect, useCallback } = React;
+const { useState, useEffect, useCallback, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
 import "./Analytics.css";
 
-const AD_CONNECTIONS_URL = `${ScannerHost}/api/ad-connections`;
-const SITE_URL           = `${ScannerHost}/api/analytics-site`;
+const AD_CONNECTIONS_URL  = `${ScannerHost}/api/ad-connections`;
+const SITE_URL            = `${ScannerHost}/api/analytics-site`;
+const DISPLAY_CURRENCIES  = ["EUR", "USD", "GBP", "DKK", "SEK", "NOK", "CHF"];
+const CURRENCY_PREFS_KEY  = "ia_ad_display_currency";
 
 const PLATFORM_LABELS = {
     google_ads:    "Google Ads",
@@ -297,6 +299,42 @@ function SiteConfigSection({ domain }) {
     );
 }
 
+// ── Display currency section ──────────────────────────────────────────────────
+
+function DisplayCurrencySection() {
+    const [currency, setCurrency] = useState(() => {
+        try { return localStorage.getItem(CURRENCY_PREFS_KEY) || "EUR"; } catch { return "EUR"; }
+    });
+
+    function pick(c) {
+        setCurrency(c);
+        try { localStorage.setItem(CURRENCY_PREFS_KEY, c); } catch {}
+    }
+
+    return (
+        <div>
+            <p style={{ fontSize: 13, color: "rgba(180,180,180,0.65)", marginBottom: 14, lineHeight: 1.5 }}>
+                All ad spend figures across Google Ads, Meta, and Microsoft Ads will be converted
+                to this currency using ECB rates fetched daily. The preference is stored per-browser.
+            </p>
+            <div className="sa-currency-picker">
+                {DISPLAY_CURRENCIES.map(c => (
+                    <button
+                        key={c}
+                        className={"sa-currency-btn" + (currency === c ? " sa-currency-btn--active" : "")}
+                        onClick={() => pick(c)}
+                    >
+                        {c}
+                    </button>
+                ))}
+            </div>
+            <p style={{ fontSize: 11, color: "rgba(130,130,130,0.45)", marginTop: 10 }}>
+                Rates sourced from the European Central Bank. EUR is the base (no conversion).
+            </p>
+        </div>
+    );
+}
+
 // ── How attribution works ─────────────────────────────────────────────────────
 
 function AttributionGuide() {
@@ -361,6 +399,10 @@ export default function AnalyticsSettings() {
 
                     <Section title="Site Configuration">
                         <SiteConfigSection domain={domain} />
+                    </Section>
+
+                    <Section title="Display Currency">
+                        <DisplayCurrencySection />
                     </Section>
 
                     <Section title="Conversion Actions">
