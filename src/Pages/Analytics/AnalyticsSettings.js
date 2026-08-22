@@ -4,8 +4,9 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome } from "./_shared.js";
 import "./Analytics.css";
 
-const AD_CONNECTIONS_URL  = `${ScannerHost}/api/ad-connections`;
-const SITE_URL            = `${ScannerHost}/api/analytics-site`;
+const AD_CONNECTIONS_URL      = `${ScannerHost}/api/ad-connections`;
+const AD_CONV_ACTIONS_URL     = `${ScannerHost}/api/ad-conversion-actions`;
+const SITE_URL                = `${ScannerHost}/api/analytics-site`;
 const DISPLAY_CURRENCIES  = ["EUR", "USD", "GBP", "DKK", "SEK", "NOK", "CHF"];
 const CURRENCY_PREFS_KEY  = "ia_ad_display_currency";
 
@@ -17,7 +18,6 @@ const PLATFORM_LABELS = {
 };
 
 const PLATFORM_HINTS = {
-    google_ads:    "Resource name from Google Ads → Tools → Conversions, e.g. customers/1234567890/conversionActions/987654321",
     microsoft_ads: "Goal name from Microsoft Advertising → Tools → Conversion goals, e.g. Purchase",
     meta_ads:      "Not required — Meta uses the event name (purchase, lead, etc.) mapped to standard events automatically.",
     linkedin_ads:  "Conversion ID from LinkedIn Campaign Manager → Analyze → Conversion tracking.",
@@ -51,6 +51,116 @@ function Section({ title, children }) {
 }
 
 // ── Conversion actions section ────────────────────────────────────────────────
+
+function GoogleConversionActionPicker({ domain, draft, onChange }) {
+    const [actions,  setActions]  = useState(null);  // null = not loaded yet
+    const [loading,  setLoading]  = useState(false);
+    const [error,    setError]    = useState(null);
+    const [expanded, setExpanded] = useState(false);
+
+    const load = useCallback(() => {
+        if (!domain || actions !== null) return;
+        setLoading(true);
+        setError(null);
+        fetch(
+            `${AD_CONV_ACTIONS_URL}?domain=${encodeURIComponent(domain)}&platform=google_ads`,
+            { headers: authHeaders() }
+        )
+            .then(r => r.json())
+            .then(d => {
+                if (d.error) throw new Error(d.error);
+                setActions(d.actions || []);
+                setExpanded(true);
+            })
+            .catch(e => { setError(e.message); setActions([]); })
+            .finally(() => setLoading(false));
+    }, [domain, actions]);
+
+    // Currently-saved value is a full resource name — extract the human name
+    // by matching against the fetched list, or fall back to showing the raw
+    // resource name string if the list hasn't loaded.
+    const selectedName = useMemo(() => {
+        if (!draft) return null;
+        if (!actions) return draft; // show raw until list loads
+        const match = actions.find(a => a.resourceName === draft);
+        return match ? match.name : draft;
+    }, [draft, actions]);
+
+    return (
+        <Field label="Conversion action">
+            {/* Collapsed state — shows currently saved value + a button to pick */}
+            {!expanded ? (
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <div style={{
+                        flex: 1, padding: "8px 10px", borderRadius: 6,
+                        background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+                        fontSize: 13, color: draft ? "rgba(210,210,210,0.9)" : "rgba(130,130,130,0.4)",
+                        minHeight: 36, display: "flex", alignItems: "center",
+                    }}>
+                        {selectedName || "Not set"}
+                    </div>
+                    <button
+                        className="sa-btn"
+                        onClick={load}
+                        disabled={loading}
+                        style={{ whiteSpace: "nowrap" }}
+                    >
+                        {loading ? "Loading…" : "Choose"}
+                    </button>
+                </div>
+            ) : (
+                /* Expanded picker — list of conversion actions as radio-style rows */
+                <div style={{ border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, overflow: "hidden" }}>
+                    {(actions || []).length === 0 ? (
+                        <div style={{ padding: "12px 14px", fontSize: 13, color: "rgba(130,130,130,0.5)" }}>
+                            No conversion actions found in this account.
+                        </div>
+                    ) : (actions || []).map(a => {
+                        const isSelected = draft === a.resourceName;
+                        return (
+                            <button
+                                key={a.resourceName}
+                                onClick={() => { onChange(a.resourceName); setExpanded(false); }}
+                                style={{
+                                    display: "block", width: "100%", textAlign: "left",
+                                    padding: "10px 14px", border: "none", borderBottom: "1px solid rgba(255,255,255,0.06)",
+                                    background: isSelected ? "rgba(192,159,83,0.1)" : "rgba(255,255,255,0.02)",
+                                    cursor: "pointer", transition: "background 0.15s",
+                                }}
+                            >
+                                <div style={{ fontWeight: isSelected ? 600 : 400, fontSize: 13, color: isSelected ? "rgba(192,159,83,0.95)" : "rgba(210,210,210,0.85)" }}>
+                                    {a.name}
+                                </div>
+                                <div style={{ fontSize: 11, color: "rgba(130,130,130,0.45)", marginTop: 2, fontFamily: "monospace" }}>
+                                    {a.type ? a.type.replace(/_/g, " ").toLowerCase() : ""}
+                                </div>
+                            </button>
+                        );
+                    })}
+                    <button
+                        onClick={() => setExpanded(false)}
+                        style={{
+                            display: "block", width: "100%", textAlign: "center",
+                            padding: "8px", border: "none",
+                            background: "rgba(255,255,255,0.02)", cursor: "pointer",
+                            fontSize: 12, color: "rgba(130,130,130,0.5)",
+                        }}
+                    >
+                        Cancel
+                    </button>
+                </div>
+            )}
+            {error && (
+                <p style={{ fontSize: 11, color: "rgba(239,68,68,0.75)", marginTop: 6 }}>
+                    Could not load conversion actions: {error}
+                </p>
+            )}
+            <p style={{ fontSize: 11, color: "rgba(130,130,130,0.45)", marginTop: 6, lineHeight: 1.5 }}>
+                Pulled live from your Google Ads account. The full resource name is stored and used when pushing conversions.
+            </p>
+        </Field>
+    );
+}
 
 function ConversionActionsSection({ domain }) {
     const [connections, setConnections] = useState([]);
@@ -117,6 +227,7 @@ function ConversionActionsSection({ domain }) {
             {connections.map(conn => {
                 const platform = conn.platform;
                 const isMetaLike = platform === "meta_ads";
+                const isGoogle   = platform === "google_ads";
                 return (
                     <div key={platform} style={{
                         padding: "14px 16px", borderRadius: 8,
@@ -140,7 +251,28 @@ function ConversionActionsSection({ domain }) {
                             <p style={{ fontSize: 12, color: "rgba(130,130,130,0.55)", lineHeight: 1.5, margin: 0 }}>
                                 {PLATFORM_HINTS[platform]}
                             </p>
+                        ) : isGoogle ? (
+                            /* Google Ads: live picker fetched from the API */
+                            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                                <GoogleConversionActionPicker
+                                    domain={domain}
+                                    draft={drafts[platform] || ""}
+                                    onChange={val => setDrafts(d => ({ ...d, [platform]: val }))}
+                                />
+                                {drafts[platform] !== (conn.conversion_action || "") && (
+                                    <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                                        <button
+                                            className="sa-btn"
+                                            onClick={() => save(platform)}
+                                            disabled={saving[platform]}
+                                        >
+                                            {saving[platform] ? "Saving…" : saved[platform] ? "Saved!" : "Save"}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         ) : (
+                            /* Microsoft Ads etc: plain text input */
                             <Field label="Conversion action" hint={PLATFORM_HINTS[platform]}>
                                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                                     <input
@@ -151,13 +283,8 @@ function ConversionActionsSection({ domain }) {
                                             background: "rgba(255,255,255,0.05)",
                                             border: "1px solid rgba(255,255,255,0.1)",
                                             color: "rgba(210,210,210,0.9)", fontSize: 13,
-                                            fontFamily: "monospace",
                                         }}
-                                        placeholder={
-                                            platform === "google_ads"    ? "customers/123.../conversionActions/456..." :
-                                            platform === "microsoft_ads" ? "Purchase" :
-                                            "Conversion action"
-                                        }
+                                        placeholder="Purchase"
                                         value={drafts[platform] || ""}
                                         onChange={e => setDrafts(d => ({ ...d, [platform]: e.target.value }))}
                                     />
@@ -369,7 +496,7 @@ function AttributionGuide() {
                 background: "rgba(192,159,83,0.06)", border: "1px solid rgba(192,159,83,0.18)",
                 fontSize: 12, color: "rgba(192,159,83,0.75)", lineHeight: 1.5,
             }}>
-                <strong style={{ color: "rgba(192,159,83,0.9)" }}>Google Ads note:</strong> You must set the Conversion action resource name above for pushes to work. Find it in Google Ads → Tools & Settings → Measurement → Conversions → click a conversion → the URL contains the conversion action ID, or use the Google Ads API to list conversion actions.
+                <strong style={{ color: "rgba(192,159,83,0.9)" }}>Google Ads note:</strong> You must select a Conversion action above for pushes to work. Click <em>Choose</em> next to your Google Ads connection — it will pull the list live from your account so you can pick by name.
             </div>
         </div>
     );

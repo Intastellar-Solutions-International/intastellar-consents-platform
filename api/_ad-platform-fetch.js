@@ -183,6 +183,54 @@ function collectUtmSourcesFrom(resource, into) {
     }
 }
 
+export async function fetchGoogleAdsConversionActions(conn) {
+    if (!conn.account_id) throw new Error("No Google Ads customer ID linked.");
+    const customerId = conn.account_id.replace(/\D/g, "");
+    const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+    const headers = {
+        Authorization: `Bearer ${conn.access_token}`,
+        "developer-token": devToken,
+        "Content-Type": "application/json",
+    };
+    if (conn.login_customer_id) headers["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
+
+    const resp = await fetch(
+        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
+        {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+                query: `
+                    SELECT conversion_action.resource_name,
+                           conversion_action.name,
+                           conversion_action.status,
+                           conversion_action.type
+                    FROM conversion_action
+                    WHERE conversion_action.status != 'REMOVED'
+                    ORDER BY conversion_action.name ASC
+                `,
+            }),
+        }
+    );
+    if (!resp.ok) {
+        const raw = await resp.text().catch(() => "");
+        let err = {};
+        try { err = JSON.parse(raw); } catch {}
+        throw new Error(err?.error?.message || `Google Ads API error (${resp.status}): ${raw.slice(0, 200)}`);
+    }
+    const data = await resp.json();
+    return (data.results || [])
+        .map(row => {
+            const ca = row.conversionAction || row.conversion_action || {};
+            return {
+                resourceName: ca.resourceName || ca.resource_name || "",
+                name:         ca.name         || "",
+                type:         ca.type         || "",
+            };
+        })
+        .filter(a => a.resourceName && a.name);
+}
+
 export async function fetchGoogleAdsUtmSources(conn) {
     if (!conn.account_id) throw new Error("No Google Ads customer ID linked.");
     const customerId = conn.account_id.replace(/\D/g, "");
