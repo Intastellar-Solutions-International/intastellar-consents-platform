@@ -143,12 +143,20 @@ function detectBot(ua) {
     return null;
 }
 
-// Local/dev-machine traffic — a site owner (or their team) previewing the
-// site on localhost, a LAN dev server, or a Bonjour/mDNS ".local" hostname.
+// Local/dev-machine traffic and known Google infrastructure renderers.
 // Checked against the hostname the embed actually ran on (`pageHostSanitized`,
 // i.e. location.hostname — never includes a port), not the site's registered
 // domain, so this catches "example.com" being previewed at localhost:3000
 // during development without needing any site-level configuration.
+//
+// Google infrastructure hosts are dropped here rather than in detectBot()
+// because they don't carry a bot-identifying UA — GTM's MSR uses a normal
+// desktop Chrome UA so UA-based detection can't distinguish them.
+const GOOGLE_INFRA_HOSTS = new Set([
+    // GTM Mobile Site Renderer — used by GTM server-side preview and Tag
+    // Assistant to pre-render pages for debugging. Not a real visitor.
+    "gtm-msr.appspot.com",
+]);
 function isDevOrLocalHost(host) {
     if (!host) return false;
     if (host === "localhost" || host === "0.0.0.0" || host === "::1") return true;
@@ -157,6 +165,7 @@ function isDevOrLocalHost(host) {
     if (/^10\./.test(host)) return true;            // private LAN
     if (/^192\.168\./.test(host)) return true;      // private LAN
     if (/^172\.(1[6-9]|2\d|3[01])\./.test(host)) return true; // private LAN
+    if (GOOGLE_INFRA_HOSTS.has(host)) return true;
     return false;
 }
 
