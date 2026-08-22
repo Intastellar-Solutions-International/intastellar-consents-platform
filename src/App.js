@@ -62,6 +62,7 @@ import PageExperiments from "./Pages/Analytics/PageExperiments.js";
 import PageExperimentEditor from "./Pages/Analytics/PageExperimentEditor.js";
 import PageExperimentVariantDetail from "./Pages/Analytics/PageExperimentVariantDetail.js";
 import AnalyticsAdSpend from "./Pages/Analytics/AdSpend.js";
+import ConversionAttribution from "./Pages/Analytics/ConversionAttribution.js";
 import AnalyticsGoogleAnalytics from "./Pages/Analytics/GoogleAnalytics.js";
 import AnalyticsSearchConsole from "./Pages/Analytics/SearchConsole.js";
 import AnalyticsCohorts from "./Pages/Analytics/Cohorts.js";
@@ -368,6 +369,16 @@ export default function App() {
                                         <Route path="/analytics/ad-spend" exact>
                                             {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Ad Spend" fullPage /> : <ErrorBoundary>
                                                 <AnalyticsAdSpend />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/:handle/attribution" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Conversion Attribution" fullPage /> : <ErrorBoundary>
+                                                <ConversionAttribution />
+                                            </ErrorBoundary>}
+                                        </Route>
+                                        <Route path="/analytics/attribution" exact>
+                                            {subscriptionLoading ? <LoadingSpinner /> : needsPayment ? <SubscriptionPlans /> : !canAccess('growth') ? <TierGate minTier="growth" featureName="Conversion Attribution" fullPage /> : <ErrorBoundary>
+                                                <ConversionAttribution />
                                             </ErrorBoundary>}
                                         </Route>
                                         <Route path="/analytics/:handle/google-analytics" exact>

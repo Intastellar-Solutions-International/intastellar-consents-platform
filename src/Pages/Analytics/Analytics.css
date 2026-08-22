@@ -4635,3 +4635,45 @@ details[open] .ca-context-summary::before { content: "▾"; }
     line-height: 1.5;
     margin: 0 0 10px;
 }
+
+/* ── Conversion Attribution table ─────────────────────────────────────────── */
+
+.sa-attr-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.sa-attr-th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(130,130,130,0.6);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    white-space: nowrap;
+}
+
+.sa-attr-td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: rgba(210,210,210,0.85);
+    vertical-align: middle;
+}
+
+.sa-attr-row:last-child .sa-attr-td {
+    border-bottom: none;
+}
+
+.sa-attr-row:hover .sa-attr-td {
+    background: rgba(255,255,255,0.02);
+}
+
+/* ── Small action button variant ─────────────────────────────────────────── */
+
+.sa-btn--sm {
+    padding: 3px 10px;
+    font-size: 0.75rem;
+}

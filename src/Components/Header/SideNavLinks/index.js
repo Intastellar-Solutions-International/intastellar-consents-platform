@@ -1,6 +1,6 @@
 import {
     analyticsAudiencePath, analyticsAcquisitionPath, analyticsConsentPath,
-    analyticsMarketingPath, analyticsAdSpendPath, analyticsGoogleAnalyticsPath,
+    analyticsMarketingPath, analyticsAdSpendPath, analyticsAttributionPath, analyticsGoogleAnalyticsPath,
     analyticsSearchConsolePath,
     analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
     analyticsUserFlowPath,
@@ -117,6 +117,10 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Ad Spend",
             path: analyticsAdSpendPath(domain),
+        },
+        {
+            name: "Attribution",
+            path: analyticsAttributionPath(domain),
         },
         {
             name: "Google Analytics",

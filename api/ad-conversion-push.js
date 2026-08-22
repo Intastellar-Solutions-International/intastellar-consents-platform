@@ -272,7 +272,7 @@ async function dispatchPush(db, connection, push) {
     if (!token) throw new Error("Could not obtain a valid access token");
 
     switch (connection.platform) {
-        case "google_ads":    return await pushGoogleAds(db, token, push);
+        case "google_ads":    return await pushGoogleAds(connection, token, push);
         case "meta_ads":      return await pushMetaAds(connection, token, push);
         case "microsoft_ads": return await pushMicrosoftAds(connection, token, push);
         default: throw new Error(`Unsupported platform: ${connection.platform}`);
