@@ -8,7 +8,7 @@ import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, toIsoDate, pctChange,
-    IndustryBenchmarkNote, formatPercent, SegmentFilter,
+    IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
 } from "./_shared.js";
 import {
     IconBarChart,
@@ -216,59 +216,84 @@ function CopyButton({ text }) {
     );
 }
 
-function DailyChart({ daily }) {
-    const W = 600, H = 160, PAD = { t: 10, r: 8, b: 28, l: 36 };
-    const cW = W - PAD.l - PAD.r;
-    const cH = H - PAD.t - PAD.b;
+function smoothPath(pts) {
+    if (!pts.length) return '';
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+        const x0 = pts[i - 1][0], y0 = pts[i - 1][1];
+        const x1 = pts[i][0],     y1 = pts[i][1];
+        const mx = (x0 + x1) / 2;
+        d += ` C${mx},${y0} ${mx},${y1} ${x1},${y1}`;
+    }
+    return d;
+}
+
+function AreaChart({ daily }) {
+    const W = 800, H = 182;
+    const PAD = { t: 14, r: 18, b: 34, l: 46 };
+    const cW = W - PAD.l - PAD.r, cH = H - PAD.t - PAD.b;
 
     if (!daily?.length) return <div className="sa-chart sa-chart--empty">No data for this period</div>;
 
     const maxVal = Math.max(...daily.map(d => d.minimal + d.full), 1);
-    const barW   = Math.max(2, Math.floor(cW / daily.length) - 2);
+    const n = daily.length;
+    const xOf = i => PAD.l + (n === 1 ? cW / 2 : (i / (n - 1)) * cW);
+    const yOf = v => PAD.t + cH - (v / maxVal) * cH;
+    const base = PAD.t + cH;
+
+    const totalPts = daily.map((d, i) => [xOf(i), yOf(d.minimal + d.full)]);
+    const fullPts  = daily.map((d, i) => [xOf(i), yOf(d.full)]);
+
+    const totalArea = smoothPath(totalPts)
+        + ` L${totalPts[n - 1][0]},${base} L${PAD.l},${base} Z`;
+    const fullArea = smoothPath(fullPts)
+        + ` L${fullPts[n - 1][0]},${base} L${PAD.l},${base} Z`;
+
     const yTicks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(maxVal * f));
+    const fmtN = v => v >= 10000 ? (v / 1000).toFixed(0) + 'k' : v >= 1000 ? (v / 1000).toFixed(1) + 'k' : String(v);
+    const labelIdxs = n <= 1 ? [0] :
+        [0, Math.round(n / 4), Math.round(n / 2), Math.round((n * 3) / 4), n - 1]
+        .filter((v, idx, a) => a.indexOf(v) === idx);
 
     return (
-        <div className="sa-chart">
+        <div className="sa-area-chart">
             <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", display: "block" }}>
+                <defs>
+                    <linearGradient id="sa-grad-total" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"   stopColor="rgba(249,191,64,0.45)" />
+                        <stop offset="100%" stopColor="rgba(249,191,64,0.02)" />
+                    </linearGradient>
+                    <linearGradient id="sa-grad-full" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"   stopColor="rgba(74,222,128,0.65)" />
+                        <stop offset="100%" stopColor="rgba(74,222,128,0.04)" />
+                    </linearGradient>
+                </defs>
+
                 {yTicks.map((v, i) => {
-                    const y = PAD.t + cH - (v / maxVal) * cH;
+                    const y = yOf(v);
                     return (
                         <g key={i}>
                             <line x1={PAD.l} y1={y} x2={W - PAD.r} y2={y}
-                                stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                            <text x={PAD.l - 4} y={y + 4} textAnchor="end"
-                                fontSize="9" fill="rgba(160,160,160,0.6)">{v}</text>
-                        </g>
-                    );
-                })}
-
-                {daily.map((d, i) => {
-                    const x  = PAD.l + (i / daily.length) * cW + (cW / daily.length - barW) / 2;
-                    const hF = (d.full    / maxVal) * cH;
-                    const hM = (d.minimal / maxVal) * cH;
-                    return (
-                        <g key={d.date}>
-                            <rect x={x} y={PAD.t + cH - hM - hF} width={barW} height={hF}
-                                fill="rgba(74,222,128,0.75)" rx="1" />
-                            <rect x={x} y={PAD.t + cH - hM}      width={barW} height={hM}
-                                fill="rgba(192,159,83,0.55)"  rx="1" />
-                        </g>
-                    );
-                })}
-
-                {[0, Math.floor(daily.length / 2), daily.length - 1]
-                    .filter((v, i, a) => a.indexOf(v) === i && v < daily.length)
-                    .map(i => {
-                        const d = daily[i];
-                        const x = PAD.l + (i / daily.length) * cW + (cW / daily.length) / 2;
-                        return (
-                            <text key={d.date} x={x} y={H - PAD.b + 14}
-                                textAnchor="middle" fontSize="9" fill="rgba(160,160,160,0.7)">
-                                {d.date.slice(5)}
+                                stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                            <text x={PAD.l - 6} y={y + 4} textAnchor="end"
+                                fontSize="9" fill="rgba(150,150,175,0.5)">
+                                {fmtN(v)}
                             </text>
-                        );
-                    })
-                }
+                        </g>
+                    );
+                })}
+
+                <path d={totalArea} fill="url(#sa-grad-total)" />
+                <path d={fullArea}  fill="url(#sa-grad-full)" />
+                <path d={smoothPath(totalPts)} fill="none" stroke="rgba(249,191,64,0.55)" strokeWidth="1.5" />
+                <path d={smoothPath(fullPts)}  fill="none" stroke="rgba(74,222,128,0.85)"  strokeWidth="1.5" />
+
+                {labelIdxs.map(i => (
+                    <text key={daily[i].date} x={xOf(i)} y={H - PAD.b + 18}
+                        textAnchor="middle" fontSize="9" fill="rgba(150,150,175,0.55)">
+                        {daily[i].date.slice(5)}
+                    </text>
+                ))}
             </svg>
             <div className="sa-chart__legend">
                 <span className="sa-chart__legend-dot sa-chart__legend-dot--full" />
@@ -446,6 +471,8 @@ export default function SiteAnalytics() {
             <div className="dashboard-content">
                 <div className="sa-page">
 
+                    <AnalyticsSubNav domain={domain} />
+
                     {data && !data.noSiteKey && (
                         <div className="sa-meta-row">
                             <span className="sa-site-key-badge">
@@ -488,6 +515,7 @@ export default function SiteAnalytics() {
                                 label="Total events"
                                 value={data.totals.total.toLocaleString("de-DE")}
                                 sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
+                                variant="blue"
                                 trend={trendEvents}
                             />
                             <KpiCard className="sa-ga-kpi2"
@@ -495,6 +523,7 @@ export default function SiteAnalytics() {
                                 label="Unique sessions"
                                 value={data.totals.uniqueSessions.toLocaleString("de-DE")}
                                 sub="consent-gated sessions only"
+                                variant="purple"
                                 trend={trendSessions}
                             />
                             <KpiCard className="sa-ga-kpi3"
@@ -502,7 +531,7 @@ export default function SiteAnalytics() {
                                 label="Consent rate"
                                 value={formatPercent(data.totals.consentRate)}
                                 sub="statisticCookies accepted"
-                                variant={data.totals.consentRate < 20 ? "warn" : null}
+                                variant={data.totals.consentRate < 20 ? "warn" : "live"}
                                 trend={trendConsent}
                             >
                                 <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={data.totals.consentRate} />
@@ -512,6 +541,7 @@ export default function SiteAnalytics() {
                                 label="Countries"
                                 value={data.countries.length}
                                 sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
+                                variant="teal"
                             />
                             {showData && data.totals.qualityLeads !== null && (
                                 <KpiCard
@@ -528,7 +558,7 @@ export default function SiteAnalytics() {
                                 <h3 className="sa-chart-section__title">
                                     <IconTrendingUp className="sa-icon" /> Events per day
                                 </h3>
-                                <DailyChart daily={data.daily} />
+                                <AreaChart daily={data.daily} />
                             </div>
 
                             <LivePanel domain={domain} className="sa-ga-live" engagedUsers={data.totals.engagedUsers} />

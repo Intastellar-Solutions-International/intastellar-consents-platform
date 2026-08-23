@@ -1,9 +1,16 @@
 const { useState, useEffect, useContext, useMemo } = React;
-const useParams = window.ReactRouterDOM.useParams;
+const useParams  = window.ReactRouterDOM.useParams;
+const Link       = window.ReactRouterDOM.Link;
+const useLocation = window.ReactRouterDOM.useLocation;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
 import { DomainContext } from "../../App.js";
-import { useSyncDomainFromRoute, isCombinedOrClearDomain } from "../../Functions/domainPathSegments.js";
+import {
+    useSyncDomainFromRoute, isCombinedOrClearDomain,
+    analyticsPath, analyticsAudiencePath, analyticsAcquisitionPath,
+    analyticsConsentPath, analyticsAdSpendPath, analyticsAttributionPath,
+    analyticsConversionsPath, analyticsHeatmapPath,
+} from "../../Functions/domainPathSegments.js";
 
 export function authHeaders() {
     return {
@@ -346,6 +353,39 @@ export function SegmentFilter({ segment, setSegment }) {
                 </button>
             )}
         </div>
+    );
+}
+
+// ── Analytics section quick-nav (shared across all Analytics pages) ───────────
+export function AnalyticsSubNav({ domain }) {
+    const { pathname } = useLocation();
+    if (!domain) return null;
+
+    const tabs = [
+        { label: "Overview",    path: analyticsPath(domain),          end: true },
+        { label: "Audience",    path: analyticsAudiencePath(domain) },
+        { label: "Consent",     path: analyticsConsentPath(domain) },
+        { label: "Acquisition", path: analyticsAcquisitionPath(domain) },
+        { label: "Ad Spend",    path: analyticsAdSpendPath(domain) },
+        { label: "Attribution", path: analyticsAttributionPath(domain) },
+        { label: "Conversions", path: analyticsConversionsPath(domain) },
+        { label: "Heatmap",     path: analyticsHeatmapPath(domain) },
+    ];
+
+    return (
+        <nav className="sa-subnav" aria-label="Analytics sections">
+            {tabs.map(t => {
+                const active = t.end
+                    ? pathname === t.path || pathname === t.path + '/'
+                    : pathname === t.path || pathname.startsWith(t.path + '/');
+                return (
+                    <Link key={t.path} to={t.path}
+                        className={"sa-subnav__tab" + (active ? " sa-subnav__tab--active" : "")}>
+                        {t.label}
+                    </Link>
+                );
+            })}
+        </nav>
     );
 }
 

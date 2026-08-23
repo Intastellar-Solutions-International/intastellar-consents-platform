@@ -82,6 +82,7 @@ export default function AnalyticsAudience() {
                                     label="Unique sessions"
                                     value={data.totals.uniqueSessions.toLocaleString("de-DE")}
                                     sub="consent-gated sessions only"
+                                    variant="purple"
                                     trend={trendSessions}
                                 />
                                 <KpiCard
@@ -89,12 +90,14 @@ export default function AnalyticsAudience() {
                                     label="Active users"
                                     value={data.totals.engagedUsers.toLocaleString("de-DE")}
                                     sub="engaged: 10s+, clicked, or 2+ pages"
+                                    variant="live"
                                     trend={trendEngaged}
                                 />
                                 <KpiCard
                                     icon={<IconGlobe />}
                                     label="Countries reached"
                                     value={data.countries.length.toLocaleString("de-DE")}
+                                    variant="teal"
                                     trend={trendCountries}
                                 />
                             </div>

@@ -1,19 +1,47 @@
+/* ── Design tokens ────────────────────────────────────────────────────────────── */
+
+:root {
+    --sa-surface:    rgba(14, 14, 20, 0.97);
+    --sa-surface-2:  rgba(20, 20, 28, 0.95);
+    --sa-surface-3:  rgba(26, 26, 36, 0.92);
+    --sa-border:     rgba(255, 255, 255, 0.055);
+    --sa-radius:     12px;
+    --sa-radius-lg:  16px;
+    --sa-gap:        20px;
+
+    /* Per-channel accent palette */
+    --sa-c-green:    #4ade80;
+    --sa-c-blue:     #60a5fa;
+    --sa-c-amber:    #f9bf40;
+    --sa-c-purple:   #a78bfa;
+    --sa-c-teal:     #2dd4bf;
+    --sa-c-red:      #f87171;
+
+    /* Translucent accent backgrounds */
+    --sa-bg-green:   rgba(74, 222, 128, 0.08);
+    --sa-bg-blue:    rgba(96, 165, 250, 0.08);
+    --sa-bg-amber:   rgba(249, 191, 64, 0.08);
+    --sa-bg-purple:  rgba(167, 139, 250, 0.08);
+    --sa-bg-teal:    rgba(45, 212, 191, 0.08);
+}
+
 /* ── Site Analytics report page ─────────────────────────────────────────────── */
 
 .sa-page {
-    padding: 4px 0 64px;
+    padding: 8px 0 72px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 }
 
 /* ── Live view panel ─────────────────────────────────────────────────────────── */
 
 .sa-live {
-    border: 1px solid rgba(74,222,128,0.2);
-    border-radius: 14px;
-    background: rgba(20,30,20,0.7);
+    border: 1px solid rgba(74,222,128,0.16);
+    border-radius: var(--sa-radius, 12px);
+    background: rgba(12, 20, 14, 0.97);
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.2);
 }
 
 .sa-live__header {
@@ -301,6 +329,54 @@
     color: #f5aeae;
 }
 
+/* ── Analytics section nav — underline tab strip (Vercel/Mixpanel style) ──────── */
+
+.sa-subnav {
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    margin-bottom: 4px;
+    padding-top: 2px;
+}
+
+.sa-subnav::-webkit-scrollbar { display: none; }
+
+.sa-subnav__tab {
+    flex-shrink: 0;
+    padding: 0 4px 11px;
+    margin-right: 28px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: rgba(155, 155, 175, 0.6);
+    text-decoration: none;
+    transition: color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+    line-height: 1;
+    letter-spacing: 0.01em;
+}
+
+.sa-subnav__tab:last-child { margin-right: 0; }
+
+.sa-subnav__tab:hover {
+    color: rgba(215, 215, 235, 0.9);
+}
+
+.sa-subnav__tab--active {
+    color: rgba(249, 191, 64, 1);
+    border-bottom-color: rgba(249, 191, 64, 0.75);
+    font-weight: 600;
+}
+
+.sa-subnav__tab--active:hover {
+    color: rgba(249, 191, 64, 1);
+}
+
 /* ── Meta row ────────────────────────────────────────────────────────────────── */
 
 .sa-meta-row {
@@ -323,37 +399,48 @@
     border-radius: 4px;
 }
 
-/* ── KPI cards (each is a direct grid child with its own area) ───────────────── */
+/* ── KPI cards ───────────────────────────────────────────────────────────────── */
 
 .sa-kpi {
     position: relative;
-    padding: 18px 20px 16px;
-    border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.09);
-    background: rgba(30,30,34,0.8);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    padding: 20px 20px 18px 22px;
+    border-radius: var(--sa-radius, 12px);
+    border: 1px solid var(--sa-border, rgba(255,255,255,0.055));
+    background: var(--sa-surface-3, rgba(26,26,36,0.92));
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.18);
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     overflow: hidden;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-/* Coloured accent stripe across the top of each KPI card */
+.sa-kpi:hover {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.26);
+    border-color: rgba(255,255,255,0.1);
+}
+
+/* Left accent bar — replaces dated top stripe */
 .sa-kpi::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: rgba(192,159,83,0.6);
-    border-radius: 14px 14px 0 0;
+    top: 14px; left: 0; bottom: 14px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: rgba(249, 191, 64, 0.8);
 }
 
-.sa-kpi:nth-child(2)::before { background: rgba(99,179,237,0.6); }
-.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.6); }
-.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.6); }
+.sa-kpi:nth-child(2)::before { background: rgba(96,165,250,0.8); }
+.sa-kpi:nth-child(3)::before { background: rgba(74,222,128,0.8); }
+.sa-kpi:nth-child(4)::before { background: rgba(167,139,250,0.8); }
 
-.sa-kpi--warn::before { background: rgba(239,68,68,0.55) !important; }
-.sa-kpi--live::before { background: rgba(74,222,128,0.7)  !important; }
+.sa-kpi--warn::before { background: rgba(248,113,113,0.85) !important; }
+.sa-kpi--live::before { background: rgba(74,222,128,0.85) !important; }
+
+/* Explicit color variants */
+.sa-kpi--blue::before   { background: rgba(96,165,250,0.85) !important; }
+.sa-kpi--purple::before { background: rgba(167,139,250,0.85) !important; }
+.sa-kpi--teal::before   { background: rgba(45,212,191,0.85) !important; }
 
 .sa-kpi__head {
     display: flex;
@@ -363,12 +450,16 @@
 
 .sa-kpi__icon {
     display: inline-flex;
-    color: rgba(192,159,83,0.8);
+    color: rgba(249,191,64,0.65);
 }
 
-.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(99,179,237,0.8); }
-.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.8); }
-.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.8); }
+.sa-kpi:nth-child(2) .sa-kpi__icon { color: rgba(96,165,250,0.65); }
+.sa-kpi:nth-child(3) .sa-kpi__icon { color: rgba(74,222,128,0.65); }
+.sa-kpi:nth-child(4) .sa-kpi__icon { color: rgba(167,139,250,0.65); }
+
+.sa-kpi--blue .sa-kpi__icon   { color: rgba(96,165,250,0.7) !important; }
+.sa-kpi--purple .sa-kpi__icon { color: rgba(167,139,250,0.7) !important; }
+.sa-kpi--teal .sa-kpi__icon   { color: rgba(45,212,191,0.7) !important; }
 
 .sa-kpi__icon svg {
     width: 14px;
@@ -379,23 +470,23 @@
     width: 14px;
     height: 14px;
     flex-shrink: 0;
-    color: rgba(192,159,83,0.75);
+    color: rgba(192,159,83,0.6);
 }
 
 .sa-kpi__label {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(160,160,160,0.7);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: rgba(160,160,172,0.7);
 }
 
 .sa-kpi__value {
-    font-size: 2.1rem;
+    font-size: 2rem;
     font-weight: 700;
-    color: #ececec;
+    color: rgba(240, 240, 252, 0.95);
     line-height: 1;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
 }
 
 .sa-kpi--warn .sa-kpi__value { color: rgba(252,165,55,0.95); }
@@ -403,8 +494,8 @@
 .sa-kpi__trend {
     display: inline-block;
     margin-left: 8px;
-    font-size: 0.68rem;
-    font-weight: 700;
+    font-size: 0.7rem;
+    font-weight: 600;
     letter-spacing: 0;
     vertical-align: middle;
 }
@@ -413,34 +504,36 @@
 .sa-kpi__trend--down { color: rgba(248,113,113,0.9); }
 
 .sa-kpi__sub {
-    font-size: 0.7rem;
-    color: rgba(140,140,140,0.65);
+    font-size: 0.69rem;
+    color: rgba(130,130,148,0.6);
     line-height: 1.4;
 }
 
 .sa-kpi__cross-check {
     display: block;
     margin-top: 4px;
-    color: rgba(120,120,120,0.55);
+    color: rgba(120,120,120,0.5);
 }
 
 /* ── Chart section ───────────────────────────────────────────────────────────── */
 
 .sa-chart-section {
-    background: rgba(26,26,30,0.75);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 20px 24px 18px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    background: var(--sa-surface-3, rgba(26,26,36,0.92));
+    border: 1px solid var(--sa-border, rgba(255,255,255,0.055));
+    border-radius: var(--sa-radius, 12px);
+    padding: 22px 24px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.18);
 }
+
+.sa-area-chart { width: 100%; }
 
 .sa-chart-section__title {
     margin: 0 0 16px;
     font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(160,160,160,0.65);
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: rgba(155,155,175,0.7);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -582,20 +675,20 @@
 /* ── Generic panel card ──────────────────────────────────────────────────────── */
 
 .sa-panel {
-    background: rgba(26,26,30,0.75);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 18px 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    background: var(--sa-surface-3, rgba(26,26,36,0.92));
+    border: 1px solid var(--sa-border, rgba(255,255,255,0.055));
+    border-radius: var(--sa-radius, 12px);
+    padding: 20px 22px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.15);
 }
 
 .sa-panel__title {
     margin: 0 0 14px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(160,160,160,0.65);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: rgba(200,200,215,0.85);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -610,11 +703,11 @@
 
 .sa-panel__sub-title {
     margin: 0 0 10px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: rgba(130,130,130,0.55);
+    font-size: 0.69rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: rgba(130,130,148,0.6);
 }
 
 .sa-panel__consent-note {
@@ -676,6 +769,13 @@
 }
 
 .sa-table tbody tr:last-child td { border-bottom: none; }
+
+.sa-table tbody tr {
+    transition: background 0.1s ease;
+}
+.sa-table tbody tr:hover td {
+    background: rgba(255,255,255,0.025);
+}
 
 .sa-table__num {
     text-align: right !important;
