@@ -22,7 +22,15 @@ const KIND_LABEL = {
 
 function snippetFor(name, kind) {
     if (kind === "purchase") {
-        return `intaAnalytics.track('${name}', { value: 49.99, currency: 'EUR' });`;
+        return `intaAnalytics.track('${name}', {
+  value: 49.99,
+  currency: 'EUR',
+  transactionId: 'ORDER-123',
+  products: [
+    { id: 'SKU-001', name: 'Blue T-Shirt', price: 29.99, quantity: 1, category: 'Apparel' },
+    { id: 'SKU-002', name: 'Black Jeans',  price: 19.99, quantity: 1, category: 'Apparel' },
+  ],
+});`;
     }
     return `intaAnalytics.track('${name}');`;
 }

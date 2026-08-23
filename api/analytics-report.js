@@ -169,7 +169,8 @@ async function _handler(req, res) {
            osRes, screensRes, languagesRes, timezonesRes, engagedRes, leadRes,
            dailyConversionsRes, timeToConvertRes, funnelRes,
            conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes, pageEngagementRes,
-           newVsReturningRes, lastTouchByChannelRes] = await Promise.all([
+           newVsReturningRes, lastTouchByChannelRes,
+           revenueRes, topProductsRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -728,9 +729,55 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Revenue totals — sum of value_cents for events registered as
+        // kind='purchase' in analytics_event_defs, or literally named 'purchase'.
+        db.query(`
+            SELECT
+                COALESCE(SUM(ace.value_cents), 0)                                AS total_cents,
+                COUNT(*)                                                          AS transactions,
+                (ARRAY_AGG(ace.currency) FILTER (WHERE ace.currency IS NOT NULL))[1] AS currency
+            FROM analytics_custom_events ace
+            WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+              AND ace.value_cents IS NOT NULL
+              AND (
+                ace.name = 'purchase'
+                OR ace.name IN (
+                    SELECT name FROM analytics_event_defs
+                    WHERE site_id = $1 AND kind = 'purchase'
+                )
+              )`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        // Top products sold — explodes the products JSONB array and aggregates
+        // by product id/name to get units sold and revenue contribution.
+        db.query(`
+            SELECT
+                p->>'id'                                                          AS product_id,
+                p->>'name'                                                        AS product_name,
+                p->>'cat'                                                         AS category,
+                SUM((p->>'qty')::numeric)                                         AS units,
+                SUM((p->>'price')::numeric * COALESCE((p->>'qty')::numeric, 1))  AS revenue
+            FROM analytics_custom_events ace,
+                 jsonb_array_elements(ace.products) AS p
+            WHERE ace.site_id = $1 AND ace.received_at >= $2 AND ace.received_at < $3
+              AND ace.products IS NOT NULL
+              AND (
+                ace.name = 'purchase'
+                OR ace.name IN (
+                    SELECT name FROM analytics_event_defs
+                    WHERE site_id = $1 AND kind = 'purchase'
+                )
+              )
+            GROUP BY 1, 2, 3
+            ORDER BY revenue DESC NULLS LAST
+            LIMIT 20`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(29).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(31).fill({ rows: [] });
         throw err;
     });
 
@@ -758,6 +805,9 @@ async function _handler(req, res) {
             conversionRate: Number(t.unique_sessions || 0) > 0
                 ? Math.round((Number(convertedSessionsRes.rows[0]?.converted || 0) / Number(t.unique_sessions)) * 1000) / 10
                 : 0,
+            revenue:         Number(revenueRes.rows[0]?.total_cents || 0) / 100 || null,
+            revenueCurrency: revenueRes.rows[0]?.currency || null,
+            transactions:    Number(revenueRes.rows[0]?.transactions || 0) || null,
         },
         daily: dailyRes.rows.map(r => ({
             date:     r.date,
@@ -957,5 +1007,12 @@ async function _handler(req, res) {
                 }));
             return rows;
         })(),
+        topProducts: topProductsRes.rows.map(r => ({
+            id:       r.product_id   || null,
+            name:     r.product_name || null,
+            category: r.category     || null,
+            units:    Number(r.units   || 0),
+            revenue:  Number(r.revenue || 0),
+        })),
     });
 }

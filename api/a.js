@@ -458,6 +458,7 @@ async function ensureTables(db) {
         ALTER TABLE ab_test_assignments ADD COLUMN IF NOT EXISTS page_host TEXT;
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
         ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS products JSONB;
     `).catch(() => {});
 }
 
@@ -1075,7 +1076,8 @@ if(hasStat(c)){
 }
 
 // ── Custom conversion events ────────────────────────────────────────────────
-// window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR' })
+// window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR',
+//   products: [{ id: 'SKU-1', name: 'Blue T-Shirt', price: 29.99, quantity: 2, category: 'Apparel' }] })
 // Fires a minimal (unlinked) record always; upgrades to a session-linked
 // record only when the visitor has accepted statisticCookies.
 function track(name,opts){
@@ -1083,6 +1085,19 @@ function track(name,opts){
   opts=opts||{};
   var c=getConsents();
   var full=hasStat(c);
+  var prods=undefined;
+  if(Array.isArray(opts.products)&&opts.products.length){
+    prods=opts.products.slice(0,50).map(function(p){
+      var o={};
+      if(p.id)o.id=String(p.id).slice(0,64);
+      if(p.name)o.name=String(p.name).slice(0,100);
+      if(typeof p.price==='number'&&isFinite(p.price))o.price=p.price;
+      if(typeof p.quantity==='number'&&isFinite(p.quantity))o.qty=Math.round(p.quantity);
+      if(p.category)o.cat=String(p.category).slice(0,64);
+      if(p.variant)o.var=String(p.variant).slice(0,64);
+      return o;
+    });
+  }
   send(JSON.stringify({
     s:SITE,t:'ev',n:String(name).slice(0,64),
     cl:full?'full':'minimal',
@@ -1090,6 +1105,7 @@ function track(name,opts){
     v:(typeof opts.value==='number'&&isFinite(opts.value))?opts.value:undefined,
     cur:opts.currency?String(opts.currency).slice(0,3):undefined,
     txn:opts.transactionId?String(opts.transactionId).slice(0,64):undefined,
+    pr:prods,
     src:opts._source==='datalayer'?'datalayer':'manual',
     u:location.pathname,h:getHost(),dt:devType(),
     cs:full?1:0,
@@ -1138,7 +1154,7 @@ export default async function handler(req, res) {
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, h: pageHost, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
             dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency,
-            txn: eventTransactionId, src: eventSource, tid: abTestId, vid: abVariantId, nv,
+            txn: eventTransactionId, pr: rawProducts, src: eventSource, tid: abTestId, vid: abVariantId, nv,
             gc: gclid, mc: msclkid, fc: fbclid } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
@@ -1222,12 +1238,28 @@ export default async function handler(req, res) {
         const cleanUtmSource   = us ? String(us).slice(0, 255) : null;
         const cleanUtmMedium   = um ? String(um).slice(0, 255) : null;
 
+        let products = null;
+        if (Array.isArray(rawProducts) && rawProducts.length) {
+            products = JSON.stringify(
+                rawProducts.slice(0, 50).map(p => {
+                    const item = {};
+                    if (p.id)   item.id   = String(p.id).slice(0, 64);
+                    if (p.name) item.name = String(p.name).slice(0, 100);
+                    if (typeof p.price === "number" && isFinite(p.price)) item.price = p.price;
+                    if (typeof p.qty   === "number" && isFinite(p.qty))   item.qty   = Math.round(p.qty);
+                    if (p.cat)  item.cat  = String(p.cat).slice(0, 64);
+                    if (p.var)  item.var  = String(p.var).slice(0, 64);
+                    return item;
+                })
+            );
+        }
+
         const { rows: evRows } = await db.query(
             `INSERT INTO analytics_custom_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
-              gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23)
+              gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)
              RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
@@ -1240,6 +1272,7 @@ export default async function handler(req, res) {
                 eventSource === "datalayer" ? "datalayer" : "manual",
                 cleanGclid, cleanMsclkid, cleanFbclid,
                 cleanUtmCampaign, cleanUtmContent, cleanUtmSource, cleanUtmMedium,
+                products,
             ]
         ).catch(() => ({ rows: [] }));
 
