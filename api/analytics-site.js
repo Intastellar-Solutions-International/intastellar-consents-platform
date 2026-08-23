@@ -96,6 +96,7 @@ export default async function handler(req, res) {
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_block_selectors TEXT[]   NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS recording_mask_selectors  TEXT[]   NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS industry                  VARCHAR(32);
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS business_type             VARCHAR(32);
     `).catch(() => {});
 
     // ── GET (list mode): which of this org's domains have analytics set up ────
@@ -125,7 +126,7 @@ export default async function handler(req, res) {
                     datalayer_enabled,
                     lead_quality_enabled, lead_require_engaged,
                     lead_qualifying_pages, lead_qualifying_events,
-                    industry
+                    industry, business_type
              FROM analytics_sites
              WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2)
              LIMIT 1`,
@@ -200,6 +201,13 @@ export default async function handler(req, res) {
             sets.push(`industry = $${i++}`);
             params.push(body.industry);
         }
+        const VALID_BUSINESS_TYPES = ["ecommerce", "b2b", "media", "local"];
+        if (body.businessType === null) {
+            sets.push(`business_type = NULL`);
+        } else if (typeof body.businessType === "string" && VALID_BUSINESS_TYPES.includes(body.businessType)) {
+            sets.push(`business_type = $${i++}`);
+            params.push(body.businessType);
+        }
 
         if (!sets.length) return res.status(400).json({ error: "No valid fields to update" });
 
@@ -210,7 +218,7 @@ export default async function handler(req, res) {
                        recording_sample_rate, recording_retention_days, heatmap_retention_days,
                        recording_block_selectors, recording_mask_selectors,
                        datalayer_enabled, lead_quality_enabled, lead_require_engaged,
-                       lead_qualifying_pages, lead_qualifying_events, industry`,
+                       lead_qualifying_pages, lead_qualifying_events, industry, business_type`,
             params
         ).catch(() => ({ rows: [] }));
 
