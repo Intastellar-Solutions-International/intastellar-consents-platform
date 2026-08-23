@@ -1,25 +1,18 @@
 const { useState, useEffect, useMemo, useCallback } = React;
 const Link = window.ReactRouterDOM.Link;
 import {
-    analyticsAudiencePath, analyticsAcquisitionPath,
+    analyticsAudiencePath, analyticsAcquisitionPath, analyticsSettingsPath,
 } from "../../Functions/domainPathSegments.js";
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
-    authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, toIsoDate, pctChange,
-    IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
+    authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
+    toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
 } from "./_shared.js";
 import {
-    IconBarChart,
-    IconUsers,
-    IconShieldCheck,
-    IconGlobe,
-    IconTrendingUp,
-    IconDocument,
-    IconRadio,
-    IconTarget,
-    IconMegaphone,
+    IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
+    IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash,
 } from "./Icons.js";
 import "./Analytics.css";
 
@@ -295,6 +288,132 @@ function AreaChart({ daily }) {
     );
 }
 
+const BT_LABELS = {
+    ecommerce: "E-commerce",
+    b2b:       "B2B / SaaS",
+    media:     "Media & Content",
+    local:     "Local Business",
+};
+
+function fmtRevenue(amount, currency = "EUR") {
+    const SYM = { EUR: "€", USD: "$", GBP: "£", CHF: "CHF ", DKK: "kr ", SEK: "kr ", NOK: "kr " };
+    const sym = SYM[currency] ?? (currency + " ");
+    if (amount >= 1_000_000) return sym + (amount / 1_000_000).toFixed(2) + "M";
+    if (amount >= 1_000)     return sym + (amount / 1_000).toFixed(1) + "k";
+    return sym + Number(amount).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent }) {
+    const bt          = siteConfig?.businessType || "";
+    const hasRevenue  = data.totals.revenue != null && data.totals.revenue > 0;
+    const hasLeads    = data.totals.qualityLeads !== null;
+    const consentPct  = data.totals.consentRate;
+    const currency    = data.totals.revenueCurrency || "EUR";
+
+    const CARDS = {
+        revenue: (
+            <KpiCard key="revenue"
+                icon={<IconCash />}
+                label="Revenue"
+                value={fmtRevenue(data.totals.revenue, currency)}
+                sub={data.totals.transactions ? `${data.totals.transactions.toLocaleString("de-DE")} transactions` : "ecommerce events"}
+                variant="revenue"
+            />
+        ),
+        users: (
+            <KpiCard key="users"
+                icon={<IconRadio />}
+                label="Active users"
+                value={data.totals.engagedUsers.toLocaleString("de-DE")}
+                sub="engaged: 10s+, clicked, or 2+ pages"
+                variant="live"
+                trend={trendEngaged}
+            />
+        ),
+        events: (
+            <KpiCard key="events"
+                icon={<IconBarChart />}
+                label={bt === "media" ? "Page views" : "Total events"}
+                value={data.totals.total.toLocaleString("de-DE")}
+                sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
+                variant="blue"
+                trend={trendEvents}
+            />
+        ),
+        sessions: (
+            <KpiCard key="sessions"
+                icon={<IconUsers />}
+                label="Unique sessions"
+                value={data.totals.uniqueSessions.toLocaleString("de-DE")}
+                sub="consent-gated sessions only"
+                variant="purple"
+                trend={trendSessions}
+            />
+        ),
+        consent: (
+            <KpiCard key="consent"
+                icon={<IconShieldCheck />}
+                label="Consent rate"
+                value={formatPercent(consentPct)}
+                sub="statisticCookies accepted"
+                variant={consentPct < 20 ? "warn" : "live"}
+                trend={trendConsent}
+            >
+                <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={consentPct} />
+            </KpiCard>
+        ),
+        countries: (
+            <KpiCard key="countries"
+                icon={<IconGlobe />}
+                label="Countries"
+                value={data.countries.length}
+                sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
+                variant="teal"
+            />
+        ),
+        leads: (
+            <KpiCard key="leads"
+                icon={<IconTarget />}
+                label="Quality leads"
+                value={data.totals.qualityLeads.toLocaleString("de-DE")}
+                sub="engaged + page/event match"
+                variant="live"
+            />
+        ),
+    };
+
+    let order;
+    switch (bt) {
+        case "ecommerce":
+            order = ["users", "sessions", "consent", "countries", ...(hasRevenue ? ["revenue"] : [])];
+            // revenue goes first in ecommerce mode
+            if (hasRevenue) order = ["revenue", "users", "sessions", "consent", "countries"];
+            break;
+        case "b2b":
+            order = hasLeads
+                ? ["leads", "users", "events", "sessions", "consent"]
+                : ["users", "events", "sessions", "consent", "countries"];
+            break;
+        case "media":
+            order = ["events", "sessions", "users", "consent", "countries"];
+            break;
+        case "local":
+            order = ["sessions", "users", "countries", "consent", "events"];
+            break;
+        default:
+            order = ["users", "events", "sessions", "consent", "countries"];
+            if (hasLeads)   order.push("leads");
+            if (hasRevenue) order.push("revenue");
+    }
+
+    const cards = order.map(id => CARDS[id]).filter(Boolean);
+    const cls = cards.length === 6 ? "sa-kpi-strip sa-kpi-strip--6"
+              : cards.length === 7 ? "sa-kpi-strip sa-kpi-strip--6"
+              : "sa-kpi-strip";
+
+    return <div className={cls}>{cards}</div>;
+}
+
 function SetupCard({ domain, onKeyGenerated }) {
     const [siteKey,    setSiteKey]    = useState(null);
     const [loading,    setLoading]    = useState(true);
@@ -437,6 +556,8 @@ export default function SiteAnalytics() {
     }, [fromDate, toDate]);
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
 
+    const siteConfig    = useSiteConfig(domain);
+
     const trendEngaged  = useMemo(() => pctChange(data?.totals?.engagedUsers,   prevData?.totals?.engagedUsers),   [data, prevData]);
     const trendEvents   = useMemo(() => pctChange(data?.totals?.total,          prevData?.totals?.total),          [data, prevData]);
     const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
@@ -492,59 +613,24 @@ export default function SiteAnalytics() {
                     {showData && (
                         <div className="sa-overview">
 
-                            {/* ── KPI strip ─────────────────────────────────────── */}
-                            <div className={"sa-kpi-strip" + (data.totals.qualityLeads !== null ? " sa-kpi-strip--6" : "")}>
-                                <KpiCard
-                                    icon={<IconRadio />}
-                                    label="Active users"
-                                    value={data.totals.engagedUsers.toLocaleString("de-DE")}
-                                    sub="engaged: 10s+, clicked, or 2+ pages"
-                                    variant="live"
-                                    trend={trendEngaged}
-                                />
-                                <KpiCard
-                                    icon={<IconBarChart />}
-                                    label="Total events"
-                                    value={data.totals.total.toLocaleString("de-DE")}
-                                    sub={`${data.totals.minimal.toLocaleString("de-DE")} minimal · ${data.totals.full.toLocaleString("de-DE")} full`}
-                                    variant="blue"
-                                    trend={trendEvents}
-                                />
-                                <KpiCard
-                                    icon={<IconUsers />}
-                                    label="Unique sessions"
-                                    value={data.totals.uniqueSessions.toLocaleString("de-DE")}
-                                    sub="consent-gated sessions only"
-                                    variant="purple"
-                                    trend={trendSessions}
-                                />
-                                <KpiCard
-                                    icon={<IconShieldCheck />}
-                                    label="Consent rate"
-                                    value={formatPercent(data.totals.consentRate)}
-                                    sub="statisticCookies accepted"
-                                    variant={data.totals.consentRate < 20 ? "warn" : "live"}
-                                    trend={trendConsent}
-                                >
-                                    <IndustryBenchmarkNote benchmark={data.industryBenchmark} actualPct={data.totals.consentRate} />
-                                </KpiCard>
-                                <KpiCard
-                                    icon={<IconGlobe />}
-                                    label="Countries"
-                                    value={data.countries.length}
-                                    sub={data.countries[0] ? `Top: ${data.countries[0].code}` : null}
-                                    variant="teal"
-                                />
-                                {data.totals.qualityLeads !== null && (
-                                    <KpiCard
-                                        icon={<IconTarget />}
-                                        label="Quality leads"
-                                        value={data.totals.qualityLeads.toLocaleString("de-DE")}
-                                        sub="engaged + page/event match (see Settings)"
-                                        variant="live"
-                                    />
-                                )}
-                            </div>
+                            {/* ── Dashboard mode badge ───────────────────────────── */}
+                            {siteConfig?.businessType && (
+                                <div className="sa-mode-badge">
+                                    <span className="sa-mode-badge__dot" />
+                                    Dashboard tuned for <strong>{BT_LABELS[siteConfig.businessType]}</strong>
+                                    <Link className="sa-mode-badge__link" to={analyticsSettingsPath(domain)}>Change mode</Link>
+                                </div>
+                            )}
+
+                            {/* ── KPI strip (business-type-aware) ───────────────── */}
+                            <KpiStrip
+                                data={data}
+                                siteConfig={siteConfig}
+                                trendEngaged={trendEngaged}
+                                trendEvents={trendEvents}
+                                trendSessions={trendSessions}
+                                trendConsent={trendConsent}
+                            />
 
                             {/* ── Main: chart (60 %) + live feed (40 %) ──────────── */}
                             <div className="sa-overview-main">

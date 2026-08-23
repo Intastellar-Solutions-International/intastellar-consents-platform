@@ -308,6 +308,33 @@ function ConversionActionsSection({ domain }) {
 
 // ── Site configuration section ────────────────────────────────────────────────
 
+const BUSINESS_TYPES = [
+    {
+        value: "ecommerce",
+        label: "E-commerce",
+        tagline: "Revenue, transactions & conversion funnel",
+        highlights: ["Revenue", "Transactions", "Conversion rate"],
+    },
+    {
+        value: "b2b",
+        label: "B2B / SaaS",
+        tagline: "Lead quality, form completions & pipeline",
+        highlights: ["Quality leads", "Form fills", "Trial starts"],
+    },
+    {
+        value: "media",
+        label: "Media & Content",
+        tagline: "Page views, scroll depth & return readers",
+        highlights: ["Page views", "Scroll depth", "Return rate"],
+    },
+    {
+        value: "local",
+        label: "Local Business",
+        tagline: "Local traffic, contact actions & mobile",
+        highlights: ["Local visitors", "Contact clicks", "Mobile ratio"],
+    },
+];
+
 const INDUSTRIES = [
     { value: "",            label: "Not set" },
     { value: "aviation",    label: "Aviation" },
@@ -325,46 +352,56 @@ const INDUSTRIES = [
 ];
 
 function SiteConfigSection({ domain }) {
-    const [site,     setSite]     = useState(null);
-    const [loading,  setLoading]  = useState(true);
-    const [industry, setIndustry] = useState("");
-    const [saving,   setSaving]   = useState(false);
-    const [saved,    setSaved]    = useState(false);
-    const [error,    setError]    = useState(null);
+    const [site,         setSite]         = useState(null);
+    const [loading,      setLoading]      = useState(true);
+    const [industry,     setIndustry]     = useState("");
+    const [businessType, setBusinessType] = useState("");
+    const [savingInd,    setSavingInd]    = useState(false);
+    const [savedInd,     setSavedInd]     = useState(false);
+    const [savingBt,     setSavingBt]     = useState(false);
+    const [savedBt,      setSavedBt]      = useState(false);
+    const [error,        setError]        = useState(null);
 
     const load = useCallback(() => {
         if (!domain) { setSite(null); setLoading(false); return; }
         setLoading(true);
         fetch(`${SITE_URL}?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
             .then(r => r.ok ? r.json() : null)
-            .then(d => { if (d) { setSite(d); setIndustry(d.industry || ""); } })
+            .then(d => {
+                if (d) {
+                    setSite(d);
+                    setIndustry(d.industry || "");
+                    setBusinessType(d.businessType || "");
+                }
+            })
             .catch(() => {})
             .finally(() => setLoading(false));
     }, [domain]);
 
     useEffect(() => { load(); }, [load]);
 
-    async function saveIndustry() {
+    async function patch(body, setSaving, setSaved) {
         setSaving(true); setError(null);
         const r = await fetch(`${SITE_URL}?domain=${encodeURIComponent(domain)}`, {
             method: "PATCH",
             headers: authHeaders(),
-            body: JSON.stringify({ industry: industry || null }),
+            body: JSON.stringify(body),
         }).catch(() => null);
         setSaving(false);
         if (!r?.ok) { setError("Could not save."); return; }
         setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
+        setTimeout(() => setSaved(false), 2200);
     }
 
     if (!domain) return <p style={{ color: "rgba(130,130,130,0.5)", fontSize: 13 }}>Select a domain.</p>;
     if (loading) return <p style={{ color: "rgba(130,130,130,0.5)", fontSize: 13 }}>Loading…</p>;
-    if (!site) return <p style={{ color: "rgba(130,130,130,0.5)", fontSize: 13 }}>No site key found for {domain}. Generate one in Settings → Analytics Script.</p>;
+    if (!site)   return <p style={{ color: "rgba(130,130,130,0.5)", fontSize: 13 }}>No site key found for {domain}. Generate one in Settings → Analytics Script.</p>;
 
     const snippet = `<script src="https://analytics.consentsmanagement.com/api/a" data-site="${site.id}" async defer></script>`;
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
             {/* Site key */}
             <Field label="Site key">
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
@@ -375,9 +412,7 @@ function SiteConfigSection({ domain }) {
                     }}>
                         {site.id}
                     </code>
-                    <button className="sa-btn" onClick={() => navigator.clipboard?.writeText(site.id)}>
-                        Copy
-                    </button>
+                    <button className="sa-btn" onClick={() => navigator.clipboard?.writeText(site.id)}>Copy</button>
                 </div>
             </Field>
 
@@ -392,36 +427,65 @@ function SiteConfigSection({ domain }) {
                     }}>
                         {snippet}
                     </code>
-                    <button
-                        className="sa-btn"
-                        style={{ position: "absolute", top: 8, right: 8 }}
-                        onClick={() => navigator.clipboard?.writeText(snippet)}
-                    >
+                    <button className="sa-btn" style={{ position: "absolute", top: 8, right: 8 }}
+                        onClick={() => navigator.clipboard?.writeText(snippet)}>
                         Copy
                     </button>
                 </div>
             </Field>
 
-            {/* Industry */}
+            {/* Industry benchmark */}
             <Field label="Industry" hint="Used to show industry benchmarks next to your consent rate.">
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                    <select
-                        value={industry}
-                        onChange={e => setIndustry(e.target.value)}
-                        style={{
-                            flex: 1, padding: "8px 10px", borderRadius: 6,
-                            background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
-                            color: "rgba(210,210,210,0.9)", fontSize: 13,
-                        }}
-                    >
+                    <select value={industry} onChange={e => setIndustry(e.target.value)} style={{
+                        flex: 1, padding: "8px 10px", borderRadius: 6,
+                        background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)",
+                        color: "rgba(210,210,210,0.9)", fontSize: 13,
+                    }}>
                         {INDUSTRIES.map(i => <option key={i.value} value={i.value}>{i.label}</option>)}
                     </select>
-                    <button className="sa-btn" onClick={saveIndustry} disabled={saving || industry === (site.industry || "")}>
-                        {saving ? "Saving…" : saved ? "Saved!" : "Save"}
+                    <button className="sa-btn"
+                        onClick={() => patch({ industry: industry || null }, setSavingInd, setSavedInd)}
+                        disabled={savingInd || industry === (site.industry || "")}>
+                        {savingInd ? "Saving…" : savedInd ? "Saved!" : "Save"}
                     </button>
                 </div>
-                {error && <p style={{ color: "rgba(239,68,68,0.8)", fontSize: 12, marginTop: 4 }}>{error}</p>}
             </Field>
+
+            {/* Dashboard mode */}
+            <Field label="Dashboard mode"
+                hint="Reorders the overview to highlight what matters most for your business. Enables the revenue card when ecommerce events are tracked.">
+                <div className="sa-biztype-grid">
+                    {BUSINESS_TYPES.map(bt => (
+                        <button key={bt.value} type="button"
+                            className={"sa-biztype-card" + (businessType === bt.value ? " sa-biztype-card--active" : "")}
+                            onClick={() => setBusinessType(businessType === bt.value ? "" : bt.value)}>
+                            <div className="sa-biztype-card__name">{bt.label}</div>
+                            <div className="sa-biztype-card__tagline">{bt.tagline}</div>
+                            <div className="sa-biztype-card__pills">
+                                {bt.highlights.map(h => (
+                                    <span key={h} className="sa-biztype-card__pill">{h}</span>
+                                ))}
+                            </div>
+                        </button>
+                    ))}
+                </div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 10 }}>
+                    <button className="sa-btn"
+                        onClick={() => patch({ businessType: businessType || null }, setSavingBt, setSavedBt)}
+                        disabled={savingBt || businessType === (site.businessType || "")}>
+                        {savingBt ? "Saving…" : savedBt ? "Saved!" : "Save mode"}
+                    </button>
+                    {businessType && (
+                        <button className="sa-btn" style={{ opacity: 0.65 }}
+                            onClick={() => setBusinessType("")}>
+                            Clear
+                        </button>
+                    )}
+                </div>
+                {error && <p style={{ color: "rgba(239,68,68,0.8)", fontSize: 12, marginTop: 6 }}>{error}</p>}
+            </Field>
+
         </div>
     );
 }

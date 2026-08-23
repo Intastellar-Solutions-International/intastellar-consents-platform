@@ -356,6 +356,20 @@ export function SegmentFilter({ segment, setSegment }) {
     );
 }
 
+// ── Site config (businessType, industry, etc.) ────────────────────────────────
+export function useSiteConfig(domain) {
+    const [config, setConfig] = useState(null);
+    useEffect(() => {
+        if (!domain) { setConfig(null); return; }
+        fetch(`${ScannerHost}/api/analytics-site?domain=${encodeURIComponent(domain)}`,
+            { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : null)
+            .then(d => setConfig(d || null))
+            .catch(() => {});
+    }, [domain]);
+    return config;
+}
+
 // ── Analytics section quick-nav (shared across all Analytics pages) ───────────
 export function AnalyticsSubNav({ domain }) {
     const { pathname } = useLocation();
