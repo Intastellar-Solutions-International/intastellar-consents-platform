@@ -1183,20 +1183,29 @@ export async function fetchGoogleAdsObjectById(conn, id) {
  * Returns { type, id, name, parentName? } or null if not found / no access.
  */
 export async function fetchMetaAdsObjectById(conn, id) {
-    const token  = conn.access_token;
-    const fields = "id,name,status,objective,adset_id,campaign_id,effective_status";
-    const resp   = await fetch(
-        `https://graph.facebook.com/v26.0/${id}?fields=${fields}&access_token=${encodeURIComponent(token)}`
-    ).catch(() => null);
-    if (!resp?.ok) return null;
-    const data = await resp.json().catch(() => null);
-    if (!data || data.error) return null;
+    const token = conn.access_token;
 
-    // Determine type from which parent-ID fields are present
+    async function metaGet(fields) {
+        const r = await fetch(
+            `https://graph.facebook.com/v26.0/${id}?fields=${fields}&access_token=${encodeURIComponent(token)}`
+        ).catch(() => null);
+        if (!r?.ok) return null;
+        const d = await r.json().catch(() => null);
+        return d?.error ? null : d;
+    }
+
+    // Try progressively simpler field sets — some campaign types reject effective_status
+    let data = await metaGet("id,name,objective,adset_id,campaign_id,effective_status");
+    if (!data) data = await metaGet("id,name,objective,adset_id,campaign_id");
+    if (!data) data = await metaGet("id,name");
+    if (!data) return null;
+
+    // Determine type from which parent-ID fields are present (use != null, not !== undefined,
+    // because Meta sometimes returns null for inapplicable fields)
     let type = "unknown";
-    if (data.objective !== undefined)          type = "campaign";
-    else if (data.campaign_id !== undefined && data.adset_id === undefined) type = "ad_set";
-    else if (data.adset_id !== undefined)      type = "ad";
+    if (data.objective != null)    type = "campaign";
+    else if (data.adset_id != null) type = "ad";
+    else if (data.campaign_id != null) type = "ad_set";
 
     let parentName = null;
     if (data.campaign_id) {
