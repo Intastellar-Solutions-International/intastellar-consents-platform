@@ -1108,6 +1108,107 @@ async function fetchMicrosoftAdsDaily(conn, fromDate, toDate) {
     return result;
 }
 
+// ── Object lookup by numeric ID ───────────────────────────────────────────────
+// Used by /api/ad-id-resolve to turn UTM-embedded platform IDs
+// (e.g. {campaignid} / {{campaign.id}}) into human-readable names.
+
+/**
+ * Resolve a Google Ads numeric ID to the object it belongs to.
+ * Tries campaign → ad group → ad in sequence and returns on first match.
+ * Returns { type, id, name, parentName? } or null if not found.
+ */
+export async function fetchGoogleAdsObjectById(conn, id) {
+    const customerId = conn.account_id.replace(/\D/g, "");
+    const devToken   = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+    const headers    = {
+        Authorization:    `Bearer ${conn.access_token}`,
+        "developer-token": devToken,
+        "Content-Type":   "application/json",
+    };
+    if (conn.login_customer_id) headers["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
+
+    const search = (query) => fetch(
+        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
+        { method: "POST", headers, body: JSON.stringify({ query }) }
+    ).then(async r => {
+        if (!r.ok) return null;
+        const d = await r.json().catch(() => null);
+        return d?.results || null;
+    }).catch(() => null);
+
+    const numId = String(id).replace(/\D/g, "");
+
+    // Campaign
+    const campRows = await search(
+        `SELECT campaign.id, campaign.name, campaign.status FROM campaign WHERE campaign.id = ${numId}`
+    );
+    if (campRows?.length) {
+        const c = campRows[0].campaign || campRows[0].Campaign || {};
+        return { type: "campaign", id: numId, name: c.name || c.Name || `Campaign ${numId}` };
+    }
+
+    // Ad group
+    const agRows = await search(
+        `SELECT ad_group.id, ad_group.name, campaign.name FROM ad_group WHERE ad_group.id = ${numId}`
+    );
+    if (agRows?.length) {
+        const ag = agRows[0].adGroup   || agRows[0].ad_group  || {};
+        const cp = agRows[0].campaign  || {};
+        return { type: "ad_group", id: numId, name: ag.name || `Ad group ${numId}`, parentName: cp.name || null };
+    }
+
+    // Ad creative
+    const adRows = await search(
+        `SELECT ad_group_ad.ad.id, ad_group_ad.ad.name, ad_group.name, campaign.name
+         FROM ad_group_ad WHERE ad_group_ad.ad.id = ${numId}`
+    );
+    if (adRows?.length) {
+        const ad = adRows[0].adGroupAd?.ad || adRows[0].ad_group_ad?.ad || {};
+        const ag = adRows[0].adGroup        || adRows[0].ad_group        || {};
+        const cp = adRows[0].campaign       || {};
+        return {
+            type: "ad", id: numId,
+            name: ad.name || `Ad ${numId}`,
+            parentName: ag.name || null,
+            campaignName: cp.name || null,
+        };
+    }
+
+    return null;
+}
+
+/**
+ * Resolve a Meta numeric ID (campaign, ad set, or ad) via the Graph API.
+ * Meta automatically returns the object type alongside the fields.
+ * Returns { type, id, name, parentName? } or null if not found / no access.
+ */
+export async function fetchMetaAdsObjectById(conn, id) {
+    const token  = conn.access_token;
+    const fields = "id,name,status,objective,adset_id,campaign_id,effective_status";
+    const resp   = await fetch(
+        `https://graph.facebook.com/v26.0/${id}?fields=${fields}&access_token=${encodeURIComponent(token)}`
+    ).catch(() => null);
+    if (!resp?.ok) return null;
+    const data = await resp.json().catch(() => null);
+    if (!data || data.error) return null;
+
+    // Determine type from which parent-ID fields are present
+    let type = "unknown";
+    if (data.objective !== undefined)          type = "campaign";
+    else if (data.campaign_id !== undefined && data.adset_id === undefined) type = "ad_set";
+    else if (data.adset_id !== undefined)      type = "ad";
+
+    let parentName = null;
+    if (data.campaign_id) {
+        const pr = await fetch(
+            `https://graph.facebook.com/v26.0/${data.campaign_id}?fields=name&access_token=${encodeURIComponent(token)}`
+        ).then(r => r.ok ? r.json() : null).catch(() => null);
+        parentName = pr?.name || null;
+    }
+
+    return { type, id: String(data.id), name: data.name || `Object ${id}`, parentName };
+}
+
 // Returns { [YYYY-MM-DD]: { clicks, impressions, spend, currency } }
 export async function fetchPlatformDataDaily(conn, fromDate, toDate) {
     switch (conn.platform) {

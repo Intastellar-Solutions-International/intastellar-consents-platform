@@ -337,6 +337,12 @@ async function ensureTables(db) {
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS gclid          VARCHAR(512);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS msclkid        VARCHAR(512);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS fbclid         VARCHAR(512);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS utm_campaign   VARCHAR(512);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS utm_content    VARCHAR(512);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS utm_source     VARCHAR(255);
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS utm_medium     VARCHAR(255);
+        ALTER TABLE analytics_conversion_pushes ADD COLUMN IF NOT EXISTS utm_campaign VARCHAR(512);
+        ALTER TABLE analytics_conversion_pushes ADD COLUMN IF NOT EXISTS utm_content  VARCHAR(512);
     `).catch(() => {});
     await db.query(`
         CREATE UNIQUE INDEX IF NOT EXISTS idx_ae_pageview_id ON analytics_events (pageview_id);
@@ -586,15 +592,20 @@ function getVid(){
 }
 var _iaNew=getVid();
 
-// Ad click IDs captured on landing and persisted for 90 days so they survive
-// across the session cookie and are still available when a conversion fires
-// later in the same journey. Only sent with full-consent events.
+// Ad click IDs + UTM params captured on landing and persisted for 90 days so
+// they survive across sessions and are still available when a conversion fires
+// later in the same journey. UTM campaign/content often carry numeric platform
+// IDs (e.g. {campaignid}/{adgroupid} ValueTrack or {{campaign.id}} in Meta),
+// allowing server-side resolution to campaign/ad names. Only sent with
+// full-consent events.
 function getClickIds(){
   try{
     var p=new URLSearchParams(location.search);
     var g=p.get('gclid')||'',ms=p.get('msclkid')||'',fb=p.get('fbclid')||'';
-    if(g||ms||fb){
-      var val=encodeURIComponent(JSON.stringify({g:g,ms:ms,fb:fb}));
+    var uc=p.get('utm_campaign')||'',uk=p.get('utm_content')||'';
+    var us=p.get('utm_source')||'',um=p.get('utm_medium')||'';
+    if(g||ms||fb||uc||uk||us||um){
+      var val=encodeURIComponent(JSON.stringify({g:g,ms:ms,fb:fb,uc:uc,uk:uk,us:us,um:um}));
       var base='_ia_cid='+val+';path=/;Max-Age=7776000;SameSite=Lax'+(location.protocol==='https:'?';Secure':'');
       var d=rootDomain();
       if(d){document.cookie=base+';domain='+d;if(document.cookie.indexOf('_ia_cid=')===-1)document.cookie=base;}
@@ -1086,7 +1097,11 @@ function track(name,opts){
     ca:hasAdv(c)?1:0,
     gc:full?(_iaCid.g||undefined):undefined,
     mc:full?(_iaCid.ms||undefined):undefined,
-    fc:full?(_iaCid.fb||undefined):undefined
+    fc:full?(_iaCid.fb||undefined):undefined,
+    uc:full?(_iaCid.uc||undefined):undefined,
+    uk:full?(_iaCid.uk||undefined):undefined,
+    us:full?(_iaCid.us||undefined):undefined,
+    um:full?(_iaCid.um||undefined):undefined
   }));
 }
 window.intaAnalytics={track:track};
@@ -1199,16 +1214,20 @@ export default async function handler(req, res) {
             ? Math.round(eventValue * 100)
             : null;
 
-        const cleanGclid   = gclid   ? String(gclid).slice(0, 512)   : null;
-        const cleanMsclkid = msclkid ? String(msclkid).slice(0, 512) : null;
-        const cleanFbclid  = fbclid  ? String(fbclid).slice(0, 512)  : null;
+        const cleanGclid      = gclid ? String(gclid).slice(0, 512)   : null;
+        const cleanMsclkid    = msclkid ? String(msclkid).slice(0, 512) : null;
+        const cleanFbclid     = fbclid  ? String(fbclid).slice(0, 512)  : null;
+        const cleanUtmCampaign = uc ? String(uc).slice(0, 512) : null;
+        const cleanUtmContent  = uk ? String(uk).slice(0, 512) : null;
+        const cleanUtmSource   = us ? String(us).slice(0, 255) : null;
+        const cleanUtmMedium   = um ? String(um).slice(0, 255) : null;
 
         const { rows: evRows } = await db.query(
             `INSERT INTO analytics_custom_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
-              gclid, msclkid, fbclid)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
+              gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23)
              RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
@@ -1220,6 +1239,7 @@ export default async function handler(req, res) {
                 evPathname, pageHostSanitized, country, deviceType,
                 eventSource === "datalayer" ? "datalayer" : "manual",
                 cleanGclid, cleanMsclkid, cleanFbclid,
+                cleanUtmCampaign, cleanUtmContent, cleanUtmSource, cleanUtmMedium,
             ]
         ).catch(() => ({ rows: [] }));
 
@@ -1240,9 +1260,11 @@ export default async function handler(req, res) {
             for (const [platform, clickId] of pushRows) {
                 await db.query(
                     `INSERT INTO analytics_conversion_pushes
-                     (organisation_id, site_id, custom_event_id, platform, click_id, event_name, value_usd, currency)
-                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8)`,
-                    [orgId, siteId, evId, platform, clickId, String(eventName).slice(0, 64), valueUsd, cur]
+                     (organisation_id, site_id, custom_event_id, platform, click_id, event_name,
+                      value_usd, currency, utm_campaign, utm_content)
+                     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+                    [orgId, siteId, evId, platform, clickId, String(eventName).slice(0, 64),
+                     valueUsd, cur, cleanUtmCampaign, cleanUtmContent]
                 ).catch(() => {});
             }
         }
