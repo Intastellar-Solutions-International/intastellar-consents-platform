@@ -85,7 +85,9 @@ export default async function handler(req, res) {
            ace.fbclid,
            ace.pathname,
            ace.country_code,
-           ace.device_type
+           ace.device_type,
+           ace.utm_campaign,
+           ace.utm_content
          FROM analytics_custom_events ace
          JOIN analytics_sites s ON s.id = ace.site_id
          WHERE ace.organisation_id = $1

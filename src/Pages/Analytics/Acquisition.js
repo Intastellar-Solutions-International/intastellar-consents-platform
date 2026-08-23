@@ -1,8 +1,23 @@
-const { useMemo } = React;
+const { useMemo, useState, useEffect, useRef } = React;
+import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
-import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration, SegmentFilter } from "./_shared.js";
+import { useAnalyticsPage, MiniBar, KpiCard, useAnalyticsReport, toIsoDate, pctChange, formatPercent, formatDuration, SegmentFilter, authHeaders } from "./_shared.js";
 import { IconMegaphone, IconTrendingUp, IconGlobe } from "./Icons.js";
 import "./Analytics.css";
+
+const AD_RESOLVE_URL = `${ScannerHost}/api/ad-id-resolve`;
+const _acqResolveCache = new Map();
+
+function isNumericId(val) {
+    return val && /^\d{5,}$/.test(String(val).trim());
+}
+
+function sourceToPlatform(source) {
+    const s = (source || "").toLowerCase();
+    if (s.includes("google")) return "google_ads";
+    if (s === "fb" || s === "ig" || s.includes("facebook") || s.includes("instagram") || s === "meta") return "meta_ads";
+    return null;
+}
 
 export default function AnalyticsAcquisition() {
     document.title = "Acquisition | Site Analytics";
@@ -29,6 +44,53 @@ export default function AnalyticsAcquisition() {
     const maxPages     = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
     const maxReferrer  = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
     const maxHost      = useMemo(() => Math.max(...(data?.hosts      || []).map(h => h.events), 1), [data]);
+
+    const [resolvedCampaigns, setResolvedCampaigns] = useState({});
+    const acqResolvingRef = useRef(new Set());
+
+    useEffect(() => {
+        if (!data?.utmSources?.length || !domain) return;
+        const toFetch = [];
+        for (const u of data.utmSources) {
+            if (!isNumericId(u.campaignRaw)) continue;
+            const platform = sourceToPlatform(u.source);
+            if (!platform) continue;
+            const key = `${platform}:${u.campaignRaw}`;
+            if (!_acqResolveCache.has(key) && !acqResolvingRef.current.has(key)) toFetch.push({ key, platform, id: u.campaignRaw });
+        }
+        const unique = [...new Map(toFetch.map(x => [x.key, x])).values()];
+        if (!unique.length) {
+            const hit = {};
+            for (const u of data.utmSources) {
+                const p = sourceToPlatform(u.source);
+                if (!p || !isNumericId(u.campaignRaw)) continue;
+                const key = `${p}:${u.campaignRaw}`;
+                if (_acqResolveCache.has(key)) hit[key] = _acqResolveCache.get(key);
+            }
+            if (Object.keys(hit).length) setResolvedCampaigns(prev => ({ ...prev, ...hit }));
+            return;
+        }
+        for (const { key } of unique) acqResolvingRef.current.add(key);
+        Promise.all(unique.map(async ({ key, platform, id }) => {
+            try {
+                const r = await fetch(
+                    `${AD_RESOLVE_URL}?platform=${platform}&id=${encodeURIComponent(id)}&domain=${encodeURIComponent(domain)}`,
+                    { headers: authHeaders() }
+                );
+                if (r.ok) {
+                    const json = await r.json();
+                    _acqResolveCache.set(key, json);
+                    return [key, json];
+                }
+            } catch { /* ignore */ }
+            return null;
+        })).then(results => {
+            const updates = {};
+            for (const r of results) if (r) updates[r[0]] = r[1];
+            if (Object.keys(updates).length) setResolvedCampaigns(prev => ({ ...prev, ...updates }));
+            for (const { key } of unique) acqResolvingRef.current.delete(key);
+        });
+    }, [data, domain]);
 
     return (
         <div style={{ flex: "1", minWidth: 0 }}>
@@ -132,13 +194,20 @@ export default function AnalyticsAcquisition() {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {data.utmSources.map((u, i) => (
+                                            {data.utmSources.map((u, i) => {
+                                                const platform = sourceToPlatform(u.source);
+                                                const resolved = platform && isNumericId(u.campaignRaw)
+                                                    ? resolvedCampaigns[`${platform}:${u.campaignRaw}`]
+                                                    : null;
+                                                const displayName = resolved?.name || u.campaign;
+                                                const isPlaceholder = !resolved && (!u.campaign || u.campaign.startsWith("Unresolved") || u.campaign.startsWith("Unnamed"));
+                                                return (
                                                 <tr key={i}>
                                                     <td
-                                                        title={u.campaignRaw && u.campaignRaw !== u.campaign ? `Raw value: ${u.campaignRaw}` : undefined}
-                                                        style={!u.campaign || u.campaign.startsWith("Unresolved") || u.campaign.startsWith("Unnamed") ? { color: "rgba(130,130,130,0.7)", fontStyle: "italic" } : undefined}
+                                                        title={u.campaignRaw && u.campaignRaw !== displayName ? `ID: ${u.campaignRaw}` : undefined}
+                                                        style={isPlaceholder ? { color: "rgba(130,130,130,0.7)", fontStyle: "italic" } : undefined}
                                                     >
-                                                        {u.campaign || "—"}
+                                                        {displayName || "—"}
                                                     </td>
                                                     <td>{u.source || "—"}</td>
                                                     <td>{u.medium || "—"}</td>
@@ -147,7 +216,8 @@ export default function AnalyticsAcquisition() {
                                                         <MiniBar value={u.events} max={maxUtm} color="rgba(251,146,60,0.6)" />
                                                     </td>
                                                 </tr>
-                                            ))}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>

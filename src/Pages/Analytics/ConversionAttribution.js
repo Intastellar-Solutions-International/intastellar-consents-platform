@@ -1,4 +1,4 @@
-const { useState, useEffect, useCallback } = React;
+const { useState, useEffect, useCallback, useRef } = React;
 import { ScannerHost } from "../../API/host.js";
 import StickyPageTitle from "../../Components/Header/Sticky/index.js";
 import { authHeaders, useAnalyticsPageChrome, toIsoDate } from "./_shared.js";
@@ -6,6 +6,20 @@ import "./Analytics.css";
 
 const ATTRIBUTION_URL = `${ScannerHost}/api/analytics-attribution`;
 const PUSH_URL        = `${ScannerHost}/api/ad-conversion-push`;
+const AD_RESOLVE_URL  = `${ScannerHost}/api/ad-id-resolve`;
+
+// Shared cache across renders — avoids re-fetching the same ID on date-range changes
+const _resolveCache = new Map();
+
+function isNumericId(val) {
+    return val && /^\d{5,}$/.test(String(val).trim());
+}
+
+function inferPlatform(ev) {
+    if (ev.gclid)   return "google_ads";
+    if (ev.fbclid)  return "meta_ads";
+    return null;
+}
 
 const PLATFORM_LABELS = {
     google_ads:    "Google Ads",
@@ -97,12 +111,42 @@ function KpiStrip({ summary }) {
     );
 }
 
-function ConversionRow({ ev, onPush }) {
+function ConversionRow({ ev, onPush, resolvedIds }) {
     const pushStatus = ev.pushes.length
         ? (ev.pushes.every(p => p.status === "sent")   ? "sent"
          : ev.pushes.some( p => p.status === "failed") ? "failed"
          : "pending")
         : "no_push";
+
+    const platform = inferPlatform(ev);
+    const campaignResolved = platform && ev.utm_campaign && isNumericId(ev.utm_campaign)
+        ? resolvedIds[`${platform}:${ev.utm_campaign}`] : null;
+    const adResolved = platform && ev.utm_content && isNumericId(ev.utm_content)
+        ? resolvedIds[`${platform}:${ev.utm_content}`] : null;
+
+    let campaignCell = null;
+    if (campaignResolved || adResolved) {
+        campaignCell = (
+            <div style={{ fontSize: 12, lineHeight: 1.4 }}>
+                {campaignResolved && (
+                    <div style={{ color: "rgba(220,220,220,0.9)" }} title={`Campaign ID: ${ev.utm_campaign}`}>
+                        {campaignResolved.name}
+                    </div>
+                )}
+                {adResolved && (
+                    <div style={{ color: "rgba(160,160,160,0.8)", fontSize: 11 }} title={`Ad ID: ${ev.utm_content}`}>
+                        {adResolved.name}
+                    </div>
+                )}
+            </div>
+        );
+    } else if (ev.utm_campaign || ev.utm_content) {
+        campaignCell = (
+            <span style={{ color: "rgba(130,130,130,0.5)", fontSize: 11 }}>
+                {ev.utm_campaign || ev.utm_content}
+            </span>
+        );
+    }
 
     return (
         <tr className="sa-attr-row">
@@ -115,6 +159,9 @@ function ConversionRow({ ev, onPush }) {
                 <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
                     {ev.platforms.map(p => <PlatformChip key={p} platform={p} />)}
                 </div>
+            </td>
+            <td className="sa-attr-td">
+                {campaignCell || <span style={{ color: "rgba(130,130,130,0.35)", fontSize: 11 }}>—</span>}
             </td>
             <td className="sa-attr-td">
                 {ev.pushes.length === 0 ? (
@@ -156,6 +203,8 @@ export default function ConversionAttribution() {
     const [error,       setError]       = useState(null);
     const [pushing,     setPushing]     = useState(false);
     const [pushResult,  setPushResult]  = useState(null);
+    const [resolvedIds, setResolvedIds] = useState({});
+    const resolvingRef = useRef(new Set());
 
     const fromIso = fromDate ? toIsoDate(fromDate) : toIsoDate(new Date(Date.now() - 30 * 86400_000));
     const toIso   = toDate   ? toIsoDate(toDate)   : toIsoDate(new Date());
@@ -174,6 +223,54 @@ export default function ConversionAttribution() {
     }, [domain, fromIso, toIso]);
 
     useEffect(() => { load(); }, [load]);
+
+    useEffect(() => {
+        if (!data?.attributed?.length || !domain) return;
+        const toFetch = [];
+        for (const ev of data.attributed) {
+            const platform = inferPlatform(ev);
+            if (!platform) continue;
+            for (const id of [ev.utm_campaign, ev.utm_content]) {
+                if (!isNumericId(id)) continue;
+                const key = `${platform}:${id}`;
+                if (!_resolveCache.has(key) && !resolvingRef.current.has(key)) toFetch.push({ key, platform, id });
+            }
+        }
+        const unique = [...new Map(toFetch.map(x => [x.key, x])).values()];
+        if (!unique.length) {
+            const hit = {};
+            for (const ev of data.attributed) {
+                const p = inferPlatform(ev);
+                if (!p) continue;
+                for (const id of [ev.utm_campaign, ev.utm_content]) {
+                    const key = `${p}:${id}`;
+                    if (_resolveCache.has(key)) hit[key] = _resolveCache.get(key);
+                }
+            }
+            if (Object.keys(hit).length) setResolvedIds(prev => ({ ...prev, ...hit }));
+            return;
+        }
+        for (const { key } of unique) resolvingRef.current.add(key);
+        Promise.all(unique.map(async ({ key, platform, id }) => {
+            try {
+                const r = await fetch(
+                    `${AD_RESOLVE_URL}?platform=${platform}&id=${encodeURIComponent(id)}&domain=${encodeURIComponent(domain)}`,
+                    { headers: authHeaders() }
+                );
+                if (r.ok) {
+                    const json = await r.json();
+                    _resolveCache.set(key, json);
+                    return [key, json];
+                }
+            } catch { /* ignore */ }
+            return null;
+        })).then(results => {
+            const updates = {};
+            for (const r of results) if (r) updates[r[0]] = r[1];
+            if (Object.keys(updates).length) setResolvedIds(prev => ({ ...prev, ...updates }));
+            for (const { key } of unique) resolvingRef.current.delete(key);
+        });
+    }, [data, domain]);
 
     async function pushPending(ids) {
         setPushing(true); setPushResult(null);
@@ -289,6 +386,7 @@ export default function ConversionAttribution() {
                                                     <th className="sa-attr-th">Event</th>
                                                     <th className="sa-attr-th">Value</th>
                                                     <th className="sa-attr-th">Platform</th>
+                                                    <th className="sa-attr-th">Campaign / Ad</th>
                                                     <th className="sa-attr-th">Push status</th>
                                                     <th className="sa-attr-th"></th>
                                                 </tr>
@@ -299,6 +397,7 @@ export default function ConversionAttribution() {
                                                         key={ev.id}
                                                         ev={ev}
                                                         onPush={ids => pushPending(ids)}
+                                                        resolvedIds={resolvedIds}
                                                     />
                                                 ))}
                                             </tbody>
