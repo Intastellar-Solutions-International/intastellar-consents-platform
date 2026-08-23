@@ -31,7 +31,9 @@ function getPool() {
         pool = new Pool({
             connectionString: process.env.POSTGRES_URL,
             ssl: { rejectUnauthorized: false },
-            max: 3,
+            max: 1,
+            idleTimeoutMillis: 10_000,
+            connectionTimeoutMillis: 5_000,
         });
     }
     return pool;
@@ -105,6 +107,16 @@ export default async function handler(req, res) {
     const orgId = parseInt(req.headers.organisation || req.headers.organization || "", 10);
     if (!orgId) return res.status(400).json({ error: "Organisation header required" });
 
+    try {
+        return await _handler(req, res, orgId);
+    } catch (err) {
+        console.error("[ad-spend-report] unhandled error:", err?.message, err?.code);
+        return res.status(500).json({ error: "Internal server error", detail: err?.message });
+    }
+}
+
+async function _handler(req, res, orgId) {
+
     const today = new Date().toISOString().slice(0, 10);
     const thirtyAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
     const fromDate = safeDate(req.query.from, thirtyAgo);
@@ -124,6 +136,7 @@ export default async function handler(req, res) {
     const domain        = isCombined ? null : rawSelector.toLowerCase();
 
     const db = getPool();
+    await ensureColumns(db);
 
     // ── Gating — does this org (or this domain) have any real ad-platform
     // connection at all? GA4-only connections don't count (no spend concept).
