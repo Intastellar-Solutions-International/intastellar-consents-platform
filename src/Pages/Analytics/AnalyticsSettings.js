@@ -371,7 +371,7 @@ function SiteConfigSection({ domain }) {
                 if (d) {
                     setSite(d);
                     setIndustry(d.industry || "");
-                    setBusinessType(d.businessType || "");
+                    setBusinessType(d.businessType || d.business_type || "");
                 }
             })
             .catch(() => {})
@@ -473,7 +473,7 @@ function SiteConfigSection({ domain }) {
                 <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 10 }}>
                     <button className="sa-btn"
                         onClick={() => patch({ businessType: businessType || null }, setSavingBt, setSavedBt)}
-                        disabled={savingBt || businessType === (site.businessType || "")}>
+                        disabled={savingBt || businessType === (site.businessType || site.business_type || "")}>
                         {savingBt ? "Saving…" : savedBt ? "Saved!" : "Save mode"}
                     </button>
                     {businessType && (

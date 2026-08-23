@@ -364,7 +364,10 @@ export function useSiteConfig(domain) {
         fetch(`${ScannerHost}/api/analytics-site?domain=${encodeURIComponent(domain)}`,
             { headers: authHeaders() })
             .then(r => r.ok ? r.json() : null)
-            .then(d => setConfig(d || null))
+            .then(d => {
+                if (!d) { setConfig(null); return; }
+                setConfig({ ...d, businessType: d.business_type ?? d.businessType ?? null });
+            })
             .catch(() => {});
     }, [domain]);
     return config;
