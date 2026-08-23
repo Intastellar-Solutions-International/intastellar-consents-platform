@@ -1,4 +1,4 @@
-const { useState, useEffect, useMemo, useContext, useCallback } = React;
+const { useState, useEffect, useMemo, useContext, useCallback, useRef } = React;
 import StickyPageTitle from "../../../Components/Header/Sticky";
 import { defaultCompareWindowForPrimary } from "../../../Components/Filter/filterDatePresets.js";
 import { DomainContext } from "../../../App.js";
@@ -1575,6 +1575,20 @@ function MarketingHighlightsSection({ highlights }) {
     );
 }
 
+const _mrResolveCache = new Map();
+
+function mrIsNumericId(val) {
+    return val && /^\d{5,}$/.test(String(val).trim());
+}
+
+function channelToPlatform(channel) {
+    const c = (channel || "").toLowerCase();
+    if (c.includes("google ads")) return "google_ads";
+    if (c.includes("facebook ads") || c.includes("instagram ads")) return "meta_ads";
+    if (c.includes("microsoft ads")) return "microsoft_ads";
+    return null;
+}
+
 export default function MarketingReport() {
     document.title = "Marketing | Analytics | Intastellar Consents";
     const [currentDomain, setGlobalDomain] = useContext(DomainContext);
@@ -1635,6 +1649,8 @@ export default function MarketingReport() {
     const [channelTableSort, setChannelTableSort] = useState({ column: null, step: 0 });
     const [campaignTableSort, setCampaignTableSort] = useState({ column: null, step: 0 });
     const [channelTablePage, setChannelTablePage] = useState(1);
+    const [resolvedMrCampaigns, setResolvedMrCampaigns] = useState({});
+    const mrResolvingRef = useRef(new Set());
 
     /*
      * Phase 2: daily time-series payload for the channel Line chart.
@@ -1994,6 +2010,51 @@ export default function MarketingReport() {
         if (!selectedChannel) return [];
         return rows.filter((r) => r.channel === selectedChannel);
     }, [rows, selectedChannel]);
+
+    useEffect(() => {
+        const domain = listDomainLabel;
+        const platform = channelToPlatform(selectedChannel);
+        if (!platform || !domain || domain === "combined view" || !drilldownRows.length) return;
+        const authToken = Authentication.getToken();
+        const orgId = Authentication.getOrganisation();
+        if (!authToken || !orgId) return;
+        const toFetch = [];
+        for (const r of drilldownRows) {
+            if (!mrIsNumericId(r.utmCampaign)) continue;
+            const key = `${platform}:${r.utmCampaign}`;
+            if (!_mrResolveCache.has(key) && !mrResolvingRef.current.has(key)) toFetch.push({ key, platform, id: r.utmCampaign });
+        }
+        const unique = [...new Map(toFetch.map(x => [x.key, x])).values()];
+        if (!unique.length) {
+            const hit = {};
+            for (const r of drilldownRows) {
+                const key = `${platform}:${r.utmCampaign}`;
+                if (_mrResolveCache.has(key)) hit[key] = _mrResolveCache.get(key);
+            }
+            if (Object.keys(hit).length) setResolvedMrCampaigns(prev => ({ ...prev, ...hit }));
+            return;
+        }
+        for (const { key } of unique) mrResolvingRef.current.add(key);
+        Promise.all(unique.map(async ({ key, platform: p, id }) => {
+            try {
+                const r = await fetch(
+                    `${ScannerHost}/api/ad-id-resolve?platform=${p}&id=${encodeURIComponent(id)}&domain=${encodeURIComponent(domain)}`,
+                    { headers: { Authorization: authToken, Organisation: String(orgId) } }
+                );
+                if (r.ok) {
+                    const json = await r.json();
+                    _mrResolveCache.set(key, json);
+                    return [key, json];
+                }
+            } catch { /* ignore */ }
+            return null;
+        })).then(results => {
+            const updates = {};
+            for (const r of results) if (r) updates[r[0]] = r[1];
+            if (Object.keys(updates).length) setResolvedMrCampaigns(prev => ({ ...prev, ...updates }));
+            for (const { key } of unique) mrResolvingRef.current.delete(key);
+        });
+    }, [drilldownRows, selectedChannel, listDomainLabel]);
 
     const sortedChannelOverview = useMemo(
         () => sortChannelOverviewRows(channelOverviewWithCompare, channelTableSort),
@@ -2675,7 +2736,15 @@ export default function MarketingReport() {
                                                 }
                                             >
                                                 <td className="marketing-report-table__col-campaign">
-                                                    {r.utmCampaign}
+                                                    {(() => {
+                                                        const platform = channelToPlatform(selectedChannel);
+                                                        const resolved = platform && mrIsNumericId(r.utmCampaign)
+                                                            ? resolvedMrCampaigns[`${platform}:${r.utmCampaign}`]
+                                                            : null;
+                                                        return resolved
+                                                            ? <span title={`ID: ${r.utmCampaign}`}>{resolved.name}</span>
+                                                            : r.utmCampaign;
+                                                    })()}
                                                     {blindSpot ? (
                                                         <span
                                                             className="marketing-report-blind-spot-badge"

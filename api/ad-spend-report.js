@@ -37,6 +37,22 @@ function getPool() {
     return pool;
 }
 
+let _migrationsRun = false;
+async function ensureColumns(db) {
+    if (_migrationsRun) return;
+    await Promise.all([
+        // spend_eur is normally added by cron-ad-sync.js but may not exist yet
+        // if the cron hasn't run since the column was added to the schema.
+        db.query(`ALTER TABLE ad_daily_data ADD COLUMN IF NOT EXISTS spend_eur NUMERIC(14,4)`).catch(() => {}),
+        // lead quality columns on analytics_sites — added by a separate migration
+        db.query(`ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_quality_enabled BOOLEAN DEFAULT false`).catch(() => {}),
+        db.query(`ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_require_engaged BOOLEAN DEFAULT true`).catch(() => {}),
+        db.query(`ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_pages TEXT[]`).catch(() => {}),
+        db.query(`ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_events TEXT[]`).catch(() => {}),
+    ]);
+    _migrationsRun = true;
+}
+
 function validateJwt(authHeader) {
     const match = (authHeader || "").match(/^Bearer\s+(.+)$/i);
     if (!match) return null;
