@@ -1210,45 +1210,69 @@ async function msAdsCampaignSoapCall(action, bodyXml, accessToken, accountId) {
     const text = await resp.text().catch(() => null);
     if (!text) return null;
     const fault = /<(?:\w+:)?Reason>[\s\S]*?<(?:\w+:)?Text[^>]*>([^<]*)<|<faultstring>([^<]*)<\/faultstring>/i.exec(text);
-    return fault ? null : text;
+    if (fault) {
+        console.warn(`[msAdsCampaignSoapCall] ${action} fault:`, fault[1] || fault[2]);
+        return null;
+    }
+    return text;
 }
 
 export async function fetchMicrosoftAdsObjectById(conn, id) {
     if (!conn.account_id) return null;
 
-    // Try as campaign
+    // GetCampaignsByIds — omit ReturnAdditionalFields entirely (passing "None"
+    // is not a valid enum value and causes a SOAP deserialization fault).
+    // CampaignType covers the common types; PerformanceMax omitted as it is
+    // not available in all markets/API versions and would also fault there.
     const campaignXml = await msAdsCampaignSoapCall(
         "GetCampaignsByIds",
         `<GetCampaignsByIdsRequest xmlns="${MS_ADS_CAMPAIGN_NS}">
           <AccountId>${conn.account_id}</AccountId>
-          <CampaignIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${id}</a:long></CampaignIds>
-          <CampaignType>Search DynamicSearchAds Shopping Audience PerformanceMax</CampaignType>
-          <ReturnAdditionalFields>None</ReturnAdditionalFields>
+          <CampaignIds i:nil="false" xmlns:a="${MS_ADS_ARRAYS_NS}">
+            <a:long>${id}</a:long>
+          </CampaignIds>
+          <CampaignType>Search DynamicSearchAds Shopping Audience</CampaignType>
         </GetCampaignsByIdsRequest>`,
         conn.access_token, conn.account_id
     );
 
     if (campaignXml) {
-        const m = /<(?:\w+:)?Campaign[^>]*>[\s\S]*?<(?:\w+:)?Name>([^<]+)<\/(?:\w+:)?Name>/i.exec(campaignXml);
+        // Match <Name> inside the first non-nil Campaign element
+        const m = /<(?:\w+:)?Campaign(?:\s[^>]*)?>[\s\S]*?<(?:\w+:)?Name>([^<]+)<\/(?:\w+:)?Name>/i.exec(campaignXml);
         if (m) return { type: "campaign", id: String(id), name: m[1] };
     }
 
-    // Try as ad group (GetAdGroupsByIds needs a CampaignId; use 0 which
-    // the API interprets as "any campaign in this account" in some versions)
-    const adGroupXml = await msAdsCampaignSoapCall(
-        "GetAdGroupsByIds",
-        `<GetAdGroupsByIdsRequest xmlns="${MS_ADS_CAMPAIGN_NS}">
+    // GetAdGroupsByIds requires a known CampaignId — we can't pass 0.
+    // Instead search all campaigns for one that contains this ad group ID.
+    // First fetch all campaign IDs for the account, then call GetAdGroupsByIds
+    // for each until a match is found.
+    const campaignListXml = await msAdsCampaignSoapCall(
+        "GetCampaignsByAccountId",
+        `<GetCampaignsByAccountIdRequest xmlns="${MS_ADS_CAMPAIGN_NS}">
           <AccountId>${conn.account_id}</AccountId>
-          <CampaignId>0</CampaignId>
-          <AdGroupIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${id}</a:long></AdGroupIds>
-          <ReturnAdditionalFields>None</ReturnAdditionalFields>
-        </GetAdGroupsByIdsRequest>`,
+          <CampaignType>Search DynamicSearchAds Shopping Audience</CampaignType>
+        </GetCampaignsByAccountIdRequest>`,
         conn.access_token, conn.account_id
     );
 
-    if (adGroupXml) {
-        const m = /<(?:\w+:)?AdGroup[^>]*>[\s\S]*?<(?:\w+:)?Name>([^<]+)<\/(?:\w+:)?Name>/i.exec(adGroupXml);
-        if (m) return { type: "ad_group", id: String(id), name: m[1] };
+    if (campaignListXml) {
+        const campaignIds = [...campaignListXml.matchAll(/<(?:\w+:)?Id>(\d+)<\/(?:\w+:)?Id>/gi)].map(m => m[1]);
+        for (const cid of campaignIds.slice(0, 20)) {
+            const agXml = await msAdsCampaignSoapCall(
+                "GetAdGroupsByIds",
+                `<GetAdGroupsByIdsRequest xmlns="${MS_ADS_CAMPAIGN_NS}">
+                  <AccountId>${conn.account_id}</AccountId>
+                  <CampaignId>${cid}</CampaignId>
+                  <AdGroupIds i:nil="false" xmlns:a="${MS_ADS_ARRAYS_NS}">
+                    <a:long>${id}</a:long>
+                  </AdGroupIds>
+                </GetAdGroupsByIdsRequest>`,
+                conn.access_token, conn.account_id
+            );
+            if (!agXml) continue;
+            const m = /<(?:\w+:)?AdGroup(?:\s[^>]*)?>[\s\S]*?<(?:\w+:)?Name>([^<]+)<\/(?:\w+:)?Name>/i.exec(agXml);
+            if (m) return { type: "ad_group", id: String(id), name: m[1] };
+        }
     }
 
     return null;
