@@ -33,7 +33,7 @@ function timeAgo(isoString) {
 }
 
 
-function LivePanel({ domain, className, engagedUsers }) {
+function LivePanel({ domain, engagedUsers }) {
     const [data,      setData]    = useState(null);
     const [open,      setOpen]    = useState(true);
     const [countdown, setCountdown] = useState(LIVE_INTERVAL);
@@ -64,18 +64,20 @@ function LivePanel({ domain, className, engagedUsers }) {
     if (!domain || !data || data.noSiteKey) return null;
 
     const maxBar = Math.max(...(data.perMinute || [1]), 1);
+    const consentPct = data.total > 0 ? Math.round((data.full / data.total) * 100) : 0;
 
     return (
-        <div className={"sa-live" + (className ? " " + className : "")}>
+        <div className="sa-live">
+            {/* ── Header ── */}
             <div className="sa-live__header" onClick={() => setOpen(o => !o)} role="button" aria-expanded={open}>
                 <div className="sa-live__title">
                     <span className="sa-live__dot" />
                     <span className="sa-live__label">Live</span>
-                    <span className="sa-live__window">— last 30 min</span>
+                    <span className="sa-live__window">last 30 min</span>
                 </div>
                 <div className="sa-live__right">
                     <span className="sa-live__countdown">
-                        {open ? `Refreshes in ${countdown}s` : `${data.total} events`}
+                        {open ? `${countdown}s` : `${data.total} events`}
                     </span>
                     <button type="button" className="sa-live__toggle" aria-label={open ? "Collapse" : "Expand"}>
                         {open ? "▲" : "▼"}
@@ -85,39 +87,19 @@ function LivePanel({ domain, className, engagedUsers }) {
 
             {open && (
                 <div className="sa-live__body">
-                    <div className="sa-live__kpis">
-                        <div className="sa-live__kpi">
-                            <span className="sa-live__kpi-label">Active users</span>
-                            <span className="sa-live__kpi-value">{(engagedUsers ?? 0).toLocaleString("de-DE")}</span>
-                            <span className="sa-live__kpi-sub">engaged in selected period</span>
-                        </div>
-                        <div className="sa-live__kpi">
-                            <span className="sa-live__kpi-label">Events</span>
-                            <span className="sa-live__kpi-value">{data.total.toLocaleString("de-DE")}</span>
-                            <span className="sa-live__kpi-sub">{data.minimal} minimal · {data.full} full</span>
-                        </div>
-                        <div className="sa-live__kpi">
-                            <span className="sa-live__kpi-label">Sessions</span>
-                            <span className="sa-live__kpi-value">{data.sessions.toLocaleString("de-DE")}</span>
-                            <span className="sa-live__kpi-sub">last 30 min · consent-gated only</span>
-                        </div>
-                        <div className="sa-live__kpi">
-                            <span className="sa-live__kpi-label">Consent rate</span>
-                            <span className="sa-live__kpi-value">
-                                {data.total > 0 ? Math.round((data.full / data.total) * 100) : 0}%
-                            </span>
-                            <span className="sa-live__kpi-sub">in this window</span>
-                        </div>
-                    </div>
 
+                    {/* ── Sparkline ── */}
                     <div className="sa-live__sparkline">
-                        <span className="sa-live__spark-label">Events per minute</span>
+                        <div className="sa-live__spark-hd">
+                            <span className="sa-live__spark-label">Events / min</span>
+                            <span className="sa-live__spark-peak">{maxBar} peak</span>
+                        </div>
                         <div className="sa-live__spark-bars">
                             {(data.perMinute || []).map((v, i) => (
                                 <div
                                     key={i}
-                                    className={"sa-live__spark-bar" + (i === 29 ? " sa-live__spark-bar--last" : "")}
-                                    style={{ height: Math.max(4, Math.round((v / maxBar) * 48)) + "px" }}
+                                    className={"sa-live__spark-bar" + (i === (data.perMinute.length - 1) ? " sa-live__spark-bar--last" : "")}
+                                    style={{ height: Math.max(3, Math.round((v / maxBar) * 44)) + "px" }}
                                     title={`${v} event${v !== 1 ? "s" : ""}`}
                                 />
                             ))}
@@ -129,53 +111,60 @@ function LivePanel({ domain, className, engagedUsers }) {
                         </div>
                     </div>
 
-                    <div className="sa-live__bottom">
-                        <div>
-                            <p className="sa-live__section-title">Top active pages</p>
-                            <table className="sa-table">
-                                <tbody>
-                                    {(data.topPages || []).map(p => (
-                                        <tr key={p.pathname}>
-                                            <td className="sa-table__path" title={p.pathname}>{p.pathname}</td>
-                                            <td className="sa-table__num">{p.views}</td>
-                                        </tr>
-                                    ))}
-                                    {!data.topPages?.length && (
-                                        <tr><td colSpan={2} style={{color:"rgba(130,130,130,0.55)",fontSize:"0.8rem"}}>No events yet</td></tr>
-                                    )}
-                                </tbody>
-                            </table>
+                    {/* ── 2 × 2 KPI grid ── */}
+                    <div className="sa-live__kpis">
+                        <div className="sa-live__kpi">
+                            <span className="sa-live__kpi-label">Active users</span>
+                            <span className="sa-live__kpi-value">{(engagedUsers ?? 0).toLocaleString("de-DE")}</span>
+                            <span className="sa-live__kpi-sub">in period</span>
                         </div>
-
-                        <div>
-                            <p className="sa-live__section-title">Recent events</p>
-                            <div className="sa-live__feed">
-                                {(data.recent || []).slice(0, 10).map((e, i) => (
-                                    <div key={i} className="sa-live__event">
-                                        <span className="sa-live__event-path" title={e.host ? `${e.host}${e.path}` : e.path}>
-                                            {e.host && e.host !== domain ? `${e.host}` : ""}{e.path}
-                                        </span>
-                                        <div className="sa-live__event-meta">
-                                            {e.country && <span className="sa-live__event-flag">{e.country}</span>}
-                                            <span className={"sa-live__event-level sa-live__event-level--" + e.level}>
-                                                {e.level}
-                                            </span>
-                                            <span className="sa-live__event-time">{timeAgo(e.at)}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                                {!data.recent?.length && (
-                                    <p style={{color:"rgba(130,130,130,0.55)",fontSize:"0.8rem",margin:0}}>No events yet</p>
-                                )}
-                            </div>
+                        <div className="sa-live__kpi">
+                            <span className="sa-live__kpi-label">Events</span>
+                            <span className="sa-live__kpi-value">{data.total.toLocaleString("de-DE")}</span>
+                            <span className="sa-live__kpi-sub">{data.minimal}m · {data.full}f</span>
+                        </div>
+                        <div className="sa-live__kpi">
+                            <span className="sa-live__kpi-label">Sessions</span>
+                            <span className="sa-live__kpi-value">{data.sessions.toLocaleString("de-DE")}</span>
+                            <span className="sa-live__kpi-sub">consent-gated</span>
+                        </div>
+                        <div className="sa-live__kpi sa-live__kpi--consent" style={{ '--cpct': consentPct + '%' }}>
+                            <span className="sa-live__kpi-label">Consent</span>
+                            <span className="sa-live__kpi-value">{consentPct}%</span>
+                            <span className="sa-live__kpi-sub">this window</span>
                         </div>
                     </div>
 
+                    {/* ── Recent event feed ── */}
+                    <div className="sa-live__feed-wrap">
+                        <p className="sa-live__section-title">Recent events</p>
+                        <div className="sa-live__feed">
+                            {(data.recent || []).slice(0, 12).map((e, i) => (
+                                <div key={i} className="sa-live__event">
+                                    <span className="sa-live__event-path" title={e.host ? `${e.host}${e.path}` : e.path}>
+                                        {e.host && e.host !== domain ? `${e.host}` : ""}{e.path}
+                                    </span>
+                                    <div className="sa-live__event-meta">
+                                        {e.country && <span className="sa-live__event-flag">{e.country}</span>}
+                                        <span className={"sa-live__event-level sa-live__event-level--" + e.level}>
+                                            {e.level}
+                                        </span>
+                                        <span className="sa-live__event-time">{timeAgo(e.at)}</span>
+                                    </div>
+                                </div>
+                            ))}
+                            {!data.recent?.length && (
+                                <p style={{ color: "rgba(130,130,130,0.55)", fontSize: "0.8rem", margin: 0 }}>No events yet</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* ── Multi-host notice ── */}
                     {data.topHosts && data.topHosts.length > 1 && (
                         <div className="sa-live__hosts">
                             <p className="sa-live__section-title">
-                                Hosts serving this site key
-                                <span className="sa-panel__consent-note"> — cross-site traffic detected</span>
+                                Cross-site hosts
+                                <span className="sa-panel__consent-note"> — multiple origins</span>
                             </p>
                             <table className="sa-table">
                                 <tbody>
@@ -189,6 +178,7 @@ function LivePanel({ domain, className, engagedUsers }) {
                             </table>
                         </div>
                     )}
+
                 </div>
             )}
         </div>
