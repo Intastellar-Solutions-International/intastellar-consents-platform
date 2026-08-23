@@ -16,7 +16,7 @@
 
 import pkg from "pg";
 const { Pool } = pkg;
-import { tryRefreshToken, fetchGoogleAdsObjectById, fetchMetaAdsObjectById } from "./_ad-platform-fetch.js";
+import { tryRefreshToken, fetchGoogleAdsObjectById, fetchMetaAdsObjectById, fetchMicrosoftAdsObjectById } from "./_ad-platform-fetch.js";
 
 let pool;
 function getPool() {
@@ -61,7 +61,7 @@ function setCors(req, res) {
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
 
-const SUPPORTED = new Set(["google_ads", "meta_ads"]);
+const SUPPORTED = new Set(["google_ads", "meta_ads", "microsoft_ads"]);
 
 export default async function handler(req, res) {
     setCors(req, res);
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
     const domain   = String(req.query.domain   || "").trim().toLowerCase();
 
     if (!SUPPORTED.has(platform)) {
-        return res.status(400).json({ error: `Unsupported platform "${platform}". Supported: google_ads, meta_ads` });
+        return res.status(400).json({ error: `Unsupported platform "${platform}". Supported: google_ads, meta_ads, microsoft_ads` });
     }
     if (!id)     return res.status(400).json({ error: "id query param required (numeric)" });
     if (!domain) return res.status(400).json({ error: "domain query param required" });
@@ -103,6 +103,8 @@ export default async function handler(req, res) {
     try {
         const result = platform === "google_ads"
             ? await fetchGoogleAdsObjectById(conn, id)
+            : platform === "microsoft_ads"
+            ? await fetchMicrosoftAdsObjectById(conn, id)
             : await fetchMetaAdsObjectById(conn, id);
 
         if (!result) return res.status(404).json({ error: `No object found for id ${id} in ${platform}` });

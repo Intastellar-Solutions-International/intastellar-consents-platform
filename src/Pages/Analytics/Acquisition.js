@@ -16,6 +16,7 @@ function sourceToPlatform(source) {
     const s = (source || "").toLowerCase();
     if (s.includes("google")) return "google_ads";
     if (s === "fb" || s === "ig" || s.includes("facebook") || s.includes("instagram") || s === "meta") return "meta_ads";
+    if (s.includes("bing") || s.includes("microsoft") || s === "msn") return "microsoft_ads";
     return null;
 }
 

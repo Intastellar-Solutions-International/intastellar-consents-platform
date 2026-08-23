@@ -18,6 +18,7 @@ function isNumericId(val) {
 function inferPlatform(ev) {
     if (ev.gclid)   return "google_ads";
     if (ev.fbclid)  return "meta_ads";
+    if (ev.msclkid) return "microsoft_ads";
     return null;
 }
 

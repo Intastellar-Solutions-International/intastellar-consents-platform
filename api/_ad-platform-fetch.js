@@ -1182,6 +1182,78 @@ export async function fetchGoogleAdsObjectById(conn, id) {
  * Meta automatically returns the object type alongside the fields.
  * Returns { type, id, name, parentName? } or null if not found / no access.
  */
+
+// --- Microsoft Ads: Campaign Management Service ---------------------------------
+
+const MS_ADS_CAMPAIGN_NS       = "https://bingads.microsoft.com/CampaignManagement/v13";
+const MS_ADS_CAMPAIGN_ENDPOINT = "https://campaign.api.bingads.microsoft.com/Api/Advertiser/CampaignManagement/v13/CampaignManagementService.svc";
+
+async function msAdsCampaignSoapCall(action, bodyXml, accessToken, accountId) {
+    const devToken = process.env.MICROSOFT_ADS_DEVELOPER_TOKEN || "";
+    const envelope = `<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <soap:Header>
+    <Action mustUnderstand="1" xmlns="${MS_ADS_CAMPAIGN_NS}">${action}</Action>
+    <ApplicationToken i:nil="true" xmlns="${MS_ADS_CAMPAIGN_NS}"/>
+    <AuthenticationToken xmlns="${MS_ADS_CAMPAIGN_NS}">${accessToken}</AuthenticationToken>
+    <CustomerAccountId xmlns="${MS_ADS_CAMPAIGN_NS}">${accountId}</CustomerAccountId>
+    <DeveloperToken xmlns="${MS_ADS_CAMPAIGN_NS}">${devToken}</DeveloperToken>
+  </soap:Header>
+  <soap:Body>${bodyXml}</soap:Body>
+</soap:Envelope>`;
+    const resp = await fetch(MS_ADS_CAMPAIGN_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "text/xml; charset=utf-8", SOAPAction: `"${action}"` },
+        body: envelope,
+    }).catch(() => null);
+    if (!resp?.ok) return null;
+    const text = await resp.text().catch(() => null);
+    if (!text) return null;
+    const fault = /<(?:\w+:)?Reason>[\s\S]*?<(?:\w+:)?Text[^>]*>([^<]*)<|<faultstring>([^<]*)<\/faultstring>/i.exec(text);
+    return fault ? null : text;
+}
+
+export async function fetchMicrosoftAdsObjectById(conn, id) {
+    if (!conn.account_id) return null;
+
+    // Try as campaign
+    const campaignXml = await msAdsCampaignSoapCall(
+        "GetCampaignsByIds",
+        `<GetCampaignsByIdsRequest xmlns="${MS_ADS_CAMPAIGN_NS}">
+          <AccountId>${conn.account_id}</AccountId>
+          <CampaignIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${id}</a:long></CampaignIds>
+          <CampaignType>Search DynamicSearchAds Shopping Audience PerformanceMax</CampaignType>
+          <ReturnAdditionalFields>None</ReturnAdditionalFields>
+        </GetCampaignsByIdsRequest>`,
+        conn.access_token, conn.account_id
+    );
+
+    if (campaignXml) {
+        const m = /<(?:\w+:)?Campaign[^>]*>[\s\S]*?<(?:\w+:)?Name>([^<]+)<\/(?:\w+:)?Name>/i.exec(campaignXml);
+        if (m) return { type: "campaign", id: String(id), name: m[1] };
+    }
+
+    // Try as ad group (GetAdGroupsByIds needs a CampaignId; use 0 which
+    // the API interprets as "any campaign in this account" in some versions)
+    const adGroupXml = await msAdsCampaignSoapCall(
+        "GetAdGroupsByIds",
+        `<GetAdGroupsByIdsRequest xmlns="${MS_ADS_CAMPAIGN_NS}">
+          <AccountId>${conn.account_id}</AccountId>
+          <CampaignId>0</CampaignId>
+          <AdGroupIds xmlns:a="${MS_ADS_ARRAYS_NS}"><a:long>${id}</a:long></AdGroupIds>
+          <ReturnAdditionalFields>None</ReturnAdditionalFields>
+        </GetAdGroupsByIdsRequest>`,
+        conn.access_token, conn.account_id
+    );
+
+    if (adGroupXml) {
+        const m = /<(?:\w+:)?AdGroup[^>]*>[\s\S]*?<(?:\w+:)?Name>([^<]+)<\/(?:\w+:)?Name>/i.exec(adGroupXml);
+        if (m) return { type: "ad_group", id: String(id), name: m[1] };
+    }
+
+    return null;
+}
+
 export async function fetchMetaAdsObjectById(conn, id) {
     const token = conn.access_token;
 
