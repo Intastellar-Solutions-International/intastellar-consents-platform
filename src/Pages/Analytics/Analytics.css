@@ -527,16 +527,30 @@
 
 .sa-area-chart { width: 100%; }
 
+.sa-chart-section__hd {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
 .sa-chart-section__title {
-    margin: 0 0 16px;
-    font-size: 0.72rem;
-    font-weight: 500;
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
     letter-spacing: 0;
     text-transform: none;
-    color: rgba(155,155,175,0.7);
+    color: rgba(200,200,218,0.9);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
+}
+
+.sa-chart-section__period {
+    font-size: 0.69rem;
+    color: rgba(130,130,150,0.6);
+    white-space: nowrap;
 }
 
 .sa-chart {
@@ -1024,59 +1038,62 @@
     color: #d4b896;
 }
 
-/* ── Overview grid (KPIs + chart + live + top pages) ─────────────────────────── */
+/* ── Overview bento layout ────────────────────────────────────────────────────── */
 
-.sa-dashboard-grid--overview {
+.sa-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* KPI strip — equal-width cards, expands to 6 when quality-leads is present */
+.sa-kpi-strip {
+    display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-areas:
-        "kpi0     kpi1     kpi2      kpi3      kpi4"
-        "chart    chart    chart     live      live"
-        "map      map      countries countries countries"
-        "sources  sources  sources   devices   devices"
-        "pages    pages    pages     pages     pages";
+    gap: 12px;
 }
-
-.sa-dashboard-grid--overview.sa-dashboard-grid--leads {
+.sa-kpi-strip--6 {
     grid-template-columns: repeat(6, 1fr);
-    grid-template-areas:
-        "kpi0     kpi1     kpi2     kpi3      kpi4      kpi5"
-        "chart    chart    chart    chart     live      live"
-        "map      map      map      countries countries countries"
-        "sources  sources  sources  devices   devices   devices"
-        "pages    pages    pages    pages     pages     pages";
 }
 
-.sa-ga-map       { grid-area: map;       }
-.sa-ga-countries { grid-area: countries; }
-.sa-ga-sources   { grid-area: sources;   }
-.sa-ga-devices   { grid-area: devices;   }
-
-@media (max-width: 1100px) {
-    .sa-dashboard-grid--overview,
-    .sa-dashboard-grid--overview.sa-dashboard-grid--leads {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-areas:
-            "kpi0  kpi1"
-            "kpi2  kpi3"
-            "kpi4  kpi4"
-            "chart chart"
-            "live  live"
-            "map   map"
-            "countries countries"
-            "sources sources"
-            "devices devices"
-            "pages pages";
-    }
+/* Row 1: main chart (60 %) + live feed (40 %) */
+.sa-overview-main {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 12px;
+    align-items: start;
 }
 
-@media (max-width: 620px) {
-    .sa-dashboard-grid--overview,
-    .sa-dashboard-grid--overview.sa-dashboard-grid--leads {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "kpi0" "kpi1" "kpi2" "kpi3" "kpi4"
-            "chart" "live" "map" "countries" "sources" "devices" "pages";
-    }
+/* Row 2: world-map (wide) | top countries | devices */
+.sa-overview-geo {
+    display: grid;
+    grid-template-columns: 2.2fr 2fr 1.5fr;
+    gap: 12px;
+    align-items: start;
+}
+
+/* Row 3: traffic sources | top pages */
+.sa-overview-bottom {
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    gap: 12px;
+    align-items: start;
+}
+
+@media (max-width: 1200px) {
+    .sa-kpi-strip    { grid-template-columns: repeat(3, 1fr); }
+    .sa-kpi-strip--6 { grid-template-columns: repeat(3, 1fr); }
+    .sa-overview-geo { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 900px) {
+    .sa-overview-main   { grid-template-columns: 1fr; }
+    .sa-overview-bottom { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+    .sa-kpi-strip, .sa-kpi-strip--6 { grid-template-columns: repeat(2, 1fr); }
+    .sa-overview-geo { grid-template-columns: 1fr; }
 }
 
 /* ── Audience sub-page grid ──────────────────────────────────────────────────── */
