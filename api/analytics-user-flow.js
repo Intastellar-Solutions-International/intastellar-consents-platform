@@ -1,6 +1,7 @@
 /**
  * GET /api/analytics-user-flow?domain=<domain>&from=<YYYY-MM-DD>&to=<YYYY-MM-DD>
  *      [&goal=<eventName>&direction=to|from]
+ *      [&traceCol=<0..FLOW_DEPTH>&traceNode=<channel label or pathname>]
  *
  * Multi-column page-transition ("user flow") data for a Sankey-style
  * diagram. No existing query in this codebase reconstructs an ordered
@@ -9,7 +10,15 @@
  * alongside the ROW_NUMBER() idiom analytics-report.js already uses for
  * per-page bounce/exit rate).
  *
- * Three modes:
+ * `traceCol`/`traceNode` request EXACT full-path attribution for one node a
+ * user clicked in the diagram, instead of the main aggregate response —
+ * see the dedicated block below the main query for why this has to be a
+ * second request rather than something derivable from the first response.
+ * Only supported in the no-goal (all-traffic) mode; `(other)` is rejected
+ * since it's a heterogeneous bucket of many real pathnames/channels, not
+ * one the DB can filter sessions by directly.
+ *
+ * Three modes (traceCol/traceNode aside):
  *  - No `goal`: column 1 is acquisition channel (source/medium), columns
  *    2-5 are the next FLOW_DEPTH pageviews in session order, for all
  *    session-linked traffic. (Byte-identical to this endpoint's original
@@ -212,6 +221,124 @@ export default async function handler(req, res) {
 
     if (!siteRows.length) return res.status(200).json({ noSiteKey: true });
     const siteId = siteRows[0].id;
+
+    // ── Exact-attribution trace for one clicked node ───────────────────────
+    // The main response below is capFlow()'d — a handful of aggregate
+    // pairwise edges, not full session paths — because that's all a Sankey
+    // diagram needs to render. But "how many of THIS node's sessions went on
+    // to page X" needs the actual multi-hop path, which those pairwise sums
+    // can't reconstruct beyond one hop (the frontend used to estimate it
+    // proportionally, which quietly rounds to a misleading "0" a few hops
+    // into a small flow). Recomputing from `analytics_events` with a fresh
+    // qualifying-sessions filter — the same pattern the goal branches below
+    // already use for "sessions that converted" — gives an exact answer
+    // instead: only sessions that actually passed through the clicked node
+    // at that exact step feed this query, so every edge it returns already
+    // is the real attributed count, no estimation needed downstream.
+    const traceColRaw = req.query.traceCol;
+    const traceNode = typeof req.query.traceNode === "string" && req.query.traceNode ? req.query.traceNode : null;
+    if (traceColRaw != null && traceNode) {
+        const traceCol = parseInt(traceColRaw, 10);
+        if (Number.isNaN(traceCol) || traceCol < 0 || traceCol > FLOW_DEPTH || traceNode === "(other)" || req.query.goal) {
+            return res.status(200).json({ trace: null });
+        }
+
+        const traceParams = [siteId, fromDate, toDateExclusive, traceNode];
+        // Column 0 is the acquisition channel of a session's FIRST pageview;
+        // columns 1..FLOW_DEPTH are that session's Nth pageview by arrival
+        // order — same numbering the main no-goal response uses for
+        // `transitionEdges[i].depth` / the frontend's column index.
+        const qualifyingSql = traceCol === 0
+            ? `qualifying_sessions AS (
+                SELECT session_id FROM (
+                    SELECT DISTINCT ON (session_id)
+                        session_id,
+                        CASE
+                            WHEN NULLIF(utm_source, '') IS NULL AND NULLIF(utm_medium, '') IS NULL AND referrer_host IS NULL
+                                THEN '(direct)'
+                            ELSE
+                                COALESCE(NULLIF(utm_source, ''), '(direct)') || ' / ' ||
+                                COALESCE(NULLIF(utm_medium, ''), CASE WHEN referrer_host IS NOT NULL THEN 'referral' ELSE '(none)' END)
+                        END AS channel_label
+                    FROM analytics_events
+                    WHERE site_id = $1 AND session_id IS NOT NULL
+                      AND received_at >= $2 AND received_at < $3
+                    ORDER BY session_id, received_at ASC
+                ) first_touch
+                WHERE first_touch.channel_label = $4
+            )`
+            : `qualifying_sessions AS (
+                SELECT session_id FROM (
+                    SELECT session_id, pathname,
+                           ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY received_at ASC) AS step_no
+                    FROM analytics_events
+                    WHERE site_id = $1 AND session_id IS NOT NULL
+                      AND received_at >= $2 AND received_at < $3
+                      AND ${JUNK_PATH_CLAUSE}
+                ) ov
+                WHERE ov.step_no = ${traceCol} AND ov.pathname = $4
+            )`;
+
+        // Identical shape to the no-goal/direction=from tail below — channel
+        // and ordered_views joined to a qualifying-sessions set, unioned into
+        // depth/from/to/sessions — just with THIS node's own qualifying set.
+        const traceSql = `
+            WITH ${qualifyingSql},
+            channel AS (
+                SELECT DISTINCT ON (ae.session_id)
+                    ae.session_id,
+                    CASE
+                        WHEN NULLIF(ae.utm_source, '') IS NULL AND NULLIF(ae.utm_medium, '') IS NULL AND ae.referrer_host IS NULL
+                            THEN '(direct)'
+                        ELSE
+                            COALESCE(NULLIF(ae.utm_source, ''), '(direct)') || ' / ' ||
+                            COALESCE(NULLIF(ae.utm_medium, ''), CASE WHEN ae.referrer_host IS NOT NULL THEN 'referral' ELSE '(none)' END)
+                    END AS channel_label
+                FROM analytics_events ae
+                JOIN qualifying_sessions qs ON qs.session_id = ae.session_id
+                WHERE ae.site_id = $1 AND ae.session_id IS NOT NULL
+                  AND ae.received_at >= $2 AND ae.received_at < $3
+                ORDER BY ae.session_id, ae.received_at ASC
+            ),
+            ordered_views AS (
+                SELECT ae.session_id, ae.pathname,
+                       ROW_NUMBER() OVER (PARTITION BY ae.session_id ORDER BY ae.received_at ASC) AS step_no
+                FROM analytics_events ae
+                JOIN qualifying_sessions qs ON qs.session_id = ae.session_id
+                WHERE ae.site_id = $1 AND ae.session_id IS NOT NULL
+                  AND ae.received_at >= $2 AND ae.received_at < $3
+                  AND ${JUNK_PATH_CLAUSE}
+            )
+            SELECT 0 AS depth, ch.channel_label AS from_node, ov.pathname AS to_node,
+                   COUNT(DISTINCT ov.session_id) AS sessions
+            FROM channel ch
+            JOIN ordered_views ov ON ov.session_id = ch.session_id AND ov.step_no = 1
+            GROUP BY ch.channel_label, ov.pathname
+
+            UNION ALL
+
+            SELECT a.step_no AS depth, a.pathname AS from_node, b.pathname AS to_node,
+                   COUNT(DISTINCT a.session_id) AS sessions
+            FROM ordered_views a
+            JOIN ordered_views b ON b.session_id = a.session_id AND b.step_no = a.step_no + 1
+            WHERE a.step_no BETWEEN 1 AND ${FLOW_DEPTH}
+            GROUP BY a.step_no, a.pathname, b.pathname`;
+
+        const { rows: traceRows } = await db.query(traceSql, traceParams).catch(() => ({ rows: [] }));
+        const channelEdges = [];
+        const transitionEdges = [];
+        for (const r of traceRows) {
+            const depth = Number(r.depth), sessions = Number(r.sessions);
+            if (depth === 0) channelEdges.push({ from: r.from_node, to: r.to_node, sessions });
+            else transitionEdges.push({ depth, from: r.from_node, to: r.to_node, sessions });
+        }
+
+        return res.status(200).json({
+            trace: { col: traceCol, node: traceNode },
+            channelEdges,
+            transitionEdges,
+        });
+    }
 
     const goalName = (req.query.goal || "").trim() || null;
     const direction = req.query.direction === "from" ? "from" : "to"; // default "to"; irrelevant when no goal
