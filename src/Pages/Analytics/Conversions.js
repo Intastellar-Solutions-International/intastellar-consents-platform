@@ -223,23 +223,25 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                                             {r.linkedCount.toLocaleString("de-DE")}/{r.count.toLocaleString("de-DE")} consent-linked
                                         </span>
                                     </div>
-                                    <button
-                                        type="button"
-                                        className="sa-event-row__snippet-toggle"
-                                        onClick={() => setOpenSnippet(s => (s === r.name ? null : r.name))}
-                                    >
-                                        {openSnippet === r.name ? "Hide snippet" : "Show snippet"}
-                                    </button>
+                                    <div className="sa-event-row__toggles">
+                                        <button
+                                            type="button"
+                                            className="sa-event-row__snippet-toggle"
+                                            onClick={() => setOpenSnippet(s => (s === r.name ? null : r.name))}
+                                        >
+                                            {openSnippet === r.name ? "Hide snippet" : "Show snippet"}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="sa-event-row__snippet-toggle"
+                                            onClick={() => togglePayloads(r.name)}
+                                        >
+                                            {openPayloads === r.name ? "Hide extra data" : "View extra data"}
+                                        </button>
+                                    </div>
                                     {openSnippet === r.name && (
                                         <pre className="sa-event-row__snippet">{snippetFor(r.name, r.kind)}</pre>
                                     )}
-                                    <button
-                                        type="button"
-                                        className="sa-event-row__snippet-toggle"
-                                        onClick={() => togglePayloads(r.name)}
-                                    >
-                                        {openPayloads === r.name ? "Hide extra data" : "View extra data"}
-                                    </button>
                                     {openPayloads === r.name && (
                                         <div className="sa-event-row__payloads">
                                             {payloadsLoading === r.name && (

@@ -1821,15 +1821,26 @@
     color: rgba(120,120,120,0.55);
 }
 
+.sa-event-row__toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+    margin-left: -8px;
+}
+
 .sa-event-row__snippet-toggle {
     background: none;
     border: none;
     color: rgba(150,180,220,0.75);
     font-size: 0.72rem;
-    padding: 0;
-    margin-top: 6px;
+    padding: 6px 8px;
+    min-height: 32px;
+    border-radius: 4px;
     cursor: pointer;
 }
+
+.sa-event-row__snippet-toggle:hover { background: rgba(255,255,255,0.06); }
 
 .sa-event-row__snippet {
     margin-top: 6px;
