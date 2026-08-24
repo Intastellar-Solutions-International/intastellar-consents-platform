@@ -459,6 +459,15 @@ async function ensureTables(db) {
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
         ALTER TABLE analytics_clicks ADD COLUMN IF NOT EXISTS page_host VARCHAR(255);
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS products JSONB;
+        -- Free-form key/value data passed as track(name, { data: {...} }) —
+        -- e.g. { reason: 'invalid_phone_format' } on a
+        -- 'verification_code_send_failed' event. Unlike 'products' (a fixed
+        -- e-commerce shape), this is arbitrary per-event context a site wants
+        -- to inspect later; both client (track()) and server (this endpoint)
+        -- shallow-sanitize it the same way products already are — capped key
+        -- count/length and value length, no unbounded nesting — before it
+        -- ever reaches this column.
+        ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS extra_data JSONB;
     `).catch(() => {});
 }
 
@@ -1078,8 +1087,11 @@ if(hasStat(c)){
 // ── Custom conversion events ────────────────────────────────────────────────
 // window.intaAnalytics.track('purchase', { value: 49.99, currency: 'EUR',
 //   products: [{ id: 'SKU-1', name: 'Blue T-Shirt', price: 29.99, quantity: 2, category: 'Apparel' }] })
+// window.intaAnalytics.track('verification_code_send_failed', { data: { reason: 'invalid_phone_format' } })
 // Fires a minimal (unlinked) record always; upgrades to a session-linked
-// record only when the visitor has accepted statisticCookies.
+// record only when the visitor has accepted statisticCookies. `data` is a
+// free-form flat object shown back in the dashboard next to the event —
+// shallow-sanitized here (and again server-side) rather than sent as-is.
 function track(name,opts){
   if(!name||typeof name!=='string')return;
   opts=opts||{};
@@ -1098,6 +1110,19 @@ function track(name,opts){
       return o;
     });
   }
+  var extra=undefined;
+  if(opts.data&&typeof opts.data==='object'&&!Array.isArray(opts.data)){
+    var ed={},keys=Object.keys(opts.data).slice(0,20);
+    for(var i=0;i<keys.length;i++){
+      var k=String(keys[i]).slice(0,40),val=opts.data[keys[i]];
+      if(val==null)continue;
+      if(typeof val==='string')ed[k]=val.slice(0,500);
+      else if(typeof val==='number'&&isFinite(val))ed[k]=val;
+      else if(typeof val==='boolean')ed[k]=val;
+      else{try{ed[k]=JSON.stringify(val).slice(0,500);}catch(e){}}
+    }
+    if(Object.keys(ed).length)extra=ed;
+  }
   send(JSON.stringify({
     s:SITE,t:'ev',n:String(name).slice(0,64),
     cl:full?'full':'minimal',
@@ -1106,6 +1131,7 @@ function track(name,opts){
     cur:opts.currency?String(opts.currency).slice(0,3):undefined,
     txn:opts.transactionId?String(opts.transactionId).slice(0,64):undefined,
     pr:prods,
+    ed:extra,
     src:opts._source==='datalayer'?'datalayer':'manual',
     u:location.pathname,h:getHost(),dt:devType(),
     cs:full?1:0,
@@ -1154,7 +1180,7 @@ export default async function handler(req, res) {
     const { s: siteId, t: eventType, cl: consentLevel, sid, pv: pageviewId, u: rawUrl, r: referrer, h: pageHost, ti: title,
             us, um, uc, uk, dt, sw, sh, vw, vh, lang, tz, sd, ph, ck,
             dur, cs, cf, ca, n: eventName, v: eventValue, cur: eventCurrency,
-            txn: eventTransactionId, pr: rawProducts, src: eventSource, tid: abTestId, vid: abVariantId, nv,
+            txn: eventTransactionId, pr: rawProducts, ed: rawExtraData, src: eventSource, tid: abTestId, vid: abVariantId, nv,
             gc: gclid, mc: msclkid, fc: fbclid } = body;
 
     if (!siteId || typeof siteId !== "string" || !rawUrl) {
@@ -1254,12 +1280,31 @@ export default async function handler(req, res) {
             );
         }
 
+        // Same shallow-sanitize treatment as products above — re-applied here
+        // (not trusted from the client-side track() sanitize alone) since the
+        // ingest endpoint accepts raw POST bodies from anywhere, not just the
+        // embed script.
+        let extraData = null;
+        if (rawExtraData && typeof rawExtraData === "object" && !Array.isArray(rawExtraData)) {
+            const clean = {};
+            for (const rawKey of Object.keys(rawExtraData).slice(0, 20)) {
+                const key = String(rawKey).slice(0, 40);
+                const val = rawExtraData[rawKey];
+                if (val == null) continue;
+                if (typeof val === "string") clean[key] = val.slice(0, 500);
+                else if (typeof val === "number" && isFinite(val)) clean[key] = val;
+                else if (typeof val === "boolean") clean[key] = val;
+                else { try { clean[key] = JSON.stringify(val).slice(0, 500); } catch { /* skip unserializable value */ } }
+            }
+            if (Object.keys(clean).length) extraData = JSON.stringify(clean);
+        }
+
         const { rows: evRows } = await db.query(
             `INSERT INTO analytics_custom_events
              (site_id, organisation_id, session_id, consent_level, consent_stat, consent_func, consent_adv,
               name, value_cents, currency, transaction_id, pathname, page_host, country_code, device_type, source,
-              gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)
+              gclid, msclkid, fbclid, utm_campaign, utm_content, utm_source, utm_medium, products, extra_data)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25)
              RETURNING id`,
             [
                 siteId, orgId, isMinimal ? null : (sid ? String(sid).slice(0, 64) : null),
@@ -1272,7 +1317,7 @@ export default async function handler(req, res) {
                 eventSource === "datalayer" ? "datalayer" : "manual",
                 cleanGclid, cleanMsclkid, cleanFbclid,
                 cleanUtmCampaign, cleanUtmContent, cleanUtmSource, cleanUtmMedium,
-                products,
+                products, extraData,
             ]
         ).catch(() => ({ rows: [] }));
 

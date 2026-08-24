@@ -55,6 +55,9 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
     const [openSnippet, setOpenSnippet] = useState(null);
+    const [openPayloads, setOpenPayloads] = useState(null);
+    const [payloadsByName, setPayloadsByName] = useState({});
+    const [payloadsLoading, setPayloadsLoading] = useState(null);
 
     const fetchDefs = useCallback(() => {
         if (!domain) { setDefs([]); setLoading(false); return; }
@@ -94,6 +97,21 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
         ).catch(() => null);
         fetchDefs();
         onDefsChanged?.();
+    };
+
+    // Lazy, cache-once per event name — most events never carry extra data,
+    // so there's no point fetching this until someone actually opens it.
+    const togglePayloads = (defName) => {
+        setOpenPayloads(s => (s === defName ? null : defName));
+        if (payloadsByName[defName] !== undefined) return;
+        setPayloadsLoading(defName);
+        fetch(`${ScannerHost}/api/analytics-event-payloads?domain=${encodeURIComponent(domain)}&name=${encodeURIComponent(defName)}`, {
+            headers: authHeaders(),
+        })
+            .then(r => r.ok ? r.json() : { rows: [] })
+            .then(d => setPayloadsByName(prev => ({ ...prev, [defName]: d.rows || [] })))
+            .catch(() => setPayloadsByName(prev => ({ ...prev, [defName]: [] })))
+            .finally(() => setPayloadsLoading(null));
     };
 
     const rows = useMemo(() => {
@@ -214,6 +232,38 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
                                     </button>
                                     {openSnippet === r.name && (
                                         <pre className="sa-event-row__snippet">{snippetFor(r.name, r.kind)}</pre>
+                                    )}
+                                    <button
+                                        type="button"
+                                        className="sa-event-row__snippet-toggle"
+                                        onClick={() => togglePayloads(r.name)}
+                                    >
+                                        {openPayloads === r.name ? "Hide extra data" : "View extra data"}
+                                    </button>
+                                    {openPayloads === r.name && (
+                                        <div className="sa-event-row__payloads">
+                                            {payloadsLoading === r.name && (
+                                                <p className="sa-event-row__payloads-empty">Loading&hellip;</p>
+                                            )}
+                                            {payloadsLoading !== r.name && (payloadsByName[r.name]?.length ?? 0) === 0 && (
+                                                <p className="sa-event-row__payloads-empty">
+                                                    No extra data recorded for this event yet — fire it with{" "}
+                                                    <code>{`intaAnalytics.track('${r.name}', { data: { reason: '...' } })`}</code>{" "}
+                                                    to see it here.
+                                                </p>
+                                            )}
+                                            {payloadsLoading !== r.name && payloadsByName[r.name]?.map((p, i) => (
+                                                <div key={i} className="sa-event-row__payload">
+                                                    <div className="sa-event-row__payload-meta">
+                                                        <span>{new Date(p.receivedAt).toLocaleString("de-DE")}</span>
+                                                        <span className="sa-event-row__payload-path">{p.pathname}</span>
+                                                    </div>
+                                                    <pre className="sa-event-row__payload-data">
+                                                        {JSON.stringify(p.data, null, 2)}
+                                                    </pre>
+                                                </div>
+                                            ))}
+                                        </div>
                                     )}
                                 </div>
                                 {r.registered && (
