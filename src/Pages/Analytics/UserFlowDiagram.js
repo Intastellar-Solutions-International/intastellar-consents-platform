@@ -1,4 +1,6 @@
-const { useState, useMemo, useRef, useLayoutEffect } = React;
+const { useState, useMemo, useRef, useEffect, useLayoutEffect } = React;
+import { ScannerHost } from "../../API/host.js";
+import { authHeaders } from "./_shared.js";
 
 // Layout constants — tuned for readability, not data-driven. COL_WIDTH/
 // COL_GAP are floors, not fixed values — see the column-width calc in the
@@ -149,6 +151,47 @@ const DEFAULT_ARIA_LABEL = "Visitor flow from acquisition channel through subseq
 
 export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel = DEFAULT_ARIA_LABEL }) {
     const [selected, setSelected] = useState(null); // nodeKey(col, id) or null
+
+    // Exact full-path attribution for the selected node, fetched from
+    // api/analytics-user-flow.js's traceCol/traceNode mode — see that file's
+    // doc comment for why the aggregate response this component otherwise
+    // renders can't answer "how many of THIS node's sessions reached page X"
+    // on its own. `trace.key` is tagged with the selection it answers so a
+    // stale in-flight response for a since-abandoned selection is never
+    // applied — `ignore` alone isn't enough because a second click before
+    // the first fetch resolves would otherwise let either one win the race.
+    const [trace, setTrace] = useState(null); // { key, channelEdges, transitionEdges } | null
+    const [traceLoading, setTraceLoading] = useState(false);
+
+    useEffect(() => {
+        // Only the all-traffic diagram has per-session paths to trace back
+        // to — a goal-filtered flow is already scoped to converters, and the
+        // synthetic "(goal: …)"/"(other)" nodes aren't real DB-filterable
+        // values (no single event or pathname to match sessions against).
+        if (!selected || data.goal) { setTrace(null); setTraceLoading(false); return; }
+        const sep = selected.indexOf("|");
+        const col = parseInt(selected.slice(0, sep), 10);
+        const id = selected.slice(sep + 1);
+        if (id === "(other)" || (conversionNode != null && id === conversionNode)) {
+            setTrace(null); setTraceLoading(false); return;
+        }
+
+        let ignore = false;
+        setTraceLoading(true);
+        const qs = new URLSearchParams({
+            domain: data.domain, from: data.from, to: data.to, traceCol: col, traceNode: id,
+        }).toString();
+        fetch(`${ScannerHost}/api/analytics-user-flow?${qs}`, { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : null)
+            .then(d => {
+                if (ignore) return;
+                if (d?.trace) setTrace({ key: selected, channelEdges: d.channelEdges || [], transitionEdges: d.transitionEdges || [] });
+                else setTrace(null);
+            })
+            .catch(() => { if (!ignore) setTrace(null); })
+            .finally(() => { if (!ignore) setTraceLoading(false); });
+        return () => { ignore = true; };
+    }, [selected, data, conversionNode]);
 
     // Same clientWidth + resize-listener measurement ClickOverlay uses in
     // Heatmap.js. Real container width, not a CSS/viewBox stretch — SVG's
@@ -365,6 +408,43 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
         return s;
     }, [filteredPopMap]);
 
+    // Exact per-edge attribution from the trace fetch above, once it resolves
+    // for the CURRENT selection (trace.key === selected guards against a
+    // response landing after the selection already moved on — see that
+    // effect's comment). Remapped through `columns` the same way the backend
+    // remaps raw pathnames to "(other)" — a trace can return a raw pathname
+    // that individually never made this column's top-N cap, and it needs to
+    // land on the same "(other)" box the uncapped view already folded it
+    // into, or the ribbon has nowhere on-diagram to attach to.
+    const traceEdgeSessions = useMemo(() => {
+        if (!trace || trace.key !== selected) return null;
+        const map = new Map(); // JSON.stringify([col, from, to]) -> sessions
+        const remap = (col, id) => (columns[col]?.some(n => n.id === id) ? id : "(other)");
+        const add = (col, from, to, sessions) => {
+            const key = JSON.stringify([col, remap(col, from), remap(col + 1, to)]);
+            map.set(key, (map.get(key) || 0) + sessions);
+        };
+        for (const e of trace.channelEdges) add(0, e.from, e.to, e.sessions);
+        for (const e of trace.transitionEdges) add(e.depth, e.from, e.to, e.sessions);
+        return map;
+    }, [trace, selected, columns]);
+
+    // Per-node totals derived from the same exact edges — unlike
+    // filteredPopMap's estimate, this needs no special-casing for the
+    // selected node itself: since the trace query is filtered to exactly the
+    // sessions that pass through it, summing its incoming (or, for a channel
+    // node, outgoing) edges already equals its true attributed population.
+    const exactPopMap = useMemo(() => {
+        if (!traceEdgeSessions) return null;
+        const map = new Map(); // nodeKey(col, id) -> sessions
+        for (const [key, sessions] of traceEdgeSessions) {
+            const [col, from, to] = JSON.parse(key);
+            if (col === 0) map.set(nodeKey(0, from), (map.get(nodeKey(0, from)) || 0) + sessions);
+            map.set(nodeKey(col + 1, to), (map.get(nodeKey(col + 1, to)) || 0) + sessions);
+        }
+        return map;
+    }, [traceEdgeSessions]);
+
     const maxEdgeSessions = Math.max(1, ...ribbons.map(r => r.edge.sessions));
 
     // exitCount.depth from the API maps directly to the frontend column index:
@@ -390,6 +470,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                     &times; Clear selection
                 </button>
             )}
+            {traceLoading && <span className="sa-flow-trace-loading">Computing exact path counts&hellip;</span>}
             <div className="sa-flow-scroll" ref={containerRef}>
                 <svg
                     width={svgWidth}
@@ -399,19 +480,31 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                     aria-label={ariaLabel}
                 >
                     {ribbons.map((r, i) => {
-                        // A highlighted ribbon whose destination rounded down to 0
-                        // attributed sessions (see zeroFilteredKeys above) is dropped
-                        // outright rather than dimmed — it's not "less emphasized
+                        const wouldBeOn = highlight?.edges.has(r);
+                        // Whether a "highlighted" ribbon actually gets drawn: exact
+                        // attribution when the trace for this selection has resolved
+                        // (a real edge among qualifying sessions, or it simply isn't
+                        // in traceEdgeSessions at all — no rounding involved), else
+                        // the proportional estimate's own 0-drop as an immediate
+                        // fallback while the trace is loading. Dropped outright rather
+                        // than dimmed either way — it's not "less emphasized
                         // background traffic" like a genuinely off-path ribbon, it's a
                         // link the selection didn't actually produce any visitors on.
-                        if (highlight?.edges.has(r) && zeroFilteredKeys?.has(nodeKey(r.col + 1, r.edge.to))) return null;
+                        if (wouldBeOn) {
+                            if (traceEdgeSessions) {
+                                const key = JSON.stringify([r.col, r.edge.from, r.edge.to]);
+                                if (!traceEdgeSessions.get(key)) return null;
+                            } else if (zeroFilteredKeys?.has(nodeKey(r.col + 1, r.edge.to))) {
+                                return null;
+                            }
+                        }
                         const x0 = 12 + r.col * (colWidth + colGap) + colWidth;
                         const x1 = x0 + colGap;
                         const y0 = 12 + r.y0;
                         const y1 = 12 + r.y1;
                         const midX = (x0 + x1) / 2;
                         const baseOpacity = 0.12 + 0.35 * (r.edge.sessions / maxEdgeSessions);
-                        const isOn = highlight?.edges.has(r);
+                        const isOn = wouldBeOn;
                         const opacity = !highlight ? baseOpacity : (isOn ? Math.min(1, baseOpacity + 0.5) : baseOpacity * 0.15);
                         const stroke = isOn ? `rgba(240,205,120,${opacity.toFixed(2)})` : `rgba(192,159,83,${opacity.toFixed(2)})`;
                         return (
@@ -437,10 +530,15 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                 const isSelected = selected === key;
                                 // Same "dropped, not dimmed" treatment as the ribbons
                                 // above — a node the selection only reaches via a
-                                // rounds-to-0 proportional estimate isn't really part
-                                // of this flow, so it shouldn't get the gold highlight
-                                // (or the misleading "0" session count) either.
-                                const isOn = highlight ? highlight.nodes.has(key) && !zeroFilteredKeys?.has(key) : true;
+                                // rounds-to-0 proportional estimate (or, once exact
+                                // data has loaded, zero real attributed sessions) isn't
+                                // really part of this flow, so it shouldn't get the
+                                // gold highlight (or a misleading session count) either.
+                                const isOn = highlight
+                                    ? isSelected || (exactPopMap
+                                        ? (exactPopMap.get(key) ?? 0) > 0
+                                        : highlight.nodes.has(key) && !zeroFilteredKeys?.has(key))
+                                    : true;
                                 const isGoal = conversionNode != null && node.id === conversionNode;
                                 const fillOpacity = isOn ? (isSelected ? 0.36 : 0.16) : 0.05;
                                 const strokeOpacity = isOn ? (isSelected ? 0.9 : 0.4) : 0.12;
@@ -465,8 +563,10 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
 
                                 // When a selection is active, display the filtered session
                                 // count for this node (how many of the selected sessions
-                                // passed through here) instead of the total population.
-                                const filteredPop = filteredPopMap?.get(key) ?? null;
+                                // passed through here) instead of the total population —
+                                // exact once the trace has resolved, the proportional
+                                // estimate until then.
+                                const filteredPop = exactPopMap ? (exactPopMap.get(key) ?? 0) : (filteredPopMap?.get(key) ?? null);
                                 const displayPop  = filteredPop !== null ? filteredPop : node.population;
 
                                 // Right-side label: filtered session count while a selection
