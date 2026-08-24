@@ -350,6 +350,21 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
         return map;
     }, [highlight, selected, columnLayouts, ribbonIndex]);
 
+    // Further-downstream columns above are a *proportional estimate*, not an
+    // exact count — a real edge can still round down to 0 attributed
+    // sessions once the selected flow is a small slice of a busy page. Left
+    // as "highlighted", those ribbons draw at full gold opacity into a node
+    // that the selection didn't actually reach, implying a connection that
+    // isn't there. Tracked separately from filteredPopMap itself (rather
+    // than deleting the 0-entries) since the map is also read by name below
+    // to decide whether a node is "in the traced subgraph" at all.
+    const zeroFilteredKeys = useMemo(() => {
+        if (!filteredPopMap) return null;
+        const s = new Set();
+        for (const [key, sessions] of filteredPopMap) if (sessions === 0) s.add(key);
+        return s;
+    }, [filteredPopMap]);
+
     const maxEdgeSessions = Math.max(1, ...ribbons.map(r => r.edge.sessions));
 
     // exitCount.depth from the API maps directly to the frontend column index:
@@ -384,6 +399,12 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                     aria-label={ariaLabel}
                 >
                     {ribbons.map((r, i) => {
+                        // A highlighted ribbon whose destination rounded down to 0
+                        // attributed sessions (see zeroFilteredKeys above) is dropped
+                        // outright rather than dimmed — it's not "less emphasized
+                        // background traffic" like a genuinely off-path ribbon, it's a
+                        // link the selection didn't actually produce any visitors on.
+                        if (highlight?.edges.has(r) && zeroFilteredKeys?.has(nodeKey(r.col + 1, r.edge.to))) return null;
                         const x0 = 12 + r.col * (colWidth + colGap) + colWidth;
                         const x1 = x0 + colGap;
                         const y0 = 12 + r.y0;
@@ -414,7 +435,12 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                 const y = 12 + layout.y;
                                 const key = nodeKey(c, node.id);
                                 const isSelected = selected === key;
-                                const isOn = highlight ? highlight.nodes.has(key) : true;
+                                // Same "dropped, not dimmed" treatment as the ribbons
+                                // above — a node the selection only reaches via a
+                                // rounds-to-0 proportional estimate isn't really part
+                                // of this flow, so it shouldn't get the gold highlight
+                                // (or the misleading "0" session count) either.
+                                const isOn = highlight ? highlight.nodes.has(key) && !zeroFilteredKeys?.has(key) : true;
                                 const isGoal = conversionNode != null && node.id === conversionNode;
                                 const fillOpacity = isOn ? (isSelected ? 0.36 : 0.16) : 0.05;
                                 const strokeOpacity = isOn ? (isSelected ? 0.9 : 0.4) : 0.12;
