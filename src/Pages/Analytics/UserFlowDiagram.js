@@ -455,6 +455,34 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
         return m;
     }, [data]);
 
+    // Same depth→column mapping as exitMap, keyed to a node's per-host
+    // session split — a bare pathname like "/" is ambiguous once a site key
+    // is shared across a root domain and a booking/white-label subdomain
+    // (see api/analytics-user-flow.js's doc comment on this field), so
+    // tooltips show which host(s) a node's traffic actually came from.
+    // Empty (host breakdown is only computed in all-traffic mode) rather
+    // than missing for goal/reverse views, so lookups below stay unconditional.
+    const hostMap = useMemo(() => {
+        const m = new Map(); // nodeKey(col, id) -> [{host, sessions}] sorted desc
+        for (const e of (data.hostBreakdown || [])) {
+            const key = nodeKey(e.depth, e.node);
+            if (!m.has(key)) m.set(key, []);
+            m.get(key).push({ host: e.host, sessions: e.sessions });
+        }
+        for (const list of m.values()) list.sort((a, b) => b.sessions - a.sessions);
+        return m;
+    }, [data]);
+
+    // "example.com" for a single-host node, "example.com: 80, sub.example.com: 20"
+    // once a node's traffic actually splits across hosts — the common case
+    // (one host) stays terse rather than always showing a redundant count.
+    function hostSuffix(key) {
+        const hosts = hostMap.get(key);
+        if (!hosts || !hosts.length) return "";
+        if (hosts.length === 1) return ` [${hosts[0].host}]`;
+        return ` [${hosts.map(h => `${h.host}: ${h.sessions.toLocaleString("de-DE")}`).join(", ")}]`;
+    }
+
     // Reserve ~44px on the right for the exit badge when present
     const exitLabelChars = Math.max(8, Math.floor((colWidth - 52) / 6));
 
@@ -515,7 +543,7 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                 strokeWidth={r.width}
                                 fill="none"
                             >
-                                <title>{`${r.edge.from} → ${r.edge.to}: ${r.edge.sessions.toLocaleString("de-DE")} sessions`}</title>
+                                <title>{`${r.edge.from} → ${r.edge.to}${hostSuffix(nodeKey(r.col + 1, r.edge.to))}: ${r.edge.sessions.toLocaleString("de-DE")} sessions`}</title>
                             </path>
                         );
                     })}
@@ -579,11 +607,12 @@ export default function UserFlowDiagram({ data, conversionNode = null, ariaLabel
                                     ? `rgba(240,235,225,${textOpacity * 0.75})`
                                     : `rgba(248,113,113,${isOn ? 0.9 : 0.2})`;
 
+                                const nodeLabel = `${node.id}${hostSuffix(key)}`;
                                 const tooltipText = highlight && isOn
-                                    ? `${node.id}: ${displayPop.toLocaleString("de-DE")} of ${node.population.toLocaleString("de-DE")} sessions`
+                                    ? `${nodeLabel}: ${displayPop.toLocaleString("de-DE")} of ${node.population.toLocaleString("de-DE")} sessions`
                                     : exitPctStr
-                                        ? `${node.id}: ${node.population.toLocaleString("de-DE")} sessions · ↓ ${exitPctStr} drop-off (${exitSessions.toLocaleString("de-DE")} left)`
-                                        : `${node.id}: ${node.population.toLocaleString("de-DE")} sessions`;
+                                        ? `${nodeLabel}: ${node.population.toLocaleString("de-DE")} sessions · ↓ ${exitPctStr} drop-off (${exitSessions.toLocaleString("de-DE")} left)`
+                                        : `${nodeLabel}: ${node.population.toLocaleString("de-DE")} sessions`;
 
                                 // Drop-off ribbon: a closed "fin" shape that starts from the
                                 // exit portion of the node's right edge (bottom fraction),

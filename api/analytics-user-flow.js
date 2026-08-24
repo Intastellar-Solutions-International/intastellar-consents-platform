@@ -571,6 +571,56 @@ export default async function handler(req, res) {
         convertedExitByNode.set(key, (convertedExitByNode.get(key) || 0) + r.sessions);
     }
 
+    // Host breakdown per page node — a bare pathname like "/" is genuinely
+    // ambiguous when a site key is shared across a root domain and a
+    // white-label/booking subdomain (see api/a.js's page_host column doc
+    // comment): two very different pages can collapse onto the same node
+    // here with no way to tell them apart. Only meaningful for page columns
+    // (the channel column has no "host" of its own) and only in all-traffic
+    // mode, same scoping as the converted-exit carve-out above.
+    let hostBreakdownRows = [];
+    if (!goalName) {
+        const { rows: hostRows } = await db.query(
+            `WITH ordered_views AS (
+                SELECT session_id, pathname, COALESCE(NULLIF(page_host, ''), '(unknown host)') AS host,
+                       ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY received_at ASC) AS step_no
+                FROM analytics_events
+                WHERE site_id = $1 AND session_id IS NOT NULL
+                  AND received_at >= $2 AND received_at < $3
+                  AND ${JUNK_PATH_CLAUSE}
+            )
+            SELECT step_no AS depth, pathname AS node, host, COUNT(DISTINCT session_id) AS sessions
+            FROM ordered_views
+            WHERE step_no BETWEEN 1 AND ${FLOW_DEPTH}
+            GROUP BY step_no, pathname, host`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] }));
+        hostBreakdownRows = hostRows.map(r => ({
+            depth: Number(r.depth), node: r.node, host: r.host, sessions: Number(r.sessions),
+        }));
+    }
+
+    // Same remap as convertedExitByNode above, plus merging by host once a
+    // node folds into "(other)" — many distinct long-tail pathnames sharing
+    // that bucket, each with their own host breakdown, need combining rather
+    // than the last one silently overwriting the rest.
+    const hostBreakdownByNode = new Map(); // `${depth}|${node}` -> Map(host -> sessions)
+    for (const r of hostBreakdownRows) {
+        const keepSet = toKeepSets.get(r.depth);
+        const node = keepSet && keepSet.has(r.node) ? r.node : "(other)";
+        const nodeKey = `${r.depth}|${node}`;
+        if (!hostBreakdownByNode.has(nodeKey)) hostBreakdownByNode.set(nodeKey, new Map());
+        const hostMap = hostBreakdownByNode.get(nodeKey);
+        hostMap.set(r.host, (hostMap.get(r.host) || 0) + r.sessions);
+    }
+    const hostBreakdown = [];
+    for (const [nodeKey, hostMap] of hostBreakdownByNode) {
+        const [depth, node] = nodeKey.split("|");
+        for (const [host, sessions] of hostMap) {
+            hostBreakdown.push({ depth: Number(depth), node, host, sessions });
+        }
+    }
+
     // Exit counts, derived from the already-capped edges so the numbers the
     // diagram shows are internally consistent (a node's population exactly
     // equals its outgoing edges plus its exit, using the same edge set for
@@ -622,5 +672,6 @@ export default async function handler(req, res) {
         channelEdges,
         transitionEdges,
         exitCounts,
+        hostBreakdown,
     });
 }
