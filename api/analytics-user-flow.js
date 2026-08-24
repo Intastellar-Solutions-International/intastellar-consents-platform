@@ -145,6 +145,13 @@ function remapSide(edges, side, keepSet) {
     });
 }
 
+// Alongside the capped edges, also returns toKeepSets: for each page-column
+// step N (1..FLOW_DEPTH), the set of raw pathnames that survived that
+// column's cap as themselves rather than being folded into "(other)". This
+// lets a caller remap a raw-pathname-keyed count (e.g. converted-session
+// exits, queried separately by step_no) into the same capped node identity
+// the rendered columns use, so it lines up with population/outgoing sums
+// computed from finalByDepth.
 function capFlow(rawEdges) {
     // Depth 0 (channel -> first page): cap both sides — channels have no
     // "previous column" to have already bounded them, unlike every later
@@ -157,6 +164,7 @@ function capFlow(rawEdges) {
     depth0 = remapSide(depth0, "to", col1Keep);
 
     const finalByDepth = new Map([[0, depth0]]);
+    const toKeepSets = new Map([[1, col1Keep]]);
     let allowedFrom = col1Keep.has("(other)") || depth0.some(e => e.to_node === "(other)")
         ? new Set([...col1Keep, "(other)"])
         : col1Keep;
@@ -168,10 +176,11 @@ function capFlow(rawEdges) {
         const keep = topNKeys(totalsBySide(edges, "to"), TOP_N_PER_COLUMN);
         edges = remapSide(edges, "to", keep);
         finalByDepth.set(depth, edges);
+        toKeepSets.set(depth + 1, keep);
         allowedFrom = edges.some(e => e.to_node === "(other)") ? new Set([...keep, "(other)"]) : keep;
     }
 
-    return finalByDepth;
+    return { finalByDepth, toKeepSets };
 }
 
 export default async function handler(req, res) {
@@ -377,7 +386,63 @@ export default async function handler(req, res) {
         depth: Number(r.depth), from_node: r.from_node, to_node: r.to_node, sessions: Number(r.sessions),
     }));
 
-    const finalByDepth = capFlow(rawEdges);
+    const { finalByDepth, toKeepSets } = capFlow(rawEdges);
+
+    // Sessions that stopped navigating (no next tracked pageview) but did
+    // fire a registered conversion event — e.g. "booked_appointment" — before
+    // exiting still show up in `population` above (they're real traffic that
+    // reached the node), but shouldn't be counted as having "dropped off"
+    // there: they got what they came for, they just didn't do it via another
+    // pageview (a booking widget submit, for instance, rarely navigates).
+    // Only meaningful in all-traffic mode — a `goal` selection already scopes
+    // the whole flow to converters, so there's no "successful exit" to carve
+    // back out. Every row in analytics_event_defs is a registered conversion
+    // event by definition (see api/analytics-events.js's doc comment) — not
+    // just booking-named ones — so this isn't hardcoded to any event name.
+    let convertedExitRows = [];
+    if (!goalName) {
+        const { rows: convRows } = await db.query(
+            `WITH ordered_views AS (
+                SELECT session_id, pathname,
+                       ROW_NUMBER() OVER (PARTITION BY session_id ORDER BY received_at ASC) AS step_no
+                FROM analytics_events
+                WHERE site_id = $1 AND session_id IS NOT NULL
+                  AND received_at >= $2 AND received_at < $3
+                  AND ${JUNK_PATH_CLAUSE}
+            ),
+            converted_sessions AS (
+                SELECT DISTINCT ace.session_id
+                FROM analytics_custom_events ace
+                JOIN analytics_event_defs d ON d.site_id = ace.site_id AND d.name = ace.name
+                WHERE ace.site_id = $1 AND ace.session_id IS NOT NULL
+                  AND ace.received_at >= $2 AND ace.received_at < $3
+            )
+            SELECT ov.step_no AS depth, ov.pathname AS node, COUNT(DISTINCT ov.session_id) AS sessions
+            FROM ordered_views ov
+            JOIN converted_sessions cs ON cs.session_id = ov.session_id
+            WHERE ov.step_no BETWEEN 1 AND ${FLOW_DEPTH}
+              AND NOT EXISTS (
+                  SELECT 1 FROM ordered_views nxt
+                  WHERE nxt.session_id = ov.session_id AND nxt.step_no = ov.step_no + 1
+              )
+            GROUP BY ov.step_no, ov.pathname`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] }));
+        convertedExitRows = convRows.map(r => ({
+            depth: Number(r.depth), node: r.node, sessions: Number(r.sessions),
+        }));
+    }
+
+    // Remap the raw pathnames above through the same top-N cap the rendered
+    // columns use (toKeepSets, from capFlow) so a converted exit at a
+    // long-tail page lands on "(other)" exactly when that page itself did.
+    const convertedExitByNode = new Map(); // `${depth}|${node}` -> sessions
+    for (const r of convertedExitRows) {
+        const keepSet = toKeepSets.get(r.depth);
+        const node = keepSet && keepSet.has(r.node) ? r.node : "(other)";
+        const key = `${r.depth}|${node}`;
+        convertedExitByNode.set(key, (convertedExitByNode.get(key) || 0) + r.sessions);
+    }
 
     // Exit counts, derived from the already-capped edges so the numbers the
     // diagram shows are internally consistent (a node's population exactly
@@ -389,13 +454,16 @@ export default async function handler(req, res) {
     // meaningful "exit" point. The final page column (depth FLOW_DEPTH's
     // "to" side) also has no depth+1 data to compare against — that's
     // "we stopped tracking here", not a real bounce signal, so it's left
-    // out rather than mislabeled as an exit.
+    // out rather than mislabeled as an exit. Converted sessions (see
+    // convertedExitByNode above) are subtracted out too — they stopped
+    // navigating, but not because they left.
     const exitCounts = [];
     for (let depth = 1; depth <= FLOW_DEPTH; depth++) {
         const population = totalsBySide(finalByDepth.get(depth - 1), "to");
         const outgoing = totalsBySide(finalByDepth.get(depth), "from");
         for (const [node, pop] of population) {
-            const sessions = Math.max(0, pop - (outgoing.get(node) || 0));
+            const converted = convertedExitByNode.get(`${depth}|${node}`) || 0;
+            const sessions = Math.max(0, pop - (outgoing.get(node) || 0) - converted);
             if (sessions > 0) exitCounts.push({ depth, node, sessions });
         }
     }
