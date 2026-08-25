@@ -376,7 +376,7 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
             <KpiCard key="leads"
                 icon={<IconTarget />}
                 label="Quality leads"
-                value={data.totals.qualityLeads.toLocaleString("de-DE")}
+                value={(data.totals.qualityLeads ?? 0).toLocaleString("de-DE")}
                 sub="engaged + page/event match"
                 variant="live"
             />
