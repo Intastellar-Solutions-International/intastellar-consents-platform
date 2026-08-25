@@ -356,6 +356,21 @@ export function SegmentFilter({ segment, setSegment }) {
     );
 }
 
+// ── Foreign domain signals ────────────────────────────────────────────────────
+export function useForeignDomains(domain) {
+    const [domains, setDomains] = useState([]);
+    const [reload, setReload] = useState(0);
+    useEffect(() => {
+        if (!domain) { setDomains([]); return; }
+        fetch(`${ScannerHost}/api/analytics-foreign-domains?domain=${encodeURIComponent(domain)}`,
+            { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : { domains: [] })
+            .then(d => setDomains(d.domains || []))
+            .catch(() => {});
+    }, [domain, reload]);
+    return { domains, refresh: () => setReload(n => n + 1) };
+}
+
 // ── Site config (businessType, industry, etc.) ────────────────────────────────
 export function useSiteConfig(domain) {
     const [config, setConfig] = useState(null);

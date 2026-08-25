@@ -9,6 +9,7 @@ import AnalyticsWorldMap from "./AnalyticsWorldMap.js";
 import {
     authHeaders, KpiCard, MiniBar, useAnalyticsPage, useAnalyticsReport, useSiteConfig,
     toIsoDate, pctChange, IndustryBenchmarkNote, formatPercent, SegmentFilter, AnalyticsSubNav,
+    useForeignDomains,
 } from "./_shared.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
@@ -557,6 +558,8 @@ export default function SiteAnalytics() {
     const { data: prevData } = useAnalyticsReport(domain, prevRange.fromIso, prevRange.toIso, tick);
 
     const siteConfig    = useSiteConfig(domain);
+    const { domains: foreignDomains } = useForeignDomains(domain);
+    const pendingForeignDomains = foreignDomains.filter(d => !d.approved);
 
     const trendEngaged  = useMemo(() => pctChange(data?.totals?.engagedUsers,   prevData?.totals?.engagedUsers),   [data, prevData]);
     const trendEvents   = useMemo(() => pctChange(data?.totals?.total,          prevData?.totals?.total),          [data, prevData]);
@@ -608,6 +611,21 @@ export default function SiteAnalytics() {
                             domain={domain}
                             onKeyGenerated={() => setTick(t => t + 1)}
                         />
+                    )}
+
+                    {pendingForeignDomains.length > 0 && (
+                        <div className="sa-foreign-banner">
+                            <span className="sa-foreign-banner__dot" />
+                            <span className="sa-foreign-banner__text">
+                                Receiving signals from {pendingForeignDomains.length === 1
+                                    ? <><strong>{pendingForeignDomains[0].domain}</strong> — an unrecognized domain</>
+                                    : <><strong>{pendingForeignDomains.length} unrecognized domains</strong></>
+                                }. Tracking is paused until approved.
+                            </span>
+                            <Link className="sa-foreign-banner__link" to={analyticsSettingsPath(domain)}>
+                                Review &amp; approve →
+                            </Link>
+                        </div>
                     )}
 
                     {showData && (

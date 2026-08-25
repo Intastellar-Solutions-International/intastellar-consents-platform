@@ -490,6 +490,127 @@ function SiteConfigSection({ domain }) {
     );
 }
 
+// ── Cross-site tracking section ───────────────────────────────────────────────
+
+const FOREIGN_DOMAINS_URL = `${ScannerHost}/api/analytics-foreign-domains`;
+
+function CrossSiteSection({ domain }) {
+    const [domains, setDomains] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [saving,  setSaving]  = useState(null);
+
+    const load = useCallback(() => {
+        if (!domain) { setDomains([]); setLoading(false); return; }
+        setLoading(true);
+        fetch(`${FOREIGN_DOMAINS_URL}?domain=${encodeURIComponent(domain)}`, { headers: authHeaders() })
+            .then(r => r.ok ? r.json() : { domains: [] })
+            .then(d => setDomains(d.domains || []))
+            .catch(() => setDomains([]))
+            .finally(() => setLoading(false));
+    }, [domain]);
+
+    useEffect(() => { load(); }, [load]);
+
+    const approve = async (foreignDomain, approved) => {
+        setSaving(foreignDomain);
+        await fetch(FOREIGN_DOMAINS_URL + `?domain=${encodeURIComponent(domain)}`, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({ foreignDomain, approved }),
+        }).catch(() => null);
+        setSaving(null);
+        load();
+    };
+
+    const remove = async (foreignDomain) => {
+        setSaving(foreignDomain);
+        await fetch(FOREIGN_DOMAINS_URL + `?domain=${encodeURIComponent(domain)}&foreignDomain=${encodeURIComponent(foreignDomain)}`, {
+            method: "DELETE",
+            headers: authHeaders(),
+        }).catch(() => null);
+        setSaving(null);
+        load();
+    };
+
+    const pending  = domains.filter(d => !d.approved);
+    const approved = domains.filter(d =>  d.approved);
+
+    if (loading) return <p className="sa-notice" style={{ margin: 0 }}>Loading…</p>;
+
+    return (
+        <div>
+            <p style={{ fontSize: 13, color: "rgba(180,180,180,0.65)", marginBottom: 16, lineHeight: 1.5 }}>
+                When the analytics script is embedded on a domain other than the one this site key
+                was registered for, signals are captured but tracking is paused. Approve a domain
+                to start tracking it alongside the primary domain.
+            </p>
+
+            {pending.length === 0 && approved.length === 0 && (
+                <p style={{ fontSize: 13, color: "rgba(180,180,180,0.4)", fontStyle: "italic" }}>
+                    No signals from foreign domains yet.
+                </p>
+            )}
+
+            {pending.length > 0 && (
+                <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: "rgba(251,191,36,0.7)", marginBottom: 8 }}>
+                        Pending approval
+                    </div>
+                    {pending.map(d => (
+                        <div key={d.domain} className="sa-foreign-row sa-foreign-row--pending">
+                            <div className="sa-foreign-row__domain">{d.domain}</div>
+                            <div className="sa-foreign-row__meta">
+                                {d.hit_count.toLocaleString("de-DE")} signals · last seen {new Date(d.last_seen).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+                            </div>
+                            <div className="sa-foreign-row__actions">
+                                <button className="sa-btn sa-btn--sm sa-btn--approve"
+                                    disabled={saving === d.domain}
+                                    onClick={() => approve(d.domain, true)}>
+                                    {saving === d.domain ? "…" : "Approve"}
+                                </button>
+                                <button className="sa-btn sa-btn--sm sa-btn--ghost"
+                                    disabled={saving === d.domain}
+                                    onClick={() => remove(d.domain)}>
+                                    Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {approved.length > 0 && (
+                <div>
+                    <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: "rgba(52,211,153,0.7)", marginBottom: 8 }}>
+                        Cross-site tracking active
+                    </div>
+                    {approved.map(d => (
+                        <div key={d.domain} className="sa-foreign-row sa-foreign-row--approved">
+                            <div className="sa-foreign-row__dot" />
+                            <div className="sa-foreign-row__domain">{d.domain}</div>
+                            <div className="sa-foreign-row__meta">
+                                {d.hit_count.toLocaleString("de-DE")} events tracked
+                            </div>
+                            <div className="sa-foreign-row__actions">
+                                <button className="sa-btn sa-btn--sm sa-btn--ghost"
+                                    disabled={saving === d.domain}
+                                    onClick={() => approve(d.domain, false)}>
+                                    Revoke
+                                </button>
+                                <button className="sa-btn sa-btn--sm sa-btn--ghost"
+                                    disabled={saving === d.domain}
+                                    onClick={() => remove(d.domain)}>
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
 // ── Display currency section ──────────────────────────────────────────────────
 
 function DisplayCurrencySection() {
@@ -590,6 +711,10 @@ export default function AnalyticsSettings() {
 
                     <Section title="Site Configuration">
                         <SiteConfigSection domain={domain} />
+                    </Section>
+
+                    <Section title="Cross-site tracking">
+                        <CrossSiteSection domain={domain} />
                     </Section>
 
                     <Section title="Display Currency">

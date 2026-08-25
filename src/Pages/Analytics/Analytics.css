@@ -385,6 +385,115 @@
 
 /* ── Dashboard mode badge ────────────────────────────────────────────────────── */
 
+/* ── Foreign-domain warning banner ───────────────────────────────────────── */
+
+.sa-foreign-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(251,191,36,0.07);
+    border: 1px solid rgba(251,191,36,0.22);
+    border-radius: var(--sa-radius);
+    font-size: 0.8rem;
+    color: rgba(240,235,225,0.75);
+    margin-bottom: 16px;
+}
+
+.sa-foreign-banner__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(251,191,36,0.9);
+    flex-shrink: 0;
+    animation: sa-pulse 2s ease-in-out infinite;
+}
+
+.sa-foreign-banner__text {
+    flex: 1;
+    min-width: 0;
+}
+
+.sa-foreign-banner__text strong {
+    color: rgba(251,191,36,0.9);
+    font-weight: 600;
+}
+
+.sa-foreign-banner__link {
+    font-size: 0.78rem;
+    color: rgba(251,191,36,0.85);
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.sa-foreign-banner__link:hover { text-decoration: underline; }
+
+/* ── Cross-site tracking settings rows ───────────────────────────────────── */
+
+.sa-foreign-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+}
+
+.sa-foreign-row--pending {
+    background: rgba(251,191,36,0.06);
+    border: 1px solid rgba(251,191,36,0.15);
+}
+
+.sa-foreign-row--approved {
+    background: rgba(52,211,153,0.05);
+    border: 1px solid rgba(52,211,153,0.15);
+}
+
+.sa-foreign-row__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(52,211,153,0.8);
+    flex-shrink: 0;
+}
+
+.sa-foreign-row__domain {
+    font-weight: 600;
+    color: rgba(240,235,225,0.9);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sa-foreign-row__meta {
+    font-size: 0.75rem;
+    color: rgba(180,180,180,0.45);
+    white-space: nowrap;
+}
+
+.sa-foreign-row__actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.sa-btn--approve {
+    background: rgba(52,211,153,0.15);
+    border-color: rgba(52,211,153,0.3);
+    color: rgba(52,211,153,0.9);
+}
+
+.sa-btn--approve:hover {
+    background: rgba(52,211,153,0.22);
+}
+
+/* ── Mode badge ───────────────────────────────────────────────────────────── */
+
 .sa-mode-badge {
     display: flex;
     align-items: center;
@@ -3884,6 +3993,17 @@ details[open] .ca-context-summary::before { content: "▾"; }
 .sa-btn--sm {
     padding: 5px 10px;
     font-size: 0.77rem;
+}
+
+.sa-btn--ghost {
+    border-color: rgba(180,180,180,0.15);
+    background: transparent;
+    color: rgba(180,180,180,0.5);
+}
+
+.sa-btn--ghost:hover:not(:disabled) {
+    background: rgba(180,180,180,0.08);
+    color: rgba(180,180,180,0.75);
 }
 
 .sa-btn--danger {
