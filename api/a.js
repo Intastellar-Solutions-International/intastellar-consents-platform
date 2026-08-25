@@ -468,6 +468,18 @@ async function ensureTables(db) {
         -- count/length and value length, no unbounded nesting — before it
         -- ever reaches this column.
         ALTER TABLE analytics_custom_events ADD COLUMN IF NOT EXISTS extra_data JSONB;
+        CREATE TABLE IF NOT EXISTS analytics_foreign_domains (
+            id              BIGSERIAL    PRIMARY KEY,
+            site_id         VARCHAR(32)  NOT NULL,
+            organisation_id INTEGER      NOT NULL,
+            domain          VARCHAR(255) NOT NULL,
+            first_seen      TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            last_seen       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+            hit_count       INTEGER      NOT NULL DEFAULT 1,
+            approved        BOOLEAN      NOT NULL DEFAULT false,
+            UNIQUE (site_id, domain)
+        );
+        CREATE INDEX IF NOT EXISTS idx_afd_site ON analytics_foreign_domains (site_id);
     `).catch(() => {});
 }
 
@@ -1223,6 +1235,29 @@ export default async function handler(req, res) {
     // isn't a "visit" at all, automated or not).
     if (isDevOrLocalHost(pageHostSanitized)) {
         return res.status(202).end();
+    }
+
+    // ── Foreign-domain gate ───────────────────────────────────────────────────
+    // If the script is embedded on a domain other than the one the site key was
+    // registered under, record the signal but don't track it — unless the owner
+    // has explicitly approved that domain for cross-site tracking.
+    const normalizeDomain = d => (d || "").replace(/^www\./, "").toLowerCase();
+    const isForeignDomain = pageHostSanitized &&
+        normalizeDomain(pageHostSanitized) !== normalizeDomain(siteDomain);
+
+    if (isForeignDomain) {
+        const { rows: fdRows } = await db.query(
+            `INSERT INTO analytics_foreign_domains
+                 (site_id, organisation_id, domain, last_seen, hit_count)
+             VALUES ($1, $2, $3, NOW(), 1)
+             ON CONFLICT (site_id, domain) DO UPDATE SET
+                 last_seen = NOW(),
+                 hit_count = analytics_foreign_domains.hit_count + 1
+             RETURNING approved`,
+            [siteId, orgId, pageHostSanitized]
+        ).catch(() => ({ rows: [] }));
+
+        if (!fdRows[0]?.approved) return res.status(202).end();
     }
 
     // ── Bot / crawler traffic — logged separately, never counted as a real
