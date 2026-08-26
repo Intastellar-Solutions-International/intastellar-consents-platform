@@ -166,7 +166,7 @@ function DiscoveriesTab({ discoveries, onAction, onBatchAction }) {
                                 <td className="cdb-desc-cell">
                                     <input
                                         className="cdb-input"
-                                        style={{ minWidth: 200 }}
+                                        style={{ minWidth: 140 }}
                                         placeholder={row.enriched_description || "Description…"}
                                         value={getEdit(row.name, "description", row.enriched_description || "")}
                                         onChange={e => edit(row.name, "description", e.target.value)}
@@ -311,7 +311,7 @@ function DefinitionsTab({ definitions, onAction }) {
                                 <td className="cdb-desc-cell">
                                     <input
                                         className="cdb-input"
-                                        style={{ minWidth: 200 }}
+                                        style={{ minWidth: 140 }}
                                         value={getEdit(row.name, "description", row.description || "")}
                                         onChange={e => edit(row.name, "description", e.target.value)}
                                     />
@@ -443,7 +443,7 @@ export default function CookieDatabase() {
     }
 
     return (
-        <>
+        <div style={{ flex: "1", minWidth: 0 }}>
             <StickyPageTitle>
                 <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <h1>Cookie Database</h1>
@@ -484,6 +484,6 @@ export default function CookieDatabase() {
                 )}
             </main>
             <Toast message={toast} onDone={() => setToast(null)} />
-        </>
+        </div>
     );
 }
