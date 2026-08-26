@@ -13,7 +13,7 @@ import {
 } from "./_shared.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
-    IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash,
+    IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash, IconExternalLink,
 } from "./Icons.js";
 import "./Analytics.css";
 
