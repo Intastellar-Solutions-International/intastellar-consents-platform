@@ -95,9 +95,11 @@ async function resolveGoogleAdsCurrency(conn, db, orgId, domain) {
             `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW() WHERE id=$2`,
             [currency, conn.id]
         ).catch(() => {});
-        // Backfill stale cache rows written with the wrong currency.
+        // Backfill stale cache rows: correct currency and null out spend_eur.
+        // spend_eur was computed as fx(spend, wrongCurrency, "EUR") so it's wrong too.
+        // Nulling it forces the query-time fallback: fx(native_spend, correctCurrency, "EUR").
         await db.query(
-            `UPDATE ad_daily_data SET currency=$1
+            `UPDATE ad_daily_data SET currency=$1, spend_eur=NULL
              WHERE organisation_id=$2 AND domain=$3 AND platform='google_ads' AND currency IS DISTINCT FROM $1`,
             [currency, orgId, domain]
         ).catch(() => {});

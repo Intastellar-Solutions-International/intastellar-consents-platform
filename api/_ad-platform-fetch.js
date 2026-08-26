@@ -113,23 +113,8 @@ async function fetchGoogleAds(conn, fromDate, toDate, db) {
         { method: "POST", headers, body: JSON.stringify({ query }) }
     );
 
-    let currency = conn.account_currency || null;
-    if (!currency) {
-        const r = await post("SELECT customer.currency_code FROM customer LIMIT 1").catch(() => null);
-        if (r?.ok) {
-            const d = await r.json().catch(() => ({}));
-            currency = d?.results?.[0]?.customer?.currencyCode || null;
-        }
-        if (currency && db && conn.id) {
-            db.query(
-                `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW() WHERE id=$2`,
-                [currency, conn.id]
-            ).catch(() => {});
-        }
-    }
-
     const resp = await post(`
-        SELECT metrics.clicks, metrics.cost_micros, metrics.impressions
+        SELECT customer.currency_code, metrics.clicks, metrics.cost_micros, metrics.impressions
         FROM campaign
         WHERE segments.date BETWEEN '${fromDate}' AND '${toDate}'
           AND campaign.status != 'REMOVED'
@@ -144,10 +129,23 @@ async function fetchGoogleAds(conn, fromDate, toDate, db) {
     }
     const data = await resp.json();
     let clicks = 0, spendMicros = 0, impressions = 0;
+    let currency = conn.account_currency || null;
     for (const row of (data.results || [])) {
         clicks      += Number(row.metrics?.clicks || 0);
         spendMicros += Number(row.metrics?.costMicros ?? row.metrics?.cost_micros ?? 0);
         impressions += Number(row.metrics?.impressions || 0);
+        if (!currency) currency = row.customer?.currencyCode || null;
+    }
+    if (currency && currency !== conn.account_currency && db && conn.id) {
+        db.query(
+            `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW() WHERE id=$2`,
+            [currency, conn.id]
+        ).catch(() => {});
+        db.query(
+            `UPDATE ad_daily_data SET currency=$1, spend_eur=NULL
+             WHERE organisation_id=$2 AND domain=$3 AND platform='google_ads' AND currency IS DISTINCT FROM $1`,
+            [currency, conn.organisation_id, conn.domain]
+        ).catch(() => {});
     }
     return { clicks, spend: +(spendMicros / 1_000_000).toFixed(2), currency: currency || "USD", impressions };
 }
@@ -863,23 +861,8 @@ async function fetchGoogleAdsDaily(conn, fromDate, toDate, db) {
         { method: "POST", headers, body: JSON.stringify({ query }) }
     );
 
-    let currency = conn.account_currency || null;
-    if (!currency) {
-        const r = await post("SELECT customer.currency_code FROM customer LIMIT 1").catch(() => null);
-        if (r?.ok) {
-            const d = await r.json().catch(() => ({}));
-            currency = d?.results?.[0]?.customer?.currencyCode || null;
-        }
-        if (currency && db && conn.id) {
-            db.query(
-                `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW() WHERE id=$2`,
-                [currency, conn.id]
-            ).catch(() => {});
-        }
-    }
-
     const resp = await post(`
-        SELECT segments.date, metrics.clicks, metrics.cost_micros, metrics.impressions
+        SELECT customer.currency_code, segments.date, metrics.clicks, metrics.cost_micros, metrics.impressions
         FROM campaign
         WHERE segments.date BETWEEN '${fromDate}' AND '${toDate}'
           AND campaign.status != 'REMOVED'
@@ -892,6 +875,7 @@ async function fetchGoogleAdsDaily(conn, fromDate, toDate, db) {
     }
     const data = await resp.json();
     const byDay = {};
+    let currency = conn.account_currency || null;
     for (const row of (data.results || [])) {
         const date = row.segments?.date;
         if (!date) continue;
@@ -899,6 +883,18 @@ async function fetchGoogleAdsDaily(conn, fromDate, toDate, db) {
         byDay[date].clicks      += Number(row.metrics?.clicks || 0);
         byDay[date].spendMicros += Number(row.metrics?.costMicros ?? row.metrics?.cost_micros ?? 0);
         byDay[date].impressions += Number(row.metrics?.impressions || 0);
+        if (!currency) currency = row.customer?.currencyCode || null;
+    }
+    if (currency && currency !== conn.account_currency && db && conn.id) {
+        db.query(
+            `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW() WHERE id=$2`,
+            [currency, conn.id]
+        ).catch(() => {});
+        db.query(
+            `UPDATE ad_daily_data SET currency=$1, spend_eur=NULL
+             WHERE organisation_id=$2 AND domain=$3 AND platform='google_ads' AND currency IS DISTINCT FROM $1`,
+            [currency, conn.organisation_id, conn.domain]
+        ).catch(() => {});
     }
     const resolvedCurrency = currency || "USD";
     const result = {};
