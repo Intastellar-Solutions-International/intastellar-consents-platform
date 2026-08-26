@@ -505,6 +505,8 @@ if(!el)try{
   for(var _i=_ss.length-1;_i>=0;_i--){if((_ss[_i].src||'').indexOf('analytics.consentsmanagement.com')!==-1){el=_ss[_i];break;}}
 }catch(e){}
 var SITE=el&&el.getAttribute('data-site');
+// Fallback: <script src=".../api/a?id=SITEKEY"> — no data-site attribute needed.
+if(!SITE){try{var _m=(el&&el.src||'').match(/[?&]id=([^&]*)/);if(_m)SITE=decodeURIComponent(_m[1]||'');}catch(e){}}
 if(!SITE)return;
 var EP=(el&&el.getAttribute('data-endpoint'))||'https://analytics.consentsmanagement.com/api/a';
 
@@ -655,6 +657,8 @@ var t0=Date.now(),fullFired=false,exitSent=false,maxScroll=0;
 // One id per page load, sent on both the entry and exit full-event calls so
 // the server can upsert a single row per pageview instead of inserting twice.
 var pvid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+// Referrer override for SPA virtual navigations — empty on real page loads.
+var _spaRef='';
 
 // Track max scroll depth as a percentage
 (function(){
@@ -996,7 +1000,7 @@ function sendFull(c,final){
   if(!final)bootstrapSiteFeatures();
   send(JSON.stringify({
     s:SITE,cl:'full',sid:getSid(),pv:pvid,
-    u:location.href,r:document.referrer||'',
+    u:location.href,r:_spaRef||document.referrer||'',
     h:getHost(),
     ti:(document.title||'').slice(0,200),
     us:utmp('utm_source'),um:utmp('utm_medium'),
@@ -1131,6 +1135,7 @@ function track(name,opts){
       if(typeof val==='string')ed[k]=val.slice(0,500);
       else if(typeof val==='number'&&isFinite(val))ed[k]=val;
       else if(typeof val==='boolean')ed[k]=val;
+      else if(Array.isArray(val))ed[k]=val.slice(0,50); // arrays stored as-is (e.g. form fields)
       else{try{ed[k]=JSON.stringify(val).slice(0,500);}catch(e){}}
     }
     if(Object.keys(ed).length)extra=ed;
@@ -1159,6 +1164,216 @@ function track(name,opts){
   }));
 }
 window.intaAnalytics={track:track};
+
+// ── SPA / virtual-page navigation ────────────────────────────────────────
+// Patches history.pushState/replaceState and listens to popstate so React,
+// Next.js, Vue Router and other SPA frameworks get a real pageview tracked
+// on each client-side route change without a full page reload.
+// Pathname+search is the change key — hash-only changes are ignored.
+var _spaLastPath=location.pathname+location.search;
+(function(){
+  function onNav(){
+    var newPath=location.pathname+location.search;
+    if(newPath===_spaLastPath)return;
+    _spaRef=location.protocol+'//'+location.host+_spaLastPath;
+    _spaLastPath=newPath;
+    if(fullFired&&!exitSent){
+      exitSent=true;
+      sendClicks();
+      var cf=getConsents();
+      if(hasStat(cf))sendFull(cf,true);
+    }
+    t0=Date.now();
+    pvid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+    maxScroll=0;fullFired=false;exitSent=false;
+    clickBuf.splice(0,clickBuf.length);
+    var cn=getConsents();
+    if(hasStat(cn)){sendFull(cn,false);}else{sendMinimal(cn);}
+    applyPageExperiment();
+  }
+  try{
+    var op=history.pushState,or=history.replaceState;
+    history.pushState=function(){op.apply(this,arguments);setTimeout(onNav,0);};
+    history.replaceState=function(){or.apply(this,arguments);setTimeout(onNav,0);};
+    window.addEventListener('popstate',function(){setTimeout(onNav,0);});
+  }catch(e){}
+})();
+
+// ── Automatic form tracking ───────────────────────────────────────────────
+// Fires a form_submit event on every <form> submit. Never captures field
+// values — only names and types — so no PII enters the pipeline.
+// Password, hidden, credit-card pattern names are skipped automatically.
+(function(){
+  var SKIP_TYPES={password:1,hidden:1,file:1,submit:1,button:1,reset:1,image:1};
+  var SKIP_NAMES=/card|cvv|cvc|ccv|ssn|tax|iban|bic|pin|secret|token|auth/i;
+  document.addEventListener('submit',function(e){
+    try{
+      var form=e.target;
+      if(!form||form.tagName!=='FORM')return;
+      var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64);
+      var faction=(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').slice(0,100);
+      if(!fid)fid=faction||'form';
+      var fields=[],els=form.elements;
+      for(var i=0;i<els.length&&fields.length<20;i++){
+        var el=els[i];
+        if(!el.name)continue;
+        var tp=(el.type||'text').toLowerCase();
+        if(SKIP_TYPES[tp]||SKIP_NAMES.test(el.name))continue;
+        fields.push({name:el.name.slice(0,40),type:tp});
+      }
+      track('form_submit',{data:{
+        formId:fid,
+        action:faction,
+        fields:fields,
+        fieldCount:els.length
+      }});
+    }catch(err){}
+  },true);
+})();
+
+// ── Outbound links, file downloads, phone & email clicks ─────────────────
+// Single delegated click listener — walks up from click target to nearest
+// <a> then classifies by protocol and href pattern.
+(function(){
+  var FILE_EXT=/\\.(?:pdf|zip|docx?|xlsx?|pptx?|csv|txt|rtf|mp3|mp4|mov|avi|webm|dmg|pkg|exe|apk|ipa)(\\?|#|$)/i;
+  document.addEventListener('click',function(e){
+    try{
+      var a=e.target;
+      while(a&&a.tagName!=='A')a=a.parentElement;
+      if(!a||!a.href)return;
+      var href=String(a.href);
+      var proto=(href.split(':')[0]||'').toLowerCase();
+      if(proto==='tel'){
+        track('phone_click',{data:{number:href.slice(4).split('?')[0].slice(0,40)}});
+        return;
+      }
+      if(proto==='mailto'){
+        track('email_click',{data:{address:href.slice(7).split('?')[0].slice(0,100)}});
+        return;
+      }
+      if(proto!=='http'&&proto!=='https')return;
+      var host='';try{host=new URL(href).hostname;}catch(e2){}
+      if(!host||host===location.hostname)return;
+      if(FILE_EXT.test(href)){
+        track('file_download',{data:{
+          file:href.split('/').pop().split('?')[0].slice(0,100),
+          host:host,
+          url:href.slice(0,200)
+        }});
+      }else{
+        track('outbound_click',{data:{
+          url:href.slice(0,200),
+          host:host,
+          text:(a.innerText||a.textContent||'').replace(/\\s+/g,' ').trim().slice(0,80)
+        }});
+      }
+    }catch(err){}
+  },true);
+})();
+
+// ── Scroll depth milestones ───────────────────────────────────────────────
+// Fires discrete events at 25 / 50 / 75 / 90 % — once per page lifecycle.
+(function(){
+  var M=[25,50,75,90],hit={};
+  function check(){
+    var h=document.documentElement;
+    var pct=Math.round(((h.scrollTop||document.body.scrollTop)/Math.max(1,h.scrollHeight-h.clientHeight))*100);
+    for(var i=0;i<M.length;i++){
+      if(!hit[M[i]]&&pct>=M[i]){hit[M[i]]=1;track('scroll_depth',{data:{depth:M[i],page:location.pathname}});}
+    }
+  }
+  try{window.addEventListener('scroll',check,{passive:true});}catch(e){}
+})();
+
+// ── Form started ──────────────────────────────────────────────────────────
+// Fires once per form when the user first focuses any input inside it.
+// Combined with form_submit gives a completion / abandon rate.
+(function(){
+  var started={};
+  document.addEventListener('focusin',function(e){
+    try{
+      var el=e.target,form=el&&el.form;
+      if(!form)return;
+      var fid=(form.getAttribute('data-analytics-id')||form.id||form.name||'').slice(0,64)||'form';
+      if(started[fid])return;
+      started[fid]=1;
+      track('form_started',{data:{
+        formId:fid,
+        action:(form.action||'').replace(/^https?:\\/\\/[^\\/]+/,'').slice(0,100)
+      }});
+    }catch(err){}
+  },true);
+})();
+
+// ── Video interactions ────────────────────────────────────────────────────
+// Attaches play / pause / 50% / complete events to all <video> elements,
+// including those added dynamically by React / SPA frameworks.
+(function(){
+  function attach(v){
+    if(v._iaV)return;v._iaV=1;
+    var src=(v.currentSrc||v.src||'').split('/').pop().split('?')[0].slice(0,80)||'video';
+    var f={};
+    v.addEventListener('play',function(){if(!f.p){f.p=1;track('video_play',{data:{src:src,duration:Math.round(v.duration)||0}});}});
+    v.addEventListener('pause',function(){if(!v.ended)track('video_pause',{data:{src:src,at:Math.round(v.currentTime)||0}});});
+    v.addEventListener('ended',function(){if(!f.e){f.e=1;track('video_complete',{data:{src:src,duration:Math.round(v.duration)||0}});}});
+    v.addEventListener('timeupdate',function(){if(!f.h&&v.duration&&(v.currentTime/v.duration)>=0.5){f.h=1;track('video_50pct',{data:{src:src}});}});
+  }
+  try{
+    var vs=document.querySelectorAll('video');
+    for(var i=0;i<vs.length;i++)attach(vs[i]);
+    if(window.MutationObserver){
+      new MutationObserver(function(muts){
+        muts.forEach(function(m){
+          m.addedNodes.forEach(function(n){
+            if(!n||n.nodeType!==1)return;
+            if(n.tagName==='VIDEO')attach(n);
+            if(n.querySelectorAll){var vv=n.querySelectorAll('video');for(var j=0;j<vv.length;j++)attach(vv[j]);}
+          });
+        });
+      }).observe(document.body||document.documentElement,{childList:true,subtree:true});
+    }
+  }catch(e){}
+})();
+
+// ── Content copy ─────────────────────────────────────────────────────────
+(function(){
+  var lastCopy=0;
+  document.addEventListener('copy',function(){
+    try{
+      var now=Date.now();if(now-lastCopy<1000)return;lastCopy=now; // debounce
+      var len=0;try{len=(window.getSelection()||'').toString().length;}catch(e){}
+      track('content_copy',{data:{length:len,page:location.pathname}});
+    }catch(err){}
+  });
+})();
+
+// ── Print ────────────────────────────────────────────────────────────────
+(function(){
+  var printed=false;
+  try{window.addEventListener('beforeprint',function(){
+    if(!printed){printed=true;track('page_print',{data:{page:location.pathname,title:(document.title||'').slice(0,100)}});}
+  });}catch(e){}
+})();
+
+// ── Rage clicks ───────────────────────────────────────────────────────────
+// 3+ clicks within 500ms in the same 30px area = user frustration signal.
+(function(){
+  var log=[],WIN=500,MIN=3,RADIUS=30;
+  document.addEventListener('click',function(e){
+    try{
+      var now=Date.now(),x=e.clientX,y=e.clientY;
+      log.push({t:now,x:x,y:y});
+      while(log.length&&log[0].t<now-WIN)log.shift();
+      if(log.length<MIN)return;
+      var f=log[0];
+      if(log.every(function(c){return Math.abs(c.x-f.x)<RADIUS&&Math.abs(c.y-f.y)<RADIUS;})){
+        log=[];
+        var t=e.target,sel=(t.id?'#'+t.id:(t.tagName||'').toLowerCase()).slice(0,80);
+        track('rage_click',{data:{selector:sel,page:location.pathname}});
+      }
+    }catch(err){}
+  },true);
+})();
 })();`;
 
 // ─────────────────────────────────────────────────────────────────────────────
