@@ -962,6 +962,50 @@ export default function SiteAnalytics() {
                                     </div>
                                 )}
 
+                                {(data.formFunnel || []).length > 0 && (
+                                    <div className="sa-panel">
+                                        <h3 className="sa-panel__title">
+                                            <IconScrollDepth className="sa-icon" /> Form performance
+                                        </h3>
+                                        <table className="sa-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Form</th>
+                                                    <th className="sa-table__num">Started</th>
+                                                    <th className="sa-table__num">Submitted</th>
+                                                    <th className="sa-table__num">Completion</th>
+                                                    <th className="sa-table__bar" />
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {data.formFunnel.map(f => {
+                                                    const rate = f.completionRate;
+                                                    const rateColor = rate == null ? "rgba(120,120,140,0.5)"
+                                                        : rate < 30 ? "rgba(239,68,68,0.85)"
+                                                        : rate < 60 ? "rgba(234,179,8,0.85)"
+                                                        : "rgba(34,197,94,0.85)";
+                                                    return (
+                                                        <tr key={f.formId + (f.provider || "")}>
+                                                            <td>
+                                                                <span className="sa-form-id">{f.formId}</span>
+                                                                {f.provider && <span className="sa-form-action">{f.provider}</span>}
+                                                            </td>
+                                                            <td className="sa-table__num">{f.started.toLocaleString("de-DE")}</td>
+                                                            <td className="sa-table__num">{f.submitted.toLocaleString("de-DE")}</td>
+                                                            <td className="sa-table__num" style={{ color: rateColor, fontWeight: 600 }}>
+                                                                {rate != null ? `${rate}%` : "—"}
+                                                            </td>
+                                                            <td className="sa-table__bar">
+                                                                <MiniBar value={f.submitted} max={data.formFunnel[0]?.started || 1} color={rateColor} />
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+
                                 {((data.topRageSelectors || []).length > 0 || (data.topRagePages || []).length > 0) && (
                                     <div className="sa-panel">
                                         <h3 className="sa-panel__title">
@@ -977,6 +1021,7 @@ export default function SiteAnalytics() {
                                                 <thead>
                                                     <tr>
                                                         <th>Element</th>
+                                                        <th>ID / Class</th>
                                                         <th className="sa-table__num">Rage clicks</th>
                                                         <th className="sa-table__bar" />
                                                     </tr>
@@ -985,6 +1030,11 @@ export default function SiteAnalytics() {
                                                     {data.topRageSelectors.map(s => (
                                                         <tr key={s.selector}>
                                                             <td className="sa-form-id">{s.selector}</td>
+                                                            <td className="sa-rage__detail">
+                                                                {s.elementId    && <span className="sa-rage__id">#{s.elementId}</span>}
+                                                                {s.elementClass && <span className="sa-rage__cls">.{s.elementClass.split(" ").filter(Boolean).join(" .")}</span>}
+                                                                {!s.elementId && !s.elementClass && <span className="sa-rage__none">—</span>}
+                                                            </td>
                                                             <td className="sa-table__num">{s.clicks.toLocaleString("de-DE")}</td>
                                                             <td className="sa-table__bar">
                                                                 <MiniBar value={s.clicks} max={maxRageSelector} color="rgba(239,68,68,0.45)" />

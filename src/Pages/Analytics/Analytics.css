@@ -5545,6 +5545,35 @@ details[open] .ca-context-summary::before { content: "▾"; }
     font-weight: 500;
 }
 
+.sa-rage__detail {
+    max-width: 220px;
+    line-height: 1.4;
+}
+.sa-rage__id {
+    display: block;
+    font-size: 11px;
+    font-family: monospace;
+    color: rgba(129,140,248,0.9);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+.sa-rage__cls {
+    display: block;
+    font-size: 11px;
+    font-family: monospace;
+    color: rgba(100,210,160,0.8);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+.sa-rage__none {
+    color: rgba(120,120,140,0.5);
+    font-size: 12px;
+}
+
 .sa-form-action {
     display: block;
     font-size: 11px;

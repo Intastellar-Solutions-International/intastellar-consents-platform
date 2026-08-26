@@ -1485,8 +1485,12 @@ var _spaLastPath=location.pathname+location.search;
       var f=log[0];
       if(log.every(function(c){return Math.abs(c.x-f.x)<RADIUS&&Math.abs(c.y-f.y)<RADIUS;})){
         log=[];
-        var t=e.target,sel=(t.id?'#'+t.id:(t.tagName||'').toLowerCase()).slice(0,80);
-        track('rage_click',{data:{selector:sel,page:location.pathname}});
+        var t=e.target;
+        var tTag=(t.tagName||'').toLowerCase().slice(0,20);
+        var tId=(t.id||'').slice(0,80);
+        var tCls=(typeof t.className==='string'?t.className:'').replace(/\s+/g,' ').trim().slice(0,150);
+        var sel=(tId?'#'+tId:tTag).slice(0,80);
+        track('rage_click',{data:{selector:sel,page:location.pathname,id:tId||undefined,cls:tCls||undefined,tag:tTag||undefined}});
       }
     }catch(err){}
   },true);

@@ -172,7 +172,8 @@ async function _handler(req, res) {
            newVsReturningRes, lastTouchByChannelRes,
            revenueRes, topProductsRes,
            outboundTotalsRes, topOutboundRes,
-           rageClickStatsRes, topRageSelectorsRes, topRagePagesRes] = await Promise.all([
+           rageClickStatsRes, topRageSelectorsRes, topRagePagesRes,
+           formFunnelRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -817,16 +818,19 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
-        // Top rage-clicked elements — grouped by CSS selector
+        // Top rage-clicked elements — grouped by selector + optional id/class
         db.query(`
             SELECT
-                extra_data->>'selector' AS selector,
-                COUNT(*)                AS clicks
+                extra_data->>'selector'  AS selector,
+                extra_data->>'id'        AS element_id,
+                extra_data->>'cls'       AS element_class,
+                extra_data->>'tag'       AS element_tag,
+                COUNT(*)                 AS clicks
             FROM analytics_custom_events
             WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
               AND name = 'rage_click'
               AND extra_data->>'selector' IS NOT NULL
-            GROUP BY 1
+            GROUP BY 1, 2, 3, 4
             ORDER BY clicks DESC
             LIMIT 15`,
             [siteId, fromDate, toDateExclusive]
@@ -863,12 +867,35 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Form funnel — started vs submitted per form, completion rate
+        db.query(`
+            SELECT
+                COALESCE(extra_data->>'formId', '(unknown)') AS form_id,
+                extra_data->>'provider'                       AS provider,
+                COUNT(*) FILTER (WHERE name = 'form_started')::int AS started,
+                COUNT(*) FILTER (WHERE name = 'form_submit')::int  AS submitted,
+                CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
+                     THEN ROUND(COUNT(*) FILTER (WHERE name = 'form_submit')::numeric /
+                                COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1)
+                     ELSE NULL
+                END AS completion_rate
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+              AND name IN ('form_started', 'form_submit')
+            GROUP BY 1, 2
+            HAVING COUNT(*) FILTER (WHERE name = 'form_started') > 0
+                OR COUNT(*) FILTER (WHERE name = 'form_submit') > 0
+            ORDER BY started DESC
+            LIMIT 20`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         // Schema not yet migrated, connection limit hit, or other transient DB
         // error — return empty rows for every query so the response stays a
         // valid (if empty) 200 instead of crashing with a 500.
         console.error("[analytics-report] batch error:", err?.message);
-        return Array(36).fill({ rows: [] });
+        return Array(37).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -1121,14 +1148,24 @@ async function _handler(req, res) {
             };
         })(),
         topRageSelectors: topRageSelectorsRes.rows.map(r => ({
-            selector: r.selector,
-            clicks:   Number(r.clicks || 0),
+            selector:     r.selector,
+            elementId:    r.element_id   || null,
+            elementClass: r.element_class || null,
+            elementTag:   r.element_tag   || null,
+            clicks:       Number(r.clicks || 0),
         })),
         topRagePages: topRagePagesRes.rows.map(r => ({
             page:       r.page,
             rageClicks: Number(r.rage_clicks || 0),
             views:      r.page_views != null ? Number(r.page_views) : null,
             rate:       r.rage_rate  != null ? Number(r.rage_rate)  : null,
+        })),
+        formFunnel: formFunnelRes.rows.map(r => ({
+            formId:         r.form_id,
+            provider:       r.provider || null,
+            started:        Number(r.started   || 0),
+            submitted:      Number(r.submitted || 0),
+            completionRate: r.completion_rate != null ? Number(r.completion_rate) : null,
         })),
     });
 }
