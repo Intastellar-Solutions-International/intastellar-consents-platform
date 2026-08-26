@@ -566,9 +566,10 @@ export default function SiteAnalytics() {
     const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
     const trendConsent  = useMemo(() => pctChange(data?.totals?.consentRate,    prevData?.totals?.consentRate),    [data, prevData]);
 
-    const maxPageViews = useMemo(() => Math.max(...(data?.topPages  || []).map(p => p.views),  1), [data]);
-    const maxCountry   = useMemo(() => Math.max(...(data?.countries || []).map(c => c.events), 1), [data]);
-    const maxReferrer  = useMemo(() => Math.max(...(data?.referrers || []).map(r => r.events), 1), [data]);
+    const maxPageViews  = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
+    const maxCountry    = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
+    const maxReferrer   = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
+    const maxOutbound   = useMemo(() => Math.max(...(data?.topOutbound|| []).map(o => o.clicks), 1), [data]);
     const deviceTotal  = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
 
     return (
@@ -784,6 +785,35 @@ export default function SiteAnalytics() {
                                         </tbody>
                                     </table>
                                 </div>
+
+                                {(data.topOutbound || []).length > 0 && (
+                                    <div className="sa-panel">
+                                        <h3 className="sa-panel__title">
+                                            <IconExternalLink className="sa-icon" /> Outbound clicks
+                                            <span className="sa-panel__consent-note">{(data.outboundClicks || 0).toLocaleString("de-DE")} total</span>
+                                        </h3>
+                                        <table className="sa-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Destination</th>
+                                                    <th className="sa-table__num">Clicks</th>
+                                                    <th className="sa-table__bar" />
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {data.topOutbound.map(o => (
+                                                    <tr key={o.host}>
+                                                        <td className="sa-table__path">{o.host}</td>
+                                                        <td className="sa-table__num">{o.clicks.toLocaleString("de-DE")}</td>
+                                                        <td className="sa-table__bar">
+                                                            <MiniBar value={o.clicks} max={maxOutbound} color="rgba(99,102,241,0.5)" />
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
                             </div>
 
                             {data.consentImpact && (

@@ -170,7 +170,8 @@ async function _handler(req, res) {
            dailyConversionsRes, timeToConvertRes, funnelRes,
            conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes, pageEngagementRes,
            newVsReturningRes, lastTouchByChannelRes,
-           revenueRes, topProductsRes] = await Promise.all([
+           revenueRes, topProductsRes,
+           outboundTotalsRes, topOutboundRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -775,9 +776,33 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Total outbound click count
+        db.query(`
+            SELECT COUNT(*) AS total
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+              AND name = 'outbound_click'`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        // Top outbound destinations by click volume
+        db.query(`
+            SELECT
+                extra_data->>'host' AS host,
+                COUNT(*)            AS clicks
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+              AND name = 'outbound_click'
+              AND extra_data->>'host' IS NOT NULL
+            GROUP BY 1
+            ORDER BY clicks DESC
+            LIMIT 20`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(31).fill({ rows: [] });
+        if (err?.message?.includes("does not exist")) return Array(33).fill({ rows: [] });
         throw err;
     });
 
@@ -1013,6 +1038,11 @@ async function _handler(req, res) {
             category: r.category     || null,
             units:    Number(r.units   || 0),
             revenue:  Number(r.revenue || 0),
+        })),
+        outboundClicks: Number(outboundTotalsRes.rows[0]?.total || 0),
+        topOutbound: topOutboundRes.rows.map(r => ({
+            host:   r.host,
+            clicks: Number(r.clicks || 0),
         })),
     });
 }
