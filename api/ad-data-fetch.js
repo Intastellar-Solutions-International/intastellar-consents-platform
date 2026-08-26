@@ -131,7 +131,7 @@ export default async function handler(req, res) {
     conn = await tryRefreshToken(db, conn);
 
     try {
-        const data = await fetchPlatformData(conn, fromDate, toDate);
+        const data = await fetchPlatformData(conn, fromDate, toDate, db);
         return res.status(200).json(data);
     } catch (err) {
         console.error(`[ad-data-fetch] ${platform}:`, err.message);

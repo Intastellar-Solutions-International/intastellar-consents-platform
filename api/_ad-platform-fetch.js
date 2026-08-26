@@ -96,7 +96,7 @@ export async function tryRefreshToken(db, conn) {
 
 // ── Aggregate fetch (single call, any date range) ─────────────────────────────
 
-async function fetchGoogleAds(conn, fromDate, toDate) {
+async function fetchGoogleAds(conn, fromDate, toDate, db) {
     if (!conn.account_id) throw new Error("No Google Ads customer ID linked.");
     const customerId = conn.account_id.replace(/\D/g, "");
     const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
@@ -119,6 +119,12 @@ async function fetchGoogleAds(conn, fromDate, toDate) {
         if (r?.ok) {
             const d = await r.json().catch(() => ({}));
             currency = d?.results?.[0]?.customer?.currencyCode || null;
+        }
+        if (currency && db && conn.id) {
+            db.query(
+                `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW() WHERE id=$2`,
+                [currency, conn.id]
+            ).catch(() => {});
         }
     }
 
@@ -143,7 +149,7 @@ async function fetchGoogleAds(conn, fromDate, toDate) {
         spendMicros += Number(row.metrics?.costMicros ?? row.metrics?.cost_micros ?? 0);
         impressions += Number(row.metrics?.impressions || 0);
     }
-    return { clicks, spend: +(spendMicros / 1_000_000).toFixed(2), currency: currency || "EUR", impressions };
+    return { clicks, spend: +(spendMicros / 1_000_000).toFixed(2), currency: currency || "USD", impressions };
 }
 
 // ── Google Ads UTM-source discovery (campaign tracking templates) ────────────
@@ -827,9 +833,9 @@ async function fetchMicrosoftAds(conn, fromDate, toDate) {
     return { ...totals, spend: +totals.spend.toFixed(2), currency: conn.account_currency || "USD" };
 }
 
-export async function fetchPlatformData(conn, fromDate, toDate) {
+export async function fetchPlatformData(conn, fromDate, toDate, db) {
     switch (conn.platform) {
-        case "google_ads":       return fetchGoogleAds(conn, fromDate, toDate);
+        case "google_ads":       return fetchGoogleAds(conn, fromDate, toDate, db);
         case "meta_ads":         return fetchMetaAds(conn, fromDate, toDate);
         case "linkedin_ads":     return fetchLinkedInAds(conn, fromDate, toDate);
         case "google_analytics": return fetchGoogleAnalytics(conn, fromDate, toDate);
@@ -842,7 +848,7 @@ export async function fetchPlatformData(conn, fromDate, toDate) {
 
 // ── Daily granularity fetch (one API call, returns per-day map) ───────────────
 
-async function fetchGoogleAdsDaily(conn, fromDate, toDate) {
+async function fetchGoogleAdsDaily(conn, fromDate, toDate, db) {
     const customerId = conn.account_id.replace(/\D/g, "");
     const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
     const headers = {
@@ -852,16 +858,32 @@ async function fetchGoogleAdsDaily(conn, fromDate, toDate) {
     };
     if (conn.login_customer_id) headers["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
 
-    const query = `
+    const post = (query) => fetch(
+        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
+        { method: "POST", headers, body: JSON.stringify({ query }) }
+    );
+
+    let currency = conn.account_currency || null;
+    if (!currency) {
+        const r = await post("SELECT customer.currency_code FROM customer LIMIT 1").catch(() => null);
+        if (r?.ok) {
+            const d = await r.json().catch(() => ({}));
+            currency = d?.results?.[0]?.customer?.currencyCode || null;
+        }
+        if (currency && db && conn.id) {
+            db.query(
+                `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW() WHERE id=$2`,
+                [currency, conn.id]
+            ).catch(() => {});
+        }
+    }
+
+    const resp = await post(`
         SELECT segments.date, metrics.clicks, metrics.cost_micros, metrics.impressions
         FROM campaign
         WHERE segments.date BETWEEN '${fromDate}' AND '${toDate}'
           AND campaign.status != 'REMOVED'
-    `;
-    const resp = await fetch(
-        `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
-        { method: "POST", headers, body: JSON.stringify({ query }) }
-    );
+    `);
     if (!resp.ok) {
         const raw = await resp.text().catch(() => "");
         let err = {};
@@ -878,14 +900,14 @@ async function fetchGoogleAdsDaily(conn, fromDate, toDate) {
         byDay[date].spendMicros += Number(row.metrics?.costMicros ?? row.metrics?.cost_micros ?? 0);
         byDay[date].impressions += Number(row.metrics?.impressions || 0);
     }
-    const currency = conn.account_currency || "EUR";
+    const resolvedCurrency = currency || "USD";
     const result = {};
     for (const [date, v] of Object.entries(byDay)) {
         result[date] = {
             clicks: v.clicks,
             impressions: v.impressions,
             spend: +(v.spendMicros / 1_000_000).toFixed(4),
-            currency,
+            currency: resolvedCurrency,
         };
     }
     return result;
@@ -1415,9 +1437,9 @@ async function fetchOpenAIAds(conn, fromDate, toDate) {
 }
 
 // Returns { [YYYY-MM-DD]: { clicks, impressions, spend, currency } }
-export async function fetchPlatformDataDaily(conn, fromDate, toDate) {
+export async function fetchPlatformDataDaily(conn, fromDate, toDate, db) {
     switch (conn.platform) {
-        case "google_ads":       return fetchGoogleAdsDaily(conn, fromDate, toDate);
+        case "google_ads":       return fetchGoogleAdsDaily(conn, fromDate, toDate, db);
         case "meta_ads":         return fetchMetaAdsDaily(conn, fromDate, toDate);
         case "linkedin_ads":     return fetchLinkedInAdsDaily(conn, fromDate, toDate);
         case "google_analytics": return fetchGoogleAnalyticsDaily(conn, fromDate, toDate);

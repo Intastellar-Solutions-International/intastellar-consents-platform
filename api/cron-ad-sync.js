@@ -223,7 +223,7 @@ export default async function handler(req, res) {
 
         let byDay;
         try {
-            byDay = await fetchPlatformDataDaily(conn, fromDate, toDate);
+            byDay = await fetchPlatformDataDaily(conn, fromDate, toDate, db);
         } catch (err) {
             console.error(`${tag} fetch failed:`, err.message);
             results.push({ tag, status: "error", error: err.message });
