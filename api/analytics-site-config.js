@@ -57,22 +57,30 @@ export default async function handler(req, res) {
     }
 
     const site = rows[0];
-    let datalayerRules = [];
-    if (site.datalayer_enabled === true) {
-        const { rows: ruleRows } = await db.query(
-            `SELECT datalayer_event, maps_to_name, kind, value_path, currency_path, transaction_id_path
-             FROM analytics_datalayer_rules WHERE site_id = $1 AND enabled = true`,
+
+    const [datalayerRuleRows, approvedDomainRows] = await Promise.all([
+        site.datalayer_enabled === true
+            ? db.query(
+                `SELECT datalayer_event, maps_to_name, kind, value_path, currency_path, transaction_id_path
+                 FROM analytics_datalayer_rules WHERE site_id = $1 AND enabled = true`,
+                [siteId]
+              ).catch(() => ({ rows: [] }))
+            : Promise.resolve({ rows: [] }),
+
+        db.query(
+            `SELECT domain FROM analytics_foreign_domains WHERE site_id = $1 AND approved = true`,
             [siteId]
-        ).catch(() => ({ rows: [] }));
-        datalayerRules = ruleRows.map(r => ({
-            datalayerEvent:    r.datalayer_event,
-            mapsToName:        r.maps_to_name,
-            kind:              r.kind,
-            valuePath:         r.value_path,
-            currencyPath:      r.currency_path,
-            transactionIdPath: r.transaction_id_path,
-        }));
-    }
+        ).catch(() => ({ rows: [] })),
+    ]);
+
+    const datalayerRules = datalayerRuleRows.rows.map(r => ({
+        datalayerEvent:    r.datalayer_event,
+        mapsToName:        r.maps_to_name,
+        kind:              r.kind,
+        valuePath:         r.value_path,
+        currencyPath:      r.currency_path,
+        transactionIdPath: r.transaction_id_path,
+    }));
 
     return res.status(200).json({
         heatmapsEnabled:  site.heatmaps_enabled !== false,
@@ -82,5 +90,6 @@ export default async function handler(req, res) {
         maskSelectors:    Array.isArray(site.recording_mask_selectors)  ? site.recording_mask_selectors  : [],
         datalayerEnabled: site.datalayer_enabled === true,
         datalayerRules,
+        approvedDomains:  approvedDomainRows.rows.map(r => r.domain),
     });
 }

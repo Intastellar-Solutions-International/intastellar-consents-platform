@@ -719,6 +719,22 @@ function startClickTracking(){
 // enabled AND a visitor sampled into the per-session roll, so the vast
 // majority of pageviews never pay rrweb's download/runtime cost.
 var siteFeaturesBootstrapped=false;
+// Approved cross-site domains (fetched from site config at boot). Clicks to
+// these are NOT counted as outbound_click — they belong to the same operator.
+var _ownDomains=[];
+(function(){
+  try{
+    var xhr=new XMLHttpRequest();
+    xhr.open('GET','https://analytics.consentsmanagement.com/api/analytics-site-config?site='+encodeURIComponent(SITE),true);
+    xhr.onload=function(){
+      try{
+        var cfg=JSON.parse(xhr.responseText);
+        if(cfg&&Array.isArray(cfg.approvedDomains))_ownDomains=cfg.approvedDomains;
+      }catch(e){}
+    };
+    xhr.send();
+  }catch(e){}
+})();
 
 // Dot-path walk into a dataLayer push, capped at 4 segments — never returns
 // nested objects/arrays, only whatever primitive sits at that exact path.
@@ -779,6 +795,8 @@ function bootstrapSiteFeatures(){
       var cfg;
       try{cfg=JSON.parse(xhr.responseText);}catch(e){return;}
       if(!cfg)return;
+
+      if(Array.isArray(cfg.approvedDomains))_ownDomains=cfg.approvedDomains;
 
       if(cfg.datalayerEnabled&&cfg.datalayerRules&&cfg.datalayerRules.length){
         installDataLayerListener(cfg.datalayerRules);
@@ -1232,9 +1250,16 @@ var _spaLastPath=location.pathname+location.search;
 })();
 
 // ── Outbound links, file downloads, phone & email clicks ─────────────────
-// Single delegated click listener — walks up from click target to nearest
-// <a> then classifies by protocol and href pattern.
+// Subdomains of the current root domain are treated as internal navigation —
+// shop.example.com clicked from www.example.com is NOT outbound. Approved
+// cross-site domains (set in Analytics Settings → Cross-site tracking) are
+// also excluded because those are operator-owned properties.
+// rootDomain() uses the last two hostname parts as a lightweight eTLD+1
+// approximation (correct for .com/.net/.org/etc; imperfect for .co.uk but
+// close enough without a full PSL library in a <5 KB embed).
 (function(){
+  function rootDomain(h){var p=(h||'').split('.');return p.slice(-2).join('.');}
+  var myRoot=rootDomain(location.hostname);
   var FILE_EXT=/\\.(?:pdf|zip|docx?|xlsx?|pptx?|csv|txt|rtf|mp3|mp4|mov|avi|webm|dmg|pkg|exe|apk|ipa)(\\?|#|$)/i;
   document.addEventListener('click',function(e){
     try{
@@ -1253,7 +1278,14 @@ var _spaLastPath=location.pathname+location.search;
       }
       if(proto!=='http'&&proto!=='https')return;
       var host='';try{host=new URL(href).hostname;}catch(e2){}
-      if(!host||host===location.hostname)return;
+      if(!host)return;
+      // Same host or same root domain (subdomain) → internal
+      if(host===location.hostname||rootDomain(host)===myRoot)return;
+      // Approved cross-site property → not outbound
+      if(_ownDomains.length){
+        var hRoot=rootDomain(host);
+        for(var oi=0;oi<_ownDomains.length;oi++){if(rootDomain(_ownDomains[oi])===hRoot)return;}
+      }
       if(FILE_EXT.test(href)){
         track('file_download',{data:{
           file:href.split('/').pop().split('?')[0].slice(0,100),
