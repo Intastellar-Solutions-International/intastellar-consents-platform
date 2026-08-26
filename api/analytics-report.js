@@ -801,9 +801,11 @@ async function _handler(req, res) {
         ).catch(() => ({ rows: [] })),
 
     ]).catch((err) => {
-        // Table may not exist yet
-        if (err?.message?.includes("does not exist")) return Array(33).fill({ rows: [] });
-        throw err;
+        // Schema not yet migrated, connection limit hit, or other transient DB
+        // error — return empty rows for every query so the response stays a
+        // valid (if empty) 200 instead of crashing with a 500.
+        console.error("[analytics-report] batch error:", err?.message);
+        return Array(33).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
