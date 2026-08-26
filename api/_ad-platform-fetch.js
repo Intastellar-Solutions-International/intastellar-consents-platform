@@ -834,6 +834,7 @@ export async function fetchPlatformData(conn, fromDate, toDate) {
         case "linkedin_ads":     return fetchLinkedInAds(conn, fromDate, toDate);
         case "google_analytics": return fetchGoogleAnalytics(conn, fromDate, toDate);
         case "microsoft_ads":    return fetchMicrosoftAds(conn, fromDate, toDate);
+        case "openai_ads":       return fetchOpenAIAds(conn, fromDate, toDate);
         default:
             throw new Error(`Unsupported platform: ${conn.platform}`);
     }
@@ -1314,6 +1315,105 @@ export async function fetchMetaAdsObjectById(conn, id) {
     return { type, id: String(data.id), name: data.name || `Object ${id}`, parentName };
 }
 
+// ── OpenAI Ads (static API key, no OAuth) ────────────────────────────────────
+// Base URL: https://api.ads.openai.com/v1/
+// Authentication: Authorization: Bearer <api_key>
+// The insights endpoint is per-ad; we list all ads first, then aggregate.
+
+const OPENAI_ADS_BASE = "https://api.ads.openai.com/v1";
+
+async function openAIAdsRequest(apiKey, path, params = {}) {
+    const url = new URL(`${OPENAI_ADS_BASE}/${path}`);
+    Object.entries(params).forEach(([k, v]) => { if (v != null) url.searchParams.set(k, String(v)); });
+    const resp = await fetch(url.toString(), {
+        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    });
+    if (!resp.ok) {
+        const raw = await resp.text().catch(() => "");
+        throw new Error(`OpenAI Ads ${path} → ${resp.status}: ${raw.slice(0, 200)}`);
+    }
+    return resp.json();
+}
+
+// Paginate through all ads in the account.
+async function listAllOpenAIAds(apiKey) {
+    const ads = [];
+    let after;
+    while (true) {
+        const data = await openAIAdsRequest(apiKey, "ads", { limit: 100, ...(after ? { after } : {}) });
+        ads.push(...(data.data || []));
+        if (!data.has_more) break;
+        after = data.last_id;
+    }
+    return ads;
+}
+
+// Fetch daily insights for one ad, returning items within [fromUnix, toUnixExclusive).
+// Insights are newest-first; we paginate backward until we've consumed the range.
+async function fetchOpenAIAdInsightsInRange(apiKey, adId, fromUnix, toUnixExclusive) {
+    const byDay = {};
+    let before;
+    while (true) {
+        const data = await openAIAdsRequest(apiKey, `ads/${adId}/insights`, {
+            time_granularity: "daily",
+            limit: 100,
+            ...(before ? { before } : {}),
+        });
+        const rows = data.data || [];
+        for (const row of rows) {
+            if (row.start_time >= fromUnix && row.start_time < toUnixExclusive) {
+                const day = row.readable_time; // "YYYY-MM-DD"
+                if (!byDay[day]) byDay[day] = { clicks: 0, impressions: 0, spend: 0 };
+                byDay[day].clicks      += Number(row.clicks      || 0);
+                byDay[day].impressions += Number(row.impressions || 0);
+                byDay[day].spend       += Number(row.spend       || 0);
+            }
+        }
+        if (!data.has_more) break;
+        // Oldest row in this page — if it's already before our range, stop
+        const oldest = rows.at(-1);
+        if (oldest && oldest.start_time < fromUnix) break;
+        before = data.last_id;
+    }
+    return byDay;
+}
+
+async function fetchOpenAIAdsDaily(conn, fromDate, toDate) {
+    const apiKey = conn.access_token;
+    if (!apiKey) throw new Error("No OpenAI Ads API key stored.");
+    const currency = conn.account_currency || "USD";
+
+    const fromUnix      = Math.floor(new Date(fromDate + "T00:00:00Z").getTime() / 1000);
+    const toUnixExclusive = Math.floor(new Date(toDate + "T00:00:00Z").getTime() / 1000) + 86400;
+
+    const ads = await listAllOpenAIAds(apiKey);
+    const perAd = await Promise.all(
+        ads.map(ad => fetchOpenAIAdInsightsInRange(apiKey, ad.id, fromUnix, toUnixExclusive).catch(() => ({})))
+    );
+
+    const result = {};
+    for (const dayMap of perAd) {
+        for (const [day, m] of Object.entries(dayMap)) {
+            if (!result[day]) result[day] = { clicks: 0, impressions: 0, spend: 0, currency };
+            result[day].clicks      += m.clicks;
+            result[day].impressions += m.impressions;
+            result[day].spend       += m.spend;
+        }
+    }
+    for (const day of Object.keys(result)) result[day].spend = +result[day].spend.toFixed(2);
+    return result;
+}
+
+async function fetchOpenAIAds(conn, fromDate, toDate) {
+    const daily    = await fetchOpenAIAdsDaily(conn, fromDate, toDate);
+    const currency = conn.account_currency || "USD";
+    const totals   = Object.values(daily).reduce(
+        (acc, d) => ({ clicks: acc.clicks + d.clicks, impressions: acc.impressions + d.impressions, spend: acc.spend + d.spend }),
+        { clicks: 0, impressions: 0, spend: 0 }
+    );
+    return { ...totals, spend: +totals.spend.toFixed(2), currency };
+}
+
 // Returns { [YYYY-MM-DD]: { clicks, impressions, spend, currency } }
 export async function fetchPlatformDataDaily(conn, fromDate, toDate) {
     switch (conn.platform) {
@@ -1323,6 +1423,7 @@ export async function fetchPlatformDataDaily(conn, fromDate, toDate) {
         case "google_analytics": return fetchGoogleAnalyticsDaily(conn, fromDate, toDate);
         case "google_search_console": return fetchSearchConsoleDaily(conn, fromDate, toDate);
         case "microsoft_ads":    return fetchMicrosoftAdsDaily(conn, fromDate, toDate);
+        case "openai_ads":       return fetchOpenAIAdsDaily(conn, fromDate, toDate);
         default:
             return {};
     }

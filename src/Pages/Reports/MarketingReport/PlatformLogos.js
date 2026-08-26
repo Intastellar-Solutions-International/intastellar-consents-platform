@@ -71,3 +71,12 @@ export function MicrosoftLogo() {
         </svg>
     );
 }
+
+// OpenAI's bloom/spark mark — simplified geometric approximation in brand green
+export function OpenAILogo() {
+    return (
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none">
+            <path fill="#10a37f" d="M21.6 9.8a5.6 5.6 0 0 0-.48-4.56 5.65 5.65 0 0 0-6.08-2.71A5.6 5.6 0 0 0 10.9.5a5.65 5.65 0 0 0-5.39 3.91A5.6 5.6 0 0 0 1.8 7.08a5.65 5.65 0 0 0 .7 6.57 5.6 5.6 0 0 0 .48 4.56 5.65 5.65 0 0 0 6.08 2.71A5.6 5.6 0 0 0 13.1 23.5a5.65 5.65 0 0 0 5.39-3.91 5.6 5.6 0 0 0 3.71-2.67 5.65 5.65 0 0 0-.7-6.57zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/>
+        </svg>
+    );
+}

@@ -60,9 +60,13 @@ function setCors(req, res) {
     const origin = req.headers.origin || "";
     if (ALLOWED_ORIGINS.includes(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Allow-Methods", "GET,PATCH,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Authorization,Organisation,Content-Type");
 }
+
+// Platforms that authenticate with a static API key instead of OAuth.
+// POST /api/ad-connections verifies the key and saves the connection.
+const API_KEY_PLATFORMS = new Set(["openai_ads"]);
 
 let tableReady = false;
 async function ensureTable(db) {
@@ -179,6 +183,54 @@ export default async function handler(req, res) {
             .sort((a, b) => (a.domain || "").localeCompare(b.domain || "") || a.platform.localeCompare(b.platform));
 
         return res.status(200).json({ connections });
+    }
+
+    if (req.method === "POST") {
+        let body = {};
+        try {
+            body = typeof req.body === "object" && req.body !== null ? req.body : JSON.parse(req.body || "{}");
+        } catch { return res.status(400).json({ error: "Invalid JSON" }); }
+
+        const { platform, domain, apiKey } = body;
+        if (!platform || !domain || !apiKey) {
+            return res.status(400).json({ error: "platform, domain, and apiKey are required" });
+        }
+        if (!API_KEY_PLATFORMS.has(platform)) {
+            return res.status(400).json({ error: `${platform} uses OAuth — use the Connect button instead` });
+        }
+
+        // Verify the key against the ad account endpoint and fetch account metadata
+        let accountId, accountLabel, currency;
+        try {
+            const verifyResp = await fetch("https://api.ads.openai.com/v1/ad_account", {
+                headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+            });
+            if (!verifyResp.ok) {
+                const raw = await verifyResp.text().catch(() => "");
+                return res.status(400).json({ error: `OpenAI Ads rejected the key (${verifyResp.status}): ${raw.slice(0, 120)}` });
+            }
+            const acct = await verifyResp.json();
+            accountId    = acct.id   || null;
+            accountLabel = acct.name || acct.url || acct.id || "OpenAI Ads account";
+            currency     = acct.currency_code || "USD";
+        } catch (err) {
+            return res.status(502).json({ error: `Could not reach OpenAI Ads API: ${err.message}` });
+        }
+
+        await db.query(`
+            INSERT INTO ad_platform_connections
+                (organisation_id, domain, platform, account_id, account_label, account_currency, access_token, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+            ON CONFLICT (organisation_id, domain, platform) DO UPDATE SET
+                account_id       = EXCLUDED.account_id,
+                account_label    = EXCLUDED.account_label,
+                account_currency = EXCLUDED.account_currency,
+                access_token     = EXCLUDED.access_token,
+                updated_at       = NOW()`,
+            [orgId, domain, platform, accountId, accountLabel, currency, apiKey]
+        );
+
+        return res.status(200).json({ ok: true, accountId, accountLabel, currency });
     }
 
     if (req.method === "PATCH") {

@@ -1,7 +1,7 @@
 const { useState, useEffect, useCallback } = React;
 import { ScannerHost } from "../../../API/host";
 import {
-    GoogleLogo, GA4Logo, SearchConsoleLogo, MetaLogo, LinkedInLogo, MicrosoftLogo,
+    GoogleLogo, GA4Logo, SearchConsoleLogo, MetaLogo, LinkedInLogo, MicrosoftLogo, OpenAILogo,
 } from "./PlatformLogos.js";
 
 const AD_PLATFORMS = [
@@ -11,6 +11,7 @@ const AD_PLATFORMS = [
     { id: "meta_ads",              label: "Meta (Facebook / Instagram)", Logo: MetaLogo,          isAnalytics: false },
     { id: "linkedin_ads",          label: "LinkedIn Ads",                Logo: LinkedInLogo,      isAnalytics: false },
     { id: "microsoft_ads",         label: "Microsoft Ads",               Logo: MicrosoftLogo,     isAnalytics: false },
+    { id: "openai_ads",            label: "OpenAI Ads",                  Logo: OpenAILogo,        isAnalytics: false, apiKey: true },
 ];
 
 function formatDate(iso) {
@@ -29,6 +30,9 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
     const [manualInput, setManualInput] = useState(null); // { platformId } | null
     const [manualId, setManualId] = useState("");
     const [savingManual, setSavingManual] = useState(false);
+    const [apiKeyInput, setApiKeyInput] = useState(null); // { platformId } | null
+    const [apiKeyValue, setApiKeyValue] = useState("");
+    const [savingApiKey, setSavingApiKey] = useState(false);
     const [statusMsg, setStatusMsg] = useState(null);
     const [statusIsError, setStatusIsError] = useState(false);
 
@@ -96,6 +100,12 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
             setStatus("Session expired — please reload and log in again.", true);
             return;
         }
+        // API-key platforms show an inline form instead of redirecting to OAuth
+        const platformMeta = AD_PLATFORMS.find(p => p.id === platformId);
+        if (platformMeta?.apiKey) {
+            setApiKeyInput({ platformId });
+            return;
+        }
         setConnecting(platformId);
         try {
             const returnPath = window.location.pathname;
@@ -117,6 +127,40 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
         } catch (err) {
             setStatus(err.message, true);
             setConnecting(null);
+        }
+    }
+
+    async function handleApiKeyConnect() {
+        if (!apiKeyValue.trim() || !apiKeyInput) return;
+        setSavingApiKey(true);
+        try {
+            const resp = await fetch(`${ScannerHost}/api/ad-connections`, {
+                method: "POST",
+                headers: {
+                    Authorization: authToken,
+                    Organisation: String(orgId),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    platform: apiKeyInput.platformId,
+                    domain,
+                    apiKey: apiKeyValue.trim(),
+                }),
+            });
+            const data = await resp.json();
+            if (!resp.ok) {
+                setStatus(data.error || "Could not connect.", true);
+                return;
+            }
+            setApiKeyInput(null);
+            setApiKeyValue("");
+            setStatus(`OpenAI Ads connected (${data.accountLabel || data.accountId}) — syncing data…`);
+            fetchConnections();
+            triggerSync(domain, apiKeyInput.platformId);
+        } catch (err) {
+            setStatus(err.message, true);
+        } finally {
+            setSavingApiKey(false);
         }
     }
 
@@ -379,6 +423,45 @@ export default function AdConnectionManager({ domain, orgId, authToken, fromDate
             </div>
             );
         })()}
+
+        {apiKeyInput && (
+            <div className="ad-manual-input-backdrop">
+                <div className="ad-manual-input">
+                    <h4 className="ad-manual-input__title">Connect OpenAI Ads</h4>
+                    <p className="ad-manual-input__hint">
+                        Generate an API key in your{" "}
+                        <strong>OpenAI Ads Manager → Settings → API keys</strong>.
+                        We'll verify the key and fetch your account details automatically.
+                    </p>
+                    <input
+                        className="ad-manual-input__field"
+                        type="password"
+                        value={apiKeyValue}
+                        onChange={e => setApiKeyValue(e.target.value)}
+                        placeholder="sk-ads-…"
+                        onKeyDown={e => e.key === "Enter" && handleApiKeyConnect()}
+                        autoFocus
+                        autoComplete="off"
+                    />
+                    <div className="ad-manual-input__actions">
+                        <button
+                            className="ad-connection-card__btn ad-connection-card__btn--disconnect"
+                            onClick={() => { setApiKeyInput(null); setApiKeyValue(""); }}
+                            disabled={savingApiKey}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="ad-connection-card__btn ad-connection-card__btn--connect"
+                            onClick={handleApiKeyConnect}
+                            disabled={!apiKeyValue.trim() || savingApiKey}
+                        >
+                            {savingApiKey ? "Verifying…" : "Connect"}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
         </div>
     );
 }

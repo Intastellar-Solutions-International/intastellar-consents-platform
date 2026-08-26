@@ -73,6 +73,7 @@ const PLATFORM_MAX_DAYS = {
     microsoft_ads:         1095, // 3 years
     google_search_console:  500, // GSC retains ~16 months
     google_analytics:       365, // GA4 standard retention
+    openai_ads:             180, // OpenAI Ads API — conservative limit (API is new, retention unconfirmed)
 };
 
 function isoDate(d) {
