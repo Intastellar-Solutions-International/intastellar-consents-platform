@@ -1,7 +1,11 @@
 const { useState, useEffect, useCallback, useMemo } = React;
 import { ScannerHost } from "../../API/host.js";
 import Authentication from "../../Authentication/Auth.js";
-import { IconCash, IconCursorClick, IconTarget, IconPlus, IconTrash, IconFunnel } from "./Icons.js";
+import {
+    IconCash, IconCursorClick, IconTarget, IconPlus, IconTrash, IconFunnel,
+    IconExternalLink, IconPhone, IconMail, IconDownload, IconFormFill,
+    IconScrollDepth, IconCopy, IconPrint, IconVideo, IconBarChart,
+} from "./Icons.js";
 
 function authHeaders() {
     return {
@@ -11,7 +15,30 @@ function authHeaders() {
     };
 }
 
-const KIND_ICON  = {
+// ── Auto-collected event definitions ─────────────────────────────────────────
+// These are fired automatically by the embed script — no user setup needed.
+// Displayed separately from user-defined conversions (same distinction GA4
+// makes between "Enhanced measurement" and "Custom events").
+const AUTO_EVENTS = [
+    { name: "outbound_click",  label: "Outbound clicks",    Icon: IconExternalLink, color: "#6366f1" },
+    { name: "scroll_depth",    label: "Scroll depth",       Icon: IconScrollDepth,  color: "#10b981" },
+    { name: "form_submit",     label: "Form submissions",   Icon: IconFormFill,     color: "#f59e0b" },
+    { name: "form_started",    label: "Form starts",        Icon: IconFormFill,     color: "#f59e0b" },
+    { name: "file_download",   label: "File downloads",     Icon: IconDownload,     color: "#3b82f6" },
+    { name: "video_play",      label: "Video plays",        Icon: IconVideo,        color: "#8b5cf6" },
+    { name: "video_complete",  label: "Video completions",  Icon: IconVideo,        color: "#8b5cf6" },
+    { name: "video_50pct",     label: "Video 50%",          Icon: IconVideo,        color: "#8b5cf6" },
+    { name: "phone_click",     label: "Phone clicks",       Icon: IconPhone,        color: "#ec4899" },
+    { name: "email_click",     label: "Email clicks",       Icon: IconMail,         color: "#ec4899" },
+    { name: "content_copy",    label: "Content copies",     Icon: IconCopy,         color: "#64748b" },
+    { name: "page_print",      label: "Page prints",        Icon: IconPrint,        color: "#64748b" },
+    { name: "rage_click",      label: "Rage clicks",        Icon: IconCursorClick,  color: "#ef4444" },
+    { name: "video_pause",     label: "Video pauses",       Icon: IconVideo,        color: "#8b5cf6" },
+];
+
+const AUTO_EVENT_NAMES = new Set(AUTO_EVENTS.map(e => e.name));
+
+const KIND_ICON = {
     purchase: IconCash, click: IconCursorClick, custom: IconTarget,
     view_basket: IconFunnel, begin_checkout: IconFunnel, checkout: IconFunnel,
 };
@@ -35,15 +62,81 @@ function snippetFor(name, kind) {
     return `intaAnalytics.track('${name}');`;
 }
 
+// ── Auto-collected enhanced measurement block ─────────────────────────────────
+function AutoCollectedBlock({ conversions }) {
+    const [expanded, setExpanded] = useState(false);
+
+    const countByName = useMemo(() => {
+        const m = new Map();
+        (conversions || []).forEach(c => m.set(c.name, c.count || 0));
+        return m;
+    }, [conversions]);
+
+    const withCounts = AUTO_EVENTS.map(e => ({ ...e, count: countByName.get(e.name) || 0 }));
+    // Events with traffic shown first; rest dimmed but still visible
+    const active  = withCounts.filter(e => e.count > 0);
+    const passive = withCounts.filter(e => e.count === 0);
+
+    const visible = expanded ? withCounts : [...active, ...passive].slice(0, 8);
+    const hiddenCount = withCounts.length - visible.length;
+
+    return (
+        <div className="sa-enhanced-block">
+            <div className="sa-enhanced-block__head">
+                <span className="sa-enhanced-block__sparkle" aria-hidden="true">✦</span>
+                <div className="sa-enhanced-block__titles">
+                    <span className="sa-enhanced-block__title">Auto-collected events</span>
+                    <span className="sa-enhanced-block__sub">
+                        Automatically measured by the Intastellar embed script — no setup needed.
+                    </span>
+                </div>
+                <span className="sa-enhanced-block__badge">ENHANCED</span>
+            </div>
+
+            <div className="sa-enhanced-chips">
+                {visible.map(e => (
+                    <div
+                        key={e.name}
+                        className={"sa-auto-chip" + (e.count === 0 ? " sa-auto-chip--dim" : "")}
+                        title={`${e.name}${e.count > 0 ? ` · ${e.count.toLocaleString("de-DE")} events` : " · no events yet"}`}
+                    >
+                        <span className="sa-auto-chip__icon" style={{ color: e.color }}>
+                            <e.Icon style={{ width: 13, height: 13 }} />
+                        </span>
+                        <span className="sa-auto-chip__label">{e.label}</span>
+                        {e.count > 0 && (
+                            <span className="sa-auto-chip__count">{e.count.toLocaleString("de-DE")}</span>
+                        )}
+                    </div>
+                ))}
+                {!expanded && hiddenCount > 0 && (
+                    <button
+                        type="button"
+                        className="sa-auto-chip sa-auto-chip--more"
+                        onClick={() => setExpanded(true)}
+                    >
+                        +{hiddenCount} more
+                    </button>
+                )}
+                {expanded && (
+                    <button
+                        type="button"
+                        className="sa-auto-chip sa-auto-chip--more"
+                        onClick={() => setExpanded(false)}
+                    >
+                        Show less
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
+
 /**
  * Conversion event registry + live counts. Definitions are purely for
  * labelling — the ingest endpoint accepts any event name a site sends,
  * so events fired without being "registered" here still show up (flagged
- * as unregistered) rather than being silently dropped. The funnel view
- * (checkout-step visualization) lives separately in ConversionFunnel.js —
- * this panel is the implementation/setup surface: every tracked event,
- * its kind, snippet, and consent-linked ratio, regardless of whether it
- * also gets a nicer visualization elsewhere.
+ * as unregistered) rather than being silently dropped.
  */
 export default function ConversionsPanel({ domain, conversions, onDefsChanged }) {
     const [defs, setDefs] = useState([]);
@@ -99,8 +192,6 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
         onDefsChanged?.();
     };
 
-    // Lazy, cache-once per event name — most events never carry extra data,
-    // so there's no point fetching this until someone actually opens it.
     const togglePayloads = (defName) => {
         setOpenPayloads(s => (s === defName ? null : defName));
         if (payloadsByName[defName] !== undefined) return;
@@ -114,6 +205,8 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
             .finally(() => setPayloadsLoading(null));
     };
 
+    // Merge registered defs with live counts; show unregistered events that
+    // have fired — but exclude auto-collected ones (they have their own section).
     const rows = useMemo(() => {
         const byName = new Map((conversions || []).map(c => [c.name, c]));
         const out = defs.map(d => {
@@ -127,7 +220,7 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
         });
         const knownNames = new Set(defs.map(d => d.name));
         (conversions || []).forEach(c => {
-            if (!knownNames.has(c.name)) {
+            if (!knownNames.has(c.name) && !AUTO_EVENT_NAMES.has(c.name)) {
                 out.push({
                     name: c.name, label: c.label, kind: c.kind,
                     count: c.count, linkedCount: c.linkedCount,
@@ -141,8 +234,12 @@ export default function ConversionsPanel({ domain, conversions, onDefsChanged })
 
     return (
         <div className="sa-section">
-            <div className="sa-panel__head">
-                <h3 className="sa-section__title"><IconTarget className="sa-icon" /> Conversions</h3>
+            {/* ── Auto-collected events ───────────────────────────────────── */}
+            <AutoCollectedBlock conversions={conversions} />
+
+            {/* ── User-defined conversion events ─────────────────────────── */}
+            <div className="sa-panel__head sa-panel__head--mt">
+                <h3 className="sa-section__title"><IconTarget className="sa-icon" /> Your conversion events</h3>
                 <button type="button" className="sa-add-event-btn" onClick={() => setShowForm(s => !s)}>
                     <IconPlus className="sa-icon" /> Add event
                 </button>
