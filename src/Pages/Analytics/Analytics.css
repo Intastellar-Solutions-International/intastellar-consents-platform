@@ -306,6 +306,63 @@
 /* ── Cross-site hosts ── */
 .sa-live__hosts { display: flex; flex-direction: column; gap: 6px; }
 
+.sa-live__conversions-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.sa-live__conv-total {
+    margin-left: 6px;
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: rgba(74,222,128,0.7);
+}
+.sa-live__conv-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.sa-live__conv-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 8px;
+    border-radius: 6px;
+    background: rgba(74,222,128,0.06);
+    border: 1px solid rgba(74,222,128,0.12);
+}
+.sa-live__conv-label {
+    font-size: 0.78rem;
+    color: rgba(210,240,220,0.85);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60%;
+}
+.sa-live__conv-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.sa-live__conv-value {
+    font-size: 0.72rem;
+    color: rgba(74,222,128,0.75);
+}
+.sa-live__conv-count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(74,222,128,0.9);
+    background: rgba(74,222,128,0.12);
+    padding: 1px 6px;
+    border-radius: 10px;
+}
+.sa-live__conv-empty {
+    font-size: 0.75rem;
+    color: rgba(130,130,150,0.45);
+    margin: 0;
+}
+
 /* ── Countries grid used in Audience page ── */
 .sa-aud-countries-grid {
     display: grid;

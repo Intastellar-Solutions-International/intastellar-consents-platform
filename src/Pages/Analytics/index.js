@@ -154,6 +154,38 @@ function LivePanel({ domain, engagedUsers }) {
                         </div>
                     </div>
 
+                    {/* ── Conversions in last 30 min ── */}
+                    <div className="sa-live__conversions-wrap">
+                        <p className="sa-live__section-title">
+                            Conversions
+                            {data.conversions?.length > 0 && (
+                                <span className="sa-live__conv-total">
+                                    {data.conversions.reduce((s, c) => s + c.count, 0)} total
+                                </span>
+                            )}
+                        </p>
+                        {data.conversions?.length > 0 ? (
+                            <div className="sa-live__conv-list">
+                                {data.conversions.map(c => (
+                                    <div key={c.name} className="sa-live__conv-row">
+                                        <span className="sa-live__conv-label" title={c.name}>{c.label}</span>
+                                        <div className="sa-live__conv-right">
+                                            {c.valueCents != null && (
+                                                <span className="sa-live__conv-value">
+                                                    {c.currency === "DKK" || c.currency === "SEK" || c.currency === "NOK" ? "kr " : c.currency === "USD" ? "$" : c.currency === "GBP" ? "£" : "€"}
+                                                    {(c.valueCents / 100).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                </span>
+                                            )}
+                                            <span className="sa-live__conv-count">{c.count}×</span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="sa-live__conv-empty">No conversions in this window</p>
+                        )}
+                    </div>
+
                     {/* ── Multi-host notice ── */}
                     {data.topHosts && data.topHosts.length > 1 && (
                         <div className="sa-live__hosts">

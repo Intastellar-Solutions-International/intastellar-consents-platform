@@ -81,7 +81,7 @@ export default async function handler(req, res) {
 
     const siteId = siteRows[0].id;
 
-    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes] = await Promise.all([
+    const [totalsRes, minutesRes, pagesRes, hostsRes, recentRes, conversionsRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -142,7 +142,26 @@ export default async function handler(req, res) {
             [siteId]
         ),
 
-    ]).catch(() => Array(5).fill({ rows: [] }));
+        db.query(`
+            SELECT
+                ce.name,
+                COALESCE(d.label, ce.name)          AS label,
+                COUNT(*)::int                        AS count,
+                SUM(ce.value_cents)                  AS total_value_cents,
+                MAX(ce.currency)                     AS currency,
+                MAX(ce.received_at)                  AS last_at
+            FROM analytics_custom_events ce
+            LEFT JOIN analytics_event_defs d
+                   ON d.site_id = ce.site_id AND d.name = ce.name
+            WHERE ce.site_id = $1
+              AND ce.received_at >= NOW() - INTERVAL '30 minutes'
+            GROUP BY ce.name, d.label
+            ORDER BY count DESC
+            LIMIT 10`,
+            [siteId]
+        ).catch(() => ({ rows: [] })),
+
+    ]).catch(() => Array(6).fill({ rows: [] }));
 
     const t = totalsRes.rows[0] || {};
 
@@ -183,6 +202,14 @@ export default async function handler(req, res) {
             country: r.country_code,
             device:  r.device_type,
             level:   r.consent_level,
+        })),
+        conversions: conversionsRes.rows.map(r => ({
+            name:       r.name,
+            label:      r.label,
+            count:      r.count,
+            valueCents: r.total_value_cents ? Number(r.total_value_cents) : null,
+            currency:   r.currency || null,
+            lastAt:     r.last_at,
         })),
     });
 }
