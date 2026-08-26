@@ -178,6 +178,9 @@ export const TRACKERS = [
     { domains: ["sdk.privacy-center.org", "didomi.io"],          service: "Didomi",               category: "cmp"            },
     { domains: ["cmp.quantcast.com", "quantcast.mgr.consensu.org", "quantcast.com"], service: "Quantcast Choice", category: "cmp" },
     { domains: ["cookiehub.com"],                                 service: "CookieHub",            category: "cmp"            },
+    // Own analytics infrastructure — must appear before the CMP entry so the
+    // analytics subdomain is classified as "analytics" rather than "cmp".
+    { domains: ["analytics.consentsmanagement.com", "analytics.intastellarconsents.com", "analytics.intastellar-consents.com"], service: "Intastellar Analytics", category: "analytics" },
     // Own CMP infrastructure — not a third-party transfer
     { domains: ["consents.cdn.intastellarsolutions.com", "intastellarsolutions.com", "consentsmanagement.com", "www.consentsmanagement.com", "intastellar-consents.com", "www.intastellar-consents.com", "intastellarconsents.com", "www.intastellarconsents.com"], service: "Intastellar Consents", category: "cmp" },
 ];
@@ -244,6 +247,7 @@ export const DATA_COUNTRIES = {
     "Cookie Information": "DK", "Consentmanager": "DE", "HubSpot Cookie Banner": "US",
     "iubenda": "IT", "Axeptio": "FR", "CookieFirst": "NL",
     "Termly": "US", "Didomi": "FR", "Quantcast Choice": "US", "CookieHub": "IS",
+    "Intastellar Analytics": "DK",
     "Intastellar Consents": "DK",
 };
 
@@ -325,6 +329,7 @@ export const DATA_REGIONS = {
     "Consentmanager":       "eu",     "HubSpot Cookie Banner": "non-eu",
     "iubenda": "eu", "Axeptio": "eu", "CookieFirst": "eu",
     "Termly": "non-eu", "Didomi": "eu", "Quantcast Choice": "non-eu", "CookieHub": "eu",
+    "Intastellar Analytics": "eu",
     "Intastellar Consents": "eu",
 };
 
@@ -475,6 +480,7 @@ export const VENDOR_META = {
     "Termly":             { description: "Privacy policy and cookie consent management platform", privacyUrl: "https://termly.io/our-privacy-policy/", legalBasis: "legal_obligation", transferMechanism: "Standard Contractual Clauses" },
     "Quantcast Choice":   { description: "IAB TCF-certified consent management platform", privacyUrl: "https://www.quantcast.com/privacy/", legalBasis: "legal_obligation", transferMechanism: "EU-US Data Privacy Framework" },
     "CookieHub":          { description: "Cookie consent and compliance management tool", privacyUrl: "https://cookiehub.com/privacy", legalBasis: "legal_obligation", transferMechanism: "EEA" },
+    "Intastellar Analytics": { description: "Privacy-preserving first-party web analytics by Intastellar — event tracking, session analysis, and conversion reporting processed in the EU", privacyUrl: "https://www.intastellarconsents.com/privacy", legalBasis: "legitimate_interest", transferMechanism: "EEA" },
     "Intastellar Consents": { description: "Consent management platform by Intastellar Solutions", privacyUrl: "https://www.intastellarsolutions.com/about/legal/privacy", legalBasis: "legal_obligation", transferMechanism: "EEA" },
 };
 
