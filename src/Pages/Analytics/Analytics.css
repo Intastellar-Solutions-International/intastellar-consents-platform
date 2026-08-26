@@ -3602,6 +3602,145 @@ details[open] .ca-context-summary::before { content: "▾"; }
     border-bottom: none !important;
 }
 
+/* ── Engagement comparison table ─────────────────────────────────────── */
+.pxp-engagement-table {
+    min-width: 420px;
+}
+
+.pxp-engagement-table__metric {
+    font-size: 0.8rem;
+    color: rgba(200,200,200,0.8);
+}
+
+.pxp-engagement-table__target {
+    font-size: 0.75rem;
+    color: rgba(192,159,83,0.7);
+    font-variant-numeric: tabular-nums;
+}
+
+.pxp-engagement-table__cell {
+    font-variant-numeric: tabular-nums;
+    position: relative;
+}
+
+.pxp-engagement-table__winner {
+    font-weight: 700;
+    color: #f2f2f2;
+}
+
+.pxp-engagement-table__best-chip {
+    display: inline-block;
+    margin-left: 5px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: rgba(74,222,128,0.18);
+    color: #86e7a4;
+    vertical-align: middle;
+}
+
+.pxp-target-pass {
+    color: #86e7a4;
+    margin-right: 4px;
+    font-size: 0.8rem;
+}
+
+.pxp-target-fail {
+    color: #f0a3a3;
+    margin-right: 4px;
+    font-size: 0.8rem;
+}
+
+/* ── Targets edit button ──────────────────────────────────────────────── */
+.pxp-targets-edit-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 7px;
+    padding: 5px 12px;
+    color: rgba(200,200,200,0.7);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.pxp-targets-edit-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: rgba(220,220,220,0.9);
+}
+
+/* ── Targets inline editor ────────────────────────────────────────────── */
+.pxp-targets-editor {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+}
+
+.pxp-targets-editor__hint {
+    font-size: 0.78rem;
+    color: rgba(180,180,180,0.6);
+    margin: 0 0 12px;
+}
+
+.pxp-targets-editor__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.pxp-targets-editor__field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.pxp-targets-editor__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgba(180,180,180,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.pxp-targets-editor__input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.pxp-targets-editor__input {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 6px;
+    padding: 5px 8px;
+    color: #f2f2f2;
+    font-size: 0.8rem;
+    width: 80px;
+    outline: none;
+    font-variant-numeric: tabular-nums;
+}
+
+.pxp-targets-editor__input:focus {
+    border-color: rgba(255,255,255,0.28);
+}
+
+.pxp-targets-editor__unit {
+    font-size: 0.75rem;
+    color: rgba(160,160,160,0.5);
+}
+
+.pxp-targets-editor__actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
 /* ── Graph tabs + charts ─────────────────────────────────────────────────── */
 
 .pxp-graph-tabs {

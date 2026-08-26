@@ -259,18 +259,20 @@ export default async function handler(req, res) {
     for (const s of siteRows) siteIdByDomain[s.domain] = s.id;
     const testSiteId = siteIdByDomain[test.domain] || null;
 
-    const variantMeta = variantRows.map((v, i) => ({
-        row: v,
-        domain: variantDomains[i],
-        siteId: siteIdByDomain[variantDomains[i]] || testSiteId,
-    }));
+    const variantMeta = variantRows.map((v, i) => {
+        const vDomain = variantDomains[i];
+        const hasDedicated = !!siteIdByDomain[vDomain];
+        const siteId = siteIdByDomain[vDomain] || testSiteId;
+        const pageHostFilter = (!hasDedicated && testSiteId && vDomain !== test.domain) ? vDomain : null;
+        return { row: v, domain: vDomain, siteId, pageHostFilter };
+    });
 
     // ── Per-variant exposures + conversions ─────────────────────────────────
     // One query per variant (rather than one combined query across all
     // variants) since each needs its own site_id — the variant count on a
     // real test is always small (a handful), so this stays cheap.
     const variants = [];
-    for (const { row: v, domain: variantDomain, siteId: variantSiteId } of variantMeta) {
+    for (const { row: v, domain: variantDomain, siteId: variantSiteId, pageHostFilter } of variantMeta) {
         const hasGoal = !!goalEventName && !!variantSiteId;
         const { rows: statRows } = await db.query(
             `WITH exposures AS (
@@ -298,11 +300,64 @@ export default async function handler(req, res) {
         const conversions = hasGoal ? Number(stats.converted_sessions || 0) : null;
         const conversionRate = !hasGoal || uniqueSessions === 0 ? null : conversions / uniqueSessions;
 
+        // ── Per-variant engagement (bounce rate, avg time, scroll, engaged rate) ─
+        let engagement = null;
+        if (variantSiteId) {
+            const { rows: engRows } = await db.query(
+                `WITH assigned AS (
+                    SELECT session_id, MIN(assigned_at) AS first_assigned_at
+                    FROM ab_test_assignments
+                    WHERE test_id = $1 AND variant_id = $2
+                    GROUP BY session_id
+                 ),
+                 ss AS (
+                    SELECT a.session_id, a.first_assigned_at,
+                           COUNT(ae.id) AS pageviews,
+                           MAX(ae.duration_sec) AS max_duration,
+                           MAX(ae.scroll_depth) AS max_scroll
+                    FROM assigned a
+                    LEFT JOIN analytics_events ae
+                      ON ae.session_id = a.session_id AND ae.site_id = $3
+                      AND ae.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
+                      AND ($4::text IS NULL OR ae.page_host = $4)
+                    GROUP BY a.session_id, a.first_assigned_at
+                 )
+                 SELECT
+                     COUNT(*) FILTER (WHERE pageviews > 0) AS sessions_with_pv,
+                     AVG(max_duration) FILTER (WHERE pageviews > 0) AS avg_duration_sec,
+                     AVG(max_scroll) FILTER (WHERE pageviews > 0) AS avg_scroll_depth,
+                     COUNT(*) FILTER (
+                         WHERE pageviews > 0 AND (
+                             max_duration >= 10 OR pageviews > 1
+                             OR EXISTS (
+                                 SELECT 1 FROM analytics_clicks c
+                                 WHERE c.session_id = ss.session_id AND c.site_id = $3
+                                   AND c.received_at >= ss.first_assigned_at - INTERVAL '2 minutes'
+                                   AND ($4::text IS NULL OR c.page_host = $4)
+                             )
+                         )
+                     ) AS engaged_with_pv
+                 FROM ss`,
+                [testId, v.id, variantSiteId, pageHostFilter]
+            ).catch(() => ({ rows: [] }));
+            const er = engRows[0] || {};
+            const sessionsPv = Number(er.sessions_with_pv || 0);
+            const engagedPv = Math.min(Number(er.engaged_with_pv || 0), sessionsPv);
+            engagement = {
+                sessionsWithPv: sessionsPv,
+                bounceRate: sessionsPv > 0 ? (sessionsPv - engagedPv) / sessionsPv : null,
+                engagedRate: uniqueSessions > 0 ? engagedPv / uniqueSessions : null,
+                avgDurationSec: er.avg_duration_sec != null ? Number(er.avg_duration_sec) : null,
+                avgScrollDepth: er.avg_scroll_depth != null ? Number(er.avg_scroll_depth) : null,
+            };
+        }
+
         variants.push({
             variantId: v.id, variantKey: v.variant_key, label: v.label, isControl: v.is_control,
             domain: variantDomain, redirectUrl: v.redirect_url || null, hasSite: !!variantSiteId,
             exposures: Number(stats.exposures || 0), uniqueSessions, conversions, conversionRate,
             expectedConversionRate: null, expectedImprovement: null, probabilityToBeBetter: null,
+            engagement,
         });
     }
 

@@ -106,6 +106,7 @@ async function ensureTables(db) {
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS ends_at TIMESTAMPTZ`).catch(() => {});
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS goal_event_name VARCHAR(64)`).catch(() => {});
     await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS test_type VARCHAR(16) NOT NULL DEFAULT 'visual'`).catch(() => {});
+    await db.query(`ALTER TABLE ab_tests ADD COLUMN IF NOT EXISTS performance_targets JSONB NOT NULL DEFAULT '{}'`).catch(() => {});
     // Keeps "which test is active for this domain+path" a guaranteed fact
     // for the runtime lookup (api/ab-test-active.js) rather than a
     // coincidence — without this, two simultaneously-running tests on the
@@ -152,7 +153,7 @@ export default async function handler(req, res) {
     async function loadOwnedTest(testId) {
         const { rows } = await db.query(
             `SELECT id, organisation_id, domain, name, target_path, status,
-                    ends_at, goal_event_name, test_type, traffic_split, created_at, updated_at
+                    ends_at, goal_event_name, test_type, traffic_split, performance_targets, created_at, updated_at
              FROM ab_tests WHERE id = $1 AND organisation_id = $2 LIMIT 1`,
             [testId, orgId]
         ).catch(() => ({ rows: [] }));
@@ -183,6 +184,7 @@ export default async function handler(req, res) {
                     testType: test.test_type || "visual",
                     trafficSplit: test.traffic_split || {},
                     endsAt: test.ends_at, goalEventName: test.goal_event_name,
+                    performanceTargets: test.performance_targets || {},
                     createdAt: test.created_at, updatedAt: test.updated_at,
                 },
                 variants: variants.map(v => ({
@@ -325,6 +327,23 @@ export default async function handler(req, res) {
         // current variant, so an incomplete split can't silently fall back to
         // equal-split behavior for whichever variant got left out (that's a
         // wrong result presented as if it were the split the caller asked for).
+        let performanceTargets = existing.performance_targets || {};
+        if (body.performanceTargets !== undefined) {
+            const raw = body.performanceTargets;
+            if (raw === null || (typeof raw === "object" && !Array.isArray(raw))) {
+                const allowed = { bounceRate: true, avgDurationSec: true, avgScrollDepth: true, engagedRate: true };
+                const cleaned = {};
+                for (const [k, val] of Object.entries(raw || {})) {
+                    if (!allowed[k]) continue;
+                    const n = Number(val);
+                    if (isFinite(n) && n >= 0) cleaned[k] = n;
+                }
+                performanceTargets = cleaned;
+            } else {
+                return res.status(400).json({ error: "performanceTargets must be an object" });
+            }
+        }
+
         let trafficSplit = existing.traffic_split || {};
         if (body.trafficSplit !== undefined) {
             const raw = body.trafficSplit;
@@ -364,6 +383,7 @@ export default async function handler(req, res) {
         try {
             ({ rows } = await db.query(
                 `UPDATE ab_tests SET name = $1, target_path = $2, status = $3, goal_event_name = $4, traffic_split = $8,
+                     performance_targets = $9,
                      ends_at = CASE
                          WHEN $6::boolean = false THEN ends_at
                          WHEN $5::int IS NOT NULL THEN NOW() + ($5::int * INTERVAL '1 day')
@@ -371,8 +391,8 @@ export default async function handler(req, res) {
                      END,
                      updated_at = NOW()
                  WHERE id = $7
-                 RETURNING id, domain, name, target_path, status, ends_at, goal_event_name, test_type, traffic_split, created_at, updated_at`,
-                [name, targetPath, status, goalEventName, durationDays, isLaunchingNow, testId, JSON.stringify(trafficSplit)]
+                 RETURNING id, domain, name, target_path, status, ends_at, goal_event_name, test_type, traffic_split, performance_targets, created_at, updated_at`,
+                [name, targetPath, status, goalEventName, durationDays, isLaunchingNow, testId, JSON.stringify(trafficSplit), JSON.stringify(performanceTargets)]
             ));
         } catch (e) {
             if (e?.code === "23505") {
@@ -389,6 +409,7 @@ export default async function handler(req, res) {
                 testType: test.test_type || "visual",
                 trafficSplit: test.traffic_split || {},
                 endsAt: test.ends_at, goalEventName: test.goal_event_name,
+                performanceTargets: test.performance_targets || {},
                 createdAt: test.created_at, updatedAt: test.updated_at,
             },
         });

@@ -605,7 +605,20 @@ export default function PageExperimentEditor() {
                             )}
 
                             {mode === "results" && (
-                                <ResultsPanel results={results} loading={resultsLoading} history={history} domain={domain} testId={testId} />
+                                <ResultsPanel
+                    results={results} loading={resultsLoading}
+                    history={history} domain={domain} testId={testId}
+                    testMeta={test}
+                    onSaveTargets={async (targets) => {
+                        const r = await fetch(`${ScannerHost}/api/ab-tests?testId=${testId}`, {
+                            method: "PATCH",
+                            headers: authHeaders(),
+                            body: JSON.stringify({ performanceTargets: targets }),
+                        }).catch(() => null);
+                        if (!r?.ok) alert("Could not save targets.");
+                        else fetchTest();
+                    }}
+                />
                             )}
 
                             {mode === "editor" && test.testType === "url_split" && (
@@ -899,10 +912,46 @@ function fmtDate(iso) {
     return new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 }
 
-function ResultsPanel({ results, loading, history, domain, testId }) {
+function fmtDur(sec) {
+    if (sec == null) return "—";
+    const s = Math.round(sec);
+    if (s < 60) return `${s}s`;
+    return `${Math.floor(s / 60)}m ${s % 60}s`;
+}
+
+// Returns the index of the "winning" variant for a given engagement metric.
+// For bounce/non-engagement metrics lower = better; for time/scroll higher = better.
+function winnerIndex(variants, key, lowerBetter) {
+    const vals = variants.map(v => v.engagement?.[key] ?? null);
+    if (vals.every(v => v == null)) return -1;
+    let best = null, bestIdx = -1;
+    vals.forEach((v, i) => {
+        if (v == null) return;
+        if (best == null || (lowerBetter ? v < best : v > best)) { best = v; bestIdx = i; }
+    });
+    return bestIdx;
+}
+
+function ResultsPanel({ results, loading, history, domain, testId, testMeta, onSaveTargets }) {
     const [graphTab, setGraphTab] = useState("date");
+    const [editingTargets, setEditingTargets] = useState(false);
+    const [targetDraft, setTargetDraft] = useState({});
+    const [targetSaving, setTargetSaving] = useState(false);
+
     const openVariantDetail = (variantId) => {
         history.push(`${analyticsPageExperimentsPath(domain)}/${testId}/variants/${variantId}`);
+    };
+
+    const openTargetEditor = () => {
+        setTargetDraft(testMeta?.performanceTargets || {});
+        setEditingTargets(true);
+    };
+
+    const saveTargets = async () => {
+        setTargetSaving(true);
+        await onSaveTargets(targetDraft);
+        setTargetSaving(false);
+        setEditingTargets(false);
     };
 
     if (loading) return <p className="sa-notice">Loading&hellip;</p>;
@@ -1090,6 +1139,135 @@ function ResultsPanel({ results, loading, history, domain, testId }) {
                     </table>
                 </div>
             </div>
+
+            {/* ── Engagement comparison card ─────────────────────────────── */}
+            {variants.some(v => v.engagement) && (() => {
+                const METRICS = [
+                    { key: "bounceRate", label: "Bounce rate", fmt: v => v != null ? formatPercent(v * 100) : "—", lowerBetter: true, targetKey: "bounceRate", targetLabel: "Max bounce rate", targetDir: "max", targetUnit: "%" },
+                    { key: "engagedRate", label: "Engaged sessions", fmt: v => v != null ? formatPercent(v * 100) : "—", lowerBetter: false, targetKey: "engagedRate", targetLabel: "Min engaged rate", targetDir: "min", targetUnit: "%" },
+                    { key: "avgDurationSec", label: "Avg. time on page", fmt: fmtDur, lowerBetter: false, targetKey: "avgDurationSec", targetLabel: "Min avg. time", targetDir: "min", targetUnit: "s" },
+                    { key: "avgScrollDepth", label: "Avg. scroll depth", fmt: v => v != null ? Math.round(v) + "%" : "—", lowerBetter: false, targetKey: "avgScrollDepth", targetLabel: "Min scroll depth", targetDir: "min", targetUnit: "%" },
+                ];
+                const targets = testMeta?.performanceTargets || {};
+                const hasTargets = Object.keys(targets).length > 0;
+
+                const passesTarget = (metric, value) => {
+                    const t = targets[metric.targetKey];
+                    if (t == null || value == null) return null;
+                    const pct = ["bounceRate", "engagedRate"].includes(metric.key) ? value * 100 : value;
+                    return metric.targetDir === "max" ? pct <= t : pct >= t;
+                };
+
+                return (
+                    <>
+                        <div className="pxp-report__card">
+                            <div className="pxp-report__card-head">
+                                <h3 className="pxp-report__metric-title">Engagement comparison</h3>
+                                <button type="button" className="pxp-targets-edit-btn" onClick={openTargetEditor}>
+                                    {hasTargets ? "Edit targets" : "+ Add targets"}
+                                </button>
+                            </div>
+
+                            {editingTargets && (
+                                <div className="pxp-targets-editor">
+                                    <p className="pxp-targets-editor__hint">
+                                        Set thresholds for your experiment. Each variant will be marked pass or fail against these values.
+                                    </p>
+                                    <div className="pxp-targets-editor__grid">
+                                        {METRICS.map(m => (
+                                            <label key={m.targetKey} className="pxp-targets-editor__field">
+                                                <span className="pxp-targets-editor__label">
+                                                    {m.targetLabel}
+                                                </span>
+                                                <div className="pxp-targets-editor__input-wrap">
+                                                    <input
+                                                        type="number"
+                                                        min="0" max={m.targetUnit === "%" ? 100 : undefined}
+                                                        step={m.targetUnit === "s" ? 10 : 1}
+                                                        className="pxp-targets-editor__input"
+                                                        placeholder="—"
+                                                        value={targetDraft[m.targetKey] ?? ""}
+                                                        onChange={e => {
+                                                            const val = e.target.value === "" ? undefined : Number(e.target.value);
+                                                            setTargetDraft(prev => {
+                                                                const next = { ...prev };
+                                                                if (val === undefined) delete next[m.targetKey];
+                                                                else next[m.targetKey] = val;
+                                                                return next;
+                                                            });
+                                                        }}
+                                                    />
+                                                    <span className="pxp-targets-editor__unit">{m.targetUnit}</span>
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    <div className="pxp-targets-editor__actions">
+                                        <button type="button" className="pxp-launch-btn" onClick={saveTargets} disabled={targetSaving}>
+                                            {targetSaving ? "Saving…" : "Save targets"}
+                                        </button>
+                                        <button type="button" className="pxp-targets-edit-btn" onClick={() => setEditingTargets(false)}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="pxp-report__table-scroll">
+                                <table className="sa-table pxp-report__table pxp-engagement-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            {hasTargets && <th className="sa-table__num">Target</th>}
+                                            {variants.map((v, i) => (
+                                                <th key={v.variantId} className="sa-table__num">
+                                                    <span className="pxp-report__variant-dot" style={{ background: variantColor(i) }} />
+                                                    {v.label || v.variantKey}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {METRICS.map(m => {
+                                            const bestIdx = winnerIndex(variants, m.key, m.lowerBetter);
+                                            return (
+                                                <tr key={m.key}>
+                                                    <td className="pxp-engagement-table__metric">{m.label}</td>
+                                                    {hasTargets && (
+                                                        <td className="sa-table__num pxp-engagement-table__target">
+                                                            {targets[m.targetKey] != null
+                                                                ? `${m.targetDir === "max" ? "<" : ">"} ${targets[m.targetKey]}${m.targetUnit}`
+                                                                : <span style={{ opacity: 0.3 }}>—</span>
+                                                            }
+                                                        </td>
+                                                    )}
+                                                    {variants.map((v, i) => {
+                                                        const val = v.engagement?.[m.key] ?? null;
+                                                        const isWinner = bestIdx === i && variants.length > 1;
+                                                        const pass = passesTarget(m, val);
+                                                        return (
+                                                            <td key={v.variantId} className="sa-table__num pxp-engagement-table__cell">
+                                                                {pass === true && <span className="pxp-target-pass">✓</span>}
+                                                                {pass === false && <span className="pxp-target-fail">✗</span>}
+                                                                <span className={isWinner ? "pxp-engagement-table__winner" : undefined}>
+                                                                    {m.fmt(val)}
+                                                                </span>
+                                                                {isWinner && variants.length > 1 && (
+                                                                    <span className="pxp-engagement-table__best-chip">best</span>
+                                                                )}
+                                                            </td>
+                                                        );
+                                                    })}
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </>
+                );
+            })()}
 
             {hasGoal && dailySeries.length > 0 && (
                 <div className="pxp-report__card">
