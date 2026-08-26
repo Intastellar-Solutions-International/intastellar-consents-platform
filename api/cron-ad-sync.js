@@ -204,17 +204,62 @@ export default async function handler(req, res) {
         const allDays = daysInRange(windowFrom, windowTo);
         const missingDays = allDays.filter(d => !cached.has(d));
 
-        if (missingDays.length === 0) {
-            results.push({ tag, status: "up-to-date" });
-            continue;
-        }
-
-        // Refresh token before fetching
+        // Refresh token before any API call (currency resolution or data fetch).
         try {
             const refreshed = await tryRefreshToken(db, conn);
             conn.access_token = refreshed.access_token;
         } catch (e) {
             console.warn(`${tag} token refresh failed:`, e.message);
+        }
+
+        // For Google Ads connections where account_currency was never stored (or was
+        // stored wrong), resolve the real currency from the API and backfill stale
+        // cache rows — even when all days are already cached and no fetch is needed.
+        if (conn.platform === "google_ads" && !conn.account_currency && conn.account_id) {
+            try {
+                const customerId = conn.account_id.replace(/\D/g, "");
+                const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+                const gadsHeaders = {
+                    Authorization: `Bearer ${conn.access_token}`,
+                    "developer-token": devToken,
+                    "Content-Type": "application/json",
+                };
+                if (conn.login_customer_id) {
+                    gadsHeaders["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
+                }
+                const cr = await fetch(
+                    `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
+                    { method: "POST", headers: gadsHeaders, body: JSON.stringify({ query: "SELECT customer.currency_code FROM customer LIMIT 1" }) }
+                );
+                if (cr.ok) {
+                    const cd = await cr.json().catch(() => ({}));
+                    const resolvedCurrency = cd?.results?.[0]?.customer?.currencyCode || null;
+                    if (resolvedCurrency) {
+                        conn.account_currency = resolvedCurrency;
+                        await db.query(
+                            `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW()
+                             WHERE organisation_id=$2 AND domain=$3 AND platform='google_ads'`,
+                            [resolvedCurrency, conn.organisation_id, conn.domain]
+                        ).catch(() => {});
+                        // Fix stale cache rows: correct currency and null out spend_eur so
+                        // the query-time conversion uses the right currency going forward.
+                        await db.query(
+                            `UPDATE ad_daily_data SET currency=$1, spend_eur=NULL
+                             WHERE organisation_id=$2 AND domain=$3 AND platform='google_ads'
+                               AND currency IS DISTINCT FROM $1`,
+                            [resolvedCurrency, conn.organisation_id, conn.domain]
+                        ).catch(() => {});
+                        console.log(`${tag} resolved and stored currency: ${resolvedCurrency}`);
+                    }
+                }
+            } catch (e) {
+                console.warn(`${tag} currency resolution failed:`, e.message);
+            }
+        }
+
+        if (missingDays.length === 0) {
+            results.push({ tag, status: "up-to-date" });
+            continue;
         }
 
         // Fetch the full missing range in one call (daily granularity)
