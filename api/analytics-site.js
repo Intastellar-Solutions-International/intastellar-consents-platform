@@ -102,6 +102,7 @@ export default async function handler(req, res) {
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_require_engaged      BOOLEAN      NOT NULL DEFAULT false;
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_pages     TEXT[]       NOT NULL DEFAULT '{}';
         ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS lead_qualifying_events    TEXT[]       NOT NULL DEFAULT '{}';
+        ALTER TABLE analytics_sites ADD COLUMN IF NOT EXISTS dashboard_cards           JSONB;
     `).catch(() => {});
 
     // ── GET (list mode): which of this org's domains have analytics set up ────
@@ -131,7 +132,7 @@ export default async function handler(req, res) {
                     datalayer_enabled,
                     lead_quality_enabled, lead_require_engaged,
                     lead_qualifying_pages, lead_qualifying_events,
-                    industry, business_type
+                    industry, business_type, dashboard_cards
              FROM analytics_sites
              WHERE organisation_id = $1 AND LOWER(domain) = LOWER($2)
              LIMIT 1`,
@@ -213,6 +214,14 @@ export default async function handler(req, res) {
             sets.push(`business_type = $${i++}`);
             params.push(body.businessType);
         }
+        const VALID_CARD_IDS = ["users", "bounce", "sessions", "events", "consent", "countries", "leads", "revenue"];
+        if (body.dashboardCards === null) {
+            sets.push(`dashboard_cards = NULL`);
+        } else if (Array.isArray(body.dashboardCards)) {
+            const filtered = body.dashboardCards.filter(c => VALID_CARD_IDS.includes(c));
+            sets.push(`dashboard_cards = $${i++}`);
+            params.push(JSON.stringify(filtered));
+        }
 
         if (!sets.length) return res.status(400).json({ error: "No valid fields to update" });
 
@@ -223,7 +232,8 @@ export default async function handler(req, res) {
                        recording_sample_rate, recording_retention_days, heatmap_retention_days,
                        recording_block_selectors, recording_mask_selectors,
                        datalayer_enabled, lead_quality_enabled, lead_require_engaged,
-                       lead_qualifying_pages, lead_qualifying_events, industry, business_type`,
+                       lead_qualifying_pages, lead_qualifying_events, industry, business_type,
+                       dashboard_cards`,
             params
         ).catch(() => ({ rows: [] }));
 

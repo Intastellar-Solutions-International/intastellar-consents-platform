@@ -14,6 +14,7 @@ import {
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
     IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash, IconExternalLink, IconCursorClick,
+    IconScrollDepth,
 } from "./Icons.js";
 import "./Analytics.css";
 
@@ -304,12 +305,69 @@ function fmtRevenue(amount, currency = "EUR") {
     return sym + Number(amount).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent }) {
+const ALL_CARD_DEFS = [
+    { id: "users",    label: "Active users",    desc: "Engaged sessions in the period" },
+    { id: "bounce",   label: "Bounce rate",     desc: "Sessions with no engagement" },
+    { id: "sessions", label: "Unique sessions", desc: "Consent-gated sessions" },
+    { id: "events",   label: "Total events",    desc: "All recorded events" },
+    { id: "consent",  label: "Consent rate",    desc: "statisticCookies acceptance" },
+    { id: "countries",label: "Countries",       desc: "Distinct visitor countries" },
+    { id: "leads",    label: "Quality leads",   desc: "Engaged sessions matching lead rules" },
+    { id: "revenue",  label: "Revenue",         desc: "Ecommerce revenue events" },
+];
+
+function CustomizePanel({ currentCards, defaultCards, onSave, onClose }) {
+    const [draft, setDraft] = useState(currentCards || defaultCards);
+
+    const toggle = (id) => setDraft(d =>
+        d.includes(id) ? d.filter(x => x !== id) : [...d, id]
+    );
+
+    return (
+        <div className="sa-customize-backdrop" onClick={onClose}>
+            <div className="sa-customize-panel" onClick={e => e.stopPropagation()}>
+                <div className="sa-customize-panel__head">
+                    <span className="sa-customize-panel__title">Customize cards</span>
+                    <button className="sa-customize-panel__close" onClick={onClose} aria-label="Close">✕</button>
+                </div>
+                <p className="sa-customize-panel__sub">Choose which KPI cards appear on the dashboard.</p>
+                <div className="sa-customize-panel__list">
+                    {ALL_CARD_DEFS.map(c => (
+                        <label key={c.id} className={"sa-customize-panel__item" + (draft.includes(c.id) ? " sa-customize-panel__item--on" : "")}>
+                            <input
+                                type="checkbox"
+                                className="sa-customize-panel__check"
+                                checked={draft.includes(c.id)}
+                                onChange={() => toggle(c.id)}
+                            />
+                            <span className="sa-customize-panel__item-label">{c.label}</span>
+                            <span className="sa-customize-panel__item-desc">{c.desc}</span>
+                        </label>
+                    ))}
+                </div>
+                <div className="sa-customize-panel__actions">
+                    <button className="sa-customize-panel__reset" onClick={() => { onSave(null); onClose(); }}>
+                        Reset to default
+                    </button>
+                    <button className="sa-customize-panel__apply" onClick={() => { onSave(draft); onClose(); }}>
+                        Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, trendConsent, trendBounce, customCards, onCustomize }) {
     const bt          = siteConfig?.businessType || "";
     const hasRevenue  = data.totals.revenue != null && data.totals.revenue > 0;
     const hasLeads    = data.totals.qualityLeads !== null;
     const consentPct  = data.totals.consentRate;
     const currency    = data.totals.revenueCurrency || "EUR";
+
+    const bounceRate = data.totals.uniqueSessions > 0
+        ? ((data.totals.uniqueSessions - data.totals.engagedUsers) / data.totals.uniqueSessions) * 100
+        : null;
 
     const CARDS = {
         revenue: (
@@ -329,6 +387,16 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
                 sub="engaged: 10s+, clicked, or 2+ pages"
                 variant="live"
                 trend={trendEngaged}
+            />
+        ),
+        bounce: (
+            <KpiCard key="bounce"
+                icon={<IconScrollDepth />}
+                label="Bounce rate"
+                value={bounceRate != null ? formatPercent(bounceRate) : "—"}
+                sub="sessions with no engagement"
+                variant={bounceRate != null && bounceRate > 60 ? "warn" : "blue"}
+                trend={trendBounce != null ? -trendBounce : undefined}
             />
         ),
         events: (
@@ -383,36 +451,45 @@ function KpiStrip({ data, siteConfig, trendEngaged, trendEvents, trendSessions, 
         ),
     };
 
-    let order;
+    let defaultOrder;
     switch (bt) {
         case "ecommerce":
-            order = ["users", "sessions", "consent", "countries", ...(hasRevenue ? ["revenue"] : [])];
-            // revenue goes first in ecommerce mode
-            if (hasRevenue) order = ["revenue", "users", "sessions", "consent", "countries"];
+            defaultOrder = hasRevenue
+                ? ["revenue", "users", "sessions", "consent", "countries"]
+                : ["users", "sessions", "consent", "countries"];
             break;
         case "b2b":
-            order = hasLeads
+            defaultOrder = hasLeads
                 ? ["leads", "users", "events", "sessions", "consent"]
                 : ["users", "events", "sessions", "consent", "countries"];
             break;
         case "media":
-            order = ["events", "sessions", "users", "consent", "countries"];
+            defaultOrder = ["events", "sessions", "users", "consent", "countries"];
             break;
         case "local":
-            order = ["sessions", "users", "countries", "consent", "events"];
+            defaultOrder = ["sessions", "users", "countries", "consent", "events"];
             break;
         default:
-            order = ["users", "events", "sessions", "consent", "countries"];
-            if (hasLeads)   order.push("leads");
-            if (hasRevenue) order.push("revenue");
+            defaultOrder = ["users", "events", "sessions", "consent", "countries"];
+            if (hasLeads)   defaultOrder.push("leads");
+            if (hasRevenue) defaultOrder.push("revenue");
     }
 
+    const order = customCards || defaultOrder;
     const cards = order.map(id => CARDS[id]).filter(Boolean);
-    const cls = cards.length === 6 ? "sa-kpi-strip sa-kpi-strip--6"
-              : cards.length === 7 ? "sa-kpi-strip sa-kpi-strip--6"
-              : "sa-kpi-strip";
+    const cls = cards.length >= 6 ? "sa-kpi-strip sa-kpi-strip--6" : "sa-kpi-strip";
 
-    return <div className={cls}>{cards}</div>;
+    return (
+        <div className="sa-kpi-strip-wrap">
+            <div className={cls}>{cards}</div>
+            <button className="sa-customize-btn" onClick={onCustomize} title="Customize cards" aria-label="Customize dashboard cards">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                Customize
+            </button>
+        </div>
+    );
 }
 
 function SetupCard({ domain, onKeyGenerated }) {
@@ -566,6 +643,32 @@ export default function SiteAnalytics() {
     const trendSessions = useMemo(() => pctChange(data?.totals?.uniqueSessions, prevData?.totals?.uniqueSessions), [data, prevData]);
     const trendConsent  = useMemo(() => pctChange(data?.totals?.consentRate,    prevData?.totals?.consentRate),    [data, prevData]);
 
+    const bounceRate     = useMemo(() => data?.totals?.uniqueSessions > 0 ? (data.totals.uniqueSessions - data.totals.engagedUsers) / data.totals.uniqueSessions * 100 : null, [data]);
+    const prevBounceRate = useMemo(() => prevData?.totals?.uniqueSessions > 0 ? (prevData.totals.uniqueSessions - prevData.totals.engagedUsers) / prevData.totals.uniqueSessions * 100 : null, [prevData]);
+    const trendBounce    = useMemo(() => pctChange(bounceRate, prevBounceRate), [bounceRate, prevBounceRate]);
+
+    // Dashboard card customization — stored in DB via analytics-site PATCH.
+    const [customCards,     setCustomCards]     = useState(null);
+    const [showCustomize,   setShowCustomize]   = useState(false);
+
+    useEffect(() => {
+        if (siteConfig?.dashboard_cards) {
+            setCustomCards(siteConfig.dashboard_cards);
+        } else {
+            setCustomCards(null);
+        }
+    }, [siteConfig]);
+
+    const saveCustomCards = useCallback(async (cards) => {
+        if (!domain) return;
+        setCustomCards(cards);
+        await fetch(`${ScannerHost}/api/analytics-site?domain=${encodeURIComponent(domain)}`, {
+            method: "PATCH",
+            headers: { ...authHeaders(), "Content-Type": "application/json" },
+            body: JSON.stringify({ dashboardCards: cards }),
+        }).catch(() => {});
+    }, [domain]);
+
     const maxPageViews  = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
     const maxCountry    = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
     const maxReferrer   = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
@@ -642,7 +745,7 @@ export default function SiteAnalytics() {
                                 </div>
                             )}
 
-                            {/* ── KPI strip (business-type-aware) ───────────────── */}
+                            {/* ── KPI strip (business-type-aware, customizable) ─── */}
                             <KpiStrip
                                 data={data}
                                 siteConfig={siteConfig}
@@ -650,7 +753,18 @@ export default function SiteAnalytics() {
                                 trendEvents={trendEvents}
                                 trendSessions={trendSessions}
                                 trendConsent={trendConsent}
+                                trendBounce={trendBounce}
+                                customCards={customCards}
+                                onCustomize={() => setShowCustomize(true)}
                             />
+                            {showCustomize && (
+                                <CustomizePanel
+                                    currentCards={customCards}
+                                    defaultCards={["users", "events", "sessions", "consent", "countries"]}
+                                    onSave={saveCustomCards}
+                                    onClose={() => setShowCustomize(false)}
+                                />
+                            )}
 
                             {/* ── Main: chart (60 %) + live feed (40 %) ──────────── */}
                             <div className="sa-overview-main">
