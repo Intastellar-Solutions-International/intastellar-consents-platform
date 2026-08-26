@@ -161,7 +161,7 @@ export default async function handler(req, res) {
                 page_count,
                 top_page,
                 CASE WHEN COALESCE(starters, 0) > 0
-                     THEN ROUND(submissions::numeric / starters * 100, 1)
+                     THEN LEAST(100, ROUND(submissions::numeric / starters * 100, 1))
                      ELSE NULL
                 END AS completion_rate
             FROM per_form
@@ -193,7 +193,7 @@ export default async function handler(req, res) {
         totals: {
             submissions,
             starters,
-            completionRate: starters > 0 ? Math.round((submissions / starters) * 1000) / 10 : null,
+            completionRate: starters > 0 ? Math.min(100, Math.round((submissions / starters) * 1000) / 10) : null,
         },
         daily: dailyRes.rows.map(r => ({
             day: r.day,

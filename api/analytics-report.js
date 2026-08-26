@@ -875,8 +875,8 @@ async function _handler(req, res) {
                 COUNT(*) FILTER (WHERE name = 'form_started')::int AS started,
                 COUNT(*) FILTER (WHERE name = 'form_submit')::int  AS submitted,
                 CASE WHEN COUNT(*) FILTER (WHERE name = 'form_started') > 0
-                     THEN ROUND(COUNT(*) FILTER (WHERE name = 'form_submit')::numeric /
-                                COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1)
+                     THEN LEAST(100, ROUND(COUNT(*) FILTER (WHERE name = 'form_submit')::numeric /
+                                COUNT(*) FILTER (WHERE name = 'form_started') * 100, 1))
                      ELSE NULL
                 END AS completion_rate
             FROM analytics_custom_events
