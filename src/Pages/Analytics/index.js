@@ -13,7 +13,7 @@ import {
 } from "./_shared.js";
 import {
     IconBarChart, IconUsers, IconShieldCheck, IconGlobe, IconTrendingUp,
-    IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash, IconExternalLink,
+    IconDocument, IconRadio, IconTarget, IconMegaphone, IconCash, IconExternalLink, IconCursorClick,
 } from "./Icons.js";
 import "./Analytics.css";
 
@@ -569,7 +569,8 @@ export default function SiteAnalytics() {
     const maxPageViews  = useMemo(() => Math.max(...(data?.topPages   || []).map(p => p.views),  1), [data]);
     const maxCountry    = useMemo(() => Math.max(...(data?.countries  || []).map(c => c.events), 1), [data]);
     const maxReferrer   = useMemo(() => Math.max(...(data?.referrers  || []).map(r => r.events), 1), [data]);
-    const maxOutbound   = useMemo(() => Math.max(...(data?.topOutbound|| []).map(o => o.clicks), 1), [data]);
+    const maxOutbound        = useMemo(() => Math.max(...(data?.topOutbound      || []).map(o => o.clicks),    1), [data]);
+    const maxRageSelector    = useMemo(() => Math.max(...(data?.topRageSelectors || []).map(s => s.clicks),    1), [data]);
     const deviceTotal  = useMemo(() => (data?.devices || []).reduce((s, d) => s + d.events, 0), [data]);
 
     return (
@@ -812,6 +813,61 @@ export default function SiteAnalytics() {
                                                 ))}
                                             </tbody>
                                         </table>
+                                    </div>
+                                )}
+
+                                {((data.topRageSelectors || []).length > 0 || (data.topRagePages || []).length > 0) && (
+                                    <div className="sa-panel">
+                                        <h3 className="sa-panel__title">
+                                            <IconCursorClick className="sa-icon" /> Frustration signals
+                                            {data.rageClicks?.frustrationRate > 0 && (
+                                                <span className="sa-panel__consent-note">
+                                                    {data.rageClicks.frustrationRate}% of sessions
+                                                </span>
+                                            )}
+                                        </h3>
+                                        {(data.topRageSelectors || []).length > 0 && (
+                                            <table className="sa-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Element</th>
+                                                        <th className="sa-table__num">Rage clicks</th>
+                                                        <th className="sa-table__bar" />
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {data.topRageSelectors.map(s => (
+                                                        <tr key={s.selector}>
+                                                            <td className="sa-form-id">{s.selector}</td>
+                                                            <td className="sa-table__num">{s.clicks.toLocaleString("de-DE")}</td>
+                                                            <td className="sa-table__bar">
+                                                                <MiniBar value={s.clicks} max={maxRageSelector} color="rgba(239,68,68,0.45)" />
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                        {(data.topRagePages || []).length > 0 && (
+                                            <table className="sa-table" style={(data.topRageSelectors || []).length > 0 ? { marginTop: "1rem" } : {}}>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Page</th>
+                                                        <th className="sa-table__num">Rage clicks</th>
+                                                        <th className="sa-table__num">Rate</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {data.topRagePages.map(p => (
+                                                        <tr key={p.page}>
+                                                            <td className="sa-table__path">{p.page}</td>
+                                                            <td className="sa-table__num">{p.rageClicks.toLocaleString("de-DE")}</td>
+                                                            <td className="sa-table__num">{p.rate != null ? `${p.rate}%` : "—"}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        )}
                                     </div>
                                 )}
                             </div>

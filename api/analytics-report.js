@@ -171,7 +171,8 @@ async function _handler(req, res) {
            conversionsByChannelRes, conversionsByDeviceRes, conversionsByCampaignRes, pageEngagementRes,
            newVsReturningRes, lastTouchByChannelRes,
            revenueRes, topProductsRes,
-           outboundTotalsRes, topOutboundRes] = await Promise.all([
+           outboundTotalsRes, topOutboundRes,
+           rageClickStatsRes, topRageSelectorsRes, topRagePagesRes] = await Promise.all([
 
         db.query(`
             SELECT
@@ -800,12 +801,74 @@ async function _handler(req, res) {
             [siteId, fromDate, toDateExclusive]
         ).catch(() => ({ rows: [] })),
 
+        // Rage click totals — total events, distinct frustrated sessions, total sessions
+        // for computing frustration rate (% sessions with ≥1 rage click).
+        db.query(`
+            SELECT
+                (SELECT COUNT(*) FROM analytics_custom_events
+                 WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+                   AND name = 'rage_click')                               AS total_rage_clicks,
+                (SELECT COUNT(DISTINCT session_id) FROM analytics_custom_events
+                 WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+                   AND name = 'rage_click' AND session_id IS NOT NULL)    AS frustrated_sessions,
+                (SELECT COUNT(DISTINCT session_id) FROM analytics_events
+                 WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+                   AND session_id IS NOT NULL)                            AS total_sessions`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        // Top rage-clicked elements — grouped by CSS selector
+        db.query(`
+            SELECT
+                extra_data->>'selector' AS selector,
+                COUNT(*)                AS clicks
+            FROM analytics_custom_events
+            WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+              AND name = 'rage_click'
+              AND extra_data->>'selector' IS NOT NULL
+            GROUP BY 1
+            ORDER BY clicks DESC
+            LIMIT 15`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
+        // Top pages by rage click count, joined with pageview counts for a rate
+        db.query(`
+            WITH rage AS (
+                SELECT extra_data->>'page' AS page, COUNT(*) AS rage_clicks
+                FROM analytics_custom_events
+                WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+                  AND name = 'rage_click'
+                  AND extra_data->>'page' IS NOT NULL
+                GROUP BY 1
+            ),
+            views AS (
+                SELECT pathname, COUNT(*) AS page_views
+                FROM analytics_events
+                WHERE site_id = $1 AND received_at >= $2 AND received_at < $3
+                GROUP BY 1
+            )
+            SELECT
+                r.page,
+                r.rage_clicks,
+                v.page_views,
+                CASE WHEN v.page_views > 0
+                     THEN ROUND(r.rage_clicks::numeric / v.page_views * 100, 1)
+                     ELSE NULL
+                END AS rage_rate
+            FROM rage r
+            LEFT JOIN views v ON v.pathname = r.page
+            ORDER BY rage_clicks DESC
+            LIMIT 15`,
+            [siteId, fromDate, toDateExclusive]
+        ).catch(() => ({ rows: [] })),
+
     ]).catch((err) => {
         // Schema not yet migrated, connection limit hit, or other transient DB
         // error — return empty rows for every query so the response stays a
         // valid (if empty) 200 instead of crashing with a 500.
         console.error("[analytics-report] batch error:", err?.message);
-        return Array(33).fill({ rows: [] });
+        return Array(36).fill({ rows: [] });
     });
 
     const t = totalsRes.rows[0] || {};
@@ -1045,6 +1108,27 @@ async function _handler(req, res) {
         topOutbound: topOutboundRes.rows.map(r => ({
             host:   r.host,
             clicks: Number(r.clicks || 0),
+        })),
+        rageClicks: (() => {
+            const r = rageClickStatsRes.rows[0] || {};
+            const frustrated = Number(r.frustrated_sessions || 0);
+            const total      = Number(r.total_sessions     || 0);
+            return {
+                total:              Number(r.total_rage_clicks || 0),
+                frustratedSessions: frustrated,
+                totalSessions:      total,
+                frustrationRate:    total > 0 ? Math.round(frustrated / total * 1000) / 10 : 0,
+            };
+        })(),
+        topRageSelectors: topRageSelectorsRes.rows.map(r => ({
+            selector: r.selector,
+            clicks:   Number(r.clicks || 0),
+        })),
+        topRagePages: topRagePagesRes.rows.map(r => ({
+            page:       r.page,
+            rageClicks: Number(r.rage_clicks || 0),
+            views:      r.page_views != null ? Number(r.page_views) : null,
+            rate:       r.rage_rate  != null ? Number(r.rage_rate)  : null,
         })),
     });
 }
