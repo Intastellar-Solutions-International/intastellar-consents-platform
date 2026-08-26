@@ -67,6 +67,47 @@ function setCors(req, res) {
 
 const tryRefreshToken = _tryRefreshToken;
 
+// Fetches the real currency from the Google Ads Customer API, persists it to the connection
+// row, and bulk-updates any stale ad_daily_data rows that were written with the wrong currency.
+async function resolveGoogleAdsCurrency(conn, db, orgId, domain) {
+    try {
+        const customerId = conn.account_id.replace(/\D/g, "");
+        const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN || "";
+        const headers = {
+            Authorization: `Bearer ${conn.access_token}`,
+            "developer-token": devToken,
+            "Content-Type": "application/json",
+        };
+        if (conn.login_customer_id) {
+            headers["login-customer-id"] = String(conn.login_customer_id).replace(/\D/g, "");
+        }
+        const r = await fetch(
+            `https://googleads.googleapis.com/v25/customers/${customerId}/googleAds:search`,
+            { method: "POST", headers, body: JSON.stringify({ query: "SELECT customer.currency_code FROM customer LIMIT 1" }) }
+        );
+        if (!r.ok) return null;
+        const d = await r.json().catch(() => ({}));
+        const currency = d?.results?.[0]?.customer?.currencyCode || null;
+        if (!currency) return null;
+
+        // Persist so future calls (and cache hits) use the correct value.
+        await db.query(
+            `UPDATE ad_platform_connections SET account_currency=$1, updated_at=NOW() WHERE id=$2`,
+            [currency, conn.id]
+        ).catch(() => {});
+        // Backfill stale cache rows written with the wrong currency.
+        await db.query(
+            `UPDATE ad_daily_data SET currency=$1
+             WHERE organisation_id=$2 AND domain=$3 AND platform='google_ads' AND currency IS DISTINCT FROM $1`,
+            [currency, orgId, domain]
+        ).catch(() => {});
+
+        return currency;
+    } catch {
+        return null;
+    }
+}
+
 // Check ad_daily_data cache; returns aggregate if all days are present, null otherwise.
 async function fromCache(db, orgId, domain, platform, fromDate, toDate) {
     try {
@@ -124,11 +165,19 @@ export default async function handler(req, res) {
 
     let conn = result.rows[0];
 
+    conn = await tryRefreshToken(db, conn);
+
     // Serve from cache if all days in range are pre-synced by the cron
     const cached = await fromCache(db, orgId, domain, platform, fromDate, toDate);
-    if (cached) return res.status(200).json(cached);
-
-    conn = await tryRefreshToken(db, conn);
+    if (cached) {
+        // Use the authoritative stored currency if available; otherwise resolve it from the API
+        // so stale "EUR" cache rows don't leak through for non-EUR accounts.
+        let currency = conn.account_currency || null;
+        if (!currency && platform === "google_ads" && conn.account_id) {
+            currency = await resolveGoogleAdsCurrency(conn, db, orgId, domain);
+        }
+        return res.status(200).json({ ...cached, currency: currency || cached.currency });
+    }
 
     try {
         const data = await fetchPlatformData(conn, fromDate, toDate, db);
