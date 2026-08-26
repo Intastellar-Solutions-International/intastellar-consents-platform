@@ -200,7 +200,13 @@ export default async function handler(req, res) {
                    COUNT(ae.id) AS pageviews
             FROM assigned a
             LEFT JOIN analytics_events ae
-              ON ae.session_id = a.session_id AND ae.site_id = $3 AND ae.received_at >= a.first_assigned_at
+              ON ae.session_id = a.session_id AND ae.site_id = $3
+              -- 2-minute grace: the analytics entry beacon fires on page load
+              -- before the exposure XHR round-trip completes, so received_at
+              -- is reliably a few hundred ms earlier than assigned_at for the
+              -- same pageview. Without this slack the control's own pageview
+              -- rows are always excluded, producing 0s duration / no scroll.
+              AND ae.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
               AND ($4::text IS NULL OR ae.page_host = $4)
             GROUP BY a.session_id, a.first_assigned_at
          )
@@ -215,7 +221,7 @@ export default async function handler(req, res) {
                  WHERE max_duration >= 10 OR pageviews > 1 OR EXISTS (
                      SELECT 1 FROM analytics_clicks c
                      WHERE c.site_id = $3 AND c.session_id = session_stats.session_id
-                       AND c.received_at >= session_stats.first_assigned_at
+                       AND c.received_at >= session_stats.first_assigned_at - INTERVAL '2 minutes'
                        AND ($4::text IS NULL OR c.page_host = $4)
                  )
              ) AS engaged_sessions
@@ -292,7 +298,8 @@ export default async function handler(req, res) {
          SELECT COUNT(*) AS clicks, COUNT(DISTINCT c.session_id) AS sessions
          FROM assigned a
          JOIN analytics_clicks c
-           ON c.session_id = a.session_id AND c.site_id = $3 AND c.received_at >= a.first_assigned_at
+           ON c.session_id = a.session_id AND c.site_id = $3
+           AND c.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
            AND ($4::text IS NULL OR c.page_host = $4)`,
         [v.test_id, v.id, siteId, pageHostFilter]
     ).catch(() => ({ rows: [{}] }));
@@ -307,7 +314,8 @@ export default async function handler(req, res) {
          SELECT c.target_tag, c.target_id, c.target_class, c.target_text, COUNT(*) AS n
          FROM assigned a
          JOIN analytics_clicks c
-           ON c.session_id = a.session_id AND c.site_id = $3 AND c.received_at >= a.first_assigned_at
+           ON c.session_id = a.session_id AND c.site_id = $3
+           AND c.received_at >= a.first_assigned_at - INTERVAL '2 minutes'
            AND ($4::text IS NULL OR c.page_host = $4)
          GROUP BY c.target_tag, c.target_id, c.target_class, c.target_text
          ORDER BY n DESC LIMIT 15`,
