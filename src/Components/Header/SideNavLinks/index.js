@@ -4,7 +4,7 @@ import {
     analyticsSearchConsolePath,
     analyticsHeatmapPath, analyticsRecordingsPath, analyticsBotsPath,
     analyticsUserFlowPath,
-    analyticsConversionsPath, analyticsPageExperimentsPath,
+    analyticsConversionsPath, analyticsPageExperimentsPath, analyticsFormsPath,
     analyticsCohortPath, analyticsAlertsPath,
     analyticsReportsPath, analyticsReportBuilderPath,
 } from "../../../Functions/domainPathSegments.js";
@@ -167,6 +167,11 @@ export function buildAnalyticsLinks(domain) {
         {
             name: "Events & Tracking",
             path: analyticsConversionsPath(domain, "setup"),
+            indent: true,
+        },
+        {
+            name: "Forms",
+            path: analyticsFormsPath(domain),
             indent: true,
         },
         {
