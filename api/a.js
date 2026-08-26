@@ -1355,6 +1355,89 @@ var _spaLastPath=location.pathname+location.search;
   });}catch(e){}
 })();
 
+// ── Embedded form providers (HubSpot, Typeform, Calendly, Tally) ─────────
+// Third-party widgets embed as cross-origin iframes, so the submit listener
+// above never fires for them. They all signal submission via postMessage.
+(function(){
+  var started={};
+  window.addEventListener('message',function(e){
+    try{
+      var d=e.data;
+      if(!d||typeof d!=='object')return;
+
+      // ── HubSpot ──────────────────────────────────────────────────────────
+      // https://legacydocs.hubspot.com/docs/methods/forms/advanced_form_options
+      // onFormSubmitted fires only after server-side success — prefer it over
+      // onFormSubmit (which fires before the server validates the submission).
+      if(d.type==='hsFormCallback'){
+        var hsFid='hs-'+String(d.id||'form').slice(0,64);
+        if(d.eventName==='onFormReady'){
+          if(!started[hsFid]){
+            started[hsFid]=1;
+            track('form_started',{data:{formId:hsFid,provider:'hubspot'}});
+          }
+        }else if(d.eventName==='onFormSubmitted'){
+          track('form_submit',{data:{
+            formId:hsFid,
+            provider:'hubspot',
+            fieldCount:Array.isArray(d.data)?d.data.length:0
+          }});
+        }
+        return;
+      }
+
+      // ── Typeform ──────────────────────────────────────────────────────────
+      if(d.type==='form-submit'&&d.formId){
+        track('form_submit',{data:{
+          formId:'tf-'+String(d.formId).slice(0,64),
+          provider:'typeform',
+          responseId:String(d.response_id||'').slice(0,64)
+        }});
+        return;
+      }
+      if(d.type==='form-first-type'&&d.formId){
+        var tfFid='tf-'+String(d.formId).slice(0,64);
+        if(!started[tfFid]){
+          started[tfFid]=1;
+          track('form_started',{data:{formId:tfFid,provider:'typeform'}});
+        }
+        return;
+      }
+
+      // ── Calendly ──────────────────────────────────────────────────────────
+      if(d.event==='calendly.event_scheduled'){
+        track('form_submit',{data:{formId:'calendly',provider:'calendly'}});
+        return;
+      }
+      if(d.event==='calendly.event_type_viewed'){
+        if(!started['calendly']){
+          started['calendly']=1;
+          track('form_started',{data:{formId:'calendly',provider:'calendly'}});
+        }
+        return;
+      }
+
+      // ── Tally ─────────────────────────────────────────────────────────────
+      if(d.isTally&&d.formId){
+        var tFid='tally-'+String(d.formId).slice(0,64);
+        if(d.event==='Tally.FormSubmitted'){
+          track('form_submit',{data:{
+            formId:tFid,
+            provider:'tally',
+            fieldCount:Array.isArray(d.fields)?d.fields.length:0
+          }});
+        }else if(d.event==='Tally.FormLoaded'){
+          if(!started[tFid]){
+            started[tFid]=1;
+            track('form_started',{data:{formId:tFid,provider:'tally'}});
+          }
+        }
+        return;
+      }
+    }catch(err){}
+  });
+})();
+
 // ── Rage clicks ───────────────────────────────────────────────────────────
 // 3+ clicks within 500ms in the same 30px area = user frustration signal.
 (function(){
